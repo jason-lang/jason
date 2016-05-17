@@ -1,4 +1,13 @@
+bin
+build
+
 *.class
+*.log
+.gradle
+.settings
+.stop___MAS
+
+*~
 
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/

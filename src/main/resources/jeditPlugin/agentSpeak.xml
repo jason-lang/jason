@@ -1,0 +1,470 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE MODE SYSTEM "xmode.dtd">
+
+<!--    
+    jEdit Syntax for the AgentSpeak language (see http://jason.sf.net)
+    written by Jomi F. Hubner & Rafael H. Bordini
+-->
+
+<MODE>
+    <PROPS>
+        <PROPERTY NAME="lineComment" VALUE="//" />
+        <PROPERTY NAME="commentStart" VALUE="/*" />
+        <PROPERTY NAME="commentEnd" VALUE="*/" />
+    </PROPS>
+
+    <RULES ESCAPE="\" IGNORE_CASE="FALSE" HIGHLIGHT_DIGITS="TRUE">
+
+        <!-- Comments -->
+        <EOL_SPAN TYPE="COMMENT2">//</EOL_SPAN>
+        <!--- ISO compliant C-style comments -->
+        <SPAN TYPE="COMMENT1">
+            <BEGIN>/*</BEGIN>
+            <END>*/</END>
+        </SPAN>
+
+        <!-- String literals -->
+        <SPAN TYPE="LITERAL1" NO_LINE_BREAK="TRUE">
+            <BEGIN>"</BEGIN>
+            <END>"</END>
+        </SPAN>
+
+        <!-- highlight atoms differently within brackets -->
+        <SPAN TYPE="NULL" DELEGATE="TermList">
+            <BEGIN>(</BEGIN>
+            <END>)</END>
+        </SPAN>
+        <SPAN TYPE="NULL" DELEGATE="TermList">
+            <BEGIN>[</BEGIN>
+            <END>]</END>
+        </SPAN>
+
+        <SEQ TYPE="OPERATOR">if</SEQ>
+        <SEQ TYPE="OPERATOR">while</SEQ>
+        <SEQ TYPE="OPERATOR">for</SEQ>
+
+        <!-- special reserved words and operators -->
+        <SEQ TYPE="LITERAL2">true</SEQ>
+        <SEQ TYPE="OPERATOR">not</SEQ>
+        <SEQ TYPE="OPERATOR">div</SEQ>
+        <SEQ TYPE="OPERATOR">mod</SEQ>
+
+        <SEQ_REGEXP TYPE="DIGIT" HASH_CHAR="@" AT_WORD_START="TRUE">[@]([[:alnum:]])+</SEQ_REGEXP>
+
+        <SEQ_REGEXP TYPE="LABEL" HASH_CHAR="+" AT_WORD_START="TRUE">[+]([~])?[a-z]([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LABEL" HASH_CHAR="-" AT_WORD_START="TRUE">[-]([~])?[a-z]([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="MARKUP" HASH_CHAR="+" AT_WORD_START="TRUE">[+][!]([~])?[a-z]([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="MARKUP" HASH_CHAR="+" AT_WORD_START="TRUE">[+][?]([~])?[a-z]([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="MARKUP" HASH_CHAR="-" AT_WORD_START="TRUE">[-][!]([~])?[a-z]([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="MARKUP" HASH_CHAR="-" AT_WORD_START="TRUE">[-][?]([~])?[a-z]([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="MARKUP" HASH_CHAR="!" AT_WORD_START="TRUE">[!]([~])?[a-z]([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="MARKUP" HASH_CHAR="!" AT_WORD_START="TRUE">[!]([~])?[!][a-z]([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="MARKUP" HASH_CHAR="?" AT_WORD_START="TRUE">[?]([~])?[a-z]([[:alnum:]])*</SEQ_REGEXP>      
+
+        <!-- Vars -->
+        <SEQ_REGEXP TYPE="LITERAL3" HASH_CHAR="A">A([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LITERAL3" HASH_CHAR="B">B([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LITERAL3" HASH_CHAR="C">C([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LITERAL3" HASH_CHAR="D">D([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LITERAL3" HASH_CHAR="E">E([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LITERAL3" HASH_CHAR="F">F([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LITERAL3" HASH_CHAR="G">G([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LITERAL3" HASH_CHAR="H">H([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LITERAL3" HASH_CHAR="I">I([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LITERAL3" HASH_CHAR="J">J([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LITERAL3" HASH_CHAR="K">K([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LITERAL3" HASH_CHAR="L">L([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LITERAL3" HASH_CHAR="M">M([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LITERAL3" HASH_CHAR="N">N([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LITERAL3" HASH_CHAR="O">O([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LITERAL3" HASH_CHAR="P">P([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LITERAL3" HASH_CHAR="Q">Q([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LITERAL3" HASH_CHAR="R">R([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LITERAL3" HASH_CHAR="S">S([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LITERAL3" HASH_CHAR="T">T([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LITERAL3" HASH_CHAR="U">U([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LITERAL3" HASH_CHAR="V">V([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LITERAL3" HASH_CHAR="X">X([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LITERAL3" HASH_CHAR="Z">Z([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LITERAL3" HASH_CHAR="W">W([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LITERAL3" HASH_CHAR="Y">Y([[:alnum:]])*</SEQ_REGEXP>
+
+        <!-- Internal Actions -->
+        <SEQ_REGEXP TYPE="COMMENT4" HASH_CHAR=".">[.]([[:alnum:]])+</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="COMMENT4" HASH_CHAR="a">a([[:alnum:]])*[.]([[:alnum:]])+</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="COMMENT4" HASH_CHAR="b">b([[:alnum:]])*[.]([[:alnum:]])+</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="COMMENT4" HASH_CHAR="c">c([[:alnum:]])*[.]([[:alnum:]])+</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="COMMENT4" HASH_CHAR="d">d([[:alnum:]])*[.]([[:alnum:]])+</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="COMMENT4" HASH_CHAR="e">e([[:alnum:]])*[.]([[:alnum:]])+</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="COMMENT4" HASH_CHAR="f">f([[:alnum:]])*[.]([[:alnum:]])+</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="COMMENT4" HASH_CHAR="g">g([[:alnum:]])*[.]([[:alnum:]])+</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="COMMENT4" HASH_CHAR="h">h([[:alnum:]])*[.]([[:alnum:]])+</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="COMMENT4" HASH_CHAR="i">i([[:alnum:]])*[.]([[:alnum:]])+</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="COMMENT4" HASH_CHAR="j">j([[:alnum:]])*[.]([[:alnum:]])+</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="COMMENT4" HASH_CHAR="k">k([[:alnum:]])*[.]([[:alnum:]])+</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="COMMENT4" HASH_CHAR="l">l([[:alnum:]])*[.]([[:alnum:]])+</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="COMMENT4" HASH_CHAR="m">m([[:alnum:]])*[.]([[:alnum:]])+</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="COMMENT4" HASH_CHAR="n">n([[:alnum:]])*[.]([[:alnum:]])+</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="COMMENT4" HASH_CHAR="o">o([[:alnum:]])*[.]([[:alnum:]])+</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="COMMENT4" HASH_CHAR="p">p([[:alnum:]])*[.]([[:alnum:]])+</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="COMMENT4" HASH_CHAR="q">q([[:alnum:]])*[.]([[:alnum:]])+</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="COMMENT4" HASH_CHAR="r">r([[:alnum:]])*[.]([[:alnum:]])+</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="COMMENT4" HASH_CHAR="s">s([[:alnum:]])*[.]([[:alnum:]])+</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="COMMENT4" HASH_CHAR="t">t([[:alnum:]])*[.]([[:alnum:]])+</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="COMMENT4" HASH_CHAR="u">u([[:alnum:]])*[.]([[:alnum:]])+</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="COMMENT4" HASH_CHAR="v">v([[:alnum:]])*[.]([[:alnum:]])+</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="COMMENT4" HASH_CHAR="x">x([[:alnum:]])*[.]([[:alnum:]])+</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="COMMENT4" HASH_CHAR="z">z([[:alnum:]])*[.]([[:alnum:]])+</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="COMMENT4" HASH_CHAR="w">w([[:alnum:]])*[.]([[:alnum:]])+</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="COMMENT4" HASH_CHAR="y">y([[:alnum:]])*[.]([[:alnum:]])+</SEQ_REGEXP>
+
+        <!-- Default for atoms is belief -->
+        <SEQ_REGEXP TYPE="LABEL" HASH_CHAR="a">a([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LABEL" HASH_CHAR="b">b([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LABEL" HASH_CHAR="c">c([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LABEL" HASH_CHAR="d">d([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LABEL" HASH_CHAR="e">e([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LABEL" HASH_CHAR="f">f([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LABEL" HASH_CHAR="g">g([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LABEL" HASH_CHAR="h">h([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LABEL" HASH_CHAR="i">i([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LABEL" HASH_CHAR="j">j([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LABEL" HASH_CHAR="k">k([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LABEL" HASH_CHAR="l">l([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LABEL" HASH_CHAR="m">m([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LABEL" HASH_CHAR="n">n([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LABEL" HASH_CHAR="o">o([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LABEL" HASH_CHAR="p">p([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LABEL" HASH_CHAR="q">q([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LABEL" HASH_CHAR="r">r([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LABEL" HASH_CHAR="s">s([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LABEL" HASH_CHAR="t">t([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LABEL" HASH_CHAR="u">u([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LABEL" HASH_CHAR="v">v([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LABEL" HASH_CHAR="x">x([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LABEL" HASH_CHAR="z">z([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LABEL" HASH_CHAR="w">w([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LABEL" HASH_CHAR="y">y([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LABEL" HASH_CHAR="~">~([[:alnum:]])*</SEQ_REGEXP>
+
+        <!-- plans delimiters -->
+        <SEQ TYPE="KEYWORD1">:</SEQ>
+        <SEQ TYPE="KEYWORD1" DELEGATE="BODY">&lt;-</SEQ>
+        <SEQ TYPE="KEYWORD1" AT_END_WORD="TRUE">.</SEQ>
+        
+        <!-- Operators -->
+        <SEQ TYPE="OPERATOR">==</SEQ>
+        <SEQ TYPE="OPERATOR">\==</SEQ>
+        <SEQ TYPE="OPERATOR">=</SEQ>
+        <SEQ TYPE="OPERATOR">&gt;=</SEQ>
+        <SEQ TYPE="OPERATOR">&lt;=</SEQ>
+        <SEQ TYPE="OPERATOR">&gt;</SEQ>
+        <SEQ TYPE="OPERATOR">&lt;</SEQ>
+
+        <SEQ TYPE="OPERATOR">+</SEQ>
+        <SEQ TYPE="OPERATOR">++</SEQ>
+        <SEQ TYPE="OPERATOR">+&gt;</SEQ>
+        <SEQ TYPE="OPERATOR">+&lt;</SEQ>
+        <SEQ TYPE="OPERATOR">-</SEQ>
+        <SEQ TYPE="OPERATOR">/</SEQ>
+        <SEQ TYPE="OPERATOR">*</SEQ>
+        <SEQ TYPE="OPERATOR">**</SEQ>
+        <SEQ TYPE="OPERATOR">%</SEQ>
+
+        <SEQ TYPE="OPERATOR">&amp;</SEQ>
+        <SEQ TYPE="OPERATOR">~</SEQ>
+
+        <!-- Brackets and Punctuation -->
+        <SEQ TYPE="NULL">(</SEQ>
+        <SEQ TYPE="NULL">)</SEQ>
+        <SEQ TYPE="NULL">[</SEQ>
+        <SEQ TYPE="NULL">]</SEQ>
+        <SEQ TYPE="NULL">{</SEQ>
+        <SEQ TYPE="NULL">}</SEQ>
+        <SEQ TYPE="NULL">,</SEQ>
+        <SEQ TYPE="NULL">;</SEQ>
+
+    </RULES>
+
+
+    <RULES ESCAPE="\" IGNORE_CASE="FALSE" HIGHLIGHT_DIGITS="TRUE" SET="BODY">
+
+        <!-- Comments -->
+        <EOL_SPAN TYPE="COMMENT2">//</EOL_SPAN>
+        <!--- ISO compliant C-style comments -->
+        <SPAN TYPE="COMMENT1">
+            <BEGIN>/*</BEGIN>
+            <END>*/</END>
+        </SPAN>
+
+        <!-- String literals -->
+        <SPAN TYPE="LITERAL1" NO_LINE_BREAK="TRUE">
+            <BEGIN>"</BEGIN>
+            <END>"</END>
+        </SPAN>
+
+        <!-- highlight atoms differently within brackets -->
+        <SPAN TYPE="NULL" DELEGATE="TermList">
+            <BEGIN>(</BEGIN>
+            <END>)</END>
+        </SPAN>
+        <SPAN TYPE="NULL" DELEGATE="TermList">
+            <BEGIN>[</BEGIN>
+            <END>]</END>
+        </SPAN>
+
+        <SEQ TYPE="OPERATOR">if</SEQ>
+        <SEQ TYPE="OPERATOR">while</SEQ>
+        <SEQ TYPE="OPERATOR">for</SEQ>
+
+
+        <!-- special reserved words and operators -->
+        <SEQ TYPE="LITERAL2">true</SEQ>
+        <SEQ TYPE="OPERATOR">not</SEQ>
+        <SEQ TYPE="OPERATOR">div</SEQ>
+        <SEQ TYPE="OPERATOR">mod</SEQ>
+
+        <SEQ_REGEXP TYPE="LABEL" HASH_CHAR="+" AT_WORD_START="TRUE">[+]([~])?[a-z]([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LABEL" HASH_CHAR="-" AT_WORD_START="TRUE">[-]([+])?([~])?[a-z]([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="MARKUP" HASH_CHAR="!" AT_WORD_START="TRUE">[!]([~])?[a-z]([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="MARKUP" HASH_CHAR="!" AT_WORD_START="TRUE">[!]([~])?[!][a-z]([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="MARKUP" HASH_CHAR="?" AT_WORD_START="TRUE">[?]([~])?[a-z]([[:alnum:]])*</SEQ_REGEXP>      
+
+        <!-- Vars -->
+        <SEQ_REGEXP TYPE="LITERAL3" HASH_CHAR="A">A([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LITERAL3" HASH_CHAR="B">B([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LITERAL3" HASH_CHAR="C">C([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LITERAL3" HASH_CHAR="D">D([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LITERAL3" HASH_CHAR="E">E([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LITERAL3" HASH_CHAR="F">F([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LITERAL3" HASH_CHAR="G">G([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LITERAL3" HASH_CHAR="H">H([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LITERAL3" HASH_CHAR="I">I([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LITERAL3" HASH_CHAR="J">J([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LITERAL3" HASH_CHAR="K">K([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LITERAL3" HASH_CHAR="L">L([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LITERAL3" HASH_CHAR="M">M([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LITERAL3" HASH_CHAR="N">N([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LITERAL3" HASH_CHAR="O">O([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LITERAL3" HASH_CHAR="P">P([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LITERAL3" HASH_CHAR="Q">Q([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LITERAL3" HASH_CHAR="R">R([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LITERAL3" HASH_CHAR="S">S([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LITERAL3" HASH_CHAR="T">T([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LITERAL3" HASH_CHAR="U">U([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LITERAL3" HASH_CHAR="V">V([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LITERAL3" HASH_CHAR="X">X([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LITERAL3" HASH_CHAR="Z">Z([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LITERAL3" HASH_CHAR="W">W([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LITERAL3" HASH_CHAR="Y">Y([[:alnum:]])*</SEQ_REGEXP>
+
+        <!-- Internal Actions -->
+        <SEQ_REGEXP TYPE="COMMENT4" HASH_CHAR=".">[.]([[:alnum:]])+</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="COMMENT4" HASH_CHAR="a">a([[:alnum:]])*[.]([[:alnum:]])+</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="COMMENT4" HASH_CHAR="b">b([[:alnum:]])*[.]([[:alnum:]])+</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="COMMENT4" HASH_CHAR="c">c([[:alnum:]])*[.]([[:alnum:]])+</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="COMMENT4" HASH_CHAR="d">d([[:alnum:]])*[.]([[:alnum:]])+</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="COMMENT4" HASH_CHAR="e">e([[:alnum:]])*[.]([[:alnum:]])+</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="COMMENT4" HASH_CHAR="f">f([[:alnum:]])*[.]([[:alnum:]])+</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="COMMENT4" HASH_CHAR="g">g([[:alnum:]])*[.]([[:alnum:]])+</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="COMMENT4" HASH_CHAR="h">h([[:alnum:]])*[.]([[:alnum:]])+</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="COMMENT4" HASH_CHAR="i">i([[:alnum:]])*[.]([[:alnum:]])+</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="COMMENT4" HASH_CHAR="j">j([[:alnum:]])*[.]([[:alnum:]])+</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="COMMENT4" HASH_CHAR="k">k([[:alnum:]])*[.]([[:alnum:]])+</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="COMMENT4" HASH_CHAR="l">l([[:alnum:]])*[.]([[:alnum:]])+</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="COMMENT4" HASH_CHAR="m">m([[:alnum:]])*[.]([[:alnum:]])+</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="COMMENT4" HASH_CHAR="n">n([[:alnum:]])*[.]([[:alnum:]])+</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="COMMENT4" HASH_CHAR="o">o([[:alnum:]])*[.]([[:alnum:]])+</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="COMMENT4" HASH_CHAR="p">p([[:alnum:]])*[.]([[:alnum:]])+</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="COMMENT4" HASH_CHAR="q">q([[:alnum:]])*[.]([[:alnum:]])+</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="COMMENT4" HASH_CHAR="r">r([[:alnum:]])*[.]([[:alnum:]])+</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="COMMENT4" HASH_CHAR="s">s([[:alnum:]])*[.]([[:alnum:]])+</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="COMMENT4" HASH_CHAR="t">t([[:alnum:]])*[.]([[:alnum:]])+</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="COMMENT4" HASH_CHAR="u">u([[:alnum:]])*[.]([[:alnum:]])+</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="COMMENT4" HASH_CHAR="v">v([[:alnum:]])*[.]([[:alnum:]])+</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="COMMENT4" HASH_CHAR="x">x([[:alnum:]])*[.]([[:alnum:]])+</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="COMMENT4" HASH_CHAR="z">z([[:alnum:]])*[.]([[:alnum:]])+</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="COMMENT4" HASH_CHAR="w">w([[:alnum:]])*[.]([[:alnum:]])+</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="COMMENT4" HASH_CHAR="y">y([[:alnum:]])*[.]([[:alnum:]])+</SEQ_REGEXP>
+
+        <!-- Default for atoms is action -->
+        <SEQ_REGEXP TYPE="COMMENT4" HASH_CHAR="a">a([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="COMMENT4" HASH_CHAR="b">b([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="COMMENT4" HASH_CHAR="c">c([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="COMMENT4" HASH_CHAR="d">d([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="COMMENT4" HASH_CHAR="e">e([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="COMMENT4" HASH_CHAR="f">f([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="COMMENT4" HASH_CHAR="g">g([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="COMMENT4" HASH_CHAR="h">h([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="COMMENT4" HASH_CHAR="i">i([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="COMMENT4" HASH_CHAR="j">j([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="COMMENT4" HASH_CHAR="k">k([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="COMMENT4" HASH_CHAR="l">l([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="COMMENT4" HASH_CHAR="m">m([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="COMMENT4" HASH_CHAR="n">n([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="COMMENT4" HASH_CHAR="o">o([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="COMMENT4" HASH_CHAR="p">p([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="COMMENT4" HASH_CHAR="q">q([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="COMMENT4" HASH_CHAR="r">r([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="COMMENT4" HASH_CHAR="s">s([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="COMMENT4" HASH_CHAR="t">t([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="COMMENT4" HASH_CHAR="u">u([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="COMMENT4" HASH_CHAR="v">v([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="COMMENT4" HASH_CHAR="x">x([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="COMMENT4" HASH_CHAR="z">z([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="COMMENT4" HASH_CHAR="w">w([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="COMMENT4" HASH_CHAR="y">y([[:alnum:]])*</SEQ_REGEXP>
+
+        <!-- plans delimiters -->
+        <SEQ TYPE="KEYWORD1" AT_END_WORD="TRUE" DELEGATE="MAIN">.</SEQ>
+
+        <!-- Operators -->
+        <SEQ TYPE="OPERATOR">==</SEQ>
+        <SEQ TYPE="OPERATOR">\==</SEQ>
+        <SEQ TYPE="OPERATOR">=</SEQ>
+        <SEQ TYPE="OPERATOR">&gt;=</SEQ>
+        <SEQ TYPE="OPERATOR">&lt;=</SEQ>
+        <SEQ TYPE="OPERATOR">&gt;</SEQ>
+        <SEQ TYPE="OPERATOR">&lt;</SEQ>
+
+        <SEQ TYPE="OPERATOR">+</SEQ>
+        <SEQ TYPE="OPERATOR">++</SEQ>
+        <SEQ TYPE="OPERATOR">+&gt;</SEQ>
+        <SEQ TYPE="OPERATOR">+&lt;</SEQ>
+        <SEQ TYPE="OPERATOR">-</SEQ>
+        <SEQ TYPE="OPERATOR">/</SEQ>
+        <SEQ TYPE="OPERATOR">*</SEQ>
+        <SEQ TYPE="OPERATOR">**</SEQ>
+        <SEQ TYPE="OPERATOR">%</SEQ>
+
+        <SEQ TYPE="OPERATOR">&amp;</SEQ>
+        <SEQ TYPE="OPERATOR">~</SEQ>
+
+        <!-- Brackets and Punctuation -->
+        <SEQ TYPE="NULL">(</SEQ>
+        <SEQ TYPE="NULL">)</SEQ>
+        <SEQ TYPE="NULL">[</SEQ>
+        <SEQ TYPE="NULL">]</SEQ>
+        <SEQ TYPE="NULL">{</SEQ>
+        <SEQ TYPE="NULL">}</SEQ>
+        <SEQ TYPE="NULL">,</SEQ>
+        <SEQ TYPE="NULL">;</SEQ>
+
+    </RULES>
+
+
+    <!-- List of terms (i.e., text within brackets) -->
+    <RULES ESCAPE="\" IGNORE_CASE="FALSE" HIGHLIGHT_DIGITS="TRUE" SET="TermList">
+
+        <!-- Comments -->
+        <EOL_SPAN TYPE="COMMENT2">//</EOL_SPAN>
+        <!--- ISO compliant C-style comments -->
+        <SPAN TYPE="COMMENT1">
+            <BEGIN>/*</BEGIN>
+            <END>*/</END>
+        </SPAN>
+
+        <!-- String literals -->
+        <SPAN TYPE="LITERAL1" NO_LINE_BREAK="TRUE">
+            <BEGIN>"</BEGIN>
+            <END>"</END>
+        </SPAN>
+
+        <SEQ TYPE="OPERATOR">if</SEQ>
+        <SEQ TYPE="OPERATOR">while</SEQ>
+        <SEQ TYPE="OPERATOR">for</SEQ>
+
+
+    <!-- Reserved Terms -->
+        <SEQ TYPE="LITERAL2">true</SEQ>
+        <SEQ TYPE="LITERAL2">tell</SEQ>
+        <SEQ TYPE="LITERAL2">untell</SEQ>
+        <SEQ TYPE="LITERAL2">tellHow</SEQ>
+        <SEQ TYPE="LITERAL2">untellHow</SEQ>
+        <SEQ TYPE="LITERAL2">achieve</SEQ>
+        <SEQ TYPE="LITERAL2">unachieve</SEQ>
+        <SEQ TYPE="LITERAL2">askIf</SEQ>
+        <SEQ TYPE="LITERAL2">askOne</SEQ>
+        <SEQ TYPE="LITERAL2">askAll</SEQ>
+        <SEQ TYPE="LITERAL2">askHow</SEQ>
+
+    <!--Reserved Annotations -->
+        <SEQ TYPE="LITERAL2">source</SEQ>
+        <SEQ TYPE="LITERAL2">atomic</SEQ>
+        <SEQ TYPE="LITERAL2">breakpoint</SEQ>
+        <SEQ TYPE="LITERAL2">all_unifs</SEQ>
+
+    <!-- special reserved words and operators -->
+        <SEQ TYPE="OPERATOR">div</SEQ>
+        <SEQ TYPE="OPERATOR">mod</SEQ>
+
+    <!-- Atoms -->
+        <SEQ_REGEXP TYPE="LITERAL4" HASH_CHAR="a">a([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LITERAL4" HASH_CHAR="b">b([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LITERAL4" HASH_CHAR="c">c([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LITERAL4" HASH_CHAR="d">d([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LITERAL4" HASH_CHAR="e">e([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LITERAL4" HASH_CHAR="f">f([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LITERAL4" HASH_CHAR="g">g([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LITERAL4" HASH_CHAR="h">h([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LITERAL4" HASH_CHAR="i">i([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LITERAL4" HASH_CHAR="j">j([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LITERAL4" HASH_CHAR="k">k([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LITERAL4" HASH_CHAR="l">l([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LITERAL4" HASH_CHAR="m">m([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LITERAL4" HASH_CHAR="n">n([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LITERAL4" HASH_CHAR="o">o([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LITERAL4" HASH_CHAR="p">p([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LITERAL4" HASH_CHAR="q">q([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LITERAL4" HASH_CHAR="r">r([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LITERAL4" HASH_CHAR="s">s([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LITERAL4" HASH_CHAR="t">t([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LITERAL4" HASH_CHAR="u">u([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LITERAL4" HASH_CHAR="v">v([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LITERAL4" HASH_CHAR="x">x([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LITERAL4" HASH_CHAR="z">z([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LITERAL4" HASH_CHAR="w">w([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LITERAL4" HASH_CHAR="y">y([[:alnum:]])*</SEQ_REGEXP>
+
+    <!-- Vars -->
+        <SEQ_REGEXP TYPE="LITERAL3" HASH_CHAR="A">A([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LITERAL3" HASH_CHAR="B">B([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LITERAL3" HASH_CHAR="C">C([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LITERAL3" HASH_CHAR="D">D([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LITERAL3" HASH_CHAR="E">E([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LITERAL3" HASH_CHAR="F">F([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LITERAL3" HASH_CHAR="G">G([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LITERAL3" HASH_CHAR="H">H([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LITERAL3" HASH_CHAR="I">I([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LITERAL3" HASH_CHAR="J">J([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LITERAL3" HASH_CHAR="K">K([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LITERAL3" HASH_CHAR="L">L([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LITERAL3" HASH_CHAR="M">M([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LITERAL3" HASH_CHAR="N">N([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LITERAL3" HASH_CHAR="O">O([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LITERAL3" HASH_CHAR="P">P([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LITERAL3" HASH_CHAR="Q">Q([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LITERAL3" HASH_CHAR="R">R([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LITERAL3" HASH_CHAR="S">S([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LITERAL3" HASH_CHAR="T">T([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LITERAL3" HASH_CHAR="U">U([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LITERAL3" HASH_CHAR="V">V([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LITERAL3" HASH_CHAR="X">X([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LITERAL3" HASH_CHAR="Z">Z([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LITERAL3" HASH_CHAR="W">W([[:alnum:]])*</SEQ_REGEXP>
+        <SEQ_REGEXP TYPE="LITERAL3" HASH_CHAR="Y">Y([[:alnum:]])*</SEQ_REGEXP>
+
+    <!-- Brackets and Punctuation -->
+        <SEQ TYPE="NULL">(</SEQ>
+        <SEQ TYPE="NULL">)</SEQ>
+        <SEQ TYPE="NULL">[</SEQ>
+        <SEQ TYPE="NULL">]</SEQ>
+        <SEQ TYPE="NULL">{</SEQ>
+        <SEQ TYPE="NULL">}</SEQ>
+        <SEQ TYPE="NULL">,</SEQ>
+        <SEQ TYPE="NULL">;</SEQ>
+
+    </RULES>
+
+</MODE>

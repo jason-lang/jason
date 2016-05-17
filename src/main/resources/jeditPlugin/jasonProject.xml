@@ -1,0 +1,81 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE MODE SYSTEM "xmode.dtd">
+
+<!--    
+    Syntax color for Jason projects (see http://jason.sf.net)
+    written by Jomi F. Hubner and Rafael H. Bordini
+-->
+
+<MODE>
+
+    <PROPS>
+        <PROPERTY NAME="lineComment" VALUE="//" />
+        <PROPERTY NAME="commentStart" VALUE="/*" />
+        <PROPERTY NAME="commentEnd" VALUE="*/" />
+        <PROPERTY NAME="wordBreakChars" VALUE=":;#={}" />
+    </PROPS>
+
+    <RULES ESCAPE="\" IGNORE_CASE="FALSE" HIGHLIGHT_DIGITS="TRUE">
+    
+        <!-- Comments -->
+        <EOL_SPAN TYPE="COMMENT2">//</EOL_SPAN>
+        <!--- ISO compliant C-style comments -->
+        <SPAN TYPE="COMMENT1">
+            <BEGIN>/*</BEGIN>
+            <END>*/</END>
+        </SPAN>
+        
+        <!-- String literals -->
+        <SPAN TYPE="LITERAL1" NO_LINE_BREAK="TRUE">
+            <BEGIN>"</BEGIN>
+			<END>"</END>
+        </SPAN>
+
+        <!-- Parentheses -->
+        <SEQ TYPE="MARKUP">{</SEQ>
+        <SEQ TYPE="MARKUP">}</SEQ>
+        <SEQ TYPE="MARKUP">:</SEQ>
+        <SEQ TYPE="MARKUP">#</SEQ>
+        <SEQ TYPE="MARKUP">;</SEQ>
+        <SEQ TYPE="MARKUP">=</SEQ>
+
+        <!-- keywords -->
+        <KEYWORDS>
+        <MARKUP>MAS</MARKUP>
+        <MARKUP>agents</MARKUP>
+        <MARKUP>environment</MARKUP>
+        <MARKUP>executionControl</MARKUP>
+        <MARKUP>infrastructure</MARKUP>
+        <MARKUP>classpath</MARKUP>
+        <MARKUP>aslSourcePath</MARKUP>
+        <MARKUP>directives</MARKUP>
+
+        <LITERAL4>at</LITERAL4>
+        <LITERAL4>events</LITERAL4>
+        <LITERAL4>intBels</LITERAL4>
+        <LITERAL4>nrcbp</LITERAL4>
+        <LITERAL4>verbose</LITERAL4>
+        <LITERAL4>synchronised</LITERAL4>
+        <LITERAL4>agentClass</LITERAL4>
+        <LITERAL4>agentArchClass</LITERAL4>
+        <LITERAL4>beliefBaseClass</LITERAL4>
+
+
+        <!-- values -->
+        <LITERAL2>Centralised</LITERAL2>
+        <LITERAL2>Saci</LITERAL2>
+        <LITERAL2>Jade</LITERAL2>
+
+        <FUNCTION>discard</FUNCTION>
+        <FUNCTION>requeue</FUNCTION>
+        <FUNCTION>retrieve</FUNCTION>
+        <FUNCTION>sameFocus</FUNCTION>
+        <FUNCTION>newFocus</FUNCTION>
+        <FUNCTION>true</FUNCTION>
+        <FUNCTION>false</FUNCTION>
+        </KEYWORDS>
+        
+    </RULES>
+
+</MODE>

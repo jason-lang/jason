@@ -1,0 +1,396 @@
+//----------------------------------------------------------------------------
+// Copyright (C) 2003  Rafael H. Bordini, Jomi F. Hubner, et al.
+// 
+// This library is free software; you can redistribute it and/or
+// modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation; either
+// version 2.1 of the License, or (at your option) any later version.
+// 
+// This library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+// Lesser General Public License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public
+// License along with this library; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+// 
+// To contact the authors:
+// http://www.dur.ac.uk/r.bordini
+// http://www.inf.furb.br/~jomi
+//
+//----------------------------------------------------------------------------
+
+
+options {
+  STATIC=false;
+  UNICODE_INPUT=true;
+}
+
+PARSER_BEGIN(mas2j)
+
+package jason.mas2j.parser;
+
+import java.util.*;
+import java.io.*;
+import jason.mas2j.*;
+import jason.asSyntax.*;
+import jason.asSemantics.*;
+import jason.util.*;
+import jason.infra.*;
+
+public class mas2j {
+
+
+    MAS2JProject project;
+
+    // Run the parser
+    public static void main (String args[]) {
+
+      String name;
+      mas2j parser;
+      MAS2JProject project = new MAS2JProject();
+      
+      if (args.length == 0) {
+		System.out.println("mas2j: usage must be:");
+		System.out.println("      java mas2j <MASConfFile>");
+		System.out.println("Output to file build.xml");
+        return;
+      } else {
+        name = args[0];
+        System.err.println("mas2j: reading from file " + name + " ..." );
+		try {
+		  parser = new mas2j(new java.io.FileInputStream(name));
+		} catch(java.io.FileNotFoundException e){
+		  System.err.println("mas2j: file \"" + name + "\" not found.");
+		  return;
+        }
+      }
+      
+      boolean debugmas = args.length >= 2 && args[1].equals("debug");
+      boolean runmas   = debugmas || args.length >= 2 && args[1].equals("run"); 
+      
+      // parsing
+      try {
+		project = parser.mas();
+		Config.get().fix();
+		File file = new File(name);
+        File directory = file.getAbsoluteFile().getParentFile();
+        project.setDirectory(directory.toString());
+        project.setProjectFile(file);
+		System.out.println("mas2j: "+name+" parsed successfully!\n");
+		MASLauncherInfraTier launcher = project.getInfrastructureFactory().createMASLauncher();
+		launcher.setProject(project);
+		launcher.writeScripts(debugmas, true);
+		
+		if (runmas) {
+		    new Thread(launcher, "MAS-Launcher").start();
+		} else {
+	        System.out.println("To run your MAS, just type \"ant -f bin/build.xml\"");
+	    }
+      } catch(Exception e){
+		System.err.println("mas2j: parsing errors found... \n" + e);
+      }
+    }
+
+}
+
+PARSER_END(mas2j)
+
+SKIP : {
+ " "
+|  "\t"
+|  "\n"
+|  "\r"
+|  <"//" (~["\n","\r"])* ("\n" | "\r" | "\r\n")? >
+|  <"/*" (~["*"])* "*" ("*" | ~["*","/"] (~["*"])* "*")* "/">
+}
+
+TOKEN : {
+
+// Predefined
+   <MAS:         "MAS">
+|  <AGS:         "agents">
+|  <ENV:         "environment">
+|  <CONTROL:     "executionControl">
+|  <AT:          "at">
+|  <INFRA:       "infrastructure" >
+|  <CLASSPATH:   "classpath" >
+|  <SOURCEPATH:  "aslSourcePath" >
+
+|  <ASOEE:       "events" >
+|  <ASOEEV:      ("discard"|"requeue"|"retrieve") >
+
+|  <ASOIB:       "intBels">
+|  <ASOIBV:      ("sameFocus"|"newFocus") >
+
+|  <ASONRC:      "nrcbp" >
+
+|  <ASOV:        "verbose" >
+
+|  <DIRECTIVE:   "directives" >
+
+|  <ASOSYNC:     "synchronised" >
+|  <ASOBOOL:     ("true" | "false" ) >
+
+|  <ASAGCLASS:      "agentClass" >
+|  <ASAGARCHCLASS:  "agentArchClass" >
+|  <BBCLASS:        "beliefBaseClass" >
+
+// Numbers
+|  <NUMBER: ["0"-"9"] (["0"-"9"])*
+          | (["0"-"9"])* "." (["0"-"9"])+ (["e","E"] (["+","-"])? (["0"-"9"])+)?
+          | (["0"-"9"])+ (["e","E"] (["+","-"])? (["0"-"9"])+) >
+
+// Strings
+|  <STRING: 
+      "\""
+      (   (~["\"","\\","\n","\r"])
+        | ("\\"
+            ( ["n","t","b","r","f","\\","'","\""]
+            | ["0"-"7"] ( ["0"-"7"] )?
+            | ["0"-"3"] ["0"-"7"] ["0"-"7"]
+            )
+          )
+      )*
+      "\""
+  >
+
+
+// Identifiers
+|  <ASID: <LC_LETTER> (<LETTER>|<DIGIT>|"_")* >
+|  <ID:   <LETTER>    (<LETTER>|<DIGIT>|"_")* >
+
+// Path
+|  <PATH: ( "./" | "/" | "\\" | (<DRIVER>) ) ( (<LETTER>|<DIGIT>|"_")* ( "/" | "\\" ) )* >
+|  <DRIVER: (<LETTER> ":")>
+
+|  <LETTER: ( <LC_LETTER> | <UP_LETTER> )>
+|  <LC_LETTER: ["a"-"z"]>
+|  <UP_LETTER: ["A"-"Z"]>
+|  <DIGIT: ["0"-"9"]>
+}
+
+
+
+/* Configuration Grammar */
+
+MAS2JProject mas() :           { Token soc; }
+{
+  <MAS>
+  soc = <ASID>                 { project = new MAS2JProject();
+                                 project.setSocName(soc.image); }
+  "{" 
+  
+  infra()
+
+  environment()
+
+  control()
+  
+  agents()
+
+  directives()
+  
+  classpath()
+  
+  sourcepath()
+
+  "}"
+                            { return project; }
+}
+
+void infra() :              { ClassParameters infra; }
+{                           
+  [ <INFRA> 
+    ":"  
+    infra = classDef()      { project.setInfrastructure(infra); }     
+  ]
+}
+
+
+void agents() :             { project.initAgMap(); }
+{
+  [ <AGS> ":"
+    ( agent() )+
+  ]
+}
+
+
+void agent() :              { Token agName; 
+                              Token qty; Token value;
+                              Token host; 
+                              AgentParameters ag = new AgentParameters();
+                              Map opts;
+                              ClassParameters arch;
+                            }
+{
+  agName = <ASID>           
+
+                            { ag.name = agName.image;
+                              ag.asSource = new File(agName.image+".asl"); 
+                            }
+                            
+  [ ag.asSource  = fileName() ]
+
+  opts = ASoptions()       { ag.setOptions(opts); }        
+
+  (
+  <ASAGARCHCLASS> arch = classDef()
+                           { ag.insertArchClass(arch); }
+  |
+  <ASAGCLASS> ag.agClass = classDef()
+  |
+  <BBCLASS> ag.bbClass = classDef()
+  |  
+  "#" qty = <NUMBER>      { ag.setNbInstances( Integer.parseInt(qty.image) ); }
+  |
+  <AT> host = <STRING>    { ag.setHost(host.image); }
+  )*
+  
+  ";"
+                            { project.addAgent(ag); } 
+}
+
+
+File fileName() :           { String path = ""; 
+                              Token t; 
+                              Token i;
+                              Token e; 
+                              String ext = ".asl"; }
+{
+  [ t = <PATH>              { path = t.image; } ]
+    i = <ASID>               
+  [ "." e = <ASID>          { ext = "." + e.image; } ]
+                            { //if (!path.startsWith(File.separator)) {
+                              //  path = destDir + path;
+                              //}
+                              return new File( path + i.image + ext);
+                            }
+}
+
+
+ClassParameters classDef() :  { Token c; String s; ClassParameters cp = new ClassParameters(); }
+{
+   (c = <ID> | c = <ASID>)              { cp.setClassName(c.image); }
+   (
+     "." (c = <ID> | c = <ASID>)        { cp.setClassName(cp.getClassName() + "." + c.image); }
+   )*
+   [
+     "("
+	   [
+	     (s=parameter())                { cp.addParameter(s); }
+   	     ( 
+   	       "," (s=parameter())          { cp.addParameter(s); }
+   	     )*
+   	   ]
+     ")"
+   ]
+                           { return cp; }
+}
+
+String parameter() :       { Token c; String s; ClassParameters cp; }
+{
+      ( cp=classDef()      { return cp.toString(); }
+      | c=<NUMBER>         { return c.image; }
+      | c=<STRING>         { return c.image; }
+      | s=listParameters() { return s; }
+      ) 
+}
+
+
+String listParameters() :  { String s; List l = new ArrayList(); }
+{
+     "["
+	     (s=parameter())       { l.add(s); }
+   	     ( 
+   	       "," s=parameter()   { l.add(s); }
+   	     )*
+     "]"
+                               { return l.toString(); }
+}
+
+
+Map ASoptions() :              { Map opts = new HashMap(); }
+{
+  [ "[" opts = procOption(opts) ( "," opts = procOption(opts) )* "]" ]
+                               { return opts;  }
+}
+
+Map procOption(Map opts): { Token opt; Token oval; }
+{
+  ( opt=<ASOEE>     "=" oval=<ASOEEV>  {opts.put(opt.image,oval.image);}
+  | opt=<ASOIB>     "=" oval=<ASOIBV>  {opts.put(opt.image,oval.image);}
+  | opt=<ASOSYNC>   "=" oval=<ASOBOOL> {opts.put(opt.image,oval.image);}
+  | opt=<ASONRC>    "=" oval=<NUMBER>  {opts.put(opt.image,oval.image);} 
+  | opt=<ASOV>      "=" oval=<NUMBER>  {opts.put(opt.image,oval.image);} 
+  | opt=<ASID>      "=" (oval=<STRING>|oval=<ASID>|oval=<NUMBER>|oval=<ID>|oval=<ASOBOOL>)
+                                       {opts.put(opt.image,oval.image);} 
+  )
+                                       { 
+                                         return opts; 
+                                       }
+}
+
+
+void environment() :        { Token host = null; ClassParameters envClass = null;}
+{
+
+  [  <ENV> ":"
+     envClass = classDef() 
+     [ <AT> host = <STRING> ]
+  ]   
+                            { 
+                              project.setEnvClass(envClass);
+                              if (host != null) {
+		                          envClass.setHost(host.image);
+	                          }
+                            }
+}
+
+
+void control() :            { Token host =  null; }
+{
+                            { ClassParameters controlClass = null; 
+                            }
+                            
+  [ <CONTROL> ":" controlClass = classDef() 
+    [ <AT> host = <STRING> ]
+  ]
+                            { project.setControlClass(controlClass);
+                              if (host != null) {
+                                   controlClass.setHost(host.image);
+                              }
+                            }
+}
+
+void classpath() :          { Token cp; }
+{
+  [ <CLASSPATH> ":" 
+    ( cp = <STRING> ";"     { project.addClassPath(cp.image); }
+    )+
+  ]
+}
+
+void sourcepath() :         { Token cp; }
+{
+  [ <SOURCEPATH> ":" 
+    ( cp = <STRING> ";"     { project.addSourcePath(cp.image); }
+    )+
+  ]
+}
+
+
+void directives() :         {  Token directiveId; ClassParameters directiveClass = null;  }
+{
+  [ <DIRECTIVE> ":" 
+    ( 
+       directiveId = <ASID> 
+       "=" 
+       directiveClass = classDef()  
+       ";"
+                            { project.addDirectiveClass(directiveId.image, directiveClass); }    
+    )+
+  ]
+
+}

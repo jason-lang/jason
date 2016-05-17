@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jnlp spec="1.0+" 
+      href="<PROJECT-ID>.jnlp" 
+      codebase="<DEFAULT-CODEBASE>" >
+
+<!-- 
+     Change the codebase above to the URL where your application 
+     was uploaded, it is something like 
+     "http://xx.com/app/<PROJECT-ID>-jws"
+-->
+
+<information>
+  <title>Jason Application: <PROJECT-ID></title>
+  <vendor>Open Source</vendor>
+  <homepage href="http://jason.sf.net"/>
+  <description>Jason Example</description>
+  <description kind="short">Jason is an AgentSpeak interpreter</description>
+  <description kind="one-line">Jason Application: <PROJECT-ID></description>
+  <icon href="Jason-GMoreau-Icon.jpg"/>
+  <offline-allowed/>
+</information>
+<security><all-permissions /></security>
+<resources>
+  <j2se version="1.5+" href="http://java.sun.com/products/autodl/j2se"/>
+  <jar href="<PROJECT-ID>.jar" />
+<OTHER-JARS>
+</resources>
+<application-desc main-class="jason.infra.centralised.RunCentralisedMAS" />
+</jnlp>

@@ -1,0 +1,58 @@
+### Plugin properties
+
+plugin.jason.jeditplugin.JasonIDPlugin.name=Jason
+plugin.jason.jeditplugin.JasonIDPlugin.version=0.3
+plugin.jason.jeditplugin.JasonIDPlugin.author=Jomi F. Hubner
+plugin.jason.jeditplugin.JasonIDPlugin.docs=index.html
+plugin.jason.jeditplugin.JasonIDPlugin.activate=startup
+
+plugin.jason.jeditplugin.JasonIDPlugin.depend.0=jedit 04.02.00.00
+plugin.jason.jeditplugin.JasonIDPlugin.depend.1=jdk 1.5
+plugin.jason.jeditplugin.JasonIDPlugin.depend.2=plugin errorlist.ErrorListPlugin 1.4
+plugin.jason.jeditplugin.JasonIDPlugin.depend.3=plugin sidekick.SideKickPlugin 0.3.4
+
+
+# application menu items
+plugin.jason.jeditplugin.JasonIDPlugin.menu=jason - \
+  jason.run-project jason.debug-project jason.stop-mas jason.clean-project \
+  - \
+  jason.new-project \
+  jason.new-ag \
+  jason.create-env \
+  jason.new-ia \
+  - \
+  jason.edit-log \
+  - \
+  jason.create-jar \
+  jason.create-jnlp
+#  jason.asl2html \
+#  jason.asl2tex
+
+# action labels
+jason.run-project.label=Run Project
+jason.debug-project.label=Debug Project
+jason.stop-mas.label=Stop running MAS
+jason.new-project.label=New Project
+jason.new-ag.label=New Agent
+jason.create-env.label=Create project environment
+jason.new-ia.label=New internal action
+jason.clean-project.label=Clean Project
+jason.edit-log.label=Edit log parameters
+jason.asl2html.label=ASL to HTML
+jason.asl2tex.label=ASL to LaTeX
+jason.create-jar.label=Create an executable jar
+jason.create-jnlp.label=Create a Java Web Start application
+  
+# Dockables
+jason.title=Jason IDE
+jason.label=Jason
+
+# Options
+plugin.jason.jeditplugin.JasonIDPlugin.option-pane=jason
+options.jason.label=Jason
+options.jason.code=new jason.jeditplugin.JasonIDOptionPanel();
+
+# plugin toolbar buttons
+#jason.run-mas.icon=run.png
+#jason.debug-mas.icon=Debug MAS
+#jason.stop-mas.icon=Stop current running MAS

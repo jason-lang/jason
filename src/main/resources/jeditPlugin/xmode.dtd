@@ -1,0 +1,146 @@
+<!-- Syntax tokens -->
+<!ENTITY % tokens "( NULL | COMMENT1 | COMMENT2 | LITERAL1 | LITERAL2
+	| LABEL | KEYWORD1 | KEYWORD2 | KEYWORD3 | FUNCTION
+	| MARKUP | OPERATOR | DIGIT | INVALID )" >
+
+<!-- Entities for attributes shared by multiple rules -->
+<!ENTITY % att-bool '( TRUE | FALSE )' >
+<!ENTITY % att-standard-mix 'TYPE %tokens; "NULL"
+	AT_LINE_START %att-bool; "FALSE"
+	AT_WHITESPACE_END %att-bool; "FALSE"
+	AT_WORD_START %att-bool; "FALSE"' >
+<!ENTITY % att-exclude-match 'EXCLUDE_MATCH %att-bool; "FALSE"' >
+<!ENTITY % att-delegate 'DELEGATE CDATA #IMPLIED' >
+<!ENTITY % att-span-mix 'NO_LINE_BREAK %att-bool; "FALSE"
+	NO_WORD_BREAK %att-bool; "FALSE"'>
+<!ENTITY % att-hash-char 'HASH_CHAR CDATA #REQUIRED' >
+
+<!-- MODE element -->
+<!ELEMENT MODE ( PROPS?, RULES* ) >
+
+<!-- MODE children -->
+<!-- PROPS element -->
+<!ELEMENT PROPS ( PROPERTY+ ) >
+
+<!-- PROPS children -->
+<!ELEMENT PROPERTY EMPTY >
+<!ATTLIST PROPERTY
+	NAME CDATA #REQUIRED
+	VALUE CDATA #REQUIRED >
+
+<!-- RULES element -->
+<!ELEMENT RULES ( PROPS?, ( TERMINATE | SEQ | SEQ_REGEXP | SPAN | SPAN_REGEXP
+	| EOL_SPAN | EOL_SPAN_REGEXP | MARK_PREVIOUS
+	| MARK_FOLLOWING )*, KEYWORDS? ) >
+
+<!-- RULES attributes -->
+<!ATTLIST RULES
+	SET CDATA "MAIN"
+	IGNORE_CASE %att-bool; "TRUE"
+	HIGHLIGHT_DIGITS %att-bool; "FALSE"
+	DIGIT_RE CDATA #IMPLIED
+	ESCAPE CDATA #IMPLIED
+	DEFAULT %tokens; "NULL"
+	NO_WORD_SEP CDATA "_">
+
+<!-- TERMINATE element -->
+<!ELEMENT TERMINATE EMPTY >
+<!ATTLIST TERMINATE AT_CHAR CDATA #REQUIRED >
+
+<!-- SEQ element -->
+<!ELEMENT SEQ ( #PCDATA ) >
+
+<!-- SEQ attributes -->
+<!ATTLIST SEQ
+	%att-standard-mix;
+	%att-delegate; >
+
+<!-- SEQ_REGEXP element -->
+<!ELEMENT SEQ_REGEXP ( #PCDATA ) >
+
+<!-- SEQ_REGEXP attributes -->
+<!ATTLIST SEQ_REGEXP
+	%att-hash-char;
+	%att-standard-mix;
+	%att-delegate; >
+
+<!-- SPAN element -->
+<!ELEMENT SPAN ( BEGIN, END ) >
+
+<!-- SPAN attributes -->
+<!ATTLIST SPAN
+	%att-standard-mix;
+	%att-span-mix;
+	%att-exclude-match;
+	%att-delegate; >
+
+<!-- SPAN_REGEXP element -->
+<!ELEMENT SPAN_REGEXP ( BEGIN, END ) >
+
+<!-- SPAN_REGEXP attributes -->
+<!ATTLIST SPAN_REGEXP
+	%att-hash-char;
+	%att-standard-mix;
+	%att-span-mix;
+	%att-exclude-match;
+	%att-delegate; >
+
+<!-- SPAN and SPAN_REGEXP children -->
+<!ELEMENT BEGIN ( #PCDATA ) >
+<!ELEMENT END ( #PCDATA ) >
+
+<!-- EOL_SPAN element -->
+<!ELEMENT EOL_SPAN ( #PCDATA ) >
+
+<!-- EOL_SPAN attributes -->
+<!ATTLIST EOL_SPAN
+	%att-standard-mix;
+	%att-exclude-match;
+	%att-delegate; >
+
+<!-- EOL_SPAN_REGEXP element -->
+<!ELEMENT EOL_SPAN_REGEXP ( #PCDATA ) >
+
+<!-- EOL_SPAN_REGEXP attributes -->
+<!ATTLIST EOL_SPAN_REGEXP
+	%att-hash-char;
+	%att-standard-mix;
+	%att-exclude-match;
+	%att-delegate; >
+
+<!-- MARK_FOLLOWING element -->
+<!ELEMENT MARK_FOLLOWING ( #PCDATA ) >
+
+<!-- MARK_FOLLOWING attributes -->
+<!ATTLIST MARK_FOLLOWING
+	%att-standard-mix;
+	%att-exclude-match; >
+
+<!-- MARK_PREVIOUS element -->
+<!ELEMENT MARK_PREVIOUS ( #PCDATA ) >
+
+<!-- MARK_PREVIOUS attributes -->
+<!ATTLIST MARK_PREVIOUS
+	%att-standard-mix;
+	%att-exclude-match; >
+
+<!-- KEYWORDS element -->
+<!ELEMENT KEYWORDS ( NULL | COMMENT1 | COMMENT2 | LITERAL1 | LITERAL2
+	| LABEL | KEYWORD1 | KEYWORD2 | KEYWORD3 | FUNCTION | MARKUP
+	| OPERATOR | DIGIT | INVALID )+ >
+
+<!-- KEYWORDS children -->
+<!ELEMENT NULL ( #PCDATA ) >
+<!ELEMENT COMMENT1 ( #PCDATA ) >
+<!ELEMENT COMMENT2 ( #PCDATA ) >
+<!ELEMENT LITERAL1 ( #PCDATA ) >
+<!ELEMENT LITERAL2 ( #PCDATA ) >
+<!ELEMENT LABEL ( #PCDATA ) >
+<!ELEMENT KEYWORD1 ( #PCDATA ) >
+<!ELEMENT KEYWORD2 ( #PCDATA ) >
+<!ELEMENT KEYWORD3 ( #PCDATA ) >
+<!ELEMENT FUNCTION ( #PCDATA ) >
+<!ELEMENT MARKUP ( #PCDATA ) >
+<!ELEMENT OPERATOR ( #PCDATA ) >
+<!ELEMENT DIGIT ( #PCDATA ) >
+<!ELEMENT INVALID ( #PCDATA ) >

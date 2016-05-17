@@ -1,0 +1,44 @@
+= Jason
+
+:icons: font
+
+Jason is an interpreter for an extended version of AgentSpeak. It implements the operational semantics of that language, and provides a platform for the development of multi-agent systems, with many user-customisable features. Jason is available as Open Source, and is distributed under GNU LGPL.
+
+Jason is developed by http://http://jomi.das.ufsc.br[Jomi F. Hübner] and http://www.inf.pucrs.br/r.bordini[Rafael H. Bordini], based on previous work done with many colleagues, in particular Michael Fisher, Joyce Martins, Álvaro Moreira, Renata Vieira, Willem Visser, Mike Wooldridge, but also many others, as acknowledged in the manual (see the http://jason.sourceforge.net/wp/documents/[documents] page).
+
+== Installation
+
+=== For Jason users
+
+- get a release https://sourceforge.net/projects/jason/files/jason/[here]
+// - install the eclipse plugin as described http://jacamo.sourceforge.net/eclipseplugin/tutorial[here] or configure your shell command as described http://jacamo.sourceforge.net/tutorial/hello-world/shell-based.html[here]
+- follow the http://jason.sourceforge.net/mini-tutorial/getting-started[getting started tutorial]
+- more documentation http://jason.sourceforge.net/wp/documents[here]
+
+=== For Jason developers
+
+----
+git clone https://github.com/jason-lang/jason.git
+cd jason
+gradle config // <1> <2> <3>
+----
+<1> gradle is available https://gradle.org/gradle-download/[here].
+<2> the config task builds the jason jar, configure jason properties file, and place all jars in `build/libs`.
+<3> this task also prints out the commands to set up the `JASON_HOME` and `PATH` variables.
+
+Examples can be run using the `jason` shell script, for example:
+
+	jason examples/gold-miners-II/miners.mas2j
+
+Other useful gradle tasks:
+
+-----
+gradle jar     // <1>
+gradle doc     // <2>
+gradle eclipse // <3>
+gradle release // <4>
+-----
+<1> generates a new jason jar.
+<2> generates the javadoc and transforms asciidoc files into html (http://asciidoctor.org[asciidoctor] should be installed).
+<3> generates an _eclipse_ project configuration to develop Jason.
+<4> produces a zip file in `build/distributions` to be distributed to users.

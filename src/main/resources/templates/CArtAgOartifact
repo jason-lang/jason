@@ -1,0 +1,19 @@
+// CArtAgO artifact code for project <PROJECT_NAME>
+
+package <PCK>;
+
+import cartago.*;
+
+public class <ARTIFACT_NAME> extends <SUPER_CLASS> {
+	void init(int initialValue) {
+		defineObsProperty("count", initialValue);
+	}
+	
+	@OPERATION
+	void inc() {
+		ObsProperty prop = getObsProperty("count");
+		prop.updateValue(prop.intValue()+1);
+		signal("tick");
+	}
+}
+

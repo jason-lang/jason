@@ -1,0 +1,192 @@
+/* 
+   Jason Gradle build file
+
+   https://github.com/jason-lang/jason
+   
+*/
+
+plugins {
+  id "ca.coglinc.javacc" version "2.3.1"
+  // see https://github.com/johnmartel/javaccPlugin
+}
+
+defaultTasks 'jar'
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'maven-publish'
+
+version '2.0-SNAPSHOT'
+group   'net.sf.jason'
+
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+
+repositories {
+    mavenCentral()
+    
+    maven {
+        url "http://jacamo.sourceforge.net/maven2"
+    }
+    
+    flatDir {
+	   dirs 'jedit'
+    }
+}
+
+
+dependencies {
+    compile group: 'net.sf.ingenias', name: 'jade', version: '4.3'
+
+    // from jEdit
+    compile name: 'jedit'
+    compile name: 'BufferTabs'
+    compile name: 'ErrorList'
+    compile name: 'SideKick'
+    
+
+    runtime group: 'org.apache.ant',  name: 'ant',  version: '1.9.7'
+    
+    testCompile group: 'junit', name: 'junit', version: '4.+'
+}
+
+jar {
+    baseName 'jason'
+    manifest {
+        attributes 'Main-Class': 'jason.util.ConfigGUI'
+    }
+    
+    doFirst {
+        Properties props = new Properties()
+        props.put('version', '')
+        props.put('release', project.version)
+        props.store(new File(project.buildDir.absolutePath +'/classes/main/dist.properties').newWriter(), null) 
+    }
+}
+
+clean {
+    delete 'bin'
+    delete 'readme.html'
+    delete 'release-notes.html'
+    //delete fileTree('doc/tutorials/hello-world')  { include '**/*.html'  }
+    delete fileTree('src')  { include '**/bin'  }
+    delete fileTree('src')  { include '**/*.log'  }
+}
+
+task config (type: JavaExec, dependsOn: 'jar') {
+    main = 'jason.util.Config'
+    classpath sourceSets.main.runtimeClasspath
+    workingDir project.buildDir.absolutePath + '/libs'
+    
+    doFirst {
+        delete System.getProperty("user.home")+'/.jason'
+        copy {
+            from configurations.runtime
+            into 'build/libs' 
+        }
+        copy {
+            from 'scripts'
+            into 'build/scripts'
+            include '**'
+        }
+    }
+    
+    doLast {    
+        println '------'
+        println ''
+        println 'you can set the Jason home directory with the following command:'
+        println '     export JASON_HOME='+project.buildDir.absolutePath 
+        println ''
+        println 'and also change your PATH with:' 
+        println '     export PATH=$JASON_HOME/scripts:$PATH' 
+        println ''
+        println '-----'
+    }
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from components.java
+            
+            artifactId 'jason'
+        }
+    }
+}
+
+compileJavacc {
+    inputDirectory = file('src/main/javacc')
+    //outputDirectory = file(project.buildDir.absolutePath + '/generated/javacc')
+}
+
+
+jjdoc {
+    outputDirectory = file(project.projectDir.absolutePath + '/doc')
+    //arguments = [text: 'true']
+}
+
+// transfer local maven artifact to our maven2 repository at sourceforge
+task publishMavenSF(dependsOn: [ 'build', 'publishToMavenLocal']) << {
+    def wdir = System.getProperty("user.home")+'/.m2/repository/net/sf/jason/jason'
+    def tdir = 'jomifred,jacamo@web.sf.net:/home/project-web/jacamo/htdocs/maven2/org/jacamo/jacamo'
+    exec {
+        commandLine 'scp', '-r', project.version, tdir
+        workingDir wdir
+    }
+    exec {
+        commandLine 'cp', 'maven-metadata-local.xml', 'maven-metadata.xml'
+        workingDir wdir
+    }
+    exec {
+        commandLine 'scp', 'maven-metadata.xml', tdir
+        workingDir wdir
+    }
+}
+
+// Builds the distribution, documentation and a new release
+task doc(dependsOn: [ 'jjdoc', 'javadoc', 'renderAsciiDocs']) << {
+} 
+
+task renderAsciiDocs(type: Exec) {
+    commandLine 'find', '.', '-name', '*.adoc', '-exec', 'asciidoctor', '{}', ';'
+}
+
+// Builds the distribution, documentation and a new release
+task release(dependsOn: [ 'build', 'doc', 'zipRel']) << {
+} 
+
+// copy files used to build a release
+task copyRel << {
+    copy {
+        from '.'
+        into 'build/jason-'+project.version
+        include '*.html'
+        include 'LICENSE'
+        include 'scripts/**'
+        include 'doc/**'
+    }
+    copy {
+        from libsDir
+        from configurations.runtime
+        into 'build/jason-'+project.version+'/'+libsDirName
+        include '**/*.jar'
+    }
+    copy {
+        from docsDir
+        into 'build/jason-'+project.version+'/doc'
+    }
+    copy {
+        from 'src/examples'      
+        into 'build/jason-'+project.version+'/src/examples' 
+    }
+    copy {
+        from 'src/demos'      
+        into 'build/jason-'+project.version+'/src/demos' 
+    }
+}
+
+// creates a zip file for a release
+task zipRel(type: Zip, dependsOn: copyRel) {
+    from 'build/jason-'+project.version
+    baseName 'jason'
+}
