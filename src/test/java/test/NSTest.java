@@ -282,8 +282,9 @@ public class NSTest extends TestCase {
         //assertTrue(a.getPL().toString().contains("+!nsd::g2(nsd::V) <- +nsd::b3(nsd::h); +ns1::tick; +#1ns2::tk; +#2ns3::b5(#1ns2::t)"));
 
         assertTrue(a.getPL().toString().contains("+ns1::tick <- .print(t); !ns1::g(u)"));
-        assertTrue(a.getPL().toString().contains("+#1ns2::tk <- .print(t); +ns1::tick; !#1ns2::g5(u)"));
-        assertTrue(a.getPL().toString().contains("+!nsd::g2(V) <- +nsd::b3(h); +ns1::tick; +#1ns2::tk; +#2ns3::b5("));
+        assertTrue(a.getPL().toString().contains("ns2::tk <- .print(t); +ns1::tick; !#"));
+        assertTrue(a.getPL().toString().contains("+!nsd::g2(V) <- +nsd::b3(h); +ns1::tick; +#"));
+        assertTrue(a.getPL().toString().contains("ns2::tk; +#"));
 
     }
 }
