@@ -108,7 +108,7 @@ public class JadeExecutionControl extends JadeAg implements ExecutionControlInfr
                             @SuppressWarnings("unused")
                             Document o = (Document)m.getContentObject();
                             logger.warning("Received agState too late! in-reply-to:"+m.getInReplyTo());
-                        } catch (Exception _) {
+                        } catch (Exception ex0) {
                             try {
                                 // check if the message is an end of cycle from some agent 
                                 final String content = m.getContent();

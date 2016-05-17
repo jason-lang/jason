@@ -58,7 +58,7 @@ public class Config extends Properties {
 
     /** path to jade.jar */
     public static final String JADE_JAR      = "jadeJar";
-    public static final String MOISE_JAR     = "moiseJar";
+    //public static final String MOISE_JAR     = "moiseJar";
     //public static final String JACAMO_JAR    = "jacamoJar";
     
     /** runtime jade arguments (the same used in jade.Boot) */
@@ -257,7 +257,7 @@ public class Config extends Properties {
 
     public void resetSomeProps() {
         //System.out.println("Reseting configuration of "+Config.MOISE_JAR);
-        remove(Config.MOISE_JAR);
+        //remove(Config.MOISE_JAR);
         //System.out.println("Reseting configuration of "+Config.JASON_JAR);
         remove(Config.JASON_JAR);
         //System.out.println("Reseting configuration of "+Config.JADE_JAR);
@@ -272,7 +272,7 @@ public class Config extends Properties {
     public void fix() {
         tryToFixJarFileConf(JASON_JAR,  "jason",  700000);
         tryToFixJarFileConf(JADE_JAR,   "jade",  2000000);
-        tryToFixJarFileConf(MOISE_JAR,  "moise",  300000);
+        //tryToFixJarFileConf(MOISE_JAR,  "moise",  300000);
         //tryToFixJarFileConf(JACAMO_JAR, "jacamo",   5000);
         tryToFixJarFileConf(JASON_JAR,  "jason",  700000); // in case jacamo is found
         
@@ -306,15 +306,15 @@ public class Config extends Properties {
             try {
                 String jjar = getJasonJar();
                 if (jjar != null) {
-                    String antlib = new File(jjar).getParentFile().getParentFile().getAbsolutePath() + File.separator + "lib";
+                    String antlib = new File(jjar).getParentFile().getParentFile().getAbsolutePath() + File.separator + "libs";
                     if (checkAntLib(antlib)) {
                         setAntLib(antlib);
                     } else {
-                        antlib = new File(".") + File.separator + "lib";
+                        antlib = new File(".") + File.separator + "libs";
                         if (checkAntLib(antlib)) {
                             setAntLib(antlib);
                         } else {
-                            antlib = new File("..") + File.separator + "lib";
+                            antlib = new File("..") + File.separator + "libs";
                             if (checkAntLib(antlib)) {
                                 setAntLib(antlib);
                             }
@@ -547,7 +547,7 @@ public class Config extends Properties {
             */
             
             // try current dir + lib
-            jarFile = findJarInDirectory(new File(".." + File.separator + "lib"), jarFilePrefix);
+            jarFile = findJarInDirectory(new File(".." + File.separator + "libs"), jarFilePrefix);
             if (checkJar(jarFile, minSize)) {
                 try {
                     put(jarEntry, new File(jarFile).getCanonicalFile().getAbsolutePath());
@@ -557,7 +557,7 @@ public class Config extends Properties {
                     e.printStackTrace();
                 }
             }
-            jarFile = findJarInDirectory(new File("lib"), jarFilePrefix);
+            jarFile = findJarInDirectory(new File("libs"), jarFilePrefix);
             if (checkJar(jarFile, minSize)) {
                 try {
                     put(jarEntry, new File(jarFile).getCanonicalFile().getAbsolutePath());
@@ -625,7 +625,7 @@ public class Config extends Properties {
         return null;
     }
     
-    String findJarInDirectory(File dir, String prefix) {
+    static String findJarInDirectory(File dir, String prefix) {
         if (dir.isDirectory()) {
             for (File f: dir.listFiles()) {
                 if (f.getName().startsWith(prefix) && f.getName().endsWith(".jar")) {
@@ -687,10 +687,8 @@ public class Config extends Properties {
             if (!al.endsWith(File.separator)) {
                 al = al + File.separator;
             }
-            File antjar = new File(al + "ant.jar");
-            if (antjar.exists()) {
+            if (findJarInDirectory(new File(al), "ant") != null) // new File(al + "ant.jar");
                 return true;
-            }
         } catch (Exception e) {
         }
         return false;
@@ -723,7 +721,7 @@ public class Config extends Properties {
             File f = (new File(eclipse)).getParentFile().getParentFile();
             if (eclipse.contains("Eclipse.app/Contents")) // MacOs case 
                 f = f.getParentFile().getParentFile(); 
-            return findJarInDirectory(new File(f+"/"+getEclipseInstallationDirectory()+"/lib"), file);
+            return findJarInDirectory(new File(f+"/"+getEclipseInstallationDirectory()+"/libs"), file);
         }
         return null;
     }

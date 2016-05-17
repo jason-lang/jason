@@ -1,0 +1,32 @@
+#!/bin/bash
+
+if [ -z JASON_HOME ] ; then
+    CURDIR=`pwd`
+    JASON_HOME=`dirname $0`
+    cd "$JASON_HOME/.."
+    JASON_HOME=`pwd`
+    cd $CURDIR
+fi
+
+echo Jason home is $JASON_HOME
+
+if [ -z $JDK_HOME ] ; then
+    if [ -n $JAVA_HOME ] ; then
+	    JDK_HOME=$JAVA_HOME
+    fi
+fi
+
+if [ -z $JDK_HOME ] ; then
+	if [ $OS == Darwin ] ; then
+		JDK_HOME=/usr
+	fi
+fi
+
+# check JDK_HOME
+if [ ! -f $JDK_HOME/bin/javac ] ; then
+   echo JDK_HOME is not properly set!
+fi
+
+JASON_JAR=`find $JASON_HOME/libs -name jason-2*.jar`
+
+$JDK_HOME/bin/java -cp $JASON_JAR:$JACAMO_JAR jason.runtime.RunJasonProject $1

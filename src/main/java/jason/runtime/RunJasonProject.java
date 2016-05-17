@@ -45,10 +45,10 @@ public class RunJasonProject {
       // parsing
       try {
           File file = new File(name);
-          //File directory = file.getAbsoluteFile().getParentFile();
           project = parser.mas();
           Config.get().fix();
           project.setProjectFile(file);
+          project.setDirectory(file.getAbsoluteFile().getParentFile().getAbsolutePath());
           System.out.println("file "+name+" parsed successfully!\n");
           
           launcher = project.getInfrastructureFactory().createMASLauncher();

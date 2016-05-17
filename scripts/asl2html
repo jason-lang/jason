@@ -1,0 +1,9 @@
+#!/bin/sh
+
+CURDIR=`pwd`
+JASON_HOME=`dirname $0`
+cd "$JASON_HOME/.."
+JASON_HOME=`pwd`
+cd $CURDIR
+
+java -classpath "$JASON_HOME/lib/jason.jar" jason.util.asl2html $1
