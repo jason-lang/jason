@@ -1,0 +1,19 @@
+/* 
+
+This example shows how to customise the KQML to add
+a new performative, identified by "tellRule", used by 
+one agent to send rules like "a :- b & c" to another
+agent.
+
+*/
+
+
+MAS tell_rule {
+
+    infrastructure: Centralised
+
+    agents:
+        sender;    // the agent that sends the rules
+        receiver;  // the agent that receives them
+}
+

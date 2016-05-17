@@ -1,0 +1,6 @@
+/* This demo shows how to use goals with deadlines, see the bob.asl */
+
+MAS hard_deadline {
+   agents: bob;
+}
+

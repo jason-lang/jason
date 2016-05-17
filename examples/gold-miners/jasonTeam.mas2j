@@ -1,0 +1,17 @@
+/* Minig Robots based on Jason Team for Clima Contest VII 2006
+ * (http://cig.in.tu-clausthal.de/CLIMAContest)
+ *
+ */
+
+MAS miners {
+    infrastructure: Centralised
+    
+    environment: mining.MiningPlanet(3,50,yes)
+        // parameters: 1. environment configuration id (from 1 to 3)
+        //             2. sleep time (in ms) after each action
+        //             3. whether display the gui
+        
+    agents:
+        leader;
+        miner #4;     
+}

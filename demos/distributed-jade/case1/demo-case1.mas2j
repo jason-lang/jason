@@ -1,0 +1,15 @@
+// this project run jade agents in 3 different hosts
+// (see Jason FAQ for detailed instructions about how to run it)
+
+MAS demo_distributed_jade {
+
+    infrastructure: Jade(main_container_host("localhost")) 
+    // replace localhost by the name or IP of the host where the main container will run
+
+    agents:
+        a at "c1";             // agent a will run on the host where container c1 will run
+        b at "c2";             // agent b will run on the host where container c2 will run
+        c at "c2" #3;          // ....
+        d at "c1";
+}
+

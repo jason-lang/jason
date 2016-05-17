@@ -1,0 +1,11 @@
+// Implementation of the example described in chapter 2
+// of the Jason's manual
+
+MAS mars {
+
+    infrastructure: Centralised
+
+    environment: MarsEnv
+    
+    agents: r1; r2;
+}

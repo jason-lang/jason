@@ -1,0 +1,19 @@
+/* 
+
+This demo shows how to create an MAS with
+several agents (3000 in this case)
+
+*/
+
+MAS big {
+    // use a thread pool instead of one thread per agent
+    // (the threads in the pool are shared by the agents)
+    infrastructure: Centralised(pool)
+    
+    environment: BEnv
+    
+    agents:
+        a #2000; // 2000 agents of type a
+        b #1000; // 1000 agents of type b
+}
+

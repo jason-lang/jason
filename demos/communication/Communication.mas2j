@@ -1,0 +1,27 @@
+/* 
+
+Jason Project 
+
+It is a very simple example of an agent (bob) 
+that sends messages to another agent (maria)
+
+*/
+
+MAS communication {
+   
+    infrastructure: Centralised 
+          /* to use Jade, replace Centralised above by Jade
+             and run as usual by the "play" button
+             
+             to run on several machines (A,B,C):
+               1. replace Centralised by Jade(main_container_host("localhost"))
+               2. go to host A, cd <project dir>/bin, ant main-container
+               3. go to host B, cd <project dir>/bin, ant c1
+               4. go to host C, cd <project dir>/bin, ant c2
+          */
+    agents:
+        bob   [beliefs="receiver(maria)"] at "c2"; // container c2 is used only in case infra is Jade
+        maria [verbose=1]                 at "c1"; // set verbose=2 to see more details
+}
+
+

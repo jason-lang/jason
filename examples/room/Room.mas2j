@@ -1,0 +1,27 @@
+/* 
+In this system, two agents are inside a room and 
+one agent (the claustrophobe) wants to maintain 
+the door always unlocked, while another (the paranoid) 
+wants to maintain it locked!
+
+The porter is the agent that is capable to (un)lock 
+the door (i.e., to act in the environment). So other 
+agents should ask him such services.
+
+A Prometheus specification is available in the doc folder.
+
+*/
+
+MAS room {
+    infrastructure: Centralised
+    
+    environment: RoomEnv
+    
+    // synchronise the execution: an agent only
+    // starts its next reasoning cycle when all others
+    // have finished theirs.
+    executionControl: jason.control.ExecutionControl
+    
+    agents: porter; claustrophobe; paranoid;
+}
+

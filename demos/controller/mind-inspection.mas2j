@@ -1,0 +1,30 @@
+/*
+    Jason Project
+
+    this demo shows how to use a customised Controller to write a 
+    particullar mind inspector
+    
+    the main idea is:
+    1. create system-cycles (it is done by Jason Controllers)
+    2. each agent perform one reasoning-cycle each system-cycle
+    3. a method of my controller is called when the system-cycle finishes
+    4. this method is implemented in class MyController doing the following: 
+       - ask each agent its mind state
+       - the result is a XML document with all the agent state (beliefs, intentions, options, suspended intentions, ...)
+       - use a XSL style sheet to translate it to other format (in the example it is translate to html and shown in the interface)
+
+    
+*/
+
+MAS mindinspection {
+   infrastructure: Centralised
+
+   executionControl: MyController
+
+   agents:
+       sample;
+       bob;
+       jh;
+
+   aslSourcePath: "src/asl"; 
+}

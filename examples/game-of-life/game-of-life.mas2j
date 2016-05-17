@@ -1,0 +1,23 @@
+/* Jason Project 
+
+   -- Game of Life --
+
+   based on the description available at
+    http://ccl.northwestern.edu/netlogo/models/Life
+
+*/
+
+MAS game_of_life {
+
+    // use a thread pool instead of one thread by agent
+    // the pool has only four threads
+    infrastructure: Centralised(pool,4) 
+
+    environment: LifeEnvironment(60,10) // grid size = 60, initial density = 10%
+
+    agents: 
+        cell [verbose=0] 
+             #3600; // a 60x60 grid has 3600 agents
+
+}
+

@@ -1,0 +1,17 @@
+/* Jason Project 
+
+The agent "main" uses the an internal action to create a 
+clone of itself. This internal action is implemented in 
+this example.
+
+*/
+
+MAS clone {
+
+    infrastructure: Centralised
+
+    agents:
+        main;
+
+}
+

@@ -1,0 +1,29 @@
+/* Jason Project 
+
+   Example of chain belief bases. 
+   
+   The agent bob uses two customisations of BB:
+   one to persist the beliefs and 
+   another to have a kind of key based BB.
+
+   To see the effect of the two BBs, run the program
+   and, when finished, click on "Debug" mode and then 
+   select "bob" agent. Notice that the 'boss' beliefs have
+   unique keys. If you run the program again you will 
+   note that beliefs added in previous executions
+   are persisted (they are stored in the bob.bb file).
+   
+*/
+
+MAS chainBB {
+
+    infrastructure: Centralised
+
+    agents:
+        bob beliefBaseClass jason.bb.ChainBB(
+              jason.bb.TextPersistentBB,
+              jason.bb.IndexedBB("boss(key,_)") // the first argument of boss is the key
+            );
+
+}
+

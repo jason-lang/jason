@@ -1,0 +1,15 @@
+/* Jason Project 
+
+   Simple example of GUI: and internal action is used to ask something for the user
+
+*/
+
+MAS gui1 {
+
+    infrastructure: Centralised
+
+    agents:
+        sample;
+
+}
+

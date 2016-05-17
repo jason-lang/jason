@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="lib" path="lib/eis-0.2-lib.jar"/>
+	<classpathentry kind="lib" path="lib/eis-0.2.jar"/>
+	<classpathentry kind="lib" path="lib/eis-jason.jar"/>
+	<classpathentry kind="lib" path="lib/wumpusenv.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Jason"/>
+	<classpathentry kind="output" path="bin/classes"/>
+</classpath>

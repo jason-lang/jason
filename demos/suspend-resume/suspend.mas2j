@@ -1,0 +1,13 @@
+/* 
+   Jason Project 
+   that exemplifies the suspend and resume 
+   internal actions.
+   
+   See the test agent for more details.
+
+*/
+
+MAS suspend {
+  agents: test [verbose=0];
+}
+

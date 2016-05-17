@@ -1,0 +1,29 @@
+/*
+
+Defines the Heathrow Robots MAS
+
+For more information about this example, see 
+ . airportChronicle.pdf and 
+ . Rafael H. Bordini, Mehdi Dastani, Jurgen Dix, and Amal El Fallah
+   Seghrouchni, editors. Multi-Agent Programming: Languages, Platforms
+   and Applications. Chapter 1. Springer-Verlag, 2005.
+
+*/
+
+MAS heathrow {
+
+    infrastructure: Centralised
+
+    environment: 
+         HeathrowEnv
+
+    agents: 
+         mds agentClass mds.MDSAgent 
+             #5;
+
+         cph agentArchClass cph.CPHAgArch 
+             agentClass cph.CPHAgent
+             #2; 
+
+         bd  #3;
+}

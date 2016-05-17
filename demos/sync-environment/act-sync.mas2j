@@ -1,0 +1,30 @@
+/* 
+
+Jason Project 
+
+This project exemplifies the use of the class TimeSteppedEnvironment. The
+environment implemented by this class has
+steps where each agent can perform only one action. When all agents have 
+asked for the execution of an action, the actions are really executed, the
+perception updated and the next step starts. 
+
+To see the impact of stepped environment, first run the project with the
+environment class "Env" and after run it again with the EnvSync.  
+
+*/
+
+MAS act_sync {
+
+    infrastructure: Centralised
+
+    //environment: Env
+    environment: EnvSync(1000) // timeout in miliseconds
+
+    // the system has 9 agents of 3 different types (see their sources for more details)
+    agents:
+        count [verbose=0] #5;
+
+        bount [verbose=0] #2;
+
+        dcount [verbose=0] #2;
+}

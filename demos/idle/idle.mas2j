@@ -1,0 +1,6 @@
+MAS idle_demo {
+
+    agents:
+        idleag [verbose=0];
+        sender;
+}

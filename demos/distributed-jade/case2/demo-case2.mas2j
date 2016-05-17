@@ -1,0 +1,23 @@
+// this project run jade agents in 3 different hosts
+// (see Jason FAQ for detailed instructions about how to run it)
+//
+// a java class defines the host/container where the agents will run
+// in this example, the same number of agents will run at each container
+
+MAS demo_distributed_jade {
+
+    infrastructure: Jade(
+                            main_container_host("localhost"),    // replace localhost by the name or IP of the host where the main container will run
+                            container_allocation("myAllocator",  // the name of the class that will allocate the agents to containers
+                                                 "[c1,c2]")      // the name and number of containers
+                                                                 // this class allocates the same number of agents to each container
+                        ) 
+    
+
+    agents:
+        a; 
+        b;   
+        c #3; 
+        d #5;
+}
+

@@ -1,0 +1,30 @@
+/* 
+Jason Project to demostrate how to use compiler directives.
+
+Agent a uses a pre-defined directive known as declarative
+goal (DG) and is implemented by means of goal patterns that 
+are proposed in the paper: 
+  Jomi Fred Hubner, Rafael H. Bordini, and Michael Wooldridge. 
+  Programming declarative goals using plan patterns. 
+  In Matteo Baldoni and Ulle Endriss, editors, Proceedings of the 
+  Fourth International Workshop on Declarative Agent Languages and 
+  Technologies (DALT 2006), held with AAMAS 2006, 8th May, Hakodate, 
+  Japan, pages 65-81. Springer, 2006.
+See the code of agent a for more information.
+
+Agent b uses an user-defined directive. This directive, called
+LoggerDirective (LD), add some code in the begin and in the end of 
+a set of plans.  User directives should be declared in the
+project file (see the end of this file). 
+
+*/
+
+MAS directive_demo {
+    infrastructure: Centralised
+    environment: myp.Env
+    agents:
+        a;
+        b;
+    directives: ld = myp.LoggerDirective;
+}
+

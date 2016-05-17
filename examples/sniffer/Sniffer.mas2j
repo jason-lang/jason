@@ -1,0 +1,34 @@
+/* 
+
+Jason Project 
+
+It is a very simple example of an agent architecture
+working as a Sniffer (see comm/Sniffer*.java)
+
+*/
+
+MAS sniffer {
+   
+    infrastructure: Centralised
+
+    agents:
+       // Monitor for Centralised infrastructure,
+       //
+       // the architecture gets all exchanged messages and add them as beliefs
+       // the customised belief base store these beliefs (i.e., the messages) in a data base
+       monitor 
+           agentArchClass comm.SnifferCentralised
+           beliefBaseClass jason.bb.JDBCPersistentBB(
+            "org.hsqldb.jdbcDriver", // driver for HSQLDB
+            "jdbc:hsqldb:log", // URL connection
+            "sa", // user
+            "", // password
+            "[msgSent(7,log)]");
+
+        // Ordinary agents
+        bob;
+        maria;
+
+    classpath: "../../demos/persistent-belief-base/lib/hsqldb.jar";
+}
+

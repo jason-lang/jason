@@ -1,0 +1,41 @@
+/* 
+
+This project exemplifies how to customise the belief
+base (BB) to persist all the data in it.
+
+Agent "a" uses a customised BB provided by Jason
+that stores its beliefs in a file called "a.bb". 
+
+Agent "b" has a customised BB that does not 
+store the beliefs! The source code for this customisations 
+is available in this project.
+
+Agent "c" has a customised BB that maps some predicates
+to a relational DB. Consulting such predicates is implemented 
+by an SQL operation SELECT; adding by INSERT; and removing
+by DELETE. This feature can by used either to access legacy
+tables or to persiste the agent belief base.
+
+*/
+
+MAS custom_BB {
+    infrastructure: Centralised
+    agents:
+        a beliefBaseClass jason.bb.TextPersistentBB;
+        b beliefBaseClass VoidBB;
+        c beliefBaseClass jason.bb.JDBCPersistentBB(
+            "org.hsqldb.jdbcDriver", // driver for HSQLDB
+            "jdbc:hsqldb:bookstore", // URL connection
+            "sa", // user
+            "",   // password
+            "[a(1,tablea,columns(runs(integer))),book(5),book_author(2),author(2,author,columns(id(integer),name(varchar(30)))),publisher(2)]");
+            // predicate a/1 is mapped to a table called "tablea" with an integer column called runs;
+            //     the name and type of the columns is used only if the table does not exits and
+            //     have to be created;
+            //     if no column name/type is provided, an arbitrary name is used with type varchar(256)
+            // predicate book (with arity 5) is mapped to a table called "book" 
+            //     if no table name is provided the predicate name is used for the table name
+            // the columns for author are "id" (an integer) and "name" (char);
+            // and so on...
+            // See JDBCPersistentBB API doc for more information
+}

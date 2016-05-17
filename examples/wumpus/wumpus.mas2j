@@ -1,0 +1,30 @@
+/* 
+
+Wumpus solution with Jason 
+
+The environment of this project was developed by W.Pasman
+using the EIS standard (http://cig.in.tu-clausthal.de/eis).
+The documentation for this environment is available at
+WumpusEnvironment.pdf file.
+
+The current code solves the Russel & Norvig scenario, 
+other scenarios (available in maps directory) are left
+as exercises. See also the agent code for suggestions of
+TODOs.
+
+*/
+
+MAS wumpus {
+
+    infrastructure: Centralised
+
+    environment: jason.eis.EISAdapter(
+                         "lib/wumpusenv.jar",    // EIS environment
+                         agent_entity(ag,agent), // entities
+                         map(file,"maps/wumpus.kt5.wld")) // initialisation parameters
+    
+    agents:
+        ag;
+
+}
+
