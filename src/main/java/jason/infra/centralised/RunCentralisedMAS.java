@@ -433,20 +433,20 @@ public class RunCentralisedMAS {
 
     
     public void createAgs() throws JasonException {
-    	
-    	RConf generalConf;
-    	if (project.getInfrastructure().hasParameter("pool")) {
-    		generalConf = RConf.POOL_SYNCH;
-    	} else if (project.getInfrastructure().hasParameter("synch_scheduled")) {
-    		generalConf = RConf.POOL_SYNCH_SCHEDULED;
-    	} else if (project.getInfrastructure().hasParameter("asynch")) {
-    		generalConf = RConf.ASYNCH;
-    	} else if (project.getInfrastructure().hasParameter("asynch_shared")) {
-    		generalConf = RConf.ASYNCH_SHARED_POOLS;
-    	} else {
-    		generalConf = RConf.TRHEADED;
-    	}
-    	
+        
+        RConf generalConf;
+        if (project.getInfrastructure().hasParameter("pool")) {
+            generalConf = RConf.POOL_SYNCH;
+        } else if (project.getInfrastructure().hasParameter("synch_scheduled")) {
+            generalConf = RConf.POOL_SYNCH_SCHEDULED;
+        } else if (project.getInfrastructure().hasParameter("asynch")) {
+            generalConf = RConf.ASYNCH;
+        } else if (project.getInfrastructure().hasParameter("asynch_shared")) {
+            generalConf = RConf.ASYNCH_SHARED_POOLS;
+        } else {
+            generalConf = RConf.TRHEADED;
+        }
+        
         //boolean isPool = project.getInfrastructure().hasParameter("pool") || project.getInfrastructure().hasParameter("synch_scheduled");
         //boolean isAsynch = project.getInfrastructure().hasParameter("asynch") || project.getInfrastructure().hasParameter("asynch_shared");
         if (generalConf != RConf.TRHEADED) logger.info("Creating agents....");
@@ -480,38 +480,38 @@ public class RunCentralisedMAS {
                     
                     RConf agentConf;
                     if (ap.getOption("rc") != null) {
-                    	if (ap.getOption("rc").equals("pool")) {
-                    		agentConf = RConf.POOL_SYNCH;
-                    	} else if (ap.getOption("rc").equals("synch_scheduled")) {
-                    		agentConf = RConf.POOL_SYNCH_SCHEDULED;
-                    	} else if (ap.getOption("rc").equals("asynch")) {
-                    		agentConf = RConf.ASYNCH;
-                    	} else if (ap.getOption("rc").equals("asynch_shared")) {
-                    		agentConf = RConf.ASYNCH_SHARED_POOLS;
-                    	} else {
-                    		agentConf = RConf.TRHEADED;
-                    	}
+                        if (ap.getOption("rc").equals("pool")) {
+                            agentConf = RConf.POOL_SYNCH;
+                        } else if (ap.getOption("rc").equals("synch_scheduled")) {
+                            agentConf = RConf.POOL_SYNCH_SCHEDULED;
+                        } else if (ap.getOption("rc").equals("asynch")) {
+                            agentConf = RConf.ASYNCH;
+                        } else if (ap.getOption("rc").equals("asynch_shared")) {
+                            agentConf = RConf.ASYNCH_SHARED_POOLS;
+                        } else {
+                            agentConf = RConf.TRHEADED;
+                        }
                     } else {
-                    	agentConf = generalConf;
+                        agentConf = generalConf;
                     }
                     
                     //Get the number of reasoning cycles or number of cycles for each stage 
                     int cycles = 0;
-                	int cyclesSense = 0;
-                	int cyclesDeliberate = 0; 
-                	int cyclesAct = 0;
-                	
+                    int cyclesSense = 0;
+                    int cyclesDeliberate = 0; 
+                    int cyclesAct = 0;
+                    
                     if (ap.getOption("cycles") != null) {
-                    	cycles = Integer.valueOf(ap.getOption("cycles"));
+                        cycles = Integer.valueOf(ap.getOption("cycles"));
                     }
                     if (ap.getOption("cycles_sense") != null) {
-                    	cyclesSense = Integer.valueOf(ap.getOption("cycles_sense"));
+                        cyclesSense = Integer.valueOf(ap.getOption("cycles_sense"));
                     }
                     if (ap.getOption("cycles_deliberate") != null) {
-                    	cyclesDeliberate = Integer.valueOf(ap.getOption("cycles_deliberate"));
+                        cyclesDeliberate = Integer.valueOf(ap.getOption("cycles_deliberate"));
                     }
                     if (ap.getOption("cycles_act") != null) {
-                    	cyclesAct = Integer.valueOf(ap.getOption("cycles_act"));
+                        cyclesAct = Integer.valueOf(ap.getOption("cycles_act"));
                     }
                     
                     //Create agents according to the specific architecture
@@ -520,44 +520,44 @@ public class RunCentralisedMAS {
                     } else if (agentConf == RConf.POOL_SYNCH_SCHEDULED) {
                         agArch = new CentralisedAgArchSynchronousScheduled();
                         if (cycles != 0) {
-                        	if (cyclesSense == 0) {
-                        		cyclesSense = cycles;
-                        	}
-                        	if (cyclesDeliberate == 0) {
-                        		cyclesDeliberate = cycles;
-                        	}
-                        	if (cyclesAct == 0) {
-                        		cyclesAct = cycles;
-                        	}
-                        	cycles = 1;
+                            if (cyclesSense == 0) {
+                                cyclesSense = cycles;
+                            }
+                            if (cyclesDeliberate == 0) {
+                                cyclesDeliberate = cycles;
+                            }
+                            if (cyclesAct == 0) {
+                                cyclesAct = cycles;
+                            }
+                            cycles = 1;
                         }
                     } else if  (agentConf == RConf.ASYNCH || agentConf == RConf.ASYNCH_SHARED_POOLS) {
-                    	agArch = new CentralisedAgArchAsynchronous();
+                        agArch = new CentralisedAgArchAsynchronous();
                         if (cycles != 0) {
-                        	if (cyclesSense == 0) {
-                        		cyclesSense = cycles;
-                        	}
-                        	if (cyclesDeliberate == 0) {
-                        		cyclesDeliberate = cycles;
-                        	}
-                        	if (cyclesAct == 0) {
-                        		cyclesAct = cycles;
-                        	}
-                        	cycles = 1;
-                        }                    	
+                            if (cyclesSense == 0) {
+                                cyclesSense = cycles;
+                            }
+                            if (cyclesDeliberate == 0) {
+                                cyclesDeliberate = cycles;
+                            }
+                            if (cyclesAct == 0) {
+                                cyclesAct = cycles;
+                            }
+                            cycles = 1;
+                        }                       
                     } else {
                         agArch = new CentralisedAgArch();
                         if (cycles != 0) {
-                        	if (cyclesSense == 0) {
-                        		cyclesSense = cycles;
-                        	}
-                        	if (cyclesDeliberate == 0) {
-                        		cyclesDeliberate = cycles;
-                        	}
-                        	if (cyclesAct == 0) {
-                        		cyclesAct = cycles;
-                        	}
-                        	cycles = 1;
+                            if (cyclesSense == 0) {
+                                cyclesSense = cycles;
+                            }
+                            if (cyclesDeliberate == 0) {
+                                cyclesDeliberate = cycles;
+                            }
+                            if (cyclesAct == 0) {
+                                cyclesAct = cycles;
+                            }
+                            cycles = 1;
                         }
                     }
                     
@@ -621,36 +621,36 @@ public class RunCentralisedMAS {
                     logger.fine("Creating agent " + numberedAg + " (" + (cAg + 1) + "/" + ap.getNbInstances() + ")");
                     CentralisedAgArch agArch;
                     if (isPool) {
-                    	if (project.getInfrastructure().hasParameter("synch_scheduled")) {
-	                        agArch = new CentralisedAgArchSynchronousScheduled();
-	                        if (ap.getOption("cycles") != null) {
-	                        	agArch.setCycles(Integer.valueOf(ap.getOption("cycles")));
-	                        }
-                    	} else {
-	                        agArch = new CentralisedAgArchForPool();
-	                        if (ap.getOption("cycles") != null) {
-	                        	agArch.setCycles(Integer.valueOf(ap.getOption("cycles")));
-	                        }
-                    	}
+                        if (project.getInfrastructure().hasParameter("synch_scheduled")) {
+                            agArch = new CentralisedAgArchSynchronousScheduled();
+                            if (ap.getOption("cycles") != null) {
+                                agArch.setCycles(Integer.valueOf(ap.getOption("cycles")));
+                            }
+                        } else {
+                            agArch = new CentralisedAgArchForPool();
+                            if (ap.getOption("cycles") != null) {
+                                agArch.setCycles(Integer.valueOf(ap.getOption("cycles")));
+                            }
+                        }
                     } else if (isAsynch) {
-                    	agArch = new CentralisedAgArchAsynchronous();
-                    	
-                    	int cyclesSense = 0;
-                    	int cyclesDeliberate = 0; 
-                    	int cyclesAct = 0;
-                    	
-                    	if (ap.getOption("cycles") != null) {
-                    		cyclesSense = cyclesDeliberate = cyclesAct = Integer.valueOf(ap.getOption("cycles"));
-                    	}
-                    	
+                        agArch = new CentralisedAgArchAsynchronous();
+                        
+                        int cyclesSense = 0;
+                        int cyclesDeliberate = 0; 
+                        int cyclesAct = 0;
+                        
+                        if (ap.getOption("cycles") != null) {
+                            cyclesSense = cyclesDeliberate = cyclesAct = Integer.valueOf(ap.getOption("cycles"));
+                        }
+                        
                         if (ap.getOption("cycles_sense") != null) {
-                        	cyclesSense = Integer.valueOf(ap.getOption("cycles_sense"));
+                            cyclesSense = Integer.valueOf(ap.getOption("cycles_sense"));
                         }
                         if (ap.getOption("cycles_deliberate") != null) {
-                        	cyclesDeliberate = Integer.valueOf(ap.getOption("cycles_deliberate"));
+                            cyclesDeliberate = Integer.valueOf(ap.getOption("cycles_deliberate"));
                         }
                         if (ap.getOption("cycles_act") != null) {
-                        	cyclesAct = Integer.valueOf(ap.getOption("cycles_act"));
+                            cyclesAct = Integer.valueOf(ap.getOption("cycles_act"));
                         }
                         
                         ((CentralisedAgArchAsynchronous) agArch).getSenseComponent().setCycles(cyclesSense);
@@ -660,7 +660,7 @@ public class RunCentralisedMAS {
                     } else {
                         agArch = new CentralisedAgArch();
                         if (ap.getOption("cycles") != null) {
-                        	agArch.setCycles(Integer.valueOf(ap.getOption("cycles")));
+                            agArch.setCycles(Integer.valueOf(ap.getOption("cycles")));
                         }
                     }
                     agArch.setAgName(numberedAg);
@@ -721,23 +721,23 @@ public class RunCentralisedMAS {
     
     /** creates one thread per agent */
     private void createAgsThreads() {
-    	
-    	int cyclesSense = 1;
-    	int cyclesDeliberate = 1;
-    	int cyclesAct = 5;
-    	
-    	if (project.getInfrastructure().hasParameters()) {
+        
+        int cyclesSense = 1;
+        int cyclesDeliberate = 1;
+        int cyclesAct = 5;
+        
+        if (project.getInfrastructure().hasParameters()) {
             if (project.getInfrastructure().getParametersArray().length > 2) {
-    			cyclesSense = Integer.parseInt(project.getInfrastructure().getParameter(1));
-    			cyclesDeliberate = Integer.parseInt(project.getInfrastructure().getParameter(2));
-    			cyclesAct = Integer.parseInt(project.getInfrastructure().getParameter(3));                    
+                cyclesSense = Integer.parseInt(project.getInfrastructure().getParameter(1));
+                cyclesDeliberate = Integer.parseInt(project.getInfrastructure().getParameter(2));
+                cyclesAct = Integer.parseInt(project.getInfrastructure().getParameter(3));                    
             } else if (project.getInfrastructure().getParametersArray().length > 1) {
-            	cyclesSense = cyclesDeliberate = cyclesAct = Integer.parseInt(project.getInfrastructure().getParameter(1));
-    		}
+                cyclesSense = cyclesDeliberate = cyclesAct = Integer.parseInt(project.getInfrastructure().getParameter(1));
+            }
             
             //logger.info("Creating a threaded agents." + "Cycles: " + cyclesSense + ", " + cyclesDeliberate + ", " + cyclesAct);
-    	}
-    	
+        }
+        
         for (CentralisedAgArch ag : ags.values()) {
             ag.setControlInfraTier(control);
             
@@ -755,7 +755,7 @@ public class RunCentralisedMAS {
         //logger.info("Creating threaded agents. Cycles: " + agTemp.getCyclesSense() + ", " + agTemp.getCyclesDeliberate() + ", " + agTemp.getCyclesAct());
         
         for (CentralisedAgArch ag : ags.values()) {
-        	ag.startThread();
+            ag.startThread();
         }
     }
     
@@ -786,63 +786,63 @@ public class RunCentralisedMAS {
         
         try {
             if (project.getInfrastructure().hasParameters()) {
-            	
-            	if (project.getInfrastructure().hasParameter("asynch")) {
-            		configuration = 1;
-            		maxthreadsSense = Integer.parseInt(project.getInfrastructure().getParameter(1));
-            		maxthreadsDeliberate = Integer.parseInt(project.getInfrastructure().getParameter(2));
-            		maxthreadsAct = Integer.parseInt(project.getInfrastructure().getParameter(3));
-            		if (project.getInfrastructure().getParametersArray().length > 5) {
-            			cyclesSense = Integer.parseInt(project.getInfrastructure().getParameter(4));
-            			cyclesDeliberate = Integer.parseInt(project.getInfrastructure().getParameter(5));
-            			cyclesAct = Integer.parseInt(project.getInfrastructure().getParameter(6));
-            		} else if (project.getInfrastructure().getParametersArray().length > 4) {
-            			cyclesSense = cyclesDeliberate = cyclesAct = Integer.parseInt(project.getInfrastructure().getParameter(4));
-            		}
-            		logger.info("Creating agents with asynchronous reasoning cycle. Sense (" + maxthreadsSense + "), Deliberate (" + maxthreadsDeliberate + "), Act (" + maxthreadsAct + ")" + "Cycles: " + cyclesSense + ", " + cyclesDeliberate + ", " + cyclesAct);
-            	} else if (project.getInfrastructure().hasParameter("asynch_shared")) {
-            		configuration = 2;
-            		maxthreads = Integer.parseInt(project.getInfrastructure().getParameter(1));
-            		if (project.getInfrastructure().getParametersArray().length > 3) {
-            			cyclesSense = Integer.parseInt(project.getInfrastructure().getParameter(2));
-            			cyclesDeliberate = Integer.parseInt(project.getInfrastructure().getParameter(3));
-            			cyclesAct = Integer.parseInt(project.getInfrastructure().getParameter(4));
-            		} else if (project.getInfrastructure().getParametersArray().length > 2) {
-            			cyclesSense = cyclesDeliberate = cyclesAct = Integer.parseInt(project.getInfrastructure().getParameter(2));
-            		}
-            		logger.info("Creating agents with asynchronous reasoning cycle (shared). Sense, Deliberate, Act (" + maxthreads + ")"  + "Cycles: " + cyclesSense + ", " + cyclesDeliberate + ", " + cyclesAct);
-            	} else if (project.getInfrastructure().hasParameter("synch_scheduled")) {
+                
+                if (project.getInfrastructure().hasParameter("asynch")) {
+                    configuration = 1;
+                    maxthreadsSense = Integer.parseInt(project.getInfrastructure().getParameter(1));
+                    maxthreadsDeliberate = Integer.parseInt(project.getInfrastructure().getParameter(2));
+                    maxthreadsAct = Integer.parseInt(project.getInfrastructure().getParameter(3));
+                    if (project.getInfrastructure().getParametersArray().length > 5) {
+                        cyclesSense = Integer.parseInt(project.getInfrastructure().getParameter(4));
+                        cyclesDeliberate = Integer.parseInt(project.getInfrastructure().getParameter(5));
+                        cyclesAct = Integer.parseInt(project.getInfrastructure().getParameter(6));
+                    } else if (project.getInfrastructure().getParametersArray().length > 4) {
+                        cyclesSense = cyclesDeliberate = cyclesAct = Integer.parseInt(project.getInfrastructure().getParameter(4));
+                    }
+                    logger.info("Creating agents with asynchronous reasoning cycle. Sense (" + maxthreadsSense + "), Deliberate (" + maxthreadsDeliberate + "), Act (" + maxthreadsAct + ")" + "Cycles: " + cyclesSense + ", " + cyclesDeliberate + ", " + cyclesAct);
+                } else if (project.getInfrastructure().hasParameter("asynch_shared")) {
+                    configuration = 2;
+                    maxthreads = Integer.parseInt(project.getInfrastructure().getParameter(1));
+                    if (project.getInfrastructure().getParametersArray().length > 3) {
+                        cyclesSense = Integer.parseInt(project.getInfrastructure().getParameter(2));
+                        cyclesDeliberate = Integer.parseInt(project.getInfrastructure().getParameter(3));
+                        cyclesAct = Integer.parseInt(project.getInfrastructure().getParameter(4));
+                    } else if (project.getInfrastructure().getParametersArray().length > 2) {
+                        cyclesSense = cyclesDeliberate = cyclesAct = Integer.parseInt(project.getInfrastructure().getParameter(2));
+                    }
+                    logger.info("Creating agents with asynchronous reasoning cycle (shared). Sense, Deliberate, Act (" + maxthreads + ")"  + "Cycles: " + cyclesSense + ", " + cyclesDeliberate + ", " + cyclesAct);
+                } else if (project.getInfrastructure().hasParameter("synch_scheduled")) {
                     maxthreads = Integer.parseInt(project.getInfrastructure().getParameter(1));
                     
                     if (project.getInfrastructure().getParametersArray().length > 3) {
-            			cyclesSense = Integer.parseInt(project.getInfrastructure().getParameter(2));
-            			cyclesDeliberate = Integer.parseInt(project.getInfrastructure().getParameter(3));
-            			cyclesAct = Integer.parseInt(project.getInfrastructure().getParameter(4));                    
+                        cyclesSense = Integer.parseInt(project.getInfrastructure().getParameter(2));
+                        cyclesDeliberate = Integer.parseInt(project.getInfrastructure().getParameter(3));
+                        cyclesAct = Integer.parseInt(project.getInfrastructure().getParameter(4));                    
                     } else if (project.getInfrastructure().getParametersArray().length > 2) {
-                    	cyclesSense = cyclesDeliberate = cyclesAct = Integer.parseInt(project.getInfrastructure().getParameter(2));
-            		}
+                        cyclesSense = cyclesDeliberate = cyclesAct = Integer.parseInt(project.getInfrastructure().getParameter(2));
+                    }
                     
-                    logger.info("Creating a thread pool with "+maxthreads+" thread(s)." + "Cycles: " + cyclesSense + ", " + cyclesDeliberate + ", " + cyclesAct + " Reasoning Cycles: " + cycles);            		
-            	} else {
+                    logger.info("Creating a thread pool with "+maxthreads+" thread(s)." + "Cycles: " + cyclesSense + ", " + cyclesDeliberate + ", " + cyclesAct + " Reasoning Cycles: " + cycles);                  
+                } else {
                     maxthreads = Integer.parseInt(project.getInfrastructure().getParameter(1));
                     
                     if (project.getInfrastructure().getParametersArray().length > 3) {
-            			cyclesSense = Integer.parseInt(project.getInfrastructure().getParameter(2));
-            			cyclesDeliberate = Integer.parseInt(project.getInfrastructure().getParameter(3));
-            			cyclesAct = Integer.parseInt(project.getInfrastructure().getParameter(4));
-            			if (project.getInfrastructure().getParametersArray().length > 4) {
-            			    cycles = Integer.parseInt(project.getInfrastructure().getParameter(5));
-            			} else {
-            			    cycles = 5;            			    
-            			}            			    
+                        cyclesSense = Integer.parseInt(project.getInfrastructure().getParameter(2));
+                        cyclesDeliberate = Integer.parseInt(project.getInfrastructure().getParameter(3));
+                        cyclesAct = Integer.parseInt(project.getInfrastructure().getParameter(4));
+                        if (project.getInfrastructure().getParametersArray().length > 4) {
+                            cycles = Integer.parseInt(project.getInfrastructure().getParameter(5));
+                        } else {
+                            cycles = 5;                         
+                        }                           
                     } else if (project.getInfrastructure().getParametersArray().length > 2) {
-            			cycles = Integer.parseInt(project.getInfrastructure().getParameter(2));
-            		} else {
-            		    cycles = 5;
-            		}
+                        cycles = Integer.parseInt(project.getInfrastructure().getParameter(2));
+                    } else {
+                        cycles = 5;
+                    }
                     
                     logger.info("Creating a thread pool with "+maxthreads+" thread(s)." + "Cycles: " + cyclesSense + ", " + cyclesDeliberate + ", " + cyclesAct + " Reasoning Cycles: " + cycles);
-            	}
+                }
             }
         } catch (Exception e) {
             logger.warning("Error getting the number of thread for the pool.");
@@ -869,37 +869,37 @@ public class RunCentralisedMAS {
             }
             
         } else {
-        	
-        	//TODO shared thread pool among the stages
-        	if (configuration == 2) {
-	            executorSense = executorDeliberate = executorAct = Executors.newFixedThreadPool(maxthreads);
-        	} else {
-	            executorSense = Executors.newFixedThreadPool(maxthreadsSense);
-	            executorDeliberate = Executors.newFixedThreadPool(maxthreadsDeliberate);
-	            executorAct = Executors.newFixedThreadPool(maxthreadsAct);
-        	}
+            
+            //TODO shared thread pool among the stages
+            if (configuration == 2) {
+                executorSense = executorDeliberate = executorAct = Executors.newFixedThreadPool(maxthreads);
+            } else {
+                executorSense = Executors.newFixedThreadPool(maxthreadsSense);
+                executorDeliberate = Executors.newFixedThreadPool(maxthreadsDeliberate);
+                executorAct = Executors.newFixedThreadPool(maxthreadsAct);
+            }
             
             //ThreadMonitorAgents mon = new ThreadMonitorAgents();
             
             // initially, add all agents in the tasks
             for (CentralisedAgArch ag : ags.values()) {
-            	CentralisedAgArchAsynchronous ag2 = (CentralisedAgArchAsynchronous) ag;
-            	
-            	ag2.addListenerToC(new CircumstanceListenerComponents(ag2));
-            	
-            	ag2.setExecutorAct(executorAct);
-            	ag2.setCyclesAct(cyclesAct);
-            	executorAct.execute(ag2.getActComponent());
-            	
-            	ag2.setExecutorDeliberate(executorDeliberate);
-            	ag2.setCyclesDeliberate(cyclesDeliberate);
-            	executorDeliberate.execute(ag2.getDeliberateComponent());
-            	
-            	ag2.setExecutorSense(executorSense);
-            	ag2.setCyclesSense(cyclesSense);
-            	executorSense.execute(ag2.getSenseComponent());
-            	
-            	//mon.lst.add(ag2);
+                CentralisedAgArchAsynchronous ag2 = (CentralisedAgArchAsynchronous) ag;
+                
+                ag2.addListenerToC(new CircumstanceListenerComponents(ag2));
+                
+                ag2.setExecutorAct(executorAct);
+                ag2.setCyclesAct(cyclesAct);
+                executorAct.execute(ag2.getActComponent());
+                
+                ag2.setExecutorDeliberate(executorDeliberate);
+                ag2.setCyclesDeliberate(cyclesDeliberate);
+                executorDeliberate.execute(ag2.getDeliberateComponent());
+                
+                ag2.setExecutorSense(executorSense);
+                ag2.setCyclesSense(cyclesSense);
+                executorSense.execute(ag2.getSenseComponent());
+                
+                //mon.lst.add(ag2);
             }
             
             //new Thread(mon).start();
@@ -919,65 +919,65 @@ public class RunCentralisedMAS {
         @Override
         public void wake() {                
             if (sleepingAgs.remove(this)) {
-            	executor.execute(this); 
+                executor.execute(this); 
             } else {
                 runWakeAfterTS = true;
             }
         }
         
         public void sense() {
-        	int number_cycles = getCyclesSense();
-        	int i = 0;
-        	
+            int number_cycles = getCyclesSense();
+            int i = 0;
+            
             while (isRunning() && i < number_cycles) {
-            	runWakeAfterTS = false;
-            	getTS().sense();
+                runWakeAfterTS = false;
+                getTS().sense();
                 if (getTS().canSleepSense()) {
                     if (runWakeAfterTS) {
                         wake();
                     }
-                	break;
+                    break;
                 }
                 i++;
             }
             
             if (isRunning()) {
-	            executor.execute(this);
+                executor.execute(this);
             }
         }
         
         public void deliberate() {
-        	super.deliberate();
+            super.deliberate();
             
             if (isRunning()) {
-	            executor.execute(this);
+                executor.execute(this);
             }
         }
         
         public void act() {
-        	super.act();
+            super.act();
             
             if (isRunning()) {
-	            executor.execute(this);
+                executor.execute(this);
             }
         }        
         
         @Override
         public void run() {
-        	switch (currentStep) {
-        		case 0: 
-        			sense();
-        			currentStep = 1;
-        			break;
-        		case 1: 
-        			deliberate();
-        			currentStep = 2;
-        			break;
-        		case 2: 
-        			act();
-        			currentStep = 0;
-        			break;
-        	}
+            switch (currentStep) {
+                case 0: 
+                    sense();
+                    currentStep = 1;
+                    break;
+                case 1: 
+                    deliberate();
+                    currentStep = 2;
+                    break;
+                case 2: 
+                    act();
+                    currentStep = 0;
+                    break;
+            }
         }      
     }
     

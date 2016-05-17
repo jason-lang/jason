@@ -1388,7 +1388,7 @@ public class TransitionSystem {
     }
     
     public boolean canSleepAct() {
-    	//&& !C.hasPendingAction()
+        //&& !C.hasPendingAction()
         return !C.hasIntention() && !C.hasFeedbackAction() && C.getSelectedIntention() == null && getUserAgArch().canSleep();
     }
 

@@ -200,7 +200,7 @@ public class CentralisedAgArch extends AgArch implements Runnable {
     
     //int sumDel = 0; int nbDel = 0;
     protected void deliberate() {
-    	TransitionSystem ts = getTS();
+        TransitionSystem ts = getTS();
         int i = 0;
         while (running && i++ < cyclesDeliberate && !ts.canSleepDeliberate()) {
             ts.deliberate();
@@ -211,8 +211,8 @@ public class CentralisedAgArch extends AgArch implements Runnable {
     
     //int sumAct = 0; int nbAct = 0;
     protected void act() {
-    	TransitionSystem ts = getTS();
-    	
+        TransitionSystem ts = getTS();
+        
         int i = 0;
         int ca = cyclesAct;
         if (cyclesAct == 9999)
@@ -226,9 +226,9 @@ public class CentralisedAgArch extends AgArch implements Runnable {
     }
     
     protected void reasoningCycle() {
-    	sense();
-    	deliberate();
-    	act();
+        sense();
+        deliberate();
+        act();
     }    
     
     public void run() {

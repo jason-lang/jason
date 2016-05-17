@@ -1,8 +1,6 @@
 /* 
    Jason Gradle build file
 
-   https://github.com/jason-lang/jason
-   
 */
 
 plugins {
@@ -70,8 +68,8 @@ clean {
     delete 'readme.html'
     delete 'release-notes.html'
     //delete fileTree('doc/tutorials/hello-world')  { include '**/*.html'  }
-    delete fileTree('src')  { include '**/bin'  }
-    delete fileTree('src')  { include '**/*.log'  }
+    delete fileTree('examples')  { include '**/bin'  }
+    delete fileTree('examples')  { include '**/*.log'  }
 }
 
 task config (type: JavaExec, dependsOn: 'jar') {
@@ -117,7 +115,7 @@ publishing {
 
 compileJavacc {
     inputDirectory = file('src/main/javacc')
-    //outputDirectory = file(project.buildDir.absolutePath + '/generated/javacc')
+    outputDirectory = file(project.buildDir.absolutePath + '/generated/javacc')
 }
 
 
@@ -152,8 +150,13 @@ task renderAsciiDocs(type: Exec) {
     commandLine 'find', '.', '-name', '*.adoc', '-exec', 'asciidoctor', '{}', ';'
 }
 
+task fixTab {
+    ant.fixcrlf(eol: 'lf',  includes: '**/*.txt,**/*.bat, **/*.adoc', srcdir: '.')
+    ant.fixcrlf(tab: 'remove', tablength: '4', javafiles: 'true', includes: '**/*.java,**/*.xml', srcdir: 'src')
+}
+
 // Builds the distribution, documentation and a new release
-task release(dependsOn: [ 'build', 'doc', 'zipRel']) << {
+task release(dependsOn: [ 'build', 'doc', 'fixTab', 'zipRel']) << {
 } 
 
 // copy files used to build a release
