@@ -104,7 +104,7 @@ clean {
     delete 'demos/persistent-belief-base/a.bb'
 }
 
-task config (type: JavaExec, dependsOn: 'jar') {
+task config (type: JavaExec, dependsOn: ['jar', 'plugin']) {
     main = 'jason.util.Config'
     classpath sourceSets.main.runtimeClasspath
     workingDir project.buildDir.absolutePath + '/libs'
@@ -155,6 +155,33 @@ jjdoc {
     outputDirectory = file(project.projectDir.absolutePath + '/doc')
     //arguments = [text: 'true']
 }
+
+// Builds jEdit plugin
+task plugin(type: Jar, dependsOn: 'classes') {
+    archiveName 'jason-jedit-plugin.jar'
+    destinationDir file('build/jedit/jars')
+    from 'build/classes/main'
+    from 'build/resources/main'
+    from 'build/resources/main/jeditPlugin'
+
+    doFirst {
+        ant.untar(compression: 'gzip', dest: 'build', src: 'jedit/jedit.tgz')
+    }
+    
+    doLast {
+        copy {
+            from 'src/main/resources/jeditPlugin'
+            into 'build/jedit/modes'
+            include 'agentSpeak.xml', 'jasonProject.xml', 'catalog'
+        }
+        copy {
+            from 'src/main/resources/jeditPlugin'
+            into 'build/jedit/properties'
+            include 'jedit-initial.props'
+        }
+    }
+}
+
 
 // transfer local maven artifact to our maven2 repository at sourceforge
 task publishMavenSF(dependsOn: [ 'build', 'publishToMavenLocal']) << {

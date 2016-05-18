@@ -1,17 +1,16 @@
 #!/bin/bash
 
-CURDIR=`pwd`
-JASON_HOME=`dirname $0`
-cd "$JASON_HOME/.."
-JASON_HOME=`pwd`
-#cd "$JASON_HOME/bin"
-cd $CURDIR
-
-OS=`uname`
+if [ -z JASON_HOME ] ; then
+    CURDIR=`pwd`
+    JASON_HOME=`dirname $0`
+    cd "$JASON_HOME/.."
+    JASON_HOME=`pwd`
+    cd $CURDIR
+fi
 
 if [ -z $JDK_HOME ] ; then
     if [ -n $JAVA_HOME ] ; then
-	JDK_HOME=$JAVA_HOME
+	    JDK_HOME=$JAVA_HOME
     fi
 fi
 
@@ -26,17 +25,10 @@ if [ ! -f $JDK_HOME/bin/javac ] ; then
    echo JDK_HOME is not properly set!
 fi
 
-export PATH="$JDK_HOME/bin":$PATH
-
-DPAR=""
-if [ $OS == Darwin ] ; then
-	DPAR="-Dapple.laf.useScreenMenuBar=true"
-fi
+JASON_JAR=`find $JASON_HOME/libs -name jason-2*.jar`
+JEDIT_HOME=$JASON_HOME/jedit
 
 # run jIDE
-java -classpath "$JASON_HOME/lib/jason.jar":"$JASON_HOME/bin/jedit/jedit.jar":"$JASON_HOME/lib/saci.jar":"$JASON_HOME/lib/jade.jar":"$JASON_HOME/lib/cartago.jar":"$JASON_HOME/lib/c4jason.jar":"$JASON_HOME/bin/jedit/jars/ErrorList.jar":"$JASON_HOME/bin/jedit/jars/SideKick.jar":$JASON_HOME/lib/cartago.jar:$JASON_HOME/lib/c4jason.jar:$JASON_HOME/lib/moise.jar:$JASON_HOME/lib/jacamo.jar:$CLASSPATH:. \
-   $DPAR \
+$JDK_HOME/bin/java \
+-classpath $JASON_JAR:$JEDIT_HOME/jedit.jar:$JEDIT_HOME/jars/ErrorList.jar:$JEDIT_HOME/jars/SideKick.jar \
    org.gjt.sp.jedit.jEdit $1
-   
-#"$JASON_HOME/lib/ant.jar":"$JASON_HOME/lib/ant-launcher.jar":
-#-settings=$JASON_HOME/bin/.jedit 
