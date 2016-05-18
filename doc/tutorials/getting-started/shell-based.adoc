@@ -1,0 +1,18 @@
+= Creating Jason projects in the shell command
+for unix users
+
+. Download Jason https://sourceforge.net/projects/jason/files/jason/[here] and unzip it
+
+. Make sure you have `JASON_HOME` properly set (it should have the directories `libs` and `scripts` inside), then setup the `PATH`:
+
+    export PATH=$JASON_HOME/scripts:$PATH
+
+. The Jason IDE based on jEdit can be run with
++
+----
+jason-ide
+----
+
+. Jason project (the `.mas2j` files) can be run it with
+
+    jason ../somewhere/some-project.mas2j

@@ -90,7 +90,10 @@ clean {
     delete 'bin'
     delete 'readme.html'
     delete 'release-notes.html'
-    //delete fileTree('doc/tutorials/hello-world')  { include '**/*.html'  }
+    
+    delete fileTree('doc/tutorials')  { include '**/*.html'  }
+    delete fileTree('doc/tutorials')  { include '**/bin/*'  }
+    
     delete fileTree('.')  { include '**/*~'  }
     delete fileTree('.')  { include '**/.stop___MAS'  }
     delete fileTree('.')  { include '**/APDescription.txt'  }
