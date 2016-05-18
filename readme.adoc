@@ -36,9 +36,11 @@ Other useful gradle tasks:
 gradle jar     // <1>
 gradle doc     // <2>
 gradle eclipse // <3>
-gradle release // <4>
+gradle clean   // <4>
+gradle release // <5>
 -----
 <1> generates a new jason jar.
 <2> generates the javadoc and transforms asciidoc files into html (http://asciidoctor.org[asciidoctor] should be installed).
 <3> generates an _eclipse_ project configuration to develop Jason.
-<4> produces a zip file in `build/distributions` to be distributed to users.
+<4> cleans all generated files.
+<5> produces a zip file in `build/distributions` to be distributed to users.

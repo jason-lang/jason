@@ -327,9 +327,6 @@ public class Config extends Properties {
             }
         }
 
-        // Jason version
-        put("version", getJasonRunningVersion());
-
         // font
         if (get("font") == null) {
             put("font", "Monospaced");
@@ -451,11 +448,17 @@ public class Config extends Properties {
     }
 
     
-    public String getDistPropFile() {
+    /*public String getDistPropFile() {
         return "/dist.properties";
-    }
+    }*/
     
-    public String getJasonRunningVersion() {
+    public String getJasonVersion() {
+        Package j = Package.getPackage("jason.util");
+        if (j != null) {
+            return j.getSpecificationVersion();
+        }
+        return "?";
+        /*
         try {
             Properties p = new Properties();
             p.load(Config.class.getResource(getDistPropFile()).openStream());
@@ -476,17 +479,24 @@ public class Config extends Properties {
                 //System.out.println("*"+ex2);
                 return "?";
             }
-        }
+        }*/
+        
     }
 
     public String getJasonBuiltDate() {
+        Package j = Package.getPackage("jason.util");
+        if (j != null) {
+            return j.getImplementationVersion();
+        }
+        return "?";
+        /*
         try {
             Properties p = new Properties();
             p.load(Config.class.getResource("/dist.properties").openStream());
             return p.get("build.date").toString();
         } catch (Exception ex) {
             return "?";
-        }
+        }*/
     }
     
     public void tryToFixJarFileConf(String jarEntry, String jarFilePrefix, int minSize) {
@@ -777,7 +787,7 @@ public class Config extends Properties {
         return TransitionSystem.class.getResource("/templates/"+templateName).openStream();
     }
     
-    public static void main(String[] args) {
+    public static void main(String[] args) { 
         Config.get().fix();
         Config.get().store();
     }

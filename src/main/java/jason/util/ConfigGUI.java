@@ -70,7 +70,7 @@ public class ConfigGUI {
     protected static Config userProperties = Config.get();
 
     static {
-        String currJasonVersion = userProperties.getJasonRunningVersion();
+        String currJasonVersion = userProperties.getJasonVersion();
 
         // check new version
         //File jasonConfFile = getUserConfFile();

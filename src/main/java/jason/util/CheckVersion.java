@@ -43,7 +43,7 @@ public class CheckVersion extends Thread {
 
     boolean isLatestVersion() {
         // get user version
-        String cVersion = Config.get().getJasonRunningVersion();
+        String cVersion = Config.get().getJasonVersion();
         String lv = getLatestVersion();
         return lv == null || cVersion.compareTo(lv) >= 0;
     }

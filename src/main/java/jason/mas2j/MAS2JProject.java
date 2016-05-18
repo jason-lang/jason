@@ -52,7 +52,7 @@ public class MAS2JProject {
     
     private static Logger logger = Logger.getLogger(MAS2JProject.class.getName());
         
-    private String soc;
+    private String soc = "default";
     private ClassParameters envClass = null; 
     private ClassParameters controlClass = null;
     private ClassParameters infrastructure = new ClassParameters("Centralised");

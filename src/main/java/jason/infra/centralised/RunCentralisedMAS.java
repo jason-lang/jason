@@ -49,7 +49,6 @@ import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
@@ -125,10 +124,10 @@ public class RunCentralisedMAS {
                 readFromJAR = true;
                 Config.get(false); // to void to call fix/store the configuration in this case everything is read from a jar/jnlp file
             } else {
-                System.out.println("Jason "+Config.get().getJasonRunningVersion());
+                /*System.out.println("Jason "+Config.get().getJasonVersion());
                 System.err.println("You should inform the MAS project file.");
-                JOptionPane.showMessageDialog(null,"You should inform the project file as a parameter.\n\nJason version "+Config.get().getJasonRunningVersion()+" library built on "+Config.get().getJasonBuiltDate(),"Jason", JOptionPane.INFORMATION_MESSAGE);
-                System.exit(0);
+                JOptionPane.showMessageDialog(null,"You should inform the project file as a parameter.\n\nJason version "+Config.get().getJasonVersion()+" library built on "+Config.get().getJasonBuiltDate(),"Jason", JOptionPane.INFORMATION_MESSAGE);
+                System.exit(0);*/
             }
         } else {
             projectFileName = args[0];
@@ -155,25 +154,30 @@ public class RunCentralisedMAS {
         int errorCode = 0;
 
         try {
-            InputStream inProject;
-            if (readFromJAR) {
-                inProject = RunCentralisedMAS.class.getResource("/"+defaultProjectFileName).openStream();
-                urlPrefix = Include.CRPrefix + "/";
-            } else {
-                URL file;
-                // test if the argument is an URL
-                try {
-                    file = new URL(projectFileName);
-                    if (projectFileName.startsWith("jar")) {
-                        urlPrefix = projectFileName.substring(0,projectFileName.indexOf("!")+1) + "/";
+            if (projectFileName != null) {
+                InputStream inProject;
+                if (readFromJAR) {
+                    inProject = RunCentralisedMAS.class.getResource("/"+defaultProjectFileName).openStream();
+                    urlPrefix = Include.CRPrefix + "/";
+                } else {
+                    URL file;
+                    // test if the argument is an URL
+                    try {
+                        file = new URL(projectFileName);
+                        if (projectFileName.startsWith("jar")) {
+                            urlPrefix = projectFileName.substring(0,projectFileName.indexOf("!")+1) + "/";
+                        }
+                    } catch (Exception e) {
+                        file = new URL("file:"+projectFileName);
                     }
-                } catch (Exception e) {
-                    file = new URL("file:"+projectFileName);
+                    inProject = file.openStream();
                 }
-                inProject = file.openStream();
+                jason.mas2j.parser.mas2j parser = new jason.mas2j.parser.mas2j(inProject); 
+                project = parser.mas();
+            } else {
+                project = new MAS2JProject();
             }
-            jason.mas2j.parser.mas2j parser = new jason.mas2j.parser.mas2j(inProject); 
-            project = parser.mas();
+            
             project.setupDefault();
 
             project.registerDirectives();
