@@ -1,0 +1,11 @@
+/* Jason Project */
+
+MAS bdi_hw {
+    infrastructure: JaCaMo
+    
+    agents: 
+        bob;
+        alice;
+
+}
+
