@@ -16,7 +16,7 @@ based only on SACI anymore (other infrastructures are available) and the
 acronyms was quite "`forced`", we decided the use Jason as a proper name
 for the interpreter.
 
-The name is also somehow inspired by in Greek mythology. Click http://www.perseus.tufts.edu/cgi-bin/ptext?doc=Perseus%3Atext%3A1999.04.0004%3Ahead%3D%234815[here] for an entry on Jason in the Perseus Encyclopaedia (Perseus is an
+The name is also somehow inspired by in Greek mythology. Click http://www.perseus.tufts.edu/hopper/text?doc=Perseus%3Atext%3A1999.04.0004%3Aalphabetic+letter%3DJ%3Aentry+group%3D1%3Aentry%3Djason[here] for an entry on Jason in the Perseus Encyclopaedia (Perseus is an
 excellent source of Classics, maintained by Tufts University).
 
 === How to configure Jason?
