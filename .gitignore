@@ -7,6 +7,8 @@ build
 .settings
 .stop___MAS
 
+doc/faq.html
+
 *~
 
 # Mobile Tools for Java (J2ME)

@@ -55,6 +55,8 @@ class name to `myIA`.
 +
 The code will likely look like
 +
+[source,java]
+.myLib/myIA.java
 -------------------------------------------------
 package myLib;
 

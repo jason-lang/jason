@@ -16,12 +16,6 @@ if [ -z $JDK_HOME ] ; then
     fi
 fi
 
-if [ -z $JDK_HOME ] ; then
-	if [ $OS == Darwin ] ; then
-		JDK_HOME=/usr
-	fi
-fi
-
 # check JDK_HOME
 if [ ! -f $JDK_HOME/bin/javac ] ; then
    echo JDK_HOME is not properly set!

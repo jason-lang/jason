@@ -14,10 +14,6 @@
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 // 
-// To contact the authors:
-// http://www.dur.ac.uk/r.bordini
-// http://www.inf.furb.br/~jomi
-//
 //----------------------------------------------------------------------------
 
 
@@ -26,7 +22,6 @@ options {
    STATIC=false;
    IGNORE_CASE=false;
    UNICODE_INPUT=true;
-   //OUTPUT_DIRECTORY="xx";
 }
 
 PARSER_BEGIN(as2j)
@@ -789,7 +784,9 @@ Term term() :          { Object o; }
 }
 
 
-ListTermImpl list() :     { ListTermImpl lt = new ListTermImpl(); ListTerm last; Token K; Term f; }
+ListTermImpl list() :     { ListTermImpl lt = new ListTermImpl(); ListTerm last; Token K; Term f; 
+                            Atom ons = namespace; namespace = Literal.DefaultNS; // do not replace abstract namespace for terms 
+                          }
 {
   "["
   [
@@ -802,7 +799,7 @@ ListTermImpl list() :     { ListTermImpl lt = new ListTermImpl(); ListTerm last;
          )           
   ]
   ]
-  "]"                     { return lt; } 
+  "]"                     { namespace = ons; return lt; } 
 }
 
 // term_in_list is the same as term, but log_expr/plan_body must be enclosed by "("....")" to avoid problem with |

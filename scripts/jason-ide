@@ -14,12 +14,6 @@ if [ -z $JDK_HOME ] ; then
     fi
 fi
 
-if [ -z $JDK_HOME ] ; then
-	if [ $OS == Darwin ] ; then
-		JDK_HOME=/usr
-	fi
-fi
-
 # check JDK_HOME
 if [ ! -f $JDK_HOME/bin/javac ] ; then
    echo JDK_HOME is not properly set!
@@ -28,8 +22,6 @@ fi
 JASON_JAR=`find $JASON_HOME/libs -name jason-2*.jar`
 JEDIT_HOME=$JASON_HOME/jedit
 JADE_JAR=`find $JASON_HOME/libs -name jade*.jar`
-
-echo $JADE_JAR
 
 # run jIDE
 $JDK_HOME/bin/java \
