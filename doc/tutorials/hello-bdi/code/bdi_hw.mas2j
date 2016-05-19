@@ -1,11 +1,11 @@
 /* Jason Project */
 
 MAS bdi_hw {
-    infrastructure: JaCaMo
+    environment: c4jason.CartagoEnvironment
     
     agents: 
-        bob;
-        alice;
+        bob   agentArchClass c4jason.CAgentArch;
+        alice agentArchClass c4jason.CAgentArch;
 
 }
 

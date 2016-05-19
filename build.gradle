@@ -35,6 +35,8 @@ repositories {
 
 dependencies {
     compile group: 'net.sf.ingenias', name: 'jade', version: '4.3'
+    compile group: 'org.jacamo',     name: 'cartago' , version: '2.0.2'
+    compile group: 'org.jacamo',     name: 'c4jason' , version: '2.0.2'
 
     // from jEdit
     compile name: 'jedit'

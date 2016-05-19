@@ -200,12 +200,20 @@ public class CentralisedMASLauncherAnt implements MASLauncherInfraTier {
         // if cartago env
         if (project.isJade() || 
                 (project.getEnvClass() != null && project.getEnvClass().getClassName().equals("c4jason.CartagoEnvironment"))) {
-            lib += "        <pathelement location=\""+Config.get().getJasonHome()+"/lib/cartago.jar\"/>\n";
-            lib += "        <pathelement location=\""+Config.get().getJasonHome()+"/lib/c4jason.jar\"/>\n";            
+            Config c = Config.get();
+            String cartago = Config.findJarInDirectory(new File(c.getJasonHome()+"/libs"), "cartago");
+            if (cartago != null)
+                lib += "        <pathelement location=\""+cartago+"\"/>\n";
+            String c4jason = Config.findJarInDirectory(new File(c.getJasonHome()+"/libs"), "c4jason");
+            if (c4jason != null)
+                lib += "        <pathelement location=\""+c4jason+"\"/>\n";            
         }
 
         if (new File(dDir + File.separator + "lib").exists()) {
             lib += "        <fileset dir=\"${basedir}/lib\" >  <include name=\"*.jar\" /> </fileset>\n";
+        }
+        if (new File(dDir + File.separator + "libs").exists()) {
+            lib += "        <fileset dir=\"${basedir}/libs\" >  <include name=\"*.jar\" /> </fileset>\n";
         }
         
         // add classpath defined in the project .mas2j

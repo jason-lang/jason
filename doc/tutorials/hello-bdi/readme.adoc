@@ -208,9 +208,11 @@ develop the environment, so we will simply copy & paste some code:
 
 --------------------------
 MAS bdi_hw {
-    infrastructure: JaCaMo
+    environment: c4jason.CartagoEnvironment // CArtAgO environment
 
-    agents: bob;
+    agents:
+        bob   agentArchClass c4jason.CAgentArch; // Agent architecture to perceive CArtAgO
+
 }
 --------------------------
 

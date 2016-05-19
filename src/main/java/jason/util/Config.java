@@ -635,7 +635,7 @@ public class Config extends Properties {
         return null;
     }
     
-    static String findJarInDirectory(File dir, String prefix) {
+    public static String findJarInDirectory(File dir, String prefix) {
         if (dir.isDirectory()) {
             for (File f: dir.listFiles()) {
                 if (f.getName().startsWith(prefix) && f.getName().endsWith(".jar")) {
