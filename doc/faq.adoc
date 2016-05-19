@@ -1,4 +1,5 @@
 = Jason FAQ
+(for Jason 2.0)
 :toc:
 :source-highlighter: coderay
 :coderay-linenums-mode: inline
