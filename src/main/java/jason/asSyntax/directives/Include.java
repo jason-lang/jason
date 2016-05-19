@@ -79,10 +79,14 @@ public class Include extends DefaultDirective implements Directive {
             // handles namespace (args[1])
             Atom ns = directive.getNS();
             if (directive.getArity() > 1) {
-                if (! directive.getTerm(1).isAtom()) {
-                    logger.log(Level.SEVERE, "The second parameter of the directive include (the namespace) should be an atom and not "+directive.getTerm(1)+". It is being ignored!");
+                if (directive.getTerm(1).isVar()) {
+                    ns = new Atom("ns"+NameSpace.getUniqueID());
                 } else {
-                    ns = new Atom( ((Atom)directive.getTerm(1)).getFunctor() );
+                    if (! directive.getTerm(1).isAtom()) {
+                        logger.log(Level.SEVERE, "The second parameter of the directive include (the namespace) should be an atom and not "+directive.getTerm(1)+". It is being ignored!");
+                    } else {
+                        ns = new Atom( ((Atom)directive.getTerm(1)).getFunctor() );
+                    }
                 }
             }
             Agent ag = new Agent();

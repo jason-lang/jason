@@ -8,6 +8,7 @@ import jason.asSyntax.parser.as2j;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -81,14 +82,18 @@ public class NameSpace implements Directive {
             return n;
     }
     
-    static private int nsCounter = 0;
+    static private AtomicInteger nsCounter = new AtomicInteger(0);
+    public static int getUniqueID() {
+        return nsCounter.incrementAndGet();
+    }
+    
     private synchronized Atom addLocalNS(Atom ns) {
         Atom newNS = localNSs.get(ns);
         if (newNS == null) {
-            nsCounter++;
-            newNS = new Atom(LOCAL_PREFIX+nsCounter+ns);
+            newNS = new Atom(LOCAL_PREFIX+nsCounter.incrementAndGet()+ns);
             localNSs.put(ns,newNS);
         }
         return newNS;
     }
+    
 }

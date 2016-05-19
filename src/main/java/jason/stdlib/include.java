@@ -58,8 +58,8 @@ public class include extends DefaultInternalAction {
         super.checkArguments(args); // check number of arguments
         if (!args[0].isString())
             throw JasonException.createWrongArgument(this,"first argument must be a string.");
-        if (args.length > 1 && !args[1].isAtom())
-            throw JasonException.createWrongArgument(this,"second argument (the namespace) must be an atom.");
+        if (args.length > 1 && !args[1].isAtom() && !args[1].isVar())
+            throw JasonException.createWrongArgument(this,"second argument (the namespace) must be an atom or a variable.");
     }
     
     Atom ns = Literal.DefaultNS;
