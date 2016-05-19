@@ -28,5 +28,6 @@ if [ ! -f $JDK_HOME/bin/javac ] ; then
 fi
 
 JASON_JAR=`find $JASON_HOME/libs -name jason-2*.jar`
+JADE_JAR=`find $JASON_HOME/libs -name jade*.jar`
 
-$JDK_HOME/bin/java -cp $JASON_JAR:$JACAMO_JAR jason.runtime.RunJasonProject $1
+$JDK_HOME/bin/java -cp $JASON_JAR:$JADE_JAR jason.runtime.RunJasonProject $1
