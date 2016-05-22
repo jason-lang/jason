@@ -32,6 +32,10 @@ repositories {
     }
 }
 
+configurations {
+    umljavadoc  // see http://www.umlgraph.org/doc/indexw.html
+}
+
 
 dependencies {
     compile group: 'net.sf.ingenias', name: 'jade', version: '4.3'
@@ -48,6 +52,8 @@ dependencies {
     
     testCompile group: 'junit', name: 'junit', version: '4.12'
     testCompile name: 'hsqldb'
+    
+    umljavadoc 'org.umlgraph:umlgraph:5.6'
 }
 
 jar {
@@ -90,6 +96,7 @@ task jarCore(type: Jar, dependsOn: 'classes') {
 
 clean {
     delete 'bin'
+    delete 'doc/api'
     delete 'readme.html'
     delete 'release-notes.html'
     
@@ -150,6 +157,35 @@ publishing {
     }
 }
 
+task javadoc(overwrite: true, dependsOn: compileJava) {
+    setDescription('Generates Javadoc API documentation with UMLGraph diagrams')
+    setGroup(JavaBasePlugin.DOCUMENTATION_GROUP)
+
+    doLast {
+        ant.javadoc(classpath: (configurations.runtime + configurations.compile).asPath, 
+                    sourcepath: file('src/main/java'), 
+                    packagenames: '*',
+                    destdir: "${docsDir}/../../doc/api",
+                    private: 'true',
+                    docletpath: configurations.umljavadoc.asPath) {
+            doclet(name: 'org.umlgraph.doclet.UmlGraphDoc') {
+                //param(name: '-inferrel')
+                //param(name: '-inferdep')
+                param(name: '-qualify')
+                //param(name: '-T', value: 'svg')
+                param(name: '-postfixpackage')
+                param(name: '-hide', value: 'java.*')
+                //param(name: '-collpackages', value: 'java.util.*')
+                //param(name: '-nodefontsize', value: '9')
+                //param(name: '-nodefontpackagesize', value: '7')
+                //param(name: '-link', value: 'http://java.sun.com/j2se/1.5.0/docs/guide/javadoc/doclet/spec')
+                //param(name: '-link', value: 'http://java.sun.com/j2se/1.5/docs/api')
+            }
+        }
+    }
+}
+
+
 compileJavacc {
     inputDirectory = file('src/main/javacc')
     outputDirectory = file(project.buildDir.absolutePath + '/generated/javacc')
@@ -157,7 +193,7 @@ compileJavacc {
 
 
 jjdoc {
-    outputDirectory = file(project.projectDir.absolutePath + '/doc')
+    outputDirectory = file(project.projectDir.absolutePath + '/doc/tech')
     //arguments = [text: 'true']
 }
 
@@ -168,6 +204,11 @@ task plugin(type: Jar, dependsOn: 'classes') {
     from 'build/classes/main'
     from 'build/resources/main'
     from 'build/resources/main/jeditPlugin'
+    
+    from ( configurations.compile.collect { zipTree(it) } ) {
+        include 'jade/**/*.class'
+    }
+    
 
     doFirst {
         ant.untar(compression: 'gzip', dest: 'build', src: 'jedit/jedit.tgz')
@@ -233,6 +274,8 @@ task copyRel << {
         include 'scripts/**'
         include 'doc/**'
     }
+    delete fileTree('build/jason-'+project.version+'/doc')  { include '**/*.adoc', '**/Makefile'  }
+
     copy {
         from libsDir
         from configurations.runtime
@@ -240,16 +283,16 @@ task copyRel << {
         include '**/*.jar'
     }
     copy {
-        from docsDir
-        into 'build/jason-'+project.version+'/doc'
+        from 'build/jedit'      
+        into 'build/jason-'+project.version+'/jedit' 
     }
     copy {
-        from 'src/examples'      
-        into 'build/jason-'+project.version+'/src/examples' 
+        from 'examples'      
+        into 'build/jason-'+project.version+'/examples' 
     }
     copy {
-        from 'src/demos'      
-        into 'build/jason-'+project.version+'/src/demos' 
+        from 'demos'      
+        into 'build/jason-'+project.version+'/demos' 
     }
 }
 

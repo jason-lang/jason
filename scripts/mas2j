@@ -10,7 +10,7 @@ then
     exit
 fi
 
-if [ -z JASON_HOME ] ; then
+if [ -z $JASON_HOME ] ; then
     CURDIR=`pwd`
     JASON_HOME=`dirname $0`
     cd "$JASON_HOME/.."

@@ -11,22 +11,15 @@ developing a simple multi-agent system using Jason.
 
 == Installation and Configuration
 
-- Java http://java.sun.com[JDK] >= 1.7 is required
-- Download Jason from https://sourceforge.net/projects/jason/files/jason/[here] and unzip it
-- You can now execute the Jason IDE:footnote:[Eclipse can also be used as the IDE, see http://jason.sourceforge.net/mini-tutorial/eclipse-plugin[here].]
-* Windows: Double-click on Jason.exe
-* MacOS: Double-click on Jason.app
-* Linux: run the script `jason-ide` (see more instructions http://jason.sourceforge.net/mini-tutorial/getting-started/shell-based.html[here])
+- Java http://java.sun.com[JDK] >= 1.7 is required.
+- Download Jason from https://sourceforge.net/projects/jason/files/jason/[here] and unzip it.
+- You can now execute the Jason IDE by going to the folder `jedit` and double-clicking on `jedit.jar`.footnote:[Eclipse can also be used as the IDE, see http://jason.sourceforge.net/mini-tutorial/eclipse-plugin[here].] For Linux and MacOS, the script `jason-ide` can also used (see more instructions http://jason.sourceforge.net/mini-tutorial/getting-started/shell-based.html[here]).
 
 image:./figures/screen-initial.png[]
 
-As you can see, Jason runs as a plugin of http://www.jedit.org[jEdit] (a text editor developed in
-  Java). This is useful because, although in Jason agents are  programmed in a variant of AgentSpeak, in most cases you'll need to
-  do some Java programming (e.g., if you want to create an environment  where the agents are situated).
+As you can see, Jason runs as a plugin of http://www.jedit.org[jEdit] (a text editor developed in Java). This is useful because, although in Jason agents are  programmed in a variant of AgentSpeak, in most cases you'll need to do some Java programming (e.g., if you want to create an environment  where the agents are situated).
 
-In some cases, it might be necessary to configure the directory
-  where Java JDK is installed. This can be done in the menu
-  Plugins -> Plugins Options -> Jason:
+In some cases, it might be necessary to configure the directory where Java JDK is installed. This can be done in the menu Plugins -> Plugins Options -> Jason:
 
 image:./figures/screen-conf.png[]
 
