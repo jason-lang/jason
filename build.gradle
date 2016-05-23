@@ -97,6 +97,7 @@ task jarCore(type: Jar, dependsOn: 'classes') {
 clean {
     delete 'bin'
     delete 'doc/api'
+    delete 'doc/faq.html'
     delete 'readme.html'
     delete 'release-notes.html'
     
@@ -115,6 +116,11 @@ clean {
     delete fileTree('demos')  { include '**/*.log'  }
     delete 'demos/persistent-belief-base/a.bb'
 }
+
+test << {
+    delete fileTree('.')  { include '**/bookstore.*'  }
+}
+
 
 task config (type: JavaExec, dependsOn: ['jar', 'plugin']) {
     main = 'jason.util.Config'

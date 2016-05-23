@@ -81,6 +81,7 @@ public class Include extends DefaultDirective implements Directive {
             if (directive.getArity() > 1) {
                 if (directive.getTerm(1).isVar()) {
                     ns = new Atom("ns"+NameSpace.getUniqueID());
+                    directive.setTerm(1, ns);
                 } else {
                     if (! directive.getTerm(1).isAtom()) {
                         logger.log(Level.SEVERE, "The second parameter of the directive include (the namespace) should be an atom and not "+directive.getTerm(1)+". It is being ignored!");

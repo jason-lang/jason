@@ -85,6 +85,10 @@ public class include extends DefaultInternalAction {
         ag.importComponents(result);
         ag.addInitialBelsInBB();
         ag.addInitialGoalsInTS();
+        
+        if (args[1].isVar()) {
+            return un.unifies(args[1], inc.getTerm(1));
+        }
         return true;
     }    
 }

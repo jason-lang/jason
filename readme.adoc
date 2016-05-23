@@ -30,7 +30,7 @@ Examples can be run using the `jason` shell script, for example:
 
 	jason examples/gold-miners-II/miners.mas2j
 
-The Jason IDE based on jEdit can be launched by the `jason-ide` script.
+The Jason IDE based on jEdit can be launched by the `jason-ide` script or `java -jar build/jedit/jedit.jar`.
 
 Other useful gradle tasks:
 
