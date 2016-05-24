@@ -8,6 +8,11 @@ build
 .stop___MAS
 
 doc/faq.html
+doc/api
+doc/tech/*Parser.html
+readme.html
+release-notes.html
+doc/tutorials/getting-started/shell-based.html
 
 *~
 

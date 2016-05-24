@@ -5,9 +5,9 @@
 
 *New features*
 
-- modules and namespaces, see doc/modules-namespaces.pdf
+- modules and namespaces, see doc/tech/modules-namespaces.pdf
 
-- concurrent plans and advanced concurrent agent architectures, see doc/concurrency.pdf
+- concurrent plans and advanced concurrent agent architectures, see doc/tech/concurrency.pdf
 
 - the operator `+` works with plans and rules enclosed by { and }. For instance:
 +
@@ -33,7 +33,7 @@
 - .asserta: inserts a belief (or rule) in the begin of the belief base (can be used in prolog like rules)
 - .assertz: inserts a belief (or rule) in the end of the belief base (can be used in prolog like rules)
 - .relevant_rules: gets rules with a specified head
-- .lower_case and upper_case for strings
+- .lower_case and .upper_case for strings
 - .include: to load an asl source code at run time
 
 *Changes in the API*
