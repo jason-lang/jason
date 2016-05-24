@@ -13,6 +13,6 @@ for unix users
 jason-ide
 ----
 
-. Jason project (the `.mas2j` files) can be run it with
+. Jason projects (`.mas2j` files) can be run it with
 
     jason ../somewhere/some-project.mas2j

@@ -36,11 +36,12 @@
 - .lower_case and .upper_case for strings
 - .include: to load an asl source code at run time
 
-*Changes in the API*
+*Changes*
 
-- AgArch act method has just one parameter
+- AgArch `act` method has just one parameter (the action to be executed)
 - Java 1.7 is used
 - JaCaMo is not an available infrastructure anymore, it has its own support to run MAS (the .jcm files)
+- The Jason.exe and Jason.app are not provided anymore. The jEdit + Jason plugin can be run by double clicking on `jedit/jedit.jar` file. See more about it on the getting started tutorial.
 
 
 *New Tutorial* on BDI (see doc/tutorials)
