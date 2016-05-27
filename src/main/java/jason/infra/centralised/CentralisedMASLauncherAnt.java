@@ -178,7 +178,7 @@ public class CentralisedMASLauncherAnt implements MASLauncherInfraTier {
     }
 
     protected String replaceMarks(String script, boolean debug) {
-        script = replace(script, "<VERSION>", Config.get().getProperty("version"));
+        script = replace(script, "<VERSION>", Config.get().getJasonVersion());
         script = replace(script, "<DATE>", new SimpleDateFormat("MMMM dd, yyyy - HH:mm:ss").format(new Date()));
         script = replace(script, "<PROJECT-ID>", project.getSocName());
 

@@ -30,13 +30,9 @@ directory. Alternatively, in a command shell you can run
 $ java -jar libs/jason.jar
 -----------------------------
 
-[[internal-actions]]
-Internal Actions
-----------------
+== Internal Actions
 
-[[how-to-create-a-new-internal-actions]]
-How to create a new internal actions?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+=== How to create a new internal actions?
 
 The following steps will help you to define your internal action (IA).
 The steps 1-4,6 are automatically done by Jason IDE, see menu
@@ -88,13 +84,9 @@ javac -classpath ...../Jason/lib/jason.jar:. myLib/myIA.java
       ... .
 ----------------------
 
-[[environment]]
-Environment
------------
+== Environment
 
-[[is-it-possible-to-call-an-internal-action-from-the-environment]]
-Is it possible to call an internal action from the environment?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+=== Is it possible to call an internal action from the environment?
 
 Most of the internal actions (IAs) are developed from an agent
 perspective, since they are conceived to be called by agents. Thus the
@@ -526,13 +518,9 @@ Of course, the AgentSpeak code in this example cannot use communicative
 actions, since the specific architecture given above does not implement
 communication.
 
-[[debug-tools]]
-Debug tools
------------
+== Debug tools
 
-[[how-to-setup-verbosity-of-an-agent]]
-How to setup verbosity of an agent?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+=== How to setup verbosity of an agent?
 
 The verbosity is set in the options defined for the agent in the project
 file. For instance
@@ -840,7 +828,7 @@ be created and how agents are distributed on to them. The project
 definition is thus like the following (`myAllocator` is the name of the
 Java class and `[c1,c2]` is the list of containers).
 
----------------------------------------------------------------------------------------------------------------------------------
+----
 MAS demo_distributed_jade {
 
     infrastructure: Jade(
@@ -856,7 +844,7 @@ MAS demo_distributed_jade {
         c #3;
         d #5;
 }
----------------------------------------------------------------------------------------------------------------------------------
+----
 
 In the above example (available in the demos/distributed-jade/case2
 directory), the class `myAllocator` allocates the same number of agents
@@ -875,12 +863,12 @@ For Unix:
 
 For Windows and other plaforms:
 
--------------------------------------------------------------------------------------------------
+-------
    > cd <your project directory>
    > ant -f bin/build.xml compile
    > set JASONLIB=<the Jason lib directory>
    > java -classpath bin\classes;%JASONLIB%\jason.jar jason.mas2j.parser.mas2j  <the .mas2j file>
--------------------------------------------------------------------------------------------------
+-------
 
 [[agentspeak-language]]
 == AgentSpeak Language
