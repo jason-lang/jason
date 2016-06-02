@@ -5,7 +5,7 @@
 - link:./Jason.pdf[First Jason Manual]
 
 - Tutorials
-* link:./tutorials/getting-started/readme.html[Getting Started tutoral]
+* link:./tutorials/getting-started/readme.html[Getting Started tutorial]
 * link:./tutorials/jason-jade/readme.html[Interoperating with JADE]
 * link:./tutorials/hello-bdi/readme.html[BDI concepts]
 * http://jason.sourceforge.net/mini-tutorial/eclipse-plugin[Eclipse plugin]
