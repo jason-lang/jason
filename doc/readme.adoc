@@ -1,6 +1,6 @@
 = Jason Documentation
 
-== Local documentation
+== Documentation on the distribution
 
 - link:./Jason.pdf[First Jason Manual]
 
