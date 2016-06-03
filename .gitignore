@@ -1,5 +1,7 @@
 bin
 build
+.project
+.classpath
 
 *.class
 *.log

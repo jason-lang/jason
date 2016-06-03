@@ -760,7 +760,12 @@ public class Config extends Properties {
                     if (bt.exists()) {
                         in = new BufferedReader(new FileReader(bt));
                     } else {
-                        in = new BufferedReader(new InputStreamReader(getDetaultResource(templateName)));
+                        bt = new File(getHome()+"/src/main/resources/templates/"+templateName);
+                        if (bt.exists()) {
+                            in = new BufferedReader(new FileReader(bt));
+                        } else {
+                            in = new BufferedReader(new InputStreamReader(getDetaultResource(templateName)));
+                        }
                     }
                 }
             }

@@ -1,0 +1,130 @@
+= Concurrency in Jason
+Maicon Zatelli, Jomi F. Hübner, and Rafael H. Bordini
+April 2016
+:toc: right
+:source-highlighter: coderay
+:coderay-linenums-mode: inline
+:icons: font
+:prewrap!:
+
+This documents presents some Jason features for concurrent programming.
+
+== Intentions
+
+Intentions in Jason are somewhat similar to threads in other languages in so far as they also execute concurrently, unless you have customised the intention selection function to alter the scheduling. By default, different intentions are executed in a round-robin fashion, executing only one element of the (topmost) plan body each time the intention is selected.
+
+New intentions are created by:
+
+. external events
+* each perceived change in the environment that the agent reacts to, starts a new intention
+* another agent delegates a goal (through an achieve message)
+. initial goals
+. the `!!`, `|&|` and `|||` operators (see next section)
+. depending on the interpreter setting, belief additions other than by perception of the environment can also cause a new intention to be created.
+
+For instance, for an agent with the following program
+----
++b(X)    <- !say(hello(X)).
++!say(M) <- .print(M); !say(M).
+----
+when it starts to believe in `b(a), b(b), b(c)` (by perceiving these beliefs, for example), three intentions will be created and will concurrently print the messages:
+
+----
+hello(a)
+hello(b)
+hello(c)
+hello(a)
+hello(b)
+hello(c)
+....
+----
+
+== Agent Language
+
+=== New intentions
+
+The plan
+----
++!ga <- ...; !!gb; a1; ...
+----
+
+creates a new intention for `gb` and then executes the action `a1`. `a1` is executed after the creation of the intention for `gb` and not after the achievement of `gb` (as it would be the case if `!` was used instead of `!!`). The intention for `gb` is a new intention and not the same as the intention for `ga`.
+
+=== Concurrent plans
+
+Besides the usual sequence operator `;`,  plan bodies can also use parallel operators: `|&|` and `|||`. The first is called __parallel-and__ and the second __parallel-or__.
+
+For instance, in
+
+----
++!ga <- ...; !gb; ...
++!gb <- ...; (!g1 |&| !g2); a1; …
+----
+
+the two subgoals `g1` and `g2` will be achieved concurrently by two sub-intentions; when both are finished, the action `a1` will be executed.
+
+In the case,
+
+----
++!ga <- ...; !gb; ...
++!gb <- ...; (!g1 ||| !g2); a1; ...
+----
+
+the two subgoals `g1` and `g2` will be also achieved concurrently; however, when one sub-intention is finished, the other is dropped and the action a1 will be executed.
+
+Regarding precedence, the operator `|&|` has precedence over `|||` that has preference over `;`. For instance, in a plan
+
+----
+x; (a;b) |&| (c;d) ||| (e;f); y
+----
+
+. Executes `x`
+. Concurrently, does
+* `a;b`
+* `c;d`
+* `e;f`
+. Executes `y` when either `a`,`b`,`c`, and `d` have finished or `e` and `f` have finished.
+
+
+The following cases can be considered when a *failure* occurs while achieving either `g1` or `g2`:
+
+. there is plan failure for the failed subgoal: the failure is handled by that plan without interference on the other subgoal.
+. there is no plan failure:
+* in the case of parallel-and: drops also the other subgoal and handles the failure in the achievement of goal `gb` as usual.
+* It is the case of parallel-or: ignore the failure (discarding its intention) and continue to try the other subgoal.
+
+When a *.fail_goal(ga)* is executed:
+
+* The sub-intentions for `g1` and `g2` are dropped,
+* The goal `gb` is dropped, and
+* Handles the failure of `ga` as usual.
+
+When a *.succeed_goal(gb)* is executed:
+
+* The sub-intentions for `g1` and `g2` are dropped,
+* The goal `gb` is dropped, and
+* The plan for `ga` continues.
+
+== Conflicting plans
+
+ToBeDone: discussion
+atomic
+
+== Internal actions
+See documentation of .succeed_goal, .fail_goal, .suspend, .resume, .wait.
+
+== Configuration
+
+
+For all the system (in the .mas2j -- centralised options)
+
+For agents
+
+Cycles, time, pools, ….
+
+== Examples
+
+Examples and performance evaluation of toy cases
+
+== Open Issues
+Do we have them?
