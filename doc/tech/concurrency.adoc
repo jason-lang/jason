@@ -20,14 +20,14 @@ New intentions are created by:
 * another agent delegates a goal (through an achieve message)
 . initial goals
 . the `!!`, `|&|` and `|||` operators (see next section)
-. depending on the interpreter setting, belief additions other than by perception of the environment can also cause a new intention to be created.
+// . depending on the interpreter setting, belief additions other than by perception of the environment can also cause a new intention to be created.
 
 For instance, for an agent with the following program
 ----
 +b(X)    <- !say(hello(X)).
 +!say(M) <- .print(M); !say(M).
 ----
-when it starts to believe in `b(a), b(b), b(c)` (by perceiving these beliefs, for example), three intentions will be created and will concurrently print the messages:
+when it starts to believe in `b(a)`, `b(b)`, and `b(c)` (by perceiving these beliefs, for example), three events `+b(...)` are produced and then three intentions are created and will concurrently print the messages as follows:
 
 ----
 hello(a)
@@ -111,7 +111,14 @@ ToBeDone: discussion
 atomic
 
 == Internal actions
-See documentation of .succeed_goal, .fail_goal, .suspend, .resume, .wait.
+
+Some internal actions are useful for concurrent programming in Jason:
+
+- http://jason.sourceforge.net/api/jason/stdlib/succeed_goal.html[.succeed_goal]
+- http://jason.sourceforge.net/api/jason/stdlib/fail_goal.html[.fail_goal]
+- http://jason.sourceforge.net/api/jason/stdlib/suspend.html[.suspend]
+- http://jason.sourceforge.net/api/jason/stdlib/resume.html[.resume]
+- http://jason.sourceforge.net/api/jason/stdlib/wait.html[.wait]
 
 == Configuration
 
