@@ -107,8 +107,19 @@ When a *.succeed_goal(gb)* is executed:
 
 == Conflicting plans
 
-ToBeDone: discussion
-atomic
+If some intention cannot interleave its execution with another, the *atomic* annotation can be used in the label of plans:
+
+----
+@alabel[atomic] // no other intention will run if an intention based on this plan starts running
++!update(X)
+   <- -vl(T);   // gets the current value of belief vl
+      +vl(T+X). // updates its value
+----
+
+If an atomic plan runs, all its subgoals will be also atomic.
+
+// add new support with conflict
+
 
 == Internal actions
 
@@ -129,9 +140,9 @@ For agents
 
 Cycles, time, pools, ….
 
-== Examples
+// == Examples
 
-Examples and performance evaluation of toy cases
+// Examples and performance evaluation of toy cases
 
-== Open Issues
-Do we have them?
+// == Open Issues
+// Do we have them?

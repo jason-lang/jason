@@ -86,7 +86,9 @@ public class Config extends Properties {
 
     public static final String SHORT_UNNAMED_VARS = "shortUnnamedVars";
     public static final String START_WEB_MI       = "startWebMindInspector";
-
+    public static final String START_WEB_EI       = "startWebEnvInspector";
+    public static final String START_WEB_OI       = "startWebOrgInspector";
+    
     public static final String NB_TH_SCH      = "numberOfThreadsForScheduler";
 
     public static final String KQML_RECEIVED_FUNCTOR   = "kqmlReceivedFunctor";

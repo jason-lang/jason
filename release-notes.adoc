@@ -5,9 +5,9 @@
 
 *New features*
 
-- modules and namespaces, see doc/tech/modules-namespaces.pdf
+- modules and namespaces, see link:doc/tech/modules-namespaces.pdf[]
 
-- concurrent plans and advanced concurrent agent architectures, see doc/tech/concurrency.pdf
+- concurrent plans and advanced concurrent agent architectures, see link:doc/tech/concurrency.html[]
 
 - the operator `+` works with plans and rules enclosed by { and }. For instance:
 +
