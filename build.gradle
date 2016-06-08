@@ -163,6 +163,14 @@ publishing {
     }
 }
 
+eclipse {
+    classpath {
+        file.whenMerged { cp ->
+            cp.entries.add( new org.gradle.plugins.ide.eclipse.model.SourceFolder('build/generated/javacc', null) )
+        }
+    }
+}
+
 task javadoc(overwrite: true, dependsOn: compileJava) {
     setDescription('Generates Javadoc API documentation with UMLGraph diagrams')
     setGroup(JavaBasePlugin.DOCUMENTATION_GROUP)
