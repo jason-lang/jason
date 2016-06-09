@@ -184,9 +184,10 @@ public class JasonBridgeArch extends AgArch {
 
 
     @Override
-    public void act(ActionExec action) { //, List<ActionExec> feedback) {
-        if (!isRunning()) return;
-        if (getEnvironmentAg() == null) return;
+    public boolean act(ActionExec action) {
+        if (super.act(action)) return true;
+        if (!isRunning()) return false;
+        if (getEnvironmentAg() == null) return false;
         
         try {
             Term acTerm = action.getActionTerm();
@@ -200,9 +201,11 @@ public class JasonBridgeArch extends AgArch {
             m.setReplyWith(rw);
             myPA.put(rw, action); 
             jadeAg.send(m);
+            return true;
         } catch (Exception e) {
             logger.log(Level.SEVERE, "Error sending action " + action, e);
         }
+        return false;
     }
 
     @Override

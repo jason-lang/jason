@@ -85,7 +85,7 @@ public class TestArch extends CentralisedAgArch implements Runnable {
     }
     
     @Override
-    public void act(ActionExec action) { //, List<ActionExec> feedback) {
+    public boolean act(ActionExec action) { //, List<ActionExec> feedback) {
         actions.add(action.getActionTerm());        
         if (getEnvInfraTier() != null) {
             super.act(action); //, feedback); //env.scheduleAction(getAgName(), action.getActionTerm(), action);
@@ -93,6 +93,7 @@ public class TestArch extends CentralisedAgArch implements Runnable {
             action.setResult(true);
             actionExecuted(action); //feedback.add(action);
         }
+        return true;
     }
     
     public void print(String s) {

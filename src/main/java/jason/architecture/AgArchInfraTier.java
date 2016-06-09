@@ -45,8 +45,12 @@ public interface AgArchInfraTier {
     /** Reads the agent's mailbox and adds messages into the agent's circumstance */
     public void checkMail();
 
-    /** Executes the action <i>action</i> in the environment */
-    public void act(ActionExec action); //, List<ActionExec> feedback);
+    /** 
+     * Executes the action <i>action</i> in the environment
+     * 
+     * @return true if the action was handled
+     */
+    public boolean act(ActionExec action);
 
     /** Returns true whether the agent can sleep according to the arch */
     public boolean canSleep();

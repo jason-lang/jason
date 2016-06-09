@@ -315,12 +315,14 @@ public class DefaultBeliefBase extends BeliefBase {
             Map<PredicateIndicator, BelEntry> belsMap = belsMapDefaultNS;
             if (l.getNS() != Literal.DefaultNS) {
                 Atom ns = l.getNS();
-                if (ns.isVar())
-                    ns = (Atom)ns.capply(u);
+                if (ns.isVar()) {
+                    l = (Literal)l.capply(u);
+                    ns = l.getNS();
+                }
                 if (ns.isVar()) { // still a var
                     return iterator();
                 }
-                belsMap = nameSpaces.get(ns);  
+                belsMap = nameSpaces.get(ns);
             }
             if (belsMap == null)
                 return null;

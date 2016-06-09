@@ -44,7 +44,7 @@
 - the way to run the Jason IDE (based on jEdit) has changed. Rather than running an application (`Jason.exe` or `Jason.app`), the IDE is now run by double clicking the `jedit/jedit.jar` file or using the script files in the `scripts` folder.
 
 
-*New Tutorial* on BDI (see doc/tutorials)
+*New Tutorial* on BDI (see link:doc/tutorials/hello-bdi/readme.html[]).
 
 == version 1.4.2
 
@@ -272,21 +272,23 @@ New features
 - new internal action setof
 - two new arguments in options to create agents in the .masj2
   project: initial beliefs and goals. For example, in the project
-    ...
+----
     agents:
         bob   ag.asl [beliefs="b(20),rec(alice)",goals="g(1),g(2)"];
         alice ag.asl [beliefs="b(20),rec(bob)"];
-    ...
-  both agents has the same source code. They differ in the initial
+----
+both agents has the same source code. They differ in the initial
   beliefs and goals, which are defined in the projects instead of the
   agent's code (ag.asl).
 
 Bugs fixed
+
 - atomic plans that fail aren't removed from the intention set.
 - succeed_goal doesn't consider the case where several goals exist
-- backtrack on annotations doesn't work with tail as in p[A|R]
+- backtrack on annotations doesn't work with tail as in `p[A|R]`
 
 Other changes
+
 - JADE is updated to 4.0.1
 
 
@@ -296,28 +298,30 @@ revision 1603 on SVN
 
 New features
 
-- creation of meta events for goal state change.
-  States are:
-        - started      the goal has been started, e.g. !g in a plan
-        - finished     the goal has been achieved, e.g. a plan for !g
-                       has finished
-        - failed       e.g. the goal has failed
-        - suspended    the goal has been suspended by .suspend,
-                       .wait, and action, ...
-        - resumed      the goal has been resumed by .resume
+Creation of *meta events* for goal state change. Goal states are:
 
-  the syntax for meta-events is
+* started:      the goal has been started, e.g. `!g` in a plan
+* finished:     the goal has been achieved, e.g. a plan for `!g` has finished
+* failed:       the goal has failed
+* suspended:    the goal has been suspended by .suspend, .wait, and action, ...
+* resumed:      the goal has been resumed by .resume
+
+The syntax for meta-events is
+----
 	^<goal type><goal literal>[state(<s>)]
-  where <goal type> is ! or ?
-        <s> is one of the above states
-  these events can than be handled by plans such as
+----
+where `<goal type>` is `!` or `?` and `<s>` is one of the above states
+
+These events can than be handled by plans such as
+----
 	^!goto(X,Y)[state(S)] <- .print("goto state is ",S).
-  for the state suspended, another annotation contains the
-  suspension reason (.wait, .suspend, ...)
+----
+for the state suspended, another annotation contains the suspension reason (.wait, .suspend, ...)
+----
 	^!goto(X,Y)[state(S)[reason(R)]]
            <- .print("goto state is ",S," due to ",R).
-
-  see demos/meta-events for an example
+----
+see demos/meta-events for an example
 
 == version 1.3.2
 
@@ -329,30 +333,33 @@ New features
   (and literal's annotations are sorted)
 
 API changes
+
 - a new listener can be added in TS to be notified about
   changes in goals state (there are methods for created,
   suspended, resumed, finished, and failed goals)
   (see new class GoalListener)
 
 Changes in the syntax
+
 - syntax of if/while/for statements are now like C/Java:
+----
       if ( X > 3) {
            bla;
       } else {
            bla;
       }
-  ";" is not required after "}"
+----
+";" is not required after "}"
   last formula in <then> can be followed by ";"
   keyword "else" is used
 
 Bugs fixed
-- equals in ObjectTermImpl,
-  as reported by Tim Cleaver in jason-bugs list
+
+- equals in ObjectTermImpl, as reported by Tim Cleaver in jason-bugs list
 - unnamed variables in some rules are not correctly replaced,
   as reported by Tim Cleaver in jason-bugs list
 - "E+1" is parsed as <exponent> instead of arithmetic expression
-- .relevant_plan with meta-variable plans
-  as reported by Iain Wallance
+- .relevant_plan with meta-variable plans as reported by Iain Wallance
 
 
 == version 1.3.1

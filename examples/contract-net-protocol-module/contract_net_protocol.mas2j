@@ -1,0 +1,26 @@
+/* 
+
+Contract Net Protocol implemented using Modules feature of Jason 
+
+Developed by Gustavo Ortiz Hernández based on the original version
+available in the Jason distribution.
+
+see jason/doc/tech/modules.pdf for more information about modules
+in Jason.
+
+*/
+
+
+
+MAS contract_net_protocol {
+
+    agents:
+
+        bob;
+        alice;
+        company_A #3;
+        company_B #3;
+
+}
+
+

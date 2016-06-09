@@ -196,7 +196,7 @@ public class PlanLibrary implements Iterable<Plan> {
             planLabels.put( getStringForLabel(p.getLabel()), p);
     
             Trigger pte = p.getTrigger();
-            if (pte.getLiteral().isVar()) {
+            if (pte.getLiteral().isVar() || pte.getLiteral().getNS().isVar()) {
                 if (before) 
                     varPlans.add(0,p); 
                 else 
@@ -376,7 +376,7 @@ public class PlanLibrary implements Iterable<Plan> {
     public List<Plan> getCandidatePlans(Trigger te) {
         synchronized (lockPL) {
             List<Plan> l = null;
-            if (te.getLiteral().isVar()) { // add all plans!
+            if (te.getLiteral().isVar() || te.getNS().isVar()) { // add all plans!
                 for (Plan p: this)
                     if (p.getTrigger().sameType(te)) {
                         if (l == null)

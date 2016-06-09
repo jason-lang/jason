@@ -39,6 +39,7 @@ import jason.asSemantics.Agent;
 import jason.asSemantics.Circumstance;
 import jason.asSemantics.Message;
 import jason.asSemantics.TransitionSystem;
+import jason.asSyntax.Atom;
 import jason.asSyntax.Literal;
 import jason.infra.centralised.RunCentralisedMAS.RConf;
 import jason.mas2j.ClassParameters;
@@ -361,11 +362,22 @@ public class CentralisedAgArch extends AgArch implements Runnable {
 
     /** called by the TS to ask the execution of an action in the environment */
     @Override
-    public void act(ActionExec action) {
+    public boolean act(ActionExec action) {
         //if (logger.isLoggable(Level.FINE)) logger.fine("doing: " + action.getActionTerm());
-        super.act(action);
-        if (isRunning() && infraEnv != null)
-            infraEnv.act(getAgName(), action);
+        if (super.act(action))
+            return true;
+        
+        if (isRunning()) { 
+            if (infraEnv != null) {
+                infraEnv.act(getAgName(), action);
+            } else {
+                action.setResult(false);
+                action.setFailureReason(new Atom("noenv"), "no environment configured!");
+                actionExecuted(action);                
+            }
+        }
+        
+        return true;
     }
     
     public boolean canSleep() {

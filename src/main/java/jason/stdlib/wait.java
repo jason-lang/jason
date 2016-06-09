@@ -23,6 +23,9 @@
 
 package jason.stdlib;
 
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+
 import jason.JasonException;
 import jason.asSemantics.Agent;
 import jason.asSemantics.Circumstance;
@@ -41,9 +44,6 @@ import jason.asSyntax.PlanBody.BodyType;
 import jason.asSyntax.PlanBodyImpl;
 import jason.asSyntax.Term;
 import jason.asSyntax.Trigger;
-
-import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
 
 /**
   <p>Internal action: <b><code>.wait(<i>E</i>,<i>T</i>)</code></b>.
@@ -213,7 +213,7 @@ public class wait extends DefaultInternalAction {
 
         public void eventAdded(Event e) {
             if (dropped)
-                return;      
+                return;
             if (te != null && un.unifies(te, e.getTrigger())) {
                 resume(false);
             } else if (formula != null && ts.getAg().believes(formula, un)) { // each new event, just test the formula being waited

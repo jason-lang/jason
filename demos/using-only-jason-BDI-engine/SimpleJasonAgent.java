@@ -66,11 +66,12 @@ public class SimpleJasonAgent extends AgArch {
 
     // this method get the agent actions
     @Override
-    public void act(ActionExec action) {
+    public boolean act(ActionExec action) {
         getTS().getLogger().info("Agent " + getAgName() + " is doing: " + action.getActionTerm());
         // set that the execution was ok
         action.setResult(true);
         actionExecuted(action);
+        return true;
     }
 
     @Override

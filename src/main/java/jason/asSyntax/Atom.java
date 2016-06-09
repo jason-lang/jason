@@ -64,8 +64,8 @@ public class Atom extends Literal {
     public Atom(Atom namespace, Literal l) {
         this.functor            = l.getFunctor();
         this.ns                 = namespace;
-        predicateIndicatorCache = l.predicateIndicatorCache;
-        hashCodeCache           = l.hashCodeCache;
+        //predicateIndicatorCache = l.predicateIndicatorCache;
+        //hashCodeCache           = l.hashCodeCache;
         srcInfo                 = l.srcInfo;  
     }
     
