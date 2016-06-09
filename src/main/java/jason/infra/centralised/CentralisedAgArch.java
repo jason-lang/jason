@@ -362,10 +362,8 @@ public class CentralisedAgArch extends AgArch implements Runnable {
 
     /** called by the TS to ask the execution of an action in the environment */
     @Override
-    public boolean act(ActionExec action) {
+    public void act(ActionExec action) {
         //if (logger.isLoggable(Level.FINE)) logger.fine("doing: " + action.getActionTerm());
-        if (super.act(action))
-            return true;
         
         if (isRunning()) { 
             if (infraEnv != null) {
@@ -376,8 +374,6 @@ public class CentralisedAgArch extends AgArch implements Runnable {
                 actionExecuted(action);                
             }
         }
-        
-        return true;
     }
     
     public boolean canSleep() {

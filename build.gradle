@@ -156,7 +156,7 @@ task config (type: JavaExec, dependsOn: ['jar', 'plugin']) {
 publishing {
     publications {
         maven(MavenPublication) {
-            //from components.java
+            from components.java
             
             artifactId 'jason'
         }

@@ -47,10 +47,8 @@ public interface AgArchInfraTier {
 
     /** 
      * Executes the action <i>action</i> in the environment
-     * 
-     * @return true if the action was handled
      */
-    public boolean act(ActionExec action);
+    public void act(ActionExec action);
 
     /** Returns true whether the agent can sleep according to the arch */
     public boolean canSleep();

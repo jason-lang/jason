@@ -192,11 +192,9 @@ public class AgArch implements AgArchInfraTier, Comparable<AgArch> {
      * 
      * @return true if the action was handled (not necessarily executed, just started)
      */
-    public boolean act(ActionExec action) {
+    public void act(ActionExec action) {
         if (successor != null)
-            return successor.act(action);
-        else 
-            return false; 
+            successor.act(action);
     }
     
     /** called to inform that the action execution is finished */

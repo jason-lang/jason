@@ -470,12 +470,11 @@ public class SimpleJasonAgent extends AgArch {
     }
 
     // this method gets the agent actions
-    public boolean act(ActionExec action) {
+    public void act(ActionExec action) {
         getTS().getLogger().info("Agent " + getAgName() + " is doing: " + action.getActionTerm());
         // return confirming the action execution was OK
         action.setResult(true);
         actionExecuted(action);
-        return true;
     }
 
     public boolean canSleep() {
