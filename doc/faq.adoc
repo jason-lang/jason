@@ -6,6 +6,8 @@
 :icons: font
 :prewrap!:
 
+ifdef::env-github[:outfilesuffix: .adoc]
+
 == General
 
 === Why is the platform called Jason?

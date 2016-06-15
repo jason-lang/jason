@@ -5,6 +5,8 @@
 :icons: font
 :prewrap!:
 
+ifdef::env-github[:outfilesuffix: .adoc]
+
 This document aims to help you install and run Jason, as well as
 developing a simple multi-agent system using Jason.
 
@@ -13,7 +15,7 @@ developing a simple multi-agent system using Jason.
 
 - Java http://java.sun.com[JDK] >= 1.7 is required.
 - Download Jason from https://sourceforge.net/projects/jason/files/jason/[here] and unzip it.
-- You can now execute the Jason IDE by going to the folder `jedit` and double-clicking on `jedit.jar`.footnote:[Eclipse can also be used as the IDE, see http://jason.sourceforge.net/mini-tutorial/eclipse-plugin[here].] For Linux and MacOS, the script `jason-ide` can be also used (see more instructions http://jason.sourceforge.net/mini-tutorial/getting-started/shell-based.html[here]).
+- You can now execute the Jason IDE by going to the folder `jedit` and double-clicking on `jedit.jar`.footnote:[Eclipse can also be used as the IDE, see http://jason.sourceforge.net/mini-tutorial/eclipse-plugin[here].] For Linux and MacOS, the script `jason-ide` can be also used (see more instructions http://jason.sourceforge.net/mini-tutorial/getting-started/shell-based{outfilesuffix}[here]).
 
 image:./figures/screen-initial.png[]
 

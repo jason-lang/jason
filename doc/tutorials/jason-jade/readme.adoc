@@ -5,6 +5,7 @@
 :icons: font
 :prewrap!:
 
+ifdef::env-github[:outfilesuffix: .adoc]
 
 This document aims to show how to create Jason agents that
 participate in a multi-agent system (MAS) formed by "`normal`" JADE

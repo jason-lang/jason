@@ -7,6 +7,8 @@ April 2016
 :icons: font
 :prewrap!:
 
+ifdef::env-github[:outfilesuffix: .adoc]
+
 This documents presents some Jason features for concurrent programming.
 
 == Intentions

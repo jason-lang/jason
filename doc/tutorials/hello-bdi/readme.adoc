@@ -7,6 +7,8 @@ Jomi F. Hubner (with Rafael H. Bordini support)
 :icons: font
 :prewrap!:
 
+ifdef::env-github[:outfilesuffix: .adoc]
+
 == Introduction
 
 This programming (mini) tutorial will illustrate how the BDI model is
