@@ -15,6 +15,7 @@ doc/tech/*Parser.html
 readme.html
 release-notes.html
 doc/tutorials/getting-started/shell-based.html
+doc/tech/concurrency.html
 
 *~
 
