@@ -74,8 +74,17 @@
 
 @kqmlReceivedAskOne1
 +!kqml_received(Sender, askOne, NS::Content, MsgId) 
-   <- ?NS::Content;
-      .send(Sender, tell, NS::Content, MsgId).
+    : NS::Content
+   <- .send(Sender, tell, NS::Content, MsgId).
+
+@kqmlReceivedAskOne1b
++!kqml_received(Sender, askOne, NS::Content, MsgId) 
+   <- .add_nested_source(Content, Sender, CA);
+      ?NS::CA;
+      // remove source annot from CA
+      CA  =.. [_,F,Ts,_];
+      CA2 =.. [_,F,Ts,[]];
+      .send(Sender, tell, NS::CA2, MsgId).
 
 @kqmlReceivedAskOne2 // error in askOne, send untell
 -!kqml_received(Sender, askOne, NS::Content, MsgId)

@@ -48,7 +48,7 @@ public class TestKQML {
         maria.parseAScode(
                 "vl(1). vl(2). " +
                 "+!goto(X,Y)[source(Ag)] <- act(X,Y,Ag). "+
-                "+?t2(X) : vl(Y) <- X = 10 + Y."+
+                "+?t2(X)[source(A)] : vl(Y) <- X = 10 + Y; jason.asunit.print(A)."+
                 "+!kqml_received(Sender, askOne, fullname, ReplyWith)  <- .send(Sender,tell,\"Maria dos Santos\", ReplyWith). "
         );
         
@@ -69,10 +69,10 @@ public class TestKQML {
         bob.addGoal("send_ask2");
         bob.assertIdle(10);   // let bob to send the messages
         maria.assertIdle(10); // let maria to process the messages
-        bob.assertAct("act1(1)", 5);
+        bob.assertAct("act1(1)", 15);
         maria.assertIdle(5);
         bob.assertBel("vl(1)[source(maria)]", 5); // answer of maria for second askOne (assynchronous)
-
+        maria.assertPrint("bob", 5);
         bob.assertPrint("t2(11)", 5); // answer for ask2
     }
 

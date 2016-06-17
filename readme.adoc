@@ -1,6 +1,8 @@
 = Jason
 :icons: font
 
+ifdef::env-github[:outfilesuffix: .adoc]
+
 Jason is an interpreter for an extended version of AgentSpeak. It implements the operational semantics of that language, and provides a platform for the development of multi-agent systems, with many user-customisable features. Jason is available as Open Source, and is distributed under GNU LGPL.
 
 Jason is developed by http://http://jomi.das.ufsc.br[Jomi F. Hübner] and http://www.inf.pucrs.br/r.bordini[Rafael H. Bordini], based on previous work done with many colleagues, in particular Michael Fisher, Joyce Martins, Álvaro Moreira, Renata Vieira, Willem Visser, Mike Wooldridge, but also many others, as acknowledged in the manual (see the http://jason.sourceforge.net/wp/documents/[documents] page).
@@ -11,7 +13,7 @@ Jason is developed by http://http://jomi.das.ufsc.br[Jomi F. Hübner] and http:/
 
 - get a release https://sourceforge.net/projects/jason/files/jason/[here]
 // - install the eclipse plugin as described http://jacamo.sourceforge.net/eclipseplugin/tutorial[here] or configure your shell command as described http://jacamo.sourceforge.net/tutorial/hello-world/shell-based.html[here]
-- follow the http://jason.sourceforge.net/mini-tutorial/getting-started[getting started tutorial]
+- follow the link:doc/tutorials/getting-started/readme{outfilesuffix}[getting started tutorial]
 - more documentation http://jason.sourceforge.net/wp/documents[here]
 
 NOTE: In Jason 2.0 the way to run the Jason IDE (based on jEdit) has changed. Rather than running an application (`Jason.exe` or `Jason.app`), the IDE is now run by double clicking the `jedit/jedit.jar` file or using the script files in the `scripts` folder.
