@@ -43,10 +43,7 @@ dependencies {
     compile group: 'org.jacamo',     name: 'c4jason' , version: '2.0.2'
 
     // from jEdit
-    compile name: 'jedit'
-    compile name: 'BufferTabs'
-    compile name: 'ErrorList'
-    compile name: 'SideKick'
+    compile fileTree(dir: 'jedit', include: '*.jar') // using fileTree, jedit jars are not included as a dependency in the pom file
     
     runtime group: 'org.apache.ant',  name: 'ant',  version: '1.9.7'
     
@@ -54,6 +51,25 @@ dependencies {
     testCompile name: 'hsqldb'
     
     umljavadoc 'org.umlgraph:umlgraph:5.6'
+}
+
+// copy dep jars and scritps into build directory
+task copyJarsToBuild {
+    inputs.files configurations.runtime.files
+    inputs.dir   'scripts'
+    outputs.dir  'build/libs'
+    outputs.dir  'build/scripts'
+    doLast {
+        copy {
+            from configurations.runtime
+            into 'build/libs' 
+        }
+        copy {
+            from 'scripts'
+            into 'build/scripts'
+            include '**'
+        }
+    }
 }
 
 jar {
@@ -72,6 +88,7 @@ jar {
         props.store(new File(project.buildDir.absolutePath +'/classes/main/dist.properties').newWriter(), null) 
     }*/
 }
+jar.dependsOn(copyJarsToBuild)
 
 task jarCore(type: Jar, dependsOn: 'classes') {
     baseName 'jason-core'
@@ -121,7 +138,6 @@ test << {
     delete fileTree('.')  { include '**/bookstore.*'  }
 }
 
-
 task config (type: JavaExec, dependsOn: ['jar', 'plugin']) {
     main = 'jason.util.Config'
     classpath sourceSets.main.runtimeClasspath
@@ -129,15 +145,6 @@ task config (type: JavaExec, dependsOn: ['jar', 'plugin']) {
     
     doFirst {
         delete System.getProperty("user.home")+'/.jason'
-        copy {
-            from configurations.runtime
-            into 'build/libs' 
-        }
-        copy {
-            from 'scripts'
-            into 'build/scripts'
-            include '**'
-        }
     }
     
     doLast {    
