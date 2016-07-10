@@ -140,7 +140,7 @@ Different concurrency configurations can be set for the *Centralised* infrastruc
 The Jason agent reasoning cycle is executed considering three main stages: *sense*, *deliberate*, and *act*. Such stages can be executed in two different configurations:
 
 . *Synchronously* (or sequentially):
-In this configuration, the stages of the reasoning cycle are executed sequentially. One stage just starts its execution when the previous stage has finished its execution. For example, the deliberate stage only starts after sense. 
+In this configuration, the stages of the reasoning cycle are executed sequentially. One stage just starts its execution when the previous stage has finished its execution. For example, the deliberate stage only starts after sense.
 . *Asynchronously* (or concurrently):
 In this configuration, the stages of the reasoning cycle are executed concurrently. One stage can start its execution before the (usual) previous stage has finished. For example, an agent can execute its intentions at the same time as new intentions are being produced by the deliberate stage.
 
@@ -213,7 +213,7 @@ or
 infrastructure: Centralised(pool, <NUMBER-THREADS>, <NUMBER-CYCLES-SENSE>, <NUMBER-CYCLES-DELIBERATE>, <NUMBER-CYCLES-ACT>, [NUMBER-REASONING-CYCLES])
 ----
 
-The keyword *pool* makes the execution platform to create  one thread pool with `<NUMBER-THREADS>` threads. `[NUMBER-REASONING-CYCLES]` is the maximum number of times that the sequence sense-deliberate-act is executed (default value is `1`).  
+The keyword *pool* makes the execution platform to create  one thread pool with `<NUMBER-THREADS>` threads. `[NUMBER-REASONING-CYCLES]` is the maximum number of times that the sequence sense-deliberate-act is executed (default value is `5`).
 
 Each time a thread of the pool runs an agent, the following algorithm is executed:
 
@@ -250,7 +250,7 @@ If `9999` is informed for the act stage, then, at least one action of each inten
 ----
 infrastructure: Centralised(pool,4,1,1,9999)
 ----
-	
+
 Finally, in the example below, the parameter `[NUMBER-REASONING-CYCLES]` is used. A thread pool with `4` threads is created, the sense and deliberate stages are configured to execute just `once`, while in the first case, the act stage executes at most `5` times, and in the second case, at least one action of each intention will be executed. In both cases, the sense-deliberate-act sequence will be repeated `10` times.
 
 ----
@@ -258,7 +258,7 @@ infrastructure: Centralised(pool,4,1,1,5,10)
 infrastructure: Centralised(pool,4,1,1,9999,10)
 ----
 
-A further configuration for pools is to execute only one stage everytime that a thread selects an agent. Thus, the thread, for example, will execute the sense stage and put the agent back to the queue, then, the next time that this agent is selected, the thread will execute the deliberate stage, and finally the act stage. 
+A further configuration for pools is to execute only one stage everytime that a thread selects an agent. Thus, the thread, for example, will execute the sense stage and put the agent back to the queue, then, the next time that this agent is selected, the thread will execute the deliberate stage, and finally the act stage.
 
 In this case, the algorithm presented previously is executed like this:
 
@@ -318,7 +318,7 @@ switch (task.stage)
   case DELIBERATE:
     loop do <NUMBER-CYCLES-DELIBERATE> times:
       deliberate();
-  case ACT: 
+  case ACT:
     loop do <NUMBER-CYCLES-ACT> times:
       act();
 ----
@@ -367,7 +367,7 @@ or
 infrastructure: Centralised(asynch, <NUMBER-THREADS-SENSE>, <NUMBER-THREADS-DELIBERATE>, <NUMBER-THREADS-ACT>, <NUMBER-CYCLES-SENSE>, <NUMBER-CYCLES-DELIBERATE>, <NUMBER-CYCLES-ACT>)
 ----
 
-The keyword *asynch* makes the execution platform to create `three` thread pools, one for each stage. `<NUMBER-THREADS-SENSE>` is the number of threads for the thread pool to execute the sense stage. `<NUMBER-THREADS-DELIBERATE>` is the number of threads for the thread pool to execute the deliberate stage. `<NUMBER-THREADS-ACT>` is the number of threads for the thread pool to execute the act stage. 
+The keyword *asynch* makes the execution platform to create `three` thread pools, one for each stage. `<NUMBER-THREADS-SENSE>` is the number of threads for the thread pool to execute the sense stage. `<NUMBER-THREADS-DELIBERATE>` is the number of threads for the thread pool to execute the deliberate stage. `<NUMBER-THREADS-ACT>` is the number of threads for the thread pool to execute the act stage.
 
 In the example below, `three` thread pools with `4` threads are created, and each stage is executed just `once`.
 
@@ -406,12 +406,15 @@ bob [cycles = 10];
 
 == Related Publications
 
+. Pascual Pérez-Carro, Francisco Grimaldo, Miguel Lozano,Juan M. Orduña. *Characterization of the Jason Multiagent Platform on Multicore Processors*.  Scientific Programming 22(1). p 21-35, 2014. DOI: http://dx.doi.org/10.3233/SPR-130375[10.3233/SPR-130375]
+
 . ZATELLI, M. R.; RICCI, A. ; HÜBNER, J. F. . *A Concurrent Architecture for Agent Reasoning Cycle Execution in Jason*. In: 13th European Conference on Multi-Agent Systems (EUMAS), 2016, Athens. Multi-Agent Systems and Agreement Technologies, 2016. v. 9571. p. 425-440.
+
 . ZATELLI, M. R.; RICCI, A. ; HÜBNER, J. F. . *Evaluating Different Concurrency Configurations for Executing Multi-Agent Systems*. In: 3rd International Workshop on Engineering Multi-agent Systems (EMAS@AAMAS), 2015, Istanbul. Engineering Multi-agent Systems, 2015. v. 9318. p. 212-230.
 
 
 
-// == Examples 
+// == Examples
 
 // Examples and performance evaluation of toy cases
 
