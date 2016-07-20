@@ -47,7 +47,7 @@ ifdef::env-github[:outfilesuffix: .adoc]
 - the way to run the Jason IDE (based on jEdit) has changed; rather than running an application (`Jason.exe` or `Jason.app`), the IDE is now run by double clicking the `jedit/jedit.jar` file or using the script files in the `scripts` folder.
 
 
-*New Tutorial* on BDI (see link:doc/tutorials/hello-bdi/readme.html[]).
+*New Tutorial* on BDI (see link:doc/tutorials/hello-bdi/readme{outfilesuffix}[]).
 
 == version 1.4.2
 
