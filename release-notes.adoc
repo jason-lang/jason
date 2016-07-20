@@ -7,7 +7,7 @@
 
 - modules and namespaces, see link:doc/tech/modules-namespaces.pdf[]
 
-- parallel courses of actions in plans and advanced concurrent agent architectures, see link:doc/tech/concurrency.html[]
+- concurrent courses of actions within a single plan and advanced concurrent agent architectures, see link:doc/tech/concurrency.html[]
 
 - operator `+` works with plans and rules enclosed by { and }. For instance:
 +
