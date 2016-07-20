@@ -7,9 +7,9 @@
 
 - modules and namespaces, see link:doc/tech/modules-namespaces.pdf[]
 
-- concurrent plans and advanced concurrent agent architectures, see link:doc/tech/concurrency.html[]
+- parallel courses of actions in plans and advanced concurrent agent architectures, see link:doc/tech/concurrency.html[]
 
-- the operator `+` works with plans and rules enclosed by { and }. For instance:
+- operator `+` works with plans and rules enclosed by { and }. For instance:
 +
 ----
 ...
@@ -18,30 +18,30 @@
 ...
 ----
 
-- two new parameters in .jason/user.properties file: `kqmlPlansFile` (the file
+- two new parameters in the .jason/user.properties file: `kqmlPlansFile` (the file
   with the plans that implement the KQML semantics) and `kqmlReceivedFunctor`
   (the functor used to produce new message events).
 
-- improved BUF function with linear time (previous BUF was exponential)
+- improved BUF with linear time (previous belief update function was quadratic)
 
-- source code is moved to GitHub
+- source code has been moved to GitHub
 
-- start using gradle
+- started using gradle
 
 *New internal actions*
 
 - .asserta: inserts a belief (or rule) in the begin of the belief base (can be used in prolog like rules)
 - .assertz: inserts a belief (or rule) in the end of the belief base (can be used in prolog like rules)
-- .relevant_rules: gets rules with a specified head
+- .relevant_rules: gets rules with a given head predicate
 - .lower_case and .upper_case for strings
 - .include: to load an asl source code at run time
 
 *Changes*
 
 - AgArch `act` method has just one parameter (the action to be executed)
-- Java 1.7 is used
+- Java 1.7 is now used
 - JaCaMo is not an available infrastructure anymore, it has its own support to run MAS (the .jcm files)
-- the way to run the Jason IDE (based on jEdit) has changed. Rather than running an application (`Jason.exe` or `Jason.app`), the IDE is now run by double clicking the `jedit/jedit.jar` file or using the script files in the `scripts` folder.
+- the way to run the Jason IDE (based on jEdit) has changed; rather than running an application (`Jason.exe` or `Jason.app`), the IDE is now run by double clicking the `jedit/jedit.jar` file or using the script files in the `scripts` folder.
 
 
 *New Tutorial* on BDI (see link:doc/tutorials/hello-bdi/readme.html[]).
@@ -64,7 +64,7 @@ revision 1792 on SVN
 
 New features
 
-- web view of agent's mind (the url usually is http://localhost:3272)
+- web view of agent's mind (the url is usually http://localhost:3272)
 
 
 == version 1.4.0
@@ -74,7 +74,7 @@ revision 1759 on SVN
 New features
 
 - implementation of tail recursion optimisation (TRO) for sub-goals.
-  It can be turned off in agent options, e.g.:
+  It can be turned off in the agent options, e.g.:
 
     agents: bob [tro=false];
 
@@ -87,12 +87,12 @@ Changes in the API
          t = t.clone();
          t.apply(u);
 
-  can be replaced by
+  should be replaced by
 
          Term t = .....
          t = t.capply(u);
 
-NB. the TRO and capply have improved the performance of some application by 30%.
+NB. TRO and capply have improved the performance of some applications by up to 30%.
 
 
 == version 1.3.10b
@@ -129,11 +129,11 @@ New features
 
 - new operators do add beliefs
 
-* "++" add a belief with new focus (a new intention is created for the
+* "++" adds a belief with new focus (a new intention is created for the
 	     event produced by the addition)
-* "+<" add a belief in the begin of the belief base (it is the same as
+* "+<" adds a belief at the beginning of the belief base (it is the same as
 	     the usual "+" operator)
-* '+>" add a belief in the end of the belief base
+* '+>" adds a belief at the end of the belief base
 
 - new special achievement goal events
 +
@@ -141,7 +141,7 @@ New features
 	+!jag_sleeping
 	+!jag_awaking
 ----
-that are created when the agent is going to sleep (is becoming idle) and becoming busy after sleeping, respectively.
+that are created when the agent is going to sleep (has just become idle) and is becoming busy after sleeping, respectively.
 See demos/idle for an example of how to use this feature.
 
 NOTE: The +!idle event is deprecated, you must use +!jag_sleeping instead!
