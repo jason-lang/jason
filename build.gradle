@@ -41,8 +41,8 @@ configurations {
 
 dependencies {
     compile group: 'net.sf.ingenias', name: 'jade', version: '4.3'
-    compile group: 'org.jacamo',     name: 'cartago' , version: '2.0.2'
-    compile group: 'org.jacamo',     name: 'c4jason' , version: '2.0.2'
+    compile group: 'org.jacamo',     name: 'cartago', version: '2.2-SNAPSHOT'
+    compile group: 'org.jacamo',     name: 'jaca',    version: '2.2-SNAPSHOT'
 
     // from jEdit
     compile fileTree(dir: 'jedit', include: '*.jar') // using fileTree, jedit jars are not included as a dependency in the pom file
@@ -223,7 +223,7 @@ task sourceJar (type : Jar) {
 }
 
 artifacts {
-    archives sourceJar, javadocJar
+    archives sourceJar //, javadocJar
 }
 
 signing {

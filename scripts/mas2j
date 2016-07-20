@@ -29,7 +29,7 @@ fi
 # try to fix JDK_HOME on MacOS
 if [ -z $JDK_HOME ] ; then
     if [ `uname` == Darwin ] ; then
-	       JDK_HOME=`find /Library/Java/JavaVirtualMachines -name javac | tail -1`
+	   JDK_HOME=`find /Library/Java/JavaVirtualMachines -name javac | tail -1`
            JDK_HOME=`dirname $JDK_HOME`
            JDK_HOME=`dirname $JDK_HOME`
        fi
@@ -42,7 +42,7 @@ fi
 
 export PATH=$JDK_HOME/bin:$PATH
 
-JASON_JAR=`find $JASON_HOME/libs -name jason-2*.jar`
+JASON_JAR=$JASON_HOME/libs/jason-2.0.jar
 JADE_JAR=`find $JASON_HOME/libs -name jade*.jar`
 
 java -cp $JASON_JAR:$JADE_JAR jason.mas2j.parser.mas2j $1 $2
