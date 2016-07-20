@@ -1,13 +1,16 @@
 = Jason release notes
 :toc: right
 
-== version 2.0.0
+
+ifdef::env-github[:outfilesuffix: .adoc]
+
+== version 2.0
 
 *New features*
 
 - modules and namespaces, see link:doc/tech/modules-namespaces.pdf[]
 
-- concurrent courses of actions within a single plan and advanced concurrent agent architectures, see link:doc/tech/concurrency.html[]
+- concurrent courses of actions within a single plan and advanced concurrent agent architectures, see link:doc/tech/concurrency{outfilesuffix}[]
 
 - operator `+` works with plans and rules enclosed by { and }. For instance:
 +
