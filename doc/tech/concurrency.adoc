@@ -13,16 +13,16 @@ This documents presents some Jason features for concurrent programming.
 
 == Intentions
 
-Intentions in Jason are somewhat similar to threads in other languages in so far as they also execute concurrently, unless you have customised the intention selection function to alter the scheduling. By default, different intentions are executed in a round-robin fashion, executing only one element of the (topmost) plan body each time the intention is selected.
+Intentions in Jason are somewhat similar to threads in other languages in so far as they also execute concurrently, unless you have customised the intention selection function to alter the default intention scheduling. By default, different intentions are executed in a round-robin fashion, executing only one element of the (topmost) plan body each time the intention is selected.
 
 New intentions are created by:
 
 . external events
-* each perceived change in the environment that the agent reacts to, starts a new intention
+* each perceived change in the environment that the agent reacts to starts a new intention
 * another agent delegates a goal (through an achieve message)
 . initial goals
 . the `!!`, `|&|` and `|||` operators (see next section)
-// . depending on the interpreter setting, belief additions other than by perception of the environment can also cause a new intention to be created.
+// . depending on the interpreter setting, other belief additions (besides those originating from perception of the environment) can also cause a new intention to be created.
 
 For instance, for an agent with the following program
 ----
@@ -65,41 +65,42 @@ For instance, in
 
 the two subgoals `g1` and `g2` will be achieved concurrently by two sub-intentions; when both are finished, the action `a1` will be executed.
 
-In the case,
+In the following case,
 
 ----
 +!ga <- ...; !gb; ...
 +!gb <- ...; (!g1 ||| !g2); a1; ...
 ----
 
-the two subgoals `g1` and `g2` will be also achieved concurrently; however, when one sub-intention is finished, the other is dropped and the action a1 will be executed.
+the two subgoals `g1` and `g2` will be also achieved concurrently; however, when one sub-intention is finished, the other is dropped and the action `a1` will be executed.
 
-Regarding precedence, the operator `|&|` has precedence over `|||` that has preference over `;`. For instance, in a plan
+Regarding precedence, the operator `|&|` has precedence over `|||` which has preference over `;`. For instance, a plan like:
 
 ----
 x; (a;b) |&| (c;d) ||| (e;f); y
 ----
 
-. Executes `x`
-. Concurrently, does
+would have the following behaviour:
+. execute `x`
+. concurrently execute
 * `a;b`
 * `c;d`
 * `e;f`
-. Executes `y` when either `a`,`b`,`c`, and `d` have finished or `e` and `f` have finished.
+. execute `y` when either `a`,`b`,`c`, and `d` have finished executing concurrently, or when both `e` and `f` have finished.
 
 
 The following cases can be considered when a *failure* occurs while achieving either `g1` or `g2`:
 
-. there is plan failure for the failed subgoal: the failure is handled by that plan without interference on the other subgoal.
+. there is plan failure for the failed subgoal: the failure is handled by that concurrent sub-intention without interference to the other subgoal.
 . there is no plan failure:
-* in the case of parallel-and: drops also the other subgoal and handles the failure in the achievement of goal `gb` as usual.
-* It is the case of parallel-or: ignore the failure (discarding its intention) and continue to try the other subgoal.
+* in case of parallel-and: drops also the other subgoal and handles the failure in the achievement of goal `gb` above as usual.
+* in case of parallel-or: ignore the failure (discarding that concurrent sub-intention) and continue to try the other subgoal.
 
 When a *.fail_goal(ga)* is executed:
 
 * The sub-intentions for `g1` and `g2` are dropped,
 * The goal `gb` is dropped, and
-* Handles the failure of `ga` as usual.
+* the failure of `ga` is handled as usual.
 
 When a *.succeed_goal(gb)* is executed:
 
