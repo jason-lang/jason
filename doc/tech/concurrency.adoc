@@ -408,7 +408,7 @@ bob [cycles = 10];
 
 . Alex Muscar, Costin Badica. *Monadic Foundations for Promises in Jason*. ITC, v. 43, n. 1, p. 65–72, 2014. DOI: http://dx.doi.org/10.5755/j01.itc.43.1.4586[10.5755/j01.itc.43.1.4586]
 
-. Alex Muscar. *Agents for the 21st century: the blueprint agent programming language*. In: Proc. of the 1st AAMAS Workshop on Engineering MultiAgent Systems. [S.l.: s.n.], 2013. p. 49–64.
+. Alex Muscar. *Agents for the 21st century: the blueprint agent programming language*. In: Proc. of the 1st AAMAS Workshop on Engineering MultiAgent Systems, 2013. p. 49–64.
 
 . Maicon R. Zatelli, Alessandro Ricci, Jomi F. Hübner. *A Concurrent Architecture for Agent Reasoning Cycle Execution in Jason*. In: 13th European Conference on Multi-Agent Systems (EUMAS), 2016, Athens. Multi-Agent Systems and Agreement Technologies, 2016. v. 9571. p. 425-440. DOI: http://dx.doi.org/10.1007/978-3-319-33509-4_33[10.1007/978-3-319-33509-4_33]
 
@@ -416,7 +416,7 @@ bob [cycles = 10];
 
 . Pascual Pérez-Carro, Francisco Grimaldo, Miguel Lozano, Juan M. Orduña. *Characterization of the Jason Multiagent Platform on Multicore Processors*.  Scientific Programming 22(1). p 21-35, 2014. DOI: http://dx.doi.org/10.3233/SPR-130375[10.3233/SPR-130375]
 
-. Victor Fernández-Bauset, Francisco Grimaldo, Miguel Lozano, Juan M. Orduña. *Tuning Java to Run Interactive Multiagent Simulations over Jason*. In: LI, J. (Ed.). Australasian Conference on Artificial Intelligence. [S.l.]: Springer, 2010. (Lecture Notes in Computer Science, v. 6464), p. 354–363. DOI: http://dx.doi.org/10.1007/978-3-642-17432-2_36[10.1007/978-3-642-17432-2_36]
+. Victor Fernández-Bauset, Francisco Grimaldo, Miguel Lozano, Juan M. Orduña. *Tuning Java to Run Interactive Multiagent Simulations over Jason*. In: LI, J. (Ed.). Australasian Conference on Artificial Intelligence, 2010. (Lecture Notes in Computer Science, v. 6464), p. 354–363. DOI: http://dx.doi.org/10.1007/978-3-642-17432-2_36[10.1007/978-3-642-17432-2_36]
 
 . Victor Fernández, Francisco Grimaldo, Miguel Lozano, Juan M. Orduña. *Evaluating Jason for Distributed Crowd Simulations*. In: FILIPE, J.; FRED, A. L. N.; SHARP, B. (Ed.). ICAART (2). [S.l.]: INSTICC Press, 2010. p. 206–211. ISBN 978-989-674-022-1.
 

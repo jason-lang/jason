@@ -12,9 +12,11 @@ defaultTasks 'jar'
 
 apply plugin: 'java'
 apply plugin: 'eclipse'
+apply plugin: 'maven'
 apply plugin: 'maven-publish'
+apply plugin: 'signing'
 
-version '2.0-SNAPSHOT'
+version '2.0'
 group   'org.jason-lang'
 
 sourceCompatibility = 1.7
@@ -160,16 +162,6 @@ task config (type: JavaExec, dependsOn: ['jar', 'plugin']) {
     }
 }
 
-publishing {
-    publications {
-        maven(MavenPublication) {
-            from components.java
-            
-            artifactId 'jason'
-        }
-    }
-}
-
 eclipse {
     classpath {
         file.whenMerged { cp ->
@@ -181,7 +173,7 @@ eclipse {
 task javadoc(overwrite: true, dependsOn: compileJava) {
     setDescription('Generates Javadoc API documentation with UMLGraph diagrams')
     setGroup(JavaBasePlugin.DOCUMENTATION_GROUP)
-
+    
     doLast {
         ant.javadoc(classpath: (configurations.runtime + configurations.compile).asPath, 
                     sourcepath: file('src/main/java'), 
@@ -206,6 +198,91 @@ task javadoc(overwrite: true, dependsOn: compileJava) {
     }
 }
 
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from components.java
+            
+            artifactId 'jason'
+        }
+    }
+}
+
+// from http://central.sonatype.org/pages/gradle.html
+
+task javadocJar (type: Jar, dependsOn: javadoc) {
+    baseName 'jason'
+    classifier = 'javadoc'
+    from '${docsDir}/../../doc/api'
+}
+
+task sourceJar (type : Jar) {
+    baseName 'jason'
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+artifacts {
+    archives sourceJar, javadocJar
+}
+
+signing {
+    sign configurations.archives
+}
+
+uploadArchives {
+    group = 'net.sf.jason'
+    repositories {
+        mavenDeployer {
+            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                authentication(userName: ossrhUsername, password: ossrhPassword)
+            }
+
+            snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+                authentication(userName: ossrhUsername, password: ossrhPassword)
+            }
+
+            pom*.whenConfigured { pom -> pom.dependencies.clear() } 
+            
+            pom.project {
+                name 'Jason'
+                packaging 'jar'
+                groupId 'net.sf.jason'
+                
+                // optionally artifactId can be defined here 
+                description 'Jason is a fully-fledged interpreter for an extended version of AgentSpeak, a BDI agent-oriented logic programming language.'
+                url 'http://jason.sf.net'
+
+                scm {
+                    connection 'scm:git:https://github.com/jason-lang/jason.git'
+                    developerConnection 'scm:git:https://github.com/jason-lang/jason.git'
+                    url 'https://github.com/jason-lang/jason.git'
+                }
+
+                licenses {
+                    license {
+                        name 'GNU Library or Lesser General Public License version 2.0 (LGPLv2)'
+                        url 'http://www.gnu.org/licenses/gpl-2.0.html'
+                    }
+                }
+                developers {
+                    developer {
+                        id 'jomi'
+                        name 'Jomi F.  Hubner'
+                        email 'jomifred@gmail.com'
+                    }
+                    developer {
+                        id 'rafael'
+                        name 'Rafael H. Bordini'
+                        email 'rafael.h.bordini@gmail.com'
+                    }
+                }            
+            }
+        }        
+    }
+}
 
 compileJavacc {
     inputDirectory = file('src/main/javacc')
@@ -278,9 +355,10 @@ task renderAsciiDocs(type: Exec) {
 
 task fixTab {
     ant.fixcrlf(eol: 'lf',  includes: '**/*.txt,**/*.bat, **/*.adoc', srcdir: '.')
-    ant.fixcrlf(tab: 'remove', tablength: '4', javafiles: 'true', includes: '**/*.java,**/*.xml, **/*.asl, **/*.mas2j', srcdir: 'src')
-    ant.fixcrlf(tab: 'remove', tablength: '4', javafiles: 'true', includes: '**/*.java,**/*.xml, **/*.asl, **/*.mas2j', srcdir: 'examples')
-    ant.fixcrlf(tab: 'remove', tablength: '4', javafiles: 'true', includes: '**/*.java,**/*.xml, **/*.asl, **/*.mas2j', srcdir: 'demos')
+    ant.fixcrlf(tab: 'remove', tablength: '4', javafiles: 'true', includes: '**/*.java,**/*.xml,**/*.asl,**/*.mas2j,**/*.txt', srcdir: 'src')
+    ant.fixcrlf(tab: 'remove', tablength: '4', javafiles: 'true', includes: '**/*.java,**/*.xml,**/*.asl,**/*.mas2j,**/*.txt', srcdir: 'examples')
+    ant.fixcrlf(tab: 'remove', tablength: '4', javafiles: 'true', includes: '**/*.java,**/*.xml,**/*.asl,**/*.mas2j,**/*.txt', srcdir: 'demos')
+    ant.fixcrlf(tab: 'remove', tablength: '4', javafiles: 'true', includes: '**/*.java,**/*.xml,**/*.asl,**/*.mas2j,**/*.txt', srcdir: 'doc')
 }
 
 // Builds the distribution, documentation and a new release
