@@ -3,7 +3,7 @@
 +!joinCNP[source(A)]
     <- .send(A,tell,::introduction(participant)).
 
-// Answer to Call For Proposal
+// Answer a Call For Proposal
 +cfp(Task)[source(A)] : acceptable(Task)
     <-  ?price(Task,Price);
         .send(A,tell, ::propose(Price));
@@ -13,7 +13,7 @@
     <-  .send (A,tell, ::refuse);
         .println("Refusing proposal for task ",Task," from agent ",A).
 
- // Answer to my Proposal
+ // Possibly results of my Proposal
 +accept_proposal : participating(Task)
     <-  .print("My proposal in ",this_ns," for task ",Task," won!").
         // do the task and report to initiator

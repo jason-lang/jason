@@ -129,11 +129,33 @@ clean {
     delete fileTree('.')  { include '**/MTPs-Main-Container.txt'  }
     
     delete fileTree('.')  { include '**/bookstore.*'  }
-    delete fileTree('examples')  { include '**/bin'  }
+    delete fileTree('examples')  { include '**/bin/**'  }
     delete fileTree('examples')  { include '**/*.log'  }
-    delete fileTree('demos')  { include '**/bin'  }
+    delete fileTree('demos')  { include '**/bin/**'  }
     delete fileTree('demos')  { include '**/*.log'  }
     delete 'demos/persistent-belief-base/a.bb'
+    
+    def emptyDirs = []
+    
+    fileTree (dir: 'examples').visit {
+        def File f = it.file
+        if (f.isDirectory() ) {
+            def children = project.fileTree(f).filter { it.isFile() }.files
+            if (children.size() == 0) {
+                emptyDirs << f
+            }
+        }
+    }    
+    fileTree (dir: 'demos').visit {
+        def File f = it.file
+        if (f.isDirectory() ) {
+            def children = project.fileTree(f).filter { it.isFile() }.files
+            if (children.size() == 0) {
+                emptyDirs << f
+            }
+        }
+    }    
+    emptyDirs.reverseEach { it.delete() }    
 }
 
 test << {

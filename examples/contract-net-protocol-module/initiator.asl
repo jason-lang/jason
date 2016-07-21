@@ -48,7 +48,7 @@ priv::all_proposals_received
            -+state(finished).
 
     +!announce_result(_,[]).
-    // announce to the winner
+    // award contract to the winner
     +!announce_result (Ns,[offer(_,Ag)|T]) : Ns::winner(Ag)
        <- .send(Ag,tell,Ns::accept_proposal ); // notify the winner
     !announce_result(Ns,T).
