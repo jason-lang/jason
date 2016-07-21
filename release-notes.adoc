@@ -44,7 +44,6 @@ ifdef::env-github[:outfilesuffix: .adoc]
 - AgArch `act` method has just one parameter (the action to be executed)
 - Java 1.7 is now used
 - JaCaMo is not an available infrastructure anymore, it has its own support to run MAS (the .jcm files)
-- the way to run the Jason IDE (based on jEdit) has changed; rather than running an application (`Jason.exe` or `Jason.app`), the IDE is now run by double clicking the `jedit/jedit.jar` file or using the script files in the `scripts` folder.
 
 NOTE: In Jason 2.0 the way to run the Jason IDE (based on jEdit) has changed. Rather than running an application (`Jason.exe` or `Jason.app`), the IDE is now run by double clicking the `jedit/jedit.jar` file or using the script files in the `scripts` folder.
 
