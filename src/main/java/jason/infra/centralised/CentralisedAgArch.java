@@ -41,7 +41,6 @@ import jason.asSemantics.Message;
 import jason.asSemantics.TransitionSystem;
 import jason.asSyntax.Atom;
 import jason.asSyntax.Literal;
-import jason.infra.centralised.RunCentralisedMAS.RConf;
 import jason.mas2j.ClassParameters;
 import jason.runtime.RuntimeServicesInfraTier;
 import jason.runtime.Settings;
@@ -67,7 +66,7 @@ public class CentralisedAgArch extends AgArch implements Runnable {
 
     protected CentralisedEnvironment    infraEnv     = null;
     private CentralisedExecutionControl infraControl = null;
-    private RunCentralisedMAS           masRunner    = RunCentralisedMAS.getRunner();
+    private BaseCentralisedMAS           masRunner    = BaseCentralisedMAS.getRunner();
 
     private String           agName  = "";
     private volatile boolean running = true;
@@ -90,7 +89,7 @@ public class CentralisedAgArch extends AgArch implements Runnable {
      * jason.architecture.AgArch. The arch will create the agent that creates
      * the TS.
      */
-    public void createArchs(List<String> agArchClasses, String agClass, ClassParameters bbPars, String asSrc, Settings stts, RunCentralisedMAS masRunner) throws JasonException {
+    public void createArchs(List<String> agArchClasses, String agClass, ClassParameters bbPars, String asSrc, Settings stts, BaseCentralisedMAS masRunner) throws JasonException {
         try {
             this.masRunner = masRunner;
             Agent.create(this, agClass, bbPars, asSrc, stts);
@@ -112,7 +111,7 @@ public class CentralisedAgArch extends AgArch implements Runnable {
     }
 
     /** init the agent architecture based on another agent */
-    public void createArchs(List<String> agArchClasses, Agent ag, RunCentralisedMAS masRunner) throws JasonException {
+    public void createArchs(List<String> agArchClasses, Agent ag, BaseCentralisedMAS masRunner) throws JasonException {
         try {
             this.masRunner = masRunner;
             setTS(ag.clone(this).getTS());

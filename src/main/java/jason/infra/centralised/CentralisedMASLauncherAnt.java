@@ -108,7 +108,7 @@ public class CentralisedMASLauncherAnt implements MASLauncherInfraTier {
     public void stopMAS() {
         try {
             // creating this file will stop the MAS, the runner checks for this file creation
-            File stop = new File(project.getDirectory()+File.separator+RunCentralisedMAS.stopMASFileName);
+            File stop = new File(project.getDirectory()+File.separator+BaseCentralisedMAS.stopMASFileName);
             stop.createNewFile();
         } catch (Exception e) {
             System.err.println("Error stoping RunCentMAS: " + e);
@@ -243,7 +243,7 @@ public class CentralisedMASLauncherAnt implements MASLauncherInfraTier {
         
         script = replace(script, "<PATH-LIB>", lib);
 
-        script = replace(script, "<PROJECT-RUNNER-CLASS>", jason.infra.centralised.RunCentralisedMAS.class.getName());
+        script = replace(script, "<PROJECT-RUNNER-CLASS>", jason.infra.centralised.BaseCentralisedMAS.class.getName());
         String sDebug = "";
         if (debug) {
             sDebug = " -debug";

@@ -51,6 +51,7 @@ import jason.asSyntax.StringTerm;
 import jason.asSyntax.directives.DirectiveProcessor;
 import jason.asSyntax.directives.Include;
 import jason.control.ExecutionControlGUI;
+import jason.infra.centralised.BaseCentralisedMAS;
 import jason.infra.centralised.RunCentralisedMAS;
 import jason.mas2j.AgentParameters;
 import jason.mas2j.ClassParameters;
@@ -83,16 +84,17 @@ public class RunJadeMAS extends RunCentralisedMAS {
     private ProfileImpl profile; // profile used to start jade container
     
     public static void main(String[] args) throws JasonException {
-        runner = new RunJadeMAS();
-        runner.init(args);
-        runner.create();
-        runner.start();
-        runner.waitEnd();
-        runner.finish();
+        RunJadeMAS r = new RunJadeMAS();
+        runner = r;
+        r.init(args);
+        r.create();
+        r.start();
+        r.waitEnd();
+        r.finish();
     }
     
     
-    @Override
+    
     public int init(String[] args) {
         // test if a container is informed
         for (int i=1; i<args.length; i++) {
@@ -104,7 +106,6 @@ public class RunJadeMAS extends RunCentralisedMAS {
         return super.init(args);
     }
 
-    @Override
     public void create() throws JasonException {
         if (startContainer()) {
             if (profile.getBooleanProperty(Profile.MAIN, true)) {
@@ -126,7 +127,6 @@ public class RunJadeMAS extends RunCentralisedMAS {
         }
     }
     
-    @Override
     public void createButtons() {
         createStopButton();
         createPauseButton();
@@ -193,7 +193,6 @@ public class RunJadeMAS extends RunCentralisedMAS {
         }
     }
 
-    @Override
     public void createEnvironment() throws JasonException {
         try {
             // create environment
@@ -210,7 +209,6 @@ public class RunJadeMAS extends RunCentralisedMAS {
         }
     }
 
-    @Override
     public void createController() throws JasonException {
         try {
             // create controller
@@ -228,7 +226,7 @@ public class RunJadeMAS extends RunCentralisedMAS {
         }
     }
     
-    @Override
+    
     public void createAgs() throws JasonException {
         try {
             // set the aslSrcPath in the include
@@ -278,7 +276,6 @@ public class RunJadeMAS extends RunCentralisedMAS {
         }
     }
 
-    @Override
     protected void startAgs() {
         try {
             if (envc != null)
@@ -296,7 +293,6 @@ public class RunJadeMAS extends RunCentralisedMAS {
         }
     }
     
-    @Override
     public void finish() {
         try {
             logger.info("Finishing the system.");

@@ -10,7 +10,7 @@ import jason.asSyntax.Literal;
 import jason.environment.Environment;
 import jason.infra.centralised.CentralisedAgArch;
 import jason.infra.centralised.CentralisedEnvironment;
-import jason.infra.centralised.RunCentralisedMAS;
+import jason.infra.centralised.BaseCentralisedMAS;
 
 public class TestArch extends CentralisedAgArch implements Runnable {
 
@@ -29,7 +29,7 @@ public class TestArch extends CentralisedAgArch implements Runnable {
 
     public TestArch(String agName) {
         setAgName(agName);
-        RunCentralisedMAS.getRunner().addAg(this);
+        BaseCentralisedMAS.getRunner().addAg(this);
     }
     
     public int getCycle() {
@@ -66,7 +66,7 @@ public class TestArch extends CentralisedAgArch implements Runnable {
     
     public void setEnv(Environment env) {
         try {
-            CentralisedEnvironment infraEnv = new CentralisedEnvironment(null, RunCentralisedMAS.getRunner());
+            CentralisedEnvironment infraEnv = new CentralisedEnvironment(null, BaseCentralisedMAS.getRunner());
             infraEnv.setUserEnvironment(env);
             env.setEnvironmentInfraTier(infraEnv);
             setEnvInfraTier(infraEnv);

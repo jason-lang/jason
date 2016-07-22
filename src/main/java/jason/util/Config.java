@@ -104,7 +104,8 @@ public class Config extends Properties {
     }
     
     public static Config get() {
-        return get(true);
+        // return get(true);
+        return get(false);
     }
     public static Config get(boolean tryToFixConfig) {
         if (singleton == null) {

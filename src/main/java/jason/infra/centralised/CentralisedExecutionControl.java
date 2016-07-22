@@ -45,13 +45,13 @@ public class CentralisedExecutionControl implements ExecutionControlInfraTier {
 
     private ExecutionControl userController;
 
-    private RunCentralisedMAS masRunner = null;
+    private BaseCentralisedMAS masRunner = null;
 
     private static Logger logger = Logger.getLogger(CentralisedExecutionControl.class.getName());
 
     protected ExecutorService executor = Executors.newSingleThreadExecutor();
     
-    public CentralisedExecutionControl(ClassParameters userControlClass, RunCentralisedMAS masRunner) throws JasonException {
+    public CentralisedExecutionControl(ClassParameters userControlClass, BaseCentralisedMAS masRunner) throws JasonException {
         this.masRunner = masRunner;
         try {
             userController = (ExecutionControl) Class.forName(userControlClass.getClassName()).newInstance();

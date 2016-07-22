@@ -44,12 +44,12 @@ public class CentralisedEnvironment implements EnvironmentInfraTier {
 
     /** the user customisation class for the environment */
     private Environment userEnv;
-    private RunCentralisedMAS masRunner = RunCentralisedMAS.getRunner();
+    private BaseCentralisedMAS masRunner = BaseCentralisedMAS.getRunner();
     private boolean running = true;
     
     private static Logger logger = Logger.getLogger(CentralisedEnvironment.class.getName());
     
-    public CentralisedEnvironment(ClassParameters userEnvArgs, RunCentralisedMAS masRunner) throws JasonException {
+    public CentralisedEnvironment(ClassParameters userEnvArgs, BaseCentralisedMAS masRunner) throws JasonException {
         this.masRunner = masRunner;
         if (userEnvArgs != null) {
             try {

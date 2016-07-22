@@ -18,9 +18,9 @@ public class CentralisedRuntimeServices implements RuntimeServicesInfraTier {
 
     private static Logger logger = Logger.getLogger(CentralisedRuntimeServices.class.getName());
     
-    protected RunCentralisedMAS masRunner;
+    protected BaseCentralisedMAS masRunner;
     
-    public CentralisedRuntimeServices(RunCentralisedMAS masRunner) {
+    public CentralisedRuntimeServices(BaseCentralisedMAS masRunner) {
         this.masRunner = masRunner;
     }
     

@@ -25,7 +25,7 @@ public class KillAgentGUI extends BaseDialogGUI {
     }
 
     protected void initComponents() {
-        services = RunCentralisedMAS.getRunner().getRuntimeServices();
+        services = BaseCentralisedMAS.getRunner().getRuntimeServices();
         getContentPane().setLayout(new BorderLayout());
 
         // Fields

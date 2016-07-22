@@ -76,47 +76,34 @@ import jason.util.Config;
 /**
  * Runs MASProject using centralised infrastructure.
  */
-public class RunCentralisedMAS {
+public class RunCentralisedMAS extends BaseCentralisedMAS {
 
-    public final static String       logPropFile     = "logging.properties";
-    public final static String       stopMASFileName = ".stop___MAS";
-    public final static String       defaultProjectFileName = "default.mas2j";
-
-    protected static Logger            logger        = Logger.getLogger(RunCentralisedMAS.class.getName());
-    protected static RunCentralisedMAS runner        = null;
-    protected static String            urlPrefix     = "";
-    protected static boolean           readFromJAR   = false;
-    protected static MAS2JProject      project;
-    protected static boolean           debug         = false;
-    
-    protected CentralisedEnvironment        env         = null;
-    protected CentralisedExecutionControl   control     = null;
-    protected Map<String,CentralisedAgArch> ags         = new ConcurrentHashMap<String,CentralisedAgArch>();
-
-    public JButton                   btDebug;
-    
-    public enum RConf {
-        TRHEADED,
-        POOL_SYNCH,
-        POOL_SYNCH_SCHEDULED,
-        ASYNCH,
-        ASYNCH_SHARED_POOLS
-    }
+    private JButton                   btDebug;
     
     public RunCentralisedMAS() {
-        runner = this;  
+        super();
     }
     
+    public boolean hasDebugControl(){
+        return btDebug != null;
+    }
+
+    public void enableDebugControl(){
+        btDebug.setEnabled(true);
+    }
+    
+    
     public static void main(String[] args) throws JasonException {
-        runner = new RunCentralisedMAS();
-        runner.init(args);
-        runner.create();
-        runner.start();
-        runner.waitEnd();
-        runner.finish();
+        RunCentralisedMAS r = new RunCentralisedMAS();
+        runner = r;
+        r.init(args);
+        r.create();
+        r.start();
+        r.waitEnd();
+        r.finish();
     }
         
-    public int init(String[] args) {
+    protected int init(String[] args) {
         String projectFileName = null;
         if (args.length < 1) {
             if (RunCentralisedMAS.class.getResource("/"+defaultProjectFileName) != null) {
@@ -216,23 +203,19 @@ public class RunCentralisedMAS {
     }
 
     /** create environment, agents, controller */
-    public void create() throws JasonException {
+    protected void create() throws JasonException {
         createEnvironment();
         createAgs();
         createController();        
     }
     
     /** start agents, .... */
-    public void start() {
+    protected void start() {
         startAgs();
         startSyncMode();
     }
     
-    public static boolean isDebug() {
-        return debug;
-    }
-
-    public static synchronized void setupLogger() {
+    public synchronized void setupLogger() {
         if (readFromJAR) {
             Handler[] hs = Logger.getLogger("").getHandlers(); 
             for (int i = 0; i < hs.length; i++) { 
@@ -253,7 +236,7 @@ public class RunCentralisedMAS {
             } else {
                 try {
                     if (runner != null) {
-                        LogManager.getLogManager().readConfiguration(runner.getDefaultLogProperties());
+                        LogManager.getLogManager().readConfiguration(getDefaultLogProperties());
                     } else {
                         LogManager.getLogManager().readConfiguration(RunCentralisedMAS.class.getResource("/templates/" + logPropFile).openStream());                        
                     }
@@ -269,7 +252,7 @@ public class RunCentralisedMAS {
         return RunCentralisedMAS.class.getResource("/templates/" + logPropFile).openStream();
     }
     
-    public static void setupDefaultConsoleLogger() {
+    protected void setupDefaultConsoleLogger() {
         Handler[] hs = Logger.getLogger("").getHandlers(); 
         for (int i = 0; i < hs.length; i++) { 
             Logger.getLogger("").removeHandler(hs[i]); 
@@ -287,11 +270,11 @@ public class RunCentralisedMAS {
         createPauseButton();
 
         // add Button debug
-        runner.btDebug = new JButton("Debug", new ImageIcon(RunCentralisedMAS.class.getResource("/images/debug.gif")));
-        runner.btDebug.addActionListener(new ActionListener() {
+        btDebug = new JButton("Debug", new ImageIcon(RunCentralisedMAS.class.getResource("/images/debug.gif")));
+        btDebug.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
-                runner.changeToDebugMode();
-                runner.btDebug.setEnabled(false);
+                changeToDebugMode();
+                btDebug.setEnabled(false);
                 if (runner.control != null) {
                     try {
                         runner.control.getUserControl().setRunningCycle(false);
@@ -300,9 +283,9 @@ public class RunCentralisedMAS {
             }
         });
         if (debug) {
-            runner.btDebug.setEnabled(false);
+            btDebug.setEnabled(false);
         }
-        MASConsoleGUI.get().addButton(runner.btDebug);
+        MASConsoleGUI.get().addButton(btDebug);
 
         // add show sources button
         final JButton btShowSrc = new JButton("Sources", new ImageIcon(RunCentralisedMAS.class.getResource("/images/list.gif")));
@@ -394,7 +377,7 @@ public class RunCentralisedMAS {
         agArch.setAgName(n);
         agArch.setEnvInfraTier(env);
         try {
-            agArch.createArchs(null, ReplAgGUI.class.getName(), null, null, new Settings(), RunCentralisedMAS.this);
+            agArch.createArchs(null, ReplAgGUI.class.getName(), null, null, new Settings(), this);
             Thread agThread = new Thread(agArch);
             agArch.setThread(agThread);
             agThread.start();                            
@@ -405,30 +388,7 @@ public class RunCentralisedMAS {
     }
 
     
-    public static RunCentralisedMAS getRunner() {
-        return runner;
-    }
-
-    public RuntimeServicesInfraTier getRuntimeServices() {
-        return new CentralisedRuntimeServices(runner);
-    }
-    
-    public CentralisedExecutionControl getControllerInfraTier() {
-        return control;
-    }
-
-    public CentralisedEnvironment getEnvironmentInfraTier() {
-        return env;
-    }
-    
-    public MAS2JProject getProject() {
-        return project;
-    }
-    public void setProject(MAS2JProject p) {
-        project = p;
-    }
-
-    public void createEnvironment() throws JasonException {
+    protected void createEnvironment() throws JasonException {
         if (project.getEnvClass() != null && !project.getEnvClass().getClassName().equals(jason.environment.Environment.class.getName())) {
             logger.fine("Creating environment " + project.getEnvClass());
             env = new CentralisedEnvironment(project.getEnvClass(), this);
@@ -436,7 +396,7 @@ public class RunCentralisedMAS {
     }
 
     
-    public void createAgs() throws JasonException {
+    protected void createAgs() throws JasonException {
         
         RConf generalConf;
         if (project.getInfrastructure().hasParameter("pool")) {
@@ -592,103 +552,9 @@ public class RunCentralisedMAS {
         if (generalConf != RConf.TRHEADED) logger.info("Created "+nbAg+" agents.");
     }
     
-    /*
-    public void createAgs() throws JasonException {
-        boolean isPool = project.getInfrastructure().hasParameter("pool") || project.getInfrastructure().hasParameter("synch_scheduled");
-        boolean isAsynch = project.getInfrastructure().hasParameter("asynch") || project.getInfrastructure().hasParameter("asynch_shared");
-        if (isPool || isAsynch) logger.info("Creating agents....");
-        int nbAg = 0;
-        Agent pag = null;
-        
-        // create the agents
-        for (AgentParameters ap : project.getAgents()) {
-            try {
-                
-                String agName = ap.name;
 
-                for (int cAg = 0; cAg < ap.getNbInstances(); cAg++) {
-                    nbAg++;
-                    
-                    String numberedAg = agName;
-                    if (ap.getNbInstances() > 1) {
-                        numberedAg += (cAg + 1);
-                        // cannot add zeros before, it causes many compatibility problems and breaks dynamic creation 
-                        // numberedAg += String.format("%0"+String.valueOf(ap.qty).length()+"d", cAg + 1);
-                    }
-                    
-                    String nb = "";
-                    int    n  = 1;
-                    while (getAg(numberedAg+nb) != null)
-                        nb = "_" + (n++);
-                    numberedAg += nb;
-                    
-                    logger.fine("Creating agent " + numberedAg + " (" + (cAg + 1) + "/" + ap.getNbInstances() + ")");
-                    CentralisedAgArch agArch;
-                    if (isPool) {
-                        if (project.getInfrastructure().hasParameter("synch_scheduled")) {
-                            agArch = new CentralisedAgArchSynchronousScheduled();
-                            if (ap.getOption("cycles") != null) {
-                                agArch.setCycles(Integer.valueOf(ap.getOption("cycles")));
-                            }
-                        } else {
-                            agArch = new CentralisedAgArchForPool();
-                            if (ap.getOption("cycles") != null) {
-                                agArch.setCycles(Integer.valueOf(ap.getOption("cycles")));
-                            }
-                        }
-                    } else if (isAsynch) {
-                        agArch = new CentralisedAgArchAsynchronous();
-                        
-                        int cyclesSense = 0;
-                        int cyclesDeliberate = 0; 
-                        int cyclesAct = 0;
-                        
-                        if (ap.getOption("cycles") != null) {
-                            cyclesSense = cyclesDeliberate = cyclesAct = Integer.valueOf(ap.getOption("cycles"));
-                        }
-                        
-                        if (ap.getOption("cycles_sense") != null) {
-                            cyclesSense = Integer.valueOf(ap.getOption("cycles_sense"));
-                        }
-                        if (ap.getOption("cycles_deliberate") != null) {
-                            cyclesDeliberate = Integer.valueOf(ap.getOption("cycles_deliberate"));
-                        }
-                        if (ap.getOption("cycles_act") != null) {
-                            cyclesAct = Integer.valueOf(ap.getOption("cycles_act"));
-                        }
-                        
-                        ((CentralisedAgArchAsynchronous) agArch).getSenseComponent().setCycles(cyclesSense);
-                        ((CentralisedAgArchAsynchronous) agArch).getDeliberateComponent().setCycles(cyclesDeliberate);
-                        ((CentralisedAgArchAsynchronous) agArch).getActComponent().setCycles(cyclesAct);
-                        
-                    } else {
-                        agArch = new CentralisedAgArch();
-                        if (ap.getOption("cycles") != null) {
-                            agArch.setCycles(Integer.valueOf(ap.getOption("cycles")));
-                        }
-                    }
-                    agArch.setAgName(numberedAg);
-                    agArch.setEnvInfraTier(env);
-                    if ((isPool || isAsynch) && cAg > 0 && ap.getAgArchClasses().isEmpty() && ap.getBBClass().equals(DefaultBeliefBase.class.getName())) {
-                        // creation by cloning previous agent (which is faster -- no parsing, for instance)
-                        agArch.createArchs(ap.getAgArchClasses(), pag, this);
-                    } else {
-                        // normal creation
-                        agArch.createArchs(ap.getAgArchClasses(), ap.agClass.getClassName(), ap.getBBClass(), ap.asSource.toString(), ap.getAsSetts(debug, project.getControlClass() != null), this);
-                    }
-                    addAg(agArch);
-                    
-                    pag = agArch.getTS().getAg();
-                }
-            } catch (Exception e) {
-                logger.log(Level.SEVERE, "Error creating agent " + ap.name, e);
-            }
-        }
-        
-        if (isPool || isAsynch) logger.info("Created "+nbAg+" agents.");
-    }*/
 
-    public void createController() throws JasonException {
+    protected void createController() throws JasonException {
         ClassParameters controlClass = project.getControlClass();
         if (debug && controlClass == null) {
             controlClass = new ClassParameters(ExecutionControlGUI.class.getName());
@@ -697,21 +563,6 @@ public class RunCentralisedMAS {
             logger.fine("Creating controller " + controlClass);
             control = new CentralisedExecutionControl(controlClass, this);
         }        
-    }
-    
-    public void addAg(CentralisedAgArch ag) {
-        ags.put(ag.getAgName(), ag);
-    }
-    public CentralisedAgArch delAg(String agName) {
-        return ags.remove(agName);
-    }
-    
-    public CentralisedAgArch getAg(String agName) {
-        return ags.get(agName);
-    }
-    
-    public Map<String,CentralisedAgArch> getAgs() {
-        return ags;
     }
     
     protected void startAgs() {
@@ -993,7 +844,7 @@ public class RunCentralisedMAS {
     }
 
     /** change the current running MAS to debug mode */
-    void changeToDebugMode() {
+    protected void changeToDebugMode() {
         try {
             if (control == null) {
                 control = new CentralisedExecutionControl(new ClassParameters(ExecutionControlGUI.class.getName()), this);
@@ -1011,7 +862,8 @@ public class RunCentralisedMAS {
             logger.log(Level.SEVERE, "Error entering in debug mode", e);
         }
     }
-
+    
+  
     protected void startSyncMode() {
         if (control != null) {
             // start the execution, if it is controlled
@@ -1024,7 +876,7 @@ public class RunCentralisedMAS {
         }
     }
 
-    public void waitEnd() {
+    protected void waitEnd() {
         try {
             // wait a file called .stop___MAS to be created!
             File stop = new File(stopMASFileName);
@@ -1049,6 +901,7 @@ public class RunCentralisedMAS {
     }
 
     private Boolean runningFinish = false;
+    
     public void finish() { 
         // avoid two threads running finish!
         synchronized (runningFinish) {

@@ -68,7 +68,7 @@ import javax.swing.event.ListSelectionListener;
 
 import org.w3c.dom.Document;
 
-import jason.infra.centralised.RunCentralisedMAS;
+import jason.infra.centralised.BaseCentralisedMAS;
 import jason.util.Config;
 import jason.util.asl2html;
 import jason.util.asl2tex;
@@ -187,8 +187,8 @@ public class ExecutionControlGUI extends ExecutionControl {
             public void actionPerformed(ActionEvent e) {
                 agsHistory.clear();
                 showAgState();
-                System.out.println("***"+RunCentralisedMAS.getRunner().sleepingAgs);
-                for (CentralisedAgArch ar: RunCentralisedMAS.getRunner().sleepingAgs) {
+                System.out.println("***"+BaseCentralisedMAS.getRunner().sleepingAgs);
+                for (CentralisedAgArch ar: BaseCentralisedMAS.getRunner().sleepingAgs) {
                     System.out.println(ar+":"+ar.canSleep());
                 }
             }
@@ -430,8 +430,8 @@ public class ExecutionControlGUI extends ExecutionControl {
             waitAllAgs     = false; 
             waitSelectedAg = true;
         }
-        if (RunCentralisedMAS.getRunner() != null && RunCentralisedMAS.getRunner().btDebug != null) {
-            RunCentralisedMAS.getRunner().btDebug.setEnabled(true);
+        if (BaseCentralisedMAS.getRunner() != null && BaseCentralisedMAS.getRunner().hasDebugControl()) {
+            BaseCentralisedMAS.getRunner().enableDebugControl();
         }        
 
         startNewCycle();
