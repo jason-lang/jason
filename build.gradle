@@ -16,7 +16,7 @@ apply plugin: 'maven'
 apply plugin: 'maven-publish'
 apply plugin: 'signing'
 
-version '2.0'
+version '2.1'
 group   'org.jason-lang'
 
 sourceCompatibility = 1.7
