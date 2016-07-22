@@ -384,7 +384,7 @@ task fixTab {
 }
 
 // Builds the distribution, documentation and a new release
-task release(dependsOn: [ 'build', 'doc', 'fixTab', 'zipRel']) << {
+task release(dependsOn: [ 'build', 'doc', 'fixTab', 'zipRel', 'plugin' ]) << {
 } 
 
 // copy files used to build a release
