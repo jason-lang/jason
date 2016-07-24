@@ -9,7 +9,7 @@ April 2016
 
 ifdef::env-github[:outfilesuffix: .adoc]
 
-This documents presents some Jason features for concurrent programming.
+This document presents some Jason features for concurrent programming.
 
 == Intentions
 
