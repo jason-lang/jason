@@ -4,7 +4,7 @@ import jason.asSemantics.ActionExec;
 import jason.asSemantics.Agent;
 import jason.asSemantics.TransitionSystem;
 import jason.asSyntax.Literal;
-import jason.infra.centralised.RunCentralisedMAS;
+import jason.infra.centralised.BaseCentralisedMAS;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +22,7 @@ public class SimpleJasonAgent extends AgArch {
     private static Logger logger = Logger.getLogger(SimpleJasonAgent.class.getName());
 
     public static void main(String[] a) {
-        RunCentralisedMAS.setupLogger();
+        BaseCentralisedMAS.getRunner().setupLogger();
         SimpleJasonAgent ag = new SimpleJasonAgent();
         ag.run();
     }

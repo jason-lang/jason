@@ -71,7 +71,7 @@ import errorlist.ErrorSource;
 import jason.infra.MASLauncherInfraTier;
 import jason.infra.RunProjectListener;
 import jason.infra.centralised.CentralisedMASLauncherAnt;
-import jason.infra.centralised.RunCentralisedMAS;
+import jason.infra.centralised.BaseCentralisedMAS;
 import jason.mas2j.AgentParameters;
 import jason.mas2j.MAS2JProject;
 import jason.mas2j.parser.ParseException;
@@ -601,11 +601,11 @@ public class JasonID extends JPanel implements EBComponent, RunProjectListener {
             return;
         }
         try {
-            File f = new File(curBuf.getDirectory() + File.separator + RunCentralisedMAS.logPropFile);
+            File f = new File(curBuf.getDirectory() + File.separator + BaseCentralisedMAS.logPropFile);
             if (f.exists()) {
                 org.gjt.sp.jedit.jEdit.openFile(view, f.getAbsolutePath());
             } else {
-                String logText = Config.get().getTemplate(RunCentralisedMAS.logPropFile);
+                String logText = Config.get().getTemplate(BaseCentralisedMAS.logPropFile);
                 Buffer b = org.gjt.sp.jedit.jEdit.openFile(view, f.getAbsolutePath());
                 try {
                     b.writeLock();

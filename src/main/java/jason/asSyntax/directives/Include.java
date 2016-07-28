@@ -153,7 +153,8 @@ public class Include extends DefaultDirective implements Directive {
                 Agent.class.getResource(asSrc.substring(CRPrefix.length())).openStream();
                 return true;
             } else {
-                Agent.class.getResource(asSrc).openStream();
+                // Agent.class.getResource(asSrc).openStream();
+                new URL(asSrc).openStream();
                 return true;                
             }
         } catch (Exception e) {}

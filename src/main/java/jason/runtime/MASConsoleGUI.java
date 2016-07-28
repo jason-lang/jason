@@ -23,7 +23,7 @@
 
 package jason.runtime;
 
-import jason.infra.centralised.RunCentralisedMAS;
+import jason.infra.centralised.BaseCentralisedMAS;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
@@ -131,7 +131,7 @@ public class MASConsoleGUI {
 
         frame.getContentPane().add(BorderLayout.SOUTH, pBt);
 
-        JButton btClean = new JButton("Clean", new ImageIcon(RunCentralisedMAS.class.getResource("/images/clear.gif")));
+        JButton btClean = new JButton("Clean", new ImageIcon(BaseCentralisedMAS.class.getResource("/images/clear.gif")));
         btClean.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 cleanConsole();
@@ -237,8 +237,8 @@ public class MASConsoleGUI {
         if (out != null)
             out.restoreOriginalOut();
         try {
-            if (RunCentralisedMAS.getRunner() != null) {
-                FileWriter f = new FileWriter(RunCentralisedMAS.stopMASFileName);
+            if (BaseCentralisedMAS.getRunner() != null) {
+                FileWriter f = new FileWriter(BaseCentralisedMAS.stopMASFileName);
                 f.write(32);
                 f.close();
             }

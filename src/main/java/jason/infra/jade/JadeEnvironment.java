@@ -35,7 +35,7 @@ import jason.asSyntax.Literal;
 import jason.asSyntax.Structure;
 import jason.environment.Environment;
 import jason.environment.EnvironmentInfraTier;
-import jason.infra.centralised.RunCentralisedMAS;
+import jason.infra.centralised.BaseCentralisedMAS;
 import jason.mas2j.ClassParameters;
 import jason.mas2j.MAS2JProject;
 import jason.runtime.RuntimeServicesInfraTier;
@@ -66,7 +66,7 @@ public class JadeEnvironment extends JadeAg implements EnvironmentInfraTier {
     @Override
     public void setup()  {
         // create the user environment
-        RunCentralisedMAS.setupLogger();
+        BaseCentralisedMAS.getRunner().setupLogger();
         logger.fine("Starting JadeEnvironment.");
         try {
             Object[] args = getArguments();

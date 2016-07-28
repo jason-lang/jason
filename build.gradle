@@ -22,6 +22,7 @@ group   'org.jason-lang'
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
 
+
 repositories {
     mavenCentral()
     
@@ -107,10 +108,11 @@ task jarCore(type: Jar, dependsOn: 'classes') {
     exclude 'jason/util/CheckVersion*'
     exclude 'jason/control/ExecutionControlGUI*'
     exclude 'jason/infra/centralised/*GUI*'
-    exclude 'jason/infra/centralised/RunCentralised*'
-    exclude 'jason/infra/jade/**/*'
+    // exclude 'jason/infra/centralised/RunCentralised*'
+    // exclude 'jason/infra/jade/**/*'
+    exclude 'jason/infra/jade/Run*'
     exclude 'jason/infra/repl/**/*'
-    exclude 'jason/infra/components/**/*'
+    // exclude 'jason/infra/components/**/*'
 }
 
 clean {
@@ -256,6 +258,7 @@ uploadArchives {
     group = 'net.sf.jason'
     repositories {
         mavenDeployer {
+        	        
             beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
 
             repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
