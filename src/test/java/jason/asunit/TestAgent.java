@@ -19,7 +19,6 @@ import jason.asSyntax.Structure;
 import jason.asSyntax.Trigger;
 import jason.asSyntax.parser.ParseException;
 import jason.bb.BeliefBase;
-import jason.infra.centralised.BaseCentralisedMAS;
 import jason.infra.centralised.RunCentralisedMAS;
 import jason.util.Config;
 

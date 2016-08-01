@@ -35,9 +35,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.ConsoleHandler;
@@ -69,7 +67,6 @@ import jason.mas2j.parser.ParseException;
 import jason.runtime.MASConsoleGUI;
 import jason.runtime.MASConsoleLogFormatter;
 import jason.runtime.MASConsoleLogHandler;
-import jason.runtime.RuntimeServicesInfraTier;
 import jason.runtime.Settings;
 import jason.util.Config;
 
@@ -82,6 +79,7 @@ public class RunCentralisedMAS extends BaseCentralisedMAS {
     
     public RunCentralisedMAS() {
         super();
+        runner = this;
     }
     
     public boolean hasDebugControl(){

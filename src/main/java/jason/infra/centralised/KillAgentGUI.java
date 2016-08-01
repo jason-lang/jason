@@ -1,7 +1,5 @@
 package jason.infra.centralised;
 
-import jason.runtime.RuntimeServicesInfraTier;
-
 import java.awt.BorderLayout;
 import java.awt.Frame;
 import java.util.Collections;
@@ -12,6 +10,8 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.ListSelectionModel;
 import javax.swing.border.TitledBorder;
+
+import jason.runtime.RuntimeServicesInfraTier;
 
 public class KillAgentGUI extends BaseDialogGUI {
 
