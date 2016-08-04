@@ -30,7 +30,7 @@ fi
 export PATH=$JDK_HOME/bin:$PATH
 
 
-JASON_JAR=$JASON_HOME/libs/jason-2.0.jar
+JASON_JAR=$JASON_HOME/libs/jason-2.1.jar
 JEDIT_HOME=$JASON_HOME/jedit
 JADE_JAR=`find $JASON_HOME/libs -name jade*.jar`
 
