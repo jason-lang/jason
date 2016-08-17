@@ -1,4 +1,4 @@
-/* 
+/*
    Jason Gradle build file
 
 */
@@ -25,11 +25,11 @@ targetCompatibility = 1.7
 
 repositories {
     mavenCentral()
-    
+
     maven {
         url "http://jacamo.sourceforge.net/maven2"
     }
-    
+
     flatDir {
 	   dirs 'jedit', 'demos/persistent-belief-base/lib'
     }
@@ -47,12 +47,12 @@ dependencies {
 
     // from jEdit
     compile fileTree(dir: 'jedit', include: '*.jar') // using fileTree, jedit jars are not included as a dependency in the pom file
-    
+
     runtime group: 'org.apache.ant',  name: 'ant',  version: '1.9.7'
-    
+
     testCompile group: 'junit', name: 'junit', version: '4.12'
     testCompile name: 'hsqldb'
-    
+
     umljavadoc 'org.umlgraph:umlgraph:5.6'
 }
 
@@ -65,7 +65,7 @@ task copyJarsToBuild {
     doLast {
         copy {
             from configurations.runtime
-            into 'build/libs' 
+            into 'build/libs'
         }
         copy {
             from 'scripts'
@@ -78,17 +78,17 @@ task copyJarsToBuild {
 jar {
     baseName 'jason'
     manifest {
-        attributes 'Main-Class': 'jason.util.ConfigGUI', 
+        attributes 'Main-Class': 'jason.util.ConfigGUI',
                    'Specification-Title': 'Jason Language',
                    'Specification-Version': project.version,
                    'Implementation-Version': new Date().toString()
     }
-    
+
     /*doFirst {
         Properties props = new Properties()
         props.put('version', '')
         props.put('release', project.version)
-        props.store(new File(project.buildDir.absolutePath +'/classes/main/dist.properties').newWriter(), null) 
+        props.store(new File(project.buildDir.absolutePath +'/classes/main/dist.properties').newWriter(), null)
     }*/
 }
 jar.dependsOn(copyJarsToBuild)
@@ -97,7 +97,7 @@ task jarCore(type: Jar, dependsOn: 'classes') {
     baseName 'jason-core'
     from 'build/classes/main'
     from 'build/resources/main'
-    
+
     exclude '**/MindInspectorAgArch*'
     exclude '**/MindInspectorWebImpl*'
     exclude 'jason/environment/grid/**/*'
@@ -121,24 +121,24 @@ clean {
     delete 'doc/faq.html'
     delete 'readme.html'
     delete 'release-notes.html'
-    
+
     delete fileTree('doc/tutorials')  { include '**/*.html'  }
     delete fileTree('doc/tutorials')  { include '**/bin/**/*'  }
-    
+
     delete fileTree('.')  { include '**/*~'  }
     delete fileTree('.')  { include '**/.stop___MAS'  }
     delete fileTree('.')  { include '**/APDescription.txt'  }
     delete fileTree('.')  { include '**/MTPs-Main-Container.txt'  }
-    
+
     delete fileTree('.')  { include '**/bookstore.*'  }
     delete fileTree('examples')  { include '**/bin/**'  }
     delete fileTree('examples')  { include '**/*.log'  }
     delete fileTree('demos')  { include '**/bin/**'  }
     delete fileTree('demos')  { include '**/*.log'  }
     delete 'demos/persistent-belief-base/a.bb'
-    
+
     def emptyDirs = []
-    
+
     fileTree (dir: 'examples').visit {
         def File f = it.file
         if (f.isDirectory() ) {
@@ -147,7 +147,7 @@ clean {
                 emptyDirs << f
             }
         }
-    }    
+    }
     fileTree (dir: 'demos').visit {
         def File f = it.file
         if (f.isDirectory() ) {
@@ -156,8 +156,8 @@ clean {
                 emptyDirs << f
             }
         }
-    }    
-    emptyDirs.reverseEach { it.delete() }    
+    }
+    emptyDirs.reverseEach { it.delete() }
 }
 
 test << {
@@ -168,19 +168,19 @@ task config (type: JavaExec, dependsOn: ['jar', 'plugin']) {
     main = 'jason.util.Config'
     classpath sourceSets.main.runtimeClasspath
     workingDir project.buildDir.absolutePath + '/libs'
-    
+
     doFirst {
         delete System.getProperty("user.home")+'/.jason'
     }
-    
-    doLast {    
+
+    doLast {
         println '------'
         println ''
         println 'you can set the Jason home directory with the following command:'
-        println '     export JASON_HOME='+project.buildDir.absolutePath 
+        println '     export JASON_HOME='+project.buildDir.absolutePath
         println ''
-        println 'and also change your PATH with:' 
-        println '     export PATH=$JASON_HOME/scripts:$PATH' 
+        println 'and also change your PATH with:'
+        println '     export PATH=$JASON_HOME/scripts:$PATH'
         println ''
         println '-----'
     }
@@ -197,10 +197,10 @@ eclipse {
 task javadoc(overwrite: true, dependsOn: compileJava) {
     setDescription('Generates Javadoc API documentation with UMLGraph diagrams')
     setGroup(JavaBasePlugin.DOCUMENTATION_GROUP)
-    
+
     doLast {
-        ant.javadoc(classpath: (configurations.runtime + configurations.compile).asPath, 
-                    sourcepath: file('src/main/java'), 
+        ant.javadoc(classpath: (configurations.runtime + configurations.compile).asPath,
+                    sourcepath: file('src/main/java'),
                     packagenames: '*',
                     destdir: "${docsDir}/../../doc/api",
                     private: 'true',
@@ -226,7 +226,7 @@ publishing {
     publications {
         maven(MavenPublication) {
             from components.java
-            
+
             artifactId 'jason'
         }
     }
@@ -254,11 +254,12 @@ signing {
     sign configurations.archives
 }
 
+/*
 uploadArchives {
     group = 'net.sf.jason'
     repositories {
         mavenDeployer {
-        	        
+
             beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
 
             repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
@@ -269,14 +270,14 @@ uploadArchives {
                 authentication(userName: ossrhUsername, password: ossrhPassword)
             }
 
-            pom*.whenConfigured { pom -> pom.dependencies.clear() } 
-            
+            pom*.whenConfigured { pom -> pom.dependencies.clear() }
+
             pom.project {
                 name 'Jason'
                 packaging 'jar'
                 groupId 'net.sf.jason'
-                
-                // optionally artifactId can be defined here 
+
+                // optionally artifactId can be defined here
                 description 'Jason is a fully-fledged interpreter for an extended version of AgentSpeak, a BDI agent-oriented logic programming language.'
                 url 'http://jason.sf.net'
 
@@ -303,11 +304,12 @@ uploadArchives {
                         name 'Rafael H. Bordini'
                         email 'rafael.h.bordini@gmail.com'
                     }
-                }            
+                }
             }
-        }        
+        }
     }
 }
+*/
 
 compileJavacc {
     inputDirectory = file('src/main/javacc')
@@ -327,16 +329,16 @@ task plugin(type: Jar, dependsOn: 'classes') {
     from 'build/classes/main'
     from 'build/resources/main'
     from 'build/resources/main/jeditPlugin'
-    
+
     from ( configurations.compile.collect { zipTree(it) } ) {
         include 'jade/**/*.class'
     }
-    
+
 
     doFirst {
         ant.untar(compression: 'gzip', dest: 'build', src: 'jedit/jedit.tgz')
     }
-    
+
     doLast {
         copy {
             from 'src/main/resources/jeditPlugin'
@@ -372,7 +374,7 @@ task publishMavenSF(dependsOn: [ 'build', 'publishToMavenLocal']) << {
 
 // Builds the distribution, documentation and a new release
 task doc(dependsOn: [ 'jjdoc', 'javadoc', 'renderAsciiDocs']) << {
-} 
+}
 
 task renderAsciiDocs(type: Exec) {
     commandLine 'find', '.', '-name', '*.adoc', '-exec', 'asciidoctor', '{}', ';'
@@ -388,7 +390,7 @@ task fixTab {
 
 // Builds the distribution, documentation and a new release
 task release(dependsOn: [ 'build', 'doc', 'fixTab', 'zipRel', 'plugin' ]) << {
-} 
+}
 
 // copy files used to build a release
 task copyRel << {
@@ -409,16 +411,16 @@ task copyRel << {
         include '**/*.jar'
     }
     copy {
-        from 'build/jedit'      
-        into 'build/jason-'+project.version+'/jedit' 
+        from 'build/jedit'
+        into 'build/jason-'+project.version+'/jedit'
     }
     copy {
-        from 'examples'      
-        into 'build/jason-'+project.version+'/examples' 
+        from 'examples'
+        into 'build/jason-'+project.version+'/examples'
     }
     copy {
-        from 'demos'      
-        into 'build/jason-'+project.version+'/demos' 
+        from 'demos'
+        into 'build/jason-'+project.version+'/demos'
     }
 }
 
