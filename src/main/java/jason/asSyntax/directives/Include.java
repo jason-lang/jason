@@ -61,6 +61,10 @@ public class Include extends DefaultDirective implements Directive {
                         
                         file = checkPathAndFixWithSourcePath(file, newpath, CRPrefix+"/");
                         in = Agent.class.getResource(file.substring(CRPrefix.length())).openStream();
+                    } else if (outerPrefix.startsWith("file:") || outerPrefix.startsWith("http:")) {
+                        URL url = new URL(new URL(outerPrefix), file);
+                        file = url.toString();
+                        in = url.openStream();
                     } else {
                         // get the directory of the source of the outer agent and 
                         // try to find the included source in the same directory
