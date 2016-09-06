@@ -150,6 +150,8 @@ public class CentralisedAgArch extends AgArch implements Runnable {
     public void setAgName(String name) throws JasonException {
         if (name.equals("self"))
             throw new JasonException("an agent cannot be named 'self'!");
+        if (name.equals("percept"))
+            throw new JasonException("an agent cannot be named 'percept'!");
         agName = name;
     }
 

@@ -134,7 +134,7 @@ public class CentralisedMASLauncherAnt implements MASLauncherInfraTier {
         } else {
             return new String[] { Config.get().getJavaHome() + "bin" + File.separator + "java", 
                     "-classpath",
-                    Config.get().getAntLib() + "/" + ant, "org.apache.tools.ant.launch.Launcher", 
+                    Config.get().getAntLib() + ant, "org.apache.tools.ant.launch.Launcher", 
                     "-e", "-f", build, task};
         }
     }

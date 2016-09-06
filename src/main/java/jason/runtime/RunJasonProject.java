@@ -46,7 +46,7 @@ public class RunJasonProject {
       try {
           File file = new File(name);
           project = parser.mas();
-          Config.get().fix();
+          //Config.get().fix();
           project.setProjectFile(file);
           project.setDirectory(file.getAbsoluteFile().getParentFile().getAbsolutePath());
           System.out.println("file "+name+" parsed successfully!\n");
