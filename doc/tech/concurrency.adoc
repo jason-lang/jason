@@ -54,7 +54,7 @@ creates a new intention for `gb` and then executes the action `a1`. `a1` is exec
 
 === Concurrent plans
 
-Besides the usual sequence operator `;`,  plan bodies can also use parallel operators: `|&|` and `|||`. The first is called __parallel-and__ and the second __parallel-or__.
+Besides the usual sequence operator `;`,  plan bodies can also use fork and join operators for concurrent execution of plan bodies: `|&|` and `|||`. The first is called __fork-join-and__ and the second __fork-join-xor__.
 
 For instance, in
 
@@ -93,8 +93,8 @@ The following cases can be considered when a *failure* occurs while achieving ei
 
 . there is plan failure for the failed subgoal: the failure is handled by that concurrent sub-intention without interference to the other subgoal.
 . there is no plan failure:
-* in case of parallel-and: drops also the other subgoal and handles the failure in the achievement of goal `gb` above as usual.
-* in case of parallel-or: ignore the failure (discarding that concurrent sub-intention) and continue to try the other subgoal.
+* in case of fork-join-and: drops also the other subgoal and handles the failure in the achievement of goal `gb` above as usual.
+* in case of fork-join-xor: ignore the failure (discarding that concurrent sub-intention) and continue to try the other subgoal.
 
 When a *.fail_goal(ga)* is executed:
 
@@ -393,13 +393,13 @@ infrastructure: Centralised(asynch,4,4,4,15,15,20)
 
 Besides the global configuration for the MAS. Jason allows to configure the number of cycles for each agent individually, allowing  to define a kind of priority by giving more CPU for certain agents than others. The parameters for the agents are presented by means of the two examples below.
 
-In this example, the parameters of the agent *ana* say that the number of cycles for the sense and deliberate stages are `2`, while the number of cycles for the act stage are `10`.
+In this example, the parameters of the agent *ana* say that the number of cycles for the sense and deliberate stages are `2`, while the number of cycles for the act stage is `10`.
 
 ----
 ana [cycles_sense = 2, cycles_deliberate = 2, cycles_act = 10];
 ----
 
-In this example, the parameters of the agent *bob* says that the number of cycles for the all stages must be `10`.
+In this example, the parameters of the agent *bob* says that the number of cycles for the senquence sense-deliberate-act is `10`.
 
 ----
 bob [cycles = 10];
