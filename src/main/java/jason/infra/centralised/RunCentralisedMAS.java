@@ -372,9 +372,9 @@ public class RunCentralisedMAS extends BaseCentralisedMAS {
     
     protected void createReplAg(String n) {
         CentralisedAgArch agArch = new CentralisedAgArch();
-        agArch.setAgName(n);
-        agArch.setEnvInfraTier(env);
         try {
+            agArch.setAgName(n);
+            agArch.setEnvInfraTier(env);
             agArch.createArchs(null, ReplAgGUI.class.getName(), null, null, new Settings(), this);
             Thread agThread = new Thread(agArch);
             agArch.setThread(agThread);

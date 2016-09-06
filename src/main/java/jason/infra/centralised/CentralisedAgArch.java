@@ -147,7 +147,9 @@ public class CentralisedAgArch extends AgArch implements Runnable {
         return logger;
     }
 
-    public void setAgName(String name) {
+    public void setAgName(String name) throws JasonException {
+        if (name.equals("self"))
+            throw new JasonException("an agent cannot be named 'self'!");
         agName = name;
     }
 

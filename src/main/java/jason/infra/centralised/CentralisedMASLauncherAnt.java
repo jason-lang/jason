@@ -214,7 +214,7 @@ public class CentralisedMASLauncherAnt implements MASLauncherInfraTier {
             String cartago = Config.findJarInDirectory(new File(c.getJasonHome()+"/libs"), "cartago");
             if (cartago != null)
                 lib += "        <pathelement location=\""+cartago+"\"/>\n";
-            String c4jason = Config.findJarInDirectory(new File(c.getJasonHome()+"/libs"), "c4jason");
+            String c4jason = Config.findJarInDirectory(new File(c.getJasonHome()+"/libs"), "jaca");
             if (c4jason != null)
                 lib += "        <pathelement location=\""+c4jason+"\"/>\n";            
         }

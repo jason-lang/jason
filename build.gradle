@@ -16,7 +16,7 @@ apply plugin: 'maven'
 apply plugin: 'maven-publish'
 apply plugin: 'signing'
 
-version '2.1-SNAPSHOT'
+version '2.0a'
 group   'org.jason-lang'
 
 sourceCompatibility = 1.7
@@ -234,6 +234,8 @@ publishing {
 
 // from http://central.sonatype.org/pages/gradle.html
 
+// uncomment to produce maven jar
+/*
 task javadocJar (type: Jar, dependsOn: javadoc) {
     baseName 'jason'
     classifier = 'javadoc'
@@ -254,7 +256,6 @@ signing {
     sign configurations.archives
 }
 
-/*
 uploadArchives {
     group = 'net.sf.jason'
     repositories {

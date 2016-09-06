@@ -92,7 +92,7 @@ public class MASConsoleGUI {
             }
         });
         frame.getContentPane().setLayout(new BorderLayout());
-        int h = 500;
+        int h = 600;
         int w = (int)(h*1.618);
         frame.setBounds((int)(h*0.618), 20, w, h);
     }

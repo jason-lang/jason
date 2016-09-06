@@ -28,8 +28,12 @@ public class TestArch extends CentralisedAgArch implements Runnable {
     }
 
     public TestArch(String agName) {
-        setAgName(agName);
-        BaseCentralisedMAS.getRunner().addAg(this);
+        try {
+            setAgName(agName);
+            BaseCentralisedMAS.getRunner().addAg(this);
+        } catch (JasonException e) {
+            e.printStackTrace();
+        }
     }
     
     public int getCycle() {
