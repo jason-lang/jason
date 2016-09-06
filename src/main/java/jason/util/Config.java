@@ -224,7 +224,17 @@ public class Config extends Properties {
     }
     
     public String getAntJar() {
-        return new File(findJarInDirectory(new File(getAntLib()), "ant-launcher")).getName();
+        String ant = getAntLib();
+        if (ant != null) {
+            ant = findJarInDirectory(new File(ant), "ant-launcher");
+            if (ant != null) {
+                File fAnt = new File(ant);
+                if (fAnt.exists())
+                    return fAnt.getName();
+            }
+        }
+        
+        return null;
     }
     
     public void setJavaHome(String jh) {

@@ -54,6 +54,11 @@ public class CentralisedMASLauncherAnt implements MASLauncherInfraTier {
         try {
             String[] command = getStartCommandArray();
 
+            if (command == null) {
+                System.err.println("Problem defining the command to run the MAS!");
+                return;
+            }
+            
             String cmdstr = command[0];
             for (int i = 1; i < command.length; i++) {
                 cmdstr += " " + command[i];
@@ -122,11 +127,16 @@ public class CentralisedMASLauncherAnt implements MASLauncherInfraTier {
     public String[] getStartCommandArray() {
         String build = bindir+getBuildFileName();;
         if (hasCBuild()) build = bindir+getCustomBuildFileName();
-        
-        return new String[] { Config.get().getJavaHome() + "bin" + File.separator + "java", 
-                "-classpath",
-                Config.get().getAntLib() + "/" + Config.get().getAntJar(), "org.apache.tools.ant.launch.Launcher", 
-                "-e", "-f", build, task};
+        String ant = Config.get().getAntJar();
+        if (ant == null) {
+            System.err.println("Ant is not properly configured! Current value is "+Config.get().getAntLib());
+            return null;
+        } else {
+            return new String[] { Config.get().getJavaHome() + "bin" + File.separator + "java", 
+                    "-classpath",
+                    Config.get().getAntLib() + "/" + ant, "org.apache.tools.ant.launch.Launcher", 
+                    "-e", "-f", build, task};
+        }
     }
 
     public String getBuildFileName() {
