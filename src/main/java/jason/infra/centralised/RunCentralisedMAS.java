@@ -285,15 +285,6 @@ public class RunCentralisedMAS extends BaseCentralisedMAS {
         }
         MASConsoleGUI.get().addButton(btDebug);
 
-        // add show sources button
-        final JButton btShowSrc = new JButton("Sources", new ImageIcon(RunCentralisedMAS.class.getResource("/images/list.gif")));
-        btShowSrc.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                showProjectSources(project);
-            }
-        });
-        MASConsoleGUI.get().addButton(btShowSrc);
-
         // add Button start
         final JButton btStartAg = new JButton("New agent", new ImageIcon(RunCentralisedMAS.class.getResource("/images/newAgent.gif")));
         btStartAg.addActionListener(new ActionListener() {
@@ -313,6 +304,16 @@ public class RunCentralisedMAS extends BaseCentralisedMAS {
         MASConsoleGUI.get().addButton(btKillAg);
         
         createNewReplAgButton();
+
+        // add show sources button
+        final JButton btShowSrc = new JButton("Sources", new ImageIcon(RunCentralisedMAS.class.getResource("/images/list.gif")));
+        btShowSrc.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                showProjectSources(project);
+            }
+        });
+        MASConsoleGUI.get().addButton(btShowSrc);
+        
     }
 
     protected void createPauseButton() {

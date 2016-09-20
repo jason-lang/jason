@@ -118,10 +118,11 @@ Follow the steps below to run the system with JADE and Jason agents:
 
 - Compile the JADE examples
 ----
-export CLASSPTH=~/Jason/lib/jade.jar:.
+export CLASSPATH=~/jason/libs/jade-XXXX.jar:.  <1>
 cd jade-example
 javac examples/bookTrading/Book*
 ----
+<1> Where XXXX is the release of Jade in the `libs` folder.
 
 - Start the buyer, called `bob`, in a new container using
   the command

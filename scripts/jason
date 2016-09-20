@@ -1,5 +1,7 @@
 #!/bin/bash
 
+REL=2.0a
+
 if [ -z $JASON_HOME ] ; then
     CURDIR=`pwd`
     JASON_HOME=`dirname $0`
@@ -27,11 +29,21 @@ fi
 
 # check JDK_HOME
 if [ ! -f $JDK_HOME/bin/javac ] ; then
-   echo JDK_HOME is not properly set!
+   echo JDK_HOME is not properly set! Value is $JDK_HOME
 fi
 export PATH=$JDK_HOME/bin:$PATH
 
-JASON_JAR=`find $JASON_HOME/libs -name jason*.jar`
-JADE_JAR=`find $JASON_HOME/libs  -name jade*.jar`
+
+JASON_JAR=$JASON_HOME/libs/jason-$REL.jar
+JADE_JAR=$JASON_HOME/libs/jade-4.3.jar
+
+if [ ! -f $JASON_JAR ] ; then
+    echo Jason.jar is not properly set!
+    echo Value is $JASON_JAR
+fi
+if [ ! -f $JADE_JAR ] ; then
+    echo Jade.jar is not properly set!
+    echo Value is $JADE_JAR
+fi
 
 java -cp $JASON_JAR:$JADE_JAR jason.runtime.RunJasonProject $1
