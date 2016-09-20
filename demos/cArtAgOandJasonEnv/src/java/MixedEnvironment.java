@@ -1,10 +1,9 @@
+import java.util.logging.Logger;
+
+import jaca.CartagoEnvironment;
 import jason.asSyntax.Literal;
 import jason.asSyntax.Structure;
 import jason.environment.Environment;
-
-import java.util.logging.Logger;
-
-import c4jason.CartagoEnvironment;
 
 
 public class MixedEnvironment extends Environment {
