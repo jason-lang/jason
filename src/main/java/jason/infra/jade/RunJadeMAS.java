@@ -51,7 +51,6 @@ import jason.asSyntax.StringTerm;
 import jason.asSyntax.directives.DirectiveProcessor;
 import jason.asSyntax.directives.Include;
 import jason.control.ExecutionControlGUI;
-import jason.infra.centralised.BaseCentralisedMAS;
 import jason.infra.centralised.RunCentralisedMAS;
 import jason.mas2j.AgentParameters;
 import jason.mas2j.ClassParameters;
@@ -276,7 +275,7 @@ public class RunJadeMAS extends RunCentralisedMAS {
         }
     }
 
-    protected void startAgs() {
+    public void startAgs() {
         try {
             if (envc != null)
                 envc.start();
