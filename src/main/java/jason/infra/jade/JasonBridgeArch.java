@@ -7,6 +7,7 @@ import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.UnreadableException;
 import jason.architecture.AgArch;
+import jason.architecture.AgArchInfraTier;
 import jason.asSemantics.ActionExec;
 import jason.asSemantics.Agent;
 import jason.asSemantics.Message;
@@ -38,6 +39,7 @@ public class JasonBridgeArch extends AgArch {
         this.jadeAg = jadeAg;
         logger = jade.util.Logger.getMyLogger(this.getClass().getName() + "." + getAgName());
     }
+    
     public void init(AgentParameters ap) throws Exception {
         Agent.create(this, ap.agClass.getClassName(), ap.getBBClass(), ap.asSource.getAbsolutePath(), ap.getAsSetts(false, false));
         insertAgArch(this);
@@ -57,7 +59,7 @@ public class JasonBridgeArch extends AgArch {
     public void wake() {
         jadeAg.wakeUp();
     }
-
+   
     @Override
     public void stop() {
         getTS().getAg().stopAg();
@@ -77,6 +79,8 @@ public class JasonBridgeArch extends AgArch {
     @SuppressWarnings("unchecked")
     @Override
     public List<Literal> perceive() {
+        super.perceive();
+        
         if (!isRunning()) return null;
         if (getEnvironmentAg() == null) return null;
         
@@ -101,6 +105,8 @@ public class JasonBridgeArch extends AgArch {
     public JadeAgArch getJadeAg() {
         return jadeAg;
     }
+    
+    
     
     @Override
     public void sendMsg(Message m) throws Exception {

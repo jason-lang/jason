@@ -16,7 +16,7 @@ apply plugin: 'maven'
 apply plugin: 'maven-publish'
 apply plugin: 'signing'
 
-version '2.0a'
+version '2.1-SNAPSHOT'
 group   'org.jason-lang'
 
 sourceCompatibility = 1.7
@@ -188,9 +188,29 @@ task config (type: JavaExec, dependsOn: ['jar', 'plugin']) {
 
 eclipse {
     classpath {
+        downloadJavadoc = true
         file.whenMerged { cp ->
             cp.entries.add( new org.gradle.plugins.ide.eclipse.model.SourceFolder('build/generated/javacc', null) )
         }
+        file.whenMerged { cp ->
+	        logger.lifecycle "Removing duplicate classpath entries from eclipse for project '${project.name}'"
+	
+	        Map entryByPath = cp.entries.groupBy { entry -> entry.path }
+	        entryByPath.each { key, values ->
+	          if (values.size() > 1) {
+	            def entry = values.first()
+	            if (entry.kind == 'src') {
+	              entry.includes = []
+	              entry.excludes = []
+	            }
+	            int index = cp.entries.indexOf entry
+	            logger.lifecycle "Removing ${values.collect { it.path }}"
+	            cp.entries.removeAll values
+	            logger.lifecycle "Adding ${entry.path}"
+	            cp.entries.add index, entry
+	          }
+	        }
+	   }
     }
 }
 
@@ -226,7 +246,8 @@ publishing {
     publications {
         maven(MavenPublication) {
             from components.java
-
+			artifact sourceJar
+			artifact javadocJar
             artifactId 'jason'
         }
     }
@@ -235,7 +256,6 @@ publishing {
 // from http://central.sonatype.org/pages/gradle.html
 
 // uncomment to produce maven jar
-/*
 task javadocJar (type: Jar, dependsOn: javadoc) {
     baseName 'jason'
     classifier = 'javadoc'
@@ -248,6 +268,7 @@ task sourceJar (type : Jar) {
     from sourceSets.main.allSource
 }
 
+/*
 artifacts {
     archives sourceJar //, javadocJar
 }

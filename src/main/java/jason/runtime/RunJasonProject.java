@@ -5,7 +5,6 @@ import java.io.File;
 import jason.infra.MASLauncherInfraTier;
 import jason.mas2j.MAS2JProject;
 import jason.mas2j.parser.mas2j;
-import jason.util.Config;
 
 /**
  * Run a Jason mas2j project

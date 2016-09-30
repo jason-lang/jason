@@ -59,7 +59,6 @@ public class JadeAgArch extends JadeAg {
         logger = jade.util.Logger.getMyLogger(this.getClass().getName() + "." + getLocalName());
         logger.info("starting "+getLocalName());
         try {
-    
             AgentParameters ap = parseParameters();
             if (ap != null) {
                 jasonBridgeAgArch = new JasonBridgeArch(this);
@@ -92,7 +91,8 @@ public class JadeAgArch extends JadeAg {
     }*/
     
     void wakeUp() {
-        tsBehaviour.restart();
+        if (tsBehaviour != null) // it can happen that the setup was not run before this method...
+            tsBehaviour.restart();
     }
     
     protected AgentParameters parseParameters() throws ParseException, IOException {
@@ -223,11 +223,10 @@ public class JadeAgArch extends JadeAg {
                     block(1000);
                 }
             } else {
+                ts.reasoningCycle();
                 if (ts.canSleep()) {
                     block(1000);
                     //enterInSleepMode = false;
-                } else {
-                    ts.reasoningCycle();
                 }
             }
         }

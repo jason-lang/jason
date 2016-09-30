@@ -11,7 +11,7 @@ ifdef::env-github[:outfilesuffix: .adoc]
 
 == Introduction
 
-This programming (mini) tutorial will illustrate how the BDI model is
+This programming (mini) tutorial illustrates how the BDI model is
 used in the http://jason.sf.net[Jason] agent-oriented programming
 language. We start by a very simple agent code and progress exploring
 the BDI features of Jason.
@@ -26,19 +26,19 @@ agent has _beliefs_ (based on what it perceives and communicates with
 other agents) that can produce _desires_ (states of the world that the
 agent wants to achieve). The agent _deliberates_ on its desires and
 decides to _commit_ to some (desires to which the agent is committed
-become _intentions_). The satisfy its intentions, the agent executes
+become _intentions_). To satisfy its intentions, the agent executes
 plans that lead to action. The behaviour of the agent (i.e., its
 actions) is thus explained/caused by what it intends (i.e., the desires
 it decided to pursue). An important feature of architectures that
 implement the BDI model is that the agent should _react_ to changes in
 its environment as soon as possible while keeping its _pro-active_
 (i.e., desires-oriented) behaviour. (Do not worry about all these
-high-level anthropomorphic concepts (in italics), we will try to keep
+high-level anthropomorphic concepts (in _italics_), we will try to keep
 the simplicity of usual hello world programs.)
 
 == Bob (the mentalist)
 
-=== the agent program
+=== Agent program
 
 The Jason program for our agent is the following (since BDI is inspired
 in folk psychology, we can name this agent Bob):
@@ -103,15 +103,20 @@ in this case).
 * Since the intention has executed all actions, it finishes.
 5.  The agent keeps waiting for new events to react to.
 
-=== execution
+=== Execution
 
-* Create a new Jason project (you can use either
+* Create a new project (you can use either
 http://jason.sourceforge.net/mini-tutorial/getting-started/[jEdit] or
 http://jason.sourceforge.net/mini-tutorial/eclipse-plugin/[Eclipse]
-plugins).
-* Create agent Bob with the source code above. The .mas2j project should
+Jason plugins, or the http://jacamo.sourceforge.net/eclipseplugin/tutorial/[JaCaMo plugin]).
+* Create agent Bob with the source code above. The project should
 look like:
++
+[cols="2",frame=topbot]
+|===
+|Jason .mas2j project|JaCaMo .jcm project
 
+a|
 ----------------
 MAS bdi_hw {
 
@@ -119,6 +124,18 @@ MAS bdi_hw {
 
 }
 ----------------
+
+a|
+----------------
+mas bdi_hw {
+
+    agent bob
+
+    asl-path: src/agt, src/agt/inc
+}
+----------------
+
+|===
 
 * Run the project.
 
@@ -199,34 +216,72 @@ sincere(alice).
 +!say(X) : not today(monday) <- .print(X); .wait(500); !say(X).
 -----------------------------------------------------------------
 
-=== perception
+=== Perception
 
 Besides messages from other agents, another source for beliefs is
 perception. We will place a calendar in the environment so that Bob can
 be aware of the current day. It is not the focus of this tutorial to
 develop the environment, so we will simply copy & paste some code:
 
-* change the .mas2j to:
+* change the project to:
++
+[cols="2",frame=topbot]
+|===
+|Jason .mas2j project|JaCaMo .jcm project
 
+a|
 --------------------------
 MAS bdi_hw {
-    environment: c4jason.CartagoEnvironment // CArtAgO environment
 
-    agents:
-        bob   agentArchClass c4jason.CAgentArch; // Agent architecture to perceive CArtAgO
+  // CArtAgO environment
+  environment: c4jason.CartagoEnvironment
 
+  // Agent architecture for CArtAgO
+  agents:
+     bob agentArchClass c4jason.CAgentArch;
 }
 --------------------------
 
+a|
+--------------------------
+mas bdi_hw {
+
+   agent bob
+
+   workspace world {
+      artifact cal: Calendar {
+         focused-by: bob
+      }
+   }
+
+   asl-path: src/agt, src/agt/inc
+}
+--------------------------
+|===
+
+
 * Download link:./code/Calendar.java[this] file and place it in the
 directory of the project.
-* In the beginning of Bob's program, add the following lines that create
-the Calendar in the environment:
+* In the beginning of Bob's program, add the following lines to give him access to the calendar:
++
+[cols="2",frame=topbot]
+|===
+|If using .mas2j project|If using .jcm project
 
+a|
 ---------------------------------------------------------------------
 !create_calendar.
-+!create_calendar <- makeArtifact("c","Calendar",[],AId); focus(AId).
++!create_calendar
+   <- makeArtifact("c","Calendar",[],AId);
+      focus(AId).
 ---------------------------------------------------------------------
+
+a|
+--------------------------
+{ include("$jacamoJar/templates/common-cartago.asl") }
+--------------------------
+|===
+
 
 * Run the project and interactively change the current day observing
 Bob's belief base and intentions. For example, if you change the day to
