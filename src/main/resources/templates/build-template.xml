@@ -27,6 +27,7 @@
 
     <!-- tasks the user can override in his/her c-build.xml script -->
     <target name="user-init">
+        
     </target>
     <target name="user-end">
     </target>
@@ -46,6 +47,7 @@
     </target>
     
     <target name="jar" depends="compile">
+        <mkdir dir="${basedir}/lib" />
         <delete file="${ant.project.name}.jar" />
         <copy file="${jasonJar}" tofile="${ant.project.name}.jar" />
         <copy file="${mas2j.project.file}" tofile="default.mas2j" />
@@ -58,7 +60,7 @@
                 <include name="**/*.class" />
             </fileset>
             <zipgroupfileset dir="${basedir}/lib" includes="**/*.jar" />
-            <zipgroupfileset dir="${jasonJar}/../../lib" includes="cartago.jar, c4jason.jar, moise.jar" />
+            <zipgroupfileset dir="${jasonJar}/../../libs" includes="*.jar" />
             <manifest>
                   <attribute name="Main-Class" value="jason.infra.centralised.RunCentralisedMAS"/>
             </manifest>
