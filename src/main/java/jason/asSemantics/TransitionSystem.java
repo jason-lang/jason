@@ -805,7 +805,7 @@ public class TransitionSystem {
                         Trigger te = new Trigger(TEOperator.add, TEType.test, body);
                         evt = new Event(te, curInt);
                         if (ag.getPL().hasCandidatePlan(te)) {
-                            if (logger.isLoggable(Level.FINE)) logger.fine("Test Goal '" + h + "' failed as simple query. Generating internal event for it: "+te);
+                            if (logger.isLoggable(Level.FINE)) logger.fine("Test Goal '" + bTerm + "' failed as simple query. Generating internal event for it: "+te);
                             conf.C.addEvent(evt);
                             confP.stepAct = State.StartRC;
                             fail = false;
@@ -813,8 +813,8 @@ public class TransitionSystem {
                     }
                 }
                 if (fail) {
-                    if (logger.isLoggable(Level.FINE)) logger.fine("Test '"+h+"' failed ("+h.getSrcInfo()+").");
-                    generateGoalDeletion(curInt, JasonException.createBasicErrorAnnots("test_goal_failed", "Failed to test '"+h+"'"));
+                    if (logger.isLoggable(Level.FINE)) logger.fine("Test '"+bTerm+"' failed ("+h.getSrcInfo()+").");
+                    generateGoalDeletion(curInt, JasonException.createBasicErrorAnnots("test_goal_failed", "Failed to test '"+bTerm+"'"));
                 }
             }
             break;
