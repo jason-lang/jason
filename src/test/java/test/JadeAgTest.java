@@ -25,7 +25,7 @@ public class JadeAgTest extends TestCase {
         assertEquals(ACLMessage.ACCEPT_PROPOSAL, JadeAg.kqmlToACL("accept_proposal").getPerformative());
         assertEquals(ACLMessage.QUERY_IF, JadeAg.kqmlToACL("query_if").getPerformative());
         assertEquals(ACLMessage.PROPOSE, JadeAg.kqmlToACL("propose").getPerformative());
-        assertEquals(ACLMessage.INFORM_IF, JadeAg.kqmlToACL("inform\\_if").getPerformative());
+        assertEquals(ACLMessage.INFORM_IF, JadeAg.kqmlToACL("inform_if").getPerformative());
     }
 
 }
