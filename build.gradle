@@ -29,7 +29,9 @@ repositories {
     maven {
         url "http://jacamo.sourceforge.net/maven2"
     }
-
+    //maven {
+    //    url "http://jade.tilab.com/maven"
+    //}
     flatDir {
 	   dirs 'jedit', 'demos/persistent-belief-base/lib'
     }
@@ -41,7 +43,8 @@ configurations {
 
 
 dependencies {
-    compile group: 'net.sf.ingenias', name: 'jade', version: '4.3'
+	compile group: 'net.sf.ingenias', name: 'jade', version: '4.3'
+    //compile group: 'com.tilab.jade', name: 'jade', version: '4.4.0'
     compile group: 'org.jacamo',     name: 'cartago', version: '2.2-SNAPSHOT'
     compile group: 'org.jacamo',     name: 'jaca',    version: '2.2-SNAPSHOT'
 

@@ -1,5 +1,11 @@
 package jason.infra.jade;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import jade.core.AID;
 import jade.domain.DFService;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
@@ -7,7 +13,6 @@ import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.UnreadableException;
 import jason.architecture.AgArch;
-import jason.architecture.AgArchInfraTier;
 import jason.asSemantics.ActionExec;
 import jason.asSemantics.Agent;
 import jason.asSemantics.Message;
@@ -18,12 +23,6 @@ import jason.asSyntax.StringTermImpl;
 import jason.asSyntax.Term;
 import jason.mas2j.AgentParameters;
 import jason.runtime.RuntimeServicesInfraTier;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class JasonBridgeArch extends AgArch {
     
@@ -132,7 +131,7 @@ public class JasonBridgeArch extends AgArch {
                         continue;
                     }
                     
-                    String ilForce   = JadeAg.aclToKqml(m);
+                    String ilForce   = JadeAg.aclPerformativeToKqml(m);
                     String sender    = m.getSender().getLocalName();
                     String replyWith = m.getReplyWith();
                     String irt       = m.getInReplyTo();

@@ -153,6 +153,12 @@ public abstract class JadeAg extends Agent {
             ACLMessage m = new ACLMessage(ACLMessage.INFORM_REF);
             m.addUserDefinedParameter("kqml-performative", p);
             return m;
+        } else if (p.toLowerCase().equals("accept_proposal")) {
+            return new ACLMessage(ACLMessage.ACCEPT_PROPOSAL);          
+        } else if (p.toLowerCase().equals("reject_proposal")) {
+            return new ACLMessage(ACLMessage.REJECT_PROPOSAL);          
+        } else if (p.toLowerCase().equals("query_if")) {
+            return new ACLMessage(ACLMessage.QUERY_IF);         
         /*} else if (p.equals("unachieve")) {
             return UNACHIEVE;
         } else if (p.equals("askAll")) {
@@ -167,7 +173,7 @@ public abstract class JadeAg extends Agent {
         return new ACLMessage(ACLMessage.getInteger(p));            
     }
     
-    public static String aclToKqml(ACLMessage m) {
+    public static String aclPerformativeToKqml(ACLMessage m) {
         switch(m.getPerformative()) {
         case ACLMessage.INFORM: return "tell"; 
         case ACLMessage.QUERY_REF: return "askOne";
