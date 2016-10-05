@@ -1,37 +1,7 @@
 #!/bin/bash
 
-if [ -z $JASON_HOME ] ; then
-    CURDIR=`pwd`
-    JASON_HOME=`dirname $0`
-    cd "$JASON_HOME/.."
-    JASON_HOME=`pwd`
-    cd $CURDIR
-fi
+source `dirname $0`/jason-setup
 
-if [ -z $JDK_HOME ] ; then
-    if [ -n $JAVA_HOME ] ; then
-	    JDK_HOME=$JAVA_HOME
-    fi
-fi
-
-# try to fix JDK_HOME on MacOS
-if [ -z $JDK_HOME ] ; then
-    if [ `uname` == Darwin ] ; then
-	       JDK_HOME=`find /Library/Java/JavaVirtualMachines -name javac | tail -1`
-           JDK_HOME=`dirname $JDK_HOME`
-           JDK_HOME=`dirname $JDK_HOME`
-       fi
-fi
-
-# check JDK_HOME
-if [ ! -f $JDK_HOME/bin/javac ] ; then
-   echo JDK_HOME is not properly set!
-fi
-export PATH=$JDK_HOME/bin:$PATH
-
-
-JASON_JAR=`find $JASON_HOME/libs -name jason*.jar`
-JADE_JAR=`find $JASON_HOME/libs  -name jade*.jar`
 JEDIT_HOME=$JASON_HOME/jedit
 
 # run jIDE
