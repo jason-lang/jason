@@ -1,11 +1,5 @@
 package jason.bb;
 
-import jason.asSemantics.Agent;
-import jason.asSemantics.Unifier;
-import jason.asSyntax.Atom;
-import jason.asSyntax.Literal;
-import jason.asSyntax.PredicateIndicator;
-
 import java.util.Deque;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -18,6 +12,12 @@ import java.util.logging.Logger;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+
+import jason.asSemantics.Agent;
+import jason.asSemantics.Unifier;
+import jason.asSyntax.Atom;
+import jason.asSyntax.Literal;
+import jason.asSyntax.PredicateIndicator;
 
 /**
  * Default implementation of Jason BB.
@@ -276,7 +276,11 @@ public class DefaultBeliefBase extends BeliefBase {
 
     @Override
     public Iterator<Literal> getCandidateBeliefs(PredicateIndicator pi) {
-        BelEntry entry = nameSpaces.get(pi.getNS()).get(pi); 
+    	Map<PredicateIndicator, BelEntry> pi2entry = nameSpaces.get(pi.getNS());
+    	if (pi2entry == null ) 
+    		return null;
+
+        BelEntry entry = pi2entry.get(pi); 
         if (entry != null)
             return entry.list.iterator();
         else
