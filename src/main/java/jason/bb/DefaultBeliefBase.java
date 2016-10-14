@@ -276,9 +276,9 @@ public class DefaultBeliefBase extends BeliefBase {
 
     @Override
     public Iterator<Literal> getCandidateBeliefs(PredicateIndicator pi) {
-    	Map<PredicateIndicator, BelEntry> pi2entry = nameSpaces.get(pi.getNS());
-    	if (pi2entry == null ) 
-    		return null;
+        Map<PredicateIndicator, BelEntry> pi2entry = nameSpaces.get(pi.getNS());
+        if (pi2entry == null ) 
+            return null;
 
         BelEntry entry = pi2entry.get(pi); 
         if (entry != null)
@@ -340,7 +340,7 @@ public class DefaultBeliefBase extends BeliefBase {
                     ebels = (Element) document.createElement("beliefs");
                     Element enss = (Element) document.createElement("namespaces");
                     Element ens = (Element) document.createElement("namespace");
-                    ens.setAttribute("id", "default"); // to ensure default is the first
+                    ens.setAttribute("id", Literal.DefaultNS.toString()); // to ensure default is the first
                     enss.appendChild(ens);
                     for (Atom ns: getNameSpaces()) {
                         if (ns == Literal.DefaultNS)
