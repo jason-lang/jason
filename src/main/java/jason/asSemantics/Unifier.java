@@ -276,13 +276,15 @@ public class Unifier implements Cloneable, Iterable<VarTerm> {
     }
 
     private boolean unifiesNamespace(Literal t1s, Literal t2s) {
-        if (t1s == Literal.DefaultNS && t2s == Literal.DefaultNS) { // if both are the default NS
+        if (t1s == Literal.DefaultNS && t2s == Literal.DefaultNS)  // if both are the default NS
             return true;
-        }
-        Atom nst1 = (t1s == Literal.DefaultNS ? Literal.DefaultNS : t1s.getNS());
-        Atom nst2 = (t2s == Literal.DefaultNS ? Literal.DefaultNS : t2s.getNS());
-        //System.out.println(nst1.getFunctor()+" == "+ nst2.getFunctor()); //+" ==> "+unifiesNoUndo(nst1, nst2));
-        return unifiesNoUndo(nst1, nst2);
+        
+        // compares the name spaces of t1s and t2s
+        t1s = t1s.getNS();
+        t2s = t2s.getNS();
+        if (t1s.equals(t2s)) // just to speed up and avoid all the details of unifiesNoUndo
+            return true;
+        return unifiesNoUndo(t1s, t2s);
     }
     
     public VarTerm deref(VarTerm v) {

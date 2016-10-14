@@ -562,6 +562,17 @@ public abstract class Literal extends DefaultTerm implements LogicalFormula {
             return this;
         }
         
+        @Override
+        public boolean equals(Object o) {
+            if (o == null) return false;
+            if (o == this) return true;
+            if (o instanceof Atom) {
+                Atom a = (Atom)o;
+                return a.isAtom() && getFunctor().equals(a.getFunctor());
+            }
+            return false;
+        }
+        
         public String toString() {
             return getFunctor();
         };
