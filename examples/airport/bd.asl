@@ -40,4 +40,3 @@ safe_area(field1).
 +!disarm(plasticBomb).
 +!disarm(bioBomb).
 +!disarm(dirtyBomb).
-

@@ -45,8 +45,8 @@ configurations {
 dependencies {
 	compile group: 'net.sf.ingenias', name: 'jade', version: '4.3'
     //compile group: 'com.tilab.jade', name: 'jade', version: '4.4.0'
-    compile group: 'org.jacamo',     name: 'cartago', version: '2.2-SNAPSHOT'
-    compile group: 'org.jacamo',     name: 'jaca',    version: '2.2-SNAPSHOT'
+    compile group: 'org.jacamo',     name: 'cartago', version: '2.2'
+    compile group: 'org.jacamo',     name: 'jaca',    version: '2.2'
 
     // from jEdit
     compile fileTree(dir: 'jedit', include: '*.jar') // using fileTree, jedit jars are not included as a dependency in the pom file
@@ -74,6 +74,12 @@ task copyJarsToBuild {
             from 'scripts'
             into 'build/scripts'
             include '**'
+            filter {
+			    String line -> line.replaceAll("JasonREL=[0-9]+\\.[0-9]+", "JasonREL="+project.version)
+			}
+			filter {
+				String line -> line.replaceAll("JadeREL", file(project.configurations.compile.find { it.name.startsWith("jade-") }).name)
+			}
         }
     }
 }

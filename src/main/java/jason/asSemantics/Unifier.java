@@ -1,7 +1,6 @@
 package jason.asSemantics;
 
 import jason.asSyntax.ASSyntax;
-import jason.asSyntax.Atom;
 import jason.asSyntax.CyclicTerm;
 import jason.asSyntax.ListTerm;
 import jason.asSyntax.ListTermImpl;
