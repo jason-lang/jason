@@ -7,12 +7,12 @@ priv::all_proposals_received
         .count(::propose(_)[source(_)], NO) &
         .count(::refuse[source(_)], NR) &
         NP = NO + NR. // participants = proposals + refusals
-        
+
 // starts a CNP
-@p1 
+@p1
 +!startCNP(Task)
     <-  .broadcast(tell, ::cnp_started); // tell everyone a CNP has started
-        // this_ns is a reference to the namespace where this module is loaded
+        // :: is a reference to the namespace where this module is loaded
         // in this example is the namespace where the CNP is being performed
         .print("Waiting participants for task ",Task," in ",this_ns ," ... ");
         .wait(3000); // wait participants introduction
@@ -50,10 +50,10 @@ priv::all_proposals_received
     +!announce_result(_,[]).
     // award contract to the winner
     +!announce_result (Ns,[offer(_,Ag)|T]) : Ns::winner(Ag)
-       <- .send(Ag,tell,Ns::accept_proposal ); // notify the winner
+       <- .send(Ag,tell,Ns::accept_proposal); // notify the winner
     !announce_result(Ns,T).
     // announce to others
     +!announce_result(Ns,[offer(_,Ag)|T])
-       <- .send(Ag,tell,Ns::reject_proposal );
+       <- .send(Ag,tell,Ns::reject_proposal);
           !announce_result(Ns,T).
 {end}

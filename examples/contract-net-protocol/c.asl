@@ -1,6 +1,6 @@
 /* Initial beliefs and rules */
 
-all_proposals_received(CNPId) 
+all_proposals_received(CNPId)
   :- .count(introduction(participant,_),NP) &    // number of participants
      .count(propose(CNPId,_)[source(_)], NO) &   // number of proposes received
      .count(refuse(CNPId)[source(_)], NR) &      // number of refusals received
@@ -14,8 +14,8 @@ all_proposals_received(CNPId)
 /* Plans */
 
 // start the CNP
-+!startCNP(Id,Task) 
-   <- .print(" Waiting participants for task ",Task,"...");
++!startCNP(Id,Task)
+   <- .print("Waiting participants for task ",Task,"...");
       .wait(2000);  // wait participants introduction
       +cnp_state(Id,propose);   // remember the state of the CNP
       .findall(Name,introduction(participant,Name),LP);
@@ -31,7 +31,7 @@ all_proposals_received(CNPId)
 +!contract(CNPId)
    :  cnp_state(CNPId,propose)
    <- -cnp_state(CNPId,_);
-      +cnp_state(CNPId,contract);  
+      +cnp_state(CNPId,contract);
       .findall(offer(O,A),propose(CNPId,O)[source(A)],L);
       .print("Offers are ",L);
       L \== []; // constraint the plan execution to at least one offer
@@ -41,17 +41,17 @@ all_proposals_received(CNPId)
       -+cnp_state(CNPId,finished).
 
 // nothing todo, the current phase is not 'propose'
-@lc2 +!contract(_). 
+@lc2 +!contract(_).
 
 -!contract(CNPId)
    <- .print("CNP ",CNPId," has failed!").
 
 +!announce_result(_,[],_).
 // announce to the winner
-+!announce_result(CNPId,[offer(_,WAg)|T],WAg) 
++!announce_result(CNPId,[offer(_,WAg)|T],WAg)
    <- .send(WAg,tell,accept_proposal(CNPId));
       !announce_result(CNPId,T,WAg).
 // announce to others
-+!announce_result(CNPId,[offer(_,LAg)|T],WAg) 
++!announce_result(CNPId,[offer(_,LAg)|T],WAg)
    <- .send(LAg,tell,reject_proposal(CNPId));
       !announce_result(CNPId,T,WAg).

@@ -10,7 +10,7 @@
         +participating(Task).
 
 +cfp(Task)[source(A)] : not acceptable(Task)
-    <-  .send (A,tell, ::refuse);
+    <-  .send(A,tell, ::refuse);
         .println("Refusing proposal for task ",Task," from agent ",A).
 
  // Possibly results of my Proposal
@@ -18,5 +18,5 @@
     <-  .print("My proposal in ",this_ns," for task ",Task," won!").
         // do the task and report to initiator
 
-+reject_proposal : participating ( Task )
++reject_proposal : participating (Task)
     <- .print("I lost CNP in ",this_ns," for task ",Task,".").
