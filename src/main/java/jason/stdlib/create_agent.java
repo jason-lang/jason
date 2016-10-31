@@ -9,6 +9,8 @@ import jason.asSyntax.StringTerm;
 import jason.asSyntax.StringTermImpl;
 import jason.asSyntax.Structure;
 import jason.asSyntax.Term;
+import jason.asSyntax.directives.DirectiveProcessor;
+import jason.asSyntax.directives.Include;
 import jason.mas2j.ClassParameters;
 import jason.runtime.RuntimeServicesInfraTier;
 import jason.runtime.Settings;
@@ -88,7 +90,7 @@ public class create_agent extends DefaultInternalAction {
         checkArguments(args);
         
         String name = getName(args);
-        String source = getSource(args);
+        String source = getSource(args, ts.getAg().getASLSrc());
         
         List<String> agArchClasses = getAgArchClasses(args);
 
@@ -137,21 +139,17 @@ public class create_agent extends DefaultInternalAction {
         return name;
     }
 
-    protected String getSource(Term[] args) throws JasonException {
+    protected String getSource(Term[] args, String srcFather) throws JasonException {
         String source = null;
         if (args.length > 1) {
+        	
+        	source = ((StringTerm)args[1]).getString();
+        	
+        	String prefix = null;
+        	if (srcFather.startsWith(Include.CRPrefix))
+        		prefix = Include.CRPrefix + "/";
 
-            File fSource = new File( ((StringTerm)args[1]).getString());
-            if (!fSource.exists()) {
-                fSource = new File("src/asl/"+((StringTerm)args[1]).getString());
-                if (!fSource.exists()) {
-                    fSource = new File("src/agt/"+((StringTerm)args[1]).getString());
-                    if (!fSource.exists()) {
-                        throw new JasonException("The source file " + source + " was not found!");
-                    }
-                }
-            }
-            source = fSource.getAbsolutePath();
+        	source = Include.checkPathAndFixWithSourcePath(source, ((Include)DirectiveProcessor.getDirective("include")).getSourcePaths(), prefix);
         }
         return source;
     }
