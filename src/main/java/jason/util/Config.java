@@ -71,7 +71,7 @@ public class Config extends Properties {
     public static final String KQML_RECEIVED_FUNCTOR   = "kqmlReceivedFunctor";
     public static final String KQML_PLANS_FILE         = "kqmlPlansFile";
 
-    private static Config      singleton     = null;
+    protected static Config    singleton     = null;
 
     protected static String    configFactory = null;
     
@@ -103,7 +103,7 @@ public class Config extends Properties {
         }
         return singleton;
     }
-
+    
     protected Config() {
     }
 
@@ -376,10 +376,13 @@ public class Config extends Properties {
         }
 
         // Default infrastructures
+        setDefaultInfra();
+    }
+    
+    private void setDefaultInfra() {
         put("infrastructure.Centralised", CentralisedFactory.class.getName());
         put("infrastructure.Jade", JadeFactory.class.getName());
-        //put("infrastructure.JaCaMo", "jacamo.infra.JaCaMoInfrastructureFactory");
-
+        //put("infrastructure.JaCaMo", "jacamo.infra.JaCaMoInfrastructureFactory");     
     }
 
     public void store() {
@@ -428,7 +431,13 @@ public class Config extends Properties {
     }
     
     public String getInfrastructureFactoryClass(String infraId) {
-        return get("infrastructure." + infraId).toString();
+        Object oClass = get("infrastructure." + infraId);
+        if (oClass == null) {
+            // try to fix using default configuration
+            setDefaultInfra();
+            oClass = get("infrastructure." + infraId);
+        }
+        return oClass.toString();
     }
     public void setInfrastructureFactoryClass(String infraId, String factory) {
         put("infrastructure." + infraId, factory);

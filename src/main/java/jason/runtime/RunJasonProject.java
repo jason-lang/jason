@@ -5,6 +5,7 @@ import java.io.File;
 import jason.infra.MASLauncherInfraTier;
 import jason.mas2j.MAS2JProject;
 import jason.mas2j.parser.mas2j;
+import jason.util.Config;
 
 /**
  * Run a Jason mas2j project
@@ -45,7 +46,10 @@ public class RunJasonProject {
       try {
           File file = new File(name);
           project = parser.mas();
-          //Config.get().fix();
+          if (Config.get().getJasonJar() == null) {
+              System.out.println("Jason is not configured, creating a default configuration");
+              Config.get().fix();
+          }
           project.setProjectFile(file);
           project.setDirectory(file.getAbsoluteFile().getParentFile().getAbsolutePath());
           System.out.println("file "+name+" parsed successfully!\n");

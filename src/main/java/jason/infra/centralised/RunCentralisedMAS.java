@@ -65,8 +65,7 @@ public class RunCentralisedMAS extends BaseCentralisedMAS {
 
     public void enableDebugControl(){
         btDebug.setEnabled(true);
-    }
-    
+    }    
     
     public static void main(String[] args) throws JasonException {
         RunCentralisedMAS r = new RunCentralisedMAS();
@@ -86,13 +85,18 @@ public class RunCentralisedMAS extends BaseCentralisedMAS {
                 readFromJAR = true;
                 Config.get(false); // to void to call fix/store the configuration in this case everything is read from a jar/jnlp file
             } else {
-                /*System.out.println("Jason "+Config.get().getJasonVersion());
+                System.out.println("Jason "+Config.get().getJasonVersion());
                 System.err.println("You should inform the MAS project file.");
-                JOptionPane.showMessageDialog(null,"You should inform the project file as a parameter.\n\nJason version "+Config.get().getJasonVersion()+" library built on "+Config.get().getJasonBuiltDate(),"Jason", JOptionPane.INFORMATION_MESSAGE);
-                System.exit(0);*/
+                //JOptionPane.showMessageDialog(null,"You should inform the project file as a parameter.\n\nJason version "+Config.get().getJasonVersion()+" library built on "+Config.get().getJasonBuiltDate(),"Jason", JOptionPane.INFORMATION_MESSAGE);
+                System.exit(0);
             }
         } else {
             projectFileName = args[0];
+        }
+
+        if (Config.get().getJasonJar() == null) {
+            System.out.println("Jason is not configured, creating a default configuration");
+            Config.get().fix();
         }
 
         setupLogger();

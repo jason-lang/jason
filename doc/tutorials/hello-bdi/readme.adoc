@@ -106,9 +106,8 @@ in this case).
 === Execution
 
 * Create a new project (you can use either
-http://jason.sourceforge.net/mini-tutorial/getting-started/[jEdit] or
-http://jason.sourceforge.net/mini-tutorial/eclipse-plugin/[Eclipse]
-Jason plugins, or the http://jacamo.sourceforge.net/eclipseplugin/tutorial/[JaCaMo plugin]).
+http://jason.sourceforge.net/mini-tutorial/getting-started/[Jason jEdit],
+http://jason.sourceforge.net/mini-tutorial/eclipse-plugin/[Jason Eclipse],  http://jacamo.sourceforge.net/eclipseplugin/tutorial/[JaCaMo Eclipse], or  http://jacamo.sourceforge.net/tutorial/hello-world/shell-based.html[JaCaMo shell based commands]).
 * Create agent Bob with the source code above. The project should
 look like:
 +

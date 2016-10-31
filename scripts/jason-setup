@@ -2,15 +2,15 @@
 
 JasonREL=2.1
 
+
 if [ -z $JASON_HOME ] ; then
     CURDIR=`pwd`
     JASON_HOME=`dirname $0`
     cd "$JASON_HOME/.."
     JASON_HOME=`pwd`
     cd $CURDIR
+    echo Jason home is $JASON_HOME
 fi
-
-echo Jason home is $JASON_HOME
 
 if [ -z $JDK_HOME ] ; then
     if [ -n $JAVA_HOME ] ; then
@@ -48,3 +48,10 @@ if [ ! -f $JADE_JAR ] ; then
     echo Value is $JADE_JAR
 fi
 
+if [ ! -d "$HOME/.jason" ] ; then
+    echo ----------------------------------------------------------------
+    echo Jason is not configured in your System
+    echo run the following command to create a default configuration:
+    echo       java -cp $JASON_JAR jason.util.Config
+    echo ----------------------------------------------------------------
+fi

@@ -37,6 +37,10 @@ public class Include extends DefaultDirective implements Directive {
             // test include from jar
             if (file.startsWith("$")) { // the case of "$jasonJar/src/a.asl"
                 String jar = file.substring(1,file.indexOf("/"));
+                if (Config.get().get(jar) == null) {
+                    logger.log(Level.SEVERE,"The included file '"+jar+"' is not configured");
+                    return null;
+                }
                 String path = Config.get().get(jar).toString();
                 file = "jar:file:" + path + "!" + file.substring(file.indexOf("/"));
                 in = new URL(file).openStream();

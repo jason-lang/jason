@@ -15,12 +15,12 @@ public abstract class BaseCentralisedMAS {
     public final static String       stopMASFileName = ".stop___MAS";
     public final static String       defaultProjectFileName = "default.mas2j";
 
-    protected static Logger            logger        = Logger.getLogger(BaseCentralisedMAS.class.getName());
+    protected static Logger             logger        = Logger.getLogger(BaseCentralisedMAS.class.getName());
     protected static BaseCentralisedMAS runner        = null;
-    protected static String            urlPrefix     = "";
-    protected static boolean           readFromJAR   = false;
-    protected static MAS2JProject      project;
-    protected static boolean           debug         = false;
+    protected static String             urlPrefix     = "";
+    protected static boolean            readFromJAR   = false;
+    protected static MAS2JProject       project;
+    protected static boolean            debug         = false;
     
     protected CentralisedEnvironment        env         = null;
     protected CentralisedExecutionControl   control     = null;
@@ -75,6 +75,5 @@ public abstract class BaseCentralisedMAS {
     public abstract boolean hasDebugControl();
 
     public abstract void enableDebugControl();
-    
     
 }
