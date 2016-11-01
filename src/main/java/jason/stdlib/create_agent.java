@@ -1,5 +1,8 @@
 package jason.stdlib;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import jason.JasonException;
 import jason.asSemantics.DefaultInternalAction;
 import jason.asSemantics.TransitionSystem;
@@ -14,10 +17,6 @@ import jason.asSyntax.directives.Include;
 import jason.mas2j.ClassParameters;
 import jason.runtime.RuntimeServicesInfraTier;
 import jason.runtime.Settings;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
   <p>Internal action: <b><code>.create_agent</code></b>.
