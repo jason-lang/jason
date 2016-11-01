@@ -1,3 +1,3 @@
-This is a demo of how an agent can create another agent, and 
-how a separate java program (to be compiled separately, see 
-file CreateAgDemo.java) can add an agent to an existing MAS.
+This demo shows how an agent can create another agent, see ag1.asl.
+
+Both, the internal action .create_agent and a new custom internal action are illustrated.
