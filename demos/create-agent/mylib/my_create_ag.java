@@ -12,14 +12,14 @@ public class my_create_ag extends DefaultInternalAction {
 
         // use Settings to add initial beliefs and goals for the new agent
         // (as used in the .mas2j project file)
-		Settings s = new Settings();
-		s.addOption(Settings.INIT_BELS, "b(10),b(20)");
-		s.addOption(Settings.INIT_GOALS, "a");
+        Settings s = new Settings();
+        s.addOption(Settings.INIT_BELS, "b(10),b(20)");
+        s.addOption(Settings.INIT_GOALS, "a");
 
         // RuntimeServices provides services to create agents in the current platform (Centralised, JADE, JaCaMo, ...)
-		RuntimeServicesInfraTier rs = ts.getUserAgArch().getRuntimeServices();
+        RuntimeServicesInfraTier rs = ts.getUserAgArch().getRuntimeServices();
         String name = "anotherBob";
-        name = rs.createAgent(name, "bob.asl", null, null, null, s);
+        name = rs.createAgent(name, "bob.asl", null, null, null, s, ts.getAg());
         rs.startAgent(name);
 
         // everything ok, so returns true

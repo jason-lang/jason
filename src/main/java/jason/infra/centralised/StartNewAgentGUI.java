@@ -1,10 +1,5 @@
 package jason.infra.centralised;
 
-import jason.mas2j.AgentParameters;
-import jason.mas2j.ClassParameters;
-import jason.mas2j.MAS2JProject;
-import jason.runtime.RuntimeServicesInfraTier;
-
 import java.awt.BorderLayout;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
@@ -20,6 +15,11 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 import javax.swing.filechooser.FileFilter;
+
+import jason.mas2j.AgentParameters;
+import jason.mas2j.ClassParameters;
+import jason.mas2j.MAS2JProject;
+import jason.runtime.RuntimeServicesInfraTier;
 
 public class StartNewAgentGUI extends BaseDialogGUI {
 
@@ -122,7 +122,7 @@ public class StartNewAgentGUI extends BaseDialogGUI {
                             name = name + (i + 1);
                         }
                         // TODO: implements bb class
-                        name = services.createAgent(name, ap.asSource.getAbsolutePath(), agClass, ap.getAgArchClasses(), null, ap.getAsSetts(debug, fs));
+                        name = services.createAgent(name, ap.asSource.getAbsolutePath(), agClass, ap.getAgArchClasses(), null, ap.getAsSetts(debug, fs), null);
                         services.startAgent(name);
                     }
                 } catch (Exception e) {

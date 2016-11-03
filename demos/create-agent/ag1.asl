@@ -7,10 +7,10 @@
       .wait(100);
       .print("Killing agent bob!");
       .kill_agent(bob);
-	  
-	  .print("Creating agent with internal action");
-	  mylib.my_create_ag;
-	  
+      
+      .print("Creating agent with internal action");
+      mylib.my_create_ag;
+      
       !end(10000).
       
 +!end(T) : T <= 0 <- .stopMAS.

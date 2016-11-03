@@ -12,8 +12,6 @@ import jason.asSyntax.StringTerm;
 import jason.asSyntax.StringTermImpl;
 import jason.asSyntax.Structure;
 import jason.asSyntax.Term;
-import jason.asSyntax.directives.DirectiveProcessor;
-import jason.asSyntax.directives.Include;
 import jason.mas2j.ClassParameters;
 import jason.runtime.RuntimeServicesInfraTier;
 import jason.runtime.Settings;
@@ -89,7 +87,7 @@ public class create_agent extends DefaultInternalAction {
         checkArguments(args);
         
         String name = getName(args);
-        String source = getSource(args, ts.getAg().getASLSrc());
+        String source = getSource(args);
         
         List<String> agArchClasses = getAgArchClasses(args);
 
@@ -109,7 +107,7 @@ public class create_agent extends DefaultInternalAction {
             }
         }
         RuntimeServicesInfraTier rs = ts.getUserAgArch().getRuntimeServices();
-        name = rs.createAgent(name, source, agClass, agArchClasses, bbPars, getSettings(ts));
+        name = rs.createAgent(name, source, agClass, agArchClasses, bbPars, getSettings(ts), ts.getAg());
         rs.startAgent(name);
         
         if (args[0].isVar())
@@ -138,17 +136,10 @@ public class create_agent extends DefaultInternalAction {
         return name;
     }
 
-    protected String getSource(Term[] args, String srcFather) throws JasonException {
+    protected String getSource(Term[] args) throws JasonException {
         String source = null;
         if (args.length > 1) {
-        	
-        	source = ((StringTerm)args[1]).getString();
-        	
-        	String prefix = null;
-        	if (srcFather.startsWith(Include.CRPrefix))
-        		prefix = Include.CRPrefix + "/";
-
-        	source = Include.checkPathAndFixWithSourcePath(source, ((Include)DirectiveProcessor.getDirective("include")).getSourcePaths(), prefix);
+        	source = ((StringTerm)args[1]).getString();        	
         }
         return source;
     }

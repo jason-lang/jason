@@ -8,6 +8,8 @@ import java.util.logging.Logger;
 import jason.JasonException;
 import jason.architecture.AgArch;
 import jason.asSemantics.Agent;
+import jason.asSyntax.directives.DirectiveProcessor;
+import jason.asSyntax.directives.Include;
 import jason.mas2j.AgentParameters;
 import jason.mas2j.ClassParameters;
 import jason.runtime.RuntimeServicesInfraTier;
@@ -28,7 +30,7 @@ public class CentralisedRuntimeServices implements RuntimeServicesInfraTier {
         return new CentralisedAgArch();
     }
     
-    public String createAgent(String agName, String agSource, String agClass, List<String> archClasses, ClassParameters bbPars, Settings stts) throws Exception {
+    public String createAgent(String agName, String agSource, String agClass, List<String> archClasses, ClassParameters bbPars, Settings stts, Agent father) throws Exception {
         if (logger.isLoggable(Level.FINE)) 
             logger.fine("Creating centralised agent " + agName + " from source " + agSource + " (agClass=" + agClass + ", archClass=" + archClasses + ", settings=" + stts);
 
@@ -39,6 +41,11 @@ public class CentralisedRuntimeServices implements RuntimeServicesInfraTier {
         
         if (stts == null) 
             stts = new Settings();
+        
+        String prefix = null;
+        if (father != null && father.getASLSrc().startsWith(Include.CRPrefix))
+            prefix = Include.CRPrefix + "/";
+        agSource = Include.checkPathAndFixWithSourcePath(agSource, ((Include)DirectiveProcessor.getDirective("include")).getSourcePaths(), prefix);
         
         String nb = "";
         synchronized (logger) { // to avoid problems related to concurrent executions of .create_agent
