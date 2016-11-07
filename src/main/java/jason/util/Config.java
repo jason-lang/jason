@@ -637,7 +637,7 @@ public class Config extends Properties {
     public static String findJarInDirectory(File dir, String prefix) {
         if (dir.isDirectory()) {
             for (File f: dir.listFiles()) {
-                if (f.getName().startsWith(prefix) && f.getName().endsWith(".jar") && !f.getName().endsWith("-sources.jar") && !f.getName().endsWith("-javadoc.jar")) {
+                if (f.getName().startsWith(prefix) && f.getName().endsWith(".jar") && !f.getName().endsWith("-sources.jar") && !f.getName().endsWith("-javadoc.jar")) {                 
                     return f.getAbsolutePath();
                 }
             }
@@ -712,7 +712,7 @@ public class Config extends Properties {
         while (st.hasMoreTokens()) {
             String token = st.nextToken();
             File f = new File(token);
-            if (f.getName().startsWith(file)) {
+            if (f.getName().startsWith(file)  && f.getName().endsWith(".jar") && !f.getName().endsWith("-sources.jar") && !f.getName().endsWith("-javadoc.jar")) {
                 return f.getAbsolutePath();
             }
         }
