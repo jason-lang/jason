@@ -378,22 +378,8 @@ public class RunCentralisedMAS extends BaseCentralisedMAS {
     
     protected void createAgs() throws JasonException {
         
-        RConf generalConf;
-        if (project.getInfrastructure().hasParameter("pool")) {
-            generalConf = RConf.POOL_SYNCH;
-        } else if (project.getInfrastructure().hasParameter("synch_scheduled")) {
-            generalConf = RConf.POOL_SYNCH_SCHEDULED;
-        } else if (project.getInfrastructure().hasParameter("asynch")) {
-            generalConf = RConf.ASYNCH;
-        } else if (project.getInfrastructure().hasParameter("asynch_shared")) {
-            generalConf = RConf.ASYNCH_SHARED_POOLS;
-        } else {
-            generalConf = RConf.TRHEADED;
-        }
+        RConf generalConf = RConf.fromString(project.getInfrastructure().getParameter(0));
         
-        //boolean isPool = project.getInfrastructure().hasParameter("pool") || project.getInfrastructure().hasParameter("synch_scheduled");
-        //boolean isAsynch = project.getInfrastructure().hasParameter("asynch") || project.getInfrastructure().hasParameter("asynch_shared");
-        if (generalConf != RConf.TRHEADED) logger.info("Creating agents....");
         int nbAg = 0;
         Agent pag = null;
         
@@ -423,27 +409,17 @@ public class RunCentralisedMAS extends BaseCentralisedMAS {
                     CentralisedAgArch agArch;
                     
                     RConf agentConf;
-                    if (ap.getOption("rc") != null) {
-                        if (ap.getOption("rc").equals("pool")) {
-                            agentConf = RConf.POOL_SYNCH;
-                        } else if (ap.getOption("rc").equals("synch_scheduled")) {
-                            agentConf = RConf.POOL_SYNCH_SCHEDULED;
-                        } else if (ap.getOption("rc").equals("asynch")) {
-                            agentConf = RConf.ASYNCH;
-                        } else if (ap.getOption("rc").equals("asynch_shared")) {
-                            agentConf = RConf.ASYNCH_SHARED_POOLS;
-                        } else {
-                            agentConf = RConf.TRHEADED;
-                        }
-                    } else {
+                    if (ap.getOption("rc") == null) {
                         agentConf = generalConf;
-                    }
+                    } else {
+                        agentConf = RConf.fromString(ap.getOption("rc"));
+                    }                    
                     
-                    //Get the number of reasoning cycles or number of cycles for each stage 
-                    int cycles = 0;
-                    int cyclesSense = 0;
-                    int cyclesDeliberate = 0; 
-                    int cyclesAct = 0;
+                    // Get the number of reasoning cycles or number of cycles for each stage 
+                    int cycles           = -1; // -1 means default value of the platform
+                    int cyclesSense      = -1;
+                    int cyclesDeliberate = -1; 
+                    int cyclesAct        = -1;
                     
                     if (ap.getOption("cycles") != null) {
                         cycles = Integer.valueOf(ap.getOption("cycles"));
@@ -458,51 +434,15 @@ public class RunCentralisedMAS extends BaseCentralisedMAS {
                         cyclesAct = Integer.valueOf(ap.getOption("cycles_act"));
                     }
                     
-                    //Create agents according to the specific architecture
+                    // Create agents according to the specific architecture
                     if (agentConf == RConf.POOL_SYNCH) {
                         agArch = new CentralisedAgArchForPool();
                     } else if (agentConf == RConf.POOL_SYNCH_SCHEDULED) {
                         agArch = new CentralisedAgArchSynchronousScheduled();
-                        if (cycles != 0) {
-                            if (cyclesSense == 0) {
-                                cyclesSense = cycles;
-                            }
-                            if (cyclesDeliberate == 0) {
-                                cyclesDeliberate = cycles;
-                            }
-                            if (cyclesAct == 0) {
-                                cyclesAct = cycles;
-                            }
-                            cycles = 1;
-                        }
                     } else if  (agentConf == RConf.ASYNCH || agentConf == RConf.ASYNCH_SHARED_POOLS) {
                         agArch = new CentralisedAgArchAsynchronous();
-                        if (cycles != 0) {
-                            if (cyclesSense == 0) {
-                                cyclesSense = cycles;
-                            }
-                            if (cyclesDeliberate == 0) {
-                                cyclesDeliberate = cycles;
-                            }
-                            if (cyclesAct == 0) {
-                                cyclesAct = cycles;
-                            }
-                            cycles = 1;
-                        }                       
                     } else {
                         agArch = new CentralisedAgArch();
-                        if (cycles != 0) {
-                            if (cyclesSense == 0) {
-                                cyclesSense = cycles;
-                            }
-                            if (cyclesDeliberate == 0) {
-                                cyclesDeliberate = cycles;
-                            }
-                            if (cyclesAct == 0) {
-                                cyclesAct = cycles;
-                            }
-                            cycles = 1;
-                        }
                     }
                     
                     agArch.setCycles(cycles);
@@ -513,7 +453,7 @@ public class RunCentralisedMAS extends BaseCentralisedMAS {
                     agArch.setConf(agentConf);
                     agArch.setAgName(numberedAg);
                     agArch.setEnvInfraTier(env);
-                    if ((generalConf != RConf.TRHEADED) && cAg > 0 && ap.getAgArchClasses().isEmpty() && ap.getBBClass().equals(DefaultBeliefBase.class.getName())) {
+                    if ((generalConf != RConf.THREADED) && cAg > 0 && ap.getAgArchClasses().isEmpty() && ap.getBBClass().equals(DefaultBeliefBase.class.getName())) {
                         // creation by cloning previous agent (which is faster -- no parsing, for instance)
                         agArch.createArchs(ap.getAgArchClasses(), pag, this);
                     } else {
@@ -529,7 +469,7 @@ public class RunCentralisedMAS extends BaseCentralisedMAS {
             }
         }
         
-        if (generalConf != RConf.TRHEADED) logger.info("Created "+nbAg+" agents.");
+        if (generalConf != RConf.THREADED) logger.info("Created "+nbAg+" agents.");
     }
     
 
@@ -557,15 +497,15 @@ public class RunCentralisedMAS extends BaseCentralisedMAS {
     /** creates one thread per agent */
     private void createAgsThreads() {
         
-        int cyclesSense = 1;
+        int cyclesSense      = 1;
         int cyclesDeliberate = 1;
-        int cyclesAct = 5;
+        int cyclesAct        = 5;
         
         if (project.getInfrastructure().hasParameters()) {
             if (project.getInfrastructure().getParametersArray().length > 2) {
-                cyclesSense = Integer.parseInt(project.getInfrastructure().getParameter(1));
+                cyclesSense      = Integer.parseInt(project.getInfrastructure().getParameter(1));
                 cyclesDeliberate = Integer.parseInt(project.getInfrastructure().getParameter(2));
-                cyclesAct = Integer.parseInt(project.getInfrastructure().getParameter(3));                    
+                cyclesAct        = Integer.parseInt(project.getInfrastructure().getParameter(3));                    
             } else if (project.getInfrastructure().getParametersArray().length > 1) {
                 cyclesSense = cyclesDeliberate = cyclesAct = Integer.parseInt(project.getInfrastructure().getParameter(1));
             }
@@ -576,17 +516,16 @@ public class RunCentralisedMAS extends BaseCentralisedMAS {
         for (CentralisedAgArch ag : ags.values()) {
             ag.setControlInfraTier(control);
             
-            ag.setCyclesSense(cyclesSense);
-            ag.setCyclesDeliberate(cyclesDeliberate);
-            ag.setCyclesAct(cyclesAct);
-            
+            // if the agent hasn't override the values for cycles, use the platform values
+            if (ag.getCyclesSense() == -1)            ag.setCyclesSense(cyclesSense);
+            if (ag.getCyclesDeliberate() == -1)       ag.setCyclesDeliberate(cyclesDeliberate);
+            if (ag.getCyclesAct() == -1)              ag.setCyclesAct(cyclesAct);
+
             // create the agent thread
             Thread agThread = new Thread(ag);
             ag.setThread(agThread);
-            //agThread.start();
         }
         
-        //CentralisedAgArch agTemp = ags.values().iterator().next();
         //logger.info("Creating threaded agents. Cycles: " + agTemp.getCyclesSense() + ", " + agTemp.getCyclesDeliberate() + ", " + agTemp.getCyclesAct());
         
         for (CentralisedAgArch ag : ags.values()) {
@@ -596,148 +535,109 @@ public class RunCentralisedMAS extends BaseCentralisedMAS {
     
     private Set<CentralisedAgArch> sleepingAgs;
     
-    private ExecutorService executor;
+    private ExecutorService executor            = null;
     
-    private ExecutorService executorSense;
-    private ExecutorService executorDeliberate;
-    private ExecutorService executorAct;
+    private ExecutorService executorSense       = null;
+    private ExecutorService executorDeliberate  = null;
+    private ExecutorService executorAct         = null;
     
     /** creates a pool of threads shared by all agents */
     private void createThreadPool() {
         sleepingAgs = Collections.synchronizedSet(new HashSet<CentralisedAgArch>());
         
-        int configuration = 0;
-
         int maxthreads = 10;
         
-        int maxthreadsSense = 1;
+        int maxthreadsSense      = 1;
         int maxthreadsDeliberate = 1;
-        int maxthreadsAct = 1;
+        int maxthreadsAct        = 1;
         
-        int cycles = 1;
-        int cyclesSense = 1;
+        int cycles           = 1;
+        int cyclesSense      = 1;
         int cyclesDeliberate = 1;
-        int cyclesAct = 5;
+        int cyclesAct        = 5;
         
         try {
-            if (project.getInfrastructure().hasParameters()) {
+            ClassParameters infra = project.getInfrastructure();
+            RConf conf = RConf.fromString(infra.getParameter(0));
+            if (conf == RConf.ASYNCH) {
+                maxthreadsSense      = Integer.parseInt(infra.getParameter(1));
+                maxthreadsDeliberate = Integer.parseInt(infra.getParameter(2));
+                maxthreadsAct        = Integer.parseInt(infra.getParameter(3));
+                if (infra.getParametersArray().length > 5) {
+                    cyclesSense      = Integer.parseInt(infra.getParameter(4));
+                    cyclesDeliberate = Integer.parseInt(infra.getParameter(5));
+                    cyclesAct        = Integer.parseInt(infra.getParameter(6));
+                }
+                logger.info("Creating agents with asynchronous reasoning cycle. Sense (" + maxthreadsSense + "), Deliberate (" + maxthreadsDeliberate + "), Act (" + maxthreadsAct + "). Cycles: " + cyclesSense + ", " + cyclesDeliberate + ", " + cyclesAct);
                 
-                if (project.getInfrastructure().hasParameter("asynch")) {
-                    configuration = 1;
-                    maxthreadsSense = Integer.parseInt(project.getInfrastructure().getParameter(1));
-                    maxthreadsDeliberate = Integer.parseInt(project.getInfrastructure().getParameter(2));
-                    maxthreadsAct = Integer.parseInt(project.getInfrastructure().getParameter(3));
-                    if (project.getInfrastructure().getParametersArray().length > 5) {
-                        cyclesSense = Integer.parseInt(project.getInfrastructure().getParameter(4));
-                        cyclesDeliberate = Integer.parseInt(project.getInfrastructure().getParameter(5));
-                        cyclesAct = Integer.parseInt(project.getInfrastructure().getParameter(6));
-                    } else if (project.getInfrastructure().getParametersArray().length > 4) {
-                        cyclesSense = cyclesDeliberate = cyclesAct = Integer.parseInt(project.getInfrastructure().getParameter(4));
-                    }
-                    logger.info("Creating agents with asynchronous reasoning cycle. Sense (" + maxthreadsSense + "), Deliberate (" + maxthreadsDeliberate + "), Act (" + maxthreadsAct + ")" + "Cycles: " + cyclesSense + ", " + cyclesDeliberate + ", " + cyclesAct);
-                } else if (project.getInfrastructure().hasParameter("asynch_shared")) {
-                    configuration = 2;
-                    maxthreads = Integer.parseInt(project.getInfrastructure().getParameter(1));
-                    if (project.getInfrastructure().getParametersArray().length > 3) {
-                        cyclesSense = Integer.parseInt(project.getInfrastructure().getParameter(2));
-                        cyclesDeliberate = Integer.parseInt(project.getInfrastructure().getParameter(3));
-                        cyclesAct = Integer.parseInt(project.getInfrastructure().getParameter(4));
-                    } else if (project.getInfrastructure().getParametersArray().length > 2) {
-                        cyclesSense = cyclesDeliberate = cyclesAct = Integer.parseInt(project.getInfrastructure().getParameter(2));
-                    }
-                    logger.info("Creating agents with asynchronous reasoning cycle (shared). Sense, Deliberate, Act (" + maxthreads + ")"  + "Cycles: " + cyclesSense + ", " + cyclesDeliberate + ", " + cyclesAct);
-                } else if (project.getInfrastructure().hasParameter("synch_scheduled")) {
-                    maxthreads = Integer.parseInt(project.getInfrastructure().getParameter(1));
+                executorSense      = Executors.newFixedThreadPool(maxthreadsSense);
+                executorDeliberate = Executors.newFixedThreadPool(maxthreadsDeliberate);
+                executorAct        = Executors.newFixedThreadPool(maxthreadsAct);
+                
+            } else { // async shared and pool cases
+                if (infra.getParametersArray().length > 1) {
+                    maxthreads = Integer.parseInt(infra.getParameter(1));
+                }
+                if (infra.getParametersArray().length > 4) {
+                    cyclesSense      = Integer.parseInt(infra.getParameter(2));
+                    cyclesDeliberate = Integer.parseInt(infra.getParameter(3));
+                    cyclesAct        = Integer.parseInt(infra.getParameter(4));                    
+                }
+
+                if (conf == RConf.ASYNCH_SHARED_POOLS) {
+                    logger.info("Creating agents with asynchronous reasoning cycle (shared). Sense, Deliberate, Act (" + maxthreads + "). Cycles: " + cyclesSense + ", " + cyclesDeliberate + ", " + cyclesAct);
+                    executorSense = executorDeliberate = executorAct = Executors.newFixedThreadPool(maxthreads);
                     
-                    if (project.getInfrastructure().getParametersArray().length > 3) {
-                        cyclesSense = Integer.parseInt(project.getInfrastructure().getParameter(2));
-                        cyclesDeliberate = Integer.parseInt(project.getInfrastructure().getParameter(3));
-                        cyclesAct = Integer.parseInt(project.getInfrastructure().getParameter(4));                    
-                    } else if (project.getInfrastructure().getParametersArray().length > 2) {
-                        cyclesSense = cyclesDeliberate = cyclesAct = Integer.parseInt(project.getInfrastructure().getParameter(2));
-                    }
-                    
-                    logger.info("Creating a thread pool with "+maxthreads+" thread(s)." + "Cycles: " + cyclesSense + ", " + cyclesDeliberate + ", " + cyclesAct + " Reasoning Cycles: " + cycles);                  
-                } else {
-                    maxthreads = Integer.parseInt(project.getInfrastructure().getParameter(1));
-                    
-                    if (project.getInfrastructure().getParametersArray().length > 3) {
-                        cyclesSense = Integer.parseInt(project.getInfrastructure().getParameter(2));
-                        cyclesDeliberate = Integer.parseInt(project.getInfrastructure().getParameter(3));
-                        cyclesAct = Integer.parseInt(project.getInfrastructure().getParameter(4));
-                        if (project.getInfrastructure().getParametersArray().length > 4) {
-                            cycles = Integer.parseInt(project.getInfrastructure().getParameter(5));
+                } else { // pool c  ases
+                    if (conf == RConf.POOL_SYNCH) {
+                        // redefine cycles
+                        if (infra.getParametersArray().length == 3) {
+                            cycles = Integer.parseInt(infra.getParameter(2));
+                        } else  if (infra.getParametersArray().length == 6) {
+                            cycles = Integer.parseInt(infra.getParameter(5));
                         } else {
                             cycles = 5;                         
-                        }                           
-                    } else if (project.getInfrastructure().getParametersArray().length > 2) {
-                        cycles = Integer.parseInt(project.getInfrastructure().getParameter(2));
-                    } else {
-                        cycles = 5;
+                        }
+                    } else if (infra.getParametersArray().length == 3) {
+                        cyclesSense = cyclesDeliberate = cyclesAct = Integer.parseInt(infra.getParameter(2));
                     }
                     
-                    logger.info("Creating a thread pool with "+maxthreads+" thread(s)." + "Cycles: " + cyclesSense + ", " + cyclesDeliberate + ", " + cyclesAct + " Reasoning Cycles: " + cycles);
+                    int poolSize = Math.min(maxthreads, ags.size());                 
+                    logger.info("Creating a thread pool with "+poolSize+" thread(s). Cycles: " + cyclesSense + ", " + cyclesDeliberate + ", " + cyclesAct + ". Reasoning Cycles: " + cycles);
+                    
+                    // create the pool
+                    executor = Executors.newFixedThreadPool(poolSize);
                 }
             }
         } catch (Exception e) {
             logger.warning("Error getting the number of thread for the pool.");
         }
 
-        if (configuration == 0) {
-            int poolSize = Math.min(8, ags.size());
-            if (poolSize > maxthreads) {
-                poolSize = maxthreads;
-            }
-            
-            // create the pool
-            executor = Executors.newFixedThreadPool(poolSize);
-
-            // initially, add all agents in the tasks
-            for (CentralisedAgArch ag : ags.values()) {
-                ag.setCycles(cycles);
-                ag.setCyclesSense(cyclesSense);
-                ag.setCyclesDeliberate(cyclesDeliberate);
-                ag.setCyclesAct(cyclesAct);
+        // initially, add all agents in the tasks
+        for (CentralisedAgArch ag : ags.values()) {
+            if (ag.getCycles() == -1)           ag.setCycles(cycles);
+            if (ag.getCyclesSense() == -1)      ag.setCyclesSense(cyclesSense);
+            if (ag.getCyclesDeliberate() == -1) ag.setCyclesDeliberate(cyclesDeliberate);
+            if (ag.getCyclesAct() == -1)        ag.setCyclesAct(cyclesAct);
+        
+            if (executor != null) {
+                executor.execute(ag);
                 if (ag instanceof CentralisedAgArchForPool)
                     ((CentralisedAgArchForPool)ag).setExecutor(executor);
-                executor.execute(ag);
-            }
-            
-        } else {
-            
-            //TODO shared thread pool among the stages
-            if (configuration == 2) {
-                executorSense = executorDeliberate = executorAct = Executors.newFixedThreadPool(maxthreads);
-            } else {
-                executorSense = Executors.newFixedThreadPool(maxthreadsSense);
-                executorDeliberate = Executors.newFixedThreadPool(maxthreadsDeliberate);
-                executorAct = Executors.newFixedThreadPool(maxthreadsAct);
-            }
-            
-            //ThreadMonitorAgents mon = new ThreadMonitorAgents();
-            
-            // initially, add all agents in the tasks
-            for (CentralisedAgArch ag : ags.values()) {
+            } else if (ag instanceof CentralisedAgArchAsynchronous) {
                 CentralisedAgArchAsynchronous ag2 = (CentralisedAgArchAsynchronous) ag;
                 
                 ag2.addListenerToC(new CircumstanceListenerComponents(ag2));
                 
                 ag2.setExecutorAct(executorAct);
-                ag2.setCyclesAct(cyclesAct);
                 executorAct.execute(ag2.getActComponent());
                 
                 ag2.setExecutorDeliberate(executorDeliberate);
-                ag2.setCyclesDeliberate(cyclesDeliberate);
                 executorDeliberate.execute(ag2.getDeliberateComponent());
                 
                 ag2.setExecutorSense(executorSense);
-                ag2.setCyclesSense(cyclesSense);
-                executorSense.execute(ag2.getSenseComponent());
-                
-                //mon.lst.add(ag2);
+                executorSense.execute(ag2.getSenseComponent());             
             }
-            
-            //new Thread(mon).start();
         }
     }
     

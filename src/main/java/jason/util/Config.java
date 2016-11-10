@@ -394,7 +394,7 @@ public class Config extends Properties {
             if (!f.getParentFile().exists()) {
                 f.getParentFile().mkdirs();
             }
-            System.out.println("Storing configuration at "+f);
+            System.out.println("Storing configuration at "+f.getAbsolutePath());
             super.store(new FileOutputStream(f), getFileConfComment());
         } catch (Exception e) {
             System.err.println("Error writting preferences");

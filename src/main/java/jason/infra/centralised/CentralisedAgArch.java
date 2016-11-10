@@ -418,13 +418,9 @@ public class CentralisedAgArch extends AgArch implements Runnable {
 
     private int cycles = 1;
 
-    private int cyclesSense = 1;
+    private int cyclesSense      = 1;
     private int cyclesDeliberate = 1;
-    private int cyclesAct = 5;
-
-    public int getCycles() {
-        return cycles;
-    }
+    private int cyclesAct        = 5;
 
     public void setConf(RConf conf) {
         this.conf = conf;
@@ -432,6 +428,10 @@ public class CentralisedAgArch extends AgArch implements Runnable {
 
     public RConf getConf() {
         return conf;
+    }
+
+    public int getCycles() {
+        return cycles;
     }
 
     public void setCycles(int cycles) {

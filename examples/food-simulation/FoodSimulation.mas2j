@@ -9,7 +9,7 @@
    used in the chapter about Jason in the book
    "Agents, Simulation and Applications" by
    Adelinde M. Uhrmacher and Danny Weyns
-   
+
 */
 
 /*
@@ -27,15 +27,15 @@ Percepts:
         see    if the food is in the agent's territory
         smell  if the food is two steps away from the agent
      O is the agent allocated to the food, -1 if none
-     
+
 .  pos(AgId,X,Y): agent position
      AgId the agent's identification in the environment
-    
+
 .  agent(AgId, X, Y, S, A): perception of other agents in the agent's territory
      AgId is the identification of the other agent
      S is its strength
      A is its action (moving or eating)
-     
+
 .  strength(S): the strength of the agent
 
 .  attacked(AgId,Name): the agent is beign attacked by AgId
@@ -47,24 +47,24 @@ Actions:
 .  move(X,Y)
 .  attack(X,Y)
 .  random_move
-.  pause     
+.  pause
 
 */
 
 
 MAS normative_simulation {
-   infrastructure: Centralised
-   
+   infrastructure: Centralised(pool,4)
+
    // the class that implements the environment is FoodEnvironment
    // parameters are: grid size, number of agents, number of food units
    environment: FoodEnvironment(10,50,25)
-   
+
    agents:
        //blind     [verbose=0] #50;
        strategic [verbose=0] #25;
        //normative [verbose=0] #25;
        //normativerule [verbose=0] #50;
        reputation [verbose=0] #25;
-       
-   aslSourcePath: "src/asl"; 
+
+   aslSourcePath: "src/asl";
 }

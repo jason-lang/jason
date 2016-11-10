@@ -259,7 +259,7 @@ infrastructure: Centralised(pool,4,1,1,5,10)
 infrastructure: Centralised(pool,4,1,1,9999,10)
 ----
 
-A further configuration for pools is to execute only one stage everytime that a thread selects an agent. Thus, the thread, for example, will execute the sense stage and put the agent back to the queue, then, the next time that this agent is selected, the thread will execute the deliberate stage, and finally the act stage.
+A further configuration for pools is to execute only one stage every time that a thread selects an agent. Thus, the thread, for example, will execute the sense stage and put the agent back to the queue, then, the next time that this agent is selected, the thread will execute the deliberate stage, and finally the act stage.
 
 In this case, the algorithm presented previously is executed like this:
 
@@ -279,27 +279,27 @@ switch (stage)
     stage = SENSE;
 ----
 
-The parameters are almost the same as before, however, the first parameter must be defined as *synch_scheduled* and `[NUMBER-REASONING-CYCLES]` is not a parameter for this configuration. Thus, the examples aforementioned could be written like this:
+The parameters are almost the same as before, however, the first parameter must be defined as *synch_scheduled* and `[NUMBER-REASONING-CYCLES]` is not a parameter for this configuration. Thus, the examples aforementioned could be written exemplified below.
 
-In this example, each stage will be executed `once`.
+Using 4 threads, each stage will be executed `once`:
 
 ----
 infrastructure: Centralised(synch_scheduled,4)
 ----
 
-In this example, each stage is executed at most `5` times.
+Each stage is executed at most `5` times:
 
 ----
 infrastructure: Centralised(synch_scheduled,4,5)
 ----
 
-In this example, the sense and deliberate stages are executed `once`, while the act stage is executed at most `5` times.
+The sense and deliberate stages are executed `once`, while the act stage is executed at most `5` times:
 
 ----
 infrastructure: Centralised(synch_scheduled,4,1,1,5)
 ----
 
-In this example, the sense and deliberate stages are executed `once`, and at least one action of each intention will be executed in the act stage.
+The sense and deliberate stages are executed `once`, and at least one action of each intention will be executed in the act stage:
 
 ----
 infrastructure: Centralised(synch_scheduled,4,1,1,9999)
@@ -324,13 +324,7 @@ switch (task.stage)
       act();
 ----
 
-The paremeters to use a single thread pool are presented below:
-
-----
-infrastructure: Centralised(asynch_shared, <NUMBER-THREADS>, [NUMBER-REASONING-CYCLES])
-----
-
-The parameters to use a thread pool to execute each stage are presented below:
+The parameters to use a single thread pool are presented below:
 
 ----
 infrastructure: Centralised(asynch_shared, <NUMBER-THREADS>, <NUMBER-CYCLES-SENSE>, <NUMBER-CYCLES-DELIBERATE>, <NUMBER-CYCLES-ACT>)
@@ -344,22 +338,16 @@ In the example below, a thread pool with `4` threads is created and each stage w
 infrastructure: Centralised(asynch_shared,4)
 ----
 
-In the example below, a thread pool with `4` threads is created and each stage is executed at most `15` times.
-
-----
-infrastructure: Centralised(asynch_shared,4,15)
-----
-
 In the example below, a thread pool with `4` threads is created, the sense and deliberate stages are configured to execute at most `15` times, and the act stage will be executed at most `20` times.
 
 ----
 infrastructure: Centralised(asynch_shared,4,15,15,20)
 ----
 
-Each stage can be executed by a different thread pool. The parameters for this configuration are presented below.
+In another configuration, each stage can be executed by a different thread pool. The parameters for this configuration are presented below.
 
 ----
-infrastructure: Centralised(asynch, <NUMBER-THREADS-SENSE>, <NUMBER-THREADS-DELIBERATE>, <NUMBER-THREADS-ACT>, [NUMBER-CYCLES])
+infrastructure: Centralised(asynch, <NUMBER-THREADS-SENSE>, <NUMBER-THREADS-DELIBERATE>, <NUMBER-THREADS-ACT>)
 ----
 
 or
@@ -370,16 +358,10 @@ infrastructure: Centralised(asynch, <NUMBER-THREADS-SENSE>, <NUMBER-THREADS-DELI
 
 The keyword *asynch* makes the execution platform to create `three` thread pools, one for each stage. `<NUMBER-THREADS-SENSE>` is the number of threads for the thread pool to execute the sense stage. `<NUMBER-THREADS-DELIBERATE>` is the number of threads for the thread pool to execute the deliberate stage. `<NUMBER-THREADS-ACT>` is the number of threads for the thread pool to execute the act stage.
 
-In the example below, `three` thread pools with `4` threads are created, and each stage is executed just `once`.
+In the example below, `three` thread pools with `4` threads each are created:
 
 ----
 infrastructure: Centralised(asynch,4,4,4)
-----
-
-In the example below, `three` thread pools with `4` threads each are created and each stage is executed at most `15` times.
-
-----
-infrastructure: Centralised(asynch,4,4,4,15)
 ----
 
 In the example below, `three` thread pools with `4` threads each are created, the sense and deliberate stages are configured to execute at most `15` times, and the act stage will be executed at most `20` times.
@@ -393,13 +375,13 @@ infrastructure: Centralised(asynch,4,4,4,15,15,20)
 
 Besides the global configuration for the MAS. Jason allows to configure the number of cycles for each agent individually, allowing  to define a kind of priority by giving more CPU for certain agents than others. The parameters for the agents are presented by means of the two examples below.
 
-In this example, the parameters of the agent *ana* say that the number of cycles for the sense and deliberate stages are `2`, while the number of cycles for the act stage is `10`.
+The agent *ana* has the number of cycles for the sense and deliberate stages as `2`, while the number of cycles for the act stage is `10`:
 
 ----
 ana [cycles_sense = 2, cycles_deliberate = 2, cycles_act = 10];
 ----
 
-In this example, the parameters of the agent *bob* says that the number of cycles for the senquence sense-deliberate-act is `10`.
+The agent *bob* has the number of cycles for the sequence sense-deliberate-act as `10`:
 
 ----
 bob [cycles = 10];

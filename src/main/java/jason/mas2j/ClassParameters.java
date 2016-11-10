@@ -57,7 +57,10 @@ public class ClassParameters {
         return parameters;
     }
     public String getParameter(int index) {
-        return parameters.get(index);
+        if (parameters.size() > index)
+            return parameters.get(index);
+        else
+            return null;
     }
     public String getParameter(String startWith) {
         for (String s: parameters) 
