@@ -170,7 +170,8 @@ loop
 When some stages must be executed more than once, the number of cycles for each stage must be informed. The parameters in the *.mas2j* for this configuration are presented below.
 
 ----
-infrastructure: Centralised(threaded, <NUMBER-CYCLES-SENSE>, <NUMBER-CYCLES-DELIBERATE>, <NUMBER-CYCLES-ACT>)
+infrastructure: Centralised(threaded,
+    <NUMBER-CYCLES-SENSE>, <NUMBER-CYCLES-DELIBERATE>, <NUMBER-CYCLES-ACT>)
 ----
 
 and the reasoning cycle is:
@@ -211,7 +212,9 @@ infrastructure: Centralised(pool, <NUMBER-THREADS>, [NUMBER-REASONING-CYCLES])
 or
 
 ----
-infrastructure: Centralised(pool, <NUMBER-THREADS>, <NUMBER-CYCLES-SENSE>, <NUMBER-CYCLES-DELIBERATE>, <NUMBER-CYCLES-ACT>, [NUMBER-REASONING-CYCLES])
+infrastructure: Centralised(pool, <NUMBER-THREADS>,
+    <NUMBER-CYCLES-SENSE>, <NUMBER-CYCLES-DELIBERATE>, <NUMBER-CYCLES-ACT>,
+    [NUMBER-REASONING-CYCLES])
 ----
 
 The keyword *pool* makes the execution platform to create  one thread pool with `<NUMBER-THREADS>` threads. `[NUMBER-REASONING-CYCLES]` is the maximum number of times that the sequence sense-deliberate-act is executed (default value is `5`).
@@ -327,7 +330,8 @@ switch (task.stage)
 The parameters to use a single thread pool are presented below:
 
 ----
-infrastructure: Centralised(asynch_shared, <NUMBER-THREADS>, <NUMBER-CYCLES-SENSE>, <NUMBER-CYCLES-DELIBERATE>, <NUMBER-CYCLES-ACT>)
+infrastructure: Centralised(asynch_shared, <NUMBER-THREADS>,
+    <NUMBER-CYCLES-SENSE>, <NUMBER-CYCLES-DELIBERATE>, <NUMBER-CYCLES-ACT>)
 ----
 
 As in the pool case, the keyword *asynch_shared* makes the execution platform to create a thread pool with `<NUMBER-THREADS>` threads.
@@ -347,13 +351,16 @@ infrastructure: Centralised(asynch_shared,4,15,15,20)
 In another configuration, each stage can be executed by a different thread pool. The parameters for this configuration are presented below.
 
 ----
-infrastructure: Centralised(asynch, <NUMBER-THREADS-SENSE>, <NUMBER-THREADS-DELIBERATE>, <NUMBER-THREADS-ACT>)
+infrastructure: Centralised(asynch,
+    <NUMBER-THREADS-SENSE>, <NUMBER-THREADS-DELIBERATE>, <NUMBER-THREADS-ACT>)
 ----
 
 or
 
 ----
-infrastructure: Centralised(asynch, <NUMBER-THREADS-SENSE>, <NUMBER-THREADS-DELIBERATE>, <NUMBER-THREADS-ACT>, <NUMBER-CYCLES-SENSE>, <NUMBER-CYCLES-DELIBERATE>, <NUMBER-CYCLES-ACT>)
+infrastructure: Centralised(asynch,
+    <NUMBER-THREADS-SENSE>, <NUMBER-THREADS-DELIBERATE>, <NUMBER-THREADS-ACT>,
+    <NUMBER-CYCLES-SENSE>, <NUMBER-CYCLES-DELIBERATE>, <NUMBER-CYCLES-ACT>)
 ----
 
 The keyword *asynch* makes the execution platform to create `three` thread pools, one for each stage. `<NUMBER-THREADS-SENSE>` is the number of threads for the thread pool to execute the sense stage. `<NUMBER-THREADS-DELIBERATE>` is the number of threads for the thread pool to execute the deliberate stage. `<NUMBER-THREADS-ACT>` is the number of threads for the thread pool to execute the act stage.

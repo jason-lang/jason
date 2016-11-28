@@ -19,6 +19,9 @@ import jason.asSyntax.directives.Include;
   
   <p>Parameters:<ul>
   <li>+ the file (string): the file name.<br/>
+  <li>+ the name space (atom or var): sets the name space where the included components (bels, plans, ...) 
+  will be placed. If this argument is a
+  var, it will unifies with and random new name space.<br/>
   </ul>
   
   <p>Examples:<ul>
@@ -63,9 +66,10 @@ public class include extends DefaultInternalAction {
         ag.addInitialBelsInBB();
         ag.addInitialGoalsInTS();
         
-        if (args[1].isVar()) {
+        if (args.length > 1 && args[1].isVar()) {
             return un.unifies(args[1], inc.getTerm(1));
+        } else {
+        	return true;
         }
-        return true;
     }    
 }
