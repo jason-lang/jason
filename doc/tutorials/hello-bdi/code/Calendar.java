@@ -8,6 +8,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import cartago.INTERNAL_OPERATION;
 import cartago.ObsProperty;
@@ -56,13 +57,17 @@ public class Calendar extends GUIArtifact {
         f.setVisible(true);
     }
     
-    @INTERNAL_OPERATION void updateDay(ChangeEvent ev) {
+    protected void linkChangeEventToOp(JSlider source, String opName){
+		insertEventToOp(source,"stateChanged",opName);
+		source.addChangeListener((ChangeListener) getEventListenerInstance());
+	}
+    
+	@INTERNAL_OPERATION void updateDay(ChangeEvent ev) {
         try {
             ObsProperty prop = getObsProperty("today");
             prop.updateValue(days[ (int)s.getValue() ]);
         } catch (Exception e2) {
             e2.printStackTrace();
         }
-    }
+    }	
 }
-
