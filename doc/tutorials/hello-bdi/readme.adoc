@@ -303,6 +303,7 @@ sincere(alice).
 
 +!say(X) : today(friday)     <- .print(X,"!!!!!"); .wait(math.random(400)+100); !say(X).
 +!say(X) : not today(monday) <- .print(X);         .wait(math.random(400)+100); !say(X).
++!say(X)					 <- !say(X). 
 ----------------------------------------------------------------------------------------
 
 For each event, *one* plan is selected according to the context: the
@@ -315,7 +316,10 @@ of `happy(H)` is sincere
 is true if the value of `H` is the name of the agent executing that
 internal action). The second plan is used otherwise. The first plan for
 `+!say(X)` is used in days other than Monday and the second on Fridays.
-(Notice that there are no plans for Mondays!)
+(Notice that there is a plan for Mondays that does not actually say anything 
+but just keeps the intention alive. Without it Bob would find no plan for
+`say(X)` on Monday and the intention for `say(X)` would not be re-added. Bob 
+would have to remain mute ever after.)
 
 Instead of using REPL, we will add a new agent, called Alice, to run
 this system:
