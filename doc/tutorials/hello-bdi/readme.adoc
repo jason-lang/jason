@@ -233,11 +233,11 @@ a|
 MAS bdi_hw {
 
   // CArtAgO environment
-  environment: c4jason.CartagoEnvironment
+  environment: jaca.CartagoEnvironment
 
   // Agent architecture for CArtAgO
   agents:
-     bob agentArchClass c4jason.CAgentArch;
+     bob agentArchClass jaca.CAgentArch;
 }
 --------------------------
 
@@ -292,7 +292,7 @@ with failure, since the agent has a desire without a suitable plan.
 The following program for Bob includes alternative plans for the events
 `+happy(H)` and `+!say(X)`.
 
-----------------------------------------------------------------------------------------
+-----
 sincere(alice).
 
 !create_calendar.
@@ -303,8 +303,8 @@ sincere(alice).
 
 +!say(X) : today(friday)     <- .print(X,"!!!!!"); .wait(math.random(400)+100); !say(X).
 +!say(X) : not today(monday) <- .print(X);         .wait(math.random(400)+100); !say(X).
-+!say(X)					 <- !say(X). 
-----------------------------------------------------------------------------------------
++!say(X)					 <- !say(X).
+-----
 
 For each event, *one* plan is selected according to the context: the
 first plan with a context that holds is selected to create the intention
@@ -316,9 +316,9 @@ of `happy(H)` is sincere
 is true if the value of `H` is the name of the agent executing that
 internal action). The second plan is used otherwise. The first plan for
 `+!say(X)` is used in days other than Monday and the second on Fridays.
-(Notice that there is a plan for Mondays that does not actually say anything 
+(Notice that there is a plan for Mondays that does not actually say anything
 but just keeps the intention alive. Without it Bob would find no plan for
-`say(X)` on Monday and the intention for `say(X)` would not be re-added. Bob 
+`say(X)` on Monday and the intention for `say(X)` would not be re-added. Bob
 would have to remain mute ever after.)
 
 Instead of using REPL, we will add a new agent, called Alice, to run
@@ -404,7 +404,7 @@ be suspended.
 2.  On Fridays, suspended intentions are resumed.
 3.  On Saturdays, all intentions are dropped.
 
-------------------------------------------------------------------------------------------------
+-----
 sincere(alice).
 
 !create_calendar.
@@ -419,6 +419,7 @@ sincere(alice).
 
 +!say(X) : today(friday)     <- .print(X,"!!!!!"); .wait(500); !say(X).
 +!say(X) : not today(monday) <- .print(X);         .wait(math.random(400)+100); !say(X).
++!say(X)					 <- !say(X).
 
 /**** the following is NEW ****/
 
@@ -438,7 +439,7 @@ sincere(alice).
    <- .resume(say(_));
       !resume_all.
 +!resume_all.
-------------------------------------------------------------------------------------------------
+-----
 
 (You can refer to the
 http://jason.sourceforge.net/api/jason/stdlib/package-summary.html#package.description[Jason

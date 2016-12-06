@@ -209,7 +209,7 @@ public class CentralisedMASLauncherAnt implements MASLauncherInfraTier {
 
         // if cartago env
         if (project.isJade() || 
-                (project.getEnvClass() != null && project.getEnvClass().getClassName().equals("c4jason.CartagoEnvironment"))) {
+                (project.getEnvClass() != null && project.getEnvClass().getClassName().equals("jaca.CartagoEnvironment"))) {
             Config c = Config.get();
             String cartago = Config.findJarInDirectory(new File(c.getJasonHome()+"/libs"), "cartago");
             if (cartago != null)

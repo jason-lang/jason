@@ -69,7 +69,7 @@ public class include extends DefaultInternalAction {
         if (args.length > 1 && args[1].isVar()) {
             return un.unifies(args[1], inc.getTerm(1));
         } else {
-        	return true;
+            return true;
         }
     }    
 }

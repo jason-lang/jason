@@ -17,8 +17,9 @@ breeze(2,3).
 stench(2,3).
 
 breeze(3,2).
-~stench(3,2).*/
+~stench(3,2).
 
+*/
 
 +!show_info  <-
    for (.member(X, [1,2,3,4])) {
@@ -34,7 +35,7 @@ breeze(3,2).
          }
       }
    }.
-   
+
 +!safe(X,Y) : safe(X,Y) <- .print(safe(X,Y)).
 +!safe(X,Y)             <- .print("   ",nsafe(X,Y)).
 
@@ -43,4 +44,3 @@ breeze(3,2).
 
 +!wumpus(X,Y) : wumpus(X,Y) <- .print(wumpus(X,Y)).
 +!wumpus(X,Y)               <- .print("   ",nwumpus(X,Y)).
-

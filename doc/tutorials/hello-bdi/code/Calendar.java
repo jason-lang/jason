@@ -15,7 +15,7 @@ import cartago.ObsProperty;
 import cartago.tools.GUIArtifact;
 
 public class Calendar extends GUIArtifact {
-    Term[] days = { 
+    Term[] days = {
                 ASSyntax.createAtom("sunday"),
                 ASSyntax.createAtom("monday"),
                 ASSyntax.createAtom("tuesday"),
@@ -24,18 +24,18 @@ public class Calendar extends GUIArtifact {
                 ASSyntax.createAtom("friday"),
                 ASSyntax.createAtom("saturday")
             };
-    
-    
+
+
     public void setup() {
         defineObsProperty("today", days[0]);
         initGUI();
     }
 
     JSlider s = new JSlider();
-    
+
     void initGUI() {
         JFrame f = new JFrame("Calendar");
-        
+
         s.setMinimum(0);
         s.setMaximum(6);
         s.setPaintTicks(true);
@@ -51,17 +51,19 @@ public class Calendar extends GUIArtifact {
         lbs.put(6, new JLabel("S"));
         s.setLabelTable(lbs);
         linkChangeEventToOp(s, "updateDay");
-        
+
         f.add(s);
         f.pack();
         f.setVisible(true);
     }
-    
+
+    /*
     protected void linkChangeEventToOp(JSlider source, String opName){
 		insertEventToOp(source,"stateChanged",opName);
 		source.addChangeListener((ChangeListener) getEventListenerInstance());
 	}
-    
+    */
+
 	@INTERNAL_OPERATION void updateDay(ChangeEvent ev) {
         try {
             ObsProperty prop = getObsProperty("today");
@@ -69,5 +71,5 @@ public class Calendar extends GUIArtifact {
         } catch (Exception e2) {
             e2.printStackTrace();
         }
-    }	
+    }
 }

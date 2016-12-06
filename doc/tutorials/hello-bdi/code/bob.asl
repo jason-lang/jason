@@ -12,7 +12,7 @@ sincere(alice).
 
 +!say(X) : today(friday)     <- .print(X,"!!!!!"); .wait(500); !say(X).
 +!say(X) : not today(monday) <- .print(X);         .wait(math.random(400)+100); !say(X).
-+!say(X)					 <- !say(X). 
++!say(X)					 <- !say(X).
 
 +today(wednesday) <- .print("**** Let's slow down.... **** (only 2 intentions)"); !enter_lazy_mode.
 +today(friday)    <- .print("**** Let's finish the work!"); !resume_all.
@@ -31,4 +31,3 @@ sincere(alice).
    <- .resume(say(_));
       !resume_all.
 +!resume_all.
-
