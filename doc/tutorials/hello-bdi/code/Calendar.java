@@ -59,12 +59,12 @@ public class Calendar extends GUIArtifact {
 
     /*
     protected void linkChangeEventToOp(JSlider source, String opName){
-		insertEventToOp(source,"stateChanged",opName);
-		source.addChangeListener((ChangeListener) getEventListenerInstance());
-	}
+        insertEventToOp(source,"stateChanged",opName);
+        source.addChangeListener((ChangeListener) getEventListenerInstance());
+    }
     */
 
-	@INTERNAL_OPERATION void updateDay(ChangeEvent ev) {
+    @INTERNAL_OPERATION void updateDay(ChangeEvent ev) {
         try {
             ObsProperty prop = getObsProperty("today");
             prop.updateValue(days[ (int)s.getValue() ]);

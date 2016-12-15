@@ -621,9 +621,9 @@ public class RunCentralisedMAS extends BaseCentralisedMAS {
             if (ag.getCyclesAct() == -1)        ag.setCyclesAct(cyclesAct);
         
             if (executor != null) {
-                executor.execute(ag);
                 if (ag instanceof CentralisedAgArchForPool)
                     ((CentralisedAgArchForPool)ag).setExecutor(executor);
+                executor.execute(ag);
             } else if (ag instanceof CentralisedAgArchAsynchronous) {
                 CentralisedAgArchAsynchronous ag2 = (CentralisedAgArchAsynchronous) ag;
                 
