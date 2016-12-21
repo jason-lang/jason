@@ -315,11 +315,11 @@ of `happy(H)` is sincere
 (http://jason.sourceforge.net/api/jason/stdlib/my_name.html[`.my_name`]
 is true if the value of `H` is the name of the agent executing that
 internal action). The second plan is used otherwise. The first plan for
-`+!say(X)` is used in days other than Monday and the second on Fridays.
+`+!say(X)` is used on Fridays and the second on days other than Monday.
 (Notice that there is a plan for Mondays that does not actually say anything
 but just keeps the intention alive. Without it Bob would find no plan for
-`say(X)` on Monday and the intention for `say(X)` would not be re-added. Bob
-would have to remain mute ever after.)
+`say(X)` on Monday and the intention for `say(X)` would not be re-added. Thus, Bob
+would remain mute thereafter.)
 
 Instead of using REPL, we will add a new agent, called Alice, to run
 this system:
