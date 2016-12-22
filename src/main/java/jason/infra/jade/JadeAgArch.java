@@ -55,7 +55,8 @@ public class JadeAgArch extends JadeAg {
     @SuppressWarnings("serial")
     @Override
     protected void setup() {
-        BaseCentralisedMAS.getRunner().setupLogger();
+        if (BaseCentralisedMAS.getRunner() != null)
+            BaseCentralisedMAS.getRunner().setupLogger();
         logger = jade.util.Logger.getMyLogger(this.getClass().getName() + "." + getLocalName());
         logger.info("starting "+getLocalName());
         try {
@@ -117,49 +118,52 @@ public class JadeAgArch extends JadeAg {
         //    option < options >
         if (args[0] instanceof AgentParameters) {
             return (AgentParameters)args[0];
-        } else if (args[0].toString().equals("j-project")) { // load parameters from .mas2j
-            if (args.length != 3) {
-                logger.log(Level.SEVERE, "To start agents from .mas2j file, you have to provide as parameters: (j-project <file.mas2j> <nameofagent in mas2j>)");
-                return null;
-            }
-            jason.mas2j.parser.mas2j parser = new jason.mas2j.parser.mas2j(new FileReader(args[1].toString())); 
-            MAS2JProject project = parser.mas();
-            project.setupDefault();
-
-            project.registerDirectives();
-            ((Include)DirectiveProcessor.getDirective("include")).setSourcePath(project.getSourcePaths());
-            
-            AgentParameters ap = project.getAg(args[2].toString());
-            if (ap == null) {
-                logger.log(Level.SEVERE, "There is no agent '"+args[2]+"' in project '"+args[1]+"'.");
-            } else {    
-                ap.fixSrc(project.getSourcePaths(), null);
-                //if (ap.qty > 1)
-                //    logger.warning("Ignoring quantity of agents from mas2j, jade arch creates only ONE agent.");
-            }
-            
-            // The case CARTAGO+JADE
-            if (isCartagoJadeCase(project)) {
-                startCartagoNode(project.getEnvClass().getParametersArray());           
-            }
-            return ap;
-            
-        } else { // load parameters from shell
-            AgentParameters ap = new AgentParameters();
-            ap.asSource = new File(args[0].toString());
-        
-            int i=1;
-            while (i < args.length) {                
-                if (args[i].toString().equals("arch")) {
-                    i++;
-                    ap.addArchClass(args[i].toString());
-                } else if (args[i].toString().equals("ag")) {
-                    i++;
-                    ap.agClass = new ClassParameters(args[i].toString());
+        } else {
+            args = args[0].toString().split(" ");
+            if (args[0].toString().equals("j-project")) { // load parameters from .mas2j
+                if (args.length != 3) {
+                    logger.log(Level.SEVERE, "To start agents from .mas2j file, you have to provide as parameters: (j-project <file.mas2j> <nameofagent in mas2j>)");
+                    return null;
                 }
-                i++;
+                jason.mas2j.parser.mas2j parser = new jason.mas2j.parser.mas2j(new FileReader(args[1].toString())); 
+                MAS2JProject project = parser.mas();
+                project.setupDefault();
+    
+                project.registerDirectives();
+                ((Include)DirectiveProcessor.getDirective("include")).setSourcePath(project.getSourcePaths());
+                
+                AgentParameters ap = project.getAg(args[2].toString());
+                if (ap == null) {
+                    logger.log(Level.SEVERE, "There is no agent '"+args[2]+"' in project '"+args[1]+"'.");
+                } else {    
+                    ap.fixSrc(project.getSourcePaths(), null);
+                    //if (ap.qty > 1)
+                    //    logger.warning("Ignoring quantity of agents from mas2j, jade arch creates only ONE agent.");
+                }
+                
+                // The case CARTAGO+JADE
+                if (isCartagoJadeCase(project)) {
+                    startCartagoNode(project.getEnvClass().getParametersArray());           
+                }
+                return ap;
+                
+            } else { // load parameters from shell
+                AgentParameters ap = new AgentParameters();
+                ap.asSource = new File(args[0].toString());
+            
+                int i=1;
+                while (i < args.length) {                
+                    if (args[i].toString().equals("arch")) {
+                        i++;
+                        ap.addArchClass(args[i].toString());
+                    } else if (args[i].toString().equals("ag")) {
+                        i++;
+                        ap.agClass = new ClassParameters(args[i].toString());
+                    }
+                    i++;
+                }
+                return ap;
             }
-            return ap;
         }
     }
     
