@@ -260,7 +260,7 @@ mas bdi_hw {
 
 
 * Download link:./code/Calendar.java[this] file and place it in the
-directory of the project where artifacts goes (when using JaCaMo, this directory is `src/env`)
+directory of the project where artifacts go (when using JaCaMo, this directory usually is `src/env`)
 * In the beginning of Bob's program (`bob.asl`), add the following lines to give him access to the calendar:
 +
 [cols="2",frame=topbot]
