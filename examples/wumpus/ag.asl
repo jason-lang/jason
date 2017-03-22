@@ -2,7 +2,7 @@
 
 { include("kb.asl") } 
 { include("search.asl") } 
-{ include("aux.asl") } 
+{ include("auxiliary.asl") } 
 
 
 /* Initial beliefs and rules */
