@@ -54,7 +54,7 @@ public class date extends DefaultInternalAction {
         checkArguments(args);
         Calendar now = new GregorianCalendar();
         return un.unifies(args[0], new NumberTermImpl(now.get(Calendar.YEAR))) &&
-               un.unifies(args[1], new NumberTermImpl(now.get(Calendar.MONTH))) &&
+               un.unifies(args[1], new NumberTermImpl(now.get(Calendar.MONTH)+1)) &&
                un.unifies(args[2], new NumberTermImpl(now.get(Calendar.DAY_OF_MONTH)));
     }
 }
