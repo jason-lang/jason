@@ -453,6 +453,10 @@ task copyRel << {
         from 'demos'
         into 'build/jason-'+project.version+'/demos'
     }
+    copy {
+        from 'src'
+        into 'build/jason-'+project.version+'/src'
+    }
 }
 
 // creates a zip file for a release
