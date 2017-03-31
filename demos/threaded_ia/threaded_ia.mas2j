@@ -1,0 +1,15 @@
+/* Jason Demo
+
+In this demo, an internal action runs a heavy task an
+does not block the agent thread, instead it creates
+a new thread for that task.
+
+See the code mylib/tia.java
+
+ */
+
+MAS threaded_ia {
+
+    agents:  a;
+
+}
