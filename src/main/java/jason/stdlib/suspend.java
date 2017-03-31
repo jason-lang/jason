@@ -167,7 +167,7 @@ public class suspend extends DefaultInternalAction {
     }
 
     @Override
-    public boolean suspendIntention() {    	
+    public boolean suspendIntention() {     
         return suspendIntention;
     }
 }
