@@ -1,7 +1,8 @@
 = Interoperation between Jason and JADE
 :toc: right
-:source-highlighter: coderay
-:coderay-linenums-mode: inline
+:source-highlighter: pygments
+:pygments-style: autumn
+:pygments-linenums-mode: inline
 :icons: font
 :prewrap!:
 
@@ -35,6 +36,7 @@ image:./figures/screen-create-project.png[]
 - Create the first version of the seller agent, called
   `john`, with the following code:
 +
+[source,jasonagent]
 .john.asl
 ----
 /* Initial beliefs and rules */
@@ -99,6 +101,7 @@ processing) produces an event like `+!kqml_received(Sender, Performative, Conten
 the message). We can then create plans to handle this event in the
 particular case where the performative is CFP or ACCEPT_PROPOSAL:
 
+[source,jasonagent]
 .john.asl
 ----
 include::book_trading/john.asl[]

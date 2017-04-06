@@ -2,8 +2,9 @@
 Jomi F. Hubner (with Rafael H. Bordini support)
 2015
 :toc: right
-:source-highlighter: coderay
-:coderay-linenums-mode: inline
+:source-highlighter: pygments
+:pygments-style: autumn
+:pygments-linenums-mode: inline
 :icons: font
 :prewrap!:
 
@@ -43,6 +44,7 @@ the simplicity of usual hello world programs.)
 The Jason program for our agent is the following (since BDI is inspired
 in folk psychology, we can name this agent Bob):
 
+[source,jasonagent]
 -----------------------------------
 happy(bob).
 
@@ -116,6 +118,7 @@ look like:
 |Jason .mas2j project|JaCaMo .jcm project
 
 a|
+[source,jasonproject]
 ----------------
 MAS bdi_hw {
 
@@ -125,6 +128,7 @@ MAS bdi_hw {
 ----------------
 
 a|
+[source,jacamoproject]
 ----------------
 mas bdi_hw {
 
@@ -142,6 +146,7 @@ mas bdi_hw {
 
 The second version of agent Bob has neither initial beliefs nor desires:
 
+[source,jasonagent]
 ---------------------------------------------------------------
 +happy(bob) <- !say(hello).
 +!say(X) : not today(monday) <- .print(X); .wait(500); !say(X).
@@ -195,6 +200,7 @@ annotations. All beliefs in Jason have annotations for their sources.
 This information can be used, for instance, if an agent needs to
 consider only those beliefs that come from trustable sources:
 
+[source,jasonagent]
 ---------------------------------------------------------------
 sincere(alice).
 
@@ -207,6 +213,7 @@ This program has a problem, however. Another malicious agent can tell
 Bob that it is sincere just before telling him `happy(bob)`! The source
 of the `sincere` belief should be Bob itself (and not another agent):
 
+[source,jasonagent]
 -----------------------------------------------------------------
 sincere(alice).
 
@@ -229,6 +236,7 @@ develop the environment, so we will simply copy & paste some code:
 |Jason .mas2j project|JaCaMo .jcm project
 
 a|
+[source,jasonproject]
 --------------------------
 MAS bdi_hw {
 
@@ -242,6 +250,7 @@ MAS bdi_hw {
 --------------------------
 
 a|
+[source,jacamoproject]
 --------------------------
 mas bdi_hw {
 
@@ -268,6 +277,7 @@ directory of the project where artifacts go (when using JaCaMo, this directory u
 |If using .mas2j project|If using .jcm project
 
 a|
+[source,jasonagent]
 ---------------------------------------------------------------------
 !create_calendar.
 +!create_calendar
@@ -276,6 +286,7 @@ a|
 ---------------------------------------------------------------------
 
 a|
+[source,jasonagent]
 --------------------------
 { include("$jacamoJar/templates/common-cartago.asl") }
 --------------------------
@@ -292,6 +303,7 @@ with failure, since the agent has a desire without a suitable plan.
 The following program for Bob includes alternative plans for the events
 `+happy(H)` and `+!say(X)`.
 
+[source,jasonagent]
 -----
 sincere(alice).
 
@@ -324,6 +336,7 @@ would remain mute thereafter.)
 Instead of using REPL, we will add a new agent, called Alice, to run
 this system:
 
+[source,jasonagent]
 -------------------------------------
 !start.
 
@@ -346,6 +359,7 @@ that sends tell messages to Bob and see how fast it reacts.
 
 To really stress Bob, we can change Alice's program as follows:
 
+[source,jasonagent]
 -------------------------------------
 !start.
 
@@ -371,6 +385,7 @@ revise their own intentions. The following plan reacts to the event of
 stop believing that someone is happy. The reaction is to drop the
 corresponding intention.
 
+[source,jasonagent]
 --------------------------------------
 // new plan in Bob's program:
 
@@ -381,6 +396,7 @@ corresponding intention.
 
 We can test this with the following program for Alice:
 
+[source,jasonagent]
 ---------------------------------------------------
 !start.
 
@@ -404,6 +420,7 @@ be suspended.
 2.  On Fridays, suspended intentions are resumed.
 3.  On Saturdays, all intentions are dropped.
 
+[source,jasonagent]
 -----
 sincere(alice).
 

@@ -1,7 +1,8 @@
 = Getting started with Jason
 :toc: right
-:source-highlighter: coderay
-:coderay-linenums-mode: inline
+:source-highlighter: pygments
+:pygments-style: autumn
+:pygments-linenums-mode: inline
 :icons: font
 :prewrap!:
 
@@ -112,6 +113,7 @@ We will now change `tom` 's code so that it sends a "`hello`"
   message to `bob`. To send messages, an *internal action*
   called `.send` is used:
 +
+[source,jasonagent]
 ----
 // Agent tom in project greeting.mas2j
 
@@ -123,6 +125,7 @@ We will now change `tom` 's code so that it sends a "`hello`"
 In `bob` code, we remove the `start` goal (and its
   related plan), leaving its program empty:
 +
+[source,jasonagent]
 ----
 // Agent bob in project greeting.mas2j
 ----
@@ -145,6 +148,7 @@ Note the `bob` has a belief `hello[source(tom)]`,
   event like `+hello[source(tom)]` is produced and may trigger
   the execution of the following plan:
 +
+[source,jasonagent]
 ----
 // Agent bob in project greeting.mas2j
 
@@ -162,6 +166,7 @@ image:./figures/screen-hello.png[]
 - Since `bob` is a polite agent, we will now make it send a
   hello back to `tom`:
 +
+[source,jasonagent]
 ----
 // Agent bob in project greeting.mas2j
 
@@ -172,6 +177,7 @@ image:./figures/screen-hello.png[]
 +
 and `tom` does the same:
 +
+[source,jasonagent]
 ----
 // Agent tom in project greeting.mas2j
 
@@ -195,6 +201,7 @@ Before running the system, think what you would expect to happen.
 - If you want to use JADE as the infrastructure, change the
   project as follows:
 +
+[source,jasonproject]
 ----
 MAS greeting {
     infrastructure: Jade
@@ -223,6 +230,7 @@ one action in a simulated environment.
 - Create a new project called `testenv`.
 - Add one agent called `liz` with the following code:
 +
+[source,jasonagent]
 ----
 // Agent liz in project testeenv.mas2j
 
@@ -286,6 +294,7 @@ When an agent attempts to execute an environment action, the method
 
 - Agent `liz` can now react to the perception of fire:
 +
+[source,jasonagent]
 ----
 !start.
 
@@ -335,6 +344,7 @@ react to the available perception. For instance, what it should do
 when it perceives "dirty"? The action "suck", of course! In AgentSpeak,
 we program this reaction by means of a plan as follows:
 
+[source,jasonagent]
 ----
 +dirty <- suck. // when dirty is perceived, do the action suck
 ----
@@ -344,6 +354,7 @@ perception and be programmed as shown below (replace "someaction" for
 the action you think is the most suitable, you might also want to
 remove some of the plans):
 
+[source,jasonagent]
 ----
 +dirty  <- someaction.
 +clean  <- someaction.
@@ -356,6 +367,7 @@ remove some of the plans):
 Since all perception is also included in the belief base, they can
 also be used to select the right plan, as in the following example:
 
+[source,jasonagent]
 ----
 +pos(1) : clean <- someaction.   // whenever I perceive I'm in pos(1) and
                                  // I believe that my position is clean,
@@ -369,6 +381,7 @@ goal of maintaining the house clean. The easiest way to define a
 persistent goal is by a recursive plan; for example, the code below
 implements the persistent goal (represented by p) of printing out "a":
 
+[source,jasonagent]
 ----
 !p.                   // initial goal
 +!p <- .print(a); !p. // to achieve the goal p, print "a"
