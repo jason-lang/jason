@@ -253,6 +253,15 @@ public class NSTest extends TestCase {
         assertTrue(a.getPL().toString().contains("[source(self)] +NS::tick <- .print(NS)."));
     }
     
+    public void testParserNS3() throws ParseException, JasonException {
+        as2j parser = new as2j(new StringReader("-!NoPlan[error(no_relevant), k,b,source(AgenteAdversario)] <- .print(NS). "));
+        //parser.setNS(new Atom("ns33"));
+        Agent a = new Agent();
+        a.initAg();
+        parser.agent(a);
+        System.out.println(a.getPL());
+        assertTrue(a.getPL().toString().contains("-!NoPlan[b,k,error(no_relevant),source(AgenteAdversario)] <- .print(NS)"));
+    }
     
     public void testDirective() throws ParseException, JasonException {
         as2j parser = new as2j(new StringReader(

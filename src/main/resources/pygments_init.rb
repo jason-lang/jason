@@ -1,7 +1,7 @@
 require 'pygments'
 
 # use a custom Pygments installation (directory that contains pygmentize)
-Pygments.start '$HOME/tmp/pygments'
+Pygments.start '/Users/jomi/pro/pygments-jacamo'
 
 # example of registering a missing or additional lexer
 Pygments::Lexer.create name: 'JasonAgent', aliases: ['jasonagent'],
