@@ -4,7 +4,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Represents an unnamed variable '_'.
- * 
+ *
  * @author jomi
  */
 public class UnnamedVar extends VarTerm {
@@ -13,7 +13,7 @@ public class UnnamedVar extends VarTerm {
 
     private static AtomicInteger varCont = new AtomicInteger(0);
     public int myId;
-    
+
     public UnnamedVar() {
         this(Literal.DefaultNS, varCont.incrementAndGet());
     }
@@ -47,7 +47,7 @@ public class UnnamedVar extends VarTerm {
         if (name.length() == 1) { // the case of "_"
             return new UnnamedVar(ns);
         } else {
-            int id = varCont.incrementAndGet();            
+            int id = varCont.incrementAndGet();
             UnnamedVar v = new UnnamedVar(ns, "_"+id+name);
             v.myId = id;
             return v;
@@ -57,7 +57,7 @@ public class UnnamedVar extends VarTerm {
     public Term clone() {
         return cloneNS(getNS());
     }
-    
+
     @Override
     public Literal cloneNS(Atom newNameSpace) {
         UnnamedVar newv = new UnnamedVar(newNameSpace, getFunctor());
@@ -67,7 +67,7 @@ public class UnnamedVar extends VarTerm {
             newv.addAnnots(this.getAnnots().cloneLT());
         return newv;
     }
-    
+
     @Override
     public boolean equals(Object t) {
         if (t == null) return false;
@@ -75,7 +75,7 @@ public class UnnamedVar extends VarTerm {
         if (t instanceof UnnamedVar) return ((UnnamedVar)t).myId == this.myId;
         return false;
     }
-    
+
     public int compareTo(Term t) {
         if (t instanceof UnnamedVar) {
             if (myId > ((UnnamedVar)t).myId)
