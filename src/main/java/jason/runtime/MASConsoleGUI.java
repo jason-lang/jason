@@ -60,7 +60,7 @@ public class MASConsoleGUI {
         initOutput();
         initButtonPanel();
     }
-    
+
     protected void initFrame(String title) {
         frame = new JFrame(title);
         frame.addWindowListener(new WindowAdapter() {
@@ -73,7 +73,7 @@ public class MASConsoleGUI {
         int w = (int)(h*1.618);
         frame.setBounds((int)(h*0.618), 20, w, h);
     }
-    
+
     protected void initMainPanel() {
         String tabbed = LogManager.getLogManager().getProperty(isTabbedPropField);
         if (tabbed != null && tabbed.equals("true")) {
@@ -84,12 +84,12 @@ public class MASConsoleGUI {
             tabPane = new JTabbedPane(JTabbedPane.LEFT);
             pcenter.add(BorderLayout.CENTER, tabPane);
         }
-        frame.getContentPane().add(BorderLayout.CENTER, pcenter);        
+        frame.getContentPane().add(BorderLayout.CENTER, pcenter);
     }
-    
+
     protected void initOutput() {
         output = new JTextArea();
-        output.setEditable(false);        
+        output.setEditable(false);
         ((DefaultCaret)output.getCaret()).setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
         if (isTabbed) {
             tabPane.add("common", new JScrollPane(output));
@@ -97,11 +97,11 @@ public class MASConsoleGUI {
             pcenter.add(BorderLayout.CENTER, new JScrollPane(output));
         }
     }
-    
+
     public void cleanConsole() {
         output.setText("");
     }
-    
+
     protected void initButtonPanel() {
         pBt = new JPanel();
         pBt.setLayout(new FlowLayout(FlowLayout.CENTER));
@@ -174,7 +174,7 @@ public class MASConsoleGUI {
                     SwingUtilities.invokeAndWait(new Runnable() {
                         public void run() {
                             agsTextArea.put(agName, cta);
-                            tabPane.add(agName, new JScrollPane(cta));                            
+                            tabPane.add(agName, new JScrollPane(cta));
                         }
                     });
                 }
