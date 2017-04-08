@@ -10,15 +10,15 @@ public abstract class DefaultDirective implements Directive {
     public boolean isSingleton() {
         return true;
     }
-    
+
     public void begin(Pred directive, as2j parser) {
     }
-    
+
     public Agent process(Pred directive, Agent outerContent, Agent innerContent) {
         return innerContent;
     }
 
     public void end(Pred directive, as2j parser) {
     }
-    
+
 }
