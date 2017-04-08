@@ -135,7 +135,7 @@ public class BookSellerAgent extends Agent {
        offer acceptances (i.e. purchase orders) from buyer agents.
        The seller agent removes the purchased book from its catalogue 
        and replies with an INFORM message to notify the buyer that the
-       purchase has been sucesfully completed.
+       purchase has been successfully completed.
   */
   private class PurchaseOrdersServer extends CyclicBehaviour {
       public void action() {
