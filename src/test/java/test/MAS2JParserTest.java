@@ -17,7 +17,7 @@ import junit.framework.TestCase;
 public class MAS2JParserTest extends TestCase {
 
     mas2j parser;
-     
+
     protected void setUp() throws Exception {
         super.setUp();
         StringBuffer source = new StringBuffer("MAS auctionCent { \n");
@@ -52,16 +52,16 @@ public class MAS2JParserTest extends TestCase {
         try {
             MAS2JProject project = parser.mas();
             project.setDirectory("/tmp");
-            
+
             //project.writeXMLScript(System.out);
             //project.writeScripts(true);
             Map ag1Opt = project.getAg("ag1").getOptions();
             assertEquals(ag1Opt.size(),3);
-            
+
             assertEquals(project.getDirectiveClasses().size(),2);
             assertEquals(project.getDirectiveClasses().get("md2").toString(), "mypkg.LogDirective");
             assertEquals("JaCaMo", project.getInfrastructure().getClassName());
-            
+
             // jacamo is removed
             //String facClass = Config.get().getInfrastructureFactoryClass(project.getInfrastructure().getClassName());
             //assertEquals("jacamo.infra.JaCaMoInfrastructureFactory", facClass);
@@ -82,12 +82,12 @@ public class MAS2JParserTest extends TestCase {
 
         MAS2JProject project = parser.mas();
         assertEquals(2,  project.getAg("bob").getBBClass().getParametersArray().length);
-        
+
         ChainBB bb = new ChainBB();
         bb.init(null, project.getAg("bob").getBBClass().getParametersArray());
         bb.add(Literal.parseLiteral("b(1)"));
     }
-    
+
     public void testClassDef1() throws ParseException {
         String archClass = "my.Arch(test)";
         mas2j parser = new mas2j(new StringReader(archClass));
@@ -101,7 +101,7 @@ public class MAS2JParserTest extends TestCase {
         ClassParameters c = parser.classDef();
         assertEquals("my.Arch", c.getClassName());
         assertEquals(0,c.getParametersArray().length);
-        
+
         Structure s = ASSyntax.parseStructure(c.toString()); // a classDef should be parsed as a structure
         assertEquals("my.Arch", s.toString());
     }
