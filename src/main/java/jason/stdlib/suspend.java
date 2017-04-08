@@ -19,16 +19,16 @@ import jason.asSyntax.Trigger.TEType;
 /**
   <p>Internal action:
   <b><code>.suspend(<i>G</i>)</code></b>.
-  
-  <p>Description: suspend goals <i>G</i>, i.e., all intentions trying to achieve G will stop 
-  running until the internal action <code>.resume</code> change the state of those intentions.  
+
+  <p>Description: suspend goals <i>G</i>, i.e., all intentions trying to achieve G will stop
+  running until the internal action <code>.resume</code> change the state of those intentions.
   A literal <i>G</i>
   is a goal if there is a triggering event <code>+!G</code> in any plan within
-  any intention in I, E, PI, or PA. 
+  any intention in I, E, PI, or PA.
   <br/>
-  The meta-event <code>^!G[state(suspended)]</code> is produced. 
+  The meta-event <code>^!G[state(suspended)]</code> is produced.
 
-  <p>Examples:<ul> 
+  <p>Examples:<ul>
 
   <li> <code>.suspend(go(1,3))</code>: suspends intentions to go to the location 1,3.
   <li> <code>.suspend</code>: suspends the current intention.
@@ -47,16 +47,20 @@ import jason.asSyntax.Trigger.TEType;
   @see jason.stdlib.fail_goal
   @see jason.stdlib.current_intention
   @see jason.stdlib.resume
-  
+
  */
 public class suspend extends DefaultInternalAction {
-    
+
     boolean suspendIntention = false;
     public static final String SUSPENDED_INT      = "suspended-";
     public static final String SELF_SUSPENDED_INT = SUSPENDED_INT+"self-";
 
-    @Override public int getMinArgs() { return 0; }
-    @Override public int getMaxArgs() { return 1; }
+    @Override public int getMinArgs() {
+        return 0;
+    }
+    @Override public int getMaxArgs() {
+        return 1;
+    }
 
     @Override protected void checkArguments(Term[] args) throws JasonException {
         super.checkArguments(args); // check number of arguments
@@ -69,7 +73,7 @@ public class suspend extends DefaultInternalAction {
         checkArguments(args);
 
         suspendIntention = false;
-        
+
         Circumstance C = ts.getC();
 
         if (args.length == 0) {
@@ -80,13 +84,13 @@ public class suspend extends DefaultInternalAction {
             C.addPendingIntention(SELF_SUSPENDED_INT+i.getId(), i);
             return true;
         }
-        
+
         // use the argument to select the intention to suspend.
-        
+
         Trigger      g = new Trigger(TEOperator.add, TEType.achieve, (Literal)args[0]);
 
         // ** Must test in PA/PI first since some actions (as .suspend) put intention in PI
-        
+
         // suspending from Pending Actions
         for (ActionExec a: C.getPendingActions().values()) {
             Intention i = a.getIntention();
@@ -95,10 +99,10 @@ public class suspend extends DefaultInternalAction {
                 C.addPendingIntention(SUSPENDED_INT+i.getId(), i);
             }
         }
-        
+
         // suspending from Pending Intentions
         for (Intention i: C.getPendingIntentions().values()) {
-            if (i.hasTrigger(g, un)) { 
+            if (i.hasTrigger(g, un)) {
                 i.setSuspended(true);
             }
         }
@@ -113,7 +117,7 @@ public class suspend extends DefaultInternalAction {
                 //System.out.println("sus "+g+" from I "+i.getId()+" #"+C.getPendingIntentions().size());
             }
         }
-        
+
         // suspending the current intention?
         Intention i = C.getSelectedIntention();
         if (i != null && i.hasTrigger(g, un)) {
@@ -121,7 +125,7 @@ public class suspend extends DefaultInternalAction {
             i.setSuspended(true);
             C.addPendingIntention(SELF_SUSPENDED_INT+i.getId(), i);
         }
-            
+
         // suspending G in Events
         int c = 0;
         Iterator<Event> ie = C.getEventsPlusAtomic();
@@ -132,42 +136,42 @@ public class suspend extends DefaultInternalAction {
                 C.removeEvent(e);
                 C.addPendingEvent(SUSPENDED_INT+e.getTrigger()+(c++), e);
                 if (i != null)
-                    i.setSuspended(true);                
+                    i.setSuspended(true);
                 //System.out.println("sus "+g+" from E "+e.getTrigger());
             }
-            
+
 
             /*
-            if ( i != null && 
+            if ( i != null &&
                     (i.hasTrigger(g, un) ||       // the goal is in the i's stack of IM
                      un.unifies(g, e.getTrigger())  // the goal is the trigger of the event
                     )
                 ) {
                 i.setSuspended(true);
-                C.removeEvent(e);                    
+                C.removeEvent(e);
                 C.addPendingIntention(k, i);
             } else if (i == Intention.EmptyInt && un.unifies(g, e.getTrigger())) { // the case of !!
                 // creates an intention to suspend the "event"
                 i = new Intention();
                 i.push(new IntendedMeans(
                         new Option(
-                                new Plan(null, e.getTrigger(), Literal.LTrue, 
-                                        new PlanBodyImpl(BodyType.achieveNF, e.getTrigger().getLiteral())), 
-                                new Unifier()), 
+                                new Plan(null, e.getTrigger(), Literal.LTrue,
+                                        new PlanBodyImpl(BodyType.achieveNF, e.getTrigger().getLiteral())),
+                                new Unifier()),
                         e.getTrigger()));
                 e.setIntention(i);
                 i.setSuspended(true);
-                C.removeEvent(e);                    
+                C.removeEvent(e);
                 C.addPendingIntention(k, i);
             }
-            */                
+            */
         }
-        
+
         return true;
     }
 
     @Override
-    public boolean suspendIntention() {     
+    public boolean suspendIntention() {
         return suspendIntention;
     }
 }
