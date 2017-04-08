@@ -20,8 +20,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-/** 
-Implementation of <b>for</b>. 
+/**
+Implementation of <b>for</b>.
 
 <p>Syntax:
 <pre>
@@ -60,81 +60,85 @@ public class foreach extends DefaultInternalAction {
 
     private static InternalAction singleton = null;
     public static InternalAction create() {
-        if (singleton == null) 
-            singleton = new foreach();
-        return singleton;
-    }
+            if (singleton == null)
+                singleton = new foreach();
+            return singleton;
+        }
 
-    @Override public Term[] prepareArguments(Literal body, Unifier un) {
-        /*Term[] terms = new Term[body.getArity()];
-        for (int i=0; i<terms.length; i++) {
-            terms[i] = body.getTerm(i).clone();
+        @Override public Term[] prepareArguments(Literal body, Unifier un) {
+            /*Term[] terms = new Term[body.getArity()];
+            for (int i=0; i<terms.length; i++) {
+                terms[i] = body.getTerm(i).clone();
+            }
+            return terms;
+            */
+            return body.getTermsArray();
         }
-        return terms;
-        */
-        return body.getTermsArray();
-    }
-    
-    @Override public int getMinArgs() { return 2; }
-    @Override public int getMaxArgs() { return 2; }
-    
-    @Override protected void checkArguments(Term[] args) throws JasonException {
-        super.checkArguments(args); // check number of arguments
-        if ( !(args[0] instanceof LogicalFormula))
-            throw JasonException.createWrongArgument(this,"first argument must be a logical formula.");
-        if ( !args[1].isPlanBody())
-            throw JasonException.createWrongArgument(this,"second argument must be a plan body term.");
-    }
-    
-    
-    @SuppressWarnings("unchecked")
-    @Override
-    public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {
-        IntendedMeans im    = ts.getC().getSelectedIntention().peek();
-        PlanBody      foria = im.getCurrentStep();
 
-        Iterator<Unifier> iu;
-        
-        if (args.length == 2) {
-            // first execution of while
-            checkArguments(args);
-            
-            // get all solutions for the loop
-            // Note: you should get all solutions here, otherwise a concurrent modification will occur for the iterator 
-            LogicalFormula logExpr = (LogicalFormula)args[0];
-            iu = logExpr.logicalConsequence(ts.getAg(), un);
-            List<Unifier> allsol = new ArrayList<Unifier>();
-            while (iu.hasNext())
-                allsol.add(iu.next());
-            if (allsol.isEmpty())
-                return true;
-            iu = allsol.iterator();
-            foria = new PlanBodyImpl(BodyType.internalAction, foria.getBodyTerm().clone());
-            foria.add(im.getCurrentStep().getBodyNext());
-            Structure forstructure = (Structure)foria.getBodyTerm();
-            forstructure.addTerm(new ObjectTermImpl(iu));         // store all solutions
-            forstructure.addTerm(new ObjectTermImpl(un.clone())); // backup original unifier
-        } else if (args.length == 4) {
-            // restore the solutions
-            iu = (Iterator<Unifier>)((ObjectTerm)args[2]).getObject();
-        } else {
-            throw JasonException.createWrongArgumentNb(this);
+        @Override public int getMinArgs() {
+            return 2;
         }
-        
-        un.clear();
-        if (iu.hasNext()) {
-            // add in the current intention:
-            // 1. the body argument of for and
-            // 2. the for internal action after the execution of the body
-            //    (to perform the next iteration)
-            un.compose(iu.next());
-            PlanBody whattoadd = (PlanBody)args[1].clone(); 
-            whattoadd.add(foria); 
-            whattoadd.setAsBodyTerm(false);
-            im.insertAsNextStep(whattoadd);
-        } else {
-            un.compose((Unifier)((ObjectTerm)args[3]).getObject());
+        @Override public int getMaxArgs() {
+            return 2;
         }
-        return true;
+
+        @Override protected void checkArguments(Term[] args) throws JasonException {
+            super.checkArguments(args); // check number of arguments
+            if ( !(args[0] instanceof LogicalFormula))
+                throw JasonException.createWrongArgument(this,"first argument must be a logical formula.");
+            if ( !args[1].isPlanBody())
+                throw JasonException.createWrongArgument(this,"second argument must be a plan body term.");
+        }
+
+
+        @SuppressWarnings("unchecked")
+        @Override
+        public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {
+            IntendedMeans im    = ts.getC().getSelectedIntention().peek();
+            PlanBody      foria = im.getCurrentStep();
+
+            Iterator<Unifier> iu;
+
+            if (args.length == 2) {
+                // first execution of while
+                checkArguments(args);
+
+                // get all solutions for the loop
+                // Note: you should get all solutions here, otherwise a concurrent modification will occur for the iterator
+                LogicalFormula logExpr = (LogicalFormula)args[0];
+                iu = logExpr.logicalConsequence(ts.getAg(), un);
+                List<Unifier> allsol = new ArrayList<Unifier>();
+                while (iu.hasNext())
+                    allsol.add(iu.next());
+                if (allsol.isEmpty())
+                    return true;
+                iu = allsol.iterator();
+                foria = new PlanBodyImpl(BodyType.internalAction, foria.getBodyTerm().clone());
+                foria.add(im.getCurrentStep().getBodyNext());
+                Structure forstructure = (Structure)foria.getBodyTerm();
+                forstructure.addTerm(new ObjectTermImpl(iu));         // store all solutions
+                forstructure.addTerm(new ObjectTermImpl(un.clone())); // backup original unifier
+            } else if (args.length == 4) {
+                // restore the solutions
+                iu = (Iterator<Unifier>)((ObjectTerm)args[2]).getObject();
+            } else {
+                throw JasonException.createWrongArgumentNb(this);
+            }
+
+            un.clear();
+            if (iu.hasNext()) {
+                // add in the current intention:
+                // 1. the body argument of for and
+                // 2. the for internal action after the execution of the body
+                //    (to perform the next iteration)
+                un.compose(iu.next());
+                PlanBody whattoadd = (PlanBody)args[1].clone();
+                whattoadd.add(foria);
+                whattoadd.setAsBodyTerm(false);
+                im.insertAsNextStep(whattoadd);
+            } else {
+                un.compose((Unifier)((ObjectTerm)args[3]).getObject());
+            }
+            return true;
+        }
     }
-}
