@@ -9,8 +9,12 @@ import jason.asSyntax.Term;
 
 public class copy_term extends DefaultInternalAction {
 
-    @Override public int getMinArgs() { return 2; }
-    @Override public int getMaxArgs() { return 2; }
+    @Override public int getMinArgs() {
+        return 2;
+    }
+    @Override public int getMaxArgs() {
+        return 2;
+    }
 
     @Override protected void checkArguments(Term[] args) throws JasonException {
         super.checkArguments(args); // check number of arguments
