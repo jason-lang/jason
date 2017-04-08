@@ -6,11 +6,11 @@ public enum RConf {
     POOL_SYNCH_SCHEDULED("synch_scheduled"),
     ASYNCH("asynch"),
     ASYNCH_SHARED_POOLS("asynch_shared");
-    
+
     private String text;
 
     RConf(String text) {
-      this.text = text;
+        this.text = text;
     }
 
     public String toString() {
