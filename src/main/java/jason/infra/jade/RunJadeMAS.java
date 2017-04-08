@@ -37,28 +37,28 @@ import jason.util.Config;
 
 /**
  * Runs MASProject using JADE infrastructure.
- * 
- * This class reads the mas2j project and create the 
+ *
+ * This class reads the mas2j project and create the
  * corresponding agents.
- * 
+ *
  * @author Jomi
  */
 public class RunJadeMAS extends RunCentralisedMAS {
 
     public static String controllerName  = "j_controller";
     public static String environmentName = "j_environment";
-        
+
     private static Logger logger = Logger.getLogger(RunJadeMAS.class.getName());
-    
+
     private AgentController envc, crtc;
     private Map<String,AgentController> ags = new HashMap<String,AgentController>();
 
     private ContainerController cc;
-    
+
     private String targetContainer  = null; // start only agents of this container
     private ArrayList<String> initArgs   = new ArrayList<String>();
     private ProfileImpl profile; // profile used to start jade container
-    
+
     public static void main(String[] args) throws JasonException {
         RunJadeMAS r = new RunJadeMAS();
         runner = r;
@@ -68,9 +68,9 @@ public class RunJadeMAS extends RunCentralisedMAS {
         r.waitEnd();
         r.finish();
     }
-    
-    
-    
+
+
+
     public int init(String[] args) {
         // test if a container is informed
         for (int i=1; i<args.length; i++) {
@@ -102,7 +102,7 @@ public class RunJadeMAS extends RunCentralisedMAS {
             }
         }
     }
-    
+
     public void createButtons() {
         createStopButton();
         createPauseButton();
@@ -132,7 +132,7 @@ public class RunJadeMAS extends RunCentralisedMAS {
         MASConsoleGUI.get().addButton(btSniffer);
     }
 
-    
+
     public boolean startContainer() {
         try {
             // source based on jade.Boot
@@ -144,9 +144,12 @@ public class RunJadeMAS extends RunCentralisedMAS {
                     int pos = m.indexOf(":");
                     if (pos > 0) {
                         try {
-                            initArgs.add("-port"); initArgs.add(m.substring(pos+1));
-                            initArgs.add("-host"); initArgs.add(m.substring(0,pos));
-                            initArgs.add("-container"); initArgs.add(m.substring(0,pos));
+                            initArgs.add("-port");
+                            initArgs.add(m.substring(pos+1));
+                            initArgs.add("-host");
+                            initArgs.add(m.substring(0,pos));
+                            initArgs.add("-container");
+                            initArgs.add(m.substring(0,pos));
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -155,12 +158,12 @@ public class RunJadeMAS extends RunCentralisedMAS {
             } catch (Exception e) {}
             profile = new BootProfileImpl(prepareArgs( (String[])initArgs.toArray(new String[0])));
             //System.out.println(profile);
-            if (profile.getBooleanProperty(Profile.MAIN, true)) { 
+            if (profile.getBooleanProperty(Profile.MAIN, true)) {
                 cc = Runtime.instance().createMainContainer(profile);
             } else {
                 cc = Runtime.instance().createAgentContainer(profile);
                 logger.info("Agent Container started with "+profile);
-            }            
+            }
             //Runtime.instance().setCloseVM(true); // Exit the JVM when there are no more containers around
             return cc != null;
         } catch (Throwable e) {
@@ -172,12 +175,12 @@ public class RunJadeMAS extends RunCentralisedMAS {
     public void createEnvironment() throws JasonException {
         try {
             // create environment
-                // the cartago + jade case
+            // the cartago + jade case
             if (JadeAgArch.isCartagoJadeCase(getProject())) {
-                JadeAgArch.startCartagoNode(getProject().getEnvClass().getParametersArray());           
+                JadeAgArch.startCartagoNode(getProject().getEnvClass().getParametersArray());
             } else {
                 logger.fine("Creating environment " + getProject().getEnvClass());
-                envc = cc.createNewAgent(environmentName, JadeEnvironment.class.getName(), new Object[] { getProject().getEnvClass() });                        
+                envc = cc.createNewAgent(environmentName, JadeEnvironment.class.getName(), new Object[] { getProject().getEnvClass() });
             }
         } catch (Exception e) {
             logger.log(Level.SEVERE, "Error creating the environment: ", e);
@@ -201,8 +204,8 @@ public class RunJadeMAS extends RunCentralisedMAS {
             return;
         }
     }
-    
-    
+
+
     public void createAgs() throws JasonException {
         try {
             // set the aslSrcPath in the include
@@ -216,7 +219,7 @@ public class RunJadeMAS extends RunCentralisedMAS {
                         continue; // skip this agent, it is not for this container
                     if (ap.getHost() == null && !profile.getBooleanProperty(Profile.MAIN, true) && !Config.get().getClass().getName().equals("jacamo.util.Config"))
                         continue; // skip this agent, agents without host will be placed in the main container (but not in JaCaMo)
-    
+
                     // mind inspector arch
                     if (ap.getOption("mindinspector") != null) {
                         ap.addArchClass( Config.get().getMindInspectorArchClassName());
@@ -234,21 +237,21 @@ public class RunJadeMAS extends RunCentralisedMAS {
                     logger.log(Level.SEVERE, "Error creating agent " + ap.name, e);
                 }
             }
-    
-            if (profile.getBooleanProperty(Profile.MAIN, true)) { 
+
+            if (profile.getBooleanProperty(Profile.MAIN, true)) {
                 // create rma
                 if (Config.get().getBoolean(Config.JADE_RMA)) {
                     cc.createNewAgent("RMA", jade.tools.rma.rma.class.getName(), null).start();
                 }
-    
+
                 // create sniffer
                 if (Config.get().getBoolean(Config.JADE_SNIFFER)) {
                     cc.createNewAgent("Sniffer", jade.tools.sniffer.Sniffer.class.getName(), null).start();
                     Thread.sleep(1000); // give 1 second for sniffer to start
                 }
-            }           
+            }
         } catch (Throwable e) {
-            logger.log(Level.SEVERE, "Error creating agents: ", e);            
+            logger.log(Level.SEVERE, "Error creating agents: ", e);
         }
     }
 
@@ -256,8 +259,8 @@ public class RunJadeMAS extends RunCentralisedMAS {
         try {
             if (envc != null)
                 envc.start();
-            
-            if (crtc != null) 
+
+            if (crtc != null)
                 crtc.start();
 
             // run the agents
@@ -265,22 +268,22 @@ public class RunJadeMAS extends RunCentralisedMAS {
                 ag.start();
             }
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Error starting agents.", e);            
+            logger.log(Level.SEVERE, "Error starting agents.", e);
         }
     }
-    
+
     public void finish() {
         try {
             logger.info("Finishing the system.");
             new JadeRuntimeServices(cc,null).stopMAS();
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Error stopping system.", e);            
+            logger.log(Level.SEVERE, "Error stopping system.", e);
         }
         System.exit(0);
     }
-    
+
     // CODE FROM jade.Boot
-    
+
     /**
      * Transform original style boot arguments to new form.
      * <pre>
@@ -333,13 +336,11 @@ public class RunJadeMAS extends RunCentralisedMAS {
                     int j = args[i].indexOf(':');
                     isNew = ( (j < args[i].length()-1) && (isFileName(args[i].substring(j+1))) );
                     likely = !isNew;  // in case malformed file name
-                } else
-                if (args[i].startsWith("agents:")) {
+                } else if (args[i].startsWith("agents:")) {
                     isNew = true;
-                } else
-                if (args[i].startsWith("-") && likely) {
+                } else if (args[i].startsWith("-") && likely) {
                     isNew = true;
-                } 
+                }
             }
 
             if (isNew) {
@@ -380,7 +381,7 @@ public class RunJadeMAS extends RunCentralisedMAS {
                 } else {
                     results.add("host:" + args[n]);
                 }
-            }else if (theArg.equalsIgnoreCase("-owner")) {
+            } else if (theArg.equalsIgnoreCase("-owner")) {
                 if (++n == args.length) {
 
                     // "owner:password" not provided on command line
@@ -431,8 +432,8 @@ public class RunJadeMAS extends RunCentralisedMAS {
                 }
             } else if (theArg.equalsIgnoreCase("-container")) {
                 results.add(theArg);
-        } else if (theArg.equalsIgnoreCase("-backupmain")) {
-        results.add(theArg);
+            } else if (theArg.equalsIgnoreCase("-backupmain")) {
+                results.add(theArg);
             } else if (theArg.equalsIgnoreCase("-gui")) {
                 results.add(theArg);
             } else if (theArg.equalsIgnoreCase("-version")
@@ -443,10 +444,10 @@ public class RunJadeMAS extends RunCentralisedMAS {
                 results.add("-help");
             } else if (theArg.equalsIgnoreCase("-nomtp")) {
                 results.add(theArg);
-            } else if(theArg.equalsIgnoreCase("-nomobility")){
+            } else if(theArg.equalsIgnoreCase("-nomobility")) {
                 results.add(theArg);
             } else if (theArg.equalsIgnoreCase(
-                    "-dump")) {    // new form but useful for debugging
+                           "-dump")) {    // new form but useful for debugging
                 results.add(theArg);
             } else if (theArg.equalsIgnoreCase("-mtp")) {
                 if (++n == args.length) {
