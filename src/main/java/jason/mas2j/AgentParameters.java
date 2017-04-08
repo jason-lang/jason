@@ -14,10 +14,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-/** 
- * represents the agent declaration in the MAS2J project file. 
+/**
+ * represents the agent declaration in the MAS2J project file.
  * The project parser creates this object while parsing.
- * 
+ *
  * @author jomi
  */
 public class AgentParameters {
@@ -30,16 +30,16 @@ public class AgentParameters {
     protected List<ClassParameters> archClasses = new ArrayList<ClassParameters>();
 
     protected String               host      = null;
-    
+
     public AgentParameters() {
         setupDefault();
     }
-    
+
     public AgentParameters(AgentParameters a) {
         this();
         a.copyTo(this);
     }
-    
+
     public AgentParameters copy() {
         AgentParameters newap = new AgentParameters();
         copyTo(newap);
@@ -56,21 +56,21 @@ public class AgentParameters {
         newap.archClasses = new ArrayList<ClassParameters>(this.archClasses);
         newap.host = this.host;
     }
-    
+
     public String toString() {
         return getAsInMASProject();
     }
-    
+
     public void setupDefault() {
         if (agClass == null) {
             agClass = new ClassParameters(jason.asSemantics.Agent.class.getName());
         }
         if (bbClass == null) {
             bbClass = new ClassParameters(DefaultBeliefBase.class.getName());
-        }        
-        
+        }
+
     }
-    
+
     /** fix source of the asl code based on aslsourcepath, also considers code from a jar file (if urlPrefix is not null) */
     public boolean fixSrc(List<String> srcpath, String urlPrefix) {
         String r = Include.checkPathAndFixWithSourcePath(asSource.toString(), srcpath, urlPrefix);
@@ -81,57 +81,57 @@ public class AgentParameters {
             return false;
         }
     }
-    
+
     public ClassParameters getBBClass() {
         return bbClass;
     }
-    
+
     public void setNbInstances(int i) {
         nbInstances = i;
     }
     public int getNbInstances() {
         return nbInstances;
     }
-    
+
     public void setHost(String h) {
         if (h != null && h.startsWith("\""))
             host = h.substring(1,h.length()-1);
-        else 
+        else
             host = h;
     }
-    public String getHost()       { 
-        return host; 
+    public String getHost()       {
+        return host;
     }
-    
-    
+
+
     public void setAgClass(String c) {
-        if (c != null) 
+        if (c != null)
             agClass = new ClassParameters(c);
     }
-    
+
     public void addArchClass(String... cs) {
-        if (cs == null) 
+        if (cs == null)
             return;
         for (String c: cs)
-            archClasses.add(new ClassParameters(c));        
+            archClasses.add(new ClassParameters(c));
     }
     public void addArchClass(Collection<String> cs) {
-        if (cs == null) 
+        if (cs == null)
             return;
         for (String c: cs)
-            archClasses.add(new ClassParameters(c));        
+            archClasses.add(new ClassParameters(c));
     }
     public void addArchClass(ClassParameters... cps) {
-        if (cps == null) 
+        if (cps == null)
             return;
         for (ClassParameters c: cps)
-            archClasses.add(c);        
+            archClasses.add(c);
     }
     public void insertArchClass(ClassParameters... cps) {
-        if (cps == null) 
+        if (cps == null)
             return;
         for (ClassParameters c: cps)
-            archClasses.add(0,c);        
+            archClasses.add(0,c);
     }
     /** gets a list of all custom arch classes defined in the jason project */
     public List<String> getAgArchClasses() {
@@ -140,18 +140,18 @@ public class AgentParameters {
             all.add(c.getClassName());
         }
         return all;
-    }    
-    
-    
-    public void setBB(ClassParameters c) {
-        if (c != null) bbClass = c;        
     }
-    
+
+
+    public void setBB(ClassParameters c) {
+        if (c != null) bbClass = c;
+    }
+
     public void setOptions(Map<String,String> m) {
         for (String k: m.keySet())
             addOption(k, m.get(k));
     }
-    
+
     public void addOption(String k, String vl) {
         if (options == null)
             options = new HashMap<String, String>();
@@ -166,7 +166,7 @@ public class AgentParameters {
     public Map<String,String> getOptions() {
         return options;
     }
-    
+
     public String getAsInMASProject() {
         StringBuilder s = new StringBuilder(name+" ");
         if (asSource != null && !asSource.getName().startsWith(name)) {
@@ -187,7 +187,7 @@ public class AgentParameters {
         for (ClassParameters c: archClasses) {
             if (c.getClassName().length() > 0 && !c.getClassName().equals(AgArch.class.getName())) {
                 s.append("agentArchClass "+c+" ");
-            }            
+            }
         }
         if (agClass != null && agClass.getClassName().length() > 0 && !agClass.getClassName().equals(Agent.class.getName())) {
             s.append("agentClass "+agClass+" ");
@@ -216,22 +216,22 @@ public class AgentParameters {
             }
             if (!opt.isEmpty()) {
                 stts.setOptions(opt);
-            //if (s.length() > 0) {
-            //    stts.setOptions("["+s+"]");
+                //if (s.length() > 0) {
+                //    stts.setOptions("["+s+"]");
             }
         }
         if (debug) {
             stts.setVerbose(2);
         }
-        
+
         if (forceSync || debug) {
             stts.setSync(true);
         }
         stts.addOption(Settings.PROJECT_PARAMETER, this); // place of copy of this object anyway
-        
+
         return stts;
     }
-    
+
     public String getAgName() {
         return name;
     }
