@@ -51,14 +51,14 @@ public class ASParserTest extends TestCase {
         Literal l2 = ASSyntax.parseLiteral("B");
         assertTrue(l1.equals(l2)); // see comment in varterm equals
     }
-    
+
     public void testTrue() throws ParseException {
         Term t = ASSyntax.parseTerm("true");
         assertEquals("jason.asSyntax.Literal$TrueLiteral", t.getClass().getName());
         t = ASSyntax.parseTerm("false");
         assertEquals("jason.asSyntax.Literal$FalseLiteral", t.getClass().getName());
     }
-    
+
     public void testKQML() {
         Agent ag = new Agent();
         ag.initAg();
@@ -94,7 +94,7 @@ public class ASParserTest extends TestCase {
         assertTrue(t1 != null);
         solve = ((RelExpr) t1).logicalConsequence(null, new Unifier());
         assertFalse(solve.hasNext());
-         
+
         t1 = LogExpr.parseExpr("-2 > -3");
         assertTrue(t1 != null);
         RelExpr r1 = (RelExpr) t1;
@@ -110,12 +110,12 @@ public class ASParserTest extends TestCase {
         assertTrue(t1 != null);
         solve = ((RelExpr)t1).logicalConsequence(null, new Unifier());
         assertTrue(solve.hasNext());
-        
+
         t1 = LogExpr.parseExpr("(3 - 5) > -3 & 2 > 1");
         assertTrue(t1 != null);
         solve = ((LogExpr) t1).logicalConsequence(null, new Unifier());
         assertTrue(solve.hasNext());
-        
+
         t1 = LogExpr.parseExpr("(3 - 5) > -3 & 0 > 1");
         assertTrue(t1 != null);
         solve = ((LogExpr) t1).logicalConsequence(null, new Unifier());
@@ -140,7 +140,7 @@ public class ASParserTest extends TestCase {
         assertTrue(t1 != null);
         solve = ((LogExpr) t1).logicalConsequence(null, new Unifier());
         assertTrue(solve.hasNext());
-        
+
         as2j parser = new as2j(new StringReader("E+1"));
         parser.getNextToken();
         assertEquals(parser.token.kind, as2jConstants.VAR);
@@ -163,11 +163,11 @@ public class ASParserTest extends TestCase {
 
         t1 = ArithExpr.parseExpr("8 / 4 / 2");
         assertTrue(t1 != null);
-        assertEquals(t1.solve(), 1.0);    
+        assertEquals(t1.solve(), 1.0);
     }
-    
+
     public void testDirectives() throws Exception {
-        String 
+        String
         source =  " b(10). ";
         source += " { begin bc(at(X,Y), ebdg(at(X,Y))) } \n";
         source += "    +!at(X,Y) : b(X) <- go(X,Y). \n";
@@ -191,7 +191,7 @@ public class ASParserTest extends TestCase {
         parser.agent(a);
         assertTrue(a.getPL().getPlans().size() == 8);
         assertEquals("@l1[source(self)] +!at(X,left(H)) : not (b(X)) <- go(3,Y); ?at(X,left(H)).", a.getPL().get("l1").toString());
-        
+
         source =  " { begin mg(at(10,10)) } \n";
         source += "    +!at(X,Y) : b(X) <- go(X,Y). ";
         source += "    +!at(X,Y) : not b(X) <- go(3,Y). ";
@@ -216,9 +216,9 @@ public class ASParserTest extends TestCase {
         //    System.out.println(p);
         //}
         assertEquals(5, a.getPL().getPlans().size());
-        
+
     }
-    
+
     public void testParsingPlanBodyTerm1() throws ParseException {
         Literal l = ASSyntax.parseLiteral("p( {a1({f}); a2}, a3, {!g}, {?b;.print(oi) }, 10)");
         assertEquals("p({ a1({ f }); a2 },a3,{ !g },{ ?b; .print(oi) },10)", l.toString());
@@ -236,7 +236,7 @@ public class ASParserTest extends TestCase {
         assertTrue(l.getTerm(2).isPlanBody());
         assertTrue(l.getTerm(3).isPlanBody());
         assertFalse(l.getTerm(4).isPlanBody());
-        
+
         pb = (PlanBody)ASSyntax.parseTerm("{ }");
         assertEquals(0, pb.getPlanSize());
 
@@ -245,14 +245,14 @@ public class ASParserTest extends TestCase {
         assertEquals(BodyType.action, pb.getBodyType());
         assertEquals(BodyType.action, pb.getBodyNext().getBodyType()); // B must be considered as action, see TS
     }
-    
-    
+
+
     public void testParsingPlanBodyTerm2() throws ParseException {
         Unifier un = new Unifier();
         Term t = ASSyntax.parseTerm("{ +a(10) }");
         assertTrue(t.isPlanBody());
         assertEquals("{ +a(10) }", t.toString()); // plan terms should not have default annotations
-        
+
         t = ASSyntax.parseTerm("{ @label(a,b,10,test,long,label) +a(10) }");
         assertTrue(t instanceof Plan);
         assertEquals("{ @label(a,b,10,test,long,label) +a(10) }", t.toString());
@@ -266,7 +266,7 @@ public class ASParserTest extends TestCase {
         assertTrue(t.isPlanBody());
         PlanBody pb = (PlanBody)t;
         assertEquals(2, pb.getPlanSize());
-        
+
         t = ASSyntax.parseTerm("{ -a : b <- c1; c2 }");
         assertTrue(t instanceof Plan);
         assertEquals("{ -a : b <- c1; c2 }", t.toString());
@@ -287,7 +287,7 @@ public class ASParserTest extends TestCase {
         assertEquals(1, pb.getPlanSize());
         assertEquals("a", pb.getBodyTerm().toString());
         assertEquals(PlanBody.BodyType.achieve, pb.getBodyType());
-        
+
         t = ASSyntax.parseTerm("{ +!a <- +b }");
         assertEquals("{ +!a <- +b }", t.toString());
         assertTrue(t.isStructure());
@@ -302,18 +302,18 @@ public class ASParserTest extends TestCase {
         assertEquals(4, s.getArity());
         assertEquals("plan", s.getFunctor());
         assertEquals(Literal.LTrue, s.getTerm(2));
-    }    
+    }
 
     public void testParsingAllSources() {
         parseDir(new File("./examples"));
         parseDir(new File("./demos"));
         parseDir(new File("./applications/jason-moise"));
         parseDir(new File("./applications/jason-team"));
-        parseDir(new File("./doc/mini-tutorial"));        
+        parseDir(new File("./doc/mini-tutorial"));
         parseDir(new File("../Jason-applications/examples-site-jBook"));
         parseDir(new File("../Jason-applications/Tests"));
     }
-    
+
     public void parseDir(File dir) {
         if (!dir.exists())
             return;
@@ -326,8 +326,8 @@ public class ASParserTest extends TestCase {
                     if (f.isDirectory()) {
                         parseDir(f);
                     } else if (f.getName().endsWith(MAS2JProject.AS_EXT)) {
-                        if (f.getName().equals("search.asl"))  continue; // ignore this file 
-                        if (f.getName().equals("b.asl"))  continue; // ignore this file 
+                        if (f.getName().equals("search.asl"))  continue; // ignore this file
+                        if (f.getName().equals("b.asl"))  continue; // ignore this file
                         as2j parser = new as2j(new FileInputStream(f));
                         //Agent ag = new Agent();
                         //ag.init();
@@ -343,38 +343,38 @@ public class ASParserTest extends TestCase {
             }
         }
     }
-    
+
     public void testFactory() throws ParseException {
         // create the literal 'p'
-        Literal l = createLiteral("p"); 
+        Literal l = createLiteral("p");
         assertEquals("p", l.toString());
-        
+
         // create the literal 'p(a,3)'
-        l = createLiteral("p", createAtom("a"), createNumber(3)); 
+        l = createLiteral("p", createAtom("a"), createNumber(3));
         assertEquals("p(a,3)", l.toString());
-             
+
         // create the literal 'p(a,3)[s,"s"]'
         l = createLiteral("p", createAtom("a"), createNumber(3))
-                             .addAnnots(createAtom("s"), createString("s"));
+            .addAnnots(createAtom("s"), createString("s"));
         assertEquals("p(a,3)[\"s\",s]", l.toString());
-             
+
         // create the literal '~p(a,3)[s,"s"]'
         l = createLiteral(Literal.LNeg, "p", createAtom("a"), createNumber(3))
-                             .addAnnots(createAtom("s"), createString("s"));
+            .addAnnots(createAtom("s"), createString("s"));
         assertEquals("~p(a,3)[\"s\",s]", l.toString());
         l = ASSyntax.parseLiteral(l.toString());
         assertEquals("~p(a,3)[\"s\",s]", l.toString());
-        
+
         ListTerm   ll = ASSyntax.createList(); // empty list
         assertEquals("[]", ll.toString());
-        
-        ll = ASSyntax.createList(createAtom("a"), createLiteral("b", createNumber(5))); 
+
+        ll = ASSyntax.createList(createAtom("a"), createLiteral("b", createNumber(5)));
         assertEquals("[a,b(5)]", ll.toString());
-        
+
         ll = ASSyntax.parseList(ll.toString());
         assertEquals("[a,b(5)]", ll.toString());
     }
-    
+
     public void testParserPartial() throws ParseException {
         Term t;
         try {
