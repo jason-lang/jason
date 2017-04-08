@@ -18,8 +18,8 @@ import jason.asSyntax.PlanBody.BodyType;
 
 import java.util.Iterator;
 
-/** 
-Implementation of <b>while</b>. 
+/**
+Implementation of <b>while</b>.
 
 <p>Syntax:
 <pre>
@@ -52,11 +52,11 @@ public class loop extends DefaultInternalAction {
 
     private static InternalAction singleton = null;
     public static InternalAction create() {
-        if (singleton == null) 
+        if (singleton == null)
             singleton = new loop();
         return singleton;
     }
-    
+
     @Override public Term[] prepareArguments(Literal body, Unifier un) {
         /*Term[] terms = new Term[body.getArity()];
         for (int i=0; i<terms.length; i++) {
@@ -65,10 +65,14 @@ public class loop extends DefaultInternalAction {
         return terms;*/
         return body.getTermsArray();
     }
-        
-    @Override public int getMinArgs() { return 2; }
-    @Override public int getMaxArgs() { return 2; }
-    
+
+    @Override public int getMinArgs() {
+        return 2;
+    }
+    @Override public int getMaxArgs() {
+        return 2;
+    }
+
     @Override protected void checkArguments(Term[] args) throws JasonException {
         super.checkArguments(args); // check number of arguments
         if ( !(args[0] instanceof LogicalFormula))
@@ -76,10 +80,10 @@ public class loop extends DefaultInternalAction {
         if ( !args[1].isPlanBody())
             throw JasonException.createWrongArgument(this,"second argument must be a plan body term.");
     }
-    
+
     @Override
     public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {
-            
+
         IntendedMeans im = ts.getC().getSelectedIntention().peek();
         PlanBody whileia = im.getCurrentStep();
 
@@ -91,7 +95,7 @@ public class loop extends DefaultInternalAction {
             whileia = new PlanBodyImpl(BodyType.internalAction, whileia.getBodyTerm().clone());
             whileia.add(im.getCurrentStep().getBodyNext());
             ((Structure)whileia.getBodyTerm()).addTerm(new ObjectTermImpl(un.clone()));
-        } else if (args.length == 3) {            
+        } else if (args.length == 3) {
             // restore the unifier of previous iterations
             Unifier ubak = (Unifier)((ObjectTerm)args[2]).getObject();
             un.clear();
@@ -99,13 +103,13 @@ public class loop extends DefaultInternalAction {
         } else {
             throw JasonException.createWrongArgumentNb(this);
         }
-        
-        LogicalFormula logExpr = (LogicalFormula)args[0]; 
+
+        LogicalFormula logExpr = (LogicalFormula)args[0];
         // perform one iteration of the loop
-        Iterator<Unifier> iu = logExpr.logicalConsequence(ts.getAg(), un); 
-        if (iu.hasNext()) { 
+        Iterator<Unifier> iu = logExpr.logicalConsequence(ts.getAg(), un);
+        if (iu.hasNext()) {
             un.compose(iu.next());
-            
+
             // add in the current intention:
             // 1. the body argument and
             // 2. the while internal action after the execution of the body
