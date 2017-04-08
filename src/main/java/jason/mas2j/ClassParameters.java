@@ -8,20 +8,20 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-/** 
- * Used to store class parameters in .mas2j file, e.g. 
- *      environment: Mars(a,b,c); 
- * this class stores 
+/**
+ * Used to store class parameters in .mas2j file, e.g.
+ *      environment: Mars(a,b,c);
+ * this class stores
  *   className  = Mars,
  *   parameters = {a,b,c}
- * 
+ *
  * @author jomi
  */
 public class ClassParameters {
     private String className;
     private List<String> parameters = new ArrayList<String>();
     private String host;
-    
+
     public ClassParameters() {}
     public ClassParameters(String className) {
         this.className = className;
@@ -34,21 +34,21 @@ public class ClassParameters {
             }
         }
     }
-    
+
     public ClassParameters copy() {
         ClassParameters newcp = new ClassParameters(this.className);
         newcp.parameters = new ArrayList<String>(this.parameters);
         newcp.host = this.host;
         return newcp;
     }
-    
+
     public void setClassName(String cn) {
         className = cn;
     }
     public String getClassName() {
         return className;
     }
-    
+
 
     public void addParameter(String s) {
         parameters.add(s);
@@ -63,7 +63,7 @@ public class ClassParameters {
             return null;
     }
     public String getParameter(String startWith) {
-        for (String s: parameters) 
+        for (String s: parameters)
             if (s.startsWith(startWith))
                 return s;
         return null;
@@ -74,7 +74,7 @@ public class ClassParameters {
     public boolean hasParameters() {
         return !parameters.isEmpty();
     }
-    public String[] getParametersArray() {        
+    public String[] getParametersArray() {
         String[] p = new String[parameters.size()];
         int i=0;
         for (String s: parameters) {
@@ -82,8 +82,8 @@ public class ClassParameters {
         }
         return p;
     }
-    
-    public Object[] getTypedParametersArray() {        
+
+    public Object[] getTypedParametersArray() {
         Object[] p = new Object[parameters.size()];
         int i=0;
         for (String s: parameters) {
@@ -99,7 +99,7 @@ public class ClassParameters {
                     else if (s.equals("false"))
                         p[i] = false;
                     else
-                        p[i] = s;              
+                        p[i] = s;
                 }
             }
 
@@ -108,7 +108,7 @@ public class ClassParameters {
         return p;
     }
 
-    
+
     /** returns parameters with space as separator */
     public String getParametersStr(String sep) {
         StringBuilder out = new StringBuilder();
@@ -120,19 +120,19 @@ public class ClassParameters {
             }
         }
         return out.toString();
-        
+
     }
 
     public void setHost(String h) {
         if (h.startsWith("\""))
             host = h.substring(1,h.length()-1);
-        else 
+        else
             host = h;
     }
     public String getHost() {
         return host;
     }
-    
+
     public String toString() {
         StringBuilder out = new StringBuilder(className);
         if (parameters.size() > 0) {
