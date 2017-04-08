@@ -16,7 +16,7 @@ public class neighbour extends DefaultInternalAction {
             int iagy = (int)((NumberTerm)terms[1]).solve();
             int itox = (int)((NumberTerm)terms[2]).solve();
             int itoy = (int)((NumberTerm)terms[3]).solve();
-            
+
             return new Location(iagx, iagy).isNeigbour(new Location(itox, itoy));
         } catch (Throwable e) {
             e.printStackTrace();
