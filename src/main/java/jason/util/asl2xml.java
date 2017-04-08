@@ -20,7 +20,7 @@ import org.w3c.dom.Document;
 
 
 
-/** 
+/**
  * Convert an agent asl code to xml.
  *
  * @author Jomi
@@ -61,7 +61,7 @@ public class asl2xml  {
         parser.agent(ag);
         return transform(ag.getAgProgram());
     }
-    
+
     public String transform(Agent ag)  throws Exception {
         return transform(ag.getAgProgram());
     }
@@ -89,7 +89,7 @@ public class asl2xml  {
         if (transCache != null)
             transCache.setParameter(name, value);
     }
-    
+
     TransformerFactory fac = null;
     TransformerFactory getFactory() throws Exception {
         if (fac == null) {
