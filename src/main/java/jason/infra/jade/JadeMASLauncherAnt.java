@@ -60,7 +60,7 @@ public class JadeMASLauncherAnt extends CentralisedMASLauncherAnt implements MAS
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        
+
         // replace build.xml tags
         String jadeJar = Config.get().getJadeJar();
         if (!Config.checkJar(jadeJar)) {
@@ -82,22 +82,22 @@ public class JadeMASLauncherAnt extends CentralisedMASLauncherAnt implements MAS
             String jar = new File(Config.get().getJadeJar()).getAbsoluteFile().getParent() + "/commons-codec-1.3.jar";
             jadepath += "\n\t<pathelement location=\"" + jar + "\"/>";
         } catch (Exception _) {}*/
-        
-        
+
+
         script = replace(script, "<PATH-LIB>", jadepath + "\n<PATH-LIB>");
-        
+
         String startContainers = "";
-         /*
-            "    <target name=\"Main-Container\" depends=\"compile\" >\n" 
-          + "        <echo message=\"Starting JADE Main-Container\" />\n"
-          + "        <java classname=\"jason.infra.jade.RunJadeMAS\" failonerror=\"true\" fork=\"yes\" dir=\"${basedir}\" >\n"
-          + "            <classpath refid=\"project.classpath\"/>\n"
-          + "            <arg line=\"${mas2j.project.file} -container-name Main-Container "+Config.get().getJadeArgs()+"\"/>\n"
-          + "          <jvmarg line=\"-Xmx500M -Xss8M\"/>\n"
-          + "        </java>\n"
-          + "    </target>\n\n";
+        /*
+           "    <target name=\"Main-Container\" depends=\"compile\" >\n"
+         + "        <echo message=\"Starting JADE Main-Container\" />\n"
+         + "        <java classname=\"jason.infra.jade.RunJadeMAS\" failonerror=\"true\" fork=\"yes\" dir=\"${basedir}\" >\n"
+         + "            <classpath refid=\"project.classpath\"/>\n"
+         + "            <arg line=\"${mas2j.project.file} -container-name Main-Container "+Config.get().getJadeArgs()+"\"/>\n"
+         + "          <jvmarg line=\"-Xmx500M -Xss8M\"/>\n"
+         + "        </java>\n"
+         + "    </target>\n\n";
         */
-        
+
         String mainHost;
         mainHost = project.getInfrastructure().getParameter("main_container_host");
         if (mainHost == null) {
@@ -119,8 +119,8 @@ public class JadeMASLauncherAnt extends CentralisedMASLauncherAnt implements MAS
             }
             mainHost = mainHost.substring(0,pos);
         }
-        
-        
+
+
         // identify type of allocation (by class of info in .mas2h)
         ContainerAllocation allocator = null;
         String allocationClass = project.getInfrastructure().getParameter("container_allocation");
@@ -128,17 +128,17 @@ public class JadeMASLauncherAnt extends CentralisedMASLauncherAnt implements MAS
             try {
                 Literal literalArgs = ASSyntax.parseLiteral(allocationClass);
                 String   className  = ((StringTerm)literalArgs.getTerm(0)).getString();
-                
-                //URLClassLoader loader = new URLClassLoader(new URL[] { 
-                //        new File(".").toURI().toURL(), 
+
+                //URLClassLoader loader = new URLClassLoader(new URL[] {
+                //        new File(".").toURI().toURL(),
                 //        new File("./bin/classes").toURI().toURL() });
                 allocator = (ContainerAllocation)Class.forName(className).newInstance();
                 allocator.init(new String[] { ((StringTerm)literalArgs.getTerm(1)).getString() }, project);
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        } 
-    
+        }
+
         // collect containers in a set
         Set<String> containers = new HashSet<String>();
         containers.add("Main-Container");
@@ -155,9 +155,9 @@ public class JadeMASLauncherAnt extends CentralisedMASLauncherAnt implements MAS
         for (String container: containers) {
             String sep = " ";
             String args = "-container -host "+mainHost+" -container-name "+container+" ";
-            if (mainHostPort > 0) 
+            if (mainHostPort > 0)
                 args += "-port "+mainHostPort;
-            
+
             StringBuilder agents = new StringBuilder();
             if (container.equals("Main-Container")) {
                 // include environment (if not cartago)
@@ -166,9 +166,9 @@ public class JadeMASLauncherAnt extends CentralisedMASLauncherAnt implements MAS
                     sep = ";";
                 }
                 args = Config.get().getJadeArgs();
-                if (mainHostPort > 0) 
+                if (mainHostPort > 0)
                     args += " -port "+mainHostPort;
-                if (Config.get().getBoolean(Config.JADE_RMA)) 
+                if (Config.get().getBoolean(Config.JADE_RMA))
                     args += " -gui ";
             }
             for (AgentParameters ap: project.getAgents()) {
@@ -177,23 +177,23 @@ public class JadeMASLauncherAnt extends CentralisedMASLauncherAnt implements MAS
                     if (ap.getNbInstances() > 1)
                         numberedAg += (cAg + 1);
                     if ( (container.equals("Main-Container") && ap.getHost() == null && allocator == null) ||
-                         (ap.getHost() != null && ap.getHost().equals(container)) || 
-                         (allocator != null && allocator.allocateAgent(numberedAg) != null && allocator.allocateAgent(numberedAg).equals(container))) {                        
+                            (ap.getHost() != null && ap.getHost().equals(container)) ||
+                            (allocator != null && allocator.allocateAgent(numberedAg) != null && allocator.allocateAgent(numberedAg).equals(container))) {
                         agents.append(sep+numberedAg+":"+JadeAgArch.class.getName()+"(j-project,"+project.getProjectFile().getName()+","+ap.getAgName()+")");
                         sep = ";";
-                    }                    
+                    }
                 }
             }
-            startContainers += 
+            startContainers +=
                 "    <target name=\""+container+"\" depends=\"compile\" >\n" +
                 "        <echo message=\"Starting JADE Container "+container+"\" />\n"+
                 "        <java classname=\"jade.Boot\" failonerror=\"true\" fork=\"yes\" dir=\"${basedir}\" >\n"+
                 "            <classpath refid=\"project.classpath\"/>\n"+
                 "            <arg line=\""+args+" -agents "+agents+"\"/>\n"+
-                "            <jvmarg line=\"-Xmx500M -Xss8M\"/>\n"+    
+                "            <jvmarg line=\"-Xmx500M -Xss8M\"/>\n"+
                 "        </java>\n"+
                 "    </target>\n\n";
-        }  
+        }
 
         script = replace(script, "<OTHER-TASK>", startContainers);
 
