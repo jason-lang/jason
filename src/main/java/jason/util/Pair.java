@@ -2,11 +2,11 @@ package jason.util;
 
 
 public class Pair<T1,T2> implements Comparable<Pair<T1,T2>> {
-    
+
     final T1 o1;
     final T2 o2;
     int hc = 0;
-    
+
     public Pair(T1 o1, T2 o2) {
         this.o1 = o1;
         this.o2 = o2;
@@ -18,16 +18,16 @@ public class Pair<T1,T2> implements Comparable<Pair<T1,T2>> {
     public T1 getFirst() {
         return o1;
     }
-    
+
     public T2 getSecond() {
         return o2;
     }
-    
+
     @Override
     public int hashCode() {
         return hc;
     }
-    
+
     @SuppressWarnings("rawtypes")
     @Override
     public boolean equals(Object obj) {
@@ -39,7 +39,7 @@ public class Pair<T1,T2> implements Comparable<Pair<T1,T2>> {
         }
         return false;
     }
-    
+
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public int compareTo(Pair<T1, T2> arg) {
         int c = ((Comparable)o1).compareTo(arg.o1);
@@ -49,7 +49,7 @@ public class Pair<T1,T2> implements Comparable<Pair<T1,T2>> {
             return c;
         }
     }
-    
+
     @Override
     public String toString() {
         return "<"+o1+","+o2+">";
