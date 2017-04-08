@@ -84,7 +84,7 @@ public class MindInspectorWebImpl extends MindInspectorWeb {
                             if (tryToIncludeMindInspectorForAg(path))
                                 so.append("<meta http-equiv=\"refresh\" content=0>");                                
                             else
-                                so.append("unkown agent!");
+                                so.append("unknown agent!");
                         }
                         responseBody.write(so.toString().getBytes());
                     }                                
@@ -211,7 +211,7 @@ public class MindInspectorWebImpl extends MindInspectorWeb {
                                 if (tryToIncludeMindInspectorForAg(path))
                                     so.append("<meta http-equiv=\"refresh\" content=0>");                                
                                 else
-                                    so.append("unkown agent!");
+                                    so.append("unknown agent!");
                             } else {
     
                                 List<Document> h = histories.get(agName);
