@@ -22,20 +22,20 @@ public class MinerArch extends AgArch {
 
     LocalWorldModel model = null;
     WorldView  view  = null;
-    
+
     String     simId = null;
     int        myId  = -1;
     boolean    gui   = false;
     boolean    running = true;
     boolean    playing = false;
-    
+
     int        cycle  = 0;
     int        teamSize = 6;
-    
+
     WriteModelThread writeModelT = null;
     protected Logger logger = Logger.getLogger(MinerArch.class.getName());
 
-    
+
     @Override
     public void init() {
         gui = "yes".equals(getTS().getSettings().getUserParameter("gui"));
@@ -47,7 +47,7 @@ public class MinerArch extends AgArch {
             teamSize = Integer.parseInt(getTS().getSettings().getUserParameter("teamSize"));
         }
     }
-    
+
     @Override
     public void stop() {
         running = false;
@@ -56,7 +56,7 @@ public class MinerArch extends AgArch {
         }
         super.stop();
     }
-    
+
     void setSimId(String id) {
         simId = id;
     }
@@ -72,7 +72,7 @@ public class MinerArch extends AgArch {
         return model;
     }
 
-    /** The perception of the grid size is removed from the percepts list 
+    /** The perception of the grid size is removed from the percepts list
         and "directly" added as a belief */
     void gsizePerceived(int w, int h) throws RevisionFailedException {
         if (view != null) {
@@ -85,43 +85,43 @@ public class MinerArch extends AgArch {
         getTS().getAg().addBel(Literal.parseLiteral("gsize("+simId+","+w+","+h+")"));
         playing = true;
     }
-    
-    /** The perception of the depot location is removed from the percepts list 
+
+    /** The perception of the depot location is removed from the percepts list
         and "directly" added as a belief */
     void depotPerceived(int x, int y) throws RevisionFailedException {
         model.setDepot(x, y);
         getTS().getAg().addBel(Literal.parseLiteral("depot("+simId+","+x+","+y+")"));
     }
 
-    /** The number of steps of the simulation is removed from the percepts list 
+    /** The number of steps of the simulation is removed from the percepts list
         and "directly" added as a belief  */
     void stepsPerceived(int s) throws RevisionFailedException {
         getTS().getAg().addBel(Literal.parseLiteral("steps("+simId+","+s+")"));
         model.setMaxSteps(s);
     }
-    
+
     /** update the model with obstacle and share them with the team mates */
     void obstaclePerceived(int x, int y, Literal p) {
         if (! model.hasObject(WorldModel.OBSTACLE, x, y)) {
             model.add(WorldModel.OBSTACLE, x, y);
-            
+
             Message m = new Message("tell", null, null, p);
             try {
                 broadcast(m);
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }       
+        }
     }
 
-    Location lo1 = new Location(-1,-1), // last locations of the agent 
-             lo2 = new Location(-1,-1), 
-             lo3 = new Location(-1,-1), 
-             lo4 = new Location(-1,-1),
-             lo5 = new Location(-1,-1),
-             lo6 = new Location(-1,-1);
+    Location lo1 = new Location(-1,-1), // last locations of the agent
+    lo2 = new Location(-1,-1),
+    lo3 = new Location(-1,-1),
+    lo4 = new Location(-1,-1),
+    lo5 = new Location(-1,-1),
+    lo6 = new Location(-1,-1);
 
-    
+
     /** update the model with the agent location and share this information with team mates */
     void locationPerceived(int x, int y) {
         Location oldLoc = model.getAgPos(getMyId());
@@ -132,14 +132,14 @@ public class MinerArch extends AgArch {
             try {
                 model.setAgPos(getMyId(), x, y);
                 model.incVisited(x, y);
-            
+
                 Message m = new Message("tell", null, null, "my_status("+x+","+y+","+model.getGoldsWithAg(getMyId())+")");
                 broadcast(m);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-        
+
         lo6 = lo5;
         lo5 = lo4;
         lo4 = lo3;
@@ -151,53 +151,53 @@ public class MinerArch extends AgArch {
             try {
                 //logger.info("** Arch adding restart for "+getAgName()+", TS="+getTS().getCurrentTask()+", "+getTS().getC());
                 getTS().getC().create();
-                
+
                 getTS().getAg().getBB().abolish(new LiteralImpl("restart").getPredicateIndicator());
                 getTS().getAg().getBB().abolish(new PredicateIndicator("gold",2)); // tira os ouros
                 getTS().getAg().addBel(new LiteralImpl("restart"));
                 lo2 = new Location(-1,-1); // to not restart again in the next cycle
-         
+
                 //getTS().stopCycle();
             } catch (Exception e) {
                 logger.info("Error in restart!"+ e);
             }
         }
     }
-    
+
     /** returns true if the agent do not move in the last 5 location perception */
     public boolean isRobotFrozen() {
         return lo1.equals(lo2) && lo2.equals(lo3) && lo3.equals(lo4) && lo4.equals(lo5) && lo5.equals(lo6);
     }
-    
+
     /** update the number of golds the agent is carrying */
     void carriedGoldsPerceived(int n) {
         model.setGoldsWithAg(getMyId(), n);
     }
-    
+
     void goldPerceived(int x, int y) {
         model.add(WorldModel.GOLD, x, y);
     }
 
-    // not used, the allies send messages with their location    
+    // not used, the allies send messages with their location
     //void allyPerceived(int x, int y) {
     //    model.add(WorldModel.AGENT, x, y);
     //}
-    
+
     void enemyPerceived(int x, int y) {
-        model.add(WorldModel.ENEMY, x, y); 
+        model.add(WorldModel.ENEMY, x, y);
     }
 
     void simulationEndPerceived(String result) throws RevisionFailedException {
         getTS().getAg().addBel(Literal.parseLiteral("end_of_simulation("+simId+","+result+")"));
         playing = false;
     }
-    
+
     void setCycle(int s) {
         cycle = s;
         if (view != null) view.setCycle(cycle);
         //if (writeModelT != null) writeModelT.writeModel();
     }
-    
+
     /** change broadcast to send messages to only my team mates */
     @Override
     public void broadcast(Message m) throws Exception {
@@ -211,12 +211,12 @@ public class MinerArch extends AgArch {
             }
         }
     }
-    
+
     @Override
     public void checkMail() {
         try {
             super.checkMail();
-    
+
             // remove messages related to obstacles and agent_position
             // and update the model
             Iterator<Message> im = getTS().getC().getMailBox().iterator();
@@ -232,7 +232,7 @@ public class MinerArch extends AgArch {
                     }
                     im.remove();
                     //getTS().getAg().getLogger().info("received obs="+p);
-                    
+
                 } else if (ms.startsWith("my_status") && model != null) {
                     // update others location
                     Literal p = Literal.parseLiteral(m.getPropCont().toString());
@@ -250,20 +250,20 @@ public class MinerArch extends AgArch {
                             e.printStackTrace();
                         }
                     }
-                    im.remove(); 
+                    im.remove();
                 }
             }
         } catch (Exception e) {
             logger.log(Level.SEVERE, "Error checking email!",e);
         }
     }
-    
+
     public static int getAgId(String agName) {
-        return (Integer.parseInt(agName.substring(agName.length()-1))) - 1;     
+        return (Integer.parseInt(agName.substring(agName.length()-1))) - 1;
     }
 
-    
-    
+
+
     class WriteModelThread extends Thread {
         public void run() {
             String fileName = "world-state-"+getAgName()+".txt";
@@ -285,7 +285,7 @@ public class MinerArch extends AgArch {
                 e.printStackTrace();
             }
         }
-        
+
         synchronized private void waitSomeTime() throws InterruptedException {
             wait(2000);
         }
