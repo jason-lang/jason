@@ -22,7 +22,7 @@ import org.w3c.dom.Element;
 
 /**
  * Represents a list node as in prolog .(t1,.(t2,.(t3,.))).
- * 
+ *
  * Each nth-ListTerm has both a term and the next ListTerm.
  * The last ListTem is an empty ListTerm (term==null).
  * In lists terms with a tail ([a|X]), next is the Tail (next==X, term==a).
@@ -33,18 +33,18 @@ import org.w3c.dom.Element;
  * @author Jomi
  */
 public class ListTermImpl extends Structure implements ListTerm {
-    
+
     private static final long serialVersionUID = 1L;
     private static Logger logger = Logger.getLogger(ListTermImpl.class.getName());
 
     public static final String LIST_FUNCTOR = ".";
     private Term term;
     private Term next;
-    
+
     public ListTermImpl() {
         super(LIST_FUNCTOR, 0);
     }
-    
+
     private ListTermImpl(Term t, Term n) {
         super(LIST_FUNCTOR, 0);
         term = t;
@@ -60,7 +60,7 @@ public class ListTermImpl extends Structure implements ListTerm {
             return null;
         }
     }
-    
+
     /** make a hard copy of the terms */
     public ListTerm clone() {
         ListTermImpl t = new ListTermImpl();
@@ -69,7 +69,7 @@ public class ListTermImpl extends Structure implements ListTerm {
         t.hashCodeCache = this.hashCodeCache;
         return t;
     }
-    
+
     /** make a hard copy of the terms */
     public ListTerm cloneLT() {
         return clone();
@@ -105,10 +105,10 @@ public class ListTermImpl extends Structure implements ListTerm {
             if (next == null && tAsList.getNext() != null) return false;
             if (next != null) return next.equals(tAsList.getNext());
             return true;
-        } 
+        }
         return false;
     }
-    
+
     @Override
     public int calcHashCode() {
         int code = 37;
@@ -116,38 +116,38 @@ public class ListTermImpl extends Structure implements ListTerm {
         if (next != null) code += next.hashCode();
         return code;
     }
-    
+
     @Override
     public int compareTo(Term o) {
-        if (o instanceof VarTerm) 
+        if (o instanceof VarTerm)
             return o.compareTo(this) * -1;
-        if ((o instanceof NumberTerm)) 
+        if ((o instanceof NumberTerm))
             return 1;
-        if (o instanceof StringTerm) 
+        if (o instanceof StringTerm)
             return 1;
         return super.compareTo(o);
     }
-    
+
     public void setTerm(Term t) {
         term = t;
     }
-    
+
     /** gets the term of this ListTerm */
     public Term getTerm() {
         return term;
     }
-    
+
     public void setNext(Term l) {
         next = l;
     }
-    
+
     public ListTerm getNext() {
         if (next instanceof ListTerm)
             return (ListTerm)next;
         else
             return null;
     }
-    
+
     // for unifier compatibility
     @Override
     public int getArity() {
@@ -157,7 +157,7 @@ public class ListTermImpl extends Structure implements ListTerm {
             return 2; // term and next
         }
     }
-    
+
     // for unifier compatibility
     @Override
     public Term getTerm(int i) {
@@ -172,7 +172,7 @@ public class ListTermImpl extends Structure implements ListTerm {
         if (i == 0) term = t;
         if (i == 1) next = t;
     }
-    
+
     /** return the this ListTerm elements (0=Term, 1=ListTerm) */
     public List<Term> getTerms() {
         logger.warning("Do not use getTerms in lists!");
@@ -181,7 +181,7 @@ public class ListTermImpl extends Structure implements ListTerm {
         if (next != null) l.add(next);
         return l;
     }
-    
+
     public void addTerm(Term t) {
         logger.warning("Do not use addTerm in lists! Use add(Term).");
     }
@@ -195,7 +195,7 @@ public class ListTermImpl extends Structure implements ListTerm {
             return getNext().size() + 1;
         }
     }
-    
+
     @Override
     public boolean isAtom() {
         return false;
@@ -252,7 +252,7 @@ public class ListTermImpl extends Structure implements ListTerm {
     public boolean isTail() {
         return next != null && next.isVar();
     }
-    
+
     /** returns this ListTerm's tail element in case the List has the Tail, otherwise, returns null */
     public VarTerm getTail() {
         if (isTail()) {
@@ -263,7 +263,7 @@ public class ListTermImpl extends Structure implements ListTerm {
             return null;
         }
     }
-    
+
     /** set the tail of this list */
     public void setTail(VarTerm v) {
         if (getNext().isEmpty())
@@ -271,23 +271,23 @@ public class ListTermImpl extends Structure implements ListTerm {
         else
             getNext().setTail(v);
     }
-    
+
     /** get the last ListTerm of this List */
     public ListTerm getLast() {
         ListTerm r = this;
         while (!r.isEnd() && r.getNext() != null)
             r = r.getNext();
         return r;
-        /* recursive implementation 
+        /* recursive implementation
         if (isEnd()) {
             return this;
         } else if (next != null) {
             return getNext().getLast();
-        } 
+        }
         return null; // !!! no last!!!!
         */
     }
-    
+
     public ListTerm getPenultimate() {
         if (getNext() == null)
             return null;
@@ -297,7 +297,7 @@ public class ListTermImpl extends Structure implements ListTerm {
             return this;
         return getNext().getPenultimate();
     }
-    
+
     public Term removeLast() {
         ListTerm p = getPenultimate();
         if (p != null) {
@@ -309,8 +309,8 @@ public class ListTermImpl extends Structure implements ListTerm {
             return null;
         }
     }
-    
-    /** 
+
+    /**
      * Adds a term in the end of the list
      * @return the ListTerm where the term was added (i.e. the last ListTerm of the list)
      */
@@ -326,8 +326,8 @@ public class ListTermImpl extends Structure implements ListTerm {
             return getNext().append(t);
         }
     }
-    
-    /** 
+
+    /**
      * insert a term in the begin of this list
      * @return the new starter of the list
      */
@@ -338,7 +338,7 @@ public class ListTermImpl extends Structure implements ListTerm {
         return n;
     }
 
-    /** 
+    /**
      * Adds a list in the end of this list.
      * This method do not clone <i>lt</i>.
      * @return the last ListTerm of the new list
@@ -353,7 +353,7 @@ public class ListTermImpl extends Structure implements ListTerm {
         }
         return lt.getLast();
     }
-    
+
     /**
      * Creates a new (cloned) list with the same elements of this list, but in the reversed order.
      * The Tail remains the Tail: reverse([a,b|T]) = [b,a|T].
@@ -388,7 +388,7 @@ public class ListTermImpl extends Structure implements ListTerm {
         set.retainAll(this);
         return setToList(set);
     }
-    
+
     /** returns a new (cloned) list representing the set resulting of the difference of this list and lt. */
     public ListTerm difference(ListTerm lt) {
         Set<Term> set = new TreeSet<Term>();
@@ -412,9 +412,9 @@ public class ListTermImpl extends Structure implements ListTerm {
         return new Iterator<List<Term>>() {
             LinkedList<SubSetSearchState> open = null;
             Term[] thisAsArray = new Term[0];
-            
+
             List<Term> next = null;
-            
+
             public boolean hasNext() {
                 if (open == null) {
                     open = new LinkedList<SubSetSearchState>(); // states to explore
@@ -427,7 +427,7 @@ public class ListTermImpl extends Structure implements ListTerm {
                 }
                 return next != null;
             }
-            
+
             public List<Term> next() {
                 if (next == null)
                     getNext();
@@ -435,7 +435,7 @@ public class ListTermImpl extends Structure implements ListTerm {
                 next = null;
                 return r;
             }
-            
+
             void getNext() {
                 while (! open.isEmpty() ) {
                     SubSetSearchState s = open.removeFirst();
@@ -448,27 +448,30 @@ public class ListTermImpl extends Structure implements ListTerm {
                 }
                 next = null;
             }
-            
+
             public void remove() { }
-            
+
             class SubSetSearchState {
                 int pos;
-                int d;  
+                int d;
                 Term value = null;
                 SubSetSearchState f = null;
-                
-                SubSetSearchState(int pos, int d, Term t, SubSetSearchState father) {  
-                    this.pos = pos; this.d = d; this.value = t; this.f = father; 
+
+                SubSetSearchState(int pos, int d, Term t, SubSetSearchState father) {
+                    this.pos = pos;
+                    this.d = d;
+                    this.value = t;
+                    this.f = father;
                 }
                 void addNexts() {
                     int pSize = (k-d)+thisAsArray.length;
                     for (int i = thisAsArray.length-1; i >= pos; i--) {
                         if (pSize-i >= k) {
                             open.addFirst(new SubSetSearchState(i+1, d-1, thisAsArray[i], this));
-                        } 
+                        }
                     }
                 }
-                
+
                 List<Term> getAsList() {
                     LinkedList<Term> np = new LinkedList<Term>();
                     SubSetSearchState c = this;
@@ -479,13 +482,13 @@ public class ListTermImpl extends Structure implements ListTerm {
                     return np;
                 }
             }
-            
+
             /*// old code
             class SubSetSearchState {
-                List<Term> prefix, elements; 
-                int d;  
-                SubSetSearchState(List<Term> p, List<Term> e, int d) {  
-                    prefix = p; elements = e; this.d = d;  
+                List<Term> prefix, elements;
+                int d;
+                SubSetSearchState(List<Term> p, List<Term> e, int d) {
+                    prefix = p; elements = e; this.d = d;
                 }
                 void addNexts(List<SubSetSearchState> open) {
                     int esize = elements.size();
@@ -502,7 +505,7 @@ public class ListTermImpl extends Structure implements ListTerm {
             */
         };
     }
-    
+
     /*
     public List<List<Term>> subSets(int k) {
         List<List<Term>> result = new ArrayList<List<Term>>();
@@ -522,25 +525,25 @@ public class ListTermImpl extends Structure implements ListTerm {
         }
     }
     */
-    
+
     /*
     public List<List<Term>> subSets(int k, Set<PredicateIndicator> types) {
         List<List<Term>> result = new ArrayList<List<Term>>();
         List<Term> annots = new ArrayList<Term>();
-        for (Term t: this) 
+        for (Term t: this)
             if (t.isLiteral()) {
                 if (types.contains( ((Literal)t).getPredicateIndicator() ))
                     annots.add(t);
             } else {
-                annots.add(t);                
+                annots.add(t);
             }
-        
+
         generateSubSets(new ArrayList<Term>(), annots, k, result);
         return result;
-    }     
+    }
      */
-    /** 
-     * gives an iterator that includes the final empty list or tail, 
+    /**
+     * gives an iterator that includes the final empty list or tail,
      * for [a,b,c] returns [a,b,c]; [b,c]; [c]; and [].
      * for [a,b|T] returns [a,b|T]; [b|T]; [b|T]; and T.
      */
@@ -552,18 +555,18 @@ public class ListTermImpl extends Structure implements ListTerm {
             }
         };
     }
-    
 
-    /** 
+
+    /**
      * returns an iterator where each element is a Term of this list,
-     * the tail of the list is not considered. 
+     * the tail of the list is not considered.
      * for [a,b,c] returns 'a', 'b', and 'c'.
      * for [a,b|T] returns 'a' and 'b'.
-     */  
+     */
     public Iterator<Term> iterator() {
         return new ListTermIterator<Term>(this) {
             public boolean hasNext() {
-                return nextLT != null && !nextLT.isEmpty() && nextLT.isList(); 
+                return nextLT != null && !nextLT.isEmpty() && nextLT.isList();
             }
             public Term next() {
                 moveNext();
@@ -571,7 +574,7 @@ public class ListTermImpl extends Structure implements ListTerm {
             }
         };
     }
-        
+
     private abstract class ListTermIterator<T> implements Iterator<T> {
         ListTerm nextLT;
         ListTerm current = null;
@@ -579,7 +582,7 @@ public class ListTermImpl extends Structure implements ListTerm {
             nextLT = lt;
         }
         public boolean hasNext() {
-            return nextLT != null; 
+            return nextLT != null;
         }
         public void moveNext() {
             current = nextLT;
@@ -595,8 +598,8 @@ public class ListTermImpl extends Structure implements ListTerm {
     }
 
 
-    /** 
-     * Returns this ListTerm as a Java List (implemented by ArrayList). 
+    /**
+     * Returns this ListTerm as a Java List (implemented by ArrayList).
      * Note: the tail of the list, if any, is not included!
      */
     public List<Term> getAsList() {
@@ -606,7 +609,7 @@ public class ListTermImpl extends Structure implements ListTerm {
         return l;
     }
 
-    
+
     public String toString() {
         StringBuilder s = new StringBuilder("[");
         ListTerm l = this;
@@ -630,7 +633,7 @@ public class ListTermImpl extends Structure implements ListTerm {
     //
     // Java List interface methods
     //
-    
+
     public void add(int index, Term o) {
         if (index == 0) {
             insert(o);
@@ -652,13 +655,13 @@ public class ListTermImpl extends Structure implements ListTerm {
         }
         return true;
     }
-    
+
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public boolean addAll(int index, Collection c) {
         Iterator<Term> i = c.iterator();
         int p = index;
         while (i.hasNext()) {
-            add(p, i.next()); 
+            add(p, i.next());
             p++;
         }
         return true;
@@ -682,7 +685,7 @@ public class ListTermImpl extends Structure implements ListTerm {
         boolean r = true;
         Iterator<Term> i = c.iterator();
         while (i.hasNext() && r) {
-            r = r && contains(i.next()); 
+            r = r && contains(i.next());
         }
         return r;
     }
@@ -714,7 +717,7 @@ public class ListTermImpl extends Structure implements ListTerm {
     public ListIterator<Term> listIterator() {
         return listIterator(0);
     }
-    
+
     // TODO: do not base the implementation of listIterator on get (that is O(n))
     // conversely, implement all other methods of List based on this iterator
     // (see AbstractSequentialList)
@@ -757,7 +760,7 @@ public class ListTermImpl extends Structure implements ListTerm {
             public void set(Term o) {
                 remove();
                 add(o);
-            }            
+            }
         };
     }
 
@@ -765,7 +768,7 @@ public class ListTermImpl extends Structure implements ListTerm {
         this.term = lt.getTerm();
         this.next = lt.getNext();
     }
-    
+
     public Term remove(int index) {
         if (index == 0) {
             Term bt = this.term;
@@ -800,7 +803,7 @@ public class ListTermImpl extends Structure implements ListTerm {
         boolean r = true;
         Iterator i = c.iterator();
         while (i.hasNext() && r) {
-            r = r && remove(i.next()); 
+            r = r && remove(i.next());
         }
         return r;
     }
@@ -851,7 +854,7 @@ public class ListTermImpl extends Structure implements ListTerm {
 
         return a;
     }
-    
+
     public Element getAsDOM(Document document) {
         Element u = (Element) document.createElement("list-term");
         String c = "";
