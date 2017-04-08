@@ -7,7 +7,7 @@ import jason.asSyntax.ListTerm;
 import jason.asSyntax.NumberTerm;
 import jason.asSyntax.Term;
 
-/** 
+/**
 <p>Function: <b><code>math.sum(L)</code></b>: sums all values of L.
 
 <p>Examples:<ul>
@@ -15,10 +15,10 @@ import jason.asSyntax.Term;
 <li> <code>math.sum([3,a,"s",5])</code>: returns 8.</li>
 <li> <code>math.sum([])</code>: returns 0.</li>
 </ul>
- 
-@author Jomi 
 
-@see jason.functions.Min 
+@author Jomi
+
+@see jason.functions.Min
 @see jason.functions.Max
 @see jason.functions.Average
 
@@ -28,7 +28,7 @@ public class Sum extends DefaultArithFunction  {
     public String getName() {
         return "math.sum";
     }
-    
+
     @Override
     public double evaluate(TransitionSystem ts, Term[] args) throws Exception {
         if (args[0].isList()) {
