@@ -12,22 +12,22 @@ import jason.asSyntax.Term;
 /**
 
   <p>Internal action: <b><code>.fail</code></b>.
-  
+
   <p>Description: fails the intention where it is run (an internal action that
   always returns false).
 
-  <p>Example:<ul> 
+  <p>Example:<ul>
 
   <li> <code>.fail</code>.</li>
 
   </ul>
-  
+
  */
 public class fail extends DefaultInternalAction {
 
     private static InternalAction singleton = null;
     public static InternalAction create() {
-        if (singleton == null) 
+        if (singleton == null)
             singleton = new fail();
         return singleton;
     }
@@ -49,7 +49,7 @@ public class fail extends DefaultInternalAction {
                     break;
                 }
             }
-            
+
             JasonException e = new JasonException(msg);
             for (Term t: args) {
                 if (t != smsg)
