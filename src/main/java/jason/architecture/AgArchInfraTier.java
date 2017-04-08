@@ -21,14 +21,14 @@ public interface AgArchInfraTier {
     /** Reads the agent's mailbox and adds messages into the agent's circumstance */
     public void checkMail();
 
-    /** 
+    /**
      * Executes the action <i>action</i> in the environment
      */
     public void act(ActionExec action);
 
     /** Returns true whether the agent can sleep according to the arch */
     public boolean canSleep();
-    
+
     /** Gets the agent's name */
     public String getAgName();
 
@@ -37,19 +37,19 @@ public interface AgArchInfraTier {
 
     /** Broadcasts a Jason message in a specific infrastructure */
     public void broadcast(Message m) throws Exception;
-    
+
     /** Checks whether the agent is running (alive) */
     public boolean isRunning();
-    
+
     /** Stops the agent */
     //public void stopAg();
-    
+
     /** Put the agent in "sleep" mode */
     //public void sleep();
-    
+
     /** Removes the agent from the "sleep" mode */
     public void wake();
-    
+
     /** Gets an object with infrastructure runtime services */
     public RuntimeServicesInfraTier getRuntimeServices();
 }
