@@ -18,10 +18,10 @@ import jason.asSyntax.parser.ParseException;
 import jason.bb.BeliefBase;
 import jason.util.Config;
 
-/** Represents a set of plans used by an agent 
+/** Represents a set of plans used by an agent
 
     @has - plans 0..* Plan
-*/  
+*/
 public class PlanLibrary implements Iterable<Plan> {
 
     /** a MAP from TE to a list of relevant plans */
@@ -31,52 +31,52 @@ public class PlanLibrary implements Iterable<Plan> {
      * All plans as defined in the AS code (maintains the order of the plans)
      */
     private List<Plan> plans = new ArrayList<Plan>();
-    
+
     /** list of plans that have var as TE */
     private List<Plan> varPlans = new ArrayList<Plan>();
-    
+
     /** A map from labels to plans */
     private Map<String,Plan> planLabels = new ConcurrentHashMap<String,Plan>();
-    
-    private boolean hasMetaEventPlans = false; 
-    
+
+    private boolean hasMetaEventPlans = false;
+
     private static AtomicInteger lastPlanLabel = new AtomicInteger(0);
 
     private boolean hasUserKqmlReceived = false;
-    
+
     //private Logger logger = Logger.getLogger(PlanLibrary.class.getName());
-    
+
     private final Object lockPL = new Object();
-    
+
     public Object getLock() {
         return lockPL;
     }
-    
-    /** 
+
+    /**
      *  Add a new plan written as a String. The source
      *  normally is "self" or the agent that sent this plan.
      *  If the PL already has a plan equals to "stPlan", only a
      *  new source is added.
-     *  
+     *
      *  The plan is added in the end of the PlanLibrary.
-     *  
+     *
      *  @returns the plan just added
      *  @deprecated parse the plan before (ASSyntax methods) and call add(Plan, ...) methods
      */
     public Plan add(StringTerm stPlan, Term tSource) throws ParseException, JasonException {
-       return add(stPlan, tSource, false); 
+        return add(stPlan, tSource, false);
     }
-    
-    /** 
+
+    /**
      *  Add a new plan written as a String. The source
      *  normally is "self" or the agent that sent this plan.
      *  If the PL already has a plan equals to "stPlan", only a
      *  new source is added.
-     *  
+     *
      *  If <i>before</i> is true, the plan will be added in the
      *  begin of the PlanLibrary; otherwise, it is added in
      *  the end.
-     *  
+     *
      *  @returns the plan just added
      *  @deprecated parse the plan before (ASSyntax methods) and call add(Plan, ...) methods
      */
@@ -95,16 +95,16 @@ public class PlanLibrary implements Iterable<Plan> {
     }
 
 
-    /** 
+    /**
      *  Add a new plan in PL. The source
      *  normally is "self" or the agent that sent this plan.
      *  If the PL already has a plan equals to the parameter p, only a
      *  new source is added.
-     *  
+     *
      *  If <i>before</i> is true, the plan will be added in the
      *  begin of the PlanLibrary; otherwise, it is added in
      *  the end.
-     *  
+     *
      *  @returns the plan just added
      */
     public Plan add(Plan p, Term source, boolean before) throws JasonException {
@@ -127,13 +127,13 @@ public class PlanLibrary implements Iterable<Plan> {
     public void add(Plan p) throws JasonException {
         add(p,false);
     }
-    
+
     private final String kqmlReceivedFunctor = Config.get().getKqmlFunctor();
-    
+
     /**
      * Adds a plan into the plan library, either before or after all other
      * plans depending on the boolean parameter.
-     * 
+     *
      * @param p The plan to be added to the plan library
      * @param before Whether or not to place the new plan before others
      * @throws JasonException
@@ -152,30 +152,30 @@ public class PlanLibrary implements Iterable<Plan> {
                     throw new JasonException("There already is a plan with label " + p.getLabel());
                 }
             }
-            
+
             // add label, if necessary
-            if (p.getLabel() == null) 
+            if (p.getLabel() == null)
                 p.setLabel(getUniqueLabel());
-    
+
             // add self source
-            if (!p.getLabel().hasSource()) 
+            if (!p.getLabel().hasSource())
                 p.getLabel().addAnnot(BeliefBase.TSelf);
-            
+
             if (p.getTrigger().getLiteral().getFunctor().equals(kqmlReceivedFunctor)) {
                 if (! (p.getSrcInfo() != null && "kqmlPlans.asl".equals(p.getSrcInfo().getSrcFile()))) {
                     hasUserKqmlReceived = true;
                 }
             }
-    
+
             p.setAsPlanTerm(false); // it is not a term anymore
-    
+
             planLabels.put( getStringForLabel(p.getLabel()), p);
-    
+
             Trigger pte = p.getTrigger();
             if (pte.getLiteral().isVar() || pte.getLiteral().getNS().isVar()) {
-                if (before) 
-                    varPlans.add(0,p); 
-                else 
+                if (before)
+                    varPlans.add(0,p);
+                else
                     varPlans.add(p);
                 // add plan p in all entries
                 for (List<Plan> lp: relPlans.values())
@@ -199,20 +199,20 @@ public class PlanLibrary implements Iterable<Plan> {
                 else
                     codesList.add(p);
             }
-    
+
             if (pte.getOperator() == TEOperator.goalState)
                 hasMetaEventPlans = true;
-            
+
             if (before)
                 plans.add(0,p);
             else
                 plans.add(p);
         }
     }
-    
+
     public void addAll(PlanLibrary pl) throws JasonException {
         synchronized (lockPL) {
-            for (Plan p: pl) { 
+            for (Plan p: pl) {
                 add(p, false);
             }
         }
@@ -220,23 +220,23 @@ public class PlanLibrary implements Iterable<Plan> {
 
     public void addAll(List<Plan> plans) throws JasonException {
         synchronized (lockPL) {
-            for (Plan p: plans) { 
+            for (Plan p: plans) {
                 add(p, false);
             }
         }
     }
-    
+
     private String getStringForLabel(Atom p) {
         if (p.getNS() == Literal.DefaultNS)
             return p.getFunctor();
         else
             return p.getNS()+"::"+p.getFunctor();
     }
-    
+
     public boolean hasMetaEventPlans() {
-        return hasMetaEventPlans; 
+        return hasMetaEventPlans;
     }
-    
+
     public boolean hasUserKqmlReceivedPlans() {
         return hasUserKqmlReceived;
     }
@@ -249,7 +249,7 @@ public class PlanLibrary implements Iterable<Plan> {
         } while (planLabels.keySet().contains(l));
         return new Pred(l);
     }
-    
+
     /** return a plan for a label */
     public Plan get(String label) {
         return get(new Atom(label));
@@ -258,15 +258,15 @@ public class PlanLibrary implements Iterable<Plan> {
     public Plan get(Atom label) {
         return planLabels.get(getStringForLabel(label));
     }
-    
+
     public int size() {
         return plans.size();
     }
-    
+
     public List<Plan> getPlans() {
         return plans;
     }
-    
+
     public Iterator<Plan> iterator() {
         return plans.iterator();
     }
@@ -278,34 +278,34 @@ public class PlanLibrary implements Iterable<Plan> {
         varPlans.clear();
         relPlans.clear();
     }
-    
-    /** 
+
+    /**
      * Remove a plan represented by the label <i>pLabel</i>.
-     * In case the plan has many sources, only the plan's source is removed. 
-	 */
-	public boolean remove(Atom pLabel, Term source) {
-		// find the plan
-		Plan p = get(pLabel);
-		if (p != null) {
-			boolean hasSource = p.getLabel().delSource(source);
+     * In case the plan has many sources, only the plan's source is removed.
+     */
+    public boolean remove(Atom pLabel, Term source) {
+        // find the plan
+        Plan p = get(pLabel);
+        if (p != null) {
+            boolean hasSource = p.getLabel().delSource(source);
 
-			// if no source anymore, remove the plan
-			if (hasSource && !p.getLabel().hasSource()) {
-			    remove(pLabel);
-			}
-			return true;
-		}
-		return false;
-	}
+            // if no source anymore, remove the plan
+            if (hasSource && !p.getLabel().hasSource()) {
+                remove(pLabel);
+            }
+            return true;
+        }
+        return false;
+    }
 
-	/** remove the plan with label <i>pLabel</i> */
+    /** remove the plan with label <i>pLabel</i> */
     public Plan remove(Atom pLabel) {
         synchronized (lockPL) {
             Plan p = planLabels.remove( getStringForLabel(pLabel) );
-    
+
             // remove it from plans' list
             plans.remove(p);
-    
+
             if (p.getTrigger().getLiteral().isVar()) {
                 varPlans.remove(p);
                 // remove p from all entries and
@@ -313,7 +313,7 @@ public class PlanLibrary implements Iterable<Plan> {
                 Iterator<PredicateIndicator> ipi = relPlans.keySet().iterator();
                 while (ipi.hasNext()) {
                     PredicateIndicator pi = ipi.next();
-                    List<Plan> lp = relPlans.get(pi); 
+                    List<Plan> lp = relPlans.get(pi);
                     lp.remove(p);
                     if (lp.isEmpty()) {
                         ipi.remove();
@@ -343,12 +343,12 @@ public class PlanLibrary implements Iterable<Plan> {
             return getCandidatePlans(te) != null;
     }
 
-    
+
     /** @deprecated use getCandidatePlans(te) instead */
     public List<Plan> getAllRelevant(Trigger te) {
         return getCandidatePlans(te);
     }
-    
+
     public List<Plan> getCandidatePlans(Trigger te) {
         synchronized (lockPL) {
             List<Plan> l = null;
@@ -358,7 +358,7 @@ public class PlanLibrary implements Iterable<Plan> {
                         if (l == null)
                             l = new ArrayList<Plan>();
                         l.add(p);
-                    }            
+                    }
             } else {
                 l = relPlans.get(te.getPredicateIndicator());
                 if ((l == null || l.isEmpty()) && !varPlans.isEmpty() && te != TE_JAG_SLEEPING && te != TE_JAG_AWAKING) {  // no rel plan, try varPlan
@@ -381,7 +381,7 @@ public class PlanLibrary implements Iterable<Plan> {
         PlanLibrary pl = new PlanLibrary();
         try {
             synchronized (lockPL) {
-                for (Plan p: this) { 
+                for (Plan p: this) {
                     pl.add((Plan)p.clone(), false);
                 }
             }
@@ -394,7 +394,7 @@ public class PlanLibrary implements Iterable<Plan> {
     public String toString() {
         return plans.toString();
     }
-    
+
     /** get as XML */
     public Element getAsDOM(Document document) {
         Element eplans = (Element) document.createElement("plans");
