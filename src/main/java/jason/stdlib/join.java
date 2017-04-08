@@ -16,30 +16,34 @@ public class join extends DefaultInternalAction {
 
     private static InternalAction singleton = null;
     public static InternalAction create() {
-        if (singleton == null) 
+        if (singleton == null)
             singleton = new join();
         return singleton;
     }
-    
+
     @Override public Term[] prepareArguments(Literal body, Unifier un) {
         return body.getTermsArray();
     }
-    
+
     @Override protected void checkArguments(Term[] args) throws JasonException {
     }
 
-    @Override public boolean suspendIntention()   { return true;  }    
-    @Override public boolean canBeUsedInContext() { return false; }
-        
+    @Override public boolean suspendIntention()   {
+        return true;
+    }
+    @Override public boolean canBeUsedInContext() {
+        return false;
+    }
+
     @Override
     public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {
         checkArguments(args);
-        
+
         Intention currentInt = ts.getC().getSelectedIntention();
         ForkData fd = (ForkData) ((ObjectTerm)args[0]).getObject();
         fd.toFinish--;
         //System.out.println("** in join for "+currentInt.getId()+ " with "+fd);
-        
+
         // in the case of fork and, all intentions should be finished to continue
         if (fd.isAnd) {
             if (fd.toFinish == 0) {
@@ -60,5 +64,5 @@ public class join extends DefaultInternalAction {
 
         return true;
     }
-    
+
 }
