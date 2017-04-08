@@ -9,19 +9,19 @@ import jason.asSyntax.Term;
 
 /**
   <p>Internal action: <b><code>.broadcast</code></b>.
-  
+
   <p>Description: broadcasts a message to all known agents.
-  
+
   <p>Parameters:<ul>
-  
+
   <li>+ ilf (atom): the illocutionary force of the message (tell,
   achieve, ...). <br/>
-  
+
   <li>+ message (literal): the content of the message.<br/>
-  
+
   </ul>
-  
-  <p>Example:<ul> 
+
+  <p>Example:<ul>
 
   <li> <code>.broadcast(tell,value(10))</code>: sends <code>value(10)</code>
   as a "tell" message to all known agents in the society.</li>
@@ -34,8 +34,12 @@ import jason.asSyntax.Term;
 */
 public class broadcast extends DefaultInternalAction {
 
-    @Override public int getMinArgs() { return 2; }
-    @Override public int getMaxArgs() { return 2; }
+    @Override public int getMinArgs() {
+        return 2;
+    }
+    @Override public int getMaxArgs() {
+        return 2;
+    }
 
     @Override
     protected void checkArguments(Term[] args) throws JasonException {
