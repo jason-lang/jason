@@ -1,4 +1,4 @@
- package jason.jeditplugin;
+package jason.jeditplugin;
 
 import jason.asSemantics.Agent;
 import jason.asSyntax.Plan;
@@ -19,13 +19,13 @@ import errorlist.ErrorSource;
 
 public class AgentSpeakSideKickParser extends sidekick.SideKickParser {
     public static final String ID = "asl";
-    
+
     SideKickParsedData pd = null;
 
     public AgentSpeakSideKickParser() {
         super(ID);
     }
-    
+
     public SideKickParsedData parse(Buffer buf, DefaultErrorSource errorSource) {
         String text;
         try {
@@ -37,18 +37,18 @@ public class AgentSpeakSideKickParser extends sidekick.SideKickParser {
 
         try {
             jason.asSyntax.parser.as2j parser = new jason.asSyntax.parser.as2j(new StringReader(text));
-            
+
             Agent ag = new Agent();
             ag.initAg();
             parser.agent(ag);
-            
-            // create nodes 
+
+            // create nodes
             pd = new SideKickParsedData(buf.getName());
             for (Plan p: ag.getPL()) {
                 DefaultMutableTreeNode node = new PlanAsset(p, buf).createTreeNode();
                 pd.root.add(node);
-            }          
-                
+            }
+
         } catch (jason.asSyntax.parser.ParseException ex) {
             addError(ex, errorSource, buf.getPath());
         } catch (Exception e) {
@@ -63,14 +63,14 @@ public class AgentSpeakSideKickParser extends sidekick.SideKickParser {
             int line = ex.currentToken.next.beginLine-1;
             if (line < 0) line = 0;
             errorSource.addError(new DefaultErrorSource.DefaultError(
-                    errorSource, 
-                    ErrorSource.ERROR, 
-                    path,
-                    line, 0, 0,
-                    ex.toString()));
-        }       
+                                     errorSource,
+                                     ErrorSource.ERROR,
+                                     path,
+                                     line, 0, 0,
+                                     ex.toString()));
+        }
     }
-    
+
     public String toString() {
         return ID;
     }
