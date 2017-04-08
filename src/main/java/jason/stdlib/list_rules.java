@@ -9,7 +9,7 @@ import jason.asSyntax.Term;
 /**
 <p>Internal action: <b><code>.list_rules</code></b>.
 
-<p>Description: prints out the rules in the belief base. 
+<p>Description: prints out the rules in the belief base.
 
 <p>Example:<ul>
 <li> <code>.list_rules</code>
