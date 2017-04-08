@@ -9,21 +9,21 @@ import jason.asSyntax.Literal;
 public class MixedAgentArch extends AgArch {
 
     Set<String> jasonEnvActions = new HashSet<String>();
-    
+
     @Override
     public void init() throws Exception {
         jasonEnvActions.add("a2");
         // add other actions here
-        
+
         super.init();
     }
-        
+
     @Override
     public Collection<Literal> perceive() {
         super.perceive(); // run cartago perceive
         return getArchInfraTier().perceive(); // the perceive of centralised arch
     }
-    
+
     /** Send specific actions to Jason environment */
     @Override
     public void act(ActionExec act) {
