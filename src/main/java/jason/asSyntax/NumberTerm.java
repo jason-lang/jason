@@ -4,7 +4,7 @@ import jason.NoValueException;
 
 
 /** The interface for numeric terms of AgentSpeak language
- *  
+ *
  * @opt nodefillcolor lightgoldenrodyellow
  */
 public interface NumberTerm extends Term {
