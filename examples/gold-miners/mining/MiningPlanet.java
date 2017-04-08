@@ -13,17 +13,17 @@ import java.util.logging.Logger;
 public class MiningPlanet extends jason.environment.Environment {
 
     private Logger logger = Logger.getLogger("jasonTeamSimLocal.mas2j." + MiningPlanet.class.getName());
-    
+
     WorldModel  model;
     WorldView   view;
-    
+
     int     simId    = 3; // type of environment
     int     nbWorlds = 3;
 
     int     sleep    = 0;
     boolean running  = true;
     boolean hasGUI   = true;
-    
+
     public static final int SIM_TIME = 60;  // in seconds
 
     Term                    up       = Literal.parseLiteral("do(up)");
@@ -40,15 +40,15 @@ public class MiningPlanet extends jason.environment.Environment {
 
     @Override
     public void init(String[] args) {
-        hasGUI = args[2].equals("yes"); 
+        hasGUI = args[2].equals("yes");
         sleep  = Integer.parseInt(args[1]);
         initWorld(Integer.parseInt(args[0]));
     }
-    
+
     public int getSimId() {
         return simId;
     }
-    
+
     public void setSleep(int s) {
         sleep = s;
     }
@@ -66,7 +66,7 @@ public class MiningPlanet extends jason.environment.Environment {
             if (sleep > 0) {
                 Thread.sleep(sleep);
             }
-            
+
             // get the agent id based on its name
             int agId = getAgIdBasedOnName(ag);
 
@@ -102,14 +102,20 @@ public class MiningPlanet extends jason.environment.Environment {
     private int getAgIdBasedOnName(String agName) {
         return (Integer.parseInt(agName.substring(5))) - 1;
     }
-    
+
     public void initWorld(int w) {
         simId = w;
         try {
             switch (w) {
-            case 1: model = WorldModel.world1(); break;
-            case 2: model = WorldModel.world2(); break;
-            case 3: model = WorldModel.world3(); break;
+            case 1:
+                model = WorldModel.world1();
+                break;
+            case 2:
+                model = WorldModel.world2();
+                break;
+            case 3:
+                model = WorldModel.world3();
+                break;
             default:
                 logger.info("Invalid index!");
                 return;
@@ -122,13 +128,13 @@ public class MiningPlanet extends jason.environment.Environment {
                 view.setEnv(this);
                 view.udpateCollectedGolds();
             }
-            updateAgsPercept();        
+            updateAgsPercept();
             informAgsEnvironmentChanged();
         } catch (Exception e) {
             logger.warning("Error creating world "+e);
         }
     }
-    
+
     public void endSimulation() {
         addPercept(Literal.parseLiteral("end_of_simulation(" + simId + ",0)"));
         informAgsEnvironmentChanged();
@@ -168,7 +174,7 @@ public class MiningPlanet extends jason.environment.Environment {
         updateAgPercept(agName, l.x + 1, l.y + 1);
     }
 
-    
+
     private void updateAgPercept(String agName, int x, int y) {
         if (model == null || !model.inGrid(x,y)) return;
         if (model.hasObject(WorldModel.OBSTACLE, x, y)) {
