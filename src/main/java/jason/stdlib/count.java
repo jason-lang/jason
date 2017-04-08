@@ -12,21 +12,21 @@ import java.util.Iterator;
 
 /**
   <p>Internal action: <b><code>.count</code></b>.
-  
+
   <p>Description: counts the number of occurrences of a particular belief
   (pattern) in the agent's belief base.
-  
+
   <p>Parameters:<ul>
-  
+
   <li>+ query (logical formula): the formula used to count literals in the belief base;
   is has the same syntax as the plan context.
   <br/>
-  
+
   <li>+/- quantity (number): the number of occurrences of the belief.<br/>
-  
+
   </ul>
-  
-  <p>Examples:<ul> 
+
+  <p>Examples:<ul>
 
   <li> <code>.count(a(2,_),N)</code>: counts the number of beliefs
   that unify with <code>a(2,_)</code>; <code>N</code> unifies with
@@ -42,13 +42,17 @@ import java.util.Iterator;
   </ul>
 
   @see jason.stdlib.findall
-  
+
   @see jason.functions.Count function version
 */
 public class count extends DefaultInternalAction {
 
-    @Override public int getMinArgs() { return 2; }
-    @Override public int getMaxArgs() { return 2; }
+    @Override public int getMinArgs() {
+        return 2;
+    }
+    @Override public int getMaxArgs() {
+        return 2;
+    }
 
     @Override protected void checkArguments(Term[] args) throws JasonException {
         super.checkArguments(args); // check number of arguments
