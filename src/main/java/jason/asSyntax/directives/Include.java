@@ -25,11 +25,11 @@ public class Include extends DefaultDirective implements Directive {
     public static final String CRPrefix = "ClassResource:";
 
     private List<String> aslSourcePath = null;
-    
+
     public Agent process(Pred directive, Agent outerContent, Agent innerContent) {
         if (outerContent == null)
             return null;
-        
+
         // handles file (arg[0])
         String file = ((StringTerm)directive.getTerm(0)).getString().replaceAll("\\\\", "/");
         try {
@@ -52,17 +52,17 @@ public class Include extends DefaultDirective implements Directive {
                         outerPrefix = outerPrefix.substring(0,outerPrefix.indexOf("!")+1) + "/";
                         file = checkPathAndFixWithSourcePath(file, aslSourcePath, outerPrefix);
                         in = new URL(file).openStream();
-                        
+
                     } else if (outerPrefix.startsWith(CRPrefix)) {
                         // outer is loaded from a resource ("application".jar) file, used for java web start
                         int posSlash = outerPrefix.lastIndexOf("/");
-    
+
                         List<String> newpath = new ArrayList<String>();
                         if (outerPrefix.indexOf("/") != posSlash) { // has only one slash
                             newpath.add(outerPrefix.substring(CRPrefix.length()+1,posSlash));
                         }
                         newpath.addAll(aslSourcePath);
-                        
+
                         file = checkPathAndFixWithSourcePath(file, newpath, CRPrefix+"/");
                         in = Agent.class.getResource(file.substring(CRPrefix.length())).openStream();
                     } else if (outerPrefix.startsWith("file:") || outerPrefix.startsWith("http:")) {
@@ -70,7 +70,7 @@ public class Include extends DefaultDirective implements Directive {
                         file = url.toString();
                         in = url.openStream();
                     } else {
-                        // get the directory of the source of the outer agent and 
+                        // get the directory of the source of the outer agent and
                         // try to find the included source in the same directory
                         // or in the source paths
                         List<String> newpath = new ArrayList<String>();
@@ -81,7 +81,7 @@ public class Include extends DefaultDirective implements Directive {
                         in = new FileInputStream(file);
                     }
                 } else {
-                    in = new FileInputStream(checkPathAndFixWithSourcePath(file, aslSourcePath, null));         
+                    in = new FileInputStream(checkPathAndFixWithSourcePath(file, aslSourcePath, null));
                 }
             }
             // handles namespace (args[1])
@@ -117,11 +117,11 @@ public class Include extends DefaultDirective implements Directive {
     public void setSourcePath(List<String> sp) {
         aslSourcePath = sp;
     }
-    
+
     public List<String> getSourcePaths() {
         return aslSourcePath;
     }
-    
+
     /** fix path of the asl code based on aslSourcePath, also considers code from a jar file (if urlPrefix is not null) */
     public static String checkPathAndFixWithSourcePath(String f, List<String> srcpath, String urlPrefix) {
         if (urlPrefix == null || urlPrefix.length() == 0) {
@@ -154,7 +154,7 @@ public class Include extends DefaultDirective implements Directive {
         }
         return f;
     }
-    
+
     private static boolean testURLSrc(String asSrc) {
         try {
             if (asSrc.startsWith(CRPrefix)) {
@@ -163,10 +163,10 @@ public class Include extends DefaultDirective implements Directive {
             } else {
                 // Agent.class.getResource(asSrc).openStream();
                 new URL(asSrc).openStream();
-                return true;                
+                return true;
             }
         } catch (Exception e) {}
         return false;
-    }    
+    }
 
 }
