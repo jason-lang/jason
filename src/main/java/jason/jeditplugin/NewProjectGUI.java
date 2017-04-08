@@ -153,7 +153,7 @@ public class NewProjectGUI extends NewAgentGUI {
         }
         /*
          * jasonID.checkProjectView(projName.getText(), finalDir);
-         * 
+         *
          * DockableWindowManager d = view.getDockableWindowManager(); if
          * (d.getDockableWindow("projectviewer") != null) { if
          * (!d.isDockableWindowVisible("projectviewer")) {
