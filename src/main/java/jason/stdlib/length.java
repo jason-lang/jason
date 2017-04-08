@@ -14,11 +14,11 @@ import jason.asSyntax.Term;
 
   <p>Internal action: <b><code>.length</code></b>.
 
-  <p>Description: gets the length of strings or lists. 
+  <p>Description: gets the length of strings or lists.
 
   <p>Parameters:<ul>
   <li>+ argument (string or list): the term whose length is to be determined.<br/>
-  <li>+/- length (number). 
+  <li>+/- length (number).
   </ul>
 
   <p>Examples:<ul>
@@ -42,19 +42,23 @@ import jason.asSyntax.Term;
   @see jason.stdlib.union
 
   @see jason.functions.Length function version
-  
+
  */
 public class length extends DefaultInternalAction {
 
     private static InternalAction singleton = null;
     public static InternalAction create() {
-        if (singleton == null) 
+        if (singleton == null)
             singleton = new length();
         return singleton;
     }
-    
-    @Override public int getMinArgs() { return 2; }
-    @Override public int getMaxArgs() { return 2; }
+
+    @Override public int getMinArgs() {
+        return 2;
+    }
+    @Override public int getMaxArgs() {
+        return 2;
+    }
 
     @Override
     public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {
