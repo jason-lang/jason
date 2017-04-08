@@ -6,9 +6,9 @@ import java.util.concurrent.ExecutorService;
 public final class CentralisedAgArchForPool extends CentralisedAgArch {
     private volatile boolean isSleeping  = false;
     private ExecutorService executor;
-    
+
     public void setExecutor(ExecutorService e) {
-        executor = e;        
+        executor = e;
     }
 
     @Override
@@ -23,31 +23,31 @@ public final class CentralisedAgArchForPool extends CentralisedAgArch {
 
     @Override
     public void wake() {
-        synchronized (this) {            
-            if (isSleeping) { 
+        synchronized (this) {
+            if (isSleeping) {
                 isSleeping = false;
-                executor.execute(this); 
+                executor.execute(this);
             }
         }
     }
-    
+
     @Override
     public void run() {
         int number_cycles = getCycles();
         int i = 0;
-        
+
         while (isRunning() && i++ < number_cycles) {
             reasoningCycle();
-            synchronized (this) {                
+            synchronized (this) {
                 if (getTS().canSleep()) {
                     sleep();
-                    return; 
+                    return;
                 } else if (i == number_cycles) {
-                    executor.execute(this);  
+                    executor.execute(this);
                     return;
                 }
             }
         }
-    }      
+    }
 }
 
