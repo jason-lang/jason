@@ -11,21 +11,21 @@ import java.util.logging.Logger;
 public class BlocksWorld extends jason.environment.Environment {
 
     private Logger logger = Logger.getLogger("BlocksWorld.mas2j" + BlocksWorld.class.getName());
-    
+
     WorldModel  model;
     WorldView   view;
-    
+
     int     sleep    = 0;
     boolean hasGUI   = true;
-    
+
     @Override
     public void init(String[] args) {
-        hasGUI = args[2].equals("yes"); 
+        hasGUI = args[2].equals("yes");
         sleep  = Integer.parseInt(args[1]);
         initWorld(Integer.parseInt(args[0]));
         updateAllPercepts();
     }
-    
+
     @Override
     synchronized public boolean executeAction(String ag, Structure action) {
         boolean result = false;
@@ -33,7 +33,7 @@ public class BlocksWorld extends jason.environment.Environment {
             if (sleep > 0) {
                 Thread.sleep(sleep);
             }
-            
+
             //logger.info("Agent "+ag+" is doing: "+action);
 
             if (action.getFunctor().equals("move")) {
@@ -65,21 +65,27 @@ public class BlocksWorld extends jason.environment.Environment {
             }
         }
     }
-    
+
     public void initWorld(int w) {
         try {
             switch (w) {
-                   case 1: model = WorldModel.world1(); break;
-                   case 2: model = WorldModel.world2(); break;
-                   case 3: model = WorldModel.world3(); break;
+            case 1:
+                model = WorldModel.world1();
+                break;
+            case 2:
+                model = WorldModel.world2();
+                break;
+            case 3:
+                model = WorldModel.world3();
+                break;
             default:
                 logger.info("Invalid index!");
                 return;
             }
-           
+
             if (hasGUI) {
                 view = new WorldView(model);
-            }   
+            }
             informAgsEnvironmentChanged();
         } catch (Exception e) {
             logger.warning("Error creating world "+e);
