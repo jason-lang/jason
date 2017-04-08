@@ -16,7 +16,7 @@ import java.util.Iterator;
 /**
 <p>Internal action: <b><code>.relevant_rules</code></b>.
 
-<p>Description: gets all rules that can be used to prove some literal. 
+<p>Description: gets all rules that can be used to prove some literal.
 
 <p>Parameters:<ul>
 
@@ -26,7 +26,7 @@ import java.util.Iterator;
 
 </ul>
 
-<p>Example:<ul> 
+<p>Example:<ul>
 
 <li> <code>.relevant_rules( p(_),LP)</code>: unifies LP with a list of
 all rules with head p/1.</li>
@@ -37,8 +37,12 @@ all rules with head p/1.</li>
 */
 public class relevant_rules extends DefaultInternalAction {
 
-    @Override public int getMinArgs() { return 2; }
-    @Override public int getMaxArgs() { return 2; }
+    @Override public int getMinArgs() {
+        return 2;
+    }
+    @Override public int getMaxArgs() {
+        return 2;
+    }
 
     @Override
     public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {
