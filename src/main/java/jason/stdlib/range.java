@@ -14,20 +14,20 @@ import java.util.Iterator;
 /**
 
   <p>Internal action: <b><code>.range(<i>Var</i>,<i>Start</i>,<i>End</i>, <i>Step</i>)</code></b>.
-  
+
   <p>Description: backtrack all values for <i>Var</i> starting at <i>Start</i>
   and finishing at <i>End</i> by increments of <i>Step</i> (default step value is 1).
 
   <p>Parameters:<ul>
-  
+
   <li>+/- var (Variable): the variable that unifies with all values.</li>
   <li>+ start (number): initial value.</li>
   <li>+ end (number): last value.</li>
   <li>+ end (number, optional): step.</li>
-  
+
   </ul>
-  
-  <p>Examples:<ul> 
+
+  <p>Examples:<ul>
 
   <li> <code>.range(3,1,5)</code>: true.</li>
   <li> <code>.range(6,1,5)</code>: false.</li>
@@ -40,16 +40,20 @@ import java.util.Iterator;
   @see jason.stdlib.foreach for
 */
 public class range extends DefaultInternalAction {
-    
+
     private static InternalAction singleton = null;
     public static InternalAction create() {
-        if (singleton == null) 
+        if (singleton == null)
             singleton = new range();
         return singleton;
     }
 
-    @Override public int getMinArgs() { return 3; }
-    @Override public int getMaxArgs() { return 4; }
+    @Override public int getMinArgs() {
+        return 3;
+    }
+    @Override public int getMaxArgs() {
+        return 4;
+    }
 
     @Override protected void checkArguments(Term[] args) throws JasonException {
         super.checkArguments(args); // check number of arguments
@@ -60,7 +64,7 @@ public class range extends DefaultInternalAction {
         if (args.length == 4 && !args[3].isNumeric())
             throw JasonException.createWrongArgument(this,"fourth parameter ('" + args[3] + "') must be a number!");
     }
-    
+
 
     @Override
     public Object execute(TransitionSystem ts, final Unifier un, Term[] args) throws Exception {
@@ -83,7 +87,7 @@ public class range extends DefaultInternalAction {
 
             return new Iterator<Unifier>() {
                 int vl = start-step;
-                
+
                 public boolean hasNext() {
                     if (step > 0)
                         return vl+step <= end;
@@ -97,7 +101,7 @@ public class range extends DefaultInternalAction {
                     c.unifiesNoUndo(var,new NumberTermImpl(vl));
                     return c;
                 }
-                
+
                 public void remove() {}
             };
         }
