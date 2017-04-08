@@ -29,16 +29,16 @@ import jason.mas2j.parser.ParseException;
 
 /**
  * Implementation of the Jade Architecture to run Jason agents
- * 
+ *
  * @author Jomi
  */
 public class JadeAgArch extends JadeAg {
 
     /** name of the "jason agent" service in DF */
     public  static String dfName = "j_agent";
-    
+
     private static final long serialVersionUID = 1L;
-   
+
     protected JasonBridgeArch jasonBridgeAgArch;
 
     //private boolean enterInSleepMode = false;
@@ -46,8 +46,8 @@ public class JadeAgArch extends JadeAg {
     AID controllerAID  = new AID(RunJadeMAS.controllerName, AID.ISLOCALNAME);
 
     Behaviour tsBehaviour;
-    
-    // 
+
+    //
     // Jade Methods
     // ------------
     //
@@ -64,15 +64,15 @@ public class JadeAgArch extends JadeAg {
             if (ap != null) {
                 jasonBridgeAgArch = new JasonBridgeArch(this);
                 jasonBridgeAgArch.init(ap);
-                
+
                 if (jasonBridgeAgArch.getTS().getSettings().verbose() >= 0)
                     logger.setLevel(jasonBridgeAgArch.getTS().getSettings().logLevel());
-        
+
                 registerAgInDF();
-            
+
                 tsBehaviour = new JasonTSReasoner();
                 addBehaviour(tsBehaviour);
-                
+
                 logger.fine("Created from source "+ap.asSource);
             }
         } catch (Exception e) {
@@ -86,16 +86,16 @@ public class JadeAgArch extends JadeAg {
         super.afterMove();
     }
     */
-    
+
     /*void enterInSleepMode() {
-        enterInSleepMode = true;        
+        enterInSleepMode = true;
     }*/
-    
+
     void wakeUp() {
         if (tsBehaviour != null) // it can happen that the setup was not run before this method...
             tsBehaviour.restart();
     }
-    
+
     protected AgentParameters parseParameters() throws ParseException, IOException {
 
         Object[] args = getArguments();
@@ -106,10 +106,10 @@ public class JadeAgArch extends JadeAg {
 
         // read arguments
         // if [0] is an instance of AgentParameters
-        //    read parameters from [0] 
-        // else if [0] is j-project 
+        //    read parameters from [0]
+        // else if [0] is j-project
         //    read all parameters form [1] (including aslSource and directives)
-        //    create the agent indicated by [2]              
+        //    create the agent indicated by [2]
         // else
         //    [0] is the file with AS source for the agent
         //    arch <arch class>
@@ -125,34 +125,34 @@ public class JadeAgArch extends JadeAg {
                     logger.log(Level.SEVERE, "To start agents from .mas2j file, you have to provide as parameters: (j-project <file.mas2j> <nameofagent in mas2j>)");
                     return null;
                 }
-                jason.mas2j.parser.mas2j parser = new jason.mas2j.parser.mas2j(new FileReader(args[1].toString())); 
+                jason.mas2j.parser.mas2j parser = new jason.mas2j.parser.mas2j(new FileReader(args[1].toString()));
                 MAS2JProject project = parser.mas();
                 project.setupDefault();
-    
+
                 project.registerDirectives();
                 ((Include)DirectiveProcessor.getDirective("include")).setSourcePath(project.getSourcePaths());
-                
+
                 AgentParameters ap = project.getAg(args[2].toString());
                 if (ap == null) {
                     logger.log(Level.SEVERE, "There is no agent '"+args[2]+"' in project '"+args[1]+"'.");
-                } else {    
+                } else {
                     ap.fixSrc(project.getSourcePaths(), null);
                     //if (ap.qty > 1)
                     //    logger.warning("Ignoring quantity of agents from mas2j, jade arch creates only ONE agent.");
                 }
-                
+
                 // The case CARTAGO+JADE
                 if (isCartagoJadeCase(project)) {
-                    startCartagoNode(project.getEnvClass().getParametersArray());           
+                    startCartagoNode(project.getEnvClass().getParametersArray());
                 }
                 return ap;
-                
+
             } else { // load parameters from shell
                 AgentParameters ap = new AgentParameters();
                 ap.asSource = new File(args[0].toString());
-            
+
                 int i=1;
-                while (i < args.length) {                
+                while (i < args.length) {
                     if (args[i].toString().equals("arch")) {
                         i++;
                         ap.addArchClass(args[i].toString());
@@ -166,14 +166,14 @@ public class JadeAgArch extends JadeAg {
             }
         }
     }
-    
+
     public static boolean isCartagoJadeCase(MAS2JProject project) {
-        return 
-            project.getEnvClass() != null && 
-            project.getEnvClass().getClassName().equals("c4jason.CartagoEnvironment") && 
+        return
+            project.getEnvClass() != null &&
+            project.getEnvClass().getClassName().equals("c4jason.CartagoEnvironment") &&
             project.isJade();
     }
-    
+
     private static boolean cartagoStarted = false;
     public static synchronized void startCartagoNode(String[] args) {
         if (!cartagoStarted) {
@@ -185,7 +185,7 @@ public class JadeAgArch extends JadeAg {
         }
         cartagoStarted = true;
     }
-    
+
     private void registerAgInDF() {
         // DF register
         DFAgentDescription dfa = new DFAgentDescription();
@@ -235,7 +235,7 @@ public class JadeAgArch extends JadeAg {
             }
         }
     }
-    
+
     @Override
     public void doDelete() {
         try {
@@ -249,19 +249,19 @@ public class JadeAgArch extends JadeAg {
             super.doDelete();
         }
     }
-    
+
     @Override
     protected void takeDown() {
         logger.info("Finished!");
     }
-    
-    
+
+
     private MessageTemplate ts = MessageTemplate.and(
-            MessageTemplate.MatchContent("agState"),
-            MessageTemplate.MatchOntology(JadeExecutionControl.controllerOntology));
+                                     MessageTemplate.MatchContent("agState"),
+                                     MessageTemplate.MatchOntology(JadeExecutionControl.controllerOntology));
     private MessageTemplate tc = MessageTemplate.and(
-            MessageTemplate.MatchContent("performCycle"),
-            MessageTemplate.MatchOntology(JadeExecutionControl.controllerOntology));
+                                     MessageTemplate.MatchContent("performCycle"),
+                                     MessageTemplate.MatchOntology(JadeExecutionControl.controllerOntology));
 
     boolean processExecutionControlOntologyMsg() {
         ACLMessage m = receive(ts);
@@ -275,9 +275,9 @@ public class JadeAgArch extends JadeAg {
                 send(r);
             } catch (Exception e) {
                 logger.log(Level.SEVERE, "Error sending message " + r, e);
-            }            
+            }
         }
-        
+
         m = receive(tc);
         if (m != null) {
             int cycle = Integer.parseInt(m.getUserDefinedParameter("cycle"));
@@ -287,7 +287,7 @@ public class JadeAgArch extends JadeAg {
         }
         return false;
     }
-    
+
     /*
     boolean isPerceptionOntology(ACLMessage m) {
         return m.getOntology() != null && m.getOntology().equals(JadeEnvironment.perceptionOntology);
@@ -295,13 +295,13 @@ public class JadeAgArch extends JadeAg {
     */
 
 
-    /** 
-     *  Informs the infrastructure tier controller that the agent 
+    /**
+     *  Informs the infrastructure tier controller that the agent
      *  has finished its reasoning cycle (used in sync mode).
-     *  
-     *  <p><i>breakpoint</i> is true in case the agent selected one plan 
-     *  with the "breakpoint" annotation.  
-     */ 
+     *
+     *  <p><i>breakpoint</i> is true in case the agent selected one plan
+     *  with the "breakpoint" annotation.
+     */
     public void informCycleFinished(boolean breakpoint, int cycle) {
         try {
             ACLMessage m = new ACLMessage(ACLMessage.INFORM);
