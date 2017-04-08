@@ -7,38 +7,38 @@ import org.junit.Test;
 
 public class TestPlanbodyAsTerm {
 
-    TestAgent ag; 
+    TestAgent ag;
 
     // initialisation of the agent test
     @Before
     public void setupAg() {
         ag = new TestAgent();
-        
+
         // defines the agent's AgentSpeak code
         ag.parseAScode(
-                "+!start <- +g( {a(1); b; c}); ?g(X); !g(X). " +
-                "+!test2 <- !g( {!g2(1)}). "+
-                "+!test3 <- !g2(-1 + 2)."+
-                "+!test4 <- X = {a(1); b; c}; !g(X)."+
-                
-                "+!test5 <- !g5(R); jason.asunit.print(R). "+
-                "+!g5(X) <- C; .print(errrrrror). "+
-                "-!g5(X)[error(I),error_msg(M)] <- jason.asunit.print(I,M); X = ok. "+
+            "+!start <- +g( {a(1); b; c}); ?g(X); !g(X). " +
+            "+!test2 <- !g( {!g2(1)}). "+
+            "+!test3 <- !g2(-1 + 2)."+
+            "+!test4 <- X = {a(1); b; c}; !g(X)."+
 
-                "+!test6 <- A = { a }; B = { A }; C = { B }; C; jason.asunit.print(end). "+
-                
-                "+!test7(X) <- A = { jason.asunit.print(a,X); jason.asunit.print(b,X*2) }; A; jason.asunit.print(end,X/2). "+
-                
-                "+!g({A; R}) <- A; !g(R). "+
-                "+!g(A)    <- A." +
-                "+!g2(A)     <- jason.asunit.print(A)."+
-                
-                "+!trl <- !myadd( { jason.asunit.print(a); jason.asunit.print(b) } ); !grl. "+
-                "+!myadd(Action) <- +>{+!grl : c <- Action}; +>{+!grl <- jason.asunit.print(ops) }."
+            "+!test5 <- !g5(R); jason.asunit.print(R). "+
+            "+!g5(X) <- C; .print(errrrrror). "+
+            "-!g5(X)[error(I),error_msg(M)] <- jason.asunit.print(I,M); X = ok. "+
+
+            "+!test6 <- A = { a }; B = { A }; C = { B }; C; jason.asunit.print(end). "+
+
+            "+!test7(X) <- A = { jason.asunit.print(a,X); jason.asunit.print(b,X*2) }; A; jason.asunit.print(end,X/2). "+
+
+            "+!g({A; R}) <- A; !g(R). "+
+            "+!g(A)    <- A." +
+            "+!g2(A)     <- jason.asunit.print(A)."+
+
+            "+!trl <- !myadd( { jason.asunit.print(a); jason.asunit.print(b) } ); !grl. "+
+            "+!myadd(Action) <- +>{+!grl : c <- Action}; +>{+!grl <- jason.asunit.print(ops) }."
 
         );
     }
-    
+
     @Test(timeout=2000)
     public void testProgram1a() {
         ag.addGoal("start");
@@ -47,7 +47,7 @@ public class TestPlanbodyAsTerm {
         ag.assertAct("b", 4);
         ag.assertAct("c", 4);
     }
-    
+
     @Test(timeout=2000)
     public void testProgram1b() {
         ag.addGoal("test4");
@@ -89,7 +89,7 @@ public class TestPlanbodyAsTerm {
         ag.assertPrint("b200", 5);
         ag.assertPrint("end50", 5);
     }
-    
+
     @Test(timeout=2000)
     public void test8() {
         ag.addGoal("trl");
