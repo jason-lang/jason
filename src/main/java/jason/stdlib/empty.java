@@ -12,7 +12,7 @@ import jason.asSyntax.Term;
 
   <p>Internal action: <b><code>.empty</code></b>.
 
-  <p>Description: checks whether a list has at least one term. 
+  <p>Description: checks whether a list has at least one term.
 
   <p>Parameters:<ul>
   <li>+ argument (string or list): the term whose length is to be determined.<br/>
@@ -23,19 +23,23 @@ import jason.asSyntax.Term;
   <li> <code>.empty([a,b])</code>: false.
   <li> <code>.empty("a")</code>: false.
   </ul>
-  
+
  */
 public class empty extends DefaultInternalAction {
 
     private static InternalAction singleton = null;
     public static InternalAction create() {
-        if (singleton == null) 
+        if (singleton == null)
             singleton = new empty();
         return singleton;
     }
-    
-    @Override public int getMinArgs() { return 1; }
-    @Override public int getMaxArgs() { return 1; }
+
+    @Override public int getMinArgs() {
+        return 1;
+    }
+    @Override public int getMaxArgs() {
+        return 1;
+    }
 
     @Override
     public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {
