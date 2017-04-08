@@ -30,25 +30,29 @@ import jason.asSyntax.Term;
 
 */
 public class lower_case extends DefaultInternalAction {
-    
+
     private static InternalAction singleton = null;
     public static InternalAction create() {
-        if (singleton == null) 
+        if (singleton == null)
             singleton = new lower_case();
         return singleton;
     }
 
-    @Override public int getMinArgs() { return 2; }
-    @Override public int getMaxArgs() { return 2; }
+    @Override public int getMinArgs() {
+        return 2;
+    }
+    @Override public int getMaxArgs() {
+        return 2;
+    }
 
     @Override
     public Object execute(TransitionSystem ts, final Unifier un, final Term[] args) throws Exception {
         checkArguments(args);
-        
+
         String arg = null;
         if (args[0].isString())
             arg = ((StringTerm)args[0]).getString();
-        else 
+        else
             arg = args[0].toString();
         arg = arg.toLowerCase();
         return un.unifies(new StringTermImpl(arg), args[1]);
