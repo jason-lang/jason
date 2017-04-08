@@ -20,24 +20,24 @@ import java.util.logging.Logger;
 
 /**
  * Implementation of the Exclusive BDG pattern (see DALT 2006 paper)
- * 
+ *
  * @author jomi
  */
 public class EBDG extends DefaultDirective implements Directive {
 
     static Logger logger = Logger.getLogger(EBDG.class.getName());
-    
+
     @Override
     public Agent process(Pred directive, Agent outerContent, Agent innerContent) {
         try {
             Agent newAg = new Agent();
             newAg.initAg();
-            
+
             Literal goal = Literal.parseLiteral(directive.getTerm(0).toString());
 
             // add +!g : g <- true.
             newAg.getPL().add(ASSyntax.parsePlan("+!"+goal+" : " +goal+"."));
-            
+
             // change all inner plans
             int i = 0;
             for (Plan p: innerContent.getPL()) {
@@ -47,7 +47,7 @@ public class EBDG extends DefaultDirective implements Directive {
                         i++;
                         // create p__f(i,g)
                         Literal pi = ASSyntax.createLiteral("p__f", ASSyntax.createNumber(i), goal.copy());
-                        
+
                         // change context to "not p__f(i,g) & c"
                         LogicalFormula context = p.getContext();
                         if (context == null) {
@@ -55,7 +55,7 @@ public class EBDG extends DefaultDirective implements Directive {
                         } else {
                             p.setContext(new LogExpr(new LogExpr(LogicalOp.not, pi), LogicalOp.and, context));
                         }
-                        
+
                         // change body
                         // add +p__f(i,g)
                         PlanBody b1 = new PlanBodyImpl(BodyType.addBel, pi);
@@ -67,7 +67,7 @@ public class EBDG extends DefaultDirective implements Directive {
                 }
                 newAg.getPL().add(p);
             }
-            
+
 
             // add -!g : true <- !!g.
             newAg.getPL().add(ASSyntax.parsePlan("-!"+goal+" <- !!"+goal+"."));
@@ -77,7 +77,7 @@ public class EBDG extends DefaultDirective implements Directive {
 
             // add -g <- .abolish(p__f(_,g)).
             newAg.getPL().add(ASSyntax.parsePlan("-"+goal+" <- .abolish(p__f(_,"+goal+"))."));
-            
+
             return newAg;
         } catch (Exception e) {
             logger.log(Level.SEVERE,"Directive EBDG error.", e);
