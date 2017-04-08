@@ -37,10 +37,10 @@ public class BeliefBaseTest extends TestCase {
     public void testAdd() {
         Literal l1, l2, l3, l4, l5;
         BeliefBase bb = new DefaultBeliefBase();
-        
+
         l1 = new LiteralImpl(true, new Pred("pos"));
         assertTrue(bb.add(l1));
-        
+
         assertFalse(bb.add(new LiteralImpl(true, new Pred("pos"))));
         assertEquals(bb.size(),1);
 
@@ -49,11 +49,11 @@ public class BeliefBaseTest extends TestCase {
         //System.out.println(l1.hashCode()+"/"+l2.hashCode());
         //System.out.println(bb+"-"+ bb.contains(l2));
         assertTrue(bb.contains(l2) != null);
-        
+
         assertTrue(bb.add(l2));
         // the add should maintain the annots
         assertEquals(1,l2.getAnnots().size());
-        
+
         assertFalse(bb.add(l2));
         // the add should remove the annots
         assertEquals(0,l2.getAnnots().size());
@@ -77,7 +77,7 @@ public class BeliefBaseTest extends TestCase {
         l3 = new LiteralImpl(true, new Pred("pos"));
         l3.addSource(new Atom("ag1"));
         assertFalse(bb.add(l3));
-        
+
         l4 = new LiteralImpl(true, new Pred("pos"));
         l4.addTerm(new Atom("1"));
         l4.addTerm(new Atom("2"));
@@ -100,11 +100,11 @@ public class BeliefBaseTest extends TestCase {
         l5 = new LiteralImpl(true, new Pred("garb"));
         l5.addTerm(new Structure("r1"));
         assertTrue(bb.add(l5));
-        
+
         //System.out.println("BB="+bb);
         //System.out.println("Percepts="+bb.getPercepts());
         assertEquals(iteratorSize(bb.getPercepts()), 3);
-        
+
         //Literal lRel1 = new Literal(true, new Pred("pos"));
         //System.out.println("Rel "+lRel1.getFunctorArity()+"="+bb.getRelevant(lRel1));
 
@@ -114,7 +114,7 @@ public class BeliefBaseTest extends TestCase {
         //System.out.println("Rel "+lRel2.getFunctorArity()+"="+bb.getRelevant(lRel2));
         assertEquals(bb.size(), 4);
         assertEquals(4, iteratorSize(bb.iterator()));
-        
+
         // remove
         l5 = new LiteralImpl(true, new Pred("garb"));
         l5.addTerm(new Structure("r1"));
@@ -135,7 +135,7 @@ public class BeliefBaseTest extends TestCase {
         //System.out.println("BB="+bb);
         //System.out.println("Percepts="+bb.getPercepts());
         assertEquals(iteratorSize(bb.getPercepts()), 2);
-    
+
         l4 = new LiteralImpl(true, new Pred("pos"));
         l4.addTerm(new Structure("1"));
         l4.addTerm(new Structure("2"));
@@ -147,7 +147,7 @@ public class BeliefBaseTest extends TestCase {
 
         //System.out.println("remove pos(1,2)");
         //System.out.println("BB="+bb);
-        
+
         l2 = new LiteralImpl(true, new Pred("pos"));
         l2.addAnnot(new Structure("a"));
         assertTrue(bb.contains(l2) != null);
@@ -172,7 +172,7 @@ public class BeliefBaseTest extends TestCase {
         //}
         assertEquals(iteratorSize(bb.getPercepts()), 0);
         assertEquals(bb.size(), 1);
-        
+
         l2 = new LiteralImpl(true, new Pred("testRemIt"));
         l2.addAnnot(new Structure("a"));
         l2.addAnnot(BeliefBase.TPercept);
@@ -185,11 +185,11 @@ public class BeliefBaseTest extends TestCase {
             }
         }
         assertEquals(iteratorSize(bb.getPercepts()), 0);
-        
+
         l3 = Literal.parseLiteral("pos[source(ag1)]");
         assertFalse(l2.isAtom());
         assertTrue(bb.remove(l3));
-        
+
         //System.out.println("removed "+l3);
         //System.out.println("BB="+bb);
         assertEquals(bb.size(), 0);
@@ -212,7 +212,7 @@ public class BeliefBaseTest extends TestCase {
         c.addSource(Structure.parse("ag3"));
         assertTrue(c.hasAnnot(ASSyntax.parseTerm("source(ag3)")));
         assertTrue(c.hasSource(ASSyntax.parseTerm("ag3")));
-        Literal inBB = bb.contains(c); 
+        Literal inBB = bb.contains(c);
         assertTrue(inBB != null);
         assertFalse(c.hasSubsetAnnot(inBB));
         assertFalse(c.isVar());
@@ -223,7 +223,7 @@ public class BeliefBaseTest extends TestCase {
         assertTrue(l1.equalsAsStructure(c));
         assertTrue(bb.add(c));
         assertFalse(bb.add(c));
-        
+
         c = new VarTerm("C");
         Literal ca = new VarTerm("CA");
         u = new Unifier();
@@ -242,8 +242,8 @@ public class BeliefBaseTest extends TestCase {
         assertEquals(bb.size(),1);
         assertEquals(inBB.getAnnots().size(),4);
     }
-    
-    
+
+
     public void testRemWithList() {
         Unifier u = new Unifier();
         BeliefBase bb = new DefaultBeliefBase();
@@ -260,7 +260,7 @@ public class BeliefBaseTest extends TestCase {
         assertTrue(b1.equalsAsStructure(s));
         assertTrue(bb.remove(b1));
     }
-    
+
     public void testRemWithUnnamedVar() {
         Agent ag = new Agent();
         ag.initAg();
@@ -272,10 +272,10 @@ public class BeliefBaseTest extends TestCase {
         assertTrue(ag.believes(l, u));
         l = (Literal)l.capply(u);
         assertEquals(l, Literal.parseLiteral("pos(2,3)"));
-        
+
         assertTrue(ag.getBB().remove(l));
     }
-    
+
     @SuppressWarnings("unused")
     public void testLogCons() {
         Agent ag = new Agent();
@@ -287,7 +287,7 @@ public class BeliefBaseTest extends TestCase {
         ag.getBB().add(Literal.parseLiteral("c(x)"));
         ag.getBB().add(Literal.parseLiteral("c(y)"));
         LogicalFormula texpr;
-        
+
         Iterator<Unifier> iun = Literal.parseLiteral("a(X)").logicalConsequence(ag, new Unifier());
         int c = 0;
         while (iun.hasNext()) {
@@ -300,14 +300,14 @@ public class BeliefBaseTest extends TestCase {
         assertTrue(iun.hasNext());
         Unifier un = iun.next();
         assertTrue(un.get("X").toString().equals("20"));
-        
-        
+
+
         // test not
         texpr = LogExpr.parseExpr("not a(5)");
         assertTrue(texpr.logicalConsequence(ag, new Unifier()).hasNext());
         texpr = LogExpr.parseExpr("not a(10)");
         assertFalse(texpr.logicalConsequence(ag, new Unifier()).hasNext());
-        
+
         // test and
         texpr = LogExpr.parseExpr("a(X) & c(Y) & a(Z)");
         iun = texpr.logicalConsequence(ag, new Unifier());
@@ -318,7 +318,7 @@ public class BeliefBaseTest extends TestCase {
             c++;
         }
         assertEquals(8,c);
-        
+
         // test or
         texpr = LogExpr.parseExpr("a(X) | c(Y)");
         iun = texpr.logicalConsequence(ag, new Unifier());
@@ -329,7 +329,7 @@ public class BeliefBaseTest extends TestCase {
             c++;
         }
         assertEquals(c,4);
-        
+
         // test rel
         texpr = LogExpr.parseExpr("a(X) & a(Y) & X > 10");
         iun = texpr.logicalConsequence(ag, new Unifier());
@@ -359,7 +359,7 @@ public class BeliefBaseTest extends TestCase {
             c++;
         }
         assertEquals(3,c);
-        
+
         ag.getBB().add(Literal.parseLiteral("k(20,c)"));
         ag.getBB().add(Literal.parseLiteral("k(10,b)"));
         Unifier u = new Unifier();
@@ -367,8 +367,8 @@ public class BeliefBaseTest extends TestCase {
         assertEquals(u.get("X").toString(), "20");
         assertEquals(ag.findBel(Literal.parseLiteral("k(X,c)"), new Unifier()).toString(), "k(20,c)");
     }
-    
-    
+
+
     public void testLogConsWithAnnotsBacktracking() {
         Agent ag = new Agent();
         ag.initAg();
@@ -386,8 +386,8 @@ public class BeliefBaseTest extends TestCase {
         }
         assertEquals(5, c);
     }
-    
-    
+
+
     public void testPercept1() {
         BeliefBase bb = new DefaultBeliefBase();
         assertTrue(bb.add(Literal.parseLiteral("a[source(percept)]")));
@@ -409,22 +409,22 @@ public class BeliefBaseTest extends TestCase {
         assertEquals(bb.size(),0);
         assertEquals(iteratorSize(bb.getPercepts()),0);
     }
-    
+
     public void testPercept2() {
         BeliefBase bb = new DefaultBeliefBase();
         assertTrue(bb.add(Literal.parseLiteral("p1[source(percept),source(ag1)]")));
         assertTrue(bb.add(Literal.parseLiteral("p2[source(percept),a1]")));
         assertEquals(iteratorSize(bb.getPercepts()),2);
-        
+
         Iterator<Literal> i = bb.getPercepts();
         Literal l = i.next();
         while (!l.getFunctor().equals("p1")) l = i.next();
         i.remove();
         assertEquals("p1[source(ag1)]",l.toString());
-        
+
         assertEquals(1,iteratorSize(bb.getPercepts()));
         assertEquals(2,bb.size());
-        
+
 
         i = bb.getPercepts();
         l = i.next(); // get the p2
@@ -434,18 +434,18 @@ public class BeliefBaseTest extends TestCase {
         assertEquals(0,iteratorSize(bb.getPercepts()));
         assertEquals(1,bb.size());
     }
-    
-    
+
+
     public void testJDBCBB() {
         BeliefBase bb = new JDBCPersistentBB();
         bb.init(null, new String[] {
-                "org.hsqldb.jdbcDriver",
-                "jdbc:hsqldb:bookstore",
-                "sa",
-                "",
-                "[book(5,book),book_author(2,book_author),author(2,author),test(2,testtable)]"
+                    "org.hsqldb.jdbcDriver",
+                    "jdbc:hsqldb:bookstore",
+                    "sa",
+                    "",
+                    "[book(5,book),book_author(2,book_author),author(2,author),test(2,testtable)]"
                 });
-        
+
         bb.abolish(new PredicateIndicator("book",5));
         bb.abolish(new PredicateIndicator("author",2));
         bb.abolish(new PredicateIndicator("book_author",2));
@@ -455,7 +455,7 @@ public class BeliefBaseTest extends TestCase {
         assertTrue(bb.add(Literal.parseLiteral("test(30)")));
         assertEquals(bb.size(),1);
         Literal l;
-        
+
         // add authors
         assertTrue(bb.add(Literal.parseLiteral("author(1,\"Rafael H. Bordini\")")));
         assertFalse(bb.add(Literal.parseLiteral("author(1,\"Rafael H. Bordini\")")));
@@ -465,7 +465,7 @@ public class BeliefBaseTest extends TestCase {
         assertTrue(bb.add(Literal.parseLiteral("author(5,\"Michael Wooldridge\")")));
         assertEquals(bb.size(),6);
         assertEquals(iteratorSize(bb.iterator()),bb.size());
-        
+
         // add books
         l = Literal.parseLiteral("book(1,\"Multi-Agent Programming : Languages, Platforms and Applications\", \"Springer\", 2005, \"0387245685\")");
         assertTrue(bb.add(l));
@@ -518,14 +518,14 @@ public class BeliefBaseTest extends TestCase {
         l = Literal.parseLiteral("~test(a,b)");
         assertTrue(bb.add(l));
         assertEquals(bb.size(),size+2);
-        
+
         // test get all
         assertEquals(iteratorSize(bb.iterator()),size+2);
 
         //for (Literal l2: bb) {
         //  System.out.println(l2);
         //}
-        
+
         // test remove
         size = bb.size();
         assertTrue(bb.remove(Literal.parseLiteral("test(a,b)")));
@@ -536,18 +536,18 @@ public class BeliefBaseTest extends TestCase {
         linbb = bb.contains(l);
         assertEquals(linbb.getAnnots().size(),2);
         assertEquals(bb.size(),size-2);
-        
+
         // test getRelevant
         //Iterator ir = bb.getRelevant(Literal.parseLiteral("book_author(_,_)"));
         //while (ir.hasNext()) {
         //    System.out.println(ir.next());
         //}
         assertEquals(iteratorSize(bb.getCandidateBeliefs(Literal.parseLiteral("book_author(_,_)"),null)),5);
-        
+
         bb.stop();
     }
-    
-    
+
+
     public void testBelBRF() throws RevisionFailedException {
         Agent ag = new Agent();
         ag.initAg();
@@ -565,12 +565,12 @@ public class BeliefBaseTest extends TestCase {
         Unifier u = new Unifier();
         assertTrue(ag.believes(Literal.parseLiteral("c(X)"), u));
         assertEquals(u.get("X").toString(),"20");
-        
+
         Literal l = Literal.parseLiteral("c(_)");
         u = new Unifier();
         assertTrue(ag.believes(l, u));
         assertEquals(l.capply(u).toString(),"c(20)");
-        
+
         assertFalse(ag.believes(Literal.parseLiteral("a(300)"), new Unifier()));
         assertTrue(ag.believes(Literal.parseLiteral("a(30)"), new Unifier()));
         assertTrue(ag.believes(Literal.parseLiteral("a(30)[a]"), new Unifier()));
@@ -588,7 +588,7 @@ public class BeliefBaseTest extends TestCase {
         assertEquals(u.get("X").toString(),"20");
         assertEquals(u.get("Y").toString(),"10");
         assertEquals(u.get("A").toString(),"ag");
-        
+
         @SuppressWarnings("rawtypes")
         List[] rbrf = ag.brf(null, Literal.parseLiteral("c(20)"), Intention.EmptyInt);
         assertTrue(rbrf[0].size() == 0);
@@ -613,11 +613,11 @@ public class BeliefBaseTest extends TestCase {
         assertTrue(rbrf != null);
         assertEquals("[b(20,10)[source(ag)]]", rbrf[1].toString());
         assertEquals(ag.getBB().size(),4);
-        
+
         ag.abolish(Literal.parseLiteral("a(_)"), null);
         assertEquals(ag.getBB().size(),1);
     }
-    
+
     public void testClone() {
         Agent ag = new Agent();
         ag.initAg();
@@ -630,22 +630,22 @@ public class BeliefBaseTest extends TestCase {
         BeliefBase c = (BeliefBase)ag.getBB().clone();
         assertEquals(ag.getBB().size(), c.size());
     }
-    
+
     public void testBUF() {
         Agent ag = new Agent();
         ag.initAg();
-        
+
         ag.getBB().add(Literal.parseLiteral("a(10)[source(bob)]"));
         List<Literal> percepts = new ArrayList<Literal>();
         percepts.add(Literal.parseLiteral("a(10)"));
         percepts.add(Literal.parseLiteral("a(20)"));
-        
+
         assertEquals(2,ag.buf(percepts));
         assertEquals(2,ag.getBB().size());
 
         assertEquals(0,ag.buf(new ArrayList<Literal>(percepts)));
         assertEquals(2,ag.getBB().size());
-        
+
         percepts.remove(1); // remove a(20)
         assertEquals(1,ag.buf(new ArrayList<Literal>(percepts)));
         assertEquals(1,ag.getBB().size());
@@ -654,7 +654,7 @@ public class BeliefBaseTest extends TestCase {
         assertEquals(1,ag.buf(new ArrayList<Literal>(percepts)));
         assertEquals(1,ag.getBB().size());
     }
-    
+
     private int iteratorSize(@SuppressWarnings("rawtypes") Iterator i) {
         int c = 0;
         while (i.hasNext()) {
@@ -663,13 +663,13 @@ public class BeliefBaseTest extends TestCase {
         }
         return c;
     }
-    
+
     public void testQueryCache() throws ParseException {
         Agent ag = new Agent();
         ag.initAg();
         ag.getTS().getSettings().setQueryCache(true);
         ag.initAg();
-        
+
         ag.getBB().add(1,Literal.parseLiteral("c(x)"));
         ag.getBB().add(1,Literal.parseLiteral("c(w)"));
         ag.getBB().add(1,Literal.parseLiteral("c(k)"));
@@ -684,7 +684,7 @@ public class BeliefBaseTest extends TestCase {
         while (i.hasNext()) {
             s1 += (Literal)q.capply( i.next() );
         }
-        
+
         q = ASSyntax.parseLiteral("p(A,B)");
         String s2 = "";
         i = q.logicalConsequence(ag, new Unifier());
@@ -710,7 +710,7 @@ public class BeliefBaseTest extends TestCase {
         assertEquals(s1,s2);
 
         //ag.getQueryCache().reset();
-        
+
         q = ASSyntax.parseLiteral("p(x,B)");
         s1 = "";
         i = q.logicalConsequence(ag, new Unifier());
@@ -721,7 +721,7 @@ public class BeliefBaseTest extends TestCase {
 
         // must have cache for the following
         //assertNotNull(ag.getQueryCache().getCache(ASSyntax.parseLiteral("p(x,B)")));
-        
+
         // test partial results
         //ag.getQueryCache().reset();
 
@@ -729,7 +729,7 @@ public class BeliefBaseTest extends TestCase {
         i = q.logicalConsequence(ag, new Unifier());
         // consumes 2 solutions
         i.next();
-        i.next(); 
+        i.next();
 
         // has cache for it.
         q = ASSyntax.parseLiteral("p(_,10)");
@@ -737,62 +737,62 @@ public class BeliefBaseTest extends TestCase {
         s1 = "";
         while (i.hasNext()) {
             s1 += (Literal)q.capply( i.next() );
-        }        
+        }
         assertEquals("p(x,10)p(w,10)p(k,10)",s1);
 
-        // test order       
+        // test order
         //ag.getQueryCache().reset();
         q = ASSyntax.parseLiteral("p(x,10)");
         i = q.logicalConsequence(ag, new Unifier());
         while (i.hasNext()) {
             i.next();
-        }  
+        }
 
         q = ASSyntax.parseLiteral("p(_,10)");
         i = q.logicalConsequence(ag, new Unifier());
         while (i.hasNext()) {
             i.next();
-        }          
+        }
 
         q = ASSyntax.parseLiteral("p(_,_)");
         i = q.logicalConsequence(ag, new Unifier());
         while (i.hasNext()) {
             i.next();
-        }          
+        }
 
         q = ASSyntax.parseLiteral("p(_,10)");
         i = q.logicalConsequence(ag, new Unifier());
         s1 = "";
         while (i.hasNext()) {
             s1 += (Literal)q.capply( i.next() );
-        }   
+        }
         assertEquals("p(x,10)p(w,10)p(k,10)",s1);
-        
+
         //System.out.println(ag.getQueryCache());
     }
-    
+
     public void testQueryCacheBW() throws ParseException {
         Agent ag = new Agent();
         ag.initAg();
         addBWBB(ag);
-        
+
         Literal q = ASSyntax.parseLiteral("tower([H|T])");
         Iterator<Unifier> i = q.logicalConsequence(ag, new Unifier());
         String s1 = ""; // without cache
         while (i.hasNext()) {
             s1 += (Literal)q.capply( i.next() );
         }
-        
+
         //System.out.println("*********************");
-        
+
         // now with cache
         ag = new Agent();
         ag.initAg();
         ag.getTS().getSettings().setQueryCache(true);
-        ag.getTS().getSettings().setQueryProfiling(true);        
+        ag.getTS().getSettings().setQueryProfiling(true);
         ag.initAg();
         addBWBB(ag);
-        
+
         i = q.logicalConsequence(ag, new Unifier());
         String s2 = "";
         while (i.hasNext()) {
@@ -806,20 +806,20 @@ public class BeliefBaseTest extends TestCase {
         i = q.logicalConsequence(ag, new Unifier());
         while (i.hasNext()) {
             i.next();
-        }        
-        
+        }
+
         ag.getQueryProfiling().newUpdateCycle(2,0,0);
         assertTrue(1.0 <= ag.getQueryProfiling().getP());
         ag.getQueryProfiling().show();
         */
-    }    
-    
+    }
+
     public void testGen() throws ParseException {
         // test generality
         assertTrue(ASSyntax.parseLiteral("p(_,10)").subsumes(ASSyntax.parseLiteral("p(x,10)")));
         assertTrue(ASSyntax.parseLiteral("p(x,10)").subsumes(ASSyntax.parseLiteral("p(x,10)")));
         assertFalse(ASSyntax.parseLiteral("p(x,10)").subsumes(ASSyntax.parseLiteral("p(_,10)")));
-        
+
         assertFalse(ASSyntax.parseLiteral("p(A,x)").subsumes(ASSyntax.parseLiteral("p(x,B)")));
         assertFalse(ASSyntax.parseLiteral("p(A,x,Z)").subsumes(ASSyntax.parseLiteral("p(x,B,o)")));
         assertFalse(ASSyntax.parseLiteral("p(x,B,o)").subsumes(ASSyntax.parseLiteral("p(A,x,Z)")));
@@ -835,12 +835,12 @@ public class BeliefBaseTest extends TestCase {
         ag.getBB().add(1,Literal.parseLiteral("on(a,b)"));
         ag.getBB().add(1,Literal.parseLiteral("on(b,c)"));
         ag.getBB().add(1,Literal.parseLiteral("on(c,table)"));
-        
+
         ag.getBB().add(1,ASSyntax.parseRule("clear(X) :- not(on(_,X))."));
         ag.getBB().add(1,ASSyntax.parseRule("tower([X]) :- on(X,table)."));
-        ag.getBB().add(1,ASSyntax.parseRule("tower([X,Y|T]) :- on(X,Y) & tower([Y|T])."));        
+        ag.getBB().add(1,ASSyntax.parseRule("tower([X,Y|T]) :- on(X,Y) & tower([Y|T])."));
     }
-    
+
     public void testQueryCacheRR() throws ParseException {
         Agent ag = new Agent();
         ag.initAg();
@@ -850,9 +850,9 @@ public class BeliefBaseTest extends TestCase {
         ag.getBB().add(1,Literal.parseLiteral("v(1)"));
         ag.getBB().add(1,Literal.parseLiteral("v(2)"));
         ag.getBB().add(1,Literal.parseLiteral("v(3)"));
-        
+
         ag.getBB().add(1,ASSyntax.parseRule("r(X) :- v(X)."));
-        
+
         LogicalFormula q = ASSyntax.parseFormula("r(L) & r(L2)");
         Iterator<Unifier> i = q.logicalConsequence(ag, new Unifier());
         assertTrue( i.hasNext() ); // get only one answer
@@ -867,9 +867,9 @@ public class BeliefBaseTest extends TestCase {
         }
         assertEquals(9,c);
         //assertTrue(ag.getQueryCache().getNbUses() > 2); // for adv cache
-        
+
         //System.out.println(ag.getQueryCache());
         //ag.getQueryCache().newCycle(1);
         //ag.getQueryCache().stop();
-    }    
+    }
 }
