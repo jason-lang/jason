@@ -16,5 +16,5 @@ public class mi extends DefaultInternalAction {
         Desktop.getDesktop().browse(new URI(url));
         return true;
     }
-    
+
 }
