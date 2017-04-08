@@ -7,34 +7,34 @@ import org.junit.Test;
 
 public class TestIAdelete {
 
-    TestAgent ag; 
+    TestAgent ag;
 
     // initialisation of the agent test
     @Before
     public void setupAg() {
         ag = new TestAgent();
-        
+
         // defines the agent's AgentSpeak code
         ag.parseAScode(
-                "pos(3). pos(4). pos(1). pos(10). "+
-                "+!test1 <- .findall(pos(X),pos(X),L); !find_closest(5,L,Alloc,Rest); jason.asunit.print(\"*\",Alloc); jason.asunit.print(Rest)."+
+            "pos(3). pos(4). pos(1). pos(10). "+
+            "+!test1 <- .findall(pos(X),pos(X),L); !find_closest(5,L,Alloc,Rest); jason.asunit.print(\"*\",Alloc); jason.asunit.print(Rest)."+
 
-                "+!test2 <- .findall(pos(X),pos(X),L); !alloc([1,2,3,4],L)."+
-                
-                "+!alloc([],_). "+
-                "+!alloc([A|T],Options) <- !find_closest(A,Options,Loc,Rest); jason.asunit.print(A,\" to \",Loc); !alloc(T,Rest). " +
+            "+!test2 <- .findall(pos(X),pos(X),L); !alloc([1,2,3,4],L)."+
 
-                "+!find_closest(Ag,Options, MinDist, Rest) <- "+
-                "   ?calc_distances(Options,Distances,Ag); jason.asunit.print(Distances); "+
-                "   .min(Distances,d(_,MinDist)); "+
-                "   .delete(pos(MinDist),Options,Rest). "+
-                
-                "calc_distances([],[],_) :- true. "+
-                "calc_distances([pos(F)|TP], [d(D,F)|TD], Ref) "+
-                   ":- D = math.abs(Ref - F) & calc_distances(TP, TD, Ref). "
+            "+!alloc([],_). "+
+            "+!alloc([A|T],Options) <- !find_closest(A,Options,Loc,Rest); jason.asunit.print(A,\" to \",Loc); !alloc(T,Rest). " +
+
+            "+!find_closest(Ag,Options, MinDist, Rest) <- "+
+            "   ?calc_distances(Options,Distances,Ag); jason.asunit.print(Distances); "+
+            "   .min(Distances,d(_,MinDist)); "+
+            "   .delete(pos(MinDist),Options,Rest). "+
+
+            "calc_distances([],[],_) :- true. "+
+            "calc_distances([pos(F)|TP], [d(D,F)|TD], Ref) "+
+            ":- D = math.abs(Ref - F) & calc_distances(TP, TD, Ref). "
         );
     }
-    
+
     @Test(timeout=2000)
     public void testDelete() {
         ag.addGoal("test1");
