@@ -14,29 +14,29 @@ import java.util.logging.Logger;
 
 /**
  * Base class for the user implementation of execution control.
- * 
+ *
  * <p>This default implementation synchronise the agents execution, i.e.,
- * each agent will perform its next reasoning cycle only when all agents have 
+ * each agent will perform its next reasoning cycle only when all agents have
  * finished its reasoning cycle.
- * 
+ *
  * <p>Execution sequence:
- *    <ul><li>setExecutionControlInfraTier, 
- *        <li>init, 
- *        <li>(receivedFinishedCycle)*, 
+ *    <ul><li>setExecutionControlInfraTier,
+ *        <li>init,
+ *        <li>(receivedFinishedCycle)*,
  *        <li>stop.
  *    </ul>
  */
 public class ExecutionControl {
 
     protected ExecutionControlInfraTier infraControl = null;
-    
+
     private Set<String> finished = new HashSet<String>(); // the agents that have finished its reasoning cycle
     private volatile int     cycleNumber = 0;
     private volatile boolean runningCycle = true;
     private volatile boolean isRunning    = true;
 
     private int nbAgs = -1;
-    
+
     private Lock lock = new ReentrantLock();
     private Condition agFinishedCond = lock.newCondition();
     private RuntimeServicesInfraTier runtime;
@@ -55,11 +55,11 @@ public class ExecutionControl {
                             boolean to = !agFinishedCond.await(getCycleTimeout(), TimeUnit.MILLISECONDS); // waits signal
                             if (!isRunning)
                                 break;
-                            if (runtime != null && runningCycle) { 
+                            if (runtime != null && runningCycle) {
                                 runningCycle = false;
                                 allAgsFinished();
                             }
-                            
+
                             // update number of agents if finished by timeout
                             if (to) {
                                 if (logger.isLoggable(Level.FINE)) logger.fine("Cycle "+getCycleNumber()+" finished by timeout!");
@@ -73,10 +73,10 @@ public class ExecutionControl {
                     lock.unlock();
                 }
             }
-        }.start();
+        } .start();
     }
-    
-    /** returns the maximum number of milliseconds of a cycle */ 
+
+    /** returns the maximum number of milliseconds of a cycle */
     protected int getCycleTimeout() {
         return 5000;
     }
@@ -87,40 +87,40 @@ public class ExecutionControl {
         cycleNumber++;
     }
 
-    
-    /** 
+
+    /**
      *  Updates the number of agents in the MAS, this default
      *  implementation, considers all agents in the MAS as actors .
      */
     public void updateNumberOfAgents() {
         setNbAgs(runtime.getAgentsQty());
     }
-    
+
     /** Returns the number of agents in the MAS (used to test the end of a cycle) */
     public int getNbAgs() {
         return nbAgs;
     }
-    
+
     /** Set the number of agents */
     public void setNbAgs(int n) {
         nbAgs = n;
     }
-    
-    /** 
+
+    /**
      * Called when the agent <i>agName</i> has finished its reasoning cycle.
-     * <i>breakpoint</i> is true in case the agent selected one plan with "breakpoint" 
-     * annotation. 
+     * <i>breakpoint</i> is true in case the agent selected one plan with "breakpoint"
+     * annotation.
       */
     public void receiveFinishedCycle(String agName, boolean breakpoint, int cycle) {
         if (nbAgs < 0 || cycle != this.cycleNumber || finished.size()+1 > nbAgs) {
-            updateNumberOfAgents(); 
+            updateNumberOfAgents();
         }
         if (cycle == this.cycleNumber && runningCycle) { // the agent finished the current cycle
             lock.lock();
-            try {                
+            try {
                 if (logger.isLoggable(Level.FINE)) {
                     logger.fine("Agent "+agName+" has finished cycle "+cycle+", # of finished agents is "+(finished.size()+1)+"/"+nbAgs);
-                    if (breakpoint) logger.fine("Agent "+agName+" reached a breakpoint");               
+                    if (breakpoint) logger.fine("Agent "+agName+" reached a breakpoint");
                 }
 
                 finished.add(agName);
@@ -133,12 +133,12 @@ public class ExecutionControl {
         }
     }
 
-    /** 
-     * Returns true when a new cycle can start, it normally 
+    /**
+     * Returns true when a new cycle can start, it normally
      * holds when all agents are in the finishedAgs set.
-     *  
+     *
      * @param finishedAgs the set of agents' name that already finished the current cycle
-     */ 
+     */
     protected boolean testEndCycle(Set<String> finishedAgs) {
         return finishedAgs.size() >= getNbAgs();
     }
@@ -147,7 +147,7 @@ public class ExecutionControl {
         infraControl = jasonControl;
         runtime = infraControl.getRuntimeServices();
     }
-    
+
     public ExecutionControlInfraTier getExecutionControlInfraTier() {
         return infraControl;
     }
@@ -157,21 +157,21 @@ public class ExecutionControl {
      */
     public void init(String[] args) {
     }
-    
+
     /**
      * This method is called when MAS execution is being finished
      */
     public void stop() {
         isRunning = false;
     }
-    
+
     /** Called when all agents have finished the current cycle */
     protected void allAgsFinished() {
         startNewCycle();
         infraControl.informAllAgsToPerformCycle(cycleNumber);
         logger.fine("starting cycle "+cycleNumber);
     }
-    
+
     public boolean isRunning() {
         return isRunning;
     }
@@ -179,13 +179,13 @@ public class ExecutionControl {
     public int getCycleNumber() {
         return cycleNumber;
     }
-    
+
     public void setRunningCycle(boolean rc) {
         runningCycle = rc;
     }
-    
+
     @Override
     public String toString() {
         return "Synchronous execution control.";
-    }    
+    }
 }
