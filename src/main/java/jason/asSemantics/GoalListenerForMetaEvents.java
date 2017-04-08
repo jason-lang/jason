@@ -11,7 +11,7 @@ import jason.asSyntax.Trigger.TEType;
 public class GoalListenerForMetaEvents implements GoalListener {
 
     private TransitionSystem ts;
-    
+
     public GoalListenerForMetaEvents(final TransitionSystem ts) {
         this.ts = ts;
     }
@@ -19,7 +19,7 @@ public class GoalListenerForMetaEvents implements GoalListener {
     public void goalStarted(Event goal) {
         generateGoalStateEvent(goal.getTrigger().getLiteral(), TEType.achieve, GoalStates.started, null);
     }
-    
+
     public void goalFailed(Trigger goal) {
         generateGoalStateEvent(goal.getLiteral(), goal.getType(), GoalStates.failed, null);
     }
@@ -47,7 +47,7 @@ public class GoalListenerForMetaEvents implements GoalListener {
                 Trigger eEnd = new Trigger(TEOperator.goalState, type, newGoal);
                 if (ts.getAg().getPL().hasCandidatePlan(eEnd))
                     ts.getC().insertMetaEvent(new Event(eEnd, null));
-                
+
             }
         });
         ts.getUserAgArch().wakeUpDeliberate();
