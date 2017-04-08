@@ -21,15 +21,15 @@ public class CentralisedAgArchAsynchronous extends CentralisedAgArch implements 
     public Object objSense = new Object();
     public Object objDeliberate = new Object();
     public Object objAct = new Object();
-    
+
     public CentralisedAgArchAsynchronous() {
         super();
-        
+
         senseComponent = new SenseComponent(this);
         deliberateComponent = new DeliberateComponent(this);
         actComponent = new ActComponent(this);
     }
-    
+
     public void wakeUpSense() {
         senseComponent.wakeUp();
     }
@@ -37,32 +37,32 @@ public class CentralisedAgArchAsynchronous extends CentralisedAgArch implements 
     public void wakeUpDeliberate() {
         deliberateComponent.wakeUp();
     }
-    
+
     public void wakeUpAct() {
         actComponent.wakeUp();
     }
-    
+
     public SenseComponent getSenseComponent() {
         return senseComponent;
     }
-    
+
     public DeliberateComponent getDeliberateComponent() {
         return deliberateComponent;
     }
-    
+
     public ActComponent getActComponent() {
         return actComponent;
     }
-    
+
     public ExecutorService getExecutorSense() {
         return executorSense;
     }
-    
+
 
     public ExecutorService getExecutorDeliberate() {
         return executorDeliberate;
     }
-    
+
     public ExecutorService getExecutorAct() {
         return executorAct;
     }
@@ -82,17 +82,17 @@ public class CentralisedAgArchAsynchronous extends CentralisedAgArch implements 
     public void setSenseComponent(SenseComponent senseComponent) {
         this.senseComponent = senseComponent;
     }
-    
+
     public void addListenerToC(CircumstanceListener listener) {
         getTS().getC().addEventListener(listener);
     }
-    
+
     public void receiveMsg(Message m) {
         synchronized (objSense) {
             super.receiveMsg(m);
         }
     }
-    
+
     /** called the the environment when the action was executed */
     public void actionExecuted(ActionExec action) {
         synchronized (objAct) {
