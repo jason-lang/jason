@@ -17,7 +17,7 @@ import jason.asSyntax.parser.as2j;
 import jason.util.Config;
 
 /**
- * Represents a structure: a functor with <i>n</i> arguments, 
+ * Represents a structure: a functor with <i>n</i> arguments,
  * e.g.: val(10,x(3)).
  *
  * @composed - terms 0..* Term
@@ -28,12 +28,12 @@ public class Structure extends Atom {
     private static Logger logger = Logger.getLogger(Structure.class.getName());
 
     protected static final List<Term> emptyTermList  = new ArrayList<Term>(0);
-    protected static final Term[]     emptyTermArray = new Term[0]; // just to have a type for toArray in the getTermsArray method  
+    protected static final Term[]     emptyTermArray = new Term[0]; // just to have a type for toArray in the getTermsArray method
 
     private List<Term> terms;
     //protected Boolean isGround = true; // it seems to not improve the performance
-    
-    
+
+
     public Structure(String functor) {
         //this.functor = (functor == null ? null : functor.intern()); // it does not improve performance in test i did!
         this(DefaultNS, functor);
@@ -48,7 +48,7 @@ public class Structure extends Atom {
         //this.functor = (functor == null ? null : functor.intern()); // it does not improve performance in test i did!
         super(namespace, functor);
     }
-        
+
     public Structure(Atom namespace, Literal l) {
         super(namespace, l);
         final int tss = l.getArity();
@@ -73,10 +73,10 @@ public class Structure extends Atom {
         //isGround = null;
     }
 
-    /** 
+    /**
      * Create a structure with a defined number of terms.
-     * 
-     * It is used by list term, plan body, ... to not create the array list for terms. 
+     *
+     * It is used by list term, plan body, ... to not create the array list for terms.
      */
     public Structure(String functor, int termsSize) {
         super(functor);
@@ -88,7 +88,7 @@ public class Structure extends Atom {
         as2j parser = new as2j(new StringReader(sTerm));
         try {
             Term t = parser.term();
-            if (t instanceof Structure) 
+            if (t instanceof Structure)
                 return (Structure)t;
             else
                 return new Structure((Atom)t);
@@ -97,7 +97,7 @@ public class Structure extends Atom {
             return null;
         }
     }
-    
+
     @Override
     protected int calcHashCode() {
         int result = super.calcHashCode();
@@ -106,7 +106,7 @@ public class Structure extends Atom {
             result = 7 * result + getTerm(i).hashCode();
         return result;
     }
-    
+
     public boolean equals(Object t) {
         if (t == null) return false;
         if (t == this) return true;
@@ -115,54 +115,54 @@ public class Structure extends Atom {
             Structure tAsStruct = (Structure)t;
 
             // if t is a VarTerm, uses var's equals
-            if (tAsStruct.isVar()) 
+            if (tAsStruct.isVar())
                 return ((VarTerm)t).equals(this);
 
             final int ts = getArity();
-            if (ts != tAsStruct.getArity()) 
+            if (ts != tAsStruct.getArity())
                 return false;
 
-            if (!getFunctor().equals(tAsStruct.getFunctor())) 
+            if (!getFunctor().equals(tAsStruct.getFunctor()))
                 return false;
-            
+
             if (!getNS().equals(tAsStruct.getNS()))
                 return false;
-            
+
             for (int i=0; i<ts; i++)
-                if (!getTerm(i).equals(tAsStruct.getTerm(i))) 
+                if (!getTerm(i).equals(tAsStruct.getTerm(i)))
                     return false;
 
             return true;
         }
         if (t instanceof Atom && this.isAtom()) {
             // consider atom equals only when this is an atom
-            return super.equals(t); 
+            return super.equals(t);
         }
         return false;
     }
-    
+
     public int compareTo(Term t) {
         int c = super.compareTo(t);
         if (c != 0)
             return c;
 
-        if (t.isStructure()) { 
+        if (t.isStructure()) {
             Structure tAsStruct = (Structure)t;
 
             final int ma = getArity();
             final int oa = tAsStruct.getArity();
             for (int i=0; i<ma && i<oa; i++) {
                 c = getTerm(i).compareTo(tAsStruct.getTerm(i));
-                if (c != 0) 
+                if (c != 0)
                     return c;
             }
         }
         return 0;
-    }  
-    
+    }
+
     @Override
     public boolean subsumes(Term t) {
-        if (t.isStructure()) { 
+        if (t.isStructure()) {
             Structure tAsStruct = (Structure)t;
 
             final int ma = getArity();
@@ -176,8 +176,8 @@ public class Structure extends Atom {
         } else {
             return super.subsumes(t);
         }
-    }    
-    
+    }
+
     @Override
     public Term capply(Unifier u) {
         return new Structure(this, u);
@@ -205,7 +205,7 @@ public class Structure extends Atom {
         predicateIndicatorCache = null;
         resetHashCodeCache();
     }
-    
+
     @Override
     public void delTerm(int index) {
         if (terms == null) return;
@@ -214,7 +214,7 @@ public class Structure extends Atom {
         resetHashCodeCache();
         //isGround = null;
     }
-    
+
     @Override
     public Literal addTerms(Term ... ts ) {
         if (terms == null) terms = new ArrayList<Term>(5);
@@ -234,7 +234,7 @@ public class Structure extends Atom {
         resetHashCodeCache();
         return this;
     }
- 
+
     @Override
     public Literal setTerms(List<Term> l) {
         terms = l;
@@ -243,7 +243,7 @@ public class Structure extends Atom {
         //isGround = null;
         return this;
     }
-    
+
     @Override
     public void setTerm(int i, Term t) {
         if (terms == null) terms = new ArrayList<Term>(5);
@@ -252,7 +252,7 @@ public class Structure extends Atom {
         //if (!t.isGround() && isGround())
         //    isGround = false;
     }
-     
+
     public Term getTerm(int i) {
         if (terms == null)
             return null;
@@ -267,7 +267,7 @@ public class Structure extends Atom {
         else
             return terms.size();
     }
-    
+
     /** @deprecated use getArity */
     public int getTermsSize() {
         return getArity();
@@ -277,17 +277,17 @@ public class Structure extends Atom {
     public List<Term> getTerms() {
         return terms;
     }
-    
+
     @Override
     public boolean hasTerm() {
         return getArity() > 0; // should use getArity to work for list
     }
-    
+
     @Override
     public boolean isStructure() {
         return true;
     }
-    
+
     @Override
     public boolean isAtom() {
         return !hasTerm();
@@ -297,14 +297,14 @@ public class Structure extends Atom {
     public boolean isGround() {
         //if (isGround == null) {
         //    isGround = true;
-            final int size = getArity();
-            for (int i=0; i<size; i++) {
-                if (!getTerm(i).isGround()) {
-                    //isGround = false;
-                    return false;
-                    //break;
-                }
+        final int size = getArity();
+        for (int i=0; i<size; i++) {
+            if (!getTerm(i).isGround()) {
+                //isGround = false;
+                return false;
+                //break;
             }
+        }
         //}
         //return isGround;
         return true;
@@ -313,14 +313,14 @@ public class Structure extends Atom {
     public boolean isUnary() {
         return getArity() == 1;
     }
-    
+
     @Override
     public Literal makeVarsAnnon() {
         return makeVarsAnnon(new Unifier());
     }
-    
+
     @Override
-    public Literal makeVarsAnnon(Unifier un) { 
+    public Literal makeVarsAnnon(Unifier un) {
         final int size = getArity();
         for (int i=0; i<size; i++) {
             Term ti = getTerm(i);
@@ -334,12 +334,12 @@ public class Structure extends Atom {
     }
 
     private final static boolean useShortUnnamedVars = Config.get().getBoolean(Config.SHORT_UNNAMED_VARS);
-    
+
     public VarTerm varToReplace(Term t, Unifier un) {
         VarTerm vt    = (VarTerm)t;
         VarTerm deref = un.deref(vt);
         //if (deref.isUnnamedVar())
-           //return new UnnamedVar();
+        //return new UnnamedVar();
 
         // if the variable hasn't been renamed given the input unifier, then rename it.
         if (deref.equals(vt)) {
@@ -349,7 +349,7 @@ public class Structure extends Atom {
                 ns = varToReplace(ns, un);
             UnnamedVar var = useShortUnnamedVars ? new UnnamedVar(ns) : UnnamedVar.create(ns, t.toString());
             //var.setFromMakeVarAnnon();
-            
+
             // if deref has annotations then we need to replicate these in the new variable
             if (deref.hasAnnot()) {
                 var.setAnnots(deref.getAnnots().cloneLT());
@@ -357,7 +357,7 @@ public class Structure extends Atom {
             }
             un.bind(deref, var);
             return var;
-        } else {        
+        } else {
             // otherwise it has already been renamed in this scope so return
             // the existing renaming
             Atom ns = vt.getNS();
@@ -369,7 +369,7 @@ public class Structure extends Atom {
             if (vt.hasAnnot() && !deref.hasAnnot()) {
                 deref.setAnnots(vt.getAnnots().cloneLT());
                 deref.makeVarsAnnon(un);
-            }       
+            }
             return deref;
         }
     }
@@ -391,7 +391,7 @@ public class Structure extends Atom {
         }
     }
     */
-    
+
     @Override
     public void makeTermsAnnon() {
         final int size = getArity();
@@ -426,7 +426,7 @@ public class Structure extends Atom {
             getTerm(i).countVars(c);
     }
 
-    
+
     public String toString() {
         StringBuilder s = new StringBuilder();
         if (getNS() != DefaultNS) {
@@ -435,7 +435,7 @@ public class Structure extends Atom {
         }
         if (negated())
             s.append("~");
-        if (getFunctor() != null) 
+        if (getFunctor() != null)
             s.append(getFunctor());
         if (getArity() > 0) {
             s.append('(');
@@ -447,10 +447,10 @@ public class Structure extends Atom {
             s.append(')');
         }
         if (hasAnnot())
-           s.append(getAnnots().toString()); 
+            s.append(getAnnots().toString());
         return s.toString();
     }
-   
+
     /** get as XML */
     public Element getAsDOM(Document document) {
         Element u = (Element) document.createElement("structure");
