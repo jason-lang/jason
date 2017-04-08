@@ -13,8 +13,8 @@ import jason.asSyntax.LogicalFormula;
 import jason.asSyntax.PlanBody;
 import jason.asSyntax.Term;
 
-/** 
-Implementation of <b>if</b>. 
+/**
+Implementation of <b>if</b>.
 
 <p>Syntax:
 <pre>
@@ -25,7 +25,7 @@ Implementation of <b>if</b>.
 </pre>
 </p>
 
-<p>if <i>logical formula</i> holds, <i>plan_body1</i> is executed; 
+<p>if <i>logical formula</i> holds, <i>plan_body1</i> is executed;
 otherwise, <i>plan_body2</i> is executed.</p>
 
 <p>Example:
@@ -45,19 +45,23 @@ public class if_then_else extends DefaultInternalAction {
 
     private static InternalAction singleton = null;
     public static InternalAction create() {
-        if (singleton == null) 
+        if (singleton == null)
             singleton = new if_then_else();
         return singleton;
     }
-    
+
     @Override public Term[] prepareArguments(Literal body, Unifier un) {
         return body.getTermsArray();
     }
-    
 
-    @Override public int getMinArgs() { return 2; }
-    @Override public int getMaxArgs() { return 3; }
-    
+
+    @Override public int getMinArgs() {
+        return 2;
+    }
+    @Override public int getMaxArgs() {
+        return 3;
+    }
+
     @Override protected void checkArguments(Term[] args) throws JasonException {
         super.checkArguments(args); // check number of arguments
         if ( !(args[0] instanceof LogicalFormula))
@@ -67,14 +71,14 @@ public class if_then_else extends DefaultInternalAction {
         if ( args.length == 3 && !args[2].isPlanBody())
             throw JasonException.createWrongArgument(this,"third argument (else) must be a plan body term.");
     }
-    
+
     @Override
     public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {
         checkArguments(args);
-            
+
         LogicalFormula logExpr = (LogicalFormula)args[0];
         PlanBody whattoadd = null;
-            
+
         Iterator<Unifier> iu = logExpr.logicalConsequence(ts.getAg(), un);
         if (iu.hasNext()) { // .if THEN
             whattoadd = (PlanBody)args[1].clone(); // need to clone due to setAsBodyTerm(false)
