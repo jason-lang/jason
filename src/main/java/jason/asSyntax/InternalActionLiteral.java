@@ -24,9 +24,9 @@ public class InternalActionLiteral extends Structure implements LogicalFormula {
 
     private static final long serialVersionUID = 1L;
     private static Logger logger = Logger.getLogger(InternalActionLiteral.class.getName());
-    
-    private InternalAction ia = null; // reference to the object that implements the internal action, stored here to speed up the process of looking for the IA class inside the agent 
-    
+
+    private InternalAction ia = null; // reference to the object that implements the internal action, stored here to speed up the process of looking for the IA class inside the agent
+
     public InternalActionLiteral(String functor) {
         super(functor);
     }
@@ -52,7 +52,7 @@ public class InternalActionLiteral extends Structure implements LogicalFormula {
         if (ag != null)
             ia = ag.getIA(getFunctor());
     }
-    
+
     @Override
     public boolean isInternalAction() {
         return true;
@@ -62,24 +62,24 @@ public class InternalActionLiteral extends Structure implements LogicalFormula {
     public boolean isAtom() {
         return false;
     }
-    
+
     @Override
     public Literal makeVarsAnnon(Unifier un) {
         Literal t =  super.makeVarsAnnon(un);
         if (t.getFunctor().equals(".puts")) { // vars inside strings like in .puts("bla #{X}") should be also replace
-                                              // TODO: should it work for any string? if so, proceed this replacement inside StringTermImpl
+            // TODO: should it work for any string? if so, proceed this replacement inside StringTermImpl
             ((puts)puts.create()).makeVarsAnnon(t,un);
         }
         return t;
     }
-        
+
     @SuppressWarnings("unchecked")
     public Iterator<Unifier> logicalConsequence(Agent ag, Unifier un) {
         if (ag == null || ag.getTS().getUserAgArch().isRunning()) {
             try {
                 /*final QueryCache qCache;
                 final CacheKey kForChache;
-                if (ag != null) { 
+                if (ag != null) {
                     qCache = ag.getQueryCache();
                     if (qCache != null) {
                         kForChache = qCache.prepareForCache(this, un);
@@ -107,17 +107,19 @@ public class InternalActionLiteral extends Structure implements LogicalFormula {
                     return LogExpr.createUnifIterator(un);
                 } else if (oresult instanceof Iterator) {
                     //if (kForChache == null) {
-                        return ((Iterator<Unifier>)oresult);
+                    return ((Iterator<Unifier>)oresult);
                     /*} else {
                         // add a wrapper to collect results into the cache
-                        return qCache.queryFilter(kForChache, (Iterator<Unifier>)oresult); 
+                        return qCache.queryFilter(kForChache, (Iterator<Unifier>)oresult);
                     }*/
                 }
             } catch (ConcurrentModificationException e) {
                 System.out.println("*-*-* "+getFunctor()+" concurrent exception - try later");
                 e.printStackTrace();
                 // try again later
-                try { Thread.sleep(200); } catch (InterruptedException e1) {                }
+                try {
+                    Thread.sleep(200);
+                } catch (InterruptedException e1) {                }
                 return logicalConsequence(ag, un);
             } catch (Exception e) {
                 logger.log(Level.SEVERE, getErrorMsg() + ": " + e.getMessage(), e);
@@ -125,9 +127,9 @@ public class InternalActionLiteral extends Structure implements LogicalFormula {
         }
         return LogExpr.EMPTY_UNIF_LIST.iterator();  // empty iterator for unifier
     }
-    
+
     public void setIA(InternalAction ia) {
-        this.ia = ia; 
+        this.ia = ia;
     }
 
     public InternalAction getIA(Agent ag) throws Exception {
@@ -135,28 +137,28 @@ public class InternalActionLiteral extends Structure implements LogicalFormula {
             ia = ag.getIA(getFunctor());
         return ia;
     }
-    
+
     @Override
     public String getErrorMsg() {
-        String src = getSrcInfo() == null ? "" : " ("+ getSrcInfo() + ")"; 
-        return "Error in internal action '"+this+"'"+ src;      
+        String src = getSrcInfo() == null ? "" : " ("+ getSrcInfo() + ")";
+        return "Error in internal action '"+this+"'"+ src;
     }
-    
+
     @Override
     public Term capply(Unifier u) {
         return new InternalActionLiteral(this, u);
     }
-    
+
     public InternalActionLiteral clone() {
         return new InternalActionLiteral(this);
     }
 
-    
+
     /** get as XML */
     @Override
     public Element getAsDOM(Document document) {
         Element u = super.getAsDOM(document);
         u.setAttribute("ia", isInternalAction()+"");
         return u;
-    }    
+    }
 }
