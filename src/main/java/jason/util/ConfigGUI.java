@@ -27,7 +27,7 @@ import javax.swing.border.TitledBorder;
 import javax.swing.filechooser.FileFilter;
 
 public class ConfigGUI {
-    
+
     protected JTextField jasonTF;
     protected JTextField javaTF;
     protected JTextField antTF;
@@ -53,7 +53,7 @@ public class ConfigGUI {
         //File jasonConfFile = getUserConfFile();
         if (userProperties.getProperty("version") != null) {
             //userProperties.load(new FileInputStream(jasonConfFile));
-            if (!userProperties.getProperty("version").equals(currJasonVersion) && !currJasonVersion.equals("?")) { 
+            if (!userProperties.getProperty("version").equals(currJasonVersion) && !currJasonVersion.equals("?")) {
                 // new version, set all values to default
                 System.out.println("This is a new version of Jason, reseting configuration...");
                 //userProperties.clear();
@@ -62,25 +62,25 @@ public class ConfigGUI {
                 userProperties.remove(Config.ANT_LIB);
                 userProperties.remove(Config.CHECK_VERSION);
             }
-        } 
+        }
 
         userProperties.fix();
         userProperties.store();
     }
-    
+
     public static void main(String[] args) {
         new ConfigGUI().run();
     }
-    
+
     protected static ConfigGUI getNewInstance() {
         return new ConfigGUI();
     }
-    
+
     public void run() {
         final ConfigGUI jid = getNewInstance();
         JFrame f = new JFrame(jid.getWindowTitle());
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        
+
         JPanel pBt = new JPanel(new FlowLayout());
         JButton bQuit = new JButton("Exit without saving");
         bQuit.addActionListener(new ActionListener() {
@@ -101,17 +101,17 @@ public class ConfigGUI {
         JPanel p = new JPanel(new BorderLayout());
         p.add(BorderLayout.CENTER, jid.getJasonConfigPanel());
         p.add(BorderLayout.SOUTH, pBt);
-        
+
         f.getContentPane().add(p);
         f.pack();
         f.setVisible(true);
     }
-    
+
     protected String getWindowTitle() {
         return "Jason Configuration -- "+userProperties.getProperty("version");
     }
 
-    public JPanel getJasonConfigPanel() {    
+    public JPanel getJasonConfigPanel() {
         JPanel pop = new JPanel();
         pop.setLayout(new BoxLayout(pop, BoxLayout.Y_AXIS));
 
@@ -119,7 +119,7 @@ public class ConfigGUI {
         jasonTF = new JTextField(25);
         JPanel jasonHomePanel = new JPanel(new GridLayout(0,1));
         jasonHomePanel.setBorder(BorderFactory.createTitledBorder(BorderFactory
-                .createEtchedBorder(), "Jason", TitledBorder.LEFT, TitledBorder.TOP));
+                                 .createEtchedBorder(), "Jason", TitledBorder.LEFT, TitledBorder.TOP));
         JPanel jasonJarPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         jasonJarPanel.add(new JLabel("jason.jar location"));
         jasonJarPanel.add(jasonTF);
@@ -132,8 +132,8 @@ public class ConfigGUI {
         checkVersionCBox = new JCheckBox("Check for new Jason versions on startup", false);
         checkVersionPanel.add(checkVersionCBox);
         jasonHomePanel.add(checkVersionPanel);
-        
-        // warn sing vars 
+
+        // warn sing vars
         JPanel wsvPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         warnSingVarsCBox = new JCheckBox("Print out warnings about singleton variables in plans and rules", false);
         wsvPanel.add(warnSingVarsCBox);
@@ -146,12 +146,12 @@ public class ConfigGUI {
         jasonHomePanel.add(unvPanel);
 
         pop.add(jasonHomePanel);
-        
+
 
         // java home
         JPanel javaHomePanel = new JPanel();
         javaHomePanel.setBorder(BorderFactory.createTitledBorder(BorderFactory
-                .createEtchedBorder(), "Java Home", TitledBorder.LEFT, TitledBorder.TOP));
+                                .createEtchedBorder(), "Java Home", TitledBorder.LEFT, TitledBorder.TOP));
         javaHomePanel.setLayout(new FlowLayout(FlowLayout.LEFT));
         javaHomePanel.add(new JLabel("Directory"));
         javaTF = new JTextField(25);
@@ -161,7 +161,7 @@ public class ConfigGUI {
             public void actionPerformed(ActionEvent arg0) {
                 try {
                     JFileChooser chooser = new JFileChooser(System.getProperty("user.dir"));
-                     chooser.setDialogTitle("Select the Java JDK home directory");
+                    chooser.setDialogTitle("Select the Java JDK home directory");
                     chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
                     if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
                         String javaHome = (new File(chooser.getSelectedFile().getPath())).getCanonicalPath();
@@ -176,11 +176,11 @@ public class ConfigGUI {
         });
         javaHomePanel.add(setJava);
         pop.add(javaHomePanel);
-        
+
         // ant lib home
         JPanel antHomePanel = new JPanel();
         antHomePanel.setBorder(BorderFactory.createTitledBorder(BorderFactory
-                .createEtchedBorder(), "Ant libs", TitledBorder.LEFT, TitledBorder.TOP));
+                               .createEtchedBorder(), "Ant libs", TitledBorder.LEFT, TitledBorder.TOP));
         antHomePanel.setLayout(new FlowLayout(FlowLayout.LEFT));
         antHomePanel.add(new JLabel("Directory"));
         antTF = new JTextField(25);
@@ -209,19 +209,19 @@ public class ConfigGUI {
         // infras
         JPanel infraPanel = new JPanel();
         infraPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory
-                .createEtchedBorder(), "Available Insfrastructures", TitledBorder.LEFT, TitledBorder.TOP));
+                             .createEtchedBorder(), "Available Insfrastructures", TitledBorder.LEFT, TitledBorder.TOP));
         infraPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
         infraTP = new JTextArea(5,45);
         infraPanel.add(new JScrollPane(infraTP));
         pop.add(infraPanel);
 
-        
+
         // jade home
         jadeJarTF  = new JTextField(25);
         jadeArgsTF = new JTextField(30);
         JPanel jadeHomePanel = new JPanel(new GridLayout(0,1));
         jadeHomePanel.setBorder(BorderFactory.createTitledBorder(BorderFactory
-                .createEtchedBorder(), "JADE", TitledBorder.LEFT, TitledBorder.TOP));
+                                .createEtchedBorder(), "JADE", TitledBorder.LEFT, TitledBorder.TOP));
 
         JPanel jadeJarPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         jadeJarPanel.add(new JLabel("jade.jar location"));
@@ -244,7 +244,7 @@ public class ConfigGUI {
         p.add(jadeSnifferCB);
         p.add(new JLabel("Start Sniffer"));
         jadeHomePanel.add(p);
-        
+
         pop.add(jadeHomePanel);
 
         // shell command
@@ -258,7 +258,7 @@ public class ConfigGUI {
         shellPanel.add(shellTF);
         pop.add(shellPanel);
         */
-        
+
         // run centralised inside jIDE
         /*
         JPanel insideJIDEPanel = new JPanel();
@@ -288,13 +288,13 @@ public class ConfigGUI {
         checkVersionCBox.setSelected(userProperties.getBoolean(Config.CHECK_VERSION));
         warnSingVarsCBox.setSelected(userProperties.getBoolean(Config.WARN_SING_VAR));
         shortUnnamedVarCB.setSelected(userProperties.getBoolean(Config.SHORT_UNNAMED_VARS));
-        jadeSnifferCB.setSelected(userProperties.getBoolean(Config.JADE_SNIFFER));        
+        jadeSnifferCB.setSelected(userProperties.getBoolean(Config.JADE_SNIFFER));
         jadeRmaCB.setSelected(userProperties.getBoolean(Config.JADE_RMA));
-        
+
         for (String i: userProperties.getAvailableInfrastructures()) {
             infraTP.append(i+"="+userProperties.getInfrastructureFactoryClass(i)+"\n");
         }
-        
+
         return pop;
     }
 
@@ -347,7 +347,7 @@ public class ConfigGUI {
         userProperties.put(Config.SHORT_UNNAMED_VARS, shortUnnamedVarCB.isSelected()+"");
         userProperties.put(Config.JADE_SNIFFER, jadeSnifferCB.isSelected()+"");
         userProperties.put(Config.JADE_RMA, jadeRmaCB.isSelected()+"");
-        
+
         // infras
         BufferedReader in = new BufferedReader(new StringReader(infraTP.getText()));
         String i;
@@ -366,7 +366,7 @@ public class ConfigGUI {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        
+
         userProperties.store();
     }
 
@@ -382,7 +382,7 @@ public class ConfigGUI {
                 return false;
             }
         }
-        
+
         public String getDescription() {
             return ds;
         }
