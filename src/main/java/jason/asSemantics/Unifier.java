@@ -40,7 +40,7 @@ public class Unifier implements Cloneable, Iterable<VarTerm> {
     public Term remove(VarTerm v) {
         return function.remove(v);
     }
-    
+
     public Iterator<VarTerm> iterator() {
         return function.keySet().iterator();
     }
@@ -58,18 +58,18 @@ public class Unifier implements Cloneable, Iterable<VarTerm> {
             //System.out.println("for "+vtp+" try "+new VarTerm(vtp.negated(), vtp.getFunctor())+" in "+this);
             vl = function.get( new VarTerm(vtp.negated(), vtp.getFunctor()) );
             //System.out.println(" and found "+vl);
-            if (vl != null && vl.isVar()) { 
+            if (vl != null && vl.isVar()) {
                 vl = get((VarTerm)vl);
             }
             if (vl != null && vl.isLiteral()) {
                 vl = vl.clone();
                 ((Literal)vl).setNegated(((Literal)vl).negated());
-            }            
+            }
         }
         */
         return vl;
     }
-    
+
     public VarTerm getVarFromValue(Term vl) {
         for (VarTerm v: function.keySet()) {
             Term vvl = function.get(v);
@@ -89,10 +89,10 @@ public class Unifier implements Cloneable, Iterable<VarTerm> {
     }
 
     // ----- Unify for Predicates/Literals
-    
-    /** this version of unifies undo the variables' mapping 
-        if the unification fails. 
-        E.g. 
+
+    /** this version of unifies undo the variables' mapping
+        if the unification fails.
+        E.g.
           u.unifier( a(X,10), a(1,1) );
         does not change u, i.e., u = {}
      */
@@ -106,29 +106,29 @@ public class Unifier implements Cloneable, Iterable<VarTerm> {
             return false;
         }
     }
-    
+
     @SuppressWarnings({ "unchecked", "rawtypes" })
     private Map<VarTerm, Term> cloneFunction() {
         return (Map<VarTerm, Term>)((HashMap)function).clone();
         //return new HashMap<VarTerm, Term>(function);
     }
 
-    /** this version of unifies does not undo the variables' mapping 
+    /** this version of unifies does not undo the variables' mapping
         in case of failure. It is however faster than the version with
         undo.
-        E.g. 
+        E.g.
           u.unifier( a(X,10), a(1,1) );
-        fails, but changes u to {X = 10} 
+        fails, but changes u to {X = 10}
     */
     public boolean unifiesNoUndo(Term t1g, Term t2g) {
 
         Pred np1 = null;
         Pred np2 = null;
-        
+
         if (t1g instanceof Pred && t2g instanceof Pred) {
             np1 = (Pred)t1g;
             np2 = (Pred)t2g;
-        
+
             // tests when np1 or np2 are Vars with annots
             if ((np1.isVar() && np1.hasAnnot()) || np2.isVar() && np2.hasAnnot()) {
                 if (!np1.hasSubsetAnnot(np2, this)) {
@@ -136,7 +136,7 @@ public class Unifier implements Cloneable, Iterable<VarTerm> {
                 }
             }
         }
-        
+
         if (t1g.isCyclicTerm() && t2g.isCyclicTerm()) { // both are cycled terms
             // unification of cyclic terms:
             // remove the vars (to avoid loops) and test just the structure, then reintroduce the vars
@@ -150,14 +150,14 @@ public class Unifier implements Cloneable, Iterable<VarTerm> {
                 function.put(v1, t1g);
                 function.put(v2, t1g);
             }
-            
+
         } else {
             if (t1g.isCyclicTerm() && get(t1g.getCyclicVar()) == null) // reintroduce cycles in the unifier
                 function.put(t1g.getCyclicVar(), t1g);
-            if (t2g.isCyclicTerm() && get(t2g.getCyclicVar()) == null) 
-                function.put(t2g.getCyclicVar(), t2g);            
+            if (t2g.isCyclicTerm() && get(t2g.getCyclicVar()) == null)
+                function.put(t2g.getCyclicVar(), t2g);
         }
-        
+
         // unify as Term
         boolean ok = unifyTerms(t1g, t2g);
 
@@ -181,17 +181,17 @@ public class Unifier implements Cloneable, Iterable<VarTerm> {
                 np2 = deref( (VarTerm)np2);
                 Term np2vl = function.get((VarTerm) np2);
                 if (np2vl != null && np2vl.isPred()) {
-                    Pred pvl = (Pred)np2vl.clone(); 
+                    Pred pvl = (Pred)np2vl.clone();
                     pvl.clearAnnots();
                     bind((VarTerm) np2, pvl);
                 }
             }
         }
-        
+
         return ok;
     }
 
-    
+
     // ----- Unify for Terms
 
     protected boolean unifyTerms(Term t1g, Term t2g) {
@@ -205,7 +205,7 @@ public class Unifier implements Cloneable, Iterable<VarTerm> {
         final boolean t2gisvar = t2g.isVar();
 
         // one of the args is a var
-        if (t1gisvar || t2gisvar) { 
+        if (t1gisvar || t2gisvar) {
             final VarTerm t1gv = t1gisvar ? (VarTerm)t1g : null;
             final VarTerm t2gv = t2gisvar ? (VarTerm)t2g : null;
 
@@ -213,26 +213,26 @@ public class Unifier implements Cloneable, Iterable<VarTerm> {
             final Term t1vl = t1gisvar ? get(t1gv) : t1g;
             final Term t2vl = t2gisvar ? get(t2gv) : t2g;
 
-            if (t1vl != null && t2vl != null) { // unifies the two values of the vars                
+            if (t1vl != null && t2vl != null) { // unifies the two values of the vars
                 return unifiesNoUndo(t1vl, t2vl);
             } else if (t1vl != null) { // unifies var with value
                 return bind(t2gv, t1vl);
             } else if (t2vl != null) {
                 return bind(t1gv, t2vl);
             } else {                 // unify two vars
-                if (! t1gv.getNS().equals(t2gv.getNS())) 
+                if (! t1gv.getNS().equals(t2gv.getNS()))
                     return false;
-                
+
                 if (t1gv.negated() != t2gv.negated())
                     return false;
 
                 bind(t1gv, t2gv);
                 return true;
             }
-        }        
-        
+        }
+
         // both terms are not vars
-        
+
         // if any of the terms is not a literal (is a number or a
         // string), they must be equal
         // (for unification, lists are literals)
@@ -248,15 +248,15 @@ public class Unifier implements Cloneable, Iterable<VarTerm> {
         final int ts = t1s.getArity();
         if (ts != t2s.getArity())
             return false;
-        
+
         // if both are literal, they must have the same negated
         if (t1s.negated() != t2s.negated())
             return false;
-            
+
         // different functor
-        if (!t1s.getFunctor().equals(t2s.getFunctor()))  
+        if (!t1s.getFunctor().equals(t2s.getFunctor()))
             return false;
-        
+
         // different name space
         if (!unifiesNamespace(t1s, t2s))
             return false;
@@ -270,14 +270,14 @@ public class Unifier implements Cloneable, Iterable<VarTerm> {
         // the first's annots must be subset of the second's annots
         if ( ! t1s.hasSubsetAnnot(t2s, this))
             return false;
-        
+
         return true;
     }
 
     private boolean unifiesNamespace(Literal t1s, Literal t2s) {
         if (t1s == Literal.DefaultNS && t2s == Literal.DefaultNS)  // if both are the default NS
             return true;
-        
+
         // compares the name spaces of t1s and t2s
         t1s = t1s.getNS();
         t2s = t2s.getNS();
@@ -285,14 +285,14 @@ public class Unifier implements Cloneable, Iterable<VarTerm> {
             return true;
         return unifiesNoUndo(t1s, t2s);
     }
-    
+
     public VarTerm deref(VarTerm v) {
         Term vl = function.get(v);
         // original def (before optimise)
         //   if (vl != null && vl.isVar())
         //      return deref(vl);
         //   return v;
-        
+
         VarTerm first = v;
         while (vl != null && vl.isVar()) {
             v  = (VarTerm)vl;
@@ -300,31 +300,31 @@ public class Unifier implements Cloneable, Iterable<VarTerm> {
         }
         if (first != v) {
             function.put(first, v); // optimise map
-        }            
+        }
         return v;
     }
-    
+
     public void bind(VarTerm vt1, VarTerm vt2) {
         vt1 = getVarForUnifier(vt1);
         vt2 = getVarForUnifier(vt2);
-        final int comp = vt1.compareTo(vt2); 
+        final int comp = vt1.compareTo(vt2);
         //System.out.println(vt1+"="+vt2+" ==> "+getVarForUnifier(vt1) +"="+ getVarForUnifier(vt2)+" in "+this+" cmp="+comp);
         if (comp < 0) {
             function.put(vt1, vt2);
-        } else if (comp > 0){
+        } else if (comp > 0) {
             function.put(vt2, vt1);
         } // if they are the same (comp == 0), do not bind
     }
-    
+
     public boolean bind(VarTerm vt, Term vl) {
         if (vt.negated()) { // negated vars unifies only with negated literals
             if (!vl.isLiteral() || !((Literal)vl).negated()) {
                 return false;
-            } 
+            }
             vl = (Literal)vl.clone();
             ((Literal)vl).setNegated(Literal.LPos);
-        }     
-        
+        }
+
         // namespace
         if (vl.isLiteral()) {
             Literal lvl = (Literal)vl;
@@ -332,24 +332,24 @@ public class Unifier implements Cloneable, Iterable<VarTerm> {
                 return false;
             if (lvl.getFunctor().startsWith(NameSpace.LOCAL_PREFIX)) // cannot unify a var with a local namespace
                 return false;
-            if (lvl.getNS() != Literal.DefaultNS) 
+            if (lvl.getNS() != Literal.DefaultNS)
                 vl = lvl.cloneNS(Literal.DefaultNS);
         }
 
-        if (!vl.isCyclicTerm() && vl.hasVar(vt, this)) { 
+        if (!vl.isCyclicTerm() && vl.hasVar(vt, this)) {
             vl = new CyclicTerm((Literal)vl, (VarTerm)vt.clone());
         }
 
         function.put(getVarForUnifier(vt), vl);
         return true;
     }
-    
+
     private VarTerm getVarForUnifier(VarTerm v) {
         v = (VarTerm)deref(v).cloneNS(Literal.DefaultNS);
         v.setNegated(Literal.LPos);
         return v;
     }
-        
+
     public void clear() {
         function.clear();
     }
@@ -357,7 +357,7 @@ public class Unifier implements Cloneable, Iterable<VarTerm> {
     public String toString() {
         return function.toString();
     }
-    
+
     public Term getAsTerm() {
         ListTerm lf = new ListTermImpl();
         ListTerm tail = lf;
@@ -399,7 +399,7 @@ public class Unifier implements Cloneable, Iterable<VarTerm> {
             return null;
         }
     }
-    
+
     @Override
     public int hashCode() {
         int s = 0;
@@ -408,14 +408,14 @@ public class Unifier implements Cloneable, Iterable<VarTerm> {
         }
         return s * 31;
     }
-    
+
     public boolean equals(Object o) {
         if (o == null) return false;
         if (o == this) return true;
         if (o instanceof Unifier) return function.equals( ((Unifier)o).function);
         return false;
     }
-    
+
     /** get as XML */
     public Element getAsDOM(Document document) {
         Element u = (Element) document.createElement("unifier");
