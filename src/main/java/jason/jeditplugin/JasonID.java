@@ -119,7 +119,7 @@ public class JasonID extends JPanel implements EBComponent, RunProjectListener {
         JasonProjectSideKickParser.addPluginInstance(this);
 
         new CheckVersion().start();
-        
+
         Config.get().setProperty(Config.START_WEB_MI, "false");
     }
 
@@ -140,81 +140,82 @@ public class JasonID extends JPanel implements EBComponent, RunProjectListener {
         animationLabel.setBorder(new EmptyBorder(2, 3, 2, 3));
         Toolkit toolkit = getToolkit();
         animation = new AnimatedIcon(toolkit.getImage(JasonID.class.getResource("/images/Blank.png")), new Image[] {
-                toolkit.getImage(JasonID.class.getResource("/images/Active1.png")), toolkit.getImage(JasonID.class.getResource("/images/Active2.png")),
-                toolkit.getImage(JasonID.class.getResource("/images/Active3.png")), toolkit.getImage(JasonID.class.getResource("/images/Active4.png")) }, 10, animationLabel);
+                                         toolkit.getImage(JasonID.class.getResource("/images/Active1.png")), toolkit.getImage(JasonID.class.getResource("/images/Active2.png")),
+                                         toolkit.getImage(JasonID.class.getResource("/images/Active3.png")), toolkit.getImage(JasonID.class.getResource("/images/Active4.png"))
+                                     }, 10, animationLabel);
         animationLabel.setIcon(animation);
         toolBar.add(animationLabel);
 
         btRun = createToolBarButton("Run MAS", new ImageIcon(JasonID.class.getResource("/images/run.gif")), new ActionListener() { // GUIUtilities.loadIcon("Play.png")
-                    public void actionPerformed(ActionEvent arg0) {
-                        runProject();
-                    }
-                });
+            public void actionPerformed(ActionEvent arg0) {
+                runProject();
+            }
+        });
         toolBar.add(btRun);
 
         btDebug = createToolBarButton("Debug MAS", new ImageIcon(JasonID.class.getResource("/images/debug.gif")), // GUIUtilities.loadIcon("RunAgain.png"),
-                new ActionListener() {
-                    public void actionPerformed(ActionEvent arg0) {
-                        debugProject();
-                    }
-                });
+        new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+                debugProject();
+            }
+        });
         toolBar.add(btDebug);
 
         btStop = createToolBarButton("Stop MAS", new ImageIcon(JasonID.class.getResource("/images/suspend.gif")), // GUIUtilities.loadIcon("Stop.png"),
-                new ActionListener() {
-                    public void actionPerformed(ActionEvent arg0) {
-                        stopMAS();
-                    }
-                });
+        new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+                stopMAS();
+            }
+        });
         btStop.setEnabled(false);
         toolBar.add(btStop);
 
         toolBar.add(new JLabel(" | "));
 
         toolBar.add(createToolBarButton("Open Project", new ImageIcon(JasonID.class.getResource("/images/openProject.gif")), // GUIUtilities.loadIcon("NewDir.png"),
-                new ActionListener() {
-                    public void actionPerformed(ActionEvent evt) {
-                        VFSFileChooserDialog dialog = new VFSFileChooserDialog(view, ".", VFSBrowser.OPEN_DIALOG, false);
-                        if (dialog.getSelectedFiles() != null && dialog.getSelectedFiles().length > 0) {
-                            org.gjt.sp.jedit.jEdit.openFile(view, dialog.getSelectedFiles()[0].toString());
-                        }
-                    }
-                }));
+        new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                VFSFileChooserDialog dialog = new VFSFileChooserDialog(view, ".", VFSBrowser.OPEN_DIALOG, false);
+                if (dialog.getSelectedFiles() != null && dialog.getSelectedFiles().length > 0) {
+                    org.gjt.sp.jedit.jEdit.openFile(view, dialog.getSelectedFiles()[0].toString());
+                }
+            }
+        }));
         toolBar.add(createToolBarButton("New Project", new ImageIcon(JasonID.class.getResource("/images/newProject.gif")), // GUIUtilities.loadIcon("NewDir.png"),
-                new ActionListener() {
-                    public void actionPerformed(ActionEvent evt) {
-                        newProject();
-                    }
-                }));
+        new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                newProject();
+            }
+        }));
 
         toolBar.add(createToolBarButton("Add agent in project", new ImageIcon(JasonID.class.getResource("/images/newAgent.gif")), // GUIUtilities.loadIcon("NextFile.png"),
-                new ActionListener() {
-                    public void actionPerformed(ActionEvent evt) {
-                        newAg();
-                    }
-                }));
+        new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                newAg();
+            }
+        }));
 
         toolBar.add(createToolBarButton("Create Environment", new ImageIcon(JasonID.class.getResource("/images/createEnv.gif")), // GUIUtilities.loadIcon("NextFile.png"),
-                new ActionListener() {
-                    public void actionPerformed(ActionEvent evt) {
-                        createEnv();
-                    }
-                }));
+        new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                createEnv();
+            }
+        }));
 
         toolBar.add(createToolBarButton("Create Internal Action", new ImageIcon(JasonID.class.getResource("/images/createIA.gif")), // GUIUtilities.loadIcon("NextFile.png"),
-                new ActionListener() {
-                    public void actionPerformed(ActionEvent evt) {
-                        newIA();
-                    }
-                }));
+        new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                newIA();
+            }
+        }));
 
         toolBar.add(new JLabel(" | "));
         toolBar.add(createToolBarButton("Clear panel", new ImageIcon(JasonID.class.getResource("/images/clear.gif")),// GUIUtilities.loadIcon("Clear.png"),
-                new ActionListener() {
-                    public void actionPerformed(ActionEvent arg0) {
-                        textArea.setText("");
-                    }
-                }));
+        new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+                textArea.setText("");
+            }
+        }));
         add(Box.createGlue());
 
         JPanel p = new JPanel(new BorderLayout());
@@ -295,17 +296,17 @@ public class JasonID extends JPanel implements EBComponent, RunProjectListener {
         /*
          * if (message instanceof BufferUpdate) { BufferUpdate bu =
          * (BufferUpdate)message;
-         * 
+         *
          * if ((bu.getWhat() == BufferUpdate.LOADED || bu.getWhat() ==
          * BufferUpdate.CREATED) &&
          * bu.getBuffer().getPath().endsWith(MAS2JProject.EXT)) {
-         * 
+         *
          * //String projName = bu.getBuffer().getName().substring(0,
          * bu.getBuffer().getName().length()-(MAS2JProject.EXT.length()+1));
-         * 
+         *
          * //checkProjectView(projName, new
          * File(bu.getBuffer().getDirectory()));
-         * 
+         *
          * //bu.getBuffer().setProperty("sidekick.parser",JasonSideKickParser.ID);
          *  } }
          */
@@ -346,7 +347,7 @@ public class JasonID extends JPanel implements EBComponent, RunProjectListener {
     }
 
     private void saveAll() {
-        
+
         Buffer[] bufs = org.gjt.sp.jedit.jEdit.getBuffers();
         for (int i = 0; i < bufs.length; i++) {
             if (bufs[i].isDirty()) {
@@ -376,7 +377,7 @@ public class JasonID extends JPanel implements EBComponent, RunProjectListener {
             textArea.append(" parsed successfully!\n");
             return project;
 
-        } catch (ParseException ex) {  
+        } catch (ParseException ex) {
             textArea.append("\nmas2j: syntactic errors found... \n" + ex + "\n");
             JasonProjectSideKickParser.addError(ex, errorSource, projectBufffer.getPath());
         } catch (TokenMgrError ex) {
@@ -472,7 +473,7 @@ public class JasonID extends JPanel implements EBComponent, RunProjectListener {
                 MAS2JProject project = parseProject(b);
                 if (project == null) // || !parseProjectAS(project)) {
                     return;
-                
+
                 // launch the MAS
                 animation.start();
                 btStop.setEnabled(true);
@@ -511,7 +512,7 @@ public class JasonID extends JPanel implements EBComponent, RunProjectListener {
                     ex.printStackTrace();
                 }
             }
-        }.start();
+        } .start();
     }
 
     public void runProject() {
@@ -600,7 +601,7 @@ public class JasonID extends JPanel implements EBComponent, RunProjectListener {
     public void asl2tex() {
         asl2txt(new asl2tex(), ".tex");
     }
-    
+
     // TODO: does not work, may be a problem with jEdit (check with new versions)
     private void asl2txt(asl2xml transformer, String ext) {
         Buffer buf = view.getBuffer();
@@ -618,7 +619,7 @@ public class JasonID extends JPanel implements EBComponent, RunProjectListener {
             } finally {
                 buf.readUnlock();
             }
-            
+
             String  htmlcode = transformer.transform(aslcode);
             Buffer b = org.gjt.sp.jedit.jEdit.openFile(view,buf.getPath()+ext);
             try {
@@ -632,7 +633,7 @@ public class JasonID extends JPanel implements EBComponent, RunProjectListener {
             ex.printStackTrace();
         }
     }
-    
+
     public void runAntTask(String task) {
         final Buffer b = getProjectBuffer();
         if (b == null) {
@@ -647,6 +648,6 @@ public class JasonID extends JPanel implements EBComponent, RunProjectListener {
         if (script.writeScripts(false, true)) {
             new Thread(script, "Ant-Task").start();
         }
-        
-    }    
+
+    }
 }
