@@ -2,7 +2,7 @@ package jason.infra;
 
 import jason.mas2j.MAS2JProject;
 
-/** 
+/**
  * Used to launch an MAS. Each infrastructure should
  * implements it.
  *
@@ -21,7 +21,7 @@ public interface MASLauncherInfraTier extends Runnable {
      */
     public void setProject(MAS2JProject project);
 
-    /** 
+    /**
      * Sets the object that wants to be informed about the changes in
      * the execution state. This object normally is the JasonIDE, that
      * wants to change available buttons as the project is being
