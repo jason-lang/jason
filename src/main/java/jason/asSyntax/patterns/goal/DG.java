@@ -17,7 +17,7 @@ import java.util.logging.Logger;
 
 /**
  * Implementation of the Declarative Goal pattern (see DALT 2006 paper)
- * 
+ *
  * @author jomi
  */
 public class DG extends DefaultDirective implements Directive {
@@ -29,12 +29,12 @@ public class DG extends DefaultDirective implements Directive {
         try {
             Agent newAg = new Agent();
             newAg.initAg();
-            
+
             Literal goal = Literal.parseLiteral(directive.getTerm(0).toString());
-            
+
             // add +!g : g <- true.
             newAg.getPL().add(ASSyntax.parsePlan("+!"+goal+" : " +goal+"."));
-            
+
             // add ?g in the end of all inner plans
             for (Plan p: innerContent.getPL()) {
                 // only for +!g plans
@@ -47,10 +47,10 @@ public class DG extends DefaultDirective implements Directive {
                 }
                 newAg.getPL().add(p);
             }
-            
+
             // add +g : true <- .succeed_goal(g).
             newAg.getPL().add(ASSyntax.parsePlan("+"+goal+" <- .succeed_goal("+goal+")."));
-            
+
             return newAg;
         } catch (Exception e) {
             logger.log(Level.SEVERE,"Directive error.", e);
