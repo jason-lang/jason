@@ -15,7 +15,7 @@ import org.w3c.dom.NodeList;
 /** factory for some scenarios */
 public class WorldFactory  {
 
-    
+
     /** no gold/no obstacle world */
     public static WorldModel world1() throws Exception {
         WorldModel model = new WorldModel(21, 21, 6);
@@ -85,21 +85,21 @@ public class WorldFactory  {
         model.add(WorldModel.GOLD, 20, 22);
         model.add(WorldModel.GOLD, 20, 23);
         model.add(WorldModel.GOLD, 20, 24);
-        
+
         model.add(WorldModel.GOLD, 19, 19);
         model.add(WorldModel.GOLD, 19, 20);
         model.add(WorldModel.GOLD, 19, 21);
         model.add(WorldModel.GOLD, 19, 22);
         model.add(WorldModel.GOLD, 19, 23);
         model.add(WorldModel.GOLD, 19, 24);
-        
+
         model.add(WorldModel.GOLD, 18, 19);
         model.add(WorldModel.GOLD, 18, 20);
         model.add(WorldModel.GOLD, 18, 21);
         model.add(WorldModel.GOLD, 18, 22);
         model.add(WorldModel.GOLD, 18, 23);
         model.add(WorldModel.GOLD, 18, 24);
-        
+
         model.add(WorldModel.GOLD, 21, 20);
         model.add(WorldModel.GOLD, 21, 21);
         model.add(WorldModel.GOLD, 21, 22);
@@ -119,7 +119,7 @@ public class WorldFactory  {
         model.setPMax(0);
 
         model.setDepot(16, 16);
-        
+
         // red team
         model.setAgPos(0, 1, 0);
         model.setAgPos(1, 20, 0);
@@ -127,7 +127,7 @@ public class WorldFactory  {
         model.setAgPos(3, 20, 20);
         model.setAgPos(4, 3, 4);
         model.setAgPos(5, 7, 4);
-        
+
         // blue team
         model.setAgPos(6, 2, 2);
         model.setAgPos(7, 30, 31);
@@ -135,7 +135,7 @@ public class WorldFactory  {
         model.setAgPos(9, 21, 20);
         model.setAgPos(10, 31, 31);
         model.setAgPos(11, 31, 32);
-        
+
         model.add(WorldModel.GOLD, 20, 13);
         model.add(WorldModel.GOLD, 15, 20);
         model.add(WorldModel.GOLD, 1, 1);
@@ -308,7 +308,7 @@ public class WorldFactory  {
         model.setAgPos(3, 20, 20);
         model.setAgPos(4, 3, 4);
         model.setAgPos(5, 7, 4);
-        
+
         // blue team
         model.setAgPos(6, 2, 2);
         model.setAgPos(7, 30, 50);
@@ -316,7 +316,7 @@ public class WorldFactory  {
         model.setAgPos(9, 21, 20);
         model.setAgPos(10, 30, 40);
         model.setAgPos(11, 44, 50);
-        
+
         model.add(WorldModel.GOLD, 20, 13);
         model.add(WorldModel.GOLD, 15, 20);
         model.add(WorldModel.GOLD, 41, 1);
@@ -324,7 +324,7 @@ public class WorldFactory  {
         //model.setInitialNbGolds(model.countObjects(WorldModel.GOLD));
         return model;
     }
-    
+
     // 7 with many gold
     public static WorldModel world8() throws Exception {
         WorldModel model = world7();
@@ -341,7 +341,7 @@ public class WorldFactory  {
         model.add(WorldModel.GOLD, 41, 34);
         model.add(WorldModel.GOLD, 20, 13);
         model.add(WorldModel.GOLD, 44, 20);
-        
+
         model.add(WorldModel.GOLD, 1, 1);
         model.add(WorldModel.GOLD, 3, 5);
         model.add(WorldModel.GOLD, 24, 24);
@@ -350,21 +350,21 @@ public class WorldFactory  {
         model.add(WorldModel.GOLD, 20, 22);
         model.add(WorldModel.GOLD, 20, 23);
         model.add(WorldModel.GOLD, 20, 24);
-        
+
         model.add(WorldModel.GOLD, 19, 19);
         model.add(WorldModel.GOLD, 19, 20);
         model.add(WorldModel.GOLD, 19, 21);
         model.add(WorldModel.GOLD, 19, 22);
         model.add(WorldModel.GOLD, 19, 23);
         model.add(WorldModel.GOLD, 19, 24);
-        
+
         model.add(WorldModel.GOLD, 18, 19);
         model.add(WorldModel.GOLD, 18, 20);
         model.add(WorldModel.GOLD, 18, 21);
         model.add(WorldModel.GOLD, 18, 22);
         model.add(WorldModel.GOLD, 18, 23);
         model.add(WorldModel.GOLD, 18, 24);
-        
+
         model.add(WorldModel.GOLD, 21, 20);
         model.add(WorldModel.GOLD, 21, 21);
         model.add(WorldModel.GOLD, 21, 22);
@@ -384,7 +384,7 @@ public class WorldFactory  {
         WorldModel model = world8();
         model.setPSim(0.05);
         model.setPMax(0.2);
-        
+
         model.wall(0,5,40,5);
         model.wall(5,15,44,15);
         model.wall(0,21,40,21);
@@ -393,7 +393,7 @@ public class WorldFactory  {
         model.wall(1,37,1,48);
 
         model.add(WorldModel.GOLD, 0, 47);
-        
+
         model.setInitialNbGolds(model.countObjects(WorldModel.GOLD));
         return model;
     }
@@ -401,17 +401,17 @@ public class WorldFactory  {
     // 9 with depot in lab
     public static WorldModel world10() throws Exception {
         WorldModel model = world9();
-        
+
         model.setPSim(0.01);
         model.setPMax(0.3);
         model.setMaxSteps(1400);
-        
+
         model.setDepot(25, 39);
-        
+
         model.wall(10, 35, 41, 35);
         model.wall(10, 45, 41, 45);
         model.wall(41, 35, 41, 45);
-        
+
         model.wall(10, 35, 10, 41);
         model.wall(10, 41, 35, 41);
 
@@ -428,7 +428,7 @@ public class WorldFactory  {
         model.setInitialNbGolds(model.countObjects(WorldModel.GOLD));
         return model;
     }
-    
+
     // load the fence scenario from 2007 contest
     public static WorldModel worldFromContest2007(String simId) throws Exception {
         File f = new File("env/serverconfig.contest-2007.xml");
@@ -439,59 +439,59 @@ public class WorldFactory  {
                 return null;
             }
         }
-        
+
         DocumentBuilderFactory fac = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = fac.newDocumentBuilder();
         Document doc = builder.parse(f);
         XPath expr = XPathFactory.newInstance().newXPath();
-        
+
         // get the simulation node
         Element fence = (Element)((NodeList)expr.evaluate("//simulation[@id='"+simId+"']/configuration", doc, XPathConstants.NODESET)).item(0);
         if (fence == null) {
             System.out.println("Do not find fence configuration in the conf file!");
             return null;
         }
-        
+
         // get the size
         int w = Integer.parseInt(fence.getAttribute("sizex"));
         int h = Integer.parseInt(fence.getAttribute("sizey"));
         int nbAg = Integer.parseInt(fence.getAttribute("numberOfAgents"));
         WorldModel model = new WorldModel(w,h,nbAg);
-        
+
         model.setMaxSteps(Integer.parseInt(fence.getAttribute("maxNumberOfSteps")));
         model.setPSim(Double.parseDouble(fence.getAttribute("actionFailureProbability"))/100);
         model.setPMax(Double.parseDouble(fence.getAttribute("maxActionFailureProbability"))/100);
-        
+
         // depot
         int dx = Integer.parseInt(fence.getAttribute("depotx"));
         int dy = Integer.parseInt(fence.getAttribute("depoty"));
         model.setDepot(dx, dy);
-        
+
         // agents
         int[] agx = getArray(fence, "agentPositionX");
         int[] agy = getArray(fence, "agentPositionY");
         for (int i=0; i<nbAg; i++) {
             model.setAgPos(i,  agx[i], agy[i]);
         }
-        
+
         // gold
         int[] gx = getArray(fence, "GoldPositionX");
         int[] gy = getArray(fence, "GoldPositionY");
         for (int i=0; i<gx.length; i++) {
             model.add(WorldModel.GOLD, gx[i], gy[i]);
         }
-        
+
         // obstacles
         int[] ox = getArray(fence, "obstaclePositionX");
         int[] oy = getArray(fence, "obstaclePositionY");
         for (int i=0; i<gx.length; i++) {
             model.add(WorldModel.OBSTACLE, ox[i], oy[i]);
         }
-        
-        
+
+
         return model;
     }
-    
+
     private static int[] getArray(Element e, String id) {
         NodeList l = e.getElementsByTagName("array");
         for (int i=0; i<l.getLength(); i++) {
@@ -506,7 +506,7 @@ public class WorldFactory  {
         }
         return null;
     }
-    
+
 
     public static void main(String[] args) throws Exception {
         new WorldView("Test - Fence", worldFromContest2007("Semiramis"), 1000);
