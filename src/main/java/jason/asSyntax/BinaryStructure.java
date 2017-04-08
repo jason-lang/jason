@@ -4,14 +4,14 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 
-/** 
+/**
    Represents a binary/unary logical/relational operator.
-   
+
    @opt nodefillcolor lightgoldenrodyellow
- 
+
    @navassoc - left  - Term
    @navassoc - right - Term
-    
+
  */
 public abstract class BinaryStructure extends Structure {
 
@@ -32,12 +32,12 @@ public abstract class BinaryStructure extends Structure {
         addTerm( arg );
         srcInfo = arg.getSrcInfo();
     }
-    
+
     /** gets the LHS of this operation */
     public Term getLHS() {
         return getTerm(0);
     }
-    
+
     /** gets the RHS of this operation */
     public Term getRHS() {
         return getTerm(1);
