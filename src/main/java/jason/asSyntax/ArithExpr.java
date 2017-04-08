@@ -14,14 +14,14 @@ import org.w3c.dom.Element;
 
 /**
   Represents and solve arithmetic expressions like "10 + 30".
- 
+
   @navassoc - op - ArithmeticOp
  */
 public class ArithExpr extends ArithFunctionTerm implements NumberTerm {
 
     private static final long serialVersionUID = 1L;
     private static Logger logger = Logger.getLogger(ArithExpr.class.getName());
-    
+
     public enum ArithmeticOp {
         none {
             double eval(double x, double y) {
@@ -118,7 +118,7 @@ public class ArithExpr extends ArithFunctionTerm implements NumberTerm {
         op = oper;
         srcInfo = t1.getSrcInfo();
     }
-    
+
     private ArithExpr(ArithExpr ae) { // for clone
         super(ae);
         op = ae.op;
@@ -141,7 +141,7 @@ public class ArithExpr extends ArithFunctionTerm implements NumberTerm {
             return null;
         }
     }
-    
+
     @Override
     public Term capply(Unifier u) {
         try {
@@ -161,11 +161,11 @@ public class ArithExpr extends ArithFunctionTerm implements NumberTerm {
             return clone();
         }
     }
-    
+
     public boolean checkArity(int a) {
         return a == 1 || a == 2;
     }
-    
+
     /** make a hard copy of the terms */
     public NumberTerm clone() {
         return new ArithExpr(this);
