@@ -2,12 +2,12 @@ package jason;
 
 
 public class NoValueException extends JasonException {
-    
+
     private static final long serialVersionUID = 1L;
 
     public NoValueException() {
     }
-    
+
     public NoValueException(String msg) {
         super(msg);
     }
@@ -16,5 +16,5 @@ public class NoValueException extends JasonException {
         super(msg);
         initCause(cause);
     }
-    
+
 }
