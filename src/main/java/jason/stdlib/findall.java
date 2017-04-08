@@ -15,25 +15,25 @@ import java.util.Iterator;
 /**
 
   <p>Internal action: <b><code>.findall(Var,Literal,List)</code></b>.
-  
+
   <p>Description: builds a <i>List</i> of all instantiations of
   <i>term</i> which make <i>query</i> a logical consequence of the
   agent's BB. Unlike in Prolog, the second argument cannot be a
   conjunction.
 
   <p>Parameters:<ul>
-  
+
   <li>+ term (variable or structure): the variable or structure whose
   instances will "populate" the list.<br/>
-  
+
   <li>+ query (logical formula): the formula used to find literals in the belief base;
   is has the same syntax as the plan context.
   <br/>
 
   <li>+/- result (list): the result list populated with found solutions for the query.<br/>
-  
+
   </ul>
-  
+
   <p>Examples assuming the BB is currently
   {a(30),a(20),b(1,2),b(3,4),b(5,6)}:
 
@@ -50,13 +50,17 @@ import java.util.Iterator;
   </ul>
 
 
-  @see jason.stdlib.count 
+  @see jason.stdlib.count
   @see jason.stdlib.setof
 */
 public class findall extends DefaultInternalAction {
 
-    @Override public int getMinArgs() { return 3; }
-    @Override public int getMaxArgs() { return 3; }
+    @Override public int getMinArgs() {
+        return 3;
+    }
+    @Override public int getMaxArgs() {
+        return 3;
+    }
 
     @Override public Term[] prepareArguments(Literal body, Unifier un) {
         return body.getTermsArray(); // we do not need to clone nor to apply for this internal action
