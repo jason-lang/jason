@@ -16,23 +16,23 @@ import java.util.logging.Logger;
 public class NameSpace implements Directive {
 
     public static final String LOCAL_PREFIX = "#";
-    
+
     static Logger logger = Logger.getLogger(NameSpace.class.getName());
 
     private Map<Atom,Atom> localNSs = new HashMap<Atom,Atom>();
-    
+
     @Override
     public boolean isSingleton() {
         return false;
     }
-    
+
     @Override
     public Agent process(Pred directive, Agent outerContent, Agent innerContent) {
         return innerContent;
     }
 
     Stack<Atom> oldNS = new Stack<Atom>();
-    
+
     @Override
     public void begin(Pred directive, as2j parser) {
         if (! directive.getTerm(0).isAtom()) {
@@ -54,26 +54,26 @@ public class NameSpace implements Directive {
             if (type.equals("global") && isLocalNS(ns)) {
                 logger.warning("The namespace "+ns+" was previously defined as local, changing it to globall!");
                 localNSs.remove(ns);
-            } 
-            if (type.equals("local")) {                
+            }
+            if (type.equals("local")) {
                 ns = addLocalNS(ns);
             }
         }
-        
+
         oldNS.push(parser.getNS());
         parser.setNS(ns);
     }
-    
+
     @Override
     public void end(Pred directive, as2j parser) {
-        if (!oldNS.isEmpty()) 
+        if (!oldNS.isEmpty())
             parser.setNS(oldNS.pop());
     }
-    
+
     public boolean isLocalNS(Atom ns) {
         return localNSs.get(ns) != null;
     }
-    
+
     public Atom map(Atom ns) {
         Atom n = localNSs.get(ns);
         if (n == null)
@@ -81,12 +81,12 @@ public class NameSpace implements Directive {
         else
             return n;
     }
-    
+
     static private AtomicInteger nsCounter = new AtomicInteger(0);
     public static int getUniqueID() {
         return nsCounter.incrementAndGet();
     }
-    
+
     private synchronized Atom addLocalNS(Atom ns) {
         Atom newNS = localNSs.get(ns);
         if (newNS == null) {
@@ -95,5 +95,5 @@ public class NameSpace implements Directive {
         }
         return newNS;
     }
-    
+
 }
