@@ -16,12 +16,12 @@ import arch.MinerArch;
 /**
  * Gets the near least visited location.
  * Its is based on the agent's model of the world.
- * 
+ *
  * @author jomi
  *
  */
 public class near_least_visited extends DefaultInternalAction {
-    
+
     @Override
     public Object execute(TransitionSystem ts, Unifier un, Term[] terms) throws Exception {
         try {
@@ -29,7 +29,7 @@ public class near_least_visited extends DefaultInternalAction {
             if (model == null) {
                 ts.getLogger().log(Level.SEVERE, "no model to get near_least_visited!");
             } else {
-                NumberTerm agx = (NumberTerm)terms[0]; 
+                NumberTerm agx = (NumberTerm)terms[0];
                 NumberTerm agy = (NumberTerm)terms[1];
                 Location n = model.getNearLeastVisited((int)agx.solve(), (int)agy.solve());
                 un.unifies(terms[2], new NumberTermImpl(n.x));
