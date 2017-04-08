@@ -3,28 +3,28 @@ package jason.jeditplugin;
 
 /** based on FileImporter of ProjectView plugin */
 public class JasonProjectImporter { //extends Importer {
-/*
-    public JasonProjectImporter(VPTProject node, ProjectViewer viewer) {
-        super(node, viewer);
-    }
-    
-    protected Collection internalDoImport() {
-        String state = null;
-        if (viewer != null) {
-            state = viewer.getFolderTreeState(project);
+    /*
+        public JasonProjectImporter(VPTProject node, ProjectViewer viewer) {
+            super(node, viewer);
         }
-        
-        addTree(new File(project.getRootPath()), 
-                project, 
-                new GlobFilter("*.asl *.xml *.mas2j *.java log4j.configuration",""), //GlobFilter.getImportSettingsFilter(),
-                false); // filtro: 
-        
-        if (state != null) {
-            postAction = new NodeStructureChange(project, state);
+
+        protected Collection internalDoImport() {
+            String state = null;
+            if (viewer != null) {
+                state = viewer.getFolderTreeState(project);
+            }
+
+            addTree(new File(project.getRootPath()),
+                    project,
+                    new GlobFilter("*.asl *.xml *.mas2j *.java log4j.configuration",""), //GlobFilter.getImportSettingsFilter(),
+                    false); // filtro:
+
+            if (state != null) {
+                postAction = new NodeStructureChange(project, state);
+            }
+            return null;
         }
-        return null;
-    }
-*/
+    */
     /**
      *  Adds a directory tree to the given node.
      *
