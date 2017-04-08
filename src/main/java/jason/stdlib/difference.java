@@ -12,12 +12,12 @@ import jason.asSyntax.Term;
   <p>Internal action: <b><code>.difference(S1,S2,S3)</code></b>.
 
   <p>Description: S3 is the difference between the sets S1 and S2 (represented by lists).
-  The result set is sorted.  
+  The result set is sorted.
 
   <p>Parameters:<ul>
   <li>+ arg[0] (a list).<br/>
   <li>+ arg[1] (a list).<br/>
-  <li>+/- arg[2]: the difference. 
+  <li>+/- arg[2]: the difference.
   </ul>
 
   <p>Examples:<ul>
@@ -35,7 +35,7 @@ import jason.asSyntax.Term;
   @see jason.stdlib.max
   @see jason.stdlib.min
   @see jason.stdlib.reverse
-  
+
   @see jason.stdlib.intersection
   @see jason.stdlib.union
 */
@@ -43,13 +43,17 @@ public class difference extends DefaultInternalAction {
 
     private static InternalAction singleton = null;
     public static InternalAction create() {
-        if (singleton == null) 
+        if (singleton == null)
             singleton = new difference();
         return singleton;
     }
 
-    @Override public int getMinArgs() { return 3; }
-    @Override public int getMaxArgs() { return 3; }
+    @Override public int getMinArgs() {
+        return 3;
+    }
+    @Override public int getMaxArgs() {
+        return 3;
+    }
 
     @Override protected void checkArguments(Term[] args) throws JasonException {
         super.checkArguments(args); // check number of arguments
