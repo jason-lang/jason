@@ -19,13 +19,13 @@ import java.util.Iterator;
 
 /**
   <p>Internal action: <b><code>.intend(<i>I</i>)</code></b>.
-  
+
   <p>Description: checks if <i>I</i> is an intention: <i>I</i> is an intention
   if there is a triggering event <code>+!I</code> in any plan within an
   intention; just note that intentions can appear in E (list of events), PA (intentions with pending actions),
   and PI (intentions waiting for something) as well.
-  
-  <p>Example:<ul> 
+
+  <p>Example:<ul>
 
   <li> <code>.intend(go(1,3))</code>: is true if a plan with triggering event
   <code>+!go(1,3)</code> appears in an intention of the agent.
@@ -47,9 +47,13 @@ import java.util.Iterator;
 
  */
 public class intend extends DefaultInternalAction {
-    
-    @Override public int getMinArgs() { return 1; }
-    @Override public int getMaxArgs() { return 1; }
+
+    @Override public int getMinArgs() {
+        return 1;
+    }
+    @Override public int getMaxArgs() {
+        return 1;
+    }
 
     @Override protected void checkArguments(Term[] args) throws JasonException {
         super.checkArguments(args); // check number of arguments
@@ -88,7 +92,7 @@ public class intend extends DefaultInternalAction {
             if (evt.getIntention() != null && evt.getIntention().hasTrigger(g, un))
                 return true;
         }
-        
+
         // intention may be suspended in PE
         for (Event evt : C.getPendingEvents().values()) {
             if (evt.getIntention() != null && evt.getIntention().hasTrigger(g, un))
@@ -127,7 +131,7 @@ public class intend extends DefaultInternalAction {
 
     public static Iterator<Unifier> allIntentions(final Circumstance C, final Literal l, final Unifier un) {
         final Trigger g = new Trigger(TEOperator.add, TEType.achieve, l);
-        
+
         return new Iterator<Unifier>() {
             Step curStep = Step.selEvt;
             Unifier solution = null; // the current response (which is an unifier)
@@ -136,11 +140,11 @@ public class intend extends DefaultInternalAction {
             Iterator<ActionExec> pendActIterator = null;
             Iterator<Intention>  pendIntIterator = null;
             Iterator<Intention>  intInterator    = null;
-            
+
             public boolean hasNext() {
-                if (solution == null) // the first call of hasNext should find the first response 
+                if (solution == null) // the first call of hasNext should find the first response
                     find();
-                return solution != null; 
+                return solution != null;
             }
 
             public Unifier next() {
@@ -150,7 +154,7 @@ public class intend extends DefaultInternalAction {
                 return b;
             }
             public void remove() {}
-            
+
             void find() {
                 switch (curStep) {
 
@@ -180,11 +184,11 @@ public class intend extends DefaultInternalAction {
                     }
                     find();
                     return;
-                    
-                case evt:                    
+
+                case evt:
                     if (evtIterator == null)
                         evtIterator = C.getEventsPlusAtomic();
-                    
+
                     if (evtIterator.hasNext()) {
                         solution = un.clone();
                         Event e = evtIterator.next();
@@ -195,11 +199,11 @@ public class intend extends DefaultInternalAction {
                     }
                     find();
                     return;
-                    
-                case pendEvt:                    
+
+                case pendEvt:
                     if (pendEvtIterator == null)
                         pendEvtIterator = C.getPendingEvents().values().iterator();
-                    
+
                     if (pendEvtIterator.hasNext()) {
                         solution = un.clone();
                         Event e = pendEvtIterator.next();
@@ -210,33 +214,33 @@ public class intend extends DefaultInternalAction {
                     }
                     find();
                     return;
-                    
-                case pendAct:                    
+
+                case pendAct:
                     // intention may be suspended in PA! (in the new semantics)
                     if (C.hasPendingAction()) {
                         if (pendActIterator == null)
                             pendActIterator = C.getPendingActions().values().iterator();
-                        
+
                         if (pendActIterator.hasNext()) {
                             solution = un.clone();
                             ActionExec ac = pendActIterator.next();
                             if (ac.getIntention().hasTrigger(g, solution))
                                 return;
                         } else {
-                            curStep = Step.pendInt; // set next step                                                
+                            curStep = Step.pendInt; // set next step
                         }
                     } else {
-                        curStep = Step.pendInt; // set next step                    
+                        curStep = Step.pendInt; // set next step
                     }
                     find();
                     return;
 
-                case pendInt:                    
+                case pendInt:
                     // intention may be suspended in PI! (in the new semantics)
                     if (C.hasPendingIntention()) {
                         if (pendIntIterator == null)
                             pendIntIterator = C.getPendingIntentions().values().iterator();
-                        
+
                         if (pendIntIterator.hasNext()) {
                             solution = un.clone();
                             Intention i = pendIntIterator.next();
@@ -244,18 +248,18 @@ public class intend extends DefaultInternalAction {
                             if (i.hasTrigger(g, solution))
                                 return;
                         } else {
-                            curStep = Step.intentions; // set next step                                                
+                            curStep = Step.intentions; // set next step
                         }
                     } else {
-                        curStep = Step.intentions; // set next step                    
+                        curStep = Step.intentions; // set next step
                     }
                     find();
                     return;
 
-                case intentions:                    
+                case intentions:
                     if (intInterator == null)
                         intInterator = C.getIntentionsPlusAtomic();
-                    
+
                     if (intInterator.hasNext()) {
                         solution = un.clone();
                         Intention i = intInterator.next();
@@ -267,13 +271,13 @@ public class intend extends DefaultInternalAction {
                     }
                     find();
                     return;
-                    
+
                 case end:
-                    
+
                 }
                 solution = null; // nothing found
             }
-        };        
+        };
     }
-    
+
 }
