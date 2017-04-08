@@ -16,7 +16,7 @@ import java.util.logging.Logger;
 
 /**
  * Pattern that add .print in the begin and end of plans.
- 
+
  * @author jomi
  */
 public class LoggerDirective extends DefaultDirective implements Directive {
@@ -36,7 +36,7 @@ public class LoggerDirective extends DefaultDirective implements Directive {
                 Literal print2 = Literal.parseLiteral(".print(\"Leaving \","+p.getTrigger().getLiteral()+")");
                 PlanBody b2 = new PlanBodyImpl(BodyType.internalAction, print2);
                 p.getBody().add(b2);
-                
+
                 newAg.getPL().add(p);
             }
             return newAg;
