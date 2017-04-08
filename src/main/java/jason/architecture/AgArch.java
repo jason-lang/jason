@@ -16,16 +16,16 @@ import jason.runtime.RuntimeServicesInfraTier;
  * Base agent architecture class that defines the overall agent architecture;
  * the AS interpreter is the reasoner (a kind of mind) within this
  * architecture (a kind of body).
- * 
+ *
  * <p>
  * The agent reasoning cycle (implemented in TransitionSystem class) calls these
  * methods to get perception, action, and communication.
- * 
+ *
  * <p>
  * This class implements a Chain of Responsibilities design pattern.
  * Each member of the chain is a subclass of AgArch. The last arch in the chain is the infrastructure tier (Centralised, JADE, Saci, ...).
  * The getUserAgArch method returns the first arch in the chain.
- *  
+ *
  * Users can customise the architecture by overriding some methods of this class.
  */
 public class AgArch implements AgArchInfraTier, Comparable<AgArch> {
@@ -35,28 +35,28 @@ public class AgArch implements AgArchInfraTier, Comparable<AgArch> {
     /**
      * Successor in the Chain of Responsibility
      */
-    private AgArch successor = null;    
+    private AgArch successor = null;
     private AgArch firstArch = null;
 
     /** the current cycle number, in case of sync execution mode */
     private int cycleNumber = 0;
-    
+
     public AgArch() {
         firstArch = this;
     }
-    
+
     public void init() throws Exception {
     }
-    
+
     /**
-     * A call-back method called by the infrastructure tier 
+     * A call-back method called by the infrastructure tier
      * when the agent is about to be killed.
      */
     public void stop() {
         if (successor != null)
             successor.stop();
     }
-    
+
 
     // Management of the chain of responsibility
     /** Returns the first architecture in the chain of responsibility pattern */
@@ -75,7 +75,7 @@ public class AgArch implements AgArchInfraTier, Comparable<AgArch> {
         }
         return all;
     }
- 
+
     public void insertAgArch(AgArch arch) {
         if (arch != firstArch) // to avoid loops
             arch.successor = firstArch;
@@ -100,7 +100,7 @@ public class AgArch implements AgArchInfraTier, Comparable<AgArch> {
                 try {
                     AgArch a = (AgArch) Class.forName(agArchClass).newInstance();
                     a.setTS(ts); // so a.init() can use TS
-                    insertAgArch(a);                    
+                    insertAgArch(a);
                     a.init();
                 } catch (Exception e) {
                     System.out.println("Error creating custom agent aarchitecture."+e);
@@ -112,7 +112,7 @@ public class AgArch implements AgArchInfraTier, Comparable<AgArch> {
     }
 
     /**
-     * A call-back method called by TS 
+     * A call-back method called by TS
      * when a new reasoning cycle is starting
      */
     public void reasoningCycleStarting() {
@@ -122,16 +122,16 @@ public class AgArch implements AgArchInfraTier, Comparable<AgArch> {
         if (successor != null)
             successor.reasoningCycleStarting();
     }
-    
-   
-    /** returns the last arch in the chain, which is supposed to be the infra tier */ 
+
+
+    /** returns the last arch in the chain, which is supposed to be the infra tier */
     public AgArchInfraTier getArchInfraTier() {
         if (this.successor == null)
             return this;
         else
             return successor.getArchInfraTier();
     }
-    
+
 
     public TransitionSystem getTS() {
         if (ts != null)
@@ -140,7 +140,7 @@ public class AgArch implements AgArchInfraTier, Comparable<AgArch> {
             return successor.getTS();
         return null;
     }
-    
+
     public void setTS(TransitionSystem ts) {
         this.ts = ts;
         if (successor != null)
@@ -157,7 +157,7 @@ public class AgArch implements AgArchInfraTier, Comparable<AgArch> {
             return successor.perceive();
     }
 
-    /** Reads the agent's mailbox and adds messages into 
+    /** Reads the agent's mailbox and adds messages into
         the agent's circumstance */
     public void checkMail() {
         if (successor != null)
@@ -167,14 +167,14 @@ public class AgArch implements AgArchInfraTier, Comparable<AgArch> {
     /**
      * Executes the action <i>action</i> and, when finished, add it back in
      * <i>feedback</i> actions.
-     * 
+     *
      * @return true if the action was handled (not necessarily executed, just started)
      */
     public void act(ActionExec action) {
         if (successor != null)
             successor.act(action);
     }
-    
+
     /** called to inform that the action execution is finished */
     public void actionExecuted(ActionExec act) {
         getTS().getC().addFeedbackAction(act);
@@ -191,12 +191,12 @@ public class AgArch implements AgArchInfraTier, Comparable<AgArch> {
         if (successor != null)
             successor.sleep();
     }*/
-    
+
     public void wake() {
         if (successor != null)
-            successor.wake();        
+            successor.wake();
     }
-    
+
     public void wakeUpSense() {
         if (successor != null)
             successor.wakeUpSense();
@@ -206,7 +206,7 @@ public class AgArch implements AgArchInfraTier, Comparable<AgArch> {
         if (successor != null)
             successor.wakeUpDeliberate();
     }
-    
+
     public void wakeUpAct() {
         if (successor != null)
             successor.wakeUpAct();
@@ -217,9 +217,9 @@ public class AgArch implements AgArchInfraTier, Comparable<AgArch> {
         if (successor == null)
             return null;
         else
-            return successor.getRuntimeServices();        
+            return successor.getRuntimeServices();
     }
-    
+
     /** Gets the agent's name */
     public String getAgName() {
         if (successor == null)
@@ -251,11 +251,11 @@ public class AgArch implements AgArchInfraTier, Comparable<AgArch> {
         if (successor != null)
             successor.setCycleNumber(cycle);
     }
-    
+
     public void incCycleNumber() {
         setCycleNumber(cycleNumber+1);
     }
-    
+
     /** gets the current cycle number */
     public int getCycleNumber() {
         return cycleNumber;
@@ -265,12 +265,12 @@ public class AgArch implements AgArchInfraTier, Comparable<AgArch> {
     public String toString() {
         return "arch-"+getAgName();
     }
-    
+
     @Override
     public int hashCode() {
         return getAgName().hashCode();
     }
-    
+
     @Override
     public boolean equals(Object obj) {
         if (obj == null) return false;
