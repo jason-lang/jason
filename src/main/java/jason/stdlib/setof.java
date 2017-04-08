@@ -16,8 +16,12 @@ import java.util.TreeSet;
 
 public class setof extends DefaultInternalAction {
 
-    @Override public int getMinArgs() { return 3; }
-    @Override public int getMaxArgs() { return 3; }
+    @Override public int getMinArgs() {
+        return 3;
+    }
+    @Override public int getMaxArgs() {
+        return 3;
+    }
 
     @Override public Term[] prepareArguments(Literal body, Unifier un) {
         return body.getTermsArray(); // we do not need to clone nor to apply for this internal action
@@ -42,7 +46,7 @@ public class setof extends DefaultInternalAction {
         }
         return un.unifies(args[2], setToList(all));
     }
-    
+
     // copy the set to a new list
     private ListTerm setToList(Set<Term> set) {
         ListTerm result = new ListTermImpl();
