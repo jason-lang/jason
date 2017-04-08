@@ -10,15 +10,15 @@ public class JadeAgTest extends TestCase {
     public void testKQMLtoACL() {
         assertEquals(JadeAg.kqmlToACL("tell").getPerformative(), ACLMessage.INFORM);
         assertEquals(JadeAg.aclPerformativeToKqml(JadeAg.kqmlToACL("tell")),"tell");
-        
+
         assertEquals(JadeAg.aclPerformativeToKqml(new ACLMessage(ACLMessage.CFP)),"cfp");
         assertEquals(JadeAg.kqmlToACL(JadeAg.aclPerformativeToKqml(new ACLMessage(ACLMessage.CFP))).getPerformative(),ACLMessage.CFP);
-        
+
         ACLMessage m = JadeAg.kqmlToACL("untell");
         assertEquals(m.getPerformative(), ACLMessage.INFORM_REF);
         assertNotNull(m.getUserDefinedParameter("kqml-performative"));
         assertEquals(m.getUserDefinedParameter("kqml-performative"),"untell");
-        
+
         assertEquals(JadeAg.aclPerformativeToKqml(m),"untell");
 
         assertEquals(ACLMessage.CFP, JadeAg.kqmlToACL("cfp").getPerformative());
