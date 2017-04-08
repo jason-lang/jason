@@ -13,14 +13,14 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 public class ReplAgGUI extends ReplAg {
-    
+
     JTextField command = null;
     JTextArea output = null;
     JFrame frame;
-    
+
     //asl2html agTransformer = new asl2html("/xml/agInspection.xsl");
     //JTextPane mindPanel = null;
-    
+
     @Override
     public void initAg() {
         super.initAg();
@@ -31,7 +31,7 @@ public class ReplAgGUI extends ReplAg {
                 public void run() {
                     while (getTS().getUserAgArch().isRunning()) {
                         try {
-                            updateMindView();                
+                            updateMindView();
                             sleep(1000);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
@@ -41,7 +41,7 @@ public class ReplAgGUI extends ReplAg {
             }.start();
         }*/
     }
-    
+
     void initLogger() {
         getTS().getLogger().addHandler( new StreamHandler() {
             @Override
@@ -52,9 +52,9 @@ public class ReplAgGUI extends ReplAg {
         });
     }
 
-    
+
     static int lastPos = 30;
-    
+
     void initGui() {
         Font font = new Font("Courier", Font.PLAIN, 14);
         command = new JTextField(40);
@@ -70,7 +70,7 @@ public class ReplAgGUI extends ReplAg {
         //mindPanel = new JTextPane();
         //mindPanel.setEditable(false);
         //mindPanel.setContentType("text/html");
-        
+
         output = new JTextArea(5,50);
         output.setFont(font);
         output.setEditable(false);
@@ -80,13 +80,13 @@ public class ReplAgGUI extends ReplAg {
         output.append("   .verbose(2) // to show debug messages\n");
         output.append("   .clear // clean console\n");
         output.append("\nYou can add more agents using the button 'new REPL ag' in MAS Console.");
-        
+
         output.append("\n");
-        
+
 
         frame = new JFrame(".::  REPL Interface for "+getTS().getUserAgArch().getAgName()+"  ::.");
         frame.getContentPane().setLayout(new BorderLayout());
-        frame.getContentPane().add(BorderLayout.NORTH,command);    
+        frame.getContentPane().add(BorderLayout.NORTH,command);
         //f.getContentPane().add(BorderLayout.CENTER, new JScrollPane(mindPanel));
         frame.getContentPane().add(BorderLayout.CENTER,new JScrollPane(output));
 
@@ -108,16 +108,16 @@ public class ReplAgGUI extends ReplAg {
     public void print(String s) {
         output.append(s+"\n");
     }
-    
+
     @Override
     public void stopAg() {
         frame.setVisible(false);
         super.stopAg();
     }
-    
+
     /*
     private String lastMind = "";
-    
+
     void updateMindView() {
         getTS().getUserAgArch().setCycleNumber(cmdCounter);
         Document agState = getAgState(); // the XML representation of the agent's mind
@@ -128,6 +128,6 @@ public class ReplAgGUI extends ReplAg {
             lastMind = sMind;
         } catch (Exception e) {
             e.printStackTrace();
-        }         
+        }
     }*/
 }
