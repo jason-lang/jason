@@ -19,26 +19,26 @@ import org.jfree.data.xy.DefaultXYDataset;
 
 /** Plot a graph with the score of the players */
 public class plot extends DefaultInternalAction {
-    
+
     Map<Integer,Integer> values = new HashMap<Integer,Integer>();
 
     static DefaultXYDataset dataset = new DefaultXYDataset();
     static {
-        JFreeChart xyc = ChartFactory.createXYLineChart( 
-                "Players' score",
-                "step",
-                "score",
-                dataset, // dataset, 
-                PlotOrientation.VERTICAL, // orientation, 
-                true, // legend, 
-                true, // tooltips, 
-                true); // urls
-        
+        JFreeChart xyc = ChartFactory.createXYLineChart(
+                             "Players' score",
+                             "step",
+                             "score",
+                             dataset, // dataset,
+                             PlotOrientation.VERTICAL, // orientation,
+                             true, // legend,
+                             true, // tooltips,
+                             true); // urls
+
         JFrame frame = new ChartFrame("Iterated Prisioners Dilemma", xyc);
         frame.setSize(800,500);
         frame.setVisible(true);
     }
-    
+
     @Override
     public Object execute(final TransitionSystem ts, final Unifier un, final Term[] args) throws Exception {
         int step  = (int)((NumberTerm)args[0]).solve();
@@ -51,16 +51,16 @@ public class plot extends DefaultInternalAction {
         values.put(step,vl);
         double[][] data = getData(step);
         synchronized (dataset) {
-            dataset.addSeries(agName, data);            
+            dataset.addSeries(agName, data);
         }
     }
-    
+
     private double[][] getData(int maxStep) {
         double[][] r = new double[2][maxStep+1];
         int vl = 0;
         for (int step = 0; step<=maxStep; step++) {
             if (values.containsKey(step))
-                vl = values.get(step);            
+                vl = values.get(step);
             r[0][step] = step;
             r[1][step] = vl;
         }
