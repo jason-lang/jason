@@ -12,7 +12,7 @@ import java.util.Map;
 
 /**
  * This class allocates the same number of agents to each container
- * 
+ *
  * @author Jomi
  *
  */
@@ -20,7 +20,7 @@ public class myAllocator implements ContainerAllocation {
 
     List<String> containers = new ArrayList<String>();
     Map<String,String> allocation = new HashMap<String,String>();
-    
+
     public void init(String[] args, MAS2JProject project)  {
         // args[0] is the list of containners
         try {
@@ -31,16 +31,16 @@ public class myAllocator implements ContainerAllocation {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        
+
         // computes the number of agents in the project
         int nbAgs = 0;
         for (AgentParameters ap : project.getAgents()) {
             nbAgs += ap.getNbInstances();
         }
-        
+
         int agsByContainer = nbAgs / containers.size();
         System.out.println(agsByContainer+" agents will run in each container.");
-        
+
         // create allocation
         int i=0;
         for (AgentParameters ap : project.getAgents()) {
@@ -57,11 +57,11 @@ public class myAllocator implements ContainerAllocation {
             }
         }
     }
-    
+
     public List<String> getContainers() {
         return containers;
     }
-    
+
     public String allocateAgent(String agentName) {
         return allocation.get(agentName);
     }
