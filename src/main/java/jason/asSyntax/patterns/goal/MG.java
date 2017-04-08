@@ -14,13 +14,13 @@ import java.util.logging.Logger;
 
 /**
  * Implementation of the  Maintenance Goal pattern (see DALT 2006 paper)
- * 
+ *
  * @author jomi
  */
 public class MG extends DefaultDirective  implements Directive {
 
     static Logger logger = Logger.getLogger(MG.class.getName());
-    
+
     @Override
     public Agent process(Pred directive, Agent outerContent, Agent innerContent) {
         try {
@@ -34,7 +34,7 @@ public class MG extends DefaultDirective  implements Directive {
             Directive sd = DirectiveProcessor.getDirective(subDir.getFunctor());
 
             // apply sub directive
-            Agent newAg = sd.process(subDir, outerContent, innerContent); 
+            Agent newAg = sd.process(subDir, outerContent, innerContent);
             if (newAg != null) {
                 // add bel g
                 Literal ig = goal.copy();
