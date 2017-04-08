@@ -1,4 +1,4 @@
-// some plans for the testing phase (not used in the final relase)
+// some plans for the testing phase (not used in the final release)
 
 /* perception simulation */
 /*~breeze(1,1).
