@@ -59,12 +59,12 @@ public class Pred extends Structure {
         super(functor, termsSize);
     }
     
-    public static Pred parsePred(String sPred) {
-        as2j parser = new as2j(new StringReader(sPred));
+    public static Pred parsePred(String spread) {
+        as2j parser = new as2j(new StringReader(spread));
         try {
             return parser.pred();
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Error parsing predicate " + sPred, e);
+            logger.log(Level.SEVERE, "Error parsing predicate " + spread, e);
             return null;
         }
     }
