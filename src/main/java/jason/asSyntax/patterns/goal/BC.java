@@ -13,13 +13,13 @@ import java.util.logging.Logger;
 
 /**
  * Implementation of the Blind Commitment pattern (see DALT 2006 paper)
- * 
+ *
  * @author jomi
  */
 public class BC extends DefaultDirective implements Directive {
 
     static Logger logger = Logger.getLogger(BC.class.getName());
-    
+
     @Override
     public Agent process(Pred directive, Agent outerContent, Agent innerContent) {
         try {
@@ -33,12 +33,12 @@ public class BC extends DefaultDirective implements Directive {
             Directive sd = DirectiveProcessor.getDirective(subDir.getFunctor());
 
             // apply sub directive
-            Agent newAg = sd.process((Pred)subDir, outerContent, innerContent); 
+            Agent newAg = sd.process((Pred)subDir, outerContent, innerContent);
             if (newAg != null) {
 
                 // add +!g : true <- !!g.
                 newAg.getPL().add(ASSyntax.parsePlan("+!"+goal+" <- !!"+goal+"."));
-                
+
                 return newAg;
             }
         } catch (Exception e) {
