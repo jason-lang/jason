@@ -13,11 +13,11 @@ import jason.asSyntax.Term;
 /**
   <p>Internal action: <b><code>.reverse</code></b>.
 
-  <p>Description: reverses strings or lists. 
+  <p>Description: reverses strings or lists.
 
   <p>Parameters:<ul>
   <li>+ arg[0] (list or string): the list to be reversed.<br/>
-  <li>+/- arg[1]: the result. 
+  <li>+/- arg[1]: the result.
   </ul>
 
   <p>Examples:<ul>
@@ -42,28 +42,32 @@ import jason.asSyntax.Term;
 
 */
 public class reverse extends DefaultInternalAction {
-    
+
     private static InternalAction singleton = null;
     public static InternalAction create() {
-        if (singleton == null) 
+        if (singleton == null)
             singleton = new reverse();
         return singleton;
     }
-    
-    @Override public int getMinArgs() { return 2; }
-    @Override public int getMaxArgs() { return 2; }
+
+    @Override public int getMinArgs() {
+        return 2;
+    }
+    @Override public int getMaxArgs() {
+        return 2;
+    }
 
     @Override
     public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {
         checkArguments(args);
-        
+
         if (args[0].isList()) {
             // list reverse
             if (!args[1].isVar() && !args[1].isList())
                 throw JasonException.createWrongArgument(this,"last argument '"+args[1]+"' must be a list or a variable.");
-            
+
             return un.unifies(((ListTerm)args[0]).reverse(), args[1]);
-        
+
         } else {
             // string reverse
             if (!args[1].isVar() && !args[1].isString())
