@@ -10,17 +10,17 @@ import java.util.logging.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-/** 
+/**
  *  Represents a plan body item (achieve, test, action, ...) and its successors.
- * 
+ *
  *  A plan body like <code>a1; ?t; !g</code> is represented by the following structure
  *  <code>(a1, (?t, (!g)))</code>.
- *  
- *  
+ *
+ *
  *  @navassoc - next - PlanBody
  *  @navassoc - type - PlanBody.BodyType
- *  
- *  @author Jomi  
+ *
+ *  @author Jomi
  */
 public class PlanBodyImpl extends Structure implements PlanBody, Iterable<PlanBody> {
 
@@ -29,34 +29,34 @@ public class PlanBodyImpl extends Structure implements PlanBody, Iterable<PlanBo
 
     public static final String BODY_PLAN_FUNCTOR = ";";
 
-    private Term        term     = null; 
+    private Term        term     = null;
     private PlanBody    next     = null;
     private BodyType    formType = BodyType.none;
-    
+
     private boolean     isTerm = false; // it is true when the plan body is used as a term instead of an element of a plan
-    
+
     /** constructor for empty plan body */
     public PlanBodyImpl() {
         super(BODY_PLAN_FUNCTOR, 0);
     }
-    
+
     public PlanBodyImpl(boolean planTerm) {
         this();
         setAsBodyTerm(planTerm);
     }
 
     public PlanBodyImpl(BodyType t, Term b) {
-        this(t,b,false);        
+        this(t,b,false);
     }
-    
+
     public PlanBodyImpl(BodyType t, Term b, boolean planTerm) {
         this(planTerm);
         formType = t;
-        if (b != null) { 
+        if (b != null) {
             srcInfo = b.getSrcInfo();
 
             /*
-            // add source(self) in some commands (it is preferred to do this at compile time than runtime) 
+            // add source(self) in some commands (it is preferred to do this at compile time than runtime)
             // DOES NOT work with variables (see the case of kqmlPlans.asl and the bug reported by Alexandro)
             if (b instanceof Literal) {
                 switch (formType) {
@@ -68,7 +68,7 @@ public class PlanBodyImpl extends Structure implements PlanBody, Iterable<PlanBo
                 case addBelNewFocus:
                 case delBel:
                 case delAddBel:
-                    
+
                     Literal l = (Literal)b;
                     l = l.forceFullLiteralImpl();
                     if (!l.hasSource()) { // do not add source(self) in case the programmer set the source
@@ -95,31 +95,31 @@ public class PlanBodyImpl extends Structure implements PlanBody, Iterable<PlanBo
     public boolean isEmptyBody() {
         return term == null;
     }
-    
+
     public BodyType getBodyType() {
         return formType;
     }
     public void setBodyType(BodyType bt) {
         formType = bt;
     }
-    
+
     public Term getBodyTerm() {
         return term;
     }
-    
+
     public void setBodyTerm(Term t) {
         term = t;
     }
-    
+
     public boolean isBodyTerm() {
         return isTerm;
     }
-    
+
     @Override
     public boolean isAtom() {
         return false;
     }
-    
+
     public void setAsBodyTerm(boolean b) {
         if (b != isTerm) {
             isTerm = b;
@@ -127,17 +127,17 @@ public class PlanBodyImpl extends Structure implements PlanBody, Iterable<PlanBo
                 getBodyNext().setAsBodyTerm(b);
         }
     }
-    
+
     @Override
     public boolean isPlanBody() {
         return true;
     }
-    
+
     public Iterator<PlanBody> iterator() {
         return new Iterator<PlanBody>() {
             PlanBody current = PlanBodyImpl.this;
             public boolean hasNext() {
-                return current != null && current.getBodyTerm() != null; 
+                return current != null && current.getBodyTerm() != null;
             }
             public PlanBody next() {
                 PlanBody r = current;
@@ -162,10 +162,10 @@ public class PlanBodyImpl extends Structure implements PlanBody, Iterable<PlanBo
 
     @Override
     public Term getTerm(int i) {
-        if (i == 0) 
+        if (i == 0)
             return term;
         if (i == 1) {
-            if (next != null && next.getBodyTerm().isVar() && next.getBodyNext() == null) 
+            if (next != null && next.getBodyTerm().isVar() && next.getBodyNext() == null)
                 // if next is the last VAR, return that var
                 return next.getBodyTerm();
             else
@@ -178,13 +178,13 @@ public class PlanBodyImpl extends Structure implements PlanBody, Iterable<PlanBo
     public void setTerm(int i, Term t) {
         if (i == 0) term = t;
         if (i == 1) { // (NIDE) if next is the last VAR...
-            if (next != null && next.getBodyTerm().isVar() && next.getBodyNext() == null) 
+            if (next != null && next.getBodyTerm().isVar() && next.getBodyNext() == null)
                 next.setBodyTerm(t);
             else
                 System.out.println("Should not setTerm(1) of body literal!");
         }
     }
-    
+
     /*
     private boolean applyHead(Unifier u) {
         if (term != null && term.apply(u)) {
@@ -199,7 +199,7 @@ public class PlanBodyImpl extends Structure implements PlanBody, Iterable<PlanBo
                 }
             }
             return true;
-        }        
+        }
         return false;
     }
     */
@@ -208,7 +208,7 @@ public class PlanBodyImpl extends Structure implements PlanBody, Iterable<PlanBo
     @Override
     public boolean apply(Unifier u) {
         boolean ok = next != null && next.apply(u);
-        
+
         if (applyHead(u))
             ok = true;
 
@@ -224,7 +224,7 @@ public class PlanBodyImpl extends Structure implements PlanBody, Iterable<PlanBo
         logger.log(Level.WARNING, "PlanBodyImpl cannot be used for logical consequence!", new Exception());
         return LogExpr.EMPTY_UNIF_LIST.iterator();
     }
-    
+
     @Override
     public boolean equals(Object o) {
         if (o == null) return false;
@@ -252,7 +252,7 @@ public class PlanBodyImpl extends Structure implements PlanBody, Iterable<PlanBo
             this.next = bl.getBodyNext();
         } else if (next == null) {
             next = bl;
-        } else { 
+        } else {
             next.add(bl);
         }
         return true;
@@ -264,7 +264,7 @@ public class PlanBodyImpl extends Structure implements PlanBody, Iterable<PlanBo
         else
             return next.getLastBody();
     }
-    
+
     public boolean add(int index, PlanBody bl) {
         if (index == 0) {
             PlanBody newpb = new PlanBodyImpl(this.formType, this.term);
@@ -272,7 +272,7 @@ public class PlanBodyImpl extends Structure implements PlanBody, Iterable<PlanBo
             swap(bl);
             this.next = bl.getBodyNext();
             this.getLastBody().setBodyNext(newpb);
-        } else if (next != null) { 
+        } else if (next != null) {
             next.add(index - 1, bl);
         } else {
             next = bl;
@@ -290,13 +290,13 @@ public class PlanBodyImpl extends Structure implements PlanBody, Iterable<PlanBo
                 next = next.getBodyNext();
             }
             return oldvalue;
-        } else { 
+        } else {
             return next.removeBody(index - 1);
         }
     }
 
     public int getPlanSize() {
-        if (term == null) 
+        if (term == null)
             return 0;
         else if (next == null)
             return 1;
@@ -329,7 +329,7 @@ public class PlanBodyImpl extends Structure implements PlanBody, Iterable<PlanBo
                 c.term     = ((PlanBody)c.term).getBodyTerm();
             }
         }
-        
+
         if (next != null)
             c.add((PlanBody)next.capply(u));
 
@@ -338,21 +338,21 @@ public class PlanBodyImpl extends Structure implements PlanBody, Iterable<PlanBo
     }
 
     public PlanBody clone() {
-        PlanBodyImpl c;    
+        PlanBodyImpl c;
         if (term == null)  // (NIDE) must copy c.isTerm even if cloning empty plan
             c = new PlanBodyImpl();
-        else 
+        else
             c = new PlanBodyImpl(formType, term.clone(), isTerm);
         c.isTerm = isTerm;
         if (next != null)
             c.setBodyNext(getBodyNext().clonePB());
         return c;
     }
-    
+
     public PlanBody clonePB() {
         return clone();
     }
-    
+
     public String toString() {
         if (term == null) {
             return isTerm ? "{ }" : ""; // NIDE
@@ -370,8 +370,8 @@ public class PlanBodyImpl extends Structure implements PlanBody, Iterable<PlanBo
                 if (pb != null)
                     out.append("; ");
             }
-            if (isTerm) 
-                out.append(" }"); 
+            if (isTerm)
+                out.append(" }");
             return out.toString();
         }
     }
@@ -387,7 +387,7 @@ public class PlanBodyImpl extends Structure implements PlanBody, Iterable<PlanBo
             }
             u.appendChild( ((Structure)bl.getBodyTerm()).getAsDOM(document));
             eb.appendChild(u);
-            
+
             bl = bl.getBodyNext();
         }
         return eb;
