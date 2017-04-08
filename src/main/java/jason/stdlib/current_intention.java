@@ -9,7 +9,7 @@ import jason.asSyntax.Term;
 
 /**
   <p>Internal action: <b><code>.current_intention</code></b>.
-  
+
   <p>Description: returns a description of the current intention. It is useful
   for plans that need to inspect the current intention. The description of the
   intention has the following form:<br><br>
@@ -33,13 +33,13 @@ import jason.asSyntax.Term;
   </blockquote>
 
   <p>Parameters:<ul>
-  
+
   <li>- intention (structure): the variable that unifies with the intention
   description.</li>
-  
+
   </ul>
-  
-  <p>Example:<ul> 
+
+  <p>Example:<ul>
 
   <li> <code>.current_intention(X)</code>: <code>X</code> unifies with the
   description of the current intention (i.e. the intention that executed this
@@ -47,11 +47,11 @@ import jason.asSyntax.Term;
 
   </ul>
 
-  <p>Notes:<ul> 
+  <p>Notes:<ul>
 
-  <li>In case this internal action is used in the <i>body</i> of a plan, the intention that 
+  <li>In case this internal action is used in the <i>body</i> of a plan, the intention that
       are executing the plan is used.</li>
-  <li>In case this internal action is used in the <i>context</i> of a plan, the intention that 
+  <li>In case this internal action is used in the <i>context</i> of a plan, the intention that
       produced the event is used.</li>
   </ul>
 
@@ -70,13 +70,17 @@ import jason.asSyntax.Term;
 */
 public class current_intention extends DefaultInternalAction {
 
-    @Override public int getMinArgs() { return 1; }
-    @Override public int getMaxArgs() { return 1; }
+    @Override public int getMinArgs() {
+        return 1;
+    }
+    @Override public int getMaxArgs() {
+        return 1;
+    }
 
     @Override
     public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {
         checkArguments(args);
-        
+
         // try to get the intention from the "body"
         Intention i = ts.getC().getSelectedIntention();
 
@@ -89,6 +93,6 @@ public class current_intention extends DefaultInternalAction {
         if (i != null)
             return un.unifies(i.getAsTerm(), args[0]);
         else
-            return false;            
+            return false;
     }
 }
