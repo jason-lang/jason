@@ -13,9 +13,9 @@ import java.util.Iterator;
 import java.util.Map;
 
 /**
- * Customised version of Belief Base where some beliefs are unique (with primary keys) and 
+ * Customised version of Belief Base where some beliefs are unique (with primary keys) and
  * indexed for faster access.
- * 
+ *
  * <p>E.g. in a .mas2j project file:<br/>
  * <code>agents: bob beliefBaseClass jason.bb.IndexedBB("student(key,_)", "depot(_,_,_)")</code>
  * <br/>
@@ -24,8 +24,8 @@ import java.util.Map;
  * The belief "depot/3" has no key, so there will be always only one "depot" in the BB.
  *
  * When some belief with the same key than another belief in BB is added,
- * the most recent remains in the BB and the older is removed. 
- * 
+ * the most recent remains in the BB and the older is removed.
+ *
  * @author jomi
  */
 public class IndexedBB extends ChainBBAdapter {
@@ -37,7 +37,7 @@ public class IndexedBB extends ChainBBAdapter {
     public IndexedBB(BeliefBase next) {
         super(next);
     }
-    
+
     @Override
     public void init(Agent ag, String[] args) {
         for (int i=0; i<args.length; i++) {
@@ -46,13 +46,13 @@ public class IndexedBB extends ChainBBAdapter {
         }
     }
 
-    // TODO: access indexes 
-    
+    // TODO: access indexes
+
     @Override
     public boolean add(Literal bel) {
         Structure kb = indexedBels.get(bel.getFunctor());
         if (kb != null && kb.getArity() == bel.getArity()) { // is a constrained bel?
-            
+
             // find the bel in BB and eventually remove it
             u.clear();
             Literal linbb = null;
@@ -63,7 +63,7 @@ public class IndexedBB extends ChainBBAdapter {
                 final int kbArity = kb.getArity();
                 while (relevant.hasNext() && !remove) {
                     linbb = relevant.next();
-                    
+
                     if (!linbb.isRule()) {
                         // check equality of all terms that are "key"
                         // if some key is different, no problem
@@ -90,12 +90,12 @@ public class IndexedBB extends ChainBBAdapter {
         }
         return super.add(bel);
     }
-    
+
     @Override
     public BeliefBase clone() {
         IndexedBB nbb = new IndexedBB(nextBB.clone());
         nbb.indexedBels = new HashMap<String,Structure>(this.indexedBels);
         return nbb;
     }
-    
+
 }
