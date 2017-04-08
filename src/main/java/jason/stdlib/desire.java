@@ -15,12 +15,12 @@ import java.util.Iterator;
 
 /**
   <p>Internal action: <b><code>.desire(<i>D</i>)</code></b>.
-  
+
   <p>Description: checks whether <i>D</i> is a desire: <i>D</i> is a desire
   either if there is an event with <code>+!D</code> as triggering
   event or it is a goal in one of the agent's intentions.
-  
-  <p>Example:<ul> 
+
+  <p>Example:<ul>
 
   <li> <code>.desire(go(1,3))</code>: true if <code>go(1,3)</code>
   is a desire of the agent.
@@ -48,7 +48,7 @@ public class desire extends intend {
         checkArguments(args);
         return allDesires(ts.getC(),(Literal)args[0],un);
     }
-    
+
     /*
     public boolean desires(Circumstance C, Literal l, Unifier un) {
         Trigger teFromL = new Trigger(TEOperator.add, TEType.achieve, l);
@@ -56,7 +56,7 @@ public class desire extends intend {
         // we need to check the selected event in this cycle (already removed from E)
         if (C.getSelectedEvent() != null) {
             Trigger   t = C.getSelectedEvent().getTrigger();
-            Intention i = C.getSelectedEvent().getIntention(); 
+            Intention i = C.getSelectedEvent().getIntention();
             if (i != Intention.EmptyInt && i.size() > 0) {
                 t = t.clone();
                 t.apply(i.peek().getUnif());
@@ -68,7 +68,7 @@ public class desire extends intend {
 
         for (Event ei : C.getEvents()) {
             Trigger   t = ei.getTrigger();
-            Intention i = ei.getIntention(); 
+            Intention i = ei.getIntention();
             if (i != Intention.EmptyInt && i.size() > 0) {
                 t = t.clone();
                 t.apply(i.peek().getUnif());
@@ -81,14 +81,14 @@ public class desire extends intend {
         return super.intends(C, l, un); // Int subset Des (see the formal definitions)
     }
      */
-    
+
     enum Step { selEvt, evt, useIntends, end }
 
     //private static Logger logger = Logger.getLogger(desire.class.getName());
 
     public static Iterator<Unifier> allDesires(final Circumstance C, final Literal l, final Unifier un) {
         final Trigger teFromL = new Trigger(TEOperator.add, TEType.achieve, l);
-        
+
         return new Iterator<Unifier>() {
             Step curStep = Step.selEvt;
             Unifier solution = null; // the current response (which is an unifier)
@@ -97,11 +97,11 @@ public class desire extends intend {
             {
                 find();
             }
-            
+
             public boolean hasNext() {
                 //if (solution == null)
                 //    logger.info("* no more solution for "+teFromL+C);
-                return solution != null; 
+                return solution != null;
             }
 
             public Unifier next() {
@@ -112,17 +112,17 @@ public class desire extends intend {
                 return b;
             }
             public void remove() {}
-            
+
             void find() {
                 switch (curStep) {
 
                 case selEvt:
                     curStep = Step.evt; // set next step
-                    
+
                     // we need to check the selected event in this cycle (already removed from E)
                     if (C.getSelectedEvent() != null) {
                         Trigger   t = C.getSelectedEvent().getTrigger();
-                        Intention i = C.getSelectedEvent().getIntention(); 
+                        Intention i = C.getSelectedEvent().getIntention();
                         if (i != Intention.EmptyInt && !i.isFinished()) {
                             t = (Trigger)t.capply(i.peek().getUnif());
                         }
@@ -137,11 +137,11 @@ public class desire extends intend {
                 case evt:
                     if (evtIterator == null)
                         evtIterator = C.getEventsPlusAtomic();
-                    
+
                     if (evtIterator.hasNext()) {
                         Event ei = evtIterator.next();
                         Trigger   t = ei.getTrigger();
-                        Intention i = ei.getIntention(); 
+                        Intention i = ei.getIntention();
                         if (i != Intention.EmptyInt && !i.isFinished()) {
                             t = t.capply(i.peek().getUnif());
                         }
@@ -154,23 +154,23 @@ public class desire extends intend {
                     }
                     find();
                     return;
-                    
-                case useIntends:                    
+
+                case useIntends:
                     if (intendInterator == null)
                         intendInterator = allIntentions(C,l,un);
-                    
-                    if (intendInterator.hasNext()) {                        
+
+                    if (intendInterator.hasNext()) {
                         solution = intendInterator.next();
                         return;
                     } else {
                         curStep = Step.end; // set next step
                     }
-                    
+
                 case end:
-                                        
+
                 }
                 solution = null; // nothing found
             }
-        };        
+        };
     }
 }
