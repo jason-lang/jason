@@ -18,12 +18,12 @@ import jason.asSyntax.Trigger.TEType;
 
 /**
   <p>Internal action: <b><code>.drop_intention(<i>I</i>)</code></b>.
-  
+
   <p>Description: removes intentions <i>I</i> from the set of
   intentions of the agent (suspended intentions are also considered).
   No event is produced.
 
-  <p>Example:<ul> 
+  <p>Example:<ul>
 
   <li> <code>.drop_intention(go(1,3))</code>: removes an intention having a plan
    with triggering event
@@ -46,10 +46,14 @@ import jason.asSyntax.Trigger.TEType;
 
  */
 public class drop_intention extends DefaultInternalAction {
-    
-    @Override public int getMinArgs() { return 1; }
-    @Override public int getMaxArgs() { return 1; }
-    
+
+    @Override public int getMinArgs() {
+        return 1;
+    }
+    @Override public int getMaxArgs() {
+        return 1;
+    }
+
     @Override protected void checkArguments(Term[] args) throws JasonException {
         super.checkArguments(args); // check number of arguments
         if (!args[0].isLiteral() && !args[0].isVar())
@@ -62,12 +66,12 @@ public class drop_intention extends DefaultInternalAction {
         dropInt(ts.getC(),(Literal)args[0],un);
         return true;
     }
-    
+
     public static void dropInt(Circumstance C, Literal l, Unifier un) {
         Unifier bak = un.clone();
-        
+
         Trigger g = new Trigger(TEOperator.add, TEType.achieve, l);
-        
+
         // intention may be suspended in E or PE
         Iterator<Event> ie = C.getEventsPlusAtomic();
         while (ie.hasNext()) {
@@ -85,7 +89,7 @@ public class drop_intention extends DefaultInternalAction {
                 un = bak.clone();
             }
         }
-        
+
         // intention may be suspended in PA! (in the new semantics)
         for (ActionExec a: C.getPendingActions().values()) {
             Intention i = a.getIntention();
@@ -94,7 +98,7 @@ public class drop_intention extends DefaultInternalAction {
                 un = bak.clone();
             }
         }
-    
+
         Iterator<Intention> itint = C.getIntentionsPlusAtomic();
         while (itint.hasNext()) {
             Intention i = itint.next();
@@ -103,7 +107,7 @@ public class drop_intention extends DefaultInternalAction {
                 un = bak.clone();
             }
         }
-            
+
         // intention may be suspended in PI! (in the new semantics)
         for (Intention i: C.getPendingIntentions().values()) {
             if (i.hasTrigger(g, un)) {
@@ -114,7 +118,7 @@ public class drop_intention extends DefaultInternalAction {
     }
 
     public static void dropInt(Circumstance C, Intention del) {
-        
+
         // intention may be suspended in E or PE
         Iterator<Event> ie = C.getEventsPlusAtomic();
         while (ie.hasNext()) {
@@ -130,11 +134,11 @@ public class drop_intention extends DefaultInternalAction {
                 C.removePendingEvent(k);
             }
         }
-        
+
         // intention may be suspended in PA! (in the new semantics)
         C.dropPendingAction(del);
         C.dropIntention(del);
-            
+
         // intention may be suspended in PI! (in the new semantics)
         C.dropPendingIntention(del);
     }
