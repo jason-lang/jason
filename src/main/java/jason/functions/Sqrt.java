@@ -6,22 +6,22 @@ import jason.asSemantics.TransitionSystem;
 import jason.asSyntax.NumberTerm;
 import jason.asSyntax.Term;
 
-/** 
+/**
   <p>Function: <b><code>math.sqrt(N)</code></b>: encapsulates java Math.sqrt(N);
   returns the correctly rounded positive square root of N.
-  
+
   <p>Example:<ul>
   <li> <code>math.sqrt(9)</code>: returns 3.</li>
   </ul>
-   
-  @author Jomi 
+
+  @author Jomi
 */
 public class Sqrt extends DefaultArithFunction  {
 
     public String getName() {
         return "math.sqrt";
     }
-    
+
 
     @Override
     public double evaluate(TransitionSystem ts, Term[] args) throws Exception {
@@ -37,5 +37,5 @@ public class Sqrt extends DefaultArithFunction  {
     public boolean checkArity(int a) {
         return a == 1;
     }
-    
+
 }
