@@ -26,13 +26,13 @@ public class CentralisedMASLauncherAnt implements MASLauncherInfraTier {
     protected boolean            stop       = false;
     protected Process            masProcess = null;
     protected OutputStream       processOut;
-    
+
     protected boolean            useBuildFileName = true;
 
     public static String         bindir = "bin"+File.separator;
-    
+
     private String task;
-    
+
     public CentralisedMASLauncherAnt() {
         task = "run";
     }
@@ -41,7 +41,7 @@ public class CentralisedMASLauncherAnt implements MASLauncherInfraTier {
     public CentralisedMASLauncherAnt(String task) {
         this.task = task;
     }
-    
+
     public void setProject(MAS2JProject project) {
         this.project = project;
     }
@@ -58,13 +58,13 @@ public class CentralisedMASLauncherAnt implements MASLauncherInfraTier {
                 System.err.println("Problem defining the command to run the MAS!");
                 return;
             }
-            
+
             String cmdstr = command[0];
             for (int i = 1; i < command.length; i++) {
                 cmdstr += " " + command[i];
             }
-            
-            
+
+
             System.out.println("Executing " + cmdstr);
 
             File dir = new File(new File(project.getDirectory()).getAbsolutePath());
@@ -109,7 +109,7 @@ public class CentralisedMASLauncherAnt implements MASLauncherInfraTier {
             }
         }
     }
-    
+
     public void stopMAS() {
         try {
             // creating this file will stop the MAS, the runner checks for this file creation
@@ -132,10 +132,11 @@ public class CentralisedMASLauncherAnt implements MASLauncherInfraTier {
             System.err.println("Ant is not properly configured! Current value is "+Config.get().getAntLib());
             return null;
         } else {
-            return new String[] { Config.get().getJavaHome() + "bin" + File.separator + "java", 
-                    "-classpath",
-                    Config.get().getAntLib() + ant, "org.apache.tools.ant.launch.Launcher", 
-                    "-e", "-f", build, task};
+            return new String[] { Config.get().getJavaHome() + "bin" + File.separator + "java",
+                                  "-classpath",
+                                  Config.get().getAntLib() + ant, "org.apache.tools.ant.launch.Launcher",
+                                  "-e", "-f", build, task
+                                };
         }
     }
 
@@ -153,11 +154,11 @@ public class CentralisedMASLauncherAnt implements MASLauncherInfraTier {
             return "c-"+project.getSocName()+".xml";
         }
     }
-    
+
     /** write the scripts necessary to run the project */
     public boolean writeScripts(boolean debug, boolean useBuildFileName) {
         this.useBuildFileName = useBuildFileName;
-        
+
         //if (hasCBuild()) {
         //    System.out.println("The build.xml file is not being created, the user c-build.xml file is used instead.");
         //    return true; // if the user has a c-build.xml file, use his build
@@ -174,7 +175,7 @@ public class CentralisedMASLauncherAnt implements MASLauncherInfraTier {
             if (!bindirfile.exists()) {
                 bindirfile.mkdirs();
             }
-                
+
             // write the script
             FileWriter out = new FileWriter(project.getDirectory() + File.separator + bindir + getBuildFileName());
             out.write(script);
@@ -208,7 +209,7 @@ public class CentralisedMASLauncherAnt implements MASLauncherInfraTier {
         String lib = "";
 
         // if cartago env
-        if (project.isJade() || 
+        if (project.isJade() ||
                 (project.getEnvClass() != null && project.getEnvClass().getClassName().equals("jaca.CartagoEnvironment"))) {
             Config c = Config.get();
             String cartago = Config.findJarInDirectory(new File(c.getJasonHome()+"/libs"), "cartago");
@@ -216,7 +217,7 @@ public class CentralisedMASLauncherAnt implements MASLauncherInfraTier {
                 lib += "        <pathelement location=\""+cartago+"\"/>\n";
             String c4jason = Config.findJarInDirectory(new File(c.getJasonHome()+"/libs"), "jaca");
             if (c4jason != null)
-                lib += "        <pathelement location=\""+c4jason+"\"/>\n";            
+                lib += "        <pathelement location=\""+c4jason+"\"/>\n";
         }
 
         if (new File(dDir + File.separator + "lib").exists()) {
@@ -225,10 +226,10 @@ public class CentralisedMASLauncherAnt implements MASLauncherInfraTier {
         if (new File(dDir + File.separator + "libs").exists()) {
             lib += "        <fileset dir=\"${basedir}/libs\" >  <include name=\"*.jar\" /> </fileset>\n";
         }
-        
+
         // add classpath defined in the project .mas2j
         for (String cp: project.getClassPaths()) {
-            int apos = cp.indexOf("*"); 
+            int apos = cp.indexOf("*");
             if (apos < 0) {
                 lib += "        <pathelement location=\""+cp+"\"/>\n";
             } else {
@@ -240,17 +241,17 @@ public class CentralisedMASLauncherAnt implements MASLauncherInfraTier {
                     dir   = cp.substring(0,spos);
                     files = cp.substring(spos+1);
                 } else {
-                    spos = cp.lastIndexOf("/**"); 
+                    spos = cp.lastIndexOf("/**");
                     if (spos >= 0 && spos < apos) {
                         dir   = cp.substring(0,spos);
                         files = cp.substring(spos+1);
                     }
                 }
 
-                lib += "        <fileset dir=\""+dir+"\" >  <include name=\""+files+"\" /> </fileset>\n";               
+                lib += "        <fileset dir=\""+dir+"\" >  <include name=\""+files+"\" /> </fileset>\n";
             }
         }
-        
+
         script = replace(script, "<PATH-LIB>", lib);
 
         script = replace(script, "<PROJECT-RUNNER-CLASS>", jason.infra.centralised.RunCentralisedMAS.class.getName());
@@ -263,7 +264,7 @@ public class CentralisedMASLauncherAnt implements MASLauncherInfraTier {
         script = replace(script, "<JASON-HOME>", Config.get().getJasonHome());
         script = replace(script, "<JASON-HOME>", Config.get().getJasonHome());
         script = replace(script, "<RUN-ARGS>", "");
-        
+
         return script;
     }
 
