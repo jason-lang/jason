@@ -8,16 +8,16 @@ import java.sql.SQLException;
 
 /**
  * Implementation of BB that stores some beliefs in a relational data base.
- * 
+ *
  * For all created table, an additional column (called j_agent) is created
  * and populated with the name of the agent that uses this customisation.
- * 
+ *
  * @author Neil Madden
  */
 public class AgentJDBCPersistentBB extends JDBCPersistentBB {
 
     static final String COL_AGENT = "j_agent";
-    
+
     public AgentJDBCPersistentBB() {
         extraCols = 3;
     }
@@ -26,18 +26,18 @@ public class AgentJDBCPersistentBB extends JDBCPersistentBB {
     protected String getCreateTable(String table, int arity, Structure columns) throws SQLException {
         StringBuilder q = new StringBuilder(super.getCreateTable(table,arity,columns));
         q.insert(q.length()-1, ", " + COL_AGENT + " varchar(100)");
-        return q.toString(); 
+        return q.toString();
     }
 
     protected String getAgWhere() {
         return COL_AGENT + " = '" + agentName + "'";
     }
-    
+
     @Override
     protected String getDeleteAll(PredicateIndicator pi) throws SQLException {
         return super.getDeleteAll(pi) + " where " + getAgWhere();
     }
-    
+
 
     @Override
     protected String getCountQuery(PredicateIndicator pi) throws SQLException {
@@ -48,7 +48,7 @@ public class AgentJDBCPersistentBB extends JDBCPersistentBB {
     protected String getSelectAll(PredicateIndicator pi) throws SQLException {
         return super.getSelectAll(pi) + " where " + getAgWhere();
     }
-    
+
     @Override
     protected String getWhere(Literal l) throws SQLException {
         String q = super.getWhere(l);
