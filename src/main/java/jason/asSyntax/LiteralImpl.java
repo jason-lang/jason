@@ -13,7 +13,7 @@ public class LiteralImpl extends Pred {
 
     private static final long serialVersionUID = 1L;
     //private static Logger logger = Logger.getLogger(LiteralImpl.class.getName());
-    
+
     private boolean type = LPos;
 
     /** creates a positive literal */
@@ -31,14 +31,14 @@ public class LiteralImpl extends Pred {
         super(l);
         type = !l.negated();
     }
-    
+
     // used by capply
     protected LiteralImpl(Literal l, Unifier u) {
         super(l, u);
         type = !l.negated();
     }
 
-    
+
     /** if pos == true, the literal is positive, otherwise it is negative */
     public LiteralImpl(boolean pos, Literal l) {
         super(l);
@@ -52,7 +52,7 @@ public class LiteralImpl extends Pred {
     }
 
     /** creates a literal based on another but in another name space and signal */
-    public LiteralImpl(Atom namespace, boolean pos, Literal l) {        
+    public LiteralImpl(Atom namespace, boolean pos, Literal l) {
         super(namespace, l);
         type = pos;
     }
@@ -61,18 +61,18 @@ public class LiteralImpl extends Pred {
     public boolean isAtom() {
         return super.isAtom() && !negated();
     }
-    
+
     /** to be overridden by subclasses (as internal action) */
     @Override
     public boolean canBeAddedInBB() {
         return true;
     }
-    
+
     @Override
     public boolean negated() {
         return type == LNeg;
     }
-    
+
     public Literal setNegated(boolean b) {
         type = b;
         resetHashCodeCache();
@@ -93,15 +93,15 @@ public class LiteralImpl extends Pred {
         return false;
     }
 
-    @Override    
+    @Override
     public String getErrorMsg() {
-        String src = getSrcInfo() == null ? "" : " ("+ getSrcInfo() + ")"; 
+        String src = getSrcInfo() == null ? "" : " ("+ getSrcInfo() + ")";
         return "Error in '"+this+"'"+src;
     }
-    
+
     @Override
     public int compareTo(Term t) {
-        if (t == null) 
+        if (t == null)
             return -1;
         if (t.isLiteral()) {
             Literal tl = (Literal)t;
@@ -111,7 +111,7 @@ public class LiteralImpl extends Pred {
                 return 1;
         }
         return super.compareTo(t);
-    }        
+    }
 
     @Override
     public Term clone() {
@@ -119,16 +119,16 @@ public class LiteralImpl extends Pred {
         l.hashCodeCache = this.hashCodeCache;
         return l;
     }
-    
+
     @Override
     public Term capply(Unifier u) {
         return new LiteralImpl(this, u);
     }
-    
+
     public Literal cloneNS(Atom newNameSpace) {
         return new LiteralImpl(newNameSpace, !negated(), this);
     }
-    
+
     @Override
     protected int calcHashCode() {
         int result = super.calcHashCode();
@@ -137,13 +137,13 @@ public class LiteralImpl extends Pred {
     }
 
     /** returns [~] super.getPredicateIndicator */
-    @Override 
+    @Override
     public PredicateIndicator getPredicateIndicator() {
         if (predicateIndicatorCache == null)
             predicateIndicatorCache = new PredicateIndicator(getNS(), ((type == LPos) ? getFunctor() : "~"+getFunctor()),getArity());
         return predicateIndicatorCache;
     }
-    
+
     /** get as XML */
     @Override
     public Element getAsDOM(Document document) {
