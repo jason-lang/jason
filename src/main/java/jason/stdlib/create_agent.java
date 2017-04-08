@@ -18,16 +18,16 @@ import jason.runtime.Settings;
 
 /**
   <p>Internal action: <b><code>.create_agent</code></b>.
-  
+
   <p>Description: creates another agent using the referred AgentSpeak source
   code.
-  
+
   <p>Parameters:<ul>
-  
-  <li>+ name (atom, string, or variable): the name for the new agent. 
-  If this parameter is a variable, it will be unified with the name given to the agent. 
+
+  <li>+ name (atom, string, or variable): the name for the new agent.
+  If this parameter is a variable, it will be unified with the name given to the agent.
   The agent's name will be the name of the variable and some number that makes it unique.<br/>
-  
+
   <li><i>+ source</i> (string): path to the file where the AgentSpeak code
   for the new agent can be found.<br/>
 
@@ -35,10 +35,10 @@ import jason.runtime.Settings;
   as agent class, architecture and belief base.<br/>
 
   </ul>
-  
-  <p>Examples:<ul> 
 
-  <li> <code>.create_agent(bob,"/tmp/x.asl")</code>: creates an agent named "bob" 
+  <p>Examples:<ul>
+
+  <li> <code>.create_agent(bob,"/tmp/x.asl")</code>: creates an agent named "bob"
   from the source file in "/tmp/x.asl".</li>
 
   <li> <code>.create_agent(Bob,"/tmp/x.asl")</code>: creates an agent named "bob" (or "bob_1", "bob_2", ...)
@@ -71,24 +71,28 @@ import jason.runtime.Settings;
 */
 public class create_agent extends DefaultInternalAction {
 
-    @Override public int getMinArgs() { return 1; }
-    @Override public int getMaxArgs() { return 3; }
+    @Override public int getMinArgs() {
+        return 1;
+    }
+    @Override public int getMaxArgs() {
+        return 3;
+    }
 
     @Override protected void checkArguments(Term[] args) throws JasonException {
         super.checkArguments(args); // check number of arguments
         if (args.length > 1 && !args[1].isString())
             throw JasonException.createWrongArgument(this,"second argument must be a string");
         if (args.length == 3 && !args[2].isList())
-            throw JasonException.createWrongArgument(this,"third argument must be a list");  
+            throw JasonException.createWrongArgument(this,"third argument must be a list");
     }
 
     @Override
     public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {
         checkArguments(args);
-        
+
         String name = getName(args);
         String source = getSource(args);
-        
+
         List<String> agArchClasses = getAgArchClasses(args);
 
         String agClass = null;
@@ -109,13 +113,13 @@ public class create_agent extends DefaultInternalAction {
         RuntimeServicesInfraTier rs = ts.getUserAgArch().getRuntimeServices();
         name = rs.createAgent(name, source, agClass, agArchClasses, bbPars, getSettings(ts), ts.getAg());
         rs.startAgent(name);
-        
+
         if (args[0].isVar())
             return un.unifies(new StringTermImpl(name), args[0]);
         else
             return true;
     }
-    
+
     protected Settings getSettings(TransitionSystem ts) {
         /*Settings s = ts.getSettings();
         s.removeUserParameter(Settings.INIT_BELS);
@@ -123,14 +127,14 @@ public class create_agent extends DefaultInternalAction {
         return s;*/
         return new Settings();
     }
-    
+
     protected String getName(Term[] args) {
         String name;
-        if (args[0].isString()) 
+        if (args[0].isString())
             name = ((StringTerm)args[0]).getString();
         else
             name = args[0].toString();
-        
+
         if (args[0].isVar())
             name = name.substring(0,1).toLowerCase() + name.substring(1);
         return name;
@@ -139,11 +143,11 @@ public class create_agent extends DefaultInternalAction {
     protected String getSource(Term[] args) throws JasonException {
         String source = null;
         if (args.length > 1) {
-        	source = ((StringTerm)args[1]).getString();        	
+            source = ((StringTerm)args[1]).getString();
         }
         return source;
     }
-    
+
     protected List<String> getAgArchClasses(Term[] args) {
         List<String> agArchClasses = new ArrayList<String>();
         if (args.length > 2) { // optional parameter
@@ -159,7 +163,7 @@ public class create_agent extends DefaultInternalAction {
         }
         return agArchClasses;
     }
-    
+
     private Structure testString(Term t) {
         if (t.isStructure())
             return (Structure)t;
