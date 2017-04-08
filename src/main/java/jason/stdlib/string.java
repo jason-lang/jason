@@ -9,7 +9,7 @@ import jason.asSyntax.Term;
 /**
   <p>Internal action: <b><code>.string</code></b>.
 
-  <p>Description: checks whether the argument is a string, e.g.: "a". 
+  <p>Description: checks whether the argument is a string, e.g.: "a".
 
   <p>Parameter:<ul>
   <li>+ arg[0] (any term): the term to be checked.<br/>
@@ -31,16 +31,20 @@ import jason.asSyntax.Term;
 
 */
 public class string extends DefaultInternalAction {
-    
+
     private static InternalAction singleton = null;
     public static InternalAction create() {
-        if (singleton == null) 
+        if (singleton == null)
             singleton = new string();
         return singleton;
     }
 
-    @Override public int getMinArgs() { return 1; }
-    @Override public int getMaxArgs() { return 1; }
+    @Override public int getMinArgs() {
+        return 1;
+    }
+    @Override public int getMaxArgs() {
+        return 1;
+    }
 
     @Override
     public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {
