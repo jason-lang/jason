@@ -13,11 +13,11 @@ import jason.asSyntax.Term;
 /**
   <p>Internal action: <b><code>.concat</code></b>.
 
-  <p>Description: concatenates strings or lists. 
+  <p>Description: concatenates strings or lists.
 
   <p>Parameters:<ul>
   <li>+ arg[0] ... + arg[n-1] (any term): the terms to be concatenated.<br/>
-  <li>+/- arg[n]: the result of the concatenation. 
+  <li>+/- arg[n]: the result of the concatenation.
   </ul>
   Parameters that are not string are concatenated using the toString method of
   their class.
@@ -56,14 +56,14 @@ public class concat extends DefaultInternalAction {
 
     private static InternalAction singleton = null;
     public static InternalAction create() {
-        if (singleton == null) 
+        if (singleton == null)
             singleton = new concat();
         return singleton;
     }
 
     @Override
     public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {
-        
+
         if (args[0].isList()) {
             // list concat
             if (!args[args.length-1].isVar() && !args[args.length-1].isList()) {
@@ -77,7 +77,7 @@ public class concat extends DefaultInternalAction {
             }
             return un.unifies(result, args[args.length-1]);
 
-        
+
         } else { //if (args[0].isString() || args) {
             // string concat
             if (!args[args.length-1].isVar() && !args[args.length-1].isString()) {
@@ -96,8 +96,8 @@ public class concat extends DefaultInternalAction {
                 sr.append(vl);
             }
             return un.unifies(new StringTermImpl(sr.toString()), args[args.length-1]);
-        //} else {
-        //    throw JasonException.createWrongArgument(this,"First argument '"+args[0]+"' must be a list, string or term.");
+            //} else {
+            //    throw JasonException.createWrongArgument(this,"First argument '"+args[0]+"' must be a list, string or term.");
         }
     }
 }
