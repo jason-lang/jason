@@ -20,49 +20,49 @@ import java.util.regex.Pattern;
 /**
  * <p>
  * Internal action: <b><code>.puts</code></b>.
- * 
+ *
  * <p>
  * Description: used for printing messages to the console where the system is
  * running, or unifying the message to a variable parameter. It receives one
  * string parameter, containing escaped variable names that are replaced by
  * their bindings in the current intention's unifier. Terms are made ground
  * according to the current unifying function before being printed out. No new
- * line is printed after the parameters. In this version a user can also 
+ * line is printed after the parameters. In this version a user can also
  * include any Jason expression (logical or arithmetic) that will be replaced
  * by it's evaluated value.
- * 
+ *
  * <p>
  * The precise format and output device of the message is defined by the Java
  * logging configuration as defined in the <code>logging.properties</code>
  * file in the project directory.
- * 
+ *
  * <p>
  * Parameters:
  * <ul>
- * 
+ *
  * <li>+message (string): the string to be printed out.</li>
  * <li>-output (any variable [optional]): the variable to print the processed
  * result.</li>
- * 
+ *
  * </ul>
- * 
+ *
  * <p>
  * Example:
  * <ul>
- * 
+ *
  * <li> <code>.puts("Testing variable #{A}")</code>: prints out to the
  * console the supplied string replacing #{A} with the value of variable A.</li>
- * <li> <code>.puts("Testing variable #{A}, into B", B)</code>: tries to unify 
+ * <li> <code>.puts("Testing variable #{A}, into B", B)</code>: tries to unify
  * B with the supplied string replacing #{A} with the value of variable A.</li>
  * <li> <code>.puts("The value of the expression is #{X+2}")</code>: prints out
  * the result of the X+2 expression. Assuming X is unified to a numeric value,
- * the printed result will be the sum of X and two, if X is unified to any 
- * other value, the original expression (X+2) will be printed.</li> 
- * 
+ * the printed result will be the sum of X and two, if X is unified to any
+ * other value, the original expression (X+2) will be printed.</li>
+ *
  * </ul>
- * 
+ *
  * @author Felipe Meneguzzi (http://www.meneguzzi.eu/felipe)
- * 
+ *
  */
 
 public class puts extends DefaultInternalAction {
@@ -78,20 +78,24 @@ public class puts extends DefaultInternalAction {
 
     //Pattern regex = Pattern.compile("#\\{\\p{Upper}\\p{Alnum}*\\}");
     Pattern regex = Pattern.compile("#\\{[\\p{Alnum}_]+\\}");
-    
-    @Override public int getMinArgs() { return 1; }
-    @Override public int getMaxArgs() { return 2; }
+
+    @Override public int getMinArgs() {
+        return 1;
+    }
+    @Override public int getMaxArgs() {
+        return 2;
+    }
 
     @Override protected void checkArguments(Term[] args) throws JasonException {
         super.checkArguments(args); // check number of arguments
         if (!args[0].isString())
             throw JasonException.createWrongArgument(this,"first argument must be a string");
     }
-    
+
     @Override
     public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {
         checkArguments(args);
-        
+
         StringBuffer sb = new StringBuffer();
         for (Term term : args) {
             if (!term.isString()) {
@@ -120,7 +124,7 @@ public class puts extends DefaultInternalAction {
                     // sequence, so a user can see that his/her expression was problematic
                     matcher.appendReplacement(sb, "#{"+sVar+"}");
                 }
-                
+
             }
             matcher.appendTail(sb);
         }
@@ -133,7 +137,7 @@ public class puts extends DefaultInternalAction {
             return true;
         }
     }
-    
+
     public void makeVarsAnnon(Literal l, Unifier un) {
         try {
             for (int i=0; i<l.getArity(); i++) {
