@@ -12,8 +12,8 @@ import jason.asSyntax.Trigger.TEType;
 
 
 
-/** 
- * Convert an agent asl code to dot (http://www.graphviz.org/) 
+/**
+ * Convert an agent asl code to dot (http://www.graphviz.org/)
  * -- used to produce the graph of goals.
  *
  * @author Jomi
@@ -34,7 +34,7 @@ public class asl2dot extends asl2xml {
         so.append("// run: dot -Tpdf <theoutput> -o goals.pdf\n");
         so.append("digraph goals {\n");
         so.append("    rankdir=BT;\n\n");
-        
+
         Set<String> done = new HashSet<String>();
         for (Plan p: ag.getPL()) {
             if (p.getTrigger().getType() == TEType.achieve) {
@@ -47,7 +47,7 @@ public class asl2dot extends asl2xml {
                 while (b != null) {
                     if (b.getBodyType() == BodyType.achieve || b.getBodyType() == BodyType.achieveNF) {
                         String bs = ((Literal)b.getBodyTerm()).getFunctor();
-                        String e = bs+ps; 
+                        String e = bs+ps;
                         if (!done.contains(e)) {
                             done.add(e);
                             so.append("    "+bs+" -> "+ps+";\n");
@@ -57,7 +57,7 @@ public class asl2dot extends asl2xml {
                 }
             }
         }
-        
+
         so.append("}\n");
         return so.toString();
     }
