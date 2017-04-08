@@ -32,30 +32,30 @@ public class PlanTest extends TestCase {
         assertTrue(p3.isAtomic());
         assertTrue(p3.hasBreakpoint());
     }
-    
+
     public void testRelevant() throws JasonException, ParseException {
         PlanLibrary pl = new PlanLibrary();
         pl.add(Plan.parse("+p(0) <- .print(a)."));
         pl.add(Plan.parse("+p(X) : X > 0 <- .print(a)."));
-        
+
         pl.add(Plan.parse("+!p(0) <- .print(a)."));
         pl.add(Plan.parse("+!p(X) : X > 0 <- .print(a)."));
 
         pl.add(Plan.parse("+!X <- .print(a)."));
-        
+
         List<Plan> pls = pl.getCandidatePlans(ASSyntax.parseTrigger("+p(3)"));
         assertEquals(2, pls.size());
 
         pls = pl.getCandidatePlans(ASSyntax.parseTrigger("+!p(3)"));
-        assertEquals(3, pls.size());    
+        assertEquals(3, pls.size());
 
         pls = pl.getCandidatePlans(ASSyntax.parseTrigger("+!bla"));
-        assertEquals(1, pls.size());    
+        assertEquals(1, pls.size());
 
         pls = pl.getCandidatePlans(ASSyntax.parseTrigger("+bla"));
-        assertNull(pls);    
+        assertNull(pls);
     }
-    
+
     public void testParser1() {
         Plan p = Plan.parse("+te : a & b <- a1; a2; .print(a); !g1; !!g2; ?test1; 10 > 3; +b1; -b2; -+b3.");
         p = (Plan)p.clone();
@@ -73,7 +73,7 @@ public class PlanTest extends TestCase {
         assertEquals( PlanBody.BodyType.delAddBel, ((PlanBody)i.next()).getBodyType());
         assertFalse(i.hasNext());
     }
-    
+
     public void testDelete() {
         Plan p = Plan.parse("+te : a & b <- !a1; ?a2; .print(a); !g1.");
         assertEquals(4, p.getBody().getPlanSize());
@@ -86,7 +86,7 @@ public class PlanTest extends TestCase {
         p.getBody().removeBody(0); // 1
         assertTrue(p.getBody().isEmptyBody());
     }
-    
+
     public void testEqualsBodyLiteral() {
         PlanBody bl = new PlanBodyImpl(BodyType.achieve, new LiteralImpl("g1"));
         VarTerm v = new VarTerm("X");
@@ -99,7 +99,7 @@ public class PlanTest extends TestCase {
         Plan p = Plan.parse("+te : a & b <- !g1.");
         assertEquals(p.getBody(),vb);
     }
-    
+
     public void testUnifyBody() {
         Plan p1 = Plan.parse("+te : a & b <- !a1; ?a2; .print(a); !g1.");
         PlanBody bl = new PlanBodyImpl(BodyType.action, new VarTerm("A1"));
@@ -110,14 +110,14 @@ public class PlanTest extends TestCase {
         assertTrue(u.unifies(p1.getBody(), bl));
         assertEquals("a1", u.get("A1").toString());
         assertEquals("a2", u.get("A2").toString());
-        assertEquals(".print(a); !g1", u.get("A3").toString());  
+        assertEquals(".print(a); !g1", u.get("A3").toString());
     }
-    
+
     public void testPlanTermWithVarBody() throws ParseException {
         Term pt = ASSyntax.parseTerm("{ +!g : c <- B }");
         assertEquals("{ +!g : c <- B }", pt.toString());
         assertTrue(pt instanceof Plan);
-        
+
         Unifier u = new Unifier();
         u.unifies(new VarTerm("B"), ASSyntax.parseTerm("{ .print(a); .print(b); .print(c) }"));
         pt = pt.capply(u);
@@ -125,12 +125,12 @@ public class PlanTest extends TestCase {
         pt = ASSyntax.parseTerm("{ +!g : c <- B; a1; B }");
         pt = pt.capply(u);
         assertEquals("{ +!g : c <- .print(a); .print(b); .print(c); a1; .print(a); .print(b); .print(c) }", pt.toString());
-        
+
         pt = ASSyntax.parseTerm("{ +!g : c <- .print(0); B; B; .print(d); C }");
         u.unifies(new VarTerm("C"), ASSyntax.parseTerm("{ a1 }"));
         pt = pt.capply(u);
         assertEquals(9, ((Plan)pt).getBody().getPlanSize());
         assertEquals("{ +!g : c <- .print(0); .print(a); .print(b); .print(c); .print(a); .print(b); .print(c); .print(d); a1 }", pt.toString());
     }
-    
+
 }
