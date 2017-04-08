@@ -7,7 +7,7 @@ import jason.asSyntax.NumberTermImpl;
 import jason.asSyntax.Term;
 
 public class calculateMyBid extends DefaultInternalAction {
-    
+
     @Override
     public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {
         String id = ts.getUserAgArch().getAgName().substring(3);
