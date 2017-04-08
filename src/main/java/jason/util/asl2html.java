@@ -5,20 +5,20 @@ import javax.xml.transform.stream.StreamSource;
 
 
 
-/** 
- * Convert an agent asl code to HTML. 
+/**
+ * Convert an agent asl code to HTML.
  *
  * @author Jomi
  */
 public class asl2html extends asl2xml {
 
     String style = "/xml/asl2html.xsl";
-    
+
     public asl2html() {}
     public asl2html(String style) {
         this.style = style;
     }
-    
+
     public static void main(String[] args) throws Exception {
         if (args.length != 1) {
             System.err.println("The asl code file must be informed");
@@ -30,7 +30,7 @@ public class asl2html extends asl2xml {
     public Transformer getTransformer()  throws Exception {
         if (transCache == null) {
             transCache = getFactory().newTransformer(
-                    new StreamSource(asl2html.class.getResource(style).openStream()));
+                             new StreamSource(asl2html.class.getResource(style).openStream()));
         }
         return transCache;
     }
