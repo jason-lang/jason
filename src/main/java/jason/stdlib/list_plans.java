@@ -10,7 +10,7 @@ import jason.asSyntax.Trigger;
 /**
 <p>Internal action: <b><code>.list_plans</code></b>.
 
-<p>Description: prints out the plans in the plan library. 
+<p>Description: prints out the plans in the plan library.
 
 <p>Parameter:<ul>
 <li>+ trigger (trigger term, [optional]): list only plan that unifies this parameter as trigger event.<br/>
@@ -28,7 +28,7 @@ public class list_plans extends DefaultInternalAction {
         Trigger te = null;
         if (args.length == 1 && args[0] instanceof Trigger)
             te = Trigger.tryToGetTrigger(args[0]);
-        
+
         for (Plan p: ts.getAg().getPL()) {
             if (!p.getLabel().toString().startsWith("kqml")) { // do not list kqml plans
                 if (te == null || new Unifier().unifies(p.getTrigger(), te)) {
