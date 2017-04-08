@@ -24,40 +24,40 @@ import jason.asSyntax.Trigger;
 
 /**
   <p>Internal action: <b><code>.wait(<i>E</i>,<i>T</i>)</code></b>.
-  
+
   <p>Description: suspend the intention for the time specified by <i>T</i> (in
-  milliseconds) or until some event <i>E</i> happens. The events follow the 
+  milliseconds) or until some event <i>E</i> happens. The events follow the
   AgentSpeak syntax but are enclosed by { and }, e.g. <code>{+bel(33)}</code>,
-  <code>{+!go(X,Y)}</code>. 
-  
+  <code>{+!go(X,Y)}</code>.
+
   <p>Parameters:<ul>
   <li><i>+ event</i> (trigger term [optional]): the event to wait for.<br/>
   <li><i>+ logical expression</i> ([optional]): the expression (as used on plans context) to wait to holds.<br/>
   <li>+ timeout (number [optional]): how many miliseconds should be waited.<br/>
   <li>- elapse time (var [optional]): the amount of time the intention was suspended waiting.<br/>
   </ul>
-  
-  
+
+
   <p>Examples:<ul>
   <li> <code>.wait(1000)</code>: suspend the intention for 1 second.
 
   <li> <code>.wait({+b(1)})</code>: suspend the intention until the belief
   <code>b(1)</code> is added in the belief base.
 
-  <li> <code>.wait(b(X) & X > 10)</code>: suspend the intention until the agent believes 
+  <li> <code>.wait(b(X) & X > 10)</code>: suspend the intention until the agent believes
   <code>b(X)</code> with X greater than 10.
 
   <li> <code>.wait({+!g}, 2000)</code>: suspend the intention until the goal
   <code>g</code> is triggered or 2 seconds have passed, whatever happens
   first. In case the event does not happens in two seconds, the internal action
-  fails. 
+  fails.
 
   <li> <code>.wait({+!g}, 2000, EventTime)</code>: suspend the intention until the goal
   <code>g</code> is triggered or 2 seconds have passed, whatever happens
-  first. 
-  As this use of .wait has three arguments, in case the event does not happen in 
+  first.
+  As this use of .wait has three arguments, in case the event does not happen in
   two seconds, the internal action does not fail (as in the previous example).
-  The third argument will be unified to the 
+  The third argument will be unified to the
   elapsed time (in miliseconds) from the start of .wait until the event or timeout. </ul>
 
   @see jason.stdlib.at
@@ -65,23 +65,31 @@ import jason.asSyntax.Trigger;
  */
 public class wait extends DefaultInternalAction {
 
-    public static final String waitAtom = ".wait"; 
+    public static final String waitAtom = ".wait";
 
-    @Override public boolean canBeUsedInContext() { return false;  }
-    @Override public boolean suspendIntention()   { return true;  } 
-    
-    @Override public int getMinArgs() { return 1; }
-    @Override public int getMaxArgs() { return 3; }
+    @Override public boolean canBeUsedInContext() {
+        return false;
+    }
+    @Override public boolean suspendIntention()   {
+        return true;
+    }
+
+    @Override public int getMinArgs() {
+        return 1;
+    }
+    @Override public int getMaxArgs() {
+        return 3;
+    }
 
     @Override
     public Object execute(final TransitionSystem ts, Unifier un, Term[] args) throws Exception {
         checkArguments(args);
-        
+
         long timeout = -1;
         Trigger te = null;
         LogicalFormula f = null;
         Term elapsedTime = null;
-        
+
         if (args[0].isNumeric()) {
             // time in milliseconds
             NumberTerm time = (NumberTerm)args[0];
@@ -100,9 +108,9 @@ public class wait extends DefaultInternalAction {
         }
         new WaitEvent(te, f, un, ts, timeout, elapsedTime);
         return true;
-    }    
+    }
 
-    class WaitEvent implements CircumstanceListener { 
+    class WaitEvent implements CircumstanceListener {
         private Trigger          te;
         private LogicalFormula   formula;
         private String           sEvt; // a string version of what is being waited
@@ -113,7 +121,7 @@ public class wait extends DefaultInternalAction {
         private boolean          dropped = false;
         private Term             elapsedTimeTerm;
         private long             startTime;
-        
+
         WaitEvent(Trigger te, LogicalFormula f, Unifier un, TransitionSystem ts, long timeout, Term elapsedTimeTerm) {
             this.te = te;
             this.formula = f;
@@ -125,7 +133,7 @@ public class wait extends DefaultInternalAction {
 
             // register listener
             c.addEventListener(this);
-            
+
             if (te != null) {
                 sEvt = te.toString();
             } else if (formula != null) {
@@ -135,7 +143,7 @@ public class wait extends DefaultInternalAction {
             }
             sEvt = si.getId()+"/"+sEvt;
             c.addPendingIntention(sEvt, si);
-            
+
             startTime = System.currentTimeMillis();
 
             if (timeout >= 0) {
@@ -168,7 +176,7 @@ public class wait extends DefaultInternalAction {
                                 }
                             } else if (! si.isFinished()) {
                                 si.peek().removeCurrentStep();
-                                
+
                                 if (elapsedTimeTerm != null) {
                                     long elapsedTime = System.currentTimeMillis() - startTime;
                                     un.unifies(elapsedTimeTerm, new NumberTermImpl(elapsedTime));
@@ -179,7 +187,7 @@ public class wait extends DefaultInternalAction {
                                     c.resumeIntention(si);
                                 }
                             }
-                        }    
+                        }
                     } catch (Exception e) {
                         ts.getLogger().log(Level.SEVERE, "Error at .wait thread", e);
                     }
