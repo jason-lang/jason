@@ -48,16 +48,20 @@ import java.util.Iterator;
 */
 
 public class nth extends DefaultInternalAction {
-    
+
     private static InternalAction singleton = null;
     public static InternalAction create() {
-        if (singleton == null) 
+        if (singleton == null)
             singleton = new nth();
         return singleton;
     }
 
-    @Override public int getMinArgs() { return 3; }
-    @Override public int getMaxArgs() { return 3; }
+    @Override public int getMinArgs() {
+        return 3;
+    }
+    @Override public int getMaxArgs() {
+        return 3;
+    }
 
     @Override protected void checkArguments(Term[] args) throws JasonException {
         super.checkArguments(args); // check number of arguments
@@ -77,27 +81,27 @@ public class nth extends DefaultInternalAction {
 
         if (args[0].isNumeric()) {
             int index = (int)((NumberTerm)args[0]).solve();
-    
+
             if (index < 0 || index >= list.size()) {
                 throw new JasonException("nth: index "+index+" is out of bounds ("+list.size()+")");
             }
-    
+
             return un.unifies(args[2], list.get(index));
         }
-        
+
         if (args[0].isVar()) {
-            
+
             final Iterator<Term> ilist = list.iterator();
-            
+
             // return all indexes for thirds arg
             return new Iterator<Unifier>() {
                 int index = -1;
                 Unifier c = null; // the current response (which is an unifier)
-                
+
                 public boolean hasNext() {
-                    if (c == null) // the first call of hasNext should find the first response 
+                    if (c == null) // the first call of hasNext should find the first response
                         find();
-                    return c != null; 
+                    return c != null;
                 }
 
                 public Unifier next() {
@@ -106,7 +110,7 @@ public class nth extends DefaultInternalAction {
                     find(); // find next response
                     return b;
                 }
-                
+
                 void find() {
                     while (ilist.hasNext()) {
                         index++;
@@ -117,12 +121,12 @@ public class nth extends DefaultInternalAction {
                             return; // found another response
                         }
                     }
-                    c = null; // no more sublists found 
+                    c = null; // no more sublists found
                 }
 
                 public void remove() {}
             };
-            
+
         }
         return false;
     }
