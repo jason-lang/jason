@@ -14,14 +14,14 @@ import jason.infra.jade.*;
 
 import java.util.logging.Logger;
 
-/** 
+/**
  * Register a service in the jade DF (available only when the JADE infrastructure is used)
  *
  * This internal action does not replace the services of the agent, but add a new service.
- * 
+ *
  * The first argument is the service type and
  * the second is the name (they should be String).
- * 
+ *
  * @author jomi
  */
 public class register extends DefaultInternalAction {
@@ -38,7 +38,7 @@ public class register extends DefaultInternalAction {
                 // 0. get arguments from the AgentSpeak code (type and name of the new service)
                 StringTerm type = (StringTerm)args[0];
                 StringTerm name = (StringTerm)args[1];
-                
+
                 // 1. get current services
                 DFAgentDescription dfd = new DFAgentDescription();
                 dfd.setName(infra.getAID());
@@ -46,9 +46,9 @@ public class register extends DefaultInternalAction {
                 DFAgentDescription list[] = DFService.search( infra, dfd );
 
                 // 2. deregister
-                if ( list.length > 0 ) { 
+                if ( list.length > 0 ) {
                     DFService.deregister(infra);
-                    dfd = list[0]; // the first result 
+                    dfd = list[0]; // the first result
                 }
 
                 // 3. add a new services
@@ -56,10 +56,10 @@ public class register extends DefaultInternalAction {
                 sd.setType(type.getString());
                 sd.setName(name.getString());
                 dfd.addServices(sd);
-                
+
                 // 4. register again
                 DFService.register(infra, dfd);
-                
+
                 return true;
             } else {
                 logger.warning("jadefd.register can be used only with JADE infrastructure. Current arch is "+ts.getUserAgArch().getArchInfraTier().getClass().getName());
