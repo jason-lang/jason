@@ -8,9 +8,9 @@ import jason.asSyntax.Term;
 /**
 
   <p>Internal action: <b><code>.drop_all_events</code></b>.
-  
+
   <p>Description: removes all desires that the
-     agent has not yet committed to. 
+     agent has not yet committed to.
      No event is produced.
 
   <p>This action changes the agent's circumstance structure by simply
@@ -19,7 +19,7 @@ import jason.asSyntax.Term;
     in case all entries are to be removed from the set of events but
     <b>not</b> from the set of intentions.
 
-  <p>Example:<ul> 
+  <p>Example:<ul>
 
   <li> <code>.drop_all_events</code>.
 
@@ -41,9 +41,13 @@ import jason.asSyntax.Term;
  */
 public class drop_all_events extends DefaultInternalAction {
 
-    @Override public int getMinArgs() { return 0; }
-    @Override public int getMaxArgs() { return 0; }
-    
+    @Override public int getMinArgs() {
+        return 0;
+    }
+    @Override public int getMaxArgs() {
+        return 0;
+    }
+
     @Override
     public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {
         checkArguments(args);
