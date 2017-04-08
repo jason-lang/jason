@@ -19,10 +19,10 @@ import jason.asSyntax.Structure;
 
 
 /**
- * General environment class that "synchronise" all agents actions. 
- * It waits one action for each agent and, when all actions is received, 
+ * General environment class that "synchronise" all agents actions.
+ * It waits one action for each agent and, when all actions is received,
  * executes them.
- * 
+ *
  * @author Jomi
  *
  */
@@ -33,34 +33,34 @@ public class TimeSteppedEnvironment extends Environment {
     /** Policy used when a second action is requested and the agent still has another action pending execution */
     public enum OverActionsPolicy {
         /** Queue the second action request for future execution */
-        queue, 
-        
+        queue,
+
         /** Fail the second action */
         failSecond,
-        
+
         /** Ignore the second action, it is considered as successfully executed */
         ignoreSecond
     };
-        
+
     private int step = 0;   // step counter
     private int nbAgs = -1; // number of agents acting on the environment
     private Map<String,ActRequest> requests; // actions to be executed
-    private Queue<ActRequest> overRequests; // second action tentative in the step  
+    private Queue<ActRequest> overRequests; // second action tentative in the step
     private TimeOutThread timeoutThread = null;
     private long stepTimeout = 0;
     private int  sleep = 0; // pause time between cycles
-    
-    
+
+
     private OverActionsPolicy overActPol = OverActionsPolicy.ignoreSecond;
-    
+
     public TimeSteppedEnvironment() {
         super(2);
     }
-    
+
     @Override
     public void init(String[] args) {
         super.init(args);
-            
+
         if (args.length > 0) {
             try {
                 stepTimeout = Integer.parseInt(args[0]);
@@ -68,7 +68,7 @@ public class TimeSteppedEnvironment extends Environment {
                 logger.warning("The argument "+args[0]+" is not a valid number for step timeout");
             }
         }
-        
+
         // reset everything
         requests = new HashMap<String,ActRequest>();
         overRequests = new LinkedList<ActRequest>();
@@ -88,22 +88,22 @@ public class TimeSteppedEnvironment extends Environment {
     public void setSleep(int s) {
         sleep = s;
     }
-    
+
     public void setTimeout(int to) {
         stepTimeout = to;
         if (timeoutThread != null)
             timeoutThread.timeout = to;
     }
-    
-    
+
+
     @Override
     public void stop() {
         super.stop();
         if (timeoutThread != null) timeoutThread.interrupt();
     }
-    
-    
-    /** 
+
+
+    /**
      *  Updates the number of agents using the environment, this default
      *  implementation, considers all agents in the MAS as actors in the
      *  environment.
@@ -116,7 +116,7 @@ public class TimeSteppedEnvironment extends Environment {
     public int getNbAgs() {
         return nbAgs;
     }
-    
+
     /** Set the number of agents */
     public void setNbAgs(int n) {
         nbAgs = n;
@@ -126,25 +126,25 @@ public class TimeSteppedEnvironment extends Environment {
     public int getStep() {
         return step;
     }
-    
-    /** 
+
+    /**
      * Sets the policy used for the second ask for an action while another action is not finished yet.
-     * If set as queue, the second action is added in a queue for future execution 
+     * If set as queue, the second action is added in a queue for future execution
      * If set as failSecond, the second action fails.
      */
     public void setOverActionsPolicy(OverActionsPolicy p) {
         overActPol = p;
     }
-    
+
     @Override
     public void scheduleAction(String agName, Structure action, Object infraData) {
         if (!isRunning()) return;
-        
+
         //System.out.println("scheduling "+action+" for "+agName);
         ActRequest newRequest = new ActRequest(agName, action, requiredStepsForAction(agName, action), infraData);
 
         boolean startNew = false;
-        
+
         synchronized (requests) { // lock access to requests
             if (nbAgs < 0) { // || timeoutThread == null) {
                 // initialise dynamic information
@@ -165,11 +165,11 @@ public class TimeSteppedEnvironment extends Environment {
                     getEnvironmentInfraTier().actionExecuted(agName, action, false, infraData);
                 } else if (overActPol == OverActionsPolicy.ignoreSecond) {
                     getEnvironmentInfraTier().actionExecuted(agName, action, true, infraData);
-                }   
+                }
             } else {
-                // store the action request         
+                // store the action request
                 requests.put(agName, newRequest);
-        
+
                 // test if all agents have sent their actions
                 if (testEndCycle(requests.keySet())) {
                     startNew = true;
@@ -184,9 +184,9 @@ public class TimeSteppedEnvironment extends Environment {
                 }
             }
         }
-        
+
         if (startNew) {
-            if (timeoutThread != null) 
+            if (timeoutThread != null)
                 timeoutThread.allAgFinished();
             else
                 startNewStep();
@@ -200,21 +200,21 @@ public class TimeSteppedEnvironment extends Environment {
         }
         return null;
     }
-    
-    /** 
-     * Returns true when a new cycle can start, it normally 
+
+    /**
+     * Returns true when a new cycle can start, it normally
      * holds when all agents are in the finishedAgs set.
-     *  
+     *
      * @param finishedAgs the set of agents' name that already finished the current cycle
-     */ 
+     */
     protected boolean testEndCycle(Set<String> finishedAgs) {
         return finishedAgs.size() >= getNbAgs();
     }
-    
-    /** This method is called after the execution of the action and before to send 'continue' to the agents */ 
+
+    /** This method is called after the execution of the action and before to send 'continue' to the agents */
     protected void updateAgsPercept() {
-    }   
-    
+    }
+
     private void startNewStep() {
         if (!isRunning()) return;
 
@@ -223,7 +223,7 @@ public class TimeSteppedEnvironment extends Environment {
 
             //logger.info("#"+requests.size());
             //logger.info("#"+overRequests.size());
-            
+
             try {
 
                 // execute all scheduled actions
@@ -234,9 +234,9 @@ public class TimeSteppedEnvironment extends Environment {
                         a.success = executeAction(a.agName, a.action);
                     }
                 }
-                
+
                 updateAgsPercept();
-                
+
                 // notify the agents about the result of the execution
                 Iterator<ActRequest> i = requests.values().iterator();
                 while (i.hasNext()) {
@@ -246,10 +246,10 @@ public class TimeSteppedEnvironment extends Environment {
                         i.remove();
                     }
                 }
-                
+
                 // clear all requests
                 //requests.clear();
-                
+
                 // add actions waiting in over requests into the requests
                 Iterator<ActRequest> io = overRequests.iterator();
                 while (io.hasNext()) {
@@ -259,13 +259,13 @@ public class TimeSteppedEnvironment extends Environment {
                         io.remove();
                     }
                 }
-                
+
                 // the over requests could complete the requests
                 // so test end of step again
                 if (nbAgs > 0 && testEndCycle(requests.keySet())) {
                     startNewStep();
                 }
-                
+
                 stepStarted(step);
             } catch (Exception ie) {
                 if (isRunning() && !(ie instanceof InterruptedException)) {
@@ -274,19 +274,19 @@ public class TimeSteppedEnvironment extends Environment {
             }
         }
     }
-    
+
     /** to be overridden by the user class */
     protected void stepStarted(int step) {
     }
 
     /** to be overridden by the user class */
-    protected void stepFinished(int step, long elapsedTime, boolean byTimeout) {     
+    protected void stepFinished(int step, long elapsedTime, boolean byTimeout) {
     }
-    
+
     protected int requiredStepsForAction(String agName, Structure action) {
         return 1;
     }
-    
+
     /** stops perception while executing the step's actions */
     @Override
     public Collection<Literal> getPercepts(String agName) {
@@ -294,12 +294,12 @@ public class TimeSteppedEnvironment extends Environment {
             return super.getPercepts(agName);
         }
     }
-    
+
     class ActRequest {
         String agName;
         Structure action;
         Object infraData;
-        boolean success; 
+        boolean success;
         int remainSteps; // the number os steps this action have to wait to be executed
         public ActRequest(String ag, Structure act, int rs, Object data) {
             agName = ag;
@@ -317,7 +317,7 @@ public class TimeSteppedEnvironment extends Environment {
             return "["+agName+","+action+"]";
         }
     }
-    
+
     class TimeOutThread extends Thread {
         Lock lock = new ReentrantLock();
         Condition agActCond = lock.newCondition();
@@ -328,14 +328,14 @@ public class TimeSteppedEnvironment extends Environment {
             super("EnvironmentTimeOutThread");
             timeout = to;
         }
-        
+
         public void allAgFinished() {
             lock.lock();
             allFinished = true;
             agActCond.signal();
             lock.unlock();
         }
-        
+
         public void run() {
             try {
                 while (true) {
@@ -352,10 +352,10 @@ public class TimeSteppedEnvironment extends Environment {
                     lock.unlock();
                     startNewStep();
                 }
-            } catch (InterruptedException e) {              
+            } catch (InterruptedException e) {
             } catch (Exception e) {
                 logger.log(Level.SEVERE, "Error in timeout thread!",e);
             }
         }
-    }    
+    }
 }
