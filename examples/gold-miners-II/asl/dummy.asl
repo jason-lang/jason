@@ -19,7 +19,7 @@ random_pos(X,Y) :-
 
 /* -- Gold found! -- */
 
-// in the positon of the agent
+// in the position of the agent
 +pos(X,Y,_) 
    : cell(X,Y,gold) &
      carrying_gold(N) & N < 3 // container has space 
