@@ -15,14 +15,14 @@ import cartago.tools.GUIArtifact;
 
 public class Calendar extends GUIArtifact {
     Term[] days = {
-                ASSyntax.createAtom("sunday"),
-                ASSyntax.createAtom("monday"),
-                ASSyntax.createAtom("tuesday"),
-                ASSyntax.createAtom("wednesday"),
-                ASSyntax.createAtom("thursday"),
-                ASSyntax.createAtom("friday"),
-                ASSyntax.createAtom("saturday")
-            };
+        ASSyntax.createAtom("sunday"),
+        ASSyntax.createAtom("monday"),
+        ASSyntax.createAtom("tuesday"),
+        ASSyntax.createAtom("wednesday"),
+        ASSyntax.createAtom("thursday"),
+        ASSyntax.createAtom("friday"),
+        ASSyntax.createAtom("saturday")
+    };
 
     public void setup() {
         defineObsProperty("today", days[0]);
