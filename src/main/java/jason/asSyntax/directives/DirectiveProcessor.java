@@ -16,13 +16,13 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/** 
+/**
  * This class maintains the set of directives and is used by the
  * parser to process them.
- * 
+ *
  * All available directives must be registered in this class using the
  * addDirective method.
- * 
+ *
  * @author jomi
  *
  */
@@ -33,23 +33,23 @@ public class DirectiveProcessor {
     private static Map<String,Class> directives = new HashMap<String,Class>();
     private Map<String,Directive> instances  = new HashMap<String,Directive>();
     private static Map<String,Directive> singletons = new HashMap<String,Directive>();
-    
+
     public static void registerDirective(String id, Class d) {
         directives.put(id,d);
     }
-    
+
     public static Directive getDirective(String id) {
         Directive d = singletons.get(id);
         if (d != null)
             return d;
-        
+
         // create the instance
         Class c = directives.get(id);
         if (c == null) {
             logger.log(Level.SEVERE, "Unknown directive "+id);
             return null;
         }
-            
+
         try {
             d = (Directive)c.newInstance();
             if (d.isSingleton())
@@ -58,13 +58,13 @@ public class DirectiveProcessor {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return null;        
+        return null;
     }
-    
+
     //public static Directive removeDirective(String id) {
     //    return directives.remove(id);
     //}
-    
+
     // add known directives
     static {
         registerDirective("include", Include.class);
@@ -81,27 +81,27 @@ public class DirectiveProcessor {
         registerDirective("mg",  MG.class);
         registerDirective("sga", SGA.class);
     }
-    
+
     public Directive getInstance(Pred directive) {
-        return getInstance(directive.getFunctor());        
+        return getInstance(directive.getFunctor());
     }
-    
+
     public Directive getInstance(String id) {
         Directive d = instances.get(id);
         if (d != null)
             return d;
-        
+
         d = singletons.get(id);
         if (d != null)
             return d;
-        
+
         // create the instance
         Class c = directives.get(id);
         if (c == null) {
             logger.log(Level.SEVERE, "Unknown directive "+id);
             return null;
         }
-            
+
         try {
             d = (Directive)c.newInstance();
             if (d.isSingleton())
@@ -112,7 +112,7 @@ public class DirectiveProcessor {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return null;        
+        return null;
     }
-    
+
 }
