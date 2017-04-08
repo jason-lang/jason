@@ -51,7 +51,7 @@ public class KillAgentGUI extends BaseDialogGUI {
                     services.killAgent(agName, "KillAgGUI");
                 }
             }
-        }.start();
+        } .start();
         return true;
     }
 }
