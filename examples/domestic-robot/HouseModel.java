@@ -3,14 +3,14 @@ import jason.environment.grid.Location;
 
 /** class that implements the Model of Domestic Robot application */
 public class HouseModel extends GridWorldModel {
-    
+
     // constants for the grid objects
     public static final int FRIDGE = 16;
     public static final int OWNER  = 32;
 
     // the grid size
     public static final int GSize = 7;
-    
+
     boolean fridgeOpen   = false; // whether the fridge is open
     boolean carryingBeer = false; // whether the robot is carrying beer
     int sipCount        = 0; // how many sip the owner did
@@ -26,7 +26,7 @@ public class HouseModel extends GridWorldModel {
         // initial location of robot (column 3, line 3)
         // ag code 0 means the robot
         setAgPos(0, GSize/2, GSize/2);
-        
+
         // initial location of fridge and owner
         add(FRIDGE, lFridge);
         add(OWNER, lOwner);
@@ -43,12 +43,12 @@ public class HouseModel extends GridWorldModel {
 
     boolean closeFridge() {
         if (fridgeOpen) {
-            fridgeOpen = false; 
+            fridgeOpen = false;
             return true;
         } else {
             return false;
         }
-    }  
+    }
 
     boolean moveTowards(Location dest) {
         Location r1 = getAgPos(0);
@@ -57,7 +57,7 @@ public class HouseModel extends GridWorldModel {
         if (r1.y < dest.y)        r1.y++;
         else if (r1.y > dest.y)   r1.y--;
         setAgPos(0, r1); // move the robot in the grid
-        
+
         // repaint the fridge and owner locations
         if (view != null) {
             view.update(lFridge.x,lFridge.y);
@@ -65,7 +65,7 @@ public class HouseModel extends GridWorldModel {
         }
         return true;
     }
-    
+
     boolean getBeer() {
         if (fridgeOpen && availableBeers > 0 && !carryingBeer) {
             availableBeers--;
@@ -77,14 +77,14 @@ public class HouseModel extends GridWorldModel {
             return false;
         }
     }
-    
+
     boolean addBeer(int n) {
         availableBeers += n;
         if (view != null)
             view.update(lFridge.x,lFridge.y);
         return true;
     }
-    
+
     boolean handInBeer() {
         if (carryingBeer) {
             sipCount = 10;
@@ -96,7 +96,7 @@ public class HouseModel extends GridWorldModel {
             return false;
         }
     }
-    
+
     boolean sipBeer() {
         if (sipCount > 0) {
             sipCount--;
