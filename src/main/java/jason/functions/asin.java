@@ -6,18 +6,18 @@ import jason.asSemantics.TransitionSystem;
 import jason.asSyntax.NumberTerm;
 import jason.asSyntax.Term;
 
-/** 
+/**
   <p>Function: <b><code>math.asin(N)</code></b>: encapsulates java Math.asin(N),
   returns the arc sine of a value; the returned angle is in the range -pi/2 through pi/2.
-  
-  @author Jomi 
+
+  @author Jomi
 */
 public class asin extends DefaultArithFunction  {
 
     public String getName() {
         return "math.asin";
     }
-    
+
     @Override
     public double evaluate(TransitionSystem ts, Term[] args) throws Exception {
         if (args[0].isNumeric()) {
@@ -31,5 +31,5 @@ public class asin extends DefaultArithFunction  {
     public boolean checkArity(int a) {
         return a == 1;
     }
-    
+
 }

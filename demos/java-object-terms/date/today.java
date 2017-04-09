@@ -18,7 +18,7 @@ public class today extends DefaultInternalAction {
         try {
             // create the ObjectTerm (the argument is any java object)
             Term t = new ObjectTermImpl(new NiceToStringForCalendar());
-            
+
             // unifies the new term with the arguments of the internal action
             return un.unifies(args[0], t);
         } catch (Exception e) {
@@ -26,7 +26,7 @@ public class today extends DefaultInternalAction {
         }
         return false;
     }
-    
+
     // a class to printout dates
     class NiceToStringForCalendar extends GregorianCalendar {
         @Override

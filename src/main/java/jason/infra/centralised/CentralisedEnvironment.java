@@ -22,9 +22,9 @@ public class CentralisedEnvironment implements EnvironmentInfraTier {
     private Environment userEnv;
     private BaseCentralisedMAS masRunner = BaseCentralisedMAS.getRunner();
     private boolean running = true;
-    
+
     private static Logger logger = Logger.getLogger(CentralisedEnvironment.class.getName());
-    
+
     public CentralisedEnvironment(ClassParameters userEnvArgs, BaseCentralisedMAS masRunner) throws JasonException {
         this.masRunner = masRunner;
         if (userEnvArgs != null) {
@@ -38,11 +38,11 @@ public class CentralisedEnvironment implements EnvironmentInfraTier {
             }
         }
     }
-    
+
     public boolean isRunning() {
         return running;
     }
-    
+
     /** called before the end of MAS execution, it just calls the user environment class stop method. */
     public void stop() {
         running = false;
@@ -62,7 +62,7 @@ public class CentralisedEnvironment implements EnvironmentInfraTier {
             userEnv.scheduleAction(agName, action.getActionTerm(), action);
         }
     }
-    
+
     public void actionExecuted(String agName, Structure actTerm, boolean success, Object infraData) {
         ActionExec action = (ActionExec)infraData;
         action.setResult(success);
@@ -70,11 +70,11 @@ public class CentralisedEnvironment implements EnvironmentInfraTier {
         if (ag != null) // the agent may was killed
             ag.actionExecuted(action);
     }
-    
-    
+
+
     public void informAgsEnvironmentChanged(String... agents) {
         if (agents.length == 0) {
-            for (CentralisedAgArch ag: masRunner.getAgs().values()) { 
+            for (CentralisedAgArch ag: masRunner.getAgs().values()) {
                 ag.getTS().getUserAgArch().wakeUpSense();
             }
         } else {
@@ -85,14 +85,14 @@ public class CentralisedEnvironment implements EnvironmentInfraTier {
                         ((CentralisedAgArchAsynchronous) ag.getTS().getUserAgArch()).wakeUpSense();
                     } else {
                         ag.wakeUpSense();
-                    }                
+                    }
                 } else {
                     logger.log(Level.SEVERE, "Error sending message notification: agent " + agName + " does not exist!");
                 }
             }
-            
+
         }
-    }   
+    }
 
     public void informAgsEnvironmentChanged(Collection<String> agentsToNotify) {
         if (agentsToNotify == null) {

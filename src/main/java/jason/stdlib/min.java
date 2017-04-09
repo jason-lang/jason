@@ -14,15 +14,15 @@ import java.util.Iterator;
 <p>Internal action: <b><code>.min</code></b>.
 
     <p>Description: gets the minimum value of a list of terms, using
-    the "natural" order of terms. Between 
+    the "natural" order of terms. Between
 different types of terms, the following order is
 used:<br>
 
-numbers &lt; atoms &lt; structures &lt; lists 
+numbers &lt; atoms &lt; structures &lt; lists
 
 <p>Parameters:<ul>
 <li>+   list (list): the list where to find the minimal term.<br/>
-<li>+/- minimal (term). 
+<li>+/- minimal (term).
 </ul>
 
 <p>Examples:<ul>
@@ -60,16 +60,20 @@ numbers &lt; atoms &lt; structures &lt; lists
 
 */
 public class min extends DefaultInternalAction {
-    
+
     private static InternalAction singleton = null;
     public static InternalAction create() {
-        if (singleton == null) 
+        if (singleton == null)
             singleton = new min();
         return singleton;
     }
 
-    @Override public int getMinArgs() { return 2; }
-    @Override public int getMaxArgs() { return 2; }
+    @Override public int getMinArgs() {
+        return 2;
+    }
+    @Override public int getMaxArgs() {
+        return 2;
+    }
 
     @Override protected void checkArguments(Term[] args) throws JasonException {
         super.checkArguments(args); // check number of arguments
@@ -83,7 +87,7 @@ public class min extends DefaultInternalAction {
 
         ListTerm list = (ListTerm)args[0];
         if (list.isEmpty()) {
-            return false;               
+            return false;
         }
 
         Iterator<Term> i = list.iterator();
@@ -96,7 +100,7 @@ public class min extends DefaultInternalAction {
         }
         return un.unifies(args[1], min.clone());
     }
-    
+
     protected boolean compare(Term a, Term t) {
         return a.compareTo(t) > 0;
     }

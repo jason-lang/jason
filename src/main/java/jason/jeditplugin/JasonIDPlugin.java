@@ -24,7 +24,7 @@ public class JasonIDPlugin extends EBPlugin {
             org.gjt.sp.jedit.jEdit.setProperty("mode.asl.sidekick.parser", "asl");
             org.gjt.sp.jedit.jEdit.setProperty("sidekick.parser.mas2j_parser.label", "JasonProject");
             org.gjt.sp.jedit.jEdit.setProperty("mode.mas2j.sidekick.parser", "mas2j");
-            
+
             Class.forName(JasonIDOptionPanel.class.getName()); // just to run static init
         } catch (Exception e) {
         }
@@ -69,7 +69,7 @@ public class JasonIDPlugin extends EBPlugin {
                     }
                 }
                 //if (bu.getBuffer().getPath().endsWith(MAS2JProject.AS_EXT)) {
-                    //bu.getBuffer().setProperty("sidekick.parser", AgentSpeakSideKickParser.ID);
+                //bu.getBuffer().setProperty("sidekick.parser", AgentSpeakSideKickParser.ID);
                 //}
             }
         }

@@ -19,13 +19,13 @@ import javax.swing.JLabel;
 public class create extends DefaultInternalAction {
 
     int runCount = 0;
-    
+
     @Override
     public Object execute(final TransitionSystem ts, Unifier un, Term[] args) throws Exception {
-        
+
         // get the window title
         String title = ((StringTerm)args[0]).getString();
-        
+
         // create the windows
         final JButton run = new JButton("run");
         final JButton stop = new JButton("stop");
@@ -39,7 +39,7 @@ public class create extends DefaultInternalAction {
         frame.getContentPane().add(buttons);
         frame.pack();
         frame.setVisible(true);
-        
+
         // add the event listeners
         run.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -57,7 +57,7 @@ public class create extends DefaultInternalAction {
                 run.setEnabled(true);
             }
         });
-        
+
         return true;
     }
 }

@@ -15,7 +15,7 @@ public class show_counter extends DefaultInternalAction {
     private Logger logger = Logger.getLogger("act-sync.mas2j."+show_counter.class.getName());
 
     private int pos = -1;
-    
+
     @Override
     public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {
         try {

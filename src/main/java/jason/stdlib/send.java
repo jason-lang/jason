@@ -20,25 +20,25 @@ import java.util.concurrent.TimeUnit;
 
 /**
   <p>Internal action: <b><code>.send</code></b>.
-  
+
   <p>Description: sends a message to an agent.
-  
+
   <p>Parameters:<ul>
-  
+
   <li>+ receiver (atom, string, or list): the receiver of the
   message. It is the unique name of the agent that will receive the
   message (or list of names).<br/>
 
   <li>+ ilf (atom): the illocutionary force of the message (tell,
   achieve, ...).<br/>
-  
+
   <li>+ message (literal): the content of the message.<br/>
-  
+
   <li><i>+ answer</i> (any term [optional]): the answer of an ask
-  message (for performatives askOne, askAll, and askHow).<br/> 
-  
+  message (for performatives askOne, askAll, and askHow).<br/>
+
   <li><i>+ timeout</i> (number [optional]): timeout (in milliseconds)
-  when waiting for an ask answer.<br/> 
+  when waiting for an ask answer.<br/>
 
   </ul>
 
@@ -48,7 +48,7 @@ import java.util.concurrent.TimeUnit;
   or the message request times out as specified by
   <code>arg[4]</code>. Otherwise, the intention is not suspended and the
   answer (which is a tell message) produces a belief addition event as usual.
-  
+
   <p>Examples (suppose that agent <code>jomi</code> is sending the
   messages):<ul>
 
@@ -73,14 +73,14 @@ import java.util.concurrent.TimeUnit;
   and the result of this query is then sent to jomi. In the jomi's side, the rafael's answer
   is added in the jomi's belief base and an event like
   <code>+value(beer,10)[source(rafael)]</code> is generated.</li>
-  
+
   <li> <code>.send(rafael,askOne,value(beer,X),A)</code>: sends
   <code>value(beer,X)</code> to the agent named <code>rafael</code>. This askOne
-  is a synchronous askOne, it suspends <code>jomi</code>'s intention until 
+  is a synchronous askOne, it suspends <code>jomi</code>'s intention until
   <code>rafael</code>'s
   answer is received. The answer (something like <code>value(beer,10)</code>)
   unifies with <code>A</code>.</li>
-  
+
   <li> <code>.send(rafael,askOne,value(beer,X),A,2000)</code>: as in the
   previous example, but agent <code>jomi</code> waits for 2 seconds. If no
   message is received by then, <code>A</code> unifies with
@@ -93,16 +93,20 @@ import java.util.concurrent.TimeUnit;
 
 */
 public class send extends DefaultInternalAction {
-    
+
     @Override
     public boolean canBeUsedInContext() {
         return false;
     }
 
-    private boolean lastSendWasSynAsk = false; 
-    
-    @Override public int getMinArgs() { return 3; }
-    @Override public int getMaxArgs() { return 5; }
+    private boolean lastSendWasSynAsk = false;
+
+    @Override public int getMinArgs() {
+        return 3;
+    }
+    @Override public int getMaxArgs() {
+        return 5;
+    }
 
     @Override protected void checkArguments(Term[] args) throws JasonException {
         super.checkArguments(args); // check number of arguments
@@ -116,18 +120,18 @@ public class send extends DefaultInternalAction {
     @Override
     public Object execute(final TransitionSystem ts, Unifier un, Term[] args) throws Exception {
         checkArguments(args);
-        
+
         final Term to   = args[0];
         Term ilf  = args[1];
         Term pcnt = args[2];
-        
+
         // remove source annots in the content (in case it is a pred)
-        // -- CHANGE: use nested annots 
+        // -- CHANGE: use nested annots
         //try {
         //    ((Pred)pcnt).delSources();
         //} catch (Exception e) {}
-        
-    
+
+
         // create a message to be sent
         final Message m = new Message(ilf.toString(), ts.getUserAgArch().getAgName(), null, pcnt);
 
@@ -135,7 +139,7 @@ public class send extends DefaultInternalAction {
         lastSendWasSynAsk = m.isAsk() && args.length > 3;
         if (lastSendWasSynAsk) {
             m.setSyncAskMsgId();
-        	ts.getC().addPendingIntention(m.getMsgId(), ts.getC().getSelectedIntention());
+            ts.getC().addPendingIntention(m.getMsgId(), ts.getC().getSelectedIntention());
         }
 
         // (un)tell or unknown performative with 4 args is a reply to
@@ -146,7 +150,7 @@ public class send extends DefaultInternalAction {
             }
             m.setInReplyTo(mid.toString());
         }
-    
+
         // send the message
         if (to.isList()) {
             for (Term t: (ListTerm)to) {
@@ -155,7 +159,7 @@ public class send extends DefaultInternalAction {
         } else {
             delegateSendToArch(to, ts, m);
         }
-        
+
         if (lastSendWasSynAsk && args.length == 5) {
             // get the timeout deadline
             Term tto = args[4];
@@ -180,7 +184,7 @@ public class send extends DefaultInternalAction {
                             intention.peek().getUnif().unifies(send.getTerm(3), timeoutAns);
                             // add the intention back in C.I
                             ts.getC().resumeIntention(intention);
-                            ts.getUserAgArch().wakeUpAct();                                
+                            ts.getUserAgArch().wakeUpAct();
                         }
                     }
                 }, (long)((NumberTerm)tto).solve(), TimeUnit.MILLISECONDS);
@@ -188,12 +192,12 @@ public class send extends DefaultInternalAction {
                 throw new JasonException("The 5th parameter of send must be a number (timeout) and not '"+tto+"'!");
             }
         }
-        
+
         return true;
     }
 
     private void delegateSendToArch(Term to, TransitionSystem ts, Message m) throws Exception {
-        if (!to.isAtom() && !to.isString()) 
+        if (!to.isAtom() && !to.isString())
             throw new JasonException("The TO parameter ('"+to+"') of the internal action 'send' is not an atom!");
 
         String rec = null;
@@ -206,9 +210,9 @@ public class send extends DefaultInternalAction {
         m.setReceiver(rec);
         ts.getUserAgArch().sendMsg(m);
     }
-    
+
     @Override
     public boolean suspendIntention() {
         return lastSendWasSynAsk;
-    }    
+    }
 }

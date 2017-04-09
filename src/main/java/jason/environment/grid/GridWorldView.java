@@ -10,8 +10,8 @@ import java.awt.Graphics;
 import javax.swing.JFrame;
 
 /**
- * View component for a GirdWorldModel. 
- * 
+ * View component for a GirdWorldModel.
+ *
  * @author Jomi
  */
 public class GridWorldView extends JFrame {
@@ -25,7 +25,7 @@ public class GridWorldView extends JFrame {
     protected GridWorldModel model;
 
     protected Font defaultFont = new Font("Arial", Font.BOLD, 10);
- 
+
     public GridWorldView(GridWorldModel model, String title, int windowSize) {
         super(title);
         this.model = model;
@@ -38,9 +38,9 @@ public class GridWorldView extends JFrame {
         setSize(width, width);
         getContentPane().setLayout(new BorderLayout());
         drawArea = new GridCanvas();
-        getContentPane().add(BorderLayout.CENTER, drawArea);        
+        getContentPane().add(BorderLayout.CENTER, drawArea);
     }
-    
+
     @Override
     public void repaint() {
         cellSizeW = drawArea.getWidth() / model.getWidth();
@@ -53,7 +53,7 @@ public class GridWorldView extends JFrame {
     public void update() {
         repaint();
     }
-    
+
     /** updates only one position of the grid */
     public void update(int x, int y) {
         Graphics g = drawArea.getGraphics();
@@ -77,7 +77,7 @@ public class GridWorldView extends JFrame {
             drawString(g, x, y, defaultFont, String.valueOf(id+1));
         }
     }
-    
+
     public void drawString(Graphics g, int x, int y, Font f, String s) {
         g.setFont(f);
         FontMetrics metrics = g.getFontMetrics();
@@ -106,7 +106,7 @@ public class GridWorldView extends JFrame {
         if ((model.data[x][y] & GridWorldModel.OBSTACLE) != 0) {
             drawObstacle(g, x, y);
         }
-        
+
         int vl = GridWorldModel.OBSTACLE*2;
         while (vl < limit) {
             if ((model.data[x][y] & vl) != 0) {
@@ -114,22 +114,22 @@ public class GridWorldView extends JFrame {
             }
             vl *= 2;
         }
-        
+
         if ((model.data[x][y] & GridWorldModel.AGENT) != 0) {
             drawAgent(drawArea.getGraphics(), x, y, Color.blue, model.getAgAtPos(x, y));
         }
     }
-    
+
     public Canvas getCanvas() {
         return drawArea;
     }
-    
+
     public GridWorldModel getModel() {
         return model;
     }
-    
+
     class GridCanvas extends Canvas {
-        
+
         private static final long serialVersionUID = 1L;
 
         public void paint(Graphics g) {

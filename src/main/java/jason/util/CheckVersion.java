@@ -22,10 +22,10 @@ public class CheckVersion extends Thread {
 
     public static final String JasonSite = "http://jason.sf.net";
     String download;
-    
+
     String version;
-    String release; 
-    
+    String release;
+
     String getLatestVersion() {
         // read version from Jason site
         try {
@@ -70,13 +70,14 @@ public class CheckVersion extends Thread {
 
         JTextArea ta = new JTextArea(20, 90);
         f.add(BorderLayout.CENTER,new JScrollPane(ta));
-        
+
         JPanel sp = new JPanel(new FlowLayout(FlowLayout.CENTER));
         //JButton notShow = new JButton("Do not show this message again.");
         JButton ok = new JButton("Ok");
         ok.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
-                f.setVisible(false);            }
+                f.setVisible(false);
+            }
         });
         JButton notShow = new JButton("Do not show this message again");
         notShow.addActionListener(new ActionListener() {
@@ -90,7 +91,7 @@ public class CheckVersion extends Thread {
         sp.add(notShow);
         f.add(BorderLayout.SOUTH, sp);
         f.pack();
-        
+
         ta.append("A new version of Jason (" + getLatestVersion() + ") is available at\n\n");
         ta.append("      "+download+"\n\n");
         String wn = whatsNew();
@@ -109,7 +110,7 @@ public class CheckVersion extends Thread {
         // to avoid this thread to run twice
         if (alreadyRun) return;
         alreadyRun = true;
-        
+
         try {
             if (Config.get().getProperty(Config.CHECK_VERSION,"true").equals("true")) {
                 if (!isLatestVersion()) {

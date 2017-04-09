@@ -5,13 +5,13 @@ import jason.environment.Environment;
 import java.util.Random;
 
 public class testOWEnv extends Environment {
-    
+
     Literal pa  = Literal.parseLiteral("p(a)");
     Literal pb  = Literal.parseLiteral("p(b)");
     Literal npa = Literal.parseLiteral("~p(a)");
     Literal npb = Literal.parseLiteral("~p(b)");
     Random random;
-    
+
     public testOWEnv() {
         // initial percepts
         addPercept(pa);
@@ -20,7 +20,7 @@ public class testOWEnv extends Environment {
         addPercept(npb);
         random = new Random(System.currentTimeMillis());
     }
-    
+
     /**
      * Implementation of the agent's basic actions
      */

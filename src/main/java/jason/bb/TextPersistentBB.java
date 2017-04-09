@@ -19,7 +19,7 @@ public class TextPersistentBB extends ChainBBAdapter {
     private static Logger logger = Logger.getLogger(TextPersistentBB.class.getName());
 
     private File file = null;
-    
+
     public TextPersistentBB() { }
     public TextPersistentBB(BeliefBase next) {
         super(next);

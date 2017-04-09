@@ -13,19 +13,19 @@ import java.util.Iterator;
 /**
 
   <p>Internal action: <b><code>.eval(Var,Logical Expression)</code></b>.
-  
-  <p>Description: evaluates the logical expression (which computes to true or false), the result is unified with 
+
+  <p>Description: evaluates the logical expression (which computes to true or false), the result is unified with
   <i>Var</i>.
 
   <p>Parameters:<ul>
-  
+
   <li>+ term (variable, atoms true or false): the variable that unifies with the result of evaluation.<br/>
-  
+
   <li>+ query (logical formula): the formula that is evaluated.
   <br/>
 
   </ul>
-  
+
   <p>Examples:
 
   <ul>
@@ -38,8 +38,12 @@ import java.util.Iterator;
 */
 public class eval extends DefaultInternalAction {
 
-    @Override public int getMinArgs() { return 2; }
-    @Override public int getMaxArgs() { return 2; }
+    @Override public int getMinArgs() {
+        return 2;
+    }
+    @Override public int getMaxArgs() {
+        return 2;
+    }
 
     @Override public Term[] prepareArguments(Literal body, Unifier un) {
         return body.getTermsArray(); // we do not need clone neither apply for this internal action

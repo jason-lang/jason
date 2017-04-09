@@ -11,7 +11,7 @@ import org.w3c.dom.Element;
 
 /**
      A rule is a Literal (head) with a body, as in "a :- b &amp; c".
-    
+
      @navassoc - body - LogicalFormula
  */
 public class Rule extends LiteralImpl {
@@ -41,27 +41,27 @@ public class Rule extends LiteralImpl {
         body = (LogicalFormula)r.body.capply(u);
         predicateIndicatorCache = null;
     }
-    
-    
+
+
     @Override
     public boolean isRule() {
         return true;
     }
-    
+
     @Override
     public boolean isAtom() {
         return false;
     }
-    
+
     @Override
     public boolean isGround() {
         return false;
     }
-    
+
     public void setAsTerm(boolean b) {
         isTerm = b;
     }
-    
+
     public boolean isTerm() {
         return isTerm;
     }
@@ -71,7 +71,7 @@ public class Rule extends LiteralImpl {
         if (o != null && o instanceof Rule) {
             Rule r = (Rule) o;
             return super.equals(o) && body.equals(r.body);
-        } 
+        }
         return false;
     }
 
@@ -79,43 +79,43 @@ public class Rule extends LiteralImpl {
     protected int calcHashCode() {
         return super.calcHashCode() + body.hashCode();
     }
-    
+
     public LogicalFormula getBody() {
         return body;
     }
-    
+
     public Literal getHead() {
         return new LiteralImpl(this);
     }
-    
+
     @Override
     public Literal makeVarsAnnon(Unifier un) {
         if (body instanceof Literal)
             ((Literal)body).makeVarsAnnon(un);
         return super.makeVarsAnnon(un);
     }
-    
+
     @Override
     public Term capply(Unifier u) {
         return new Rule(this,u);
     }
-    
+
     public Rule clone() {
         Rule r = new Rule((Literal)super.clone(), (LogicalFormula)body.clone());
         r.predicateIndicatorCache = null;
         r.resetHashCodeCache();
         r.isTerm = this.isTerm;
-        return r; 
+        return r;
     }
-    
+
     public Literal headClone() {
         return (Literal)super.clone();
     }
-    
+
     public Literal headCApply(Unifier u) {
         return (Literal)super.capply(u);
     }
-    
+
     public String toString() {
         if (isTerm())
             return "{ " + super.toString() + " :- " + body + " }";
@@ -128,7 +128,7 @@ public class Rule extends LiteralImpl {
         if (super.hasVar(t, u)) return true;
         return body.hasVar(t, u);
     }
-    
+
     public void countVars(Map<VarTerm, Integer> c) {
         super.countVars(c);
         body.countVars(c);
@@ -141,10 +141,10 @@ public class Rule extends LiteralImpl {
 
         Element h = (Element) document.createElement("head");
         h.appendChild(super.getAsDOM(document));
-        
+
         Element b = (Element) document.createElement("context");
         b.appendChild(body.getAsDOM(document));
-        
+
         u.appendChild(h);
         u.appendChild(b);
         return u;

@@ -21,16 +21,16 @@ import java.util.Iterator;
 /**
   <p>Internal action:
   <b><code>.succeed_goal(<i>G</i>)</code></b>.
-  
+
   <p>Description: remove goals <i>G</i> from the agent circumstance as if a plan
   for such goal had successfully finished. <i>G</i>
   is a goal if there is a triggering event <code>+!G</code> in any plan within any
   intention; also note that intentions can be suspended hence appearing
   in E, PA, or PI as well.
   <br/>
-  The meta-event <code>^!G[state(finished)]</code> is produced. 
+  The meta-event <code>^!G[state(finished)]</code> is produced.
 
-  <p>Example:<ul> 
+  <p>Example:<ul>
 
   <li> <code>.succeed_goal(go(X,3))</code>: stops any attempt to achieve goals such as
   <code>!go(1,3)</code> as if it had already been achieved.
@@ -55,15 +55,19 @@ import java.util.Iterator;
  */
 public class succeed_goal extends DefaultInternalAction {
 
-    @Override public int getMinArgs() { return 1; }
-    @Override public int getMaxArgs() { return 1; }
+    @Override public int getMinArgs() {
+        return 1;
+    }
+    @Override public int getMaxArgs() {
+        return 1;
+    }
 
     @Override protected void checkArguments(Term[] args) throws JasonException {
         super.checkArguments(args); // check number of arguments
         if (!args[0].isLiteral())
             throw JasonException.createWrongArgument(this,"first argument must be a literal");
     }
-    
+
 
     @Override
     public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {
@@ -71,12 +75,12 @@ public class succeed_goal extends DefaultInternalAction {
         drop(ts, (Literal)args[0], un);
         return true;
     }
-    
+
     public void drop(TransitionSystem ts, Literal l, Unifier un) throws Exception {
         Trigger g = new Trigger(TEOperator.add, TEType.achieve, l);
         Circumstance C = ts.getC();
         Unifier bak = un.clone();
-        
+
         Iterator<Intention> itint = C.getIntentionsPlusAtomic();
         while (itint.hasNext()) {
             Intention i = itint.next();
@@ -85,11 +89,11 @@ public class succeed_goal extends DefaultInternalAction {
                 un = bak.clone();
             }
         }
-        
+
         // dropping the current intention?
         dropIntention(C.getSelectedIntention(), g, ts, un);
         un = bak.clone();
-            
+
         // dropping G in Events
         Iterator<Event> ie = C.getEventsPlusAtomic();
         while (ie.hasNext()) {
@@ -109,13 +113,13 @@ public class succeed_goal extends DefaultInternalAction {
                 if (i != Intention.EmptyInt && !i.isFinished()) {
                     t = t.capply(i.peek().getUnif());
                 }
-                if (un.unifies(g, t)) {                    
+                if (un.unifies(g, t)) {
                     dropInEvent(ts,e,i);
                     un = bak.clone();
                 }
             }
         }
-        
+
         // dropping G in Pending Events
         for (String ek: C.getPendingEvents().keySet()) {
             // test in the intention
@@ -153,20 +157,20 @@ public class succeed_goal extends DefaultInternalAction {
                 un = bak.clone();
             }
         }
-        
+
         // dropping from Pending Intentions
         for (Intention i: C.getPendingIntentions().values()) {
             int r = dropIntention(i, g, ts, un);
-            if (r > 0) { 
-                C.removePendingIntention(i.getId()); 
-                if (r == 1) { 
-                    C.resumeIntention(i); 
+            if (r > 0) {
+                C.removePendingIntention(i.getId());
+                if (r == 1) {
+                    C.resumeIntention(i);
                 }
                 un = bak.clone();
             }
         }
     }
-    
+
     /* returns: >0 the intention was changed
      *           1 = intention must continue running
      *           2 = fail event was generated and added in C.E
@@ -189,9 +193,9 @@ public class succeed_goal extends DefaultInternalAction {
                 return 3;
             }
         }
-        return 0;        
+        return 0;
     }
-    
+
     void dropInEvent(TransitionSystem ts, Event e, Intention i) throws Exception {
         Circumstance C = ts.getC();
         C.removeEvent(e);

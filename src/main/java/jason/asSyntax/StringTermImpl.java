@@ -9,40 +9,40 @@ import java.util.logging.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-/** 
+/**
  * Immutable class for string terms.
- * 
+ *
  * @author Jomi
  */
 public final class StringTermImpl extends DefaultTerm implements StringTerm {
 
     private static final long serialVersionUID = 1L;
     private static Logger logger = Logger.getLogger(StringTermImpl.class.getName());
-    
+
     private final String value;
 
     public StringTermImpl() {
         super();
         value = null;
     }
-    
+
     public StringTermImpl(String fs) {
         value = fs;
     }
-    
+
     public StringTermImpl(StringTermImpl t) {
         value   = t.getString();
-        srcInfo = t.srcInfo;        
+        srcInfo = t.srcInfo;
     }
 
     public String getString() {
         return value;
     }
-    
+
     public StringTerm clone() {
         return this;
     }
-    
+
     public static StringTerm parseString(String sTerm) {
         as2j parser = new as2j(new StringReader(sTerm));
         try {
@@ -86,17 +86,17 @@ public final class StringTermImpl extends DefaultTerm implements StringTerm {
         else
             return value.hashCode();
     }
-    
+
     @Override
     public int compareTo(Term o) {
         if (o instanceof VarTerm)
             return o.compareTo(this) * -1;
-        if (o instanceof NumberTerm) 
-             return 1;
+        if (o instanceof NumberTerm)
+            return 1;
         return super.compareTo(o);
     }
 
-    
+
     public String toString() {
         return "\""+value+"\"";
     }
@@ -106,5 +106,5 @@ public final class StringTermImpl extends DefaultTerm implements StringTerm {
         Element u = (Element) document.createElement("string-term");
         u.appendChild(document.createTextNode(toString()));
         return u;
-    }    
+    }
 }

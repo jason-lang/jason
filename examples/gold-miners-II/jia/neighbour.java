@@ -20,7 +20,7 @@ public class neighbour extends DefaultInternalAction {
             int itoy = (int) ((NumberTerm) terms[3]).solve();
             return new Location(iagx, iagy).isNeigbour(new Location(itox, itoy));
         } catch (Throwable e) {
-            ts.getLogger().log(Level.SEVERE, "neighbour error: "+e, e);         
+            ts.getLogger().log(Level.SEVERE, "neighbour error: "+e, e);
         }
         return false;
     }

@@ -11,7 +11,7 @@ import java.util.Queue;
 
 /**
  * change the default select event function to prefer cell(_,_,gold) events.
- * 
+ *
  * @author Jomi
  */
 public class SelectEvent extends Agent {
@@ -19,7 +19,7 @@ public class SelectEvent extends Agent {
     private Trigger gold    = Trigger.parseTrigger("+cell(_,_,gold)");
     private Trigger restart = Trigger.parseTrigger("+restart");
     private Unifier un   = new Unifier();
-    
+
     public Event selectEvent(Queue<Event> events) {
         Iterator<Event> ie = events.iterator();
         while (ie.hasNext()) {

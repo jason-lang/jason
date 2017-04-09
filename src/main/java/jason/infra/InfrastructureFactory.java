@@ -6,7 +6,7 @@ import jason.runtime.RuntimeServicesInfraTier;
  * Every infrastructure for Jason must implement this interface.  The
  * interface provides methods for JasonIDE and user's runtime classes,
  * etc.
- * 
+ *
  * @author Jomi
  */
 public interface InfrastructureFactory {

@@ -24,17 +24,17 @@ public class JasonProjectSideKickParser extends sidekick.SideKickParser {
     public static final String ID = "mas2j";
 
     static Set<JasonID> jasonPluginInstance = new HashSet<JasonID>();
-    
+
     SideKickParsedData pd = null;
-    
+
     public JasonProjectSideKickParser() {
         super(ID);
     }
-    
+
     public static void addPluginInstance(JasonID p) {
         jasonPluginInstance.add(p);
     }
-    
+
     public SideKickParsedData parse(Buffer buf, DefaultErrorSource errorSource) {
         String text;
         try {
@@ -45,29 +45,29 @@ public class JasonProjectSideKickParser extends sidekick.SideKickParser {
         }
 
         try {
-                mas2j parser = new mas2j(new StringReader(text));
-                MAS2JProject project = parser.mas();
-                project.setDirectory(buf.getDirectory());
-                project.fixAgentsSrc(null);
-                
-                // create nodes 
-                pd = new SideKickParsedData(buf.getName());
-                
-                pd.root.add(new ProjectAsset("Infrastructure: ",project.getInfrastructure().toString(), buf, INFRA_TYPE).createTreeNode());
-                if (project.getEnvClass() != null) {
-                    pd.root.add(new ProjectAsset("Environment: ",project.getEnvClass().toString(), buf, ENV_TYPE).createTreeNode());
-                }
+            mas2j parser = new mas2j(new StringReader(text));
+            MAS2JProject project = parser.mas();
+            project.setDirectory(buf.getDirectory());
+            project.fixAgentsSrc(null);
+
+            // create nodes
+            pd = new SideKickParsedData(buf.getName());
+
+            pd.root.add(new ProjectAsset("Infrastructure: ",project.getInfrastructure().toString(), buf, INFRA_TYPE).createTreeNode());
+            if (project.getEnvClass() != null) {
+                pd.root.add(new ProjectAsset("Environment: ",project.getEnvClass().toString(), buf, ENV_TYPE).createTreeNode());
+            }
+            for (JasonID jid: jasonPluginInstance) {
+                jid.listModel.clear();
+            }
+            for (AgentParameters ap: project.getAgents()) {
+                pd.root.add(new ProjectAsset("", ap.name + " ("+ap.asSource+")", buf, AG_TYPE).createTreeNode());
+
                 for (JasonID jid: jasonPluginInstance) {
-                    jid.listModel.clear();
+                    jid.listModel.addElement(ap);
                 }
-                for (AgentParameters ap: project.getAgents()) {
-                    pd.root.add(new ProjectAsset("", ap.name + " ("+ap.asSource+")", buf, AG_TYPE).createTreeNode());
-                    
-                    for (JasonID jid: jasonPluginInstance) {
-                        jid.listModel.addElement(ap);
-                    }
-                }
-                
+            }
+
         } catch (jason.mas2j.parser.ParseException ex) {
             addError(ex, errorSource, buf.getPath());
         } catch (Exception e) {
@@ -81,15 +81,15 @@ public class JasonProjectSideKickParser extends sidekick.SideKickParser {
             int line = ex.currentToken.next.beginLine-1;
             if (line < 0) line = 0;
             errorSource.addError(new DefaultErrorSource.DefaultError(
-                    errorSource, 
-                    ErrorSource.ERROR, 
-                    path,
-                    line, 0, 0,
-                    ex.toString()));
-        }   
-        
+                                     errorSource,
+                                     ErrorSource.ERROR,
+                                     path,
+                                     line, 0, 0,
+                                     ex.toString()));
+        }
+
     }
-    
+
     public String toString() {
         return ID;
     }
@@ -101,11 +101,11 @@ public class JasonProjectSideKickParser extends sidekick.SideKickParser {
     private static final int AG_TYPE = 1;
     private static final int INFRA_TYPE = 2;
     private static final int ENV_TYPE = 3;
-    
+
     class ProjectAsset extends Asset {
 
         int type = 1;
-        
+
         public ProjectAsset(String pre, String vl, Buffer buf, int type) {
             super(pre+vl);
             this.start = toPos(buf, vl);
@@ -146,9 +146,9 @@ public class JasonProjectSideKickParser extends sidekick.SideKickParser {
             String text = buffer.getText(0, buffer.getLength());
             int pos = text.indexOf(p);
             if (pos >= 0) {
-                return buffer.createPosition(pos);              
+                return buffer.createPosition(pos);
             } else {
-                return buffer.createPosition(0);                
+                return buffer.createPosition(0);
             }
         }
 

@@ -9,11 +9,11 @@ import java.util.logging.StreamHandler;
 
 /** Logger handler (redirect output to MASConsoleGUI) */
 public class MASConsoleLogHandler extends StreamHandler  {
-    
+
     public static String formaterField = MASConsoleLogHandler.class.getName()+".formatter";
     public static String levelField = MASConsoleLogHandler.class.getName()+".level";
     public static String useColorsPropField = MASConsoleLogHandler.class.getName() + ".colors";
-    
+
     private MASConsoleGUI fGUI;
 
     public MASConsoleLogHandler() {

@@ -27,9 +27,9 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/** 
+/**
  * This class maintains the set of arithmetic functions available for the AS parser.
- * 
+ *
  * @author Jomi
  */
 public class FunctionRegister extends DefaultDirective implements Directive {
@@ -56,7 +56,7 @@ public class FunctionRegister extends DefaultDirective implements Directive {
         addJasonFunction(log.class);
         addJasonFunction(time.class);
     }
-    
+
     private static void addJasonFunction(Class<? extends ArithFunction> c) {
         try {
             ArithFunction af = c.newInstance();
@@ -85,12 +85,12 @@ public class FunctionRegister extends DefaultDirective implements Directive {
             return "Can not register the function "+fName+"  twice!";
         else if (fName.indexOf(".") < 0)
             return "The function "+fName+" was not registered! A function must have a '.' in its name.";
-        else if (fName.startsWith(".")) 
+        else if (fName.startsWith("."))
             return "The function "+fName+" was not registered! An user function name can not start with '.'.";
-        else 
+        else
             return null;
     }
-    
+
     public static ArithFunction getFunction(String function, int arity) {
         ArithFunction af = functions.get(function);
         if (af != null && af.checkArity(arity))
@@ -98,7 +98,7 @@ public class FunctionRegister extends DefaultDirective implements Directive {
         else
             return null;
     }
-    
+
     @SuppressWarnings("unchecked")
     @Override
     public Agent process(Pred directive, Agent outerContent, Agent innerContent) {

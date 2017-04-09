@@ -24,7 +24,7 @@ public class MASConsoleLogFormatter extends java.util.logging.Formatter {
         s.append('\n');
         return s.toString();
     }
-    
+
     public static String getAgName(LogRecord l) {
         String lname = l.getLoggerName();
         int posd = lname.lastIndexOf('.');

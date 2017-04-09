@@ -19,41 +19,41 @@ import jason.runtime.Settings;
 public class CentralisedRuntimeServices implements RuntimeServicesInfraTier {
 
     private static Logger logger = Logger.getLogger(CentralisedRuntimeServices.class.getName());
-    
+
     protected BaseCentralisedMAS masRunner;
-    
+
     public CentralisedRuntimeServices(BaseCentralisedMAS masRunner) {
         this.masRunner = masRunner;
     }
-    
+
     protected CentralisedAgArch newAgInstance() {
         return new CentralisedAgArch();
     }
-    
+
     public String createAgent(String agName, String agSource, String agClass, List<String> archClasses, ClassParameters bbPars, Settings stts, Agent father) throws Exception {
-        if (logger.isLoggable(Level.FINE)) 
+        if (logger.isLoggable(Level.FINE))
             logger.fine("Creating centralised agent " + agName + " from source " + agSource + " (agClass=" + agClass + ", archClass=" + archClasses + ", settings=" + stts);
 
         AgentParameters ap = new AgentParameters();
         ap.setAgClass(agClass);
         ap.addArchClass(archClasses);
         ap.setBB(bbPars);
-        
-        if (stts == null) 
+
+        if (stts == null)
             stts = new Settings();
-        
+
         String prefix = null;
         if (father != null && father.getASLSrc().startsWith(Include.CRPrefix))
             prefix = Include.CRPrefix + "/";
         agSource = Include.checkPathAndFixWithSourcePath(agSource, ((Include)DirectiveProcessor.getDirective("include")).getSourcePaths(), prefix);
-        
+
         String nb = "";
         synchronized (logger) { // to avoid problems related to concurrent executions of .create_agent
             int n = 1;
             while (masRunner.getAg(agName+nb) != null)
-                nb = "_" + (n++);            
+                nb = "_" + (n++);
             agName = agName + nb;
-            
+
             CentralisedAgArch agArch = newAgInstance();
             agArch.setAgName(agName);
             agArch.createArchs(ap.getAgArchClasses(), ap.agClass.getClassName(), ap.getBBClass(), agSource, stts, masRunner);
@@ -61,19 +61,19 @@ public class CentralisedRuntimeServices implements RuntimeServicesInfraTier {
             agArch.setControlInfraTier(masRunner.getControllerInfraTier());
             masRunner.addAg(agArch);
         }
-        
+
         logger.fine("Agent " + agName + " created!");
         return agName;
     }
-    
+
     public void startAgent(String agName) {
         // create the agent thread
         CentralisedAgArch agArch = masRunner.getAg(agName);
         Thread agThread = new Thread(agArch);
         agArch.setThread(agThread);
-        agThread.start(); 
+        agThread.start();
     }
-    
+
     public AgArch clone(Agent source, List<String> archClasses, String agName) throws JasonException {
         // create a new infra arch
         CentralisedAgArch agArch = newAgInstance();
@@ -81,7 +81,7 @@ public class CentralisedRuntimeServices implements RuntimeServicesInfraTier {
         agArch.setEnvInfraTier(masRunner.getEnvironmentInfraTier());
         agArch.setControlInfraTier(masRunner.getControllerInfraTier());
         masRunner.addAg(agArch);
-        
+
         agArch.createArchs(archClasses, source, masRunner);
 
         startAgent(agName);
@@ -91,7 +91,7 @@ public class CentralisedRuntimeServices implements RuntimeServicesInfraTier {
     public Set<String> getAgentsNames() {
         return masRunner.getAgs().keySet();
     }
-    
+
     public int getAgentsQty() {
         return masRunner.getAgs().keySet().size();
     }

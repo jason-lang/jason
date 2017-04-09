@@ -20,21 +20,21 @@ public class IntendedMeans implements Serializable {
     protected PlanBody planBody;
     protected Plan     plan;
     private   Trigger  trigger; // the trigger which created this IM
-    
+
     protected Unifier  renamedVars = null;
-        
+
     public IntendedMeans(Option opt, Trigger te) {
         plan     = opt.getPlan();
-        planBody = plan.getBody(); 
+        planBody = plan.getBody();
         unif     = opt.getUnifier();
-        
+
         if (te == null) {
             trigger = plan.getTrigger().capply(unif);
         } else {
             trigger = te.capply(unif);
         }
     }
-    
+
     // used by clone
     private IntendedMeans() {  }
 
@@ -57,17 +57,17 @@ public class IntendedMeans implements Serializable {
     public PlanBody insertAsNextStep(PlanBody pb2add) {
         planBody = new PlanBodyImpl(planBody.getBodyType(), planBody.getBodyTerm());
         planBody.setBodyNext(pb2add);
-        return planBody; 
+        return planBody;
     }
-    
+
     public Plan getPlan() {
         return plan;
     }
-    
+
     public void setUnif(Unifier unif) {
         this.unif = unif;
     }
-    
+
     public Unifier getUnif() {
         return unif;
     }
@@ -83,11 +83,11 @@ public class IntendedMeans implements Serializable {
     public boolean isAtomic() {
         return plan != null && plan.isAtomic();
     }
-    
+
     public boolean isFinished() {
         return planBody == null || planBody.isEmptyBody();
     }
-    
+
     public boolean isGoalAdd() {
         return trigger.isAddition() && trigger.isGoal();
     }
@@ -97,11 +97,11 @@ public class IntendedMeans implements Serializable {
         c.unif     = this.unif.clone();
         if (this.planBody != null)
             c.planBody = this.planBody.clonePB();
-        c.trigger  = this.trigger.clone(); 
+        c.trigger  = this.trigger.clone();
         c.plan     = this.plan;
         return c;
     }
-    
+
     public String toString() {
         return trigger + " <- ... " + planBody + " / " + unif;
     }
@@ -121,7 +121,7 @@ public class IntendedMeans implements Serializable {
             return ASSyntax.createAtom("noimplementedforclass"+planBody.getClass().getSimpleName());
         }
     }
-    
+
     /** get as XML */
     public Element getAsDOM(Document document) {
         Element eim = (Element) document.createElement("intended-means");

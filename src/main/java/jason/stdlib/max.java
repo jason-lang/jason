@@ -6,16 +6,16 @@ import jason.asSyntax.Term;
 /**
 <p>Internal action: <b><code>.max</code></b>.
 
-<p>Description: gets the maximum value within a list of terms, 
-using the "natural" order for each type of term. Between 
+<p>Description: gets the maximum value within a list of terms,
+using the "natural" order for each type of term. Between
 different types of terms, the following order is
 used:<br>
 
-numbers &lt; atoms &lt; structures &lt; lists 
+numbers &lt; atoms &lt; structures &lt; lists
 
 <p>Parameters:<ul>
 <li>+   list (list): the list where to find the maximum term.<br/>
-<li>+/- maximum (term). 
+<li>+/- maximum (term).
 </ul>
 
 <p>Examples:<ul>
@@ -53,10 +53,10 @@ numbers &lt; atoms &lt; structures &lt; lists
 
 */
 public class max extends min {
-    
+
     private static InternalAction singleton = null;
     public static InternalAction create() {
-        if (singleton == null) 
+        if (singleton == null)
             singleton = new max();
         return singleton;
     }

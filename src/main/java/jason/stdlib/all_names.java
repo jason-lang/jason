@@ -11,16 +11,16 @@ import jason.runtime.RuntimeServicesInfraTier;
 
 /**
   <p>Internal action: <b><code>.all_names</code></b>.
-  
+
   <p>Description: get the names of all agents in the system.
   This identification is given by the runtime
   infrastructure of the system (centralised, saci, jade, ...)
-  
-  <p>Parameters:<ul>  
+
+  <p>Parameters:<ul>
   <li>+/- names (list).<br/>
   </ul>
-  
-  <p>Examples:<ul> 
+
+  <p>Examples:<ul>
 
   <li> <code>.all_names(L)</code>: unifies with L a list of all agents in the system.</li>
 
@@ -31,8 +31,12 @@ import jason.runtime.RuntimeServicesInfraTier;
 */
 public class all_names extends DefaultInternalAction {
 
-    @Override public int getMinArgs() { return 1; }
-    @Override public int getMaxArgs() { return 1; }
+    @Override public int getMinArgs() {
+        return 1;
+    }
+    @Override public int getMaxArgs() {
+        return 1;
+    }
 
     @Override
     public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {

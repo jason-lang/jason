@@ -15,11 +15,11 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 
-/** 
+/**
    Represents a logical formula with some logical operator ("&amp;",  "|", "not").
 
    @navassoc - op - LogicalOp
-   
+
  */
 public class LogExpr extends BinaryStructure implements LogicalFormula {
 
@@ -28,15 +28,27 @@ public class LogExpr extends BinaryStructure implements LogicalFormula {
 
     public static final List<Unifier> EMPTY_UNIF_LIST = Collections.emptyList();
 
-    public enum LogicalOp { 
-        none   { public String toString() { return ""; } }, 
-        not    { public String toString() { return "not "; } }, 
-        and    { public String toString() { return " & "; } },
-        or     { public String toString() { return " | "; } };
+    public enum LogicalOp {
+        none   { public String toString() {
+                return "";
+            }
+        },
+        not    { public String toString() {
+                return "not ";
+            }
+        },
+        and    { public String toString() {
+                return " & ";
+            }
+        },
+        or     { public String toString() {
+                return " | ";
+            }
+        };
     }
 
     private  LogicalOp op = LogicalOp.none;
-    
+
     public LogExpr(LogicalFormula f1, LogicalOp oper, LogicalFormula f2) {
         super(f1, oper.toString(), f2);
         op = oper;
@@ -51,7 +63,7 @@ public class LogExpr extends BinaryStructure implements LogicalFormula {
     public LogicalFormula getLHS() {
         return (LogicalFormula)getTerm(0);
     }
-    
+
     /** gets the RHS of this Expression */
     public LogicalFormula getRHS() {
         return (LogicalFormula)getTerm(1);
@@ -61,7 +73,7 @@ public class LogExpr extends BinaryStructure implements LogicalFormula {
         try {
             /*final QueryCache qCache;
             final CacheKey kForChache;
-            if (ag != null && (op == LogicalOp.and || op == LogicalOp.or)) { 
+            if (ag != null && (op == LogicalOp.and || op == LogicalOp.or)) {
                 qCache = null; //ag.getQueryCache();
                 if (qCache != null) {
                     kForChache = qCache.prepareForCache(this, un);
@@ -78,28 +90,29 @@ public class LogExpr extends BinaryStructure implements LogicalFormula {
                 kForChache = null;
             }
             */
-            
+
             switch (op) {
-            
-            case none: break;
-            
+
+            case none:
+                break;
+
             case not:
                 if (!getLHS().logicalConsequence(ag,un).hasNext()) {
                     return createUnifIterator(un);
                 }
                 break;
-            
+
             case and:
                 return new Iterator<Unifier>() {
                     Iterator<Unifier> ileft   = getLHS().logicalConsequence(ag,un);;
                     Iterator<Unifier> iright  = null;
                     Unifier           current = null;
                     boolean           needsUpdate = true;
-                    
+
                     public boolean hasNext() {
-                        if (needsUpdate) 
+                        if (needsUpdate)
                             get();
-                        //if (kForChache != null && current == null) 
+                        //if (kForChache != null && current == null)
                         //    qCache.queryFinished(kForChache);
                         return current != null;
                     }
@@ -109,7 +122,7 @@ public class LogExpr extends BinaryStructure implements LogicalFormula {
                         //Unifier a = current;
                         if (current != null)
                             needsUpdate = true;
-                        //if (kForChache != null) 
+                        //if (kForChache != null)
                         //    qCache.addAnswer(kForChache, current);
                         return current;
                     }
@@ -123,28 +136,28 @@ public class LogExpr extends BinaryStructure implements LogicalFormula {
                     }
                     public void remove() {}
                 };
-                
+
             case or:
                 return new Iterator<Unifier>() {
                     Iterator<Unifier> ileft  = getLHS().logicalConsequence(ag,un);
                     Iterator<Unifier> iright = null;
                     Unifier current          = null;
                     boolean needsUpdate      = true;
-                    
+
                     public boolean hasNext() {
-                        if (needsUpdate) 
+                        if (needsUpdate)
                             get();
-                        //if (kForChache != null && current == null) 
+                        //if (kForChache != null && current == null)
                         //    qCache.queryFinished(kForChache);
                         return current != null;
                     }
                     public Unifier next() {
-                        if (needsUpdate) 
+                        if (needsUpdate)
                             get();
                         //Unifier a = current;
                         if (current != null)
                             needsUpdate = true;
-                        //if (kForChache != null) 
+                        //if (kForChache != null)
                         //    qCache.addAnswer(kForChache, current);
                         return current;
                     }
@@ -185,12 +198,12 @@ public class LogExpr extends BinaryStructure implements LogicalFormula {
                 } else {
                     srhs = "iterator is null";
                 }
-            } 
-            
+            }
+
             logger.log(Level.SEVERE, "Error evaluating expression "+this+". \nlhs elements="+slhs+". \nrhs elements="+srhs,e);
         }
         return EMPTY_UNIF_LIST.iterator();  // empty iterator for unifier
-    }   
+    }
 
     /** creates an iterator for a list of unifiers */
     static public Iterator<Unifier> createUnifIterator(final Unifier... unifs) {
@@ -216,7 +229,7 @@ public class LogExpr extends BinaryStructure implements LogicalFormula {
         }
         return null;
     }
-    
+
     @Override
     public Term capply(Unifier u) {
         // do not call constructor with term parameter!
@@ -225,7 +238,7 @@ public class LogExpr extends BinaryStructure implements LogicalFormula {
         else
             return new LogExpr((LogicalFormula)getTerm(0).capply(u), op, (LogicalFormula)getTerm(1).capply(u));
     }
-    
+
     /** make a hard copy of the terms */
     public LogicalFormula clone() {
         // do not call constructor with term parameter!
@@ -234,18 +247,18 @@ public class LogExpr extends BinaryStructure implements LogicalFormula {
         else
             return new LogExpr((LogicalFormula)getTerm(0).clone(), op, (LogicalFormula)getTerm(1).clone());
     }
-    
+
 
     /** gets the Operation of this Expression */
     public LogicalOp getOp() {
         return op;
     }
-    
+
     /** get as XML */
     public Element getAsDOM(Document document) {
         Element u = super.getAsDOM(document);
         u.setAttribute("type","logical");
         return u;
     }
-    
+
 }

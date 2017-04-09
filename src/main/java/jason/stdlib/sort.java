@@ -20,15 +20,15 @@ import java.util.List;
   terms is used. Between different types of terms, the following order is
   used:<br>
 
-  numbers &lt; strings &lt; lists &lt; literals (by negation, arity, functor, terms, annotations) &lt; variables  
+  numbers &lt; strings &lt; lists &lt; literals (by negation, arity, functor, terms, annotations) &lt; variables
 
   <p>Parameters:<ul>
   <li>+   unordered list (list): the list the be sorted.<br/>
-  <li>+/- ordered list (list): the sorted list. 
+  <li>+/- ordered list (list): the sorted list.
   </ul>
 
   <p>Examples:<ul>
-  
+
   <li> <code>.sort([c,a,b],X)</code>: <code>X</code> unifies with
   <code>[a,b,c]</code>.
 
@@ -60,23 +60,27 @@ import java.util.List;
 
 */
 public class sort extends DefaultInternalAction {
-    
+
     private static InternalAction singleton = null;
     public static InternalAction create() {
-        if (singleton == null) 
+        if (singleton == null)
             singleton = new sort();
         return singleton;
     }
-    
-    @Override public int getMinArgs() { return 2; }
-    @Override public int getMaxArgs() { return 2; }
+
+    @Override public int getMinArgs() {
+        return 2;
+    }
+    @Override public int getMaxArgs() {
+        return 2;
+    }
 
     @Override protected void checkArguments(Term[] args) throws JasonException {
         super.checkArguments(args); // check number of arguments
         if (!args[0].isList())
             throw JasonException.createWrongArgument(this,"first argument must be a list");
     }
-    
+
     @Override
     public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {
         checkArguments(args);

@@ -30,7 +30,7 @@ public class AuctioneerGUI extends AgArch {
                 auction.setEnabled(false);
             }
         });
-        
+
         f = new JFrame("Auctioneer agent");
         f.getContentPane().setLayout(new BorderLayout());
         f.getContentPane().add(BorderLayout.CENTER, new JScrollPane(jt));
@@ -46,7 +46,7 @@ public class AuctioneerGUI extends AgArch {
             jt.append(" is " + action.getActionTerm().getTerm(1) + "\n");
             action.setResult(true);
             actionExecuted(action);
-            
+
             auction.setEnabled(true); // enable GUI button
         } else {
             super.act(action); // send the action to the environment to be performed.

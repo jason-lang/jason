@@ -7,50 +7,50 @@ import org.junit.Test;
 
 public class TestLoop {
 
-    TestAgent ag; 
+    TestAgent ag;
 
     // initialisation of the agent test
     @Before
     public void setupAg() {
         ag = new TestAgent();
-        
+
         // defines the agent's AgentSpeak code
         ag.parseAScode(
-                "b(1). "+
-                "p(1,a). p(2,a). p(3,b). p(4,b). p(6,a).\n "+
-                "+!test1 <- \n" +
-                "    while( .count(b(_),N) & N < 4) {" +
-                "        +b(N+1);" +
-                "    }."+
-                
-                "+!test2 <- L=4; while( .count(b(_)) < L) { ?b(X); +b(X+1) }; jason.asunit.print(end).\n "+ // old syntax, for compatibility test
-                
-                "+!test2p <- L=4; " +
-                "     while( .count(b(_),LL) & LL < (L+3)) { " +
-                "         ?b(X); +b(X+1);" +
-                "      }" +
-                "      jason.asunit.print(end).\n "+
+            "b(1). "+
+            "p(1,a). p(2,a). p(3,b). p(4,b). p(6,a).\n "+
+            "+!test1 <- \n" +
+            "    while( .count(b(_),N) & N < 4) {" +
+            "        +b(N+1);" +
+            "    }."+
 
-                "+!test3 <- L=4; for( p(N,a) & N < L) { jason.asunit.print(N) }; jason.asunit.print(end).\n "+
+            "+!test2 <- L=4; while( .count(b(_)) < L) { ?b(X); +b(X+1) }; jason.asunit.print(end).\n "+ // old syntax, for compatibility test
 
-                "+!test4 <- for( .member(N, [1,3,4]) ) { jason.asunit.print(N) }; jason.asunit.print(end).\n " + // old syntax, for compatibility test
-                
-                "+!test5 <- for( .range(I, 1, 4) ) { " +
-                "                jason.asunit.print(I);" +
-                "           } " +
-                "           for( .member(I, [a,b,c]) ) { " +
-                "                jason.asunit.print(I);" +
-                "           } " +
-                "           jason.asunit.print(end). "
+            "+!test2p <- L=4; " +
+            "     while( .count(b(_),LL) & LL < (L+3)) { " +
+            "         ?b(X); +b(X+1);" +
+            "      }" +
+            "      jason.asunit.print(end).\n "+
+
+            "+!test3 <- L=4; for( p(N,a) & N < L) { jason.asunit.print(N) }; jason.asunit.print(end).\n "+
+
+            "+!test4 <- for( .member(N, [1,3,4]) ) { jason.asunit.print(N) }; jason.asunit.print(end).\n " + // old syntax, for compatibility test
+
+            "+!test5 <- for( .range(I, 1, 4) ) { " +
+            "                jason.asunit.print(I);" +
+            "           } " +
+            "           for( .member(I, [a,b,c]) ) { " +
+            "                jason.asunit.print(I);" +
+            "           } " +
+            "           jason.asunit.print(end). "
         );
     }
-    
-    @Test(timeout=2000) 
+
+    @Test(timeout=2000)
     public void testWhile1() {
         ag.addGoal("test1");
         ag.assertBel("b(4)", 20);
     }
-    
+
     @Test(timeout=2000)
     public void testWhile2p() {
         ag.addGoal("test2p");
@@ -64,7 +64,7 @@ public class TestLoop {
         ag.assertBel("b(4)", 30);
         ag.assertPrint("end", 30);
     }
-    
+
     @Test(timeout=2000)
     public void testFor1() {
         ag.addGoal("test3");

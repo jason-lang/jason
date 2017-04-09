@@ -15,12 +15,12 @@ import jason.infra.centralised.BaseCentralisedMAS;
 public class TestArch extends CentralisedAgArch implements Runnable {
 
     private static int nameCount = 0;
-    
+
     private Condition condition;
     private int cycle = 0;
-    
+
     private List<Literal> actions = new ArrayList<Literal>();
-    
+
     StringBuilder output = new StringBuilder();
 
     public TestArch() {
@@ -35,23 +35,23 @@ public class TestArch extends CentralisedAgArch implements Runnable {
             e.printStackTrace();
         }
     }
-    
+
     public int getCycle() {
         return cycle;
     }
-    
+
     public List<Literal> getActions() {
         return actions;
     }
-    
+
     public void start(Condition c) {
         condition = c;
         cycle = 0;
         actions.clear();
         new Thread(this).start();
     }
-    
-    
+
+
     public void run() {
         synchronized (condition) {
             while (condition.test(this)) {
@@ -67,7 +67,7 @@ public class TestArch extends CentralisedAgArch implements Runnable {
             condition.notifyAll();
         }
     }
-    
+
     public void setEnv(Environment env) {
         try {
             CentralisedEnvironment infraEnv = new CentralisedEnvironment(null, BaseCentralisedMAS.getRunner());
@@ -78,36 +78,36 @@ public class TestArch extends CentralisedAgArch implements Runnable {
             e.printStackTrace();
         }
     }
-    
+
     @Override
     public Collection<Literal> perceive() {
         //System.out.println(super.perceive()+"*"+getEnvInfraTier());
-        if (getEnvInfraTier() != null)            
+        if (getEnvInfraTier() != null)
             return super.perceive();
-        else 
+        else
             return null;
     }
-    
+
     @Override
     public void act(ActionExec action) { //, List<ActionExec> feedback) {
-        actions.add(action.getActionTerm());        
+        actions.add(action.getActionTerm());
         if (getEnvInfraTier() != null) {
             super.act(action); //, feedback); //env.scheduleAction(getAgName(), action.getActionTerm(), action);
-        } else { 
+        } else {
             action.setResult(true);
             actionExecuted(action); //feedback.add(action);
         }
     }
-    
+
     public void print(String s) {
         System.out.println(s);
         output.append(s+"\n");
     }
-    
+
     public StringBuilder getOutput() {
         return output;
     }
-    
+
     public void clearOutput() {
         output = new StringBuilder();
     }

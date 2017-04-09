@@ -12,19 +12,19 @@ import java.util.GregorianCalendar;
 
 /**
   <p>Internal action: <b><code>.date(YY,MM,DD)</code></b>.
-  
+
   <p>Description: gets the current date (year, month, and day of the
   month).
 
   <p>Parameters:<ul>
-  
+
   <li>+/- year (number): the year.</li/>
   <li>+/- month (number): the month (1--12).</li>
   <li>+/- day (number): the day (1--31).</li>
-  
+
   </ul>
-  
-  <p>Examples:<ul> 
+
+  <p>Examples:<ul>
 
   <li> <code>.date(Y,M,D)</code>: unifies Y with the current year, M
   with the current month, and D with the current day.</li>
@@ -40,13 +40,17 @@ public class date extends DefaultInternalAction {
 
     private static InternalAction singleton = null;
     public static InternalAction create() {
-        if (singleton == null) 
+        if (singleton == null)
             singleton = new date();
         return singleton;
     }
 
-    @Override public int getMinArgs() { return 3; }
-    @Override public int getMaxArgs() { return 3; }
+    @Override public int getMinArgs() {
+        return 3;
+    }
+    @Override public int getMaxArgs() {
+        return 3;
+    }
 
     /** date(YY,MM,DD) */
     @Override

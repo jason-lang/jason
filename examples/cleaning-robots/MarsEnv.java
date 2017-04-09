@@ -26,7 +26,7 @@ public class MarsEnv extends Environment {
 
     private MarsModel model;
     private MarsView  view;
-    
+
     @Override
     public void init(String[] args) {
         model = new MarsModel();
@@ -34,7 +34,7 @@ public class MarsEnv extends Environment {
         model.setView(view);
         updatePercepts();
     }
-    
+
     @Override
     public boolean executeAction(String ag, Structure action) {
         logger.info(ag+" doing: "+ action);
@@ -57,7 +57,7 @@ public class MarsEnv extends Environment {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        
+
         updatePercepts();
 
         try {
@@ -66,20 +66,20 @@ public class MarsEnv extends Environment {
         informAgsEnvironmentChanged();
         return true;
     }
-    
+
     /** creates the agents perception based on the MarsModel */
     void updatePercepts() {
         clearPercepts();
-        
+
         Location r1Loc = model.getAgPos(0);
         Location r2Loc = model.getAgPos(1);
-        
+
         Literal pos1 = Literal.parseLiteral("pos(r1," + r1Loc.x + "," + r1Loc.y + ")");
         Literal pos2 = Literal.parseLiteral("pos(r2," + r2Loc.x + "," + r2Loc.y + ")");
 
         addPercept(pos1);
         addPercept(pos2);
-        
+
         if (model.hasObject(GARB, r1Loc)) {
             addPercept(g1);
         }
@@ -89,7 +89,7 @@ public class MarsEnv extends Environment {
     }
 
     class MarsModel extends GridWorldModel {
-        
+
         public static final int MErr = 2; // max error in pick garb
         int nerr; // number of tries of pick garb
         boolean r1HasGarb = false; // whether r1 is carrying garbage or not
@@ -98,17 +98,17 @@ public class MarsEnv extends Environment {
 
         private MarsModel() {
             super(GSize, GSize, 2);
-            
+
             // initial location of agents
             try {
                 setAgPos(0, 0, 0);
-            
+
                 Location r2Loc = new Location(GSize/2, GSize/2);
                 setAgPos(1, r2Loc);
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            
+
             // initial location of garbage
             add(GARB, 3, 0);
             add(GARB, GSize-1, 0);
@@ -116,7 +116,7 @@ public class MarsEnv extends Environment {
             add(GARB, 0, GSize-2);
             add(GARB, GSize-1, GSize-1);
         }
-        
+
         void nextSlot() throws Exception {
             Location r1 = getAgPos(0);
             r1.x++;
@@ -131,7 +131,7 @@ public class MarsEnv extends Environment {
             setAgPos(0, r1);
             setAgPos(1, getAgPos(1)); // just to draw it in the view
         }
-        
+
         void moveTowards(int x, int y) throws Exception {
             Location r1 = getAgPos(0);
             if (r1.x < x)
@@ -145,7 +145,7 @@ public class MarsEnv extends Environment {
             setAgPos(0, r1);
             setAgPos(1, getAgPos(1)); // just to draw it in the view
         }
-        
+
         void pickGarb() {
             // r1 location has garbage
             if (model.hasObject(GARB, getAgPos(0))) {
@@ -173,7 +173,7 @@ public class MarsEnv extends Environment {
             }
         }
     }
-    
+
     class MarsView extends GridWorldView {
 
         public MarsView(MarsModel model) {
@@ -187,7 +187,9 @@ public class MarsEnv extends Environment {
         @Override
         public void draw(Graphics g, int x, int y, int object) {
             switch (object) {
-                case MarsEnv.GARB: drawGarb(g, x, y);  break;
+            case MarsEnv.GARB:
+                drawGarb(g, x, y);
+                break;
             }
         }
 
@@ -206,7 +208,7 @@ public class MarsEnv extends Environment {
             if (id == 0) {
                 g.setColor(Color.black);
             } else {
-                g.setColor(Color.white);                
+                g.setColor(Color.white);
             }
             super.drawString(g, x, y, defaultFont, label);
             repaint();
@@ -218,5 +220,5 @@ public class MarsEnv extends Environment {
             drawString(g, x, y, defaultFont, "G");
         }
 
-    }    
+    }
 }

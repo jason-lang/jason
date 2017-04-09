@@ -33,37 +33,37 @@ public class MindInspectorWebImpl extends MindInspectorWeb {
     private Map<String,List<Document>> histories = new TreeMap<String,List<Document>>();
     private Map<String,Integer>        lastStepSeenByUser = new HashMap<String, Integer>();
     private Map<String,Agent>          registeredAgents = new HashMap<String, Agent>();
-        
-    public MindInspectorWebImpl() {        
+
+    public MindInspectorWebImpl() {
     }
-    
+
     public synchronized String startHttpServer()  {
-            try {
-                httpServer = HttpServer.create(new InetSocketAddress(httpServerPort), 0);
-                httpServer.setExecutor(Executors.newCachedThreadPool());
+        try {
+            httpServer = HttpServer.create(new InetSocketAddress(httpServerPort), 0);
+            httpServer.setExecutor(Executors.newCachedThreadPool());
 
-                httpServer.start();
-                httpServerURL = "http://"+InetAddress.getLocalHost().getHostAddress()+":"+httpServerPort;
-                System.out.println("Jason Http Server running on "+httpServerURL);
-                registerRootBrowserView();
-                registerAgentsBrowserView();
-                registerAgView("no_ag");
+            httpServer.start();
+            httpServerURL = "http://"+InetAddress.getLocalHost().getHostAddress()+":"+httpServerPort;
+            System.out.println("Jason Http Server running on "+httpServerURL);
+            registerRootBrowserView();
+            registerAgentsBrowserView();
+            registerAgView("no_ag");
 
-                return httpServerURL;
-            } catch (BindException e) {
-                httpServerPort++;
-                return startHttpServer();
-            } catch (Exception e) {
-                e.printStackTrace();
-                return null;
-            }
+            return httpServerURL;
+        } catch (BindException e) {
+            httpServerPort++;
+            return startHttpServer();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
-    private void registerRootBrowserView() {        
+    private void registerRootBrowserView() {
         if (httpServer == null)
             return;
         try {
-            httpServer.createContext("/", new HttpHandler() {                                
+            httpServer.createContext("/", new HttpHandler() {
                 public void handle(HttpExchange exchange) throws IOException {
                     String requestMethod = exchange.getRequestMethod();
                     Headers responseHeaders = exchange.getResponseHeaders();
@@ -82,12 +82,12 @@ public class MindInspectorWebImpl extends MindInspectorWeb {
                             so.append("</body></html>");
                         } else if (path.indexOf("agent-mind") >= 0) {
                             if (tryToIncludeMindInspectorForAg(path))
-                                so.append("<meta http-equiv=\"refresh\" content=0>");                                
+                                so.append("<meta http-equiv=\"refresh\" content=0>");
                             else
-                                so.append("unkown agent!");
+                                so.append("unknown agent!");
                         }
                         responseBody.write(so.toString().getBytes());
-                    }                                
+                    }
                     responseBody.close();
                 }
             });
@@ -104,9 +104,9 @@ public class MindInspectorWebImpl extends MindInspectorWeb {
         if (nameEnd >= 0)
             return path.substring(nameStart,nameEnd).trim();
         else
-            return path.substring(nameStart).trim();        
+            return path.substring(nameStart).trim();
     }
-    
+
     private boolean tryToIncludeMindInspectorForAg(String path) {
         try {
             Agent ag = registeredAgents.get(getAgNameFromPath(path));
@@ -122,17 +122,17 @@ public class MindInspectorWebImpl extends MindInspectorWeb {
                     return true;
                 }
             }
-        } catch (Exception e) { 
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return false;
     }
-    
-    private void registerAgentsBrowserView() {        
+
+    private void registerAgentsBrowserView() {
         if (httpServer == null)
             return;
         try {
-            httpServer.createContext("/agents", new HttpHandler() {                                
+            httpServer.createContext("/agents", new HttpHandler() {
                 public void handle(HttpExchange exchange) throws IOException {
                     String requestMethod = exchange.getRequestMethod();
                     Headers responseHeaders = exchange.getResponseHeaders();
@@ -144,9 +144,9 @@ public class MindInspectorWebImpl extends MindInspectorWeb {
                         responseBody.write(("<html><head><title>Jason (list of agents)</title><meta http-equiv=\"refresh\" content=\""+refreshInterval+"\" ></head><body>").getBytes());
                         responseBody.write(("<font size=\"+2\"><p style='color: red; font-family: arial;'>Agents</p></font>").getBytes());
                         for (String a: histories.keySet()) {
-                            responseBody.write( ("- <a href=\"/agent-mind/"+a+"/latest\" target=\"am\" style=\"font-family: arial; text-decoration: none\">"+a+"</a><br/>").getBytes());                            
+                            responseBody.write( ("- <a href=\"/agent-mind/"+a+"/latest\" target=\"am\" style=\"font-family: arial; text-decoration: none\">"+a+"</a><br/>").getBytes());
                         }
-                    }                                
+                    }
                     responseBody.write("<hr/>by <a href=\"http://jason.sf.net\" target=\"_blank\">Jason</a>".getBytes());
                     responseBody.write("</body></html>".getBytes());
                     responseBody.close();
@@ -165,13 +165,13 @@ public class MindInspectorWebImpl extends MindInspectorWeb {
             histories.put(agName, new ArrayList<Document>()); // just for the agent name to appear in the list of agents
         }
     }
-    
+
     public synchronized void removeAg(Agent ag) {
         String agName = ag.getTS().getUserAgArch().getAgName();
         registeredAgents.remove(agName);
         histories.remove(agName);
     }
-    
+
     public synchronized void addAgState(Agent ag, Document mind, boolean hasHistory) {
         String agName = ag.getTS().getUserAgArch().getAgName();
         List<Document> h = histories.get(agName);
@@ -186,13 +186,13 @@ public class MindInspectorWebImpl extends MindInspectorWeb {
         else
             h.set(0, mind);
     }
-    
+
     String registerAgView(final String agName) {
         if (httpServer == null)
             return null;
         try {
             String url = "/agent-mind/"+agName;
-            httpServer.createContext(url, new HttpHandler() {                                
+            httpServer.createContext(url, new HttpHandler() {
                 public void handle(HttpExchange exchange) throws IOException {
                     String requestMethod = exchange.getRequestMethod();
                     Headers responseHeaders = exchange.getResponseHeaders();
@@ -204,25 +204,25 @@ public class MindInspectorWebImpl extends MindInspectorWeb {
                         try {
                             StringWriter so = new StringWriter();
                             so.append("<html><head><title>"+agName+"</title>");
-    
+
                             // test if the url is for this agent
                             String path = exchange.getRequestURI().getPath();
                             if (!getAgNameFromPath(path).equals(agName)) {
                                 if (tryToIncludeMindInspectorForAg(path))
-                                    so.append("<meta http-equiv=\"refresh\" content=0>");                                
+                                    so.append("<meta http-equiv=\"refresh\" content=0>");
                                 else
-                                    so.append("unkown agent!");
+                                    so.append("unknown agent!");
                             } else {
-    
+
                                 List<Document> h = histories.get(agName);
                                 if (h != null && h.size() > 0) {
-                                    Document agState; 
+                                    Document agState;
                                     int i = -1;
                                     exchange.getRemoteAddress();
-    
+
                                     String query = exchange.getRequestURI().getRawQuery(); // what follows ?
                                     String remote = exchange.getRemoteAddress().toString();
-                                    
+
                                     if (path.endsWith("hide")) {
                                         show.put(query,false);
                                         Integer ii = lastStepSeenByUser.get(remote);
@@ -237,7 +237,7 @@ public class MindInspectorWebImpl extends MindInspectorWeb {
                                         agState = h.get(h.size()-1);
                                         h.clear();
                                         h.add(agState);
-                                    } else {                                
+                                    } else {
                                         // see if ends with a number
                                         try {
                                             int pos = path.lastIndexOf("/");
@@ -245,10 +245,10 @@ public class MindInspectorWebImpl extends MindInspectorWeb {
                                             i = new Integer(n);
                                         } catch (Exception e) {}
                                     }
-                                    if (i == -1) { 
+                                    if (i == -1) {
                                         so.append("<meta http-equiv=\"refresh\" content=\""+refreshInterval+"\">");
                                         agState = h.get(h.size()-1);
-                                    } else {  
+                                    } else {
                                         agState = h.get(i-1);
                                     }
                                     try {
@@ -256,15 +256,15 @@ public class MindInspectorWebImpl extends MindInspectorWeb {
                                     } catch (Exception e) {
                                         e.printStackTrace();
                                     }
-                                    so.append("</head><body>");                            
+                                    so.append("</head><body>");
                                     if (h.size() > 1) {
-                                        //so.append("history: ");                            
+                                        //so.append("history: ");
                                         so.append("<a href=/agent-mind/"+agName+"/latest>latest state</a> ");
                                         for (i=h.size()-1; i>0; i--) {
                                             so.append("<a href=\"/agent-mind/"+agName+"/"+i+"\" style=\"text-decoration: none\">"+i+"</a> ");
                                         }
                                         so.append("<a href=\"/agent-mind/"+agName+"/clear\">clear history</a> ");
-                                        so.append("<hr/>");                            
+                                        so.append("<hr/>");
                                     }
                                     so.append(getAgStateAsString(agState, false));
                                     //so.append("<hr/><a href=\"/\"> list of agents</a> ");
@@ -273,13 +273,13 @@ public class MindInspectorWebImpl extends MindInspectorWeb {
                                 }
                             }
                             responseBody.write(so.toString().getBytes());
-                            
-                            //responseBody.write(("<br/><a href=/agent-code/"+agName+">code</a>").getBytes());                            
+
+                            //responseBody.write(("<br/><a href=/agent-code/"+agName+">code</a>").getBytes());
                             responseBody.write("</body></html>".getBytes());
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-                    }                                
+                    }
                     responseBody.close();
                 }
             });
@@ -291,12 +291,12 @@ public class MindInspectorWebImpl extends MindInspectorWeb {
     }
 
     /*
-    String registerAgCodeBrowserView(String agId, final String agCode) {        
+    String registerAgCodeBrowserView(String agId, final String agCode) {
         if (httpServer == null)
             return null;
         try {
             String url="/agent-code/"+agId;
-            httpServer.createContext(url, new HttpHandler() {                                
+            httpServer.createContext(url, new HttpHandler() {
                 public void handle(HttpExchange exchange) throws IOException {
                     String requestMethod = exchange.getRequestMethod();
                     Headers responseHeaders = exchange.getResponseHeaders();
@@ -306,11 +306,11 @@ public class MindInspectorWebImpl extends MindInspectorWeb {
 
                     if (requestMethod.equalsIgnoreCase("GET")) {
                         responseBody.write(agCode.getBytes());
-                    }                                
+                    }
                     responseBody.close();
                 }
             });
-            return httpServerURL+url;                          
+            return httpServerURL+url;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -325,7 +325,7 @@ public class MindInspectorWebImpl extends MindInspectorWeb {
         try {
             if (mindInspectorTransformer == null) {
                 mindInspectorTransformer = new asl2html("/xml/agInspection.xsl");
-                
+
                 show.put("bels", true);
                 show.put("annots", Config.get().getBoolean(Config.SHOW_ANNOTS));
                 show.put("rules", false);

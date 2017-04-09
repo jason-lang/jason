@@ -26,11 +26,11 @@ public class JadeExecutionControl extends JadeAg implements ExecutionControlInfr
 
     private ExecutionControl userControl;
     private ExecutorService executor; // the thread pool used to execute actions
-    
+
     @Override
     public void setup()  {
         logger = Logger.getLogger(JadeExecutionControl.class.getName());
-        
+
         // create the user environment
         try {
             Object[] args = getArguments();
@@ -57,7 +57,7 @@ public class JadeExecutionControl extends JadeAg implements ExecutionControlInfr
         }
 
         executor = Executors.newFixedThreadPool(5);
-        
+
         try {
             addBehaviour(new OneShotBehaviour() {
                 @Override
@@ -87,7 +87,7 @@ public class JadeExecutionControl extends JadeAg implements ExecutionControlInfr
                             logger.warning("Received agState too late! in-reply-to:"+m.getInReplyTo());
                         } catch (Exception ex0) {
                             try {
-                                // check if the message is an end of cycle from some agent 
+                                // check if the message is an end of cycle from some agent
                                 final String content = m.getContent();
                                 final int p = content.indexOf(",");
                                 if (p > 0) {
@@ -99,7 +99,7 @@ public class JadeExecutionControl extends JadeAg implements ExecutionControlInfr
                                             try {
                                                 userControl.receiveFinishedCycle(sender, breakpoint, cycle);
                                             } catch (Exception e) {
-                                                logger.log(Level.SEVERE, "Error processing end of cycle.", e);                                              
+                                                logger.log(Level.SEVERE, "Error processing end of cycle.", e);
                                             }
                                         }
                                     });
@@ -111,7 +111,7 @@ public class JadeExecutionControl extends JadeAg implements ExecutionControlInfr
                     }
                 }
             });
-            
+
         } catch (Exception e) {
             logger.log(Level.SEVERE, "Error starting agent", e);
         }
@@ -121,11 +121,11 @@ public class JadeExecutionControl extends JadeAg implements ExecutionControlInfr
     protected void takeDown() {
         if (userControl != null) userControl.stop();
     }
-    
+
     public ExecutionControl getUserControl() {
         return userControl;
     }
-    
+
     public void informAgToPerformCycle(final String agName, final int cycle) {
         addBehaviour(new OneShotBehaviour() {
             public void action() {
@@ -159,7 +159,7 @@ public class JadeExecutionControl extends JadeAg implements ExecutionControlInfr
 
     public Document getAgState(final String agName) {
         if (agName == null) return null;
-        
+
         state = null;
         addBehaviour(new OneShotBehaviour() {
             public void action() {
@@ -185,7 +185,7 @@ public class JadeExecutionControl extends JadeAg implements ExecutionControlInfr
         });
         return waitState();
     }
-    
+
     private Document state = null;
     private Object syncWaitState = new Object();
     private Document waitState() {

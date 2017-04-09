@@ -14,14 +14,21 @@ public class verbose extends DefaultInternalAction {
         if (args.length>0 && args[0].isNumeric()) {
             NumberTerm n = (NumberTerm)args[0];
             switch ((int)n.solve()) {
-            case 0: ts.getLogger().setLevel(Level.SEVERE); break;
-            case 1: ts.getLogger().setLevel(Level.INFO); break;
-            case 2: ts.getLogger().setLevel(Level.FINE); System.out.println("*****");break;
+            case 0:
+                ts.getLogger().setLevel(Level.SEVERE);
+                break;
+            case 1:
+                ts.getLogger().setLevel(Level.INFO);
+                break;
+            case 2:
+                ts.getLogger().setLevel(Level.FINE);
+                System.out.println("*****");
+                break;
             }
             return true;
         } else {
             return false;
         }
     }
-    
+
 }

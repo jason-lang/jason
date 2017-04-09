@@ -8,7 +8,7 @@ import jason.environment.grid.Location;
 
 /**
  * Gets the manhattan distance between two points.
- * 
+ *
  * @author jomi
  */
 public class dist extends DefaultInternalAction {
@@ -23,7 +23,7 @@ public class dist extends DefaultInternalAction {
             int dist = new Location(iagx, iagy).distance(new Location(itox, itoy));
             return un.unifies(terms[4], new NumberTermImpl(dist));
         } catch (Throwable e) {
-            ts.getLogger().log(Level.SEVERE, "dist error: "+e, e);          
+            ts.getLogger().log(Level.SEVERE, "dist error: "+e, e);
         }
         return false;
     }

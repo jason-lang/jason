@@ -13,7 +13,7 @@ public class Event implements Serializable {
 
     Trigger   trigger   = null;
     Intention intention = Intention.EmptyInt;
-    
+
     public Event(Trigger t, Intention i) {
         trigger   = t;
         intention = i;
@@ -29,7 +29,7 @@ public class Event implements Serializable {
     public void setIntention(Intention i) {
         intention = i;
     }
-    
+
     public boolean sameTE(Object t) {
         return trigger.equals(t);
     }
@@ -43,8 +43,8 @@ public class Event implements Serializable {
     public boolean isAtomic() {
         return intention != null && intention.isAtomic();
     }
-    
-    
+
+
     @Override
     public boolean equals(Object o) {
         if (o == null) return false;
@@ -53,7 +53,7 @@ public class Event implements Serializable {
             Event oe = (Event)o;
             if (this.intention == null && oe.intention != null) return false;
             if (this.intention != null && !this.intention.equals(oe.intention)) return false;
-                
+
             return this.trigger.equals(oe.trigger);
         }
         return false;
@@ -64,7 +64,7 @@ public class Event implements Serializable {
         Intention ic = (intention == null ? null : (Intention)intention.clone());
         return new Event(tc, ic);
     }
-    
+
     public String toString() {
         if (intention == Intention.EmptyInt)
             return ""+trigger;

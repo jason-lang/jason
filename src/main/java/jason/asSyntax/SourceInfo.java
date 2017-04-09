@@ -8,7 +8,7 @@ import java.io.Serializable;
  */
 public class SourceInfo implements Serializable {
 
-    private final String      source; 
+    private final String      source;
     private final int         beginSrcLine; // the line this literal appears in the source
     private final int         endSrcLine;
 
@@ -26,7 +26,7 @@ public class SourceInfo implements Serializable {
         if (o == null) {
             source       = null;
             beginSrcLine = 0;
-            endSrcLine   = 0;            
+            endSrcLine   = 0;
         } else {
             source       = o.source;
             beginSrcLine = o.beginSrcLine;
@@ -37,7 +37,7 @@ public class SourceInfo implements Serializable {
     public SourceInfo clone() {
         return this;
     }
-    
+
     public String getSrcFile() {
         return source;
     }
@@ -56,6 +56,6 @@ public class SourceInfo implements Serializable {
 
     public  String toString() {
         return (source == null ? "nofile" : source)
-        + (beginSrcLine >= 0 ? ":"+beginSrcLine : "");       
+               + (beginSrcLine >= 0 ? ":"+beginSrcLine : "");
     }
 }

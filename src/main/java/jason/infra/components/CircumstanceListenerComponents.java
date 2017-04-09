@@ -7,7 +7,7 @@ import jason.infra.centralised.CentralisedAgArchAsynchronous;
 
 public class CircumstanceListenerComponents implements CircumstanceListener {
     private CentralisedAgArchAsynchronous ag;
-    
+
     public CircumstanceListenerComponents(CentralisedAgArchAsynchronous ag) {
         this.ag = ag;
     }
@@ -15,11 +15,11 @@ public class CircumstanceListenerComponents implements CircumstanceListener {
     public void notifyDeliberate() {
         ag.wakeUpDeliberate();
     }
-    
+
     public void notifyAct() {
         ag.wakeUpAct();
     }
-    
+
     public void eventAdded(Event e) {
         notifyDeliberate();
     }

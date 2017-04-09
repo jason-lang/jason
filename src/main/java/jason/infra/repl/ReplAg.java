@@ -12,19 +12,20 @@ import jason.asSyntax.PlanBody;
 import jason.asSyntax.Trigger;
 
 public abstract class ReplAg extends Agent {
-    
-    String[] replCmds = { 
-            clear.class.getName(),
-            //verbose.class.getName(),
-            mi.class.getName()};
-    
+
+    String[] replCmds = {
+        clear.class.getName(),
+        //verbose.class.getName(),
+        mi.class.getName()
+    };
+
     int cmdCounter = 0;
-    
+
     @Override
     public void initAg() {
         super.initAg();
     }
-    
+
     @Override
     public void load(String asSrc) throws JasonException {
         super.load(null);
@@ -34,10 +35,10 @@ public abstract class ReplAg extends Agent {
             e.printStackTrace();
         }*/
     }
-    
+
     void execCmd(String sCmd) {
         try {
-            if (sCmd.endsWith(".")) 
+            if (sCmd.endsWith("."))
                 sCmd = sCmd.substring(0,sCmd.length()-1);
             for (String c: replCmds) {
                 if (c.endsWith(sCmd) && sCmd.startsWith(".")) {
@@ -53,10 +54,10 @@ public abstract class ReplAg extends Agent {
             Trigger  te   = ASSyntax.parseTrigger("+!run_repl_expr");
             Intention i   = new Intention();
             i.push(new IntendedMeans(
-                    new Option(
-                            new Plan(null,te,null,lCmd),
-                            new Unifier()), 
-                    te));
+                       new Option(
+                           new Plan(null,te,null,lCmd),
+                           new Unifier()),
+                       te));
             //Literal g = ASSyntax.createLiteral("run_repl_expr", lCmd);
             //getTS().getLogger().info("running "+i);
             //getTS().getC().addAchvGoal(g, null);
@@ -66,14 +67,14 @@ public abstract class ReplAg extends Agent {
             getTS().getUserAgArch().wake();
         } catch (Exception e) {
             print("Error parsing "+sCmd+"\n"+e);
-        }        
+        }
     }
 
     public void print(String s) {
         System.out.println(s+"\n");
     }
-    
+
     public void clear() {
     }
-    
+
 }

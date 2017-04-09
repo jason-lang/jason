@@ -18,38 +18,38 @@ public class Atom extends Literal {
 
     private final String functor; // immutable field
     private final Atom   ns; // name space
-    
+
     public Atom(String functor) {
         this(DefaultNS, functor);
     }
-    
+
     protected Atom(Atom namespace, String functor) {
         if (functor == null)
             logger.log(Level.WARNING, "The functor of an atom functor should not be null!", new Exception());
         this.functor = functor;
         this.ns      = namespace;
     }
-    
+
     public Atom(Literal l) {
         this(l.getNS(), l);
     }
-    
-    public Atom(Literal l, Unifier u) {        
+
+    public Atom(Literal l, Unifier u) {
         this((Atom)l.getNS().capply(u), l);
     }
-    
+
     public Atom(Atom namespace, Literal l) {
         this.functor            = l.getFunctor();
         this.ns                 = namespace;
         //predicateIndicatorCache = l.predicateIndicatorCache;
         //hashCodeCache           = l.hashCodeCache;
-        srcInfo                 = l.srcInfo;  
+        srcInfo                 = l.srcInfo;
     }
-    
+
     public String getFunctor() {
         return functor;
     }
-    
+
     public Atom getNS() {
         return ns;
     }
@@ -57,7 +57,7 @@ public class Atom extends Literal {
     public Term clone() {
         return this; // since this object is immutable
     }
-    
+
     @Override
     public Term capply(Unifier u) {
         if (ns.isVar())
@@ -65,7 +65,7 @@ public class Atom extends Literal {
         else
             return this;
     }
-    
+
     @Override
     public Literal cloneNS(Atom newnamespace) {
         return new Atom(newnamespace, this);
@@ -87,11 +87,11 @@ public class Atom extends Literal {
         }
         return false;
     }
-    
+
     public int compareTo(Term t) {
         if (t == null) return -1; // null should be first (required for addAnnot)
         if (t.isNumeric()) return 1;
-        
+
         // this is a list and the other not
         if (isList() && !t.isList()) return -1;
 
@@ -110,30 +110,30 @@ public class Atom extends Literal {
         }
         if (t.isVar())
             return -1;
-        if (t instanceof Literal) { 
-            Literal tAsLit = (Literal)t;            
+        if (t instanceof Literal) {
+            Literal tAsLit = (Literal)t;
             if (getNS().equals(tAsLit.getNS())) { // same ns
                 final int ma = getArity();
                 final int oa = tAsLit.getArity();
-                if (ma < oa) 
+                if (ma < oa)
                     return -1;
-                else if (ma > oa) 
+                else if (ma > oa)
                     return 1;
                 else
                     return getFunctor().compareTo(tAsLit.getFunctor());
             } else {
                 return getNS().compareTo(tAsLit.getNS());
             }
-        } 
+        }
 
         return super.compareTo(t);
     }
-    
+
     @Override
     protected int calcHashCode() {
         return getFunctor().hashCode() + getNS().hashCode();
     }
-    
+
     @Override
     public String toString() {
         if (ns == DefaultNS)

@@ -56,9 +56,9 @@ public class ExecutionControlGUI extends ExecutionControl {
     String currentAgState = "";
     String currentAgName  = "";
     int    agShownState   = 0;
-    
+
     private Map<String,Map<Integer,Document>> agsHistory = new HashMap<String,Map<Integer,Document>>();
-    
+
     private int countCycles = 0; // cycles since last "Run"
     private int maxCycles = 0;   // cycles to run
     private boolean waitAllAgs     = false; // run cycles in all agents
@@ -70,7 +70,7 @@ public class ExecutionControlGUI extends ExecutionControl {
     asl2tex  agTransformerTex  = new asl2tex("/xml/ag2tex.xsl");
     asl2html agTransformerHtml = new asl2html("/xml/agInspection.xsl");
     asl2xml  agTransformer     = null;
-     
+
 
     public ExecutionControlGUI() {
         agTransformer = agTransformerHtml;
@@ -82,7 +82,7 @@ public class ExecutionControlGUI extends ExecutionControl {
     public void init(String[] args) {
         setListOfAgsFromInfra();
     }
-    
+
     // Interface components
     JFrame     frame;
     JTextField jTfSteps = null;
@@ -93,9 +93,9 @@ public class ExecutionControlGUI extends ExecutionControl {
     JTextPane  jTA = null;
     JList      jList = null;
     JPanel     spList;
-    
+
     DefaultListModel listModel;
-    
+
     // what to show
     Document agState = null;
 
@@ -103,7 +103,7 @@ public class ExecutionControlGUI extends ExecutionControl {
     Map<String,Boolean> show = new HashMap<String,Boolean>();
 
     public static String title = "..:: Mind Inspector ::..";
-    
+
     void initComponents() {
         frame = new JFrame(title);
 
@@ -118,11 +118,11 @@ public class ExecutionControlGUI extends ExecutionControl {
                 });
             }
         });
-        
+
         jCbWho = new JComboBox();
         jCbWho.addItem("all agents");
         jCbWho.addItem("selected agent");
-        
+
         jBtRun = new JButton("Run", new ImageIcon(ExecutionControlGUI.class.getResource("/images/run.gif")));
         jBtRun.setToolTipText("Run the MAS until some agent achieve a breakpoint. Breakpoints are annotations in plans' label");
         jBtRun.setEnabled(true);
@@ -154,9 +154,9 @@ public class ExecutionControlGUI extends ExecutionControl {
                 jTA.setContentType("text/"+mime);
                 previousMind = "--";
                 showAgState();
-            }            
+            }
         });
-        
+
         /*
         JButton jBtRefresh = new JButton("Show extra info");
         jBtRefresh.setEnabled(true);
@@ -170,7 +170,7 @@ public class ExecutionControlGUI extends ExecutionControl {
                 }
             }
         });*/
-        
+
 
         jTA = new JTextPane();
         jTA.setEditable(false);
@@ -182,17 +182,17 @@ public class ExecutionControlGUI extends ExecutionControl {
             }
         });
         jTA.setText("<html><body>Select the agent to inspect.</body></html>");
-        
+
         JPanel spTA = new JPanel(new BorderLayout());
         JScrollPane scpTA = new JScrollPane(jTA);
         //scpTA.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
         spTA.add(BorderLayout.CENTER, scpTA);
         spTA.setBorder(BorderFactory.createTitledBorder(BorderFactory
-                .createEtchedBorder(), "Agent Inspection", TitledBorder.LEFT, TitledBorder.TOP));
+                       .createEtchedBorder(), "Agent Inspection", TitledBorder.LEFT, TitledBorder.TOP));
 
         JPanel pHistory = new JPanel(new BorderLayout());//new FlowLayout(FlowLayout.CENTER));
         pHistory.setBorder(BorderFactory.createTitledBorder(BorderFactory
-                .createEtchedBorder(), "Agent History", TitledBorder.LEFT, TitledBorder.TOP));
+                           .createEtchedBorder(), "Agent History", TitledBorder.LEFT, TitledBorder.TOP));
         jHistory = new JSlider();
         jHistory.setMaximum(1);
         jHistory.setMinimum(0);
@@ -215,7 +215,7 @@ public class ExecutionControlGUI extends ExecutionControl {
         JPanel pAg = new JPanel(new BorderLayout());
         pAg.add(BorderLayout.CENTER, spTA);
         pAg.add(BorderLayout.SOUTH, pHistory);
-        
+
 
         listModel = new DefaultListModel();
         jList = new JList(listModel);
@@ -236,7 +236,7 @@ public class ExecutionControlGUI extends ExecutionControl {
             }
         });
 
-        
+
         JPanel pButtons = new JPanel(new FlowLayout(FlowLayout.CENTER));
         pButtons.add(jBtRun);
         pButtons.add(jTfSteps);
@@ -266,7 +266,7 @@ public class ExecutionControlGUI extends ExecutionControl {
         frame.setBounds(80, 30, (int)(height*1.618), height);
         //splitPaneVer.setDividerLocation((int)(splitPaneVer.getHeight()*0.618));
         //splitPaneVer.setDividerLocation(height - 200);
-        
+
         frame.setVisible(true);
 
         frame.addWindowListener(new WindowAdapter() {
@@ -274,7 +274,7 @@ public class ExecutionControlGUI extends ExecutionControl {
                 //close();
             }
         });
-        
+
         show.put("bels", true);
         show.put("rules", false);
         show.put("evt", true);
@@ -283,7 +283,7 @@ public class ExecutionControlGUI extends ExecutionControl {
         show.put("int-details", false);
         show.put("plan", false);
         show.put("plan-details", false);
-        show.put("annots", Config.get().getBoolean(Config.SHOW_ANNOTS));        
+        show.put("annots", Config.get().getBoolean(Config.SHOW_ANNOTS));
     }
 
     void setListOfAgsFromInfra() {
@@ -296,7 +296,7 @@ public class ExecutionControlGUI extends ExecutionControl {
             System.err.println("Error getting list of agents from infrasructure. "+e);
         }
     }
-    
+
     private void setupSlider() {
         int size = getCycleNumber();
         Hashtable<Integer,Component> labelTable = new Hashtable<Integer,Component>();
@@ -306,13 +306,13 @@ public class ExecutionControlGUI extends ExecutionControl {
         jHistory.setMaximum(size);
         jHistory.setValue(size);
     }
-    
+
     public void stop() {
         super.stop();
         frame.dispose();
         frame = null;
     }
-    
+
     private void inspectAgent(String agName) {
         if (agName == null) {
             return;
@@ -321,7 +321,7 @@ public class ExecutionControlGUI extends ExecutionControl {
             return;
         }
         currentAgName = agName;
-        
+
         agState = null;
 
         // try to get the state from the history
@@ -340,13 +340,13 @@ public class ExecutionControlGUI extends ExecutionControl {
                 logger.log(Level.SEVERE,"Error:",e);
             }
         }
-        
+
         showAgState();
-        setupSlider();                
+        setupSlider();
     }
 
     private String previousMind = "--";
-    
+
     /** show current agent state */
     void showAgState() {
         if (agState != null) {
@@ -369,10 +369,10 @@ public class ExecutionControlGUI extends ExecutionControl {
                 jTA.setText("Error in XML transformation!" + e + "\nText="+sMind);
                 e.printStackTrace();
             }
-        }        
+        }
     }
 
-    
+
     private void hyperLink(HyperlinkEvent evt) {
         if (evt.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
             //System.out.println("*evt="+evt.getDescription());
@@ -393,31 +393,31 @@ public class ExecutionControlGUI extends ExecutionControl {
         }
     }
 
-    
-    
+
+
     protected void startRun() {
         jBtRun.setEnabled(false);
         countCycles = 0;
         maxCycles = Integer.parseInt(jTfSteps.getText());
         breakpoint = false;
         if (jCbWho.getSelectedIndex() == 0) {
-            waitAllAgs     = true; 
+            waitAllAgs     = true;
             waitSelectedAg = false;
         } else {
-            waitAllAgs     = false; 
+            waitAllAgs     = false;
             waitSelectedAg = true;
         }
         if (BaseCentralisedMAS.getRunner() != null && BaseCentralisedMAS.getRunner().hasDebugControl()) {
             BaseCentralisedMAS.getRunner().enableDebugControl();
-        }        
+        }
 
         startNewCycle();
         continueRun();
     }
-    
+
     /** stop the execution */
     protected void stopRun() {
-        waitAllAgs     = false; 
+        waitAllAgs     = false;
         waitSelectedAg = false;
         inspectAgent(currentAgName);
         jBtRun.setEnabled(true);
@@ -425,12 +425,12 @@ public class ExecutionControlGUI extends ExecutionControl {
     }
 
     private ExecutorService executor = Executors.newFixedThreadPool(2);
-    
+
     protected void continueRun() {
         executor.execute(new Runnable() {
             public void run() {
                 if (waitAllAgs) {
-                    infraControl.informAllAgsToPerformCycle(getCycleNumber());            
+                    infraControl.informAllAgsToPerformCycle(getCycleNumber());
                 }
                 if (waitSelectedAg) {
                     infraControl.informAgToPerformCycle(currentAgName, getCycleNumber());
@@ -438,11 +438,11 @@ public class ExecutionControlGUI extends ExecutionControl {
             }
         });
     }
-    
-    /** 
+
+    /**
      * Called when the agent <i>agName</i> has finished its reasoning cycle.
-     * <i>breakpoint</i> is true in case the agent selected one plan with "breakpoint" 
-     * annotation. 
+     * <i>breakpoint</i> is true in case the agent selected one plan with "breakpoint"
+     * annotation.
       */
     public void receiveFinishedCycle(final String agName, boolean breakpoint, final int cycle) {
         if (!listModel.contains(agName)) {
@@ -469,7 +469,7 @@ public class ExecutionControlGUI extends ExecutionControl {
                 continueRun();
             }
         } else {
-            super.receiveFinishedCycle(agName, breakpoint, cycle);    
+            super.receiveFinishedCycle(agName, breakpoint, cycle);
         }
     }
 
@@ -488,10 +488,10 @@ public class ExecutionControlGUI extends ExecutionControl {
             }
         }
     }
-    
+
     /** test whether to stop running and show the agent state */
     protected boolean testStop() {
-        return breakpoint || countCycles >= maxCycles; 
+        return breakpoint || countCycles >= maxCycles;
     }
 
     protected void storeAgHistory(String agName, int cycle, Document doc) {

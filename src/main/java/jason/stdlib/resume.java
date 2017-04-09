@@ -19,12 +19,12 @@ import java.util.Iterator;
 /**
   <p>Internal action:
   <b><code>.resume(<i>G</i>)</code></b>.
-  
+
   <p>Description: resume goals <i>G</i> that were suspended by <code>.suspend</code>.
   <br/>
-  The meta-event <code>^!G[state(resumed)]</code> is produced. 
+  The meta-event <code>^!G[state(resumed)]</code> is produced.
 
-  <p>Example:<ul> 
+  <p>Example:<ul>
 
   <li> <code>.resume(go(1,3))</code>: resume the goal of going to location 1,3.
 
@@ -42,12 +42,16 @@ import java.util.Iterator;
   @see jason.stdlib.current_intention
   @see jason.stdlib.suspend
   @see jason.stdlib.suspended
-   
+
  */
 public class resume extends DefaultInternalAction {
 
-    @Override public int getMinArgs() { return 1; }
-    @Override public int getMaxArgs() { return 1; }
+    @Override public int getMinArgs() {
+        return 1;
+    }
+    @Override public int getMaxArgs() {
+        return 1;
+    }
 
     @Override protected void checkArguments(Term[] args) throws JasonException {
         super.checkArguments(args); // check number of arguments
@@ -61,7 +65,7 @@ public class resume extends DefaultInternalAction {
 
         Trigger      g = new Trigger(TEOperator.add, TEType.achieve, (Literal)args[0]);
         Circumstance C = ts.getC();
-        
+
         // Search the goal in PI
         Iterator<String> ik = C.getPendingIntentions().keySet().iterator();
         while (ik.hasNext()) {
@@ -72,27 +76,27 @@ public class resume extends DefaultInternalAction {
                 boolean notify = true;
                 if (k.startsWith(suspend.SUSPENDED_INT)) { // if not SUSPENDED_INT, it was suspended while already in PI, so, do not remove it from PI, just change the suspeded status
                     ik.remove();
-                    
+
                     // add it back in I if not in PA
                     if (! C.getPendingActions().containsKey(i.getId())) {
                         C.resumeIntention(i);
                         notify = false; // the resumeIntention already notifies
                     }
                 }
-                
+
                 // notify meta event listeners
                 if (notify && C.getListeners() != null)
                     for (CircumstanceListener el : C.getListeners())
                         el.intentionResumed(i);
-                
+
                 // remove the IA .suspend in case of self-suspend
                 if (k.startsWith(suspend.SELF_SUSPENDED_INT))
                     i.peek().removeCurrentStep();
-                
+
                 //System.out.println("res "+g+" from I "+i.getId());
             }
         }
-        
+
         // Search the goal in PE
         ik = C.getPendingEvents().keySet().iterator();
         while (ik.hasNext()) {
@@ -102,14 +106,14 @@ public class resume extends DefaultInternalAction {
                 Intention i = e.getIntention();
                 if (un.unifies(g, e.getTrigger()) || (i != null && i.hasTrigger(g, un))) {
                     ik.remove();
-                    C.addEvent(e);                    
-                    if (i != null) 
-                        i.setSuspended(false);                
+                    C.addEvent(e);
+                    if (i != null)
+                        i.setSuspended(false);
                     //System.out.println("res "+g+" from E "+e.getTrigger());
                 }
             }
         }
         return true;
-    }        
-    
+    }
+
 }

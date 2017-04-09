@@ -13,12 +13,12 @@ import jason.asSyntax.VarTerm;
 
 import java.util.Iterator;
 
-/** 
+/**
 
    Wraps a rule into a function. For example the rule
      sum(X,Y,Z) :- Z = X+Y.
-   is wrapped in a function sum(X,Y). 
-   
+   is wrapped in a function sum(X,Y).
+
    <p>To define sum as
    a function the user should register it using a
    directive in the ASL code:
@@ -26,34 +26,34 @@ import java.util.Iterator;
    where myf.sum is the name of the function,
    sum is the name of the rule (or literal, or
    internal action) and 2 is the function's arity.
-      
-   @author Jomi 
+
+   @author Jomi
 */
 public class RuleToFunction extends DefaultArithFunction  {
 
     private final String literal;
     private final int    arity;
-    
+
     public RuleToFunction(String literal, int arity) {
         this.literal = literal;
         this.arity = arity;
     }
-    
+
     @Override
     public String getName() {
         return super.getName()+"_{"+literal+"}";
     }
-    
+
     @Override
     public boolean checkArity(int a) {
         return a == arity;
     }
-    
+
     @Override
     public boolean allowUngroundTerms() {
         return true;
     }
-    
+
     @Override
     public double evaluate(TransitionSystem ts, Term[] args) throws Exception {
         // create a literal to perform the query
@@ -62,11 +62,11 @@ public class RuleToFunction extends DefaultArithFunction  {
             r = new InternalActionLiteral(literal);
         else
             r = new LiteralImpl(literal);
-        
+
         r.addTerms(args);
         VarTerm answer = new VarTerm("__RuleToFunctionResult");
         r.addTerm(answer);
-        
+
         // query the BB
         Iterator<Unifier> i = r.logicalConsequence( (ts == null ? null : ts.getAg()), new Unifier());
         if (i.hasNext()) {
@@ -74,12 +74,12 @@ public class RuleToFunction extends DefaultArithFunction  {
             if (value.isNumeric())
                 return ((NumberTerm)value).solve();
             else
-                throw new JasonException("The result of "+r+" (="+value+") is not numeric!");             
-        } else 
+                throw new JasonException("The result of "+r+" (="+value+") is not numeric!");
+        } else
             throw new JasonException("No solution was found for rule "+r);
     }
-    
-    public String toString() { 
+
+    public String toString() {
         return "function wrapper for "+literal+"/"+arity;
     }
 }

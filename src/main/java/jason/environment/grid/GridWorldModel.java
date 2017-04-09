@@ -6,45 +6,45 @@ import java.util.Random;
 
 /**
  * Simple model for a grid world (with agents and obstacles).
- * 
+ *
  * <p>Every agent gets an identification (a integer from 0 to the number of ag - 1).
  * The relation of this identification with agent's name should be done
  * in the environment class and is application dependent.
- *  
- * <p>Every type of object in the environment is represented by a bit mask: 
- * an agent    is 000010; 
- * an obstacle is 000100; .... 
+ *
+ * <p>Every type of object in the environment is represented by a bit mask:
+ * an agent    is 000010;
+ * an obstacle is 000100; ....
  * New types of objects should follow this pattern,
- * for example, GOLD = 8 (001000), ENEMY=16 (010000), ...  
+ * for example, GOLD = 8 (001000), ENEMY=16 (010000), ...
  * A place with two object is represented by the OR between the masks:
  * an agent and a gold is 001010.
- * 
+ *
  * <p>Limitations:
  * <ul>
  * <li>The number of agents can not change dynamically</li>
- * <li>Two agents can not share the same place. More generally, 
+ * <li>Two agents can not share the same place. More generally,
  *     two objects with the same "mask" can not share a place.</li>
  * </ul>
- * 
+ *
  * @author Jomi
  */
 public class GridWorldModel {
 
-    // each different object is represented by having a single bit 
+    // each different object is represented by having a single bit
     // set (a bit mask is used in the model), so any power of two
-    // represents different objects. Other numbers represent combinations 
+    // represents different objects. Other numbers represent combinations
     // of objects which are all located in the same cell of the grid.
     public static final int       CLEAN    = 0;
     public static final int       AGENT    = 2;
     public static final int       OBSTACLE = 4;
 
     protected int                 width, height;
-    protected int[][]             data = null; 
+    protected int[][]             data = null;
     protected Location[]          agPos;
     protected GridWorldView       view;
 
     protected Random              random = new Random();
-    
+
 
     protected GridWorldModel(int w, int h, int nbAgs) {
         width  = w;
@@ -67,7 +67,7 @@ public class GridWorldModel {
     public void setView(GridWorldView v) {
         view = v;
     }
-    
+
     public int getWidth() {
         return width;
     }
@@ -83,7 +83,7 @@ public class GridWorldModel {
     public boolean inGrid(Location l) {
         return inGrid(l.x, l.y);
     }
-    
+
     public boolean inGrid(int x, int y) {
         return y >= 0 && y < height && x >= 0 && x < width;
     }
@@ -107,12 +107,12 @@ public class GridWorldModel {
         }
         return c;
     }
-    
+
     public void set(int value, int x, int y) {
         data[x][y] = value;
         if (view != null) view.update(x,y);
     }
-    
+
     public void add(int value, Location l) {
         add(value, l.x, l.y);
     }
@@ -190,13 +190,13 @@ public class GridWorldModel {
 
     /** returns true if the location l has not the object obj */
     public boolean isFree(int obj, Location l) {
-        return inGrid(l.x, l.y) && (data[l.x][l.y] & obj) == 0;     
+        return inGrid(l.x, l.y) && (data[l.x][l.y] & obj) == 0;
     }
     /** returns true if the location x,y has not the object obj */
     public boolean isFree(int obj, int x, int y) {
-        return inGrid(x, y) && (data[x][y] & obj) == 0;     
+        return inGrid(x, y) && (data[x][y] & obj) == 0;
     }
-    
+
     public boolean isFreeOfObstacle(Location l) {
         return isFree(OBSTACLE, l);
     }
@@ -204,7 +204,7 @@ public class GridWorldModel {
         return isFree(OBSTACLE, x, y);
     }
 
-    /** returns a random free location using isFree to test the availability of some possible location (it means free of agents and obstacles) */ 
+    /** returns a random free location using isFree to test the availability of some possible location (it means free of agents and obstacles) */
     protected Location getFreePos() {
         for (int i=0; i<(getWidth()*getHeight()*5); i++) {
             int x = random.nextInt(getWidth());
@@ -217,7 +217,7 @@ public class GridWorldModel {
         return null; // not found
     }
 
-    /** returns a random free location using isFree(object) to test the availability of some possible location */ 
+    /** returns a random free location using isFree(object) to test the availability of some possible location */
     protected Location getFreePos(int obj) {
         for (int i=0; i<(getWidth()*getHeight()*5); i++) {
             int x = random.nextInt(getWidth());

@@ -70,7 +70,7 @@ public class StartNewAgentGUI extends BaseDialogGUI {
 
         archClass = new JTextField(20);
         createField("Architecture class", archClass,
-                "The customisation class for the agent architecture (<package.classname>). If not filled, the default architecture will be used.");
+                    "The customisation class for the agent architecture (<package.classname>). If not filled, the default architecture will be used.");
 
         nbAgs = new JTextField(4);
         nbAgs.setText("1");
@@ -129,7 +129,7 @@ public class StartNewAgentGUI extends BaseDialogGUI {
                     e.printStackTrace();
                 }
             }
-        }.start();
+        } .start();
         return true;
     }
 

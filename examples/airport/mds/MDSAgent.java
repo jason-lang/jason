@@ -8,7 +8,7 @@ import java.util.*;
 public class MDSAgent extends Agent {
 
     private Trigger unattendedLuggage = Trigger.parseTrigger("+unattended_luggage(_,_,_)");
-    
+
     /** unattended_luggage event has priority */
     @Override
     public Event selectEvent(Queue<Event> events) {
@@ -34,7 +34,7 @@ public class MDSAgent extends Agent {
         }
         return super.selectEvent(events);
     }
-    
+
     /** prefer to select intentions with +unattended_luggage(_,_,_) event in stack of IMs */
     @Override
     public Intention selectIntention(Queue<Intention> intentions) {
@@ -48,7 +48,7 @@ public class MDSAgent extends Agent {
                 }
             }
         }
-        
+
         // do not find +unattended_luggage(_,_,_), use default selection
         return super.selectIntention(intentions);
     }

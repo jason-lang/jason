@@ -8,59 +8,59 @@ import org.junit.Test;
 
 public class TestKQML {
 
-    TestAgent bob, maria; 
+    TestAgent bob, maria;
 
     // initialisation of the agents
     @Before
     public void setupAgs() {
         bob   = new TestAgent("bob");
         maria = new TestAgent("maria");
-        
+
         // defines the agent's AgentSpeak code
         bob.parseAScode(
-                "+!simple_send <- .send(maria, tell, vl(10)); "+ 
-                "                 .send(maria, achieve, goto(10,2)); " +
-                "                 .send(maria, tell, loves(maria,bob)[source(maria), source(mog)]). " +
-                
-                "+!send_ask1   <- .send(maria, askOne, vl(_), vl(X)); " +
-                "                 .send(maria, askOne, vl(_)); " + 
-                "                 act1(X). "+
-                "+!send_ask2   <- .send(maria, askOne, t2(_), A); "+
-                "                 jason.asunit.print(A). " +
-                "+!send_ask3   <- .send(maria, askOne, t1(_), A); "+
-                "                 jason.asunit.print(t1,\" \",A). "+
-                "+!send_ask4   <- .send(maria, askOne, fullname, A); "+
-                "                 jason.asunit.print(A). "+
-                
-                "+!send_askAll1 <- .send(maria, askAll, vl(_), L); "+
-                "                  jason.asunit.print(L). "+
-                "+!send_askAll2 <- .send(maria, askAll, t1(_), L); "+
-                "                  jason.asunit.print(L). "+
-                
-                "+!send_tellHow   <- .plan_label(Plan,hp);"+
-                "                    .send(maria,tellHow,Plan); "+
-                "                    .send(maria,achieve, hello(bob)). "+
-                "+!send_untellHow <- .send(maria,untellHow,hp). "+
-                
-                "@hp +!hello(Who)  <- jason.asunit.print(\"Hello \",Who)."                
+            "+!simple_send <- .send(maria, tell, vl(10)); "+
+            "                 .send(maria, achieve, goto(10,2)); " +
+            "                 .send(maria, tell, loves(maria,bob)[source(maria), source(mog)]). " +
+
+            "+!send_ask1   <- .send(maria, askOne, vl(_), vl(X)); " +
+            "                 .send(maria, askOne, vl(_)); " +
+            "                 act1(X). "+
+            "+!send_ask2   <- .send(maria, askOne, t2(_), A); "+
+            "                 jason.asunit.print(A). " +
+            "+!send_ask3   <- .send(maria, askOne, t1(_), A); "+
+            "                 jason.asunit.print(t1,\" \",A). "+
+            "+!send_ask4   <- .send(maria, askOne, fullname, A); "+
+            "                 jason.asunit.print(A). "+
+
+            "+!send_askAll1 <- .send(maria, askAll, vl(_), L); "+
+            "                  jason.asunit.print(L). "+
+            "+!send_askAll2 <- .send(maria, askAll, t1(_), L); "+
+            "                  jason.asunit.print(L). "+
+
+            "+!send_tellHow   <- .plan_label(Plan,hp);"+
+            "                    .send(maria,tellHow,Plan); "+
+            "                    .send(maria,achieve, hello(bob)). "+
+            "+!send_untellHow <- .send(maria,untellHow,hp). "+
+
+            "@hp +!hello(Who)  <- jason.asunit.print(\"Hello \",Who)."
         );
-        
+
         maria.parseAScode(
-                "vl(1). vl(2). " +
-                "+!goto(X,Y)[source(Ag)] <- act(X,Y,Ag). "+
-                "+?t2(X)[source(A)] : vl(Y) <- X = 10 + Y; jason.asunit.print(A)."+
-                "+!kqml_received(Sender, askOne, fullname, ReplyWith)  <- .send(Sender,tell,\"Maria dos Santos\", ReplyWith). "
+            "vl(1). vl(2). " +
+            "+!goto(X,Y)[source(Ag)] <- act(X,Y,Ag). "+
+            "+?t2(X)[source(A)] : vl(Y) <- X = 10 + Y; jason.asunit.print(A)."+
+            "+!kqml_received(Sender, askOne, fullname, ReplyWith)  <- .send(Sender,tell,\"Maria dos Santos\", ReplyWith). "
         );
-        
+
     }
-    
+
     @Test(timeout=2000)
     public void testSend() {
         bob.addGoal("simple_send");
         bob.assertIdle(5);                         // bob sent the messages
         maria.assertBel("vl(10)[source(bob)]", 5); // maria received tell
         maria.assertAct("act(10,2,bob)", 5);       // maria received achieved
-        maria.assertBel("loves(maria,bob)[source(bob)[source(maria),source(mog)]]", 5); 
+        maria.assertBel("loves(maria,bob)[source(bob)[source(maria),source(mog)]]", 5);
     }
 
     @Test(timeout=2000)
@@ -84,8 +84,8 @@ public class TestKQML {
         bob.assertPrint("t1 false", 5); // answer for ask3
 
         bob.addGoal("send_ask4");
-        bob.assertIdle(10);   
-        maria.assertIdle(10); 
+        bob.assertIdle(10);
+        maria.assertIdle(10);
         bob.assertPrint("Maria dos Santos", 5); // answer for ask3
     }
 
@@ -93,25 +93,25 @@ public class TestKQML {
     public void testAskAll() {
         bob.addGoal("simple_send");
         bob.addGoal("send_askAll1");
-        bob.assertIdle(10); 
-        maria.assertIdle(15); 
+        bob.assertIdle(10);
+        maria.assertIdle(15);
         bob.assertPrint("[vl(10)[source(maria)],vl(1)[source(maria)],vl(2)[source(maria)]]", 5);
-        
+
         bob.addGoal("send_askAll2");
-        bob.assertIdle(10); 
-        maria.assertIdle(10); 
-        bob.assertPrint("[]", 5); 
+        bob.assertIdle(10);
+        maria.assertIdle(10);
+        bob.assertPrint("[]", 5);
     }
 
     @Test(timeout=2000)
     public void testTellHow() {
         bob.addGoal("send_tellHow");
-        bob.assertIdle(10); 
-        maria.assertPrint("Hello bob", 20); 
+        bob.assertIdle(10);
+        maria.assertPrint("Hello bob", 20);
 
         bob.addGoal("send_untellHow");
         bob.assertIdle(10);
-        maria.assertIdle(10); 
+        maria.assertIdle(10);
         Assert.assertTrue(maria.getPL().get("hp") == null);
     }
 }

@@ -17,13 +17,13 @@ public class ActionExec implements Serializable {
     private boolean   result;
     private Literal   failureReason;
     private String    failureMsg;
-    
+
     public ActionExec(Literal ac, Intention i) {
         action = ac;
         intention = i;
         result = false;
     }
-    
+
     @Override
     public boolean equals(Object ao) {
         if (ao == null) return false;
@@ -31,19 +31,19 @@ public class ActionExec implements Serializable {
         ActionExec a = (ActionExec)ao;
         return action.equals(a.action);
     }
-    
+
     @Override
     public int hashCode() {
         return action.hashCode();
     }
-   
+
     public Structure getActionTerm() {
         if (action instanceof Structure)
             return (Structure)action;
         else
             return new Structure(action);
     }
-    
+
     public Intention getIntention() {
         return intention;
     }
@@ -53,7 +53,7 @@ public class ActionExec implements Serializable {
     public void setResult(boolean ok) {
         result = ok;
     }
-    
+
     public void setFailureReason(Literal reason, String msg) {
         failureReason = reason;
         failureMsg    = msg;
@@ -64,7 +64,7 @@ public class ActionExec implements Serializable {
     public Literal getFailureReason() {
         return failureReason;
     }
-    
+
     public String toString() {
         return "<"+action+","+intention+","+result+">";
     }

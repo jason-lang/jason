@@ -90,7 +90,7 @@ public class NewInternalActionGUI extends NewAgentGUI {
         iaCode = iaCode.replaceAll("<IA_NAME>", className);
         iaCode = iaCode.replaceAll("<PCK>", pck);
         iaCode = iaCode.replaceAll("<PROJECT_NAME>", buffer.getName());
-        iaCode = iaCode.replaceAll("<SUPER_CLASS>", "DefaultInternalAction");        
+        iaCode = iaCode.replaceAll("<SUPER_CLASS>", "DefaultInternalAction");
         return iaCode;
     }
 }

@@ -11,9 +11,9 @@ import java.util.logging.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-/** Represents an AgentSpack plan 
+/** Represents an AgentSpack plan
     (it extends structure to be used as a term)
-    
+
  @navassoc - label - Pred
  @navassoc - event - Trigger
  @navassoc - context - LogicalFormula
@@ -22,30 +22,30 @@ import org.w3c.dom.Element;
 
  */
 public class Plan extends Structure implements Cloneable, Serializable {
-    
+
     private static final long serialVersionUID = 1L;
     private static final Term TAtomic         = ASSyntax.createAtom("atomic");
     private static final Term TBreakPoint     = ASSyntax.createAtom("breakpoint");
     private static final Term TAllUnifs       = ASSyntax.createAtom("all_unifs");
-    
+
     private static Logger     logger          = Logger.getLogger(Plan.class.getName());
-    
+
     private Pred              label  = null;
     private Trigger           tevent = null;
     private LogicalFormula    context;
     private PlanBody          body;
-    
+
     private boolean isAtomic      = false;
     private boolean isAllUnifs    = false;
     private boolean hasBreakpoint = false;
-    
+
     private boolean     isTerm = false; // it is true when the plan body is used as a term instead of an element of a plan
 
     // used by clone
     public Plan() {
         super("plan", 0);
     }
-    
+
     // used by parser
     public Plan(Pred label, Trigger te, LogicalFormula ct, PlanBody bd) {
         super("plan", 0);
@@ -60,35 +60,48 @@ public class Plan extends Structure implements Cloneable, Serializable {
             body.setAsBodyTerm(false);
         }
     }
-    
+
     @Override
     public int getArity() {
         return 4;
     }
-    
+
     private static final Term noLabelAtom = new Atom("nolabel");
-    
+
     @Override
     public Term getTerm(int i) {
         switch (i) {
-        case 0: return (label == null) ? noLabelAtom : label;
-        case 1: return tevent;
-        case 2: return (context == null) ? Literal.LTrue : context;
-        case 3: return body;
-        default: return null;
+        case 0:
+            return (label == null) ? noLabelAtom : label;
+        case 1:
+            return tevent;
+        case 2:
+            return (context == null) ? Literal.LTrue : context;
+        case 3:
+            return body;
+        default:
+            return null;
         }
     }
-    
+
     @Override
     public void setTerm(int i, Term t) {
         switch (i) {
-        case 0: label   = (Pred)t; break;
-        case 1: tevent  = (Trigger)t; break;
-        case 2: context = (LogicalFormula)t; break;
-        case 3: body    = (PlanBody)t; break;
+        case 0:
+            label   = (Pred)t;
+            break;
+        case 1:
+            tevent  = (Trigger)t;
+            break;
+        case 2:
+            context = (LogicalFormula)t;
+            break;
+        case 3:
+            body    = (PlanBody)t;
+            break;
         }
     }
-    
+
     public void setLabel(Pred p) {
         label = p;
         if (p != null && p.hasAnnot()) {
@@ -103,17 +116,17 @@ public class Plan extends Structure implements Cloneable, Serializable {
             }
         }
     }
-    
+
     public Pred getLabel() {
         return label;
     }
-    
+
     public void setContext(LogicalFormula le) {
         context = le;
         if (Literal.LTrue.equals(le))
             context = null;
     }
-    
+
     public void setAsPlanTerm(boolean b) {
         isTerm = b;
     }
@@ -128,7 +141,7 @@ public class Plan extends Structure implements Cloneable, Serializable {
             return null;
         }
     }
-    
+
     /** @deprecated use getTrigger */
     public Trigger getTriggerEvent() {
         return tevent;
@@ -137,28 +150,28 @@ public class Plan extends Structure implements Cloneable, Serializable {
     public Trigger getTrigger() {
         return tevent;
     }
-    
+
     public LogicalFormula getContext() {
         return context;
     }
-    
+
     public PlanBody getBody() {
         return body;
     }
-    
+
     public boolean isAtomic() {
         return isAtomic;
     }
-    
+
     public boolean hasBreakpoint() {
         return hasBreakpoint;
     }
 
     public boolean isAllUnifs() {
-        return isAllUnifs; 
+        return isAllUnifs;
     }
-    
-    /** returns an unifier if this plan is relevant for the event <i>te</i>, 
+
+    /** returns an unifier if this plan is relevant for the event <i>te</i>,
         returns null otherwise.
     */
     public Unifier isRelevant(Trigger te) {
@@ -170,7 +183,7 @@ public class Plan extends Structure implements Cloneable, Serializable {
         else
             return null;
     }
-    
+
     @Override
     public boolean equals(Object o) {
         if (o == this) return true;
@@ -183,18 +196,18 @@ public class Plan extends Structure implements Cloneable, Serializable {
         }
         return false;
     }
-        
+
     public Plan capply(Unifier u) {
         Plan p = new Plan();
-        if (label != null) { 
+        if (label != null) {
             p.label         = (Pred) label.capply(u);
             p.isAtomic      = isAtomic;
             p.hasBreakpoint = hasBreakpoint;
             p.isAllUnifs    = isAllUnifs;
         }
-        
-        p.tevent = tevent.capply(u);        
-        if (context != null) 
+
+        p.tevent = tevent.capply(u);
+        if (context != null)
             p.context = (LogicalFormula)context.capply(u);
         p.body = (PlanBody)body.capply(u);
         p.setSrcInfo(srcInfo);
@@ -205,15 +218,15 @@ public class Plan extends Structure implements Cloneable, Serializable {
 
     public Term clone() {
         Plan p = new Plan();
-        if (label != null) { 
+        if (label != null) {
             p.label         = (Pred) label.clone();
             p.isAtomic      = isAtomic;
             p.hasBreakpoint = hasBreakpoint;
             p.isAllUnifs    = isAllUnifs;
         }
-        
-        p.tevent = tevent.clone();        
-        if (context != null) 
+
+        p.tevent = tevent.clone();
+        if (context != null)
             p.context = (LogicalFormula)context.clone();
         p.body = body.clonePB();
         p.setSrcInfo(srcInfo);
@@ -225,43 +238,43 @@ public class Plan extends Structure implements Cloneable, Serializable {
     /** used to create a plan clone in a new IM */
     public Plan cloneOnlyBody() {
         Plan p = new Plan();
-        if (label != null) { 
+        if (label != null) {
             p.label         = label;
             p.isAtomic      = isAtomic;
             p.hasBreakpoint = hasBreakpoint;
             p.isAllUnifs    = isAllUnifs;
         }
-        
+
         p.tevent  = tevent.clone();
         p.context = context;
         p.body    = body.clonePB();
-        
+
         p.setSrcInfo(srcInfo);
         p.isTerm = isTerm;
 
         return p;
     }
-    
+
     public String toString() {
         return toASString();
     }
-    
+
     /** returns this plan in a string complaint with AS syntax */
     public String toASString() {
         String b, e;
         if (isTerm) {
-            b = "{ "; 
+            b = "{ ";
             e = " }";
         } else {
-            b = ""; 
+            b = "";
             e = ".";
         }
-        return b+((label == null) ? "" : "@" + label + " ") + 
+        return b+((label == null) ? "" : "@" + label + " ") +
                tevent + ((context == null) ? "" : " : " + context) +
                (body.isEmptyBody() ? "" : " <- " + body) +
                e;
     }
-    
+
     /** get as XML */
     public Element getAsDOM(Document document) {
         Element u = (Element) document.createElement("plan");
@@ -271,17 +284,17 @@ public class Plan extends Structure implements Cloneable, Serializable {
             u.appendChild(l);
         }
         u.appendChild(tevent.getAsDOM(document));
-        
+
         if (context != null) {
             Element ec = (Element) document.createElement("context");
             ec.appendChild(context.getAsDOM(document));
             u.appendChild(ec);
         }
-        
+
         if (!body.isEmptyBody()) {
             u.appendChild(body.getAsDOM(document));
         }
-        
+
         return u;
     }
 }

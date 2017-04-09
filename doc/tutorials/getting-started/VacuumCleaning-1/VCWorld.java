@@ -16,12 +16,13 @@ public class VCWorld extends Environment {
 
     /** world model */
     private boolean[][] dirty = { { true, true },    // all dirty
-                                  { true, true } };
-                                  
+        { true, true }
+    };
+
     private int vcx = 0; // the vacuum cleaner location
     private int vcy = 0;
 
-    private Object modelLock = new Object(); 
+    private Object modelLock = new Object();
 
     /** general delegations */
     private HouseGUI gui = new HouseGUI();
@@ -38,30 +39,30 @@ public class VCWorld extends Environment {
 
     public VCWorld() {
         createPercept();
-        
+
         // create a thread to add dirty
         new Thread() {
             public void run() {
                 try {
                     while (isRunning()) {
                         // add random dirty
-                        if (r.nextInt(100) < 20) { 
+                        if (r.nextInt(100) < 20) {
                             dirty[r.nextInt(2)][r.nextInt(2)] = true;
                             gui.paint();
                             createPercept();
                         }
                         Thread.sleep(1000);
                     }
-                } catch (Exception e) {} 
+                } catch (Exception e) {}
             }
-        }.start();  
+        } .start();
     }
-        
+
     /** create the agents perceptions based on the world model */
     private void createPercept() {
         // remove previous perception
-        clearPercepts();       
-        
+        clearPercepts();
+
         if (vcx == 0 && vcy == 0) {
             addPercept(lPos1);
         } else if (vcx == 1 && vcy == 0) {
@@ -82,9 +83,11 @@ public class VCWorld extends Environment {
     @Override
     public boolean executeAction(String ag, Structure action) {
         logger.info("doing "+action);
-        
-        try { Thread.sleep(500);}  catch (Exception e) {} // slow down the execution
-        
+
+        try {
+            Thread.sleep(500);   // slow down the execution
+        }  catch (Exception e) {}
+
         synchronized (modelLock) {
             // Change the world model based on action
             if (action.getFunctor().equals("suck")) {
@@ -115,23 +118,23 @@ public class VCWorld extends Environment {
                 return false;
             }
         }
-        
-        createPercept(); // update agents perception for the new world state      
+
+        createPercept(); // update agents perception for the new world state
         gui.paint();
         return true;
     }
-    
+
     @Override
     public void stop() {
         super.stop();
         gui.setVisible(false);
     }
-    
-    
-    /* a simple GUI */ 
+
+
+    /* a simple GUI */
     class HouseGUI extends JFrame {
         JLabel[][] labels;
-        
+
         HouseGUI() {
             super("Domestic Robot");
             labels = new JLabel[dirty.length][dirty.length];
@@ -149,7 +152,7 @@ public class VCWorld extends Environment {
             setVisible(true);
             paint();
         }
-        
+
         void paint() {
             synchronized (modelLock) { // do not allow changes in the robot location while painting
                 for (int i = 0; i < labels.length; i++) {
@@ -167,6 +170,6 @@ public class VCWorld extends Environment {
                 }
             }
         }
-    }    
+    }
 }
 

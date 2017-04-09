@@ -14,7 +14,7 @@ import java.util.logging.Logger;
 /**
  * Example of an agent that only uses Jason BDI engine. It runs without all
  * Jason IDE stuff. (see Jason FAQ for more information about this example)
- * 
+ *
  * The class must extend AgArch class to be used by the Jason engine.
  */
 public class SimpleJasonAgent extends AgArch {
@@ -89,7 +89,7 @@ public class SimpleJasonAgent extends AgArch {
             Thread.sleep(1000);
         } catch (InterruptedException e) {}
     }
-    
+
     // Not used methods
     // This simple agent does not need messages/control/...
     @Override

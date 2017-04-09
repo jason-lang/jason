@@ -18,7 +18,7 @@ import java.util.Map;
  * The belief "student/2" has the first argument as its key, so the BB will never has
  * two students with the same key. Or, two students in the BB will have two different keys.
  * The belief "depot/3" has no key, so there will be always only one "depot" in the BB.
- * 
+ *
  * @author jomi
  */
 public class UniqueBelsBB extends DefaultBeliefBase {
@@ -26,7 +26,7 @@ public class UniqueBelsBB extends DefaultBeliefBase {
 
     Map<String,Literal> uniqueBels = new HashMap<String,Literal>();
     Unifier             u = new Unifier();
-    
+
     public void init(Agent ag, String[] args) {
         for (int i=0; i<args.length; i++) {
             Literal arg = Literal.parseLiteral(args[i]);
@@ -38,7 +38,7 @@ public class UniqueBelsBB extends DefaultBeliefBase {
     public boolean add(Literal bel) {
         Literal kb = uniqueBels.get(bel.getFunctor());
         if (kb != null && kb.getArity() == bel.getArity()) {
-            
+
             // find the bel in BB and eventually remove it
             u.clear();
             Literal linbb = null;

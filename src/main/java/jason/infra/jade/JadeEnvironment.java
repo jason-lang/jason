@@ -24,8 +24,8 @@ import jason.runtime.RuntimeServicesInfraTier;
 
 /**
  * This class implements the Jade version of the environment
- * infrastructure tier. 
- * 
+ * infrastructure tier.
+ *
  * @author Jomi
  */
 @SuppressWarnings("serial")
@@ -33,7 +33,7 @@ public class JadeEnvironment extends JadeAg implements EnvironmentInfraTier {
 
     public static String actionOntology     = "AS-actions";
     public static String perceptionOntology = "AS-perception";
-    
+
     private Environment userEnv;
 
     public JadeEnvironment() {
@@ -62,20 +62,20 @@ public class JadeEnvironment extends JadeAg implements EnvironmentInfraTier {
                             logger.log(Level.SEVERE, "To start the environment from .mas2j file, you have to provide as parameters: (j-project <file.mas2j>)");
                             return;
                         }
-                        jason.mas2j.parser.mas2j parser = new jason.mas2j.parser.mas2j(new FileReader(args[1].toString())); 
+                        jason.mas2j.parser.mas2j parser = new jason.mas2j.parser.mas2j(new FileReader(args[1].toString()));
                         MAS2JProject project = parser.mas();
                         project.setupDefault();
-    
+
                         ClassParameters ep = project.getEnvClass();
                         userEnv = (Environment) Class.forName(ep.getClassName()).newInstance();
                         userEnv.setEnvironmentInfraTier(this);
                         userEnv.init(ep.getParametersArray());
                         logger.fine("Init of environmend, via j-project, done.");
-                    
+
                     } else { // assume first parameter as class name, remaining environment args
                         userEnv = (Environment) Class.forName(args[0].toString()).newInstance();
                         userEnv.setEnvironmentInfraTier(this);
-                        
+
                         String[] envArgs = new String[args.length-1];
                         for (int i=1; i<args.length; i++)
                             envArgs[i-1] = args[1].toString();
@@ -85,7 +85,7 @@ public class JadeEnvironment extends JadeAg implements EnvironmentInfraTier {
             } else {
                 logger.warning("Using default environment.");
                 userEnv = new Environment();
-                userEnv.setEnvironmentInfraTier(this);                
+                userEnv.setEnvironmentInfraTier(this);
             }
         } catch (Exception e) {
             logger.log(Level.SEVERE, "Error in setup Jade Environment", e);
@@ -104,7 +104,7 @@ public class JadeEnvironment extends JadeAg implements EnvironmentInfraTier {
             logger.log(Level.SEVERE, "Error registering environment in DF", e);
         }
         logger.fine("Registry in the DF done.");
-        
+
         try {
             // add a message handler to answer perception asks
             // and actions asks
@@ -132,8 +132,8 @@ public class JadeEnvironment extends JadeAg implements EnvironmentInfraTier {
                                 e.printStackTrace();
                             }
                             send(r);
-                            
-                        // is action?    
+
+                            // is action?
                         } else if (m.getOntology().equals(actionOntology)) {
                             ACLMessage r = m.createReply();
                             r.setPerformative(ACLMessage.INFORM);
@@ -142,13 +142,13 @@ public class JadeEnvironment extends JadeAg implements EnvironmentInfraTier {
                                 userEnv.scheduleAction(m.getSender().getLocalName(), action, r);
                             } catch (Exception e) {
                                 e.printStackTrace();
-                            }                            
+                            }
                         }
                     }
                 }
             });
             logger.fine("setup done");
-            
+
         } catch (Exception e) {
             logger.log(Level.SEVERE, "Error starting agent", e);
         }
@@ -158,7 +158,7 @@ public class JadeEnvironment extends JadeAg implements EnvironmentInfraTier {
     protected void takeDown() {
         if (userEnv != null) userEnv.stop();
     }
-    
+
     public void actionExecuted(String agName, Structure actTerm, boolean success, Object infraData) {
         try {
             ACLMessage r = (ACLMessage)infraData;
@@ -170,7 +170,7 @@ public class JadeEnvironment extends JadeAg implements EnvironmentInfraTier {
             send(r);
         } catch (Exception e) {
             e.printStackTrace();
-        }                            
+        }
     }
 
     public void informAgsEnvironmentChanged(String... agents) {

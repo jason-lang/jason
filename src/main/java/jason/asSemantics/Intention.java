@@ -21,10 +21,10 @@ import org.w3c.dom.Element;
 
 /**
  * Represents and Intention (a stack of IntendedMeans).
- * 
- * The comparable sorts the intentions based on the atomic property: 
+ *
+ * The comparable sorts the intentions based on the atomic property:
  * atomic intentions comes first.
- * 
+ *
  * @author Jomi & Rafael
  */
 public class Intention implements Serializable, Comparable<Intention>, Iterable<IntendedMeans> {
@@ -36,11 +36,11 @@ public class Intention implements Serializable, Comparable<Intention>, Iterable<
     private int     id;
     private int     atomicCount    = 0; // number of atomic intended means in the intention
     private boolean isSuspended = false;
-    
+
     private Deque<IntendedMeans> intendedMeans = new ArrayDeque<IntendedMeans>();
-    
+
     //private Trigger initialTrigger = null; // just for additional information/debug (not really necessary)
-    
+
     //static private Logger logger = Logger.getLogger(Intention.class.getName());
 
     public Intention() {
@@ -53,12 +53,12 @@ public class Intention implements Serializable, Comparable<Intention>, Iterable<
 
     public void push(IntendedMeans im) {
         intendedMeans.push(im);
-        if (im.isAtomic()) 
+        if (im.isAtomic())
             atomicCount++;
         //if (initialTrigger == null)
         //    initialTrigger = im.getTrigger();
     }
-    
+
     public IntendedMeans peek() {
         return intendedMeans.peek();
     }
@@ -81,13 +81,13 @@ public class Intention implements Serializable, Comparable<Intention>, Iterable<
     public boolean isAtomic() {
         return atomicCount > 0;
     }
-    
+
     public void setAtomic(int a) { // used for testing
         atomicCount = a;
     }
-    
+
     public Iterator<IntendedMeans> iterator() {
-        return intendedMeans.iterator(); 
+        return intendedMeans.iterator();
     }
 
     public boolean isFinished() {
@@ -97,7 +97,7 @@ public class Intention implements Serializable, Comparable<Intention>, Iterable<
     public int size() {
         return intendedMeans.size();
     }
-    
+
     public void clearIM() {
         intendedMeans.clear();
     }
@@ -105,11 +105,11 @@ public class Intention implements Serializable, Comparable<Intention>, Iterable<
     public void setSuspended(boolean b) {
         isSuspended = b;
     }
-    
+
     public boolean isSuspended() {
         return isSuspended;
     }
-    
+
     /** returns the IntendedMeans with TE = g, returns null if there isn't one */
     public IntendedMeans getIM(Trigger g, Unifier u) {
         for (IntendedMeans im : intendedMeans)
@@ -118,11 +118,11 @@ public class Intention implements Serializable, Comparable<Intention>, Iterable<
                 return im;
         return null;
     }
-    
+
     public IntendedMeans getBottom() {
         return intendedMeans.getLast();
     }
-    
+
     /** returns true if the intention has an IM where TE = g, using u to verify equality */
     public boolean hasTrigger(Trigger g, Unifier u) {
         //return getIM(g,u) != null;
@@ -142,13 +142,13 @@ public class Intention implements Serializable, Comparable<Intention>, Iterable<
             }
             pop(); // remove im
             return true;
-        }      
+        }
         return false;
     }
-    
+
     public void fail(Circumstance c) {
     }
-    
+
     public Pair<Event, Integer> findEventForFailure(Trigger tevent, PlanLibrary pl, Circumstance c) {
         Trigger failTrigger = new Trigger(TEOperator.del, tevent.getType(), tevent.getLiteral());
         Iterator<IntendedMeans> ii = iterator();
@@ -163,35 +163,35 @@ public class Intention implements Serializable, Comparable<Intention>, Iterable<
                 failTrigger = new Trigger(TEOperator.del, tevent.getType(), tevent.getLiteral());
                 posInStak--;
             }
-            if (tevent.isGoal() && tevent.isAddition() && pl.hasCandidatePlan(failTrigger))            
+            if (tevent.isGoal() && tevent.isAddition() && pl.hasCandidatePlan(failTrigger))
                 return new Pair<Event, Integer>(new Event(failTrigger.clone(), this), posInStak);
             else
                 return new Pair<Event, Integer>(null, 0);
         }
     }
 
-    
+
     /** implements atomic intentions > not atomic intentions */
     public int compareTo(Intention o) {
         if (o.atomicCount > this.atomicCount) return 1;
         if (this.atomicCount > o.atomicCount) return -1;
-        
+
         if (o.id > this.id) return 1;
         if (this.id > o.id) return -1;
         return 0;
     }
-    
+
     public boolean equals(Object o) {
         if (o == null) return false;
         if (o == this) return true;
         if (o instanceof Intention) return ((Intention)o).id == this.id;
         return false;
     }
-    
+
     public int hashCode() {
         return id;
     }
-    
+
     public Intention clone() {
         Intention i = new Intention();
         i.id = id;
@@ -200,15 +200,15 @@ public class Intention implements Serializable, Comparable<Intention>, Iterable<
         for (IntendedMeans im: intendedMeans) {
             i.intendedMeans.add((IntendedMeans)im.clone());
         }
-        return i;        
+        return i;
     }
-    
+
     // used by fork
     public void copyTo(Intention i) {
         i.atomicCount   = atomicCount;
         i.intendedMeans = new ArrayDeque<IntendedMeans>(intendedMeans);
     }
-        
+
     public String toString() {
         StringBuilder s = new StringBuilder("intention "+id+": \n");
         int i = 0;
@@ -231,7 +231,7 @@ public class Intention implements Serializable, Comparable<Intention>, Iterable<
         for (IntendedMeans im: intendedMeans)
             lt.add(im.getAsTerm());
         intention.addTerm(lt);
-        return intention;        
+        return intention;
     }
 
     /** get as XML */
@@ -241,7 +241,7 @@ public class Intention implements Serializable, Comparable<Intention>, Iterable<
         for (IntendedMeans im: intendedMeans)
             eint.appendChild(im.getAsDOM(document));
         //if (intendedMeans.isEmpty())
-        //    eint.appendChild( initialTrigger.getAsDOM(document));        
+        //    eint.appendChild( initialTrigger.getAsDOM(document));
         eint.setAttribute("finished", ""+isFinished());
         eint.setAttribute("suspended", ""+isSuspended());
 

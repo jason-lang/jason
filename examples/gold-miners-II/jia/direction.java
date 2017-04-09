@@ -15,24 +15,24 @@ import arch.LocalWorldModel;
 import arch.MinerArch;
 import busca.Nodo;
 
-/** 
+/**
  * Gives the direction (up, down, left, right) towards some location.
  * Uses A* for this task.
- *  
+ *
  * @author jomi
  */
 public class direction extends DefaultInternalAction {
-    
+
     int[]      actionsOrder = { 1, 2, 3, 4 }; // initial order of actions
     Random     random = new Random();
-    
+
     @Override
     public Object execute(TransitionSystem ts, Unifier un, Term[] terms) throws Exception {
         try {
             String sAction = "skip";
 
             LocalWorldModel model = ((MinerArch)ts.getUserAgArch()).getModel();
-    
+
             int iagx = (int)((NumberTerm)terms[0]).solve();
             int iagy = (int)((NumberTerm)terms[1]).solve();
             int itox = (int)((NumberTerm)terms[2]).solve();
@@ -45,18 +45,18 @@ public class direction extends DefaultInternalAction {
 
                 Location from = new Location(iagx, iagy);
                 Location to   = new Location(itox, itoy);
-                
+
                 // randomly change the place of two actions in actionsOrder
                 int i1 = random.nextInt(4);
                 int i2 = random.nextInt(4);
                 int temp = actionsOrder[i2];
                 actionsOrder[i2] = actionsOrder[i1];
                 actionsOrder[i1] = temp;
-                
+
                 if (actionsOrder[0] + actionsOrder[1] + actionsOrder[2] + actionsOrder[3] != 10) {
                     ts.getLogger().warning("****** lost action!!!!!");
                 }
-                
+
                 Search astar    = new Search(model, from, to, actionsOrder, true);
                 Nodo   solution = astar.search();
                 if (solution != null) {
@@ -70,7 +70,7 @@ public class direction extends DefaultInternalAction {
             }
             return un.unifies(terms[4], new Atom(sAction));
         } catch (Throwable e) {
-            ts.getLogger().log(Level.SEVERE, "direction error: "+e, e);         
+            ts.getLogger().log(Level.SEVERE, "direction error: "+e, e);
         }
         return false;
     }

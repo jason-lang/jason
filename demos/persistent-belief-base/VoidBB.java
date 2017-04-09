@@ -22,11 +22,11 @@ public class VoidBB extends jason.bb.BeliefBase {
     public boolean add(Literal l) {
         return true;
     }
-    
+
     public boolean add(int index, Literal l) {
         return true;
     }
-    
+
     public Literal contains(Literal l) {
         return l;
     }
@@ -35,11 +35,11 @@ public class VoidBB extends jason.bb.BeliefBase {
     public Set<Atom> getNameSpaces() {
         return new HashSet<Atom>();
     }
-    
+
     public Iterator<Literal> iterator() {
         return new ArrayList<Literal>().iterator();
     }
-    
+
     public boolean remove(Literal l) {
         return true;
     }
@@ -51,7 +51,7 @@ public class VoidBB extends jason.bb.BeliefBase {
     public Iterator<Literal> getCandidateBeliefs(PredicateIndicator pi) {
         return new ArrayList<Literal>().iterator();
     }
-    
+
     public Iterator<Literal> getCandidateBeliefs(Literal l, Unifier u) {
         return new ArrayList<Literal>().iterator();
     }

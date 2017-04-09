@@ -16,32 +16,32 @@ import jason.bb.BeliefBase;
 
 /**
   <p>Internal action: <b><code>.add_plan</code></b>.
-  
+
   <p>Description: adds plan(s) to the agent's plan library.
-  
+
   <p>Parameters:<ul>
-  
+
   <li>+ plan(s) (plan term, string, or list): the <i>plan term</i> follows the
-  same syntax as AS plans, but are enclosed by { and } 
-  (e.g. <code>{+!g : vl(X) <- .print(X)}</code>). 
+  same syntax as AS plans, but are enclosed by { and }
+  (e.g. <code>{+!g : vl(X) <- .print(X)}</code>).
   In case this parameter is a string, the code within the string has to follow the syntax of AS plans
-  (e.g. <code>"+!g : vl(X) <- .print(X)."</code>). 
+  (e.g. <code>"+!g : vl(X) <- .print(X)."</code>).
   If it is a list, each plan term or string in the list will be parsed into an
   AgentSpeak plan and added to the plan library.<br/>
-  
+
   <li><i>+ source</i> (atom, optional): the source of the
   plan(s). The default value for the source is <code>self</code>.<br/>
-  
+
   <li><i>+ position</i> (atom, optional): if the value is "begin" the plan
-  will be added in the begin of the plan library. 
+  will be added in the begin of the plan library.
   The default value is <code>end</code>.<br/>
 
   </ul>
-  
+
   Note that if only two parameter is informed, the second will be the source and not
   the position.
-  
-  <p>Examples:<ul> 
+
+  <p>Examples:<ul>
 
   <li> <code>.add_plan({ +b : true &lt;- .print(b) })</code>: adds the plan
   <code>+b : true &lt;- .print(b).</code> to the agent's plan library
@@ -72,8 +72,12 @@ import jason.bb.BeliefBase;
  */
 public class add_plan extends DefaultInternalAction {
 
-    @Override public int getMinArgs() { return 1; }
-    @Override public int getMaxArgs() { return 3; }
+    @Override public int getMinArgs() {
+        return 1;
+    }
+    @Override public int getMaxArgs() {
+        return 3;
+    }
 
     @Override
     public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {
@@ -94,13 +98,13 @@ public class add_plan extends DefaultInternalAction {
         } else { // args[0] is a plan
             ts.getAg().getPL().add( transform2plan(args[0]), source, before);
         }
-        
+
         if (ts.getAg().getPL().hasMetaEventPlans())
             ts.addGoalListener(new GoalListenerForMetaEvents(ts));
 
         return true;
     }
-    
+
     private Plan transform2plan(Term t) throws ParseException, JasonException {
         Plan p = null;
         if (t.isString()) {
@@ -111,7 +115,7 @@ public class add_plan extends DefaultInternalAction {
                 if (sPlan.charAt(c) != '\\') {
                     sTemp.append(sPlan.charAt(c));
                 }
-            }            
+            }
             sPlan  = sTemp.toString();
             p = ASSyntax.parsePlan(sPlan);
         } else if (t instanceof Plan) {

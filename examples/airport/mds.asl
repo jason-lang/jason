@@ -39,7 +39,7 @@ i_am_winner(RN,MyBid)
       :  winner(RN,_,WB) & B > WB
       <- -+winner(RN,Sender,B).
 
-// ignore loosing bids, as I'm not the winner for this RN
+// ignore losing bids, as I'm not the winner for this RN
 +bid(_,_).
 
 +!check_negot_finished(RN) 

@@ -13,7 +13,7 @@ import jason.asSemantics.Unifier;
 public class CyclicTerm extends LiteralImpl  {
 
     private static final long serialVersionUID = 1L;
-    
+
     private VarTerm cyclicVar = null;
 
     /** creates a positive literal */
@@ -30,12 +30,12 @@ public class CyclicTerm extends LiteralImpl  {
     public VarTerm getCyclicVar() {
         return cyclicVar;
     }
-    
+
     @Override
     public boolean isCyclicTerm() {
         return true;
     }
-    
+
     @Override
     public boolean equals(Object o) {
         if (o == null) return false;
@@ -68,20 +68,20 @@ public class CyclicTerm extends LiteralImpl  {
         return b;
     }
     */
-    
+
     @Override
     public Term capply(Unifier u) {
         Term v = u.remove(cyclicVar);
         Term r = new CyclicTerm(this, (VarTerm)cyclicVar.clone(), u);
         if (v != null)
             u.bind(cyclicVar, v);
-        return r; 
+        return r;
     }
 
     public Term clone() {
         return new CyclicTerm(this, (VarTerm)cyclicVar.clone());
     }
-    
+
     @Override
     protected int calcHashCode() {
         return super.calcHashCode() + cyclicVar.calcHashCode();

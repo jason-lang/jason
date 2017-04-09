@@ -19,7 +19,7 @@ abstract public class BaseDialogGUI extends JDialog {
 
     protected JButton ok;
     protected JButton cancel;
-    
+
     protected JPanel pFields = new JPanel(new GridLayout(0,1));
     protected JPanel pLabels = new JPanel(new GridLayout(0,1));
 
@@ -32,7 +32,7 @@ abstract public class BaseDialogGUI extends JDialog {
         setLocation((int)( (screenSize.width - getWidth()) / 2),(int) ((screenSize.height - getHeight())/2));
         setVisible(true);
     }
-    
+
     abstract protected void initComponents();
 
     protected JPanel createButtonsPanel() {
@@ -79,7 +79,7 @@ abstract public class BaseDialogGUI extends JDialog {
         p.add(tf2);
         pFields.add(p);
     }
-    
+
     abstract protected boolean ok();
-    
+
 }

@@ -12,16 +12,16 @@ import java.util.logging.Logger;
 
 
 /**
- * 
+ *
  * A wrapper for a chain of belief bases customisations.
- * 
+ *
  * The arguments are the belief bases in the chain
- * 
+ *
  * jason.bb.ChainBB( bb1, bb2, bb3, ... )
- * 
+ *
  * where each BB is bbclass(bb parameters)
- *  
- *  e.g.: 
+ *
+ *  e.g.:
  *  <pre>
  *  agents:
         bob beliefBaseClass jason.bb.ChainBB(
@@ -44,7 +44,7 @@ public class ChainBB extends ChainBBAdapter {
                 BeliefBase bb = (ChainBBAdapter) Class.forName(bbs.getFunctor()).newInstance();
                 addInChain(bb);
             }
-            
+
             // init BB
             ChainBBAdapter bb = getNextAdapter();
             for (String s: args) {
@@ -64,7 +64,7 @@ public class ChainBB extends ChainBBAdapter {
             logger.log(Level.SEVERE, "Error creating ChainBB",e);
         }
     }
-    
+
     /** add a new BB at the end of the chain */
     public void addInChain(BeliefBase bb) {
         if (getNextAdapter() == null) {
@@ -77,7 +77,7 @@ public class ChainBB extends ChainBBAdapter {
             last.setNext(bb);
         }
     }
-    
+
     @SuppressWarnings("rawtypes")
     public List<Class> getChainClasses() {
         List<Class> r = new ArrayList<Class>();

@@ -18,20 +18,20 @@ import java.util.Map;
 
 /**
   <p>Internal action: <b><code>.suspended(<i>G</i>, <i>R</i>)</code></b>.
-  
-  <p>Description: checks whether goal <i>G</i> belongs to a suspended intention. <i>R</i> (a String) 
+
+  <p>Description: checks whether goal <i>G</i> belongs to a suspended intention. <i>R</i> (a String)
   unifies with the reason for the
-  suspend (waiting action to be performed, .wait, ....). 
-  
+  suspend (waiting action to be performed, .wait, ....).
+
   The literal <i>G</i>
   represents a suspended goal if there is a triggering event <code>+!G</code> in any plan within
   any intention in PI or PA.
-  
-  <p>Example:<ul> 
+
+  <p>Example:<ul>
 
   <li> <code>.suspended(go(1,3),R)</code>: true if <code>go(1,3)</code>
   is a suspended goal. <code>R</code> unifies with "act" if the reason for being suspended
-  is an action waiting feedback from environment. 
+  is an action waiting feedback from environment.
 
   </ul>
 
@@ -51,8 +51,12 @@ import java.util.Map;
 */
 public class suspended extends DefaultInternalAction {
 
-    @Override public int getMinArgs() { return 2; }
-    @Override public int getMaxArgs() { return 2; }
+    @Override public int getMinArgs() {
+        return 2;
+    }
+    @Override public int getMaxArgs() {
+        return 2;
+    }
 
     @Override protected void checkArguments(Term[] args) throws JasonException {
         super.checkArguments(args); // check number of arguments

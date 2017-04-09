@@ -24,7 +24,7 @@ import java.util.Iterator;
   <li>+ substring (any term).<br/>
   <li>+ string (any term).<br/>
   <li>+/- position (optional -- integer): the position of
-  the string where the sub-string occurs. 
+  the string where the sub-string occurs.
   </ul>
 
   <p>Examples:<ul>
@@ -44,27 +44,31 @@ import java.util.Iterator;
 
 */
 public class substring extends DefaultInternalAction {
-    
+
     private static InternalAction singleton = null;
     public static InternalAction create() {
-        if (singleton == null) 
+        if (singleton == null)
             singleton = new substring();
         return singleton;
     }
 
-    @Override public int getMinArgs() { return 2; }
-    @Override public int getMaxArgs() { return 3; }
+    @Override public int getMinArgs() {
+        return 2;
+    }
+    @Override public int getMaxArgs() {
+        return 3;
+    }
 
     @Override
     public Object execute(TransitionSystem ts, final Unifier un, final Term[] args) throws Exception {
         checkArguments(args);
-        
+
         final String s0;
         if (args[0].isString())
             s0 = ((StringTerm)args[0]).getString();
-        else 
+        else
             s0 = args[0].toString();
-        
+
         final String s1;
         if (args[1].isString())
             s1 = ((StringTerm)args[1]).getString();
@@ -75,16 +79,16 @@ public class substring extends DefaultInternalAction {
             // no backtracking utilisation
             return s1.indexOf(s0) >= 0;
         } else {
-            
+
             // backtrack version: unifies in the third argument all possible positions of s0 in s1
             return new Iterator<Unifier>() {
                 Unifier c = null; // the current response (which is an unifier)
                 int     pos = 0;  // current position in s1
-                
+
                 public boolean hasNext() {
-                    if (c == null) // the first call of hasNext should find the first response 
+                    if (c == null) // the first call of hasNext should find the first response
                         find();
-                    return c != null; 
+                    return c != null;
                 }
 
                 public Unifier next() {
@@ -93,7 +97,7 @@ public class substring extends DefaultInternalAction {
                     find(); // find next response
                     return b;
                 }
-                
+
                 void find() {
                     if (pos < s1.length()) {
                         pos = s1.indexOf(s0,pos);

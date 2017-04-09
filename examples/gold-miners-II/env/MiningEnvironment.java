@@ -17,7 +17,7 @@ import javax.swing.JOptionPane;
 
 /**
  * Implementation of the local simulator for the competition scenario.
- * 
+ *
  * @author Jomi
  */
 public class MiningEnvironment extends TimeSteppedEnvironment {
@@ -26,10 +26,10 @@ public class MiningEnvironment extends TimeSteppedEnvironment {
 
     WorldModel              model;
     WorldView               view;
-    
+
     int                     simId    = 5; // type of environment
     int                     nbWorlds = 10;
-    
+
     Random                  random   = new Random();
 
     Term                    up       = Literal.parseLiteral("do(up)");
@@ -42,18 +42,18 @@ public class MiningEnvironment extends TimeSteppedEnvironment {
 
     boolean                 hasGUI   = true;
     int                     windowSize = 800;
-    
+
     int                     finishedAt = 0; // cycle where all golds was collected
 
     String                  redTeamName, blueTeamName;
-    
+
     @Override
     public void init(String[] args) {
         setOverActionsPolicy(OverActionsPolicy.ignoreSecond);
 
         // get the parameters
         setSleep(Integer.parseInt(args[1]));
-        hasGUI = args[2].equals("yes"); 
+        hasGUI = args[2].equals("yes");
         redTeamName  = args[3];
         blueTeamName = args[4];
         if (args.length > 5)
@@ -65,7 +65,7 @@ public class MiningEnvironment extends TimeSteppedEnvironment {
     protected void updateNumberOfAgents() {
         setNbAgs(model.getNbOfAgs());
     }
-    
+
     @Override
     public void stop() {
         super.stop();
@@ -74,24 +74,24 @@ public class MiningEnvironment extends TimeSteppedEnvironment {
     public int getSimId() {
         return simId;
     }
-    
-    
+
+
     @Override
     public boolean executeAction(String ag, Structure action) {
-        
+
         @SuppressWarnings("unused")
         boolean result = false;
         int agId = -10;
         try {
             // get the agent id based on its name
             agId = getAgNbFromName(ag);
-            
+
             // check failure
             if (!action.equals(drop) && random.nextDouble() < model.getAgFatigue(agId)) {
                 //logger.info("Action "+action+" from agent "+ag+" failed!");
                 return true; // does nothing
             }
-            
+
             if (action.equals(up)) {
                 result = model.move(WorldModel.Move.UP, agId);
             } else if (action.equals(down)) {
@@ -118,19 +118,19 @@ public class MiningEnvironment extends TimeSteppedEnvironment {
 
     public int getAgNbFromName(String agName) {
         if (agName.startsWith(redTeamName)) {
-            return (Integer.parseInt(agName.substring(redTeamName.length()))) - 1; 
+            return (Integer.parseInt(agName.substring(redTeamName.length()))) - 1;
         }
         if (agName.startsWith(blueTeamName)) {
-            return (Integer.parseInt(agName.substring(blueTeamName.length()))) + (model.agsByTeam - 1); 
+            return (Integer.parseInt(agName.substring(blueTeamName.length()))) + (model.agsByTeam - 1);
         }
         logger.warning("There is no ID for agent named "+agName);
-        return -1;      
+        return -1;
     }
-    
+
     public String getAgNameFromID(int id) {
         if (id < model.agsByTeam)
             return redTeamName + (id+1);
-        else 
+        else
             return blueTeamName + (id-(model.agsByTeam-1));
     }
 
@@ -138,27 +138,53 @@ public class MiningEnvironment extends TimeSteppedEnvironment {
         simId = w;
         try {
             switch (w) {
-            case 1:  model = WorldFactory.world1(); break;
-            case 2:  model = WorldFactory.world2(); break;
-            case 3:  model = WorldFactory.world3(); break;
-            case 4:  model = WorldFactory.world4(); break;
-            case 5:  model = WorldFactory.world5(); break;
-            case 6:  model = WorldFactory.world6(); break;
-            case 7:  model = WorldFactory.world7(); break;
-            case 8:  model = WorldFactory.world8(); break;
-            case 9:  model = WorldFactory.world9(); break;
-            case 10: model = WorldFactory.world10(); break;
-            case 11: model = WorldFactory.worldFromContest2007("Fence"); break;
-            case 12: model = WorldFactory.worldFromContest2007("Semiramis"); break;
-            case 13: model = WorldFactory.worldFromContest2007("Overkill"); break;
+            case 1:
+                model = WorldFactory.world1();
+                break;
+            case 2:
+                model = WorldFactory.world2();
+                break;
+            case 3:
+                model = WorldFactory.world3();
+                break;
+            case 4:
+                model = WorldFactory.world4();
+                break;
+            case 5:
+                model = WorldFactory.world5();
+                break;
+            case 6:
+                model = WorldFactory.world6();
+                break;
+            case 7:
+                model = WorldFactory.world7();
+                break;
+            case 8:
+                model = WorldFactory.world8();
+                break;
+            case 9:
+                model = WorldFactory.world9();
+                break;
+            case 10:
+                model = WorldFactory.world10();
+                break;
+            case 11:
+                model = WorldFactory.worldFromContest2007("Fence");
+                break;
+            case 12:
+                model = WorldFactory.worldFromContest2007("Semiramis");
+                break;
+            case 13:
+                model = WorldFactory.worldFromContest2007("Overkill");
+                break;
             default:
                 logger.warning("Invalid index!");
                 return;
             }
-            
+
             super.init(new String[] { "1000" } ); // set step timeout
             updateNumberOfAgents();
-            
+
             // add perception for all agents
             clearPercepts();
             addPercept(Literal.parseLiteral("gsize(" + simId + "," + model.getWidth() + "," + model.getHeight() + ")"));
@@ -166,10 +192,10 @@ public class MiningEnvironment extends TimeSteppedEnvironment {
             int msteps = model.getMaxSteps();
             if (msteps == 0) msteps = 100000;
             addPercept(Literal.parseLiteral("steps(" + simId + "," + msteps + ")"));
-            
+
             updateAgsPercept();
             //informAgsEnvironmentChanged();
-            
+
             if (hasGUI) {
                 view = new WorldView(model, windowSize);
                 view.setEnv(this);
@@ -201,15 +227,15 @@ public class MiningEnvironment extends TimeSteppedEnvironment {
         clearPercepts(agName);
         // its location
         Location l = model.getAgPos(ag);
-        Literal p = ASSyntax.createLiteral("pos", 
-                        ASSyntax.createNumber(l.x), 
-                        ASSyntax.createNumber(l.y), 
-                        ASSyntax.createNumber(getStep()));
+        Literal p = ASSyntax.createLiteral("pos",
+                                           ASSyntax.createNumber(l.x),
+                                           ASSyntax.createNumber(l.y),
+                                           ASSyntax.createNumber(getStep()));
         addPercept(agName, p);
-        
+
         Literal cg = ASSyntax.createLiteral("carrying_gold", ASSyntax.createNumber(model.getGoldsWithAg(ag)));
         addPercept(agName, cg);
-        
+
         if (model.mayCarryMoreGold(ag)) {
             addPercept(agName, aCAP);
         }
@@ -226,7 +252,7 @@ public class MiningEnvironment extends TimeSteppedEnvironment {
         updateAgPercept(agName, ag, l.x + 1, l.y + 1);
     }
 
-        
+
     private void updateAgPercept(String agName, int agId, int x, int y) {
         if (random.nextDouble() < model.getAgFatigue(agId)) return; // perception omission
         if (model == null || !model.inGrid(x,y)) return;
@@ -242,28 +268,28 @@ public class MiningEnvironment extends TimeSteppedEnvironment {
             int otherag = model.getAgAtPos(x, y);
             if (otherag >= 0 && otherag != agId) {
                 isEmpty = false;
-                boolean agIsRed    = agId < model.agsByTeam; 
-                boolean otherIsRed = otherag < model.agsByTeam; 
+                boolean agIsRed    = agId < model.agsByTeam;
+                boolean otherIsRed = otherag < model.agsByTeam;
                 if (agIsRed == otherIsRed) // ally
                     addPercept(agName, createCellPerception(x, y, aALLY));
                 else
                     addPercept(agName, createCellPerception(x, y, aENEMY));
             }
         }
-        if (isEmpty) 
+        if (isEmpty)
             addPercept(agName, createCellPerception(x, y, aEMPTY));
     }
-    
+
     public static Literal createCellPerception(int x, int y, Atom obj) {
         return ASSyntax.createLiteral("cell",
-                ASSyntax.createNumber(x),
-                ASSyntax.createNumber(y),
-                obj); 
+                                      ASSyntax.createNumber(x),
+                                      ASSyntax.createNumber(y),
+                                      obj);
     }
 
 
     Integer nextWorld;
-    
+
     public void startNewWorld(int w) {
         addPercept(Literal.parseLiteral("end_of_simulation(" + simId + ",0)"));
         if (view != null) view.setVisible(false);
@@ -288,11 +314,11 @@ public class MiningEnvironment extends TimeSteppedEnvironment {
 
         sum += time;
         logger.info("Cycle "+step+" finished in "+time+" ms, mean is "+(sum/step)+".");
-        
+
         // test end of match
         try {
             if (step >= model.getMaxSteps() && model.getMaxSteps() > 0) {
-                String msg = "Finished at the maximal number of steps! Red x Blue = "+model.getGoldsInDepotRed() + " x "+model.getGoldsInDepotBlue(); 
+                String msg = "Finished at the maximal number of steps! Red x Blue = "+model.getGoldsInDepotRed() + " x "+model.getGoldsInDepotBlue();
                 logger.info("** "+msg);
                 if (hasGUI) {
                     JOptionPane.showMessageDialog(null, msg);
@@ -311,7 +337,7 @@ public class MiningEnvironment extends TimeSteppedEnvironment {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        
+
         if (nextWorld != null) {
             initWorld(nextWorld.intValue());
             nextWorld = null;

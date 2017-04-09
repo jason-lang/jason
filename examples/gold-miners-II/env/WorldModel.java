@@ -8,7 +8,7 @@ import java.util.logging.Logger;
 
 /**
  * Class used to model the scenario (for an global view -- used by environment simulator)
- * 
+ *
  * @author Jomi
  */
 public class WorldModel extends GridWorldModel {
@@ -22,20 +22,20 @@ public class WorldModel extends GridWorldModel {
 
     double                    PSim = 0.1; // probability of action/information failure
     double                    PMax = 0.5; // maximal value for action/information failure
-    
+
     Location                  depot;
     int[]                     goldsWithAg;  // how many golds each agent is carrying
 
     int                       goldsInDepotRed  = 0; // #golds the red team puts in the depot
     int                       goldsInDepotBlue = 0; // #golds the blue team puts in the depot
     int                       initialNbGolds = 0;
-    
+
     int                       maxSteps = 0; // number of steps of the simulation
-    
+
     private Logger            logger   = Logger.getLogger("jasonTeamSimLocal.mas2j." + WorldModel.class.getName());
 
     int agsByTeam = 6;
-    
+
     public enum Move {
         UP, DOWN, RIGHT, LEFT
     };
@@ -44,12 +44,12 @@ public class WorldModel extends GridWorldModel {
     public static WorldModel create(int w, int h, int nbAg) {
         return new WorldModel(w,h,nbAg);
     }
-    
+
     public WorldModel(int w, int h, int nbAg) {
         super(w, h, nbAg);
-        
+
         agsByTeam = nbAg/2;
-        
+
         goldsWithAg = new int[nbAg];
         for (int i=0; i< goldsWithAg.length; i++) goldsWithAg[i] = 0;
     }
@@ -57,8 +57,8 @@ public class WorldModel extends GridWorldModel {
     public int getAgsByTeam() {
         return agsByTeam;
     }
-    
-    @Override 
+
+    @Override
     public boolean isFree(int x, int y) {
         return super.isFree(x,y) && !hasObject(ENEMY, x, y);
     }
@@ -66,7 +66,7 @@ public class WorldModel extends GridWorldModel {
     public WorldView getView() {
         return (WorldView)view;
     }
-    
+
     public void setDepot(int x, int y) {
         if (depot != null) {
             data[depot.x][depot.y]    = CLEAN;
@@ -74,12 +74,12 @@ public class WorldModel extends GridWorldModel {
         depot = new Location(x, y);
         data[x][y] = DEPOT;
     }
-    
+
 
     public Location getDepot() {
         return depot;
     }
-    
+
     public int getGoldsInDepotBlue() {
         return goldsInDepotBlue;
     }
@@ -87,19 +87,19 @@ public class WorldModel extends GridWorldModel {
     public int getGoldsInDepotRed() {
         return goldsInDepotRed;
     }
-    
+
     public boolean hasGold() {
         return countObjects(GOLD) > 0;
     }
-    
+
     public boolean isAllGoldsCollected() {
         return goldsInDepotRed + goldsInDepotBlue == initialNbGolds;
     }
-    
+
     public void setInitialNbGolds(int i) {
         initialNbGolds = i;
     }
-    
+
     public int getInitialNbGolds() {
         return initialNbGolds;
     }
@@ -111,40 +111,40 @@ public class WorldModel extends GridWorldModel {
     public boolean mayCarryMoreGold(int ag) {
         return goldsWithAg[ag] < AG_CAPACITY;
     }
-    
+
     public int getGoldsWithAg(int ag) {
         return goldsWithAg[ag];
     }
     public void setGoldsWithAg(int ag, int n) {
         goldsWithAg[ag] = n;
     }
-    
+
     public void setPSim(double psim) {
         PSim = psim;
     }
     public void setPMax(double pmax) {
         PMax = pmax;
     }
-    
+
     /** returns the probability of action/perception failure for an agent
-        based on the number of golds it is carrying 
-    */ 
+        based on the number of golds it is carrying
+    */
     public double getAgFatigue(int ag) {
-        return getAgFatigue(ag, goldsWithAg[ag]); 
+        return getAgFatigue(ag, goldsWithAg[ag]);
     }
-    
+
     public double getAgFatigue(int ag, int golds) {
-        return PSim + ((PMax - PSim)/AG_CAPACITY) * golds; 
+        return PSim + ((PMax - PSim)/AG_CAPACITY) * golds;
     }
-    
+
     public void setMaxSteps(int s) {
         maxSteps = s;
     }
     public int getMaxSteps() {
         return maxSteps;
     }
-        
-    
+
+
     /** Actions **/
 
     synchronized public boolean move(Move dir, int ag) throws Exception {
@@ -159,10 +159,18 @@ public class WorldModel extends GridWorldModel {
         }
         Location n = null;
         switch (dir) {
-        case UP:    n =  new Location(l.x, l.y - 1); break;
-        case DOWN:  n =  new Location(l.x, l.y + 1); break;
-        case RIGHT: n =  new Location(l.x + 1, l.y); break;
-        case LEFT:  n =  new Location(l.x - 1, l.y); break;
+        case UP:
+            n =  new Location(l.x, l.y - 1);
+            break;
+        case DOWN:
+            n =  new Location(l.x, l.y + 1);
+            break;
+        case RIGHT:
+            n =  new Location(l.x + 1, l.y);
+            break;
+        case LEFT:
+            n =  new Location(l.x - 1, l.y);
+            break;
         }
         if (n != null && canMoveTo(ag, n)) {
             // if there is an agent there, move that agent
@@ -182,7 +190,7 @@ public class WorldModel extends GridWorldModel {
         }
         return false;
     }
-    
+
     public boolean pick(int ag) {
         Location l = getAgPos(ag);
         if (hasObject(WorldModel.GOLD, l.x, l.y)) {
@@ -226,7 +234,7 @@ public class WorldModel extends GridWorldModel {
             }
         }
     }
-    
+
     public String toString() {
         StringBuilder s = new StringBuilder();
 
@@ -250,7 +258,7 @@ public class WorldModel extends GridWorldModel {
             s.append("|\n|");
         }
         s.append("---------------------------------------------\n");
-        
+
         return s.toString();
     }
 }

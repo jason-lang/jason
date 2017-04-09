@@ -27,11 +27,11 @@ public class MASConsoleColorGUI extends MASConsoleGUI {
     private Map<String, MASColorTextPane>     agsTextArea       = new HashMap<String, MASColorTextPane>();
     private Map<String, Color>                agsColours        = new HashMap<String, Color>();
     private MASColorTextPane                  output;
-    
+
     private MASConsoleColorGUI(String title) {
         super(title);
     }
-    
+
     /** for singleton pattern */
     public static MASConsoleGUI get() {
         if (masConsole == null) {
@@ -44,7 +44,7 @@ public class MASConsoleColorGUI extends MASConsoleGUI {
     public void cleanConsole() {
         output.setText("");
     }
-    
+
     @Override
     protected void initOutput() {
         output = new MASColorTextPane(Color.black);
@@ -67,7 +67,7 @@ public class MASConsoleColorGUI extends MASConsoleGUI {
                     c = MASColorTextPane.getNextAvailableColor();
                     agsColours.put(agName, c);
                 }
-            }          
+            }
             if (!frame.isVisible()) {
                 frame.setVisible(true);
             }
@@ -87,7 +87,7 @@ public class MASConsoleColorGUI extends MASConsoleGUI {
                             agsTextArea.put(agName, cta);
                             int i = 0;
                             for (; i<tabPane.getTabCount(); i++) {
-                                if (agName.toUpperCase().compareTo( tabPane.getTitleAt(i).toUpperCase()) < 0) 
+                                if (agName.toUpperCase().compareTo( tabPane.getTitleAt(i).toUpperCase()) < 0)
                                     break;
                             }
                             tabPane.add(new JScrollPane(cta),i);
@@ -129,19 +129,19 @@ public class MASConsoleColorGUI extends MASConsoleGUI {
 
 class MASColorTextPane extends JTextPane {
     protected static final Color seq[] = {//Color.black,
-                                          Color.blue, 
-                                          Color.red,
-                                          Color.gray, 
-                                          //Color.cyan,
-                                          Color.magenta,
-                                          //Color.orange,
-                                          //Color.pink,
-                                          //Color.yellow,
-                                          Color.green
-                                          };
+        Color.blue,
+        Color.red,
+        Color.gray,
+        //Color.cyan,
+        Color.magenta,
+        //Color.orange,
+        //Color.pink,
+        //Color.yellow,
+        Color.green
+    };
     protected static int change = 0;
     protected static int lastColor = 0;
-    
+
     public synchronized static Color getNextAvailableColor() {
         if(change > 0) {
             seq[lastColor] = (change%2 == 1)?seq[lastColor].brighter():seq[lastColor].darker();
@@ -153,17 +153,17 @@ class MASColorTextPane extends JTextPane {
         }
         return c;
     }
-    
+
     protected Color defaultColor;
-    
+
     public MASColorTextPane(Color defaultColor) {
         this.defaultColor = defaultColor;
     }
-    
+
     public void append(String s) {
         append(defaultColor, s);
     }
-    
+
     public void append(Color c, String s) {
         if (c == null)
             c = defaultColor;
@@ -171,7 +171,7 @@ class MASColorTextPane extends JTextPane {
         AttributeSet as = sc.addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.Foreground, c);
         try {
             getDocument().insertString(getDocument().getLength(), s, as);
-        } catch (BadLocationException e) {            
+        } catch (BadLocationException e) {
         }
     }
 }

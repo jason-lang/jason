@@ -37,7 +37,7 @@ public class TSTest extends TestCase {
         ag.getPL().add(ASSyntax.parsePlan("@t1 +a(X) : g(10) <- .print(\"ok 10\")."), new Structure("nosource"), false);
         ag.getPL().add((Plan)ASSyntax.parseTerm("{ @t2 +a(X) : true <- .print(\"ok 20\") }"), new Structure("nosource"), false);
         ag.getPL().add(ASSyntax.parsePlan("@t3 +b : true <- true."), new Structure("nosource"), false);
-        TransitionSystem ts = ag.getTS(); 
+        TransitionSystem ts = ag.getTS();
         Literal content = Literal.parseLiteral("~alliance");
         content.addSource(new Structure("ag1"));
 
@@ -77,17 +77,17 @@ public class TSTest extends TestCase {
             e.printStackTrace();
         }
     }
-    
+
     public void testIntentionOrder() {
         Intention i1 = new Intention();
-        Intention i2 = new Intention(); 
-        
-        Intention i3 = new Intention(); 
+        Intention i2 = new Intention();
+
+        Intention i3 = new Intention();
         i3.setAtomic(1);
         assertTrue(i3.isAtomic());
-        
+
         Intention i4 = new Intention();
-        
+
         Queue<Intention> q1 = new PriorityQueue<Intention>();
         q1.offer(i1);
         q1.offer(i2);
@@ -105,17 +105,17 @@ public class TSTest extends TestCase {
         l.add(i3);
         l.add(i4);
         Collections.sort(l);
-        
+
         System.out.println(l);
         */
-        
+
     }
-    
+
     public void testCustomSelOp() {
         assertFalse(new Test1().hasCustomSelectOption());
         assertTrue(new Test2().hasCustomSelectOption());
     }
-    
+
     class Test1 extends Agent {
         public void t() {}
     }
@@ -124,7 +124,7 @@ public class TSTest extends TestCase {
             return super.selectOption(options);
         }
     }
-    
+
     public void testAgentClone() throws Exception {
         Agent a = new Agent();
 
@@ -140,7 +140,7 @@ public class TSTest extends TestCase {
 
         // the agent is null here because it is an arith expr
         //assertEquals(null, add1.getAgent());
-        
+
         a = a.clone(new AgArch());
         assertEquals(p1, a.getPL().toString());
         assertEquals(b1.length(), a.getBB().toString().length());
@@ -155,5 +155,5 @@ public class TSTest extends TestCase {
         // after clone, the agent in (B+C) must be the cloned agent
         assertTrue(a == add2.getAgent());
     }
-    
+
 }

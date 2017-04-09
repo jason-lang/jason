@@ -7,15 +7,15 @@ import jason.asSyntax.Term;
 /**
 
   <p>Internal action: <b><code>.drop_all_desires</code></b>.
-  
+
   <p>Description: removes all desires of the agent. No event is
   produced.
 
   <p>This action changes the agent's circumstance structure by simply emptying
-  the whole set of events (E) and then calling  
+  the whole set of events (E) and then calling
   <code>.drop_all_intentions</code>.
 
-  <p>Example:<ul> 
+  <p>Example:<ul>
 
   <li> <code>.drop_all_desires</code>.
 
@@ -36,7 +36,7 @@ import jason.asSyntax.Term;
 
  */
 public class drop_all_desires extends drop_all_intentions {
-    
+
     @Override
     public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {
         super.execute(ts, un, args);

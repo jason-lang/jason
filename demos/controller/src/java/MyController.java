@@ -19,7 +19,7 @@ public class MyController extends ExecutionControl {
     static int NBAG = 4;
     JFrame frame;
     JTextPane[] panels = new JTextPane[NBAG];
-    
+
     public MyController() {
         createGUI();
     }
@@ -39,10 +39,10 @@ public class MyController extends ExecutionControl {
             e.printStackTrace();
         }
     }
-    
+
     private void createGUI() {
         frame = new JFrame("MyController");
-        
+
         // create space for 4 agents
         frame.getContentPane().setLayout(new GridLayout(NBAG/2,NBAG/2));
         for (int i=0; i<NBAG; i++) {

@@ -24,9 +24,9 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 
-/** 
+/**
  * graphical view for some world model
- * 
+ *
  * @author Jomi
  */
 public class WorldView extends GridWorldView {
@@ -34,7 +34,7 @@ public class WorldView extends GridWorldView {
     private static final long serialVersionUID = 1L;
 
     MiningEnvironment env = null;
-    
+
     JLabel     jCycle;
     JLabel     jGoldsC;
 
@@ -50,17 +50,17 @@ public class WorldView extends GridWorldView {
     public WorldView(WorldModel model, int windowSize) {
         this("Mining World", model, windowSize);
     }
-    
+
     public WorldView(String title, WorldModel model) {
         this(title,model,800);
     }
-    
+
     public WorldView(String title, WorldModel model, int windowSize) {
         super(model, title, windowSize);
         setVisible(true);
         repaint();
     }
-    
+
     @Override
     public void initComponents(int width) {
         super.initComponents(width);
@@ -75,7 +75,7 @@ public class WorldView extends GridWorldView {
         sp.setBorder(BorderFactory.createEtchedBorder());
         sp.add(new JLabel("Scenario:"));
         sp.add(scenarios);
-        
+
         jSpeed = new JSlider();
         jSpeed.setMinimum(0);
         jSpeed.setMaximum(400);
@@ -93,21 +93,21 @@ public class WorldView extends GridWorldView {
         JPanel p = new JPanel(new FlowLayout());
         p.setBorder(BorderFactory.createEtchedBorder());
         p.add(jSpeed);
-        
+
         args.add(sp);
         args.add(p);
 
         JPanel msg = new JPanel();
         msg.setLayout(new BoxLayout(msg, BoxLayout.Y_AXIS));
         msg.setBorder(BorderFactory.createEtchedBorder());
-        
+
         p = new JPanel(new FlowLayout(FlowLayout.CENTER));
         p.add(new JLabel("Click on the cells to add new pieces of gold."));
         p.add(new JLabel("  (mouse at:"));
         jlMouseLoc = new JLabel("0,0)");
         p.add(jlMouseLoc);
         msg.add(p);
-        
+
         p = new JPanel(new FlowLayout(FlowLayout.CENTER));
         p.add(new JLabel("Cycle:"));
         jCycle = new JLabel("0");
@@ -120,7 +120,7 @@ public class WorldView extends GridWorldView {
         JPanel s = new JPanel(new BorderLayout());
         s.add(BorderLayout.WEST, args);
         s.add(BorderLayout.CENTER, msg);
-        getContentPane().add(BorderLayout.SOUTH, s);        
+        getContentPane().add(BorderLayout.SOUTH, s);
 
         // Events handling
         jSpeed.addChangeListener(new ChangeListener() {
@@ -137,9 +137,9 @@ public class WorldView extends GridWorldView {
                 if (env != null && env.getSimId() != w) {
                     env.startNewWorld(w);
                 }
-            }            
+            }
         });
-        
+
         getCanvas().addMouseListener(new MouseListener() {
             public void mouseClicked(MouseEvent e) {
                 int col = e.getX() / cellSizeW;
@@ -165,36 +165,44 @@ public class WorldView extends GridWorldView {
                 if (col >= 0 && lin >= 0 && col < getModel().getWidth() && lin < getModel().getHeight()) {
                     jlMouseLoc.setText(col+","+lin+")");
                 }
-            }            
+            }
         });
     }
-    
+
     public void setEnv(MiningEnvironment env) {
         this.env = env;
         scenarios.setSelectedIndex(env.getSimId()-1);
     }
-    
+
     public void setCycle(int c) {
         if (jCycle != null) {
             WorldModel wm = (WorldModel)model;
-            
+
             String steps = "";
             if (wm.getMaxSteps() > 0) {
                 steps = "/" + wm.getMaxSteps();
             }
             jCycle.setText(c+steps);
-            
-            jGoldsC.setText(wm.getGoldsInDepotRed() + " x " + wm.getGoldsInDepotBlue() + "/" + wm.getInitialNbGolds());    
+
+            jGoldsC.setText(wm.getGoldsInDepotRed() + " x " + wm.getGoldsInDepotBlue() + "/" + wm.getInitialNbGolds());
         }
     }
-    
+
     @Override
     public void draw(Graphics g, int x, int y, int object) {
         switch (object) {
-        case WorldModel.DEPOT:   drawDepot(g, x, y);  break;
-        case WorldModel.GOLD:    drawGold(g, x, y);  break;
-        case WorldModel.ENEMY:   drawEnemy(g, x, y);  break;
-        case WorldModel.TARGET:  drawTarget(g, x, y);  break;
+        case WorldModel.DEPOT:
+            drawDepot(g, x, y);
+            break;
+        case WorldModel.GOLD:
+            drawGold(g, x, y);
+            break;
+        case WorldModel.ENEMY:
+            drawEnemy(g, x, y);
+            break;
+        case WorldModel.TARGET:
+            drawTarget(g, x, y);
+            break;
         }
     }
 
@@ -208,7 +216,7 @@ public class WorldView extends GridWorldView {
                         Color.darkGray,
                         Color.red } ;
     */
-    
+
     @Override
     public void drawAgent(Graphics g, int x, int y, Color c, int id) {
         int golds = ((WorldModel)model).getGoldsWithAg(id);

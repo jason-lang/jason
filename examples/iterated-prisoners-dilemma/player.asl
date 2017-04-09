@@ -29,7 +29,7 @@ my_score(0).
      -+my_score(X+S);           // update my total score
      -arrested(T,O)[source(_)]; // Don't keep in the BB the whole history of ...
      -score(T,S)[source(_)];    // ... interactions as they are not needed
-     ?payoffs(_,M,S,_);         // If I got S points, the move of the oponent was M
+     ?payoffs(_,M,S,_);         // If I got S points, the move of the opponent was M
      !take_records(T,O,M);      // some strategies might need this information
      my.plot(T,X+S);
      .print("Got ",S," at time ",T,". My total now is: ",X+S).

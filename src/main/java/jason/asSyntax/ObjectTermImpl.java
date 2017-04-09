@@ -7,20 +7,20 @@ import org.w3c.dom.Element;
 
 public class ObjectTermImpl extends DefaultTerm implements ObjectTerm {
     private static final long serialVersionUID = 1L;
-    
+
     private final Object o;
     private       Method mclone;
     private       boolean hasTestedClone = false;
-    
+
     /** Creates a new Term Wrapper for java object */
     public ObjectTermImpl(Object o) {
         this.o = o;
     }
-    
+
     public Object getObject() {
         return o;
     }
-    
+
     @Override
     protected int calcHashCode() {
         return o.hashCode();
@@ -30,20 +30,20 @@ public class ObjectTermImpl extends DefaultTerm implements ObjectTerm {
     public boolean equals(Object o) {
         if (this.o == null) return false;
         if (o == null) return false;
-        
+
         if (o instanceof ObjectTermImpl) {
             return this.o.equals(((ObjectTermImpl) o).o);
         }
-        
+
         /*if (o instanceof VarTerm) {
             Term value = ((VarTerm) o).getValue();
             if (value instanceof ObjectTermImpl) {
                 return this.o.equals(((ObjectTermImpl) value).o);
             }
         }*/
-        return false;        
+        return false;
     }
-    
+
     @Override
     public ObjectTerm clone() {
         try {
@@ -65,7 +65,7 @@ public class ObjectTermImpl extends DefaultTerm implements ObjectTerm {
     public String toString() {
         return o.toString();
     }
-    
+
     public Element getAsDOM(Document document) {
         Element u = (Element) document.createElement("object-term");
         u.appendChild(document.createTextNode(o.toString()));

@@ -10,7 +10,7 @@ import jason.asSyntax.Term;
   <p>Internal action: <b><code>.literal</code></b>.
 
   <p>Description: checks whether the argument is a literal,
-  e.g.: "p", "p(1)", "p(1)[a,b]", "~p(1)[a,b]". 
+  e.g.: "p", "p(1)", "p(1)[a,b]", "~p(1)[a,b]".
 
   <p>Parameter:<ul>
   <li>+ argument (any term): the term to be checked.<br/>
@@ -35,16 +35,20 @@ import jason.asSyntax.Term;
   @see jason.stdlib.ground
 */
 public class literal extends DefaultInternalAction {
-    
+
     private static InternalAction singleton = null;
     public static InternalAction create() {
-        if (singleton == null) 
+        if (singleton == null)
             singleton = new literal();
         return singleton;
     }
 
-    @Override public int getMinArgs() { return 1; }
-    @Override public int getMaxArgs() { return 1; }
+    @Override public int getMinArgs() {
+        return 1;
+    }
+    @Override public int getMaxArgs() {
+        return 1;
+    }
 
     @Override
     public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {

@@ -30,16 +30,20 @@ import jason.asSyntax.Term;
 
 */
 public class upper_case extends DefaultInternalAction {
-    
+
     private static InternalAction singleton = null;
     public static InternalAction create() {
-        if (singleton == null) 
+        if (singleton == null)
             singleton = new upper_case();
         return singleton;
     }
 
-    @Override public int getMinArgs() { return 2; }
-    @Override public int getMaxArgs() { return 2; }
+    @Override public int getMinArgs() {
+        return 2;
+    }
+    @Override public int getMaxArgs() {
+        return 2;
+    }
 
     @Override
     public Object execute(TransitionSystem ts, final Unifier un, final Term[] args) throws Exception {
@@ -47,7 +51,7 @@ public class upper_case extends DefaultInternalAction {
         String arg = null;
         if (args[0].isString())
             arg = ((StringTerm)args[0]).getString();
-        else 
+        else
             arg = args[0].toString();
         arg = arg.toUpperCase();
         return un.unifies(new StringTermImpl(arg), args[1]);

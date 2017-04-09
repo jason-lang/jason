@@ -14,9 +14,9 @@ import env.WorldModel;
 import arch.MinerArch;
 
 public class set_target extends DefaultInternalAction {
-    
+
     Location oldTarget = null;
-    
+
     @Override
     public Object execute(TransitionSystem ts, Unifier un, Term[] terms) throws Exception {
         try {
@@ -27,7 +27,7 @@ public class set_target extends DefaultInternalAction {
                 if (oldTarget != null && model.inGrid(oldTarget)) {
                     model.remove(WorldModel.TARGET, oldTarget);
                 }
-                NumberTerm x = (NumberTerm)terms[0]; 
+                NumberTerm x = (NumberTerm)terms[0];
                 NumberTerm y = (NumberTerm)terms[1];
                 Location t = new Location((int)x.solve(), (int)y.solve());
                 if (model.inGrid(t)) {
@@ -39,6 +39,6 @@ public class set_target extends DefaultInternalAction {
         } catch (Throwable e) {
             ts.getLogger().log(Level.SEVERE, "jia.set_target error: "+e, e);
         }
-        return false;        
+        return false;
     }
 }

@@ -10,12 +10,12 @@ import jason.asSyntax.Term;
   <p>Internal action: <b><code>.intersection(S1,S2,S3)</code></b>.
 
   <p>Description: S3 is the intersection of the sets S1 and S2 (represented by lists).
-  The result set is sorted.  
+  The result set is sorted.
 
   <p>Parameters:<ul>
   <li>+ arg[0] (a list).<br/>
   <li>+ arg[1] (a list).<br/>
-  <li>+/- arg[2]: the result of the intersection. 
+  <li>+/- arg[2]: the result of the intersection.
   </ul>
 
   <p>Examples:<ul>
@@ -33,7 +33,7 @@ import jason.asSyntax.Term;
   @see jason.stdlib.max
   @see jason.stdlib.min
   @see jason.stdlib.reverse
-  
+
   @see jason.stdlib.difference
   @see jason.stdlib.union
 */
@@ -41,7 +41,7 @@ public class intersection extends difference { // to inherit checkArgs
 
     private static InternalAction singleton = null;
     public static InternalAction create() {
-        if (singleton == null) 
+        if (singleton == null)
             singleton = new intersection();
         return singleton;
     }

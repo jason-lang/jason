@@ -7,7 +7,7 @@ import jason.asSyntax.ListTerm;
 import jason.asSyntax.NumberTerm;
 import jason.asSyntax.Term;
 
-/** 
+/**
 <p>Function: <b><code>math.min(N1,N2)</code></b>: encapsulates java Math.min(N1,N2).
    It also returns the min number of a list.
 
@@ -15,8 +15,8 @@ import jason.asSyntax.Term;
 <li> <code>math.min(1,3)</code>: returns 1.</li>
 <li> <code>math.min([3,a,"s",5])</code>: returns 3.</li>
 </ul>
- 
-@author Jomi 
+
+@author Jomi
 
 @see jason.functions.Max
 */
@@ -25,7 +25,7 @@ public class Min extends DefaultArithFunction  {
     public String getName() {
         return "math.min";
     }
-    
+
     @Override
     public double evaluate(TransitionSystem ts, Term[] args) throws Exception {
         if (args[0].isNumeric() && args[1].isNumeric()) {

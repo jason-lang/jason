@@ -25,11 +25,11 @@ import jason.mas2j.AgentParameters;
 import jason.runtime.RuntimeServicesInfraTier;
 
 public class JasonBridgeArch extends AgArch {
-    
+
     JadeAgArch jadeAg;
     AID environmentAID = null;
     Logger logger = jade.util.Logger.getMyLogger(this.getClass().getName());
-    
+
     // map of pending actions
     private Map<String,ActionExec> myPA = new HashMap<String,ActionExec>();
 
@@ -38,33 +38,33 @@ public class JasonBridgeArch extends AgArch {
         this.jadeAg = jadeAg;
         logger = jade.util.Logger.getMyLogger(this.getClass().getName() + "." + getAgName());
     }
-    
+
     public void init(AgentParameters ap) throws Exception {
         Agent.create(this, ap.agClass.getClassName(), ap.getBBClass(), ap.asSource.getAbsolutePath(), ap.getAsSetts(false, false));
         insertAgArch(this);
         createCustomArchs(ap.getAgArchClasses());
-        
+
         if (getTS().getSettings().verbose() >= 0)
             logger.setLevel(getTS().getSettings().logLevel());
     }
-            
+
     /*@Override
     public void sleep() {
         jadeAg.enterInSleepMode();
         //tsBehaviour.block(1000);
     }*/
-    
+
     @Override
     public void wake() {
         jadeAg.wakeUp();
     }
-   
+
     @Override
     public void stop() {
         getTS().getAg().stopAg();
         super.stop();
     }
-    
+
     @Override
     public String getAgName() {
         return jadeAg.getLocalName();
@@ -79,10 +79,10 @@ public class JasonBridgeArch extends AgArch {
     @Override
     public List<Literal> perceive() {
         super.perceive();
-        
+
         if (!isRunning()) return null;
         if (getEnvironmentAg() == null) return null;
-        
+
         @SuppressWarnings("rawtypes")
         List percepts = null;
         try {
@@ -97,26 +97,26 @@ public class JasonBridgeArch extends AgArch {
         } catch (Exception e) {
             logger.log(Level.SEVERE, "Error in perceive.", e);
         }
-        
+
         return percepts;
     }
-    
+
     public JadeAgArch getJadeAg() {
         return jadeAg;
     }
-    
-    
-    
+
+
+
     @Override
     public void sendMsg(Message m) throws Exception {
         jadeAg.sendMsg(m);
     }
-    
+
     @Override
     public void broadcast(Message m) throws Exception {
         jadeAg.broadcast(m);
     }
-    
+
     @Override
     public void checkMail() {
         ACLMessage m = null;
@@ -125,12 +125,12 @@ public class JasonBridgeArch extends AgArch {
                 m = jadeAg.receive();
                 if (m != null) {
                     if (logger.isLoggable(Level.FINE)) logger.fine("Received message: " + m);
-                    
+
                     if (isActionFeedback(m)) {
                         // ignore this message
                         continue;
                     }
-                    
+
                     String ilForce   = JadeAg.aclPerformativeToKqml(m);
                     String sender    = m.getSender().getLocalName();
                     String replyWith = m.getReplyWith();
@@ -144,7 +144,7 @@ public class JasonBridgeArch extends AgArch {
                     } else {
                         replyWith = "noid";
                     }
-                
+
                     Object propCont = translateContentToJason(m);
                     if (propCont != null) {
                         jason.asSemantics.Message im = new jason.asSemantics.Message(ilForce, sender, getAgName(), propCont, replyWith);
@@ -159,7 +159,7 @@ public class JasonBridgeArch extends AgArch {
             }
         } while (m != null);
     }
-    
+
     /** returns the content of the message m and implements some pro-processing of the content, if necessary */
     protected Object translateContentToJason(ACLMessage m) {
         Object propCont = null;
@@ -169,18 +169,18 @@ public class JasonBridgeArch extends AgArch {
                 // try to parse as term
                 try {
                     propCont = ASSyntax.parseTerm((String)propCont);
-                } catch (Exception e) {  // no problem 
+                } catch (Exception e) {  // no problem
                 }
-            }            
+            }
         } catch (UnreadableException e) { // no problem try another thing
         }
-        
+
         if (propCont == null) { // still null
             // try to parse as term
             try {
                 propCont = ASSyntax.parseTerm(m.getContent());
             } catch (Exception e) {
-                // not AS messages are treated as string 
+                // not AS messages are treated as string
                 propCont = new StringTermImpl(m.getContent());
             }
         }
@@ -192,7 +192,7 @@ public class JasonBridgeArch extends AgArch {
     public void act(ActionExec action) {
         if (!isRunning()) return;
         if (getEnvironmentAg() == null) return;
-        
+
         try {
             Term acTerm = action.getActionTerm();
             logger.fine("doing: " + acTerm);
@@ -203,7 +203,7 @@ public class JasonBridgeArch extends AgArch {
             m.setOntology(JadeEnvironment.actionOntology);
             m.setContent(acTerm.toString());
             m.setReplyWith(rw);
-            myPA.put(rw, action); 
+            myPA.put(rw, action);
             jadeAg.send(m);
         } catch (Exception e) {
             logger.log(Level.SEVERE, "Error sending action " + action, e);
@@ -235,7 +235,7 @@ public class JasonBridgeArch extends AgArch {
         }
         return environmentAID;
     }
-    
+
     boolean isActionFeedback(ACLMessage m) {
         // check if there are feedbacks on requested action executions
         if (m.getOntology() != null && m.getOntology().equals(JadeEnvironment.actionOntology)) {
@@ -258,6 +258,6 @@ public class JasonBridgeArch extends AgArch {
         }
         return false;
     }
-    
+
 
 }

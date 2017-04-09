@@ -934,7 +934,7 @@ _strong negation_ operator `~`. When assuming open world, the user
 models the environment with a set of propositions known to be explicitly
 true and a set of propositions known to be explicitly false of the
 environment at a certain moment in time (the latter are literals
-preceeded by the ~ operator). Of course, there is still default negation
+preceded by the ~ operator). Of course, there is still default negation
 (as usual in logic programming languages), so you can say, in the
 context of a plan, `not p(t) & not ~p(t)` to check if the agent is
 uncertain about `p(t)`. Note that it’s completely up to the user to

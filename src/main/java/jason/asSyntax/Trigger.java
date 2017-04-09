@@ -13,17 +13,17 @@ import java.util.logging.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-/** 
+/**
   Represents an AgentSpeak trigger (like +!g, +p, ...).
-  
+
   It is composed by:
      an operator (+ or -);
      a type (<empty>, !, or ?);
      a literal
- 
+
   (it extends structure to be used as a term)
-   
-  @opt attributes    
+
+  @opt attributes
   @navassoc - literal  - Literal
   @navassoc - operator - TEOperator
   @navassoc - type     - TEType
@@ -31,20 +31,38 @@ import org.w3c.dom.Element;
 public class Trigger extends Structure implements Cloneable {
 
     private static Logger logger = Logger.getLogger(Trigger.class.getName());
-      
-    public enum TEOperator { 
-        add        { public String toString() { return "+"; } }, 
-        del        { public String toString() { return "-"; } },
-        goalState  { public String toString() { return "^"; } },
+
+    public enum TEOperator {
+        add        { public String toString() {
+                return "+";
+            }
+        },
+        del        { public String toString() {
+                return "-";
+            }
+        },
+        goalState  { public String toString() {
+                return "^";
+            }
+        },
     };
-    
-    public enum TEType { 
-        belief  { public String toString() { return ""; } }, 
-        achieve { public String toString() { return "!"; } }, 
-        test    { public String toString() { return "?"; } }
+
+    public enum TEType {
+        belief  { public String toString() {
+                return "";
+            }
+        },
+        achieve { public String toString() {
+                return "!";
+            }
+        },
+        test    { public String toString() {
+                return "?";
+            }
+        }
     };
-    
-    
+
+
     private TEOperator operator = TEOperator.add;
     private TEType     type     = TEType.belief;
     private Literal    literal;
@@ -63,7 +81,7 @@ public class Trigger extends Structure implements Cloneable {
     public static Trigger parseTrigger(String sTe) {
         as2j parser = new as2j(new StringReader(sTe));
         try {
-            return parser.trigger(); 
+            return parser.trigger();
         } catch (Exception e) {
             logger.log(Level.SEVERE,"Error parsing trigger" + sTe,e);
             return null;
@@ -79,27 +97,32 @@ public class Trigger extends Structure implements Cloneable {
     @Override
     public Term getTerm(int i) {
         switch (i) {
-        case 0: return new StringTermImpl(operator.toString() + type.toString()); 
-        case 1: return literal;
-        default: return null;
+        case 0:
+            return new StringTermImpl(operator.toString() + type.toString());
+        case 1:
+            return literal;
+        default:
+            return null;
         }
     }
-    
+
     @Override
     public void setTerm(int i, Term t) {
         switch (i) {
-        case 0: 
+        case 0:
             logger.warning("setTerm(i,t) for i=0 -- the operator -- , IS NOT IMPLEMENTED YET!!!");
             break;
-        case  1: literal = (Literal)t; break;
+        case  1:
+            literal = (Literal)t;
+            break;
         }
     }
-    
+
     public void setTrigOp(TEOperator op) {
         operator = op;
         predicateIndicatorCache  = null;
     }
-    
+
 
     public boolean sameType(Trigger e) {
         return operator == e.operator && type == e.type;
@@ -120,16 +143,16 @@ public class Trigger extends Structure implements Cloneable {
 
     public boolean isGoal() {
         return type == TEType.achieve || type == TEType.test;
-    }    
+    }
 
     public boolean isMetaEvent() {
         return operator == TEOperator.goalState;
     }
-    
+
     public TEOperator getOperator() {
         return operator;
     }
-    
+
     public TEType getType() {
         return type;
     }
@@ -142,18 +165,18 @@ public class Trigger extends Structure implements Cloneable {
         Trigger c = new Trigger(operator, type, literal.copy());
         c.predicateIndicatorCache = this.predicateIndicatorCache;
         c.isTerm = isTerm;
-        return c; 
-    }   
+        return c;
+    }
 
     @Override
     public Trigger capply(Unifier u) {
         Trigger c = new Trigger(operator, type, (Literal)literal.capply(u));
         c.predicateIndicatorCache = this.predicateIndicatorCache;
         c.isTerm = isTerm;
-        return c; 
+        return c;
     }
 
-    
+
     /** return [+|-][!|?] super.getPredicateIndicator */
     @Override
     public PredicateIndicator getPredicateIndicator() {
@@ -162,7 +185,7 @@ public class Trigger extends Structure implements Cloneable {
         }
         return predicateIndicatorCache;
     }
-    
+
     /*public boolean apply(Unifier u) {
         return literal.apply(u);
     }*/
@@ -179,19 +202,19 @@ public class Trigger extends Structure implements Cloneable {
     public void setAsTriggerTerm(boolean b) {
         isTerm = b;
     }
-    
+
     public String toString() {
         String b, e;
         if (isTerm) {
-            b = "{ "; 
+            b = "{ ";
             e = " }";
         } else {
-            b = ""; 
+            b = "";
             e = "";
         }
         return b + operator+ type + literal + e;
     }
-    
+
     /** try to convert the term t into a trigger, in case t is a trigger term, a string that can be parsed to a trigger, a var with value trigger, .... */
     public static Trigger tryToGetTrigger(Term t) throws ParseException {
         if (t instanceof Trigger) {
@@ -201,7 +224,7 @@ public class Trigger extends Structure implements Cloneable {
             PlanBody p = (PlanBody)t;
             if (p.getPlanSize() == 1) {
                 TEOperator op = null;
-                if (p.getBodyType() == BodyType.addBel) 
+                if (p.getBodyType() == BodyType.addBel)
                     op = TEOperator.add;
                 else if (p.getBodyType() == BodyType.delBel)
                     op = TEOperator.del;
@@ -209,7 +232,7 @@ public class Trigger extends Structure implements Cloneable {
                     Literal l = (Literal)p.getBodyTerm().clone();
                     l.delAnnot(BeliefBase.TSelf); // remove the eventual auto added annotation of source
                     return new Trigger(op, TEType.belief, l);
-                    
+
                 }
             }
         }
@@ -218,7 +241,7 @@ public class Trigger extends Structure implements Cloneable {
         }
         return null;
     }
-    
+
     /** get as XML */
     public Element getAsDOM(Document document) {
         Element e = (Element) document.createElement("trigger");

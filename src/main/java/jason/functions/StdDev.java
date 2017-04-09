@@ -7,17 +7,17 @@ import jason.asSyntax.ListTerm;
 import jason.asSyntax.NumberTerm;
 import jason.asSyntax.Term;
 
-/** 
+/**
 <p>Function: <b><code>math.std_dev(L)</code></b>: returns the standard deviation of all values of L.
 
 <p>Examples:<ul>
 <li> <code>math.std_dev([1,2,3])</code>: returns 1.</li>
 <li> <code>math.std_dev([])</code>: returns 0.</li>
 </ul>
- 
-@author Francisco Grimaldo 
 
-@see jason.functions.Min 
+@author Francisco Grimaldo
+
+@see jason.functions.Min
 @see jason.functions.Max
 @see jason.functions.Sum
 @see jason.functions.Average
@@ -28,7 +28,7 @@ public class StdDev extends DefaultArithFunction  {
     public String getName() {
         return "math.std_dev";
     }
-    
+
     @Override
     public double evaluate(TransitionSystem ts, Term[] args) throws Exception {
         if (args[0].isList()) {

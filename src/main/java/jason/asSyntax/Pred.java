@@ -30,11 +30,11 @@ public class Pred extends Structure {
     public Pred(Literal l) {
         this(l.getNS(), l);
     }
-    
+
     public Pred(Atom namespace, String functor) {
         super(namespace, functor);
     }
-    
+
     public Pred(Atom namespace, Literal l) {
         super(namespace, l);
 
@@ -58,13 +58,13 @@ public class Pred extends Structure {
     public Pred(String functor, int termsSize) {
         super(functor, termsSize);
     }
-    
-    public static Pred parsePred(String sPred) {
-        as2j parser = new as2j(new StringReader(sPred));
+
+    public static Pred parsePred(String spread) {
+        as2j parser = new as2j(new StringReader(spread));
         try {
             return parser.pred();
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Error parsing predicate " + sPred, e);
+            logger.log(Level.SEVERE, "Error parsing predicate " + spread, e);
             return null;
         }
     }
@@ -78,7 +78,7 @@ public class Pred extends Structure {
     public boolean isAtom() {
         return super.isAtom() && !hasAnnot();
     }
-    
+
     @Override
     public boolean isGround() {
         if (annots == null) {
@@ -89,7 +89,7 @@ public class Pred extends Structure {
     }
 
     /*
-    @Override       
+    @Override
     public boolean apply(Unifier u) {
         boolean r1 = super.apply(u);
         boolean r2 = applyAnnots(u);
@@ -112,21 +112,21 @@ public class Pred extends Structure {
                     break; // the iterator is inconsistent
                 } else if (lt.getTerm() != null && lt.getTerm().apply(u)) {
                     r = true;
-                    if (toAdd == null) 
+                    if (toAdd == null)
                         toAdd = new ArrayList<Term>();
                     toAdd.add( lt.getTerm() );
                     i.remove();
                 }
-            }            
+            }
             if (toAdd != null)
                 for (Term t: toAdd)
                     addAnnot(t);
         }
-        return r;        
+        return r;
     }
     */
-    
-    @Override       
+
+    @Override
     public Literal setAnnots(ListTerm l) {
         annots = null;
         if (l == null)
@@ -145,9 +145,9 @@ public class Pred extends Structure {
         return this;
     }
 
-    @Override       
+    @Override
     public boolean addAnnot(Term t) {
-        if (annots == null) 
+        if (annots == null)
             annots = new ListTermImpl();
         Iterator<ListTerm> i = annots.listTermIterator();
         while (i.hasNext()) {
@@ -163,22 +163,22 @@ public class Pred extends Structure {
         return false;
     }
 
-    @Override       
+    @Override
     public Literal addAnnots(List<Term> l) {
-        if (l != null) 
-            for (Term t : l) 
+        if (l != null)
+            for (Term t : l)
                 addAnnot(t);
         return this;
     }
 
-    @Override       
+    @Override
     public Literal addAnnots(Term ... l) {
         for (Term t : l)
             addAnnot(t);
         return this;
     }
 
-    @Override       
+    @Override
     public boolean delAnnot(Term t) {
         if (annots == null)
             return false;
@@ -186,19 +186,19 @@ public class Pred extends Structure {
             return annots.remove(t); // TODO: use the sorted annots to reduce search (as in addAnnot)
     }
 
-    @Override       
+    @Override
     public void clearAnnots() {
         annots = null;
     }
 
-    @Override       
+    @Override
     public ListTerm getAnnots() {
         return annots;
     }
 
-    @Override       
+    @Override
     public boolean hasAnnot(Term t) {
-        if (annots == null) 
+        if (annots == null)
             return false;
         // annots are ordered
         Iterator<ListTerm> i = annots.listTermIterator();
@@ -213,10 +213,10 @@ public class Pred extends Structure {
         }
         return false; //annots.contains(t);
     }
-    
-    @Override       
+
+    @Override
     public Literal getAnnot(String functor) {
-        if (annots == null) 
+        if (annots == null)
             return null;
         // annots are ordered
         for (Term t: annots) {
@@ -234,22 +234,22 @@ public class Pred extends Structure {
     }
 
 
-    @Override       
+    @Override
     public boolean hasAnnot() {
         return annots != null && !annots.isEmpty();
     }
 
     @Override
     public boolean hasVar(VarTerm t, Unifier u) {
-        if (super.hasVar(t, u)) 
+        if (super.hasVar(t, u))
             return true;
         if (annots != null)
             for (Term v: annots)
-                if (v.hasVar(t, u)) 
+                if (v.hasVar(t, u))
                     return true;
         return false;
     }
-    
+
     @Override
     public void countVars(Map<VarTerm, Integer> c) {
         super.countVars(c);
@@ -259,7 +259,7 @@ public class Pred extends Structure {
             }
     }
 
-    @Override       
+    @Override
     public boolean importAnnots(Literal p) {
         boolean imported = false;
         if (p.hasAnnot()) {
@@ -281,7 +281,7 @@ public class Pred extends Structure {
     public boolean delAnnots(List<Term> l) {
         boolean removed = false;
         if (l != null && this.hasAnnot()) {
-            for (Term t: l) { 
+            for (Term t: l) {
                 boolean r = delAnnot(t);
                 removed = removed || r;
             }
@@ -307,11 +307,11 @@ public class Pred extends Structure {
 
     @Override
     public boolean hasSubsetAnnot(Literal p) {
-        if (annots == null) 
+        if (annots == null)
             return true;
-        if (hasAnnot() && !p.hasAnnot()) 
+        if (hasAnnot() && !p.hasAnnot())
             return false;
-        
+
         // both has annots (annots are ordered)
         Iterator<Term> i2 = p.getAnnots().iterator();
         int c = -1;
@@ -323,19 +323,19 @@ public class Pred extends Structure {
                 Term t = i2.next();
                 c = myAnnot.compareTo(t);
                 if (c <= 0)
-                    break; // found my annot in p's annots OR my annot is not in p's annots, stop searching 
+                    break; // found my annot in p's annots OR my annot is not in p's annots, stop searching
             }
             if (c != 0)
-                return false;            
+                return false;
         }
         return true;
     }
 
     @Override
     public boolean hasSubsetAnnot(Literal p, Unifier u) {
-        if (annots == null) 
+        if (annots == null)
             return true;
-        if (!p.hasAnnot()) 
+        if (!p.hasAnnot())
             return false;
 
         Term thisTail    = null;
@@ -348,7 +348,7 @@ public class Pred extends Structure {
 
         Iterator<Term> i2 = pAnnots.iterator();
         boolean i2Reset   = false;
-        
+
         Iterator<ListTerm> i1 = annots.listTermIterator(); // use this iterator to get the tail of the list
         while (i1.hasNext()) {
             ListTerm lt = i1.next();
@@ -362,7 +362,7 @@ public class Pred extends Structure {
                 i2 = pAnnots.iterator();
                 pAnnot = null;
             }
-            
+
             // search annot in p's annots
             boolean ok = false;
 
@@ -380,10 +380,10 @@ public class Pred extends Structure {
                     break;
                 }
             }
-            
+
             // if p has a tail, add annot in p's tail
             if (!ok && pTail != null) {
-                if (pAnnotsTail == null) { 
+                if (pAnnotsTail == null) {
                     pAnnotsTail = (ListTerm)u.get(pTail);
                     if (pAnnotsTail == null) {
                         pAnnotsTail = new ListTermImpl();
@@ -394,17 +394,17 @@ public class Pred extends Structure {
                 pAnnotsTail.add(annot.clone());
                 ok = true;
             }
-            if (!ok) 
+            if (!ok)
                 return false;
         }
 
         // if this Pred has a Tail, unify it with p remaining annots
-        if (thisTail != null)  
+        if (thisTail != null)
             u.unifies(thisTail, pAnnots);
-        
+
         return true;
     }
-    
+
     @Override
     public void addSource(Term agName) {
         if (agName != null)
@@ -450,7 +450,7 @@ public class Pred extends Structure {
         s.addTerm(source);
         return s;
     }
-    
+
     @Override
     public ListTerm getSources() {
         ListTerm ls = new ListTermImpl();
@@ -505,7 +505,7 @@ public class Pred extends Structure {
         return false;
     }
 
-    
+
     @Override
     public Literal makeVarsAnnon(Unifier un) {
         if (annots != null) {
@@ -525,7 +525,7 @@ public class Pred extends Structure {
         }
         return super.makeVarsAnnon(un);
     }
-    
+
     @Override
     public boolean equals(Object o) {
         if (o == null) return false;
@@ -539,7 +539,7 @@ public class Pred extends Structure {
         return false;
     }
 
-    
+
     public boolean equalsAsStructure(Object p) { // this method must be in this class, do not move (I do not remember why!)
         return super.equals((Term) p);
     }
@@ -547,24 +547,24 @@ public class Pred extends Structure {
     @Override
     public int compareTo(Term t) {
         int c = super.compareTo(t);
-        if (c != 0) 
+        if (c != 0)
             return c;
-        
+
         if (t.isPred()) {
             Pred tAsPred = (Pred)t;
             if (getAnnots() == null && tAsPred.getAnnots() == null) return 0;
             if (getAnnots() == null) return -1;
             if (tAsPred.getAnnots() == null) return 1;
-    
+
             Iterator<Term> pai = tAsPred.getAnnots().iterator();
             for (Term a : getAnnots()) {
                 c = a.compareTo(pai.next());
-                if (c != 0) 
+                if (c != 0)
                     return c;
             }
 
             final int ats = getAnnots().size();
-            final int ots = tAsPred.getAnnots().size(); 
+            final int ots = tAsPred.getAnnots().size();
             if (ats < ots) return -1;
             if (ats > ots) return 1;
         }
@@ -584,7 +584,7 @@ public class Pred extends Structure {
     public Literal cloneNS(Atom newnamespace) {
         return new Pred(newnamespace, this);
     }
-    
+
     public String toStringAsTerm() {
         return super.toString();
     }

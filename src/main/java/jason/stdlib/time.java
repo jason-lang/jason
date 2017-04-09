@@ -13,18 +13,18 @@ import java.util.GregorianCalendar;
 /**
 
   <p>Internal action: <b><code>.time(HH,MM,SS)</code></b>.
-  
+
   <p>Description: gets the current time (hour, minute, and seconds).
 
   <p>Parameters:<ul>
-  
+
   <li>+/- hours (number): the hours (0--23).</li>
   <li>+/- minutes (number): the minutes (0--59).</li>
   <li>+/- seconds (number): the seconds (0--59).</li>
-  
+
   </ul>
-  
-  <p>Examples:<ul> 
+
+  <p>Examples:<ul>
 
   <li> <code>.time(H,M,S)</code>: unifies H with the current hour, M
   with the current minutes, and S with the current seconds.</li>
@@ -36,19 +36,23 @@ import java.util.GregorianCalendar;
 
   @see jason.stdlib.date
   @see jason.functions.time function time
-  
+
  */
 public class time extends DefaultInternalAction {
-    
+
     private static InternalAction singleton = null;
     public static InternalAction create() {
-        if (singleton == null) 
+        if (singleton == null)
             singleton = new time();
         return singleton;
     }
-    
-    @Override public int getMinArgs() { return 3; }
-    @Override public int getMaxArgs() { return 3; }
+
+    @Override public int getMinArgs() {
+        return 3;
+    }
+    @Override public int getMaxArgs() {
+        return 3;
+    }
 
     @Override
     public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {

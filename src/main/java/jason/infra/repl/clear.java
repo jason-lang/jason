@@ -12,5 +12,5 @@ public class clear extends DefaultInternalAction {
         ag.clear();
         return true;
     }
-    
+
 }

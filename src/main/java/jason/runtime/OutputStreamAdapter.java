@@ -13,20 +13,20 @@ public class OutputStreamAdapter extends PrintStream {
 
     public PrintStream originalOut = null;
     public PrintStream originalErr = null;
-    
+
     public OutputStreamAdapter(MASConsoleGUI m, JTextArea t) {
         super(System.out);
         masConsole = m;
         ta = t;
     }
-    
+
     public void setAsDefaultOut() {
         originalOut = System.out;
         originalErr = System.err;
         System.setOut(this);
         System.setErr(this);
     }
-    
+
     public void restoreOriginalOut() {
         if (originalOut != null) {
             System.setOut(originalOut);
@@ -35,18 +35,18 @@ public class OutputStreamAdapter extends PrintStream {
             System.setErr(originalErr);
         }
     }
-    
-    
+
+
     void append(String s) {
         if (masConsole != null) {
             masConsole.append(s);
-        } 
+        }
         if (ta != null) {
             ta.append(s);
             ta.setCaretPosition(ta.getDocument().getLength());
         }
     }
-    
+
     public void print(Object s) {
         append(s.toString());
     }
@@ -60,7 +60,7 @@ public class OutputStreamAdapter extends PrintStream {
     public void println(String s) {
         append(s+"\n");
     }
-    
+
     public void print(boolean arg) {
         append(arg+"");
     }
@@ -100,7 +100,7 @@ public class OutputStreamAdapter extends PrintStream {
     public void println() {
         append("\n");
     }
-    
+
     public String toString() {
         String s = "masConsole";
         if (masConsole == null) {

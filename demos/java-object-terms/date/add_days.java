@@ -17,18 +17,18 @@ public class add_days extends DefaultInternalAction {
         try {
             // get the object wrapped by args[0]
             Calendar c = (Calendar) ((ObjectTerm)args[0]).getObject();
-            
+
             // clone (so to not change the original object)
             c = (Calendar)c.clone();
-            
+
             // do the changes
             c.add(Calendar.DAY_OF_YEAR, (int)((NumberTerm)args[1]).solve());
-            
+
             // unify the result
             return un.unifies(args[2], new ObjectTermImpl(c));
         } catch (Exception e) {
             logger.warning("Error in internal action 'date.add_days'! "+e);
         }
         return false;
-    }    
+    }
 }

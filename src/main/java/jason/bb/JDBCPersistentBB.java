@@ -39,14 +39,14 @@ import jason.asSyntax.parser.TokenMgrError;
 
 /**
   Implementation of BB that stores some beliefs in a relational data base.
-  
+
   <p>The parameters for this customisation are:
   <ul>
   <li>args[0] is the Database Engine JDBC drive
-  <li>args[1] is the JDBC URL connection string <br/> 
+  <li>args[1] is the JDBC URL connection string <br/>
       The url can use the agent name as parameter as in "jdbc:mysql://localhost/%s".
-      In this case, %s will be replaced by the agent's name. 
-  <li>args[2] is the username 
+      In this case, %s will be replaced by the agent's name.
+  <li>args[2] is the username
   <li>args[3] is the password
   <li>args[4] is an AS list with all beliefs that are mapped to DB.
       Each element of the list is in the form
@@ -58,11 +58,11 @@ import jason.asSyntax.parser.TokenMgrError;
       <code>columns( col_name(col_type), col_name(col_type), ....)</code>
       <br/><br/>
   </ul>
-  
+
   <p>Example in .mas2j project, the agent c uses a JDBC belief base:<br>
   <br/>
   <pre>
- agents: 
+ agents:
    c beliefBaseClass jason.bb.JDBCPersistentBB(
       "org.hsqldb.jdbcDriver", // driver for HSQLDB
       "jdbc:hsqldb:bookstore", // URL connection
@@ -79,11 +79,11 @@ import jason.asSyntax.parser.TokenMgrError;
    predicate <code>book</code> (with arity 5) is mapped to a table called "book"; and so on.
 
 
-   <p>The name and type of the columns are used only if the table does not exits and have to be created. 
+   <p>The name and type of the columns are used only if the table does not exits and have to be created.
       If no column name/type is provided, an arbitrary name is used with type varchar(256).
       If no table name is provided, the predicate name is used for the table name.
    <br/>
-  
+
    @author Jomi
  */
 public class JDBCPersistentBB extends ChainBBAdapter {
@@ -96,11 +96,11 @@ public class JDBCPersistentBB extends ChainBBAdapter {
 
     /** the number of columns that this customisation creates (default is 2: the j_negated and j_annots columns) */
     protected int extraCols = 0;
-    
+
     protected Connection  conn;
     protected String      url;
     protected String      agentName;
-    
+
     public JDBCPersistentBB() {
         extraCols = 2;
     }
@@ -108,8 +108,8 @@ public class JDBCPersistentBB extends ChainBBAdapter {
         super(next);
         extraCols = 2;
     }
-    
-    
+
+
     // map of bels in DB
     protected Map<PredicateIndicator, ResultSetMetaData> belsDB = new HashMap<PredicateIndicator, ResultSetMetaData>();
 
@@ -133,9 +133,9 @@ public class JDBCPersistentBB extends ChainBBAdapter {
             for (Term t : lt) {
                 Structure ts = (Structure)t;
                 int arity    = Integer.parseInt(ts.getTerm(0).toString());
-            	String table = ts.getFunctor();
+                String table = ts.getFunctor();
                 if (ts.getArity() >= 2) {
-                	table = ts.getTerm(1).toString();
+                    table = ts.getTerm(1).toString();
                 }
 
                 Structure columns = new Structure("columns");
@@ -171,7 +171,7 @@ public class JDBCPersistentBB extends ChainBBAdapter {
     @Override
     public void stop() {
         if (conn == null) return;
-        
+
         try {
             if (url.startsWith("jdbc:hsqldb")) {
                 conn.createStatement().execute("SHUTDOWN");
@@ -182,7 +182,7 @@ public class JDBCPersistentBB extends ChainBBAdapter {
         }
         nextBB.stop();
     }
-    
+
     public void clear() {
         logger.warning("clear is still not implemented for JDBC BB!");
     }
@@ -197,8 +197,8 @@ public class JDBCPersistentBB extends ChainBBAdapter {
         ResultSetMetaData meta = belsDB.get(pi);
         if (meta != null) {
             int cols = meta.getColumnCount();
-            return cols >= extraCols && 
-                   meta.getColumnName((cols - extraCols) + 1).equalsIgnoreCase(COL_NEG) && 
+            return cols >= extraCols &&
+                   meta.getColumnName((cols - extraCols) + 1).equalsIgnoreCase(COL_NEG) &&
                    meta.getColumnName((cols - extraCols) + 2).equalsIgnoreCase(COL_ANNOT);
         }
         return false;
@@ -221,8 +221,8 @@ public class JDBCPersistentBB extends ChainBBAdapter {
             }
         } catch (SQLException e) {
             logger.log(Level.SEVERE, "SQL Error", e);
-        //} catch (ParseException e) {
-        //    logger.log(Level.SEVERE, "Parser Error", e);
+            //} catch (ParseException e) {
+            //    logger.log(Level.SEVERE, "Parser Error", e);
         } finally {
             try {
                 stmt.close();
@@ -237,14 +237,14 @@ public class JDBCPersistentBB extends ChainBBAdapter {
     public boolean add(Literal l) {
         return add(0, l);
     }
-    
+
     @Override
     public boolean add(int index, Literal l) {
         if (!isDB(l))
             return nextBB.add(l);
-        if (index != 0) 
+        if (index != 0)
             logger.severe("JDBC BB does not support insert index "+index+" for "+l+", using index = 0!");
-        
+
         Literal bl = contains(l);
         Statement stmt = null;
         try {
@@ -257,7 +257,7 @@ public class JDBCPersistentBB extends ChainBBAdapter {
                     else {
                         // "import" annots from the new bel
                         bl.importAnnots(l);
-                        
+
                         // check if it needs to be added in the percepts list
                         if (l.hasAnnot(TPercept)) {
                             getDBBPercepts().add(bl);
@@ -288,7 +288,7 @@ public class JDBCPersistentBB extends ChainBBAdapter {
             try {
                 if (stmt != null) stmt.close();
             } catch (Exception e) {
-                logger.log(Level.WARNING, "SQL Error closing connection", e);                    
+                logger.log(Level.WARNING, "SQL Error closing connection", e);
             }
         }
         return false;
@@ -314,9 +314,9 @@ public class JDBCPersistentBB extends ChainBBAdapter {
                         stmt.executeUpdate("update "+getTableName(bl)+" set "+COL_ANNOT+" = '"+bl.getAnnots()+"' "+getWhere(l));
                     } else {
                         // remove from DB
-                        stmt.executeUpdate("delete from "+getTableName(bl)+getWhere(bl));                        
+                        stmt.executeUpdate("delete from "+getTableName(bl)+getWhere(bl));
                     }
-                    return result;                    
+                    return result;
                 }
             } catch (SQLException e) {
                 logger.log(Level.SEVERE, "SQL Error", e);
@@ -324,7 +324,7 @@ public class JDBCPersistentBB extends ChainBBAdapter {
                 try {
                     stmt.close();
                 } catch (Exception e) {
-                    logger.log(Level.WARNING, "SQL Error closing connection", e);                    
+                    logger.log(Level.WARNING, "SQL Error closing connection", e);
                 }
             }
         }
@@ -333,13 +333,13 @@ public class JDBCPersistentBB extends ChainBBAdapter {
 
     private Set<Literal> getDBBPercepts() {
         BeliefBase last = getLastBB();
-        if (last instanceof DefaultBeliefBase) 
+        if (last instanceof DefaultBeliefBase)
             return ((DefaultBeliefBase)last).getPerceptsSet();
         else
-            return null;    
+            return null;
     }
-    
-    
+
+
     @Override
     public boolean abolish(PredicateIndicator pi) {
         if (belsDB.get(pi) == null)
@@ -367,7 +367,7 @@ public class JDBCPersistentBB extends ChainBBAdapter {
         final PredicateIndicator pi = l.getPredicateIndicator();
         if (belsDB.get(pi) == null)
             return nextBB.getCandidateBeliefs(l, u);
-        
+
         if (l.isVar()) {
             // all bels are relevant
             return iterator();
@@ -407,8 +407,8 @@ public class JDBCPersistentBB extends ChainBBAdapter {
                         }
                         return null;
                     }
-                    public void remove() { 
-                        logger.warning("remove in jdbc get relevant is not implemented!");  
+                    public void remove() {
+                        logger.warning("remove in jdbc get relevant is not implemented!");
                     }
                 };
             } catch (SQLException e) {
@@ -444,16 +444,16 @@ public class JDBCPersistentBB extends ChainBBAdapter {
         }
         return count + nextBB.size();
     }
-    
+
     @Override
     public Iterator<Literal> iterator() {
         List<Literal> all = new ArrayList<Literal>(size());
-        
+
         Iterator<Literal> is = nextBB.iterator();
         while (is.hasNext()) {
             all.add(is.next());
         }
-        
+
         Statement stmt = null;
         try {
             stmt = conn.createStatement();
@@ -474,10 +474,10 @@ public class JDBCPersistentBB extends ChainBBAdapter {
             } catch (Exception e) {
                 logger.log(Level.WARNING, "SQL Error closing connection", e);
             }
-        }    
+        }
         return all.iterator();
     }
-    
+
 
     /** translates the current line of a result set into a Literal */
     protected Literal resultSetToLiteral(ResultSet rs, PredicateIndicator pi) throws SQLException {
@@ -513,7 +513,7 @@ public class JDBCPersistentBB extends ChainBBAdapter {
                 } else {
                     try {
                         parsed = ASSyntax.parseTerm(sc);
-                    
+
                         // if the parsed term is not equals to sc, try it as string
                         if (!parsed.toString().equals(sc))
                             parsed = ASSyntax.parseTerm(sc = "\"" + sc + "\"");
@@ -522,7 +522,7 @@ public class JDBCPersistentBB extends ChainBBAdapter {
                         parsed = new StringTermImpl(sc);
                     } catch (TokenMgrError e) {
                         // can not be parsed, be a string
-                        parsed = new StringTermImpl(sc);                        
+                        parsed = new StringTermImpl(sc);
                     }
                 }
                 break;
@@ -536,16 +536,16 @@ public class JDBCPersistentBB extends ChainBBAdapter {
         return ldb;
     }
 
-    
+
     protected String getTableName(Literal l) throws SQLException {
         return getTableName(l.getPredicateIndicator());
     }
-    
+
     protected String getTableName(PredicateIndicator pi) throws SQLException {
         ResultSetMetaData meta = belsDB.get(pi);
         return meta.getTableName(1);
     }
-    
+
     /** returns the SQL command to create a new table */
     protected String getCreateTable(String table, int arity, Structure columns) throws SQLException {
         StringBuilder ct = new StringBuilder("create table " + table + " (");
@@ -565,7 +565,7 @@ public class JDBCPersistentBB extends ChainBBAdapter {
         return ct.toString();
     }
 
-    /** returns the SQL command for a select that retrieves the literal l from the DB */ 
+    /** returns the SQL command for a select that retrieves the literal l from the DB */
     protected String getSelect(Literal l) throws SQLException {
         return "select * from "+getTableName(l)+getWhere(l);
     }
@@ -574,9 +574,9 @@ public class JDBCPersistentBB extends ChainBBAdapter {
     protected String getSelectAll(PredicateIndicator pi) throws SQLException {
         return "select * from " + getTableName(pi);
     }
-    
-    
-    /** returns the where clausule for a select for literal l */ 
+
+
+    /** returns the where clausule for a select for literal l */
     protected String getWhere(Literal l) throws SQLException {
         ResultSetMetaData meta = belsDB.get(l.getPredicateIndicator());
         StringBuilder q = new StringBuilder(" where ");
@@ -602,7 +602,7 @@ public class JDBCPersistentBB extends ChainBBAdapter {
             q.append(and + COL_NEG + " = " + l.negated());
         }
         //System.out.println(q.toString());
-        if (and.length() > 0) // add nothing in the clausule 
+        if (and.length() > 0) // add nothing in the clausule
             return q.toString();
         else
             return "";
@@ -685,17 +685,17 @@ public class JDBCPersistentBB extends ChainBBAdapter {
 
     /** translates a SQL timestamp into a structure like "timestamp(Y,M,D,H,M,S)" */
     public static Structure timestamp2structure(Timestamp timestamp) throws SQLException {
-        Calendar time = Calendar.getInstance(); 
+        Calendar time = Calendar.getInstance();
         time.setTime(timestamp);
-        return ASSyntax.createStructure(timestampFunctor, 
-                createNumber(time.get(Calendar.YEAR)),
-                createNumber(time.get(Calendar.MONTH)),
-                createNumber(time.get(Calendar.DAY_OF_MONTH)),
-                createNumber(time.get(Calendar.HOUR_OF_DAY)),
-                createNumber(time.get(Calendar.MINUTE)),
-                createNumber(time.get(Calendar.SECOND)));
+        return ASSyntax.createStructure(timestampFunctor,
+                                        createNumber(time.get(Calendar.YEAR)),
+                                        createNumber(time.get(Calendar.MONTH)),
+                                        createNumber(time.get(Calendar.DAY_OF_MONTH)),
+                                        createNumber(time.get(Calendar.HOUR_OF_DAY)),
+                                        createNumber(time.get(Calendar.MINUTE)),
+                                        createNumber(time.get(Calendar.SECOND)));
     }
-    
+
     /** translates structure like "timestamp(Y,M,D,H,M,S)" into a SQL timestamp */
     @SuppressWarnings("deprecation")
     public static Timestamp structure2timestamp(Term timestamp) throws Exception {
@@ -703,14 +703,14 @@ public class JDBCPersistentBB extends ChainBBAdapter {
             Structure s = (Structure)timestamp;
             if (s.getFunctor().equals(timestampFunctor) && s.getArity() == 6) {
                 return new Timestamp(
-                        (int)((NumberTerm)s.getTerm(0)).solve() - 1900,
-                        (int)((NumberTerm)s.getTerm(1)).solve(),
-                        (int)((NumberTerm)s.getTerm(2)).solve(),
-                        (int)((NumberTerm)s.getTerm(3)).solve(),
-                        (int)((NumberTerm)s.getTerm(4)).solve(),
-                        (int)((NumberTerm)s.getTerm(5)).solve(),
-                        0
-                        );
+                           (int)((NumberTerm)s.getTerm(0)).solve() - 1900,
+                           (int)((NumberTerm)s.getTerm(1)).solve(),
+                           (int)((NumberTerm)s.getTerm(2)).solve(),
+                           (int)((NumberTerm)s.getTerm(3)).solve(),
+                           (int)((NumberTerm)s.getTerm(4)).solve(),
+                           (int)((NumberTerm)s.getTerm(5)).solve(),
+                           0
+                       );
             }
         }
         return null;

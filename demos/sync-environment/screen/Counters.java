@@ -16,12 +16,12 @@ public class Counters extends JFrame {
     public static Counters get() {
         return c;
     }
-    
+
     JSlider[]    places = new JSlider[9];
     JLabel[]     names = new JLabel[9];
-    
+
     int lastPlace = 0;
-    
+
     private Counters() {
         super("Agent's counters");
         getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
@@ -46,7 +46,7 @@ public class Counters extends JFrame {
         setSize(800,300);
         setVisible(true);
     }
-    
+
     public synchronized int getPlace(String agName) {
         if (lastPlace < names.length) {
             names[lastPlace].setText(agName);
@@ -55,14 +55,14 @@ public class Counters extends JFrame {
             return -1;
         }
     }
-    
+
     public void setVl(int pos, int vl) {
         places[pos].setValue(vl);
     }
-    
+
     public static void main(String[] args) {
         get().getPlace("ag1");
-        get().getPlace("ag2");      
+        get().getPlace("ag2");
     }
-    
+
 }

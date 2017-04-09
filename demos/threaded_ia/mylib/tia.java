@@ -34,7 +34,9 @@ public class tia extends DefaultInternalAction {
                 // do a long long task here
                 try {
                     wait(3000);
-                } catch (InterruptedException e) { e.printStackTrace(); }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 ts.getAg().getLogger().info("finished tia thread....");
 
                 // resumes the intention
@@ -44,7 +46,7 @@ public class tia extends DefaultInternalAction {
                     C.resumeIntention(i); // puts the intention back to the set of active intentions
                 }
             }
-        }.start();
+        } .start();
 
         // returns just after the thread creation, so to not block the agent thread
         return true;

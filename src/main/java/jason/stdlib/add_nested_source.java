@@ -14,23 +14,23 @@ import jason.asSyntax.Term;
 
 /**
   <p>Internal action: <b><code>.add_nested_source</code></b>.
-  
+
   <p>Description: adds a source annotation to a literal (used in communication).
-  
+
   <p>Parameters:<ul>
-  
+
   <li>+ belief(s) (literal or list): the literal where the source annotation
   is to be added. If this parameter is a list, all literals in the list
   will have the source added.<br/>
-  
+
   <li>+ source (atom): the source.<br/>
 
   <li>+/- annotated beliefs(s) (literal or list): this argument
   unifies with the result of the source addition.<br/>
 
   </ul>
-  
-  <p>Examples:<ul> 
+
+  <p>Examples:<ul>
 
   <li> <code>.add_nested_source(a,jomi,B)</code>: <code>B</code>
   unifies with <code>a[source(jomi)]</code>.</li>
@@ -51,13 +51,17 @@ public class add_nested_source extends DefaultInternalAction {
 
     private static InternalAction singleton = null;
     public static InternalAction create() {
-        if (singleton == null) 
+        if (singleton == null)
             singleton = new add_nested_source();
         return singleton;
     }
-    
-    @Override public int getMinArgs() { return 3; }
-    @Override public int getMaxArgs() { return 3; }
+
+    @Override public int getMinArgs() {
+        return 3;
+    }
+    @Override public int getMaxArgs() {
+        return 3;
+    }
 
     @Override public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {
         checkArguments(args);
@@ -79,18 +83,18 @@ public class add_nested_source extends DefaultInternalAction {
             if (l.isAtom()) {
                 result = new LiteralImpl((Atom)l);
             } else {
-                result = (Literal)l.clone();                
+                result = (Literal)l.clone();
             }
-             
+
             // create the source annots
             //Literal ts = new Pred("source",1).addTerms(source).addAnnots(result.getAnnots("source"));
             Literal ts = Pred.createSource(source).addAnnots(result.getAnnots("source"));
-            
+
             result.delSources();
             result.addAnnot(ts);
             return result;
         } else {
             return l;
         }
-    }   
+    }
 }

@@ -12,23 +12,23 @@ import jason.asSyntax.Term;
 
 /**
   <p>Internal action: <b><code>.add_annot</code></b>.
-  
+
   <p>Description: adds an annotation to a literal.
-  
+
   <p>Parameters:<ul>
-  
+
   <li>+ belief(s) (literal or list): the literal where the annotation
   is to be added. If this parameter is a list, all literals in the list
   will have the annotation added.<br/>
-  
+
   <li>+ annotation (structure): the annotation.<br/>
 
   <li>+/- annotated beliefs(s) (literal or list): this argument
   unifies with the result of the annotation addition.<br/>
 
   </ul>
-  
-  <p>Examples:<ul> 
+
+  <p>Examples:<ul>
 
   <li> <code>.add_annot(a,source(jomi),B)</code>: <code>B</code>
   unifies with <code>a[source(jomi)]</code>.</li>
@@ -46,7 +46,7 @@ import jason.asSyntax.Term;
   be replaced by <code>B = a[source(jomi)]</code>; <br>
   <code>.add_annot(X,source(jomi),B)</code> can be replaced by <code>B =
   X[source(jomi)]</code>.
-  
+
   @see jason.stdlib.add_nested_source
 
  */
@@ -54,13 +54,17 @@ public class add_annot extends DefaultInternalAction {
 
     private static InternalAction singleton = null;
     public static InternalAction create() {
-        if (singleton == null) 
+        if (singleton == null)
             singleton = new add_annot();
         return singleton;
     }
-    
-    @Override public int getMinArgs() { return 3; }
-    @Override public int getMaxArgs() { return 3; } 
+
+    @Override public int getMinArgs() {
+        return 3;
+    }
+    @Override public int getMaxArgs() {
+        return 3;
+    }
 
     @Override public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {
         checkArguments(args);
@@ -82,5 +86,5 @@ public class add_annot extends DefaultInternalAction {
             return ((Literal)l).forceFullLiteralImpl().copy().addAnnots(annot);
         }
         return l;
-    }   
+    }
 }

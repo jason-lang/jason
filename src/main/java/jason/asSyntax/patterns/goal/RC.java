@@ -13,13 +13,13 @@ import java.util.logging.Logger;
 
 /**
  * Implementation of the  Relativised Commitment pattern (see DALT 2006 paper)
- * 
+ *
  * @author jomi
  */
 public class RC extends DefaultDirective implements Directive {
 
     static Logger logger = Logger.getLogger(RC.class.getName());
-    
+
     @Override
     public Agent process(Pred directive, Agent outerContent, Agent innerContent) {
         try {
@@ -30,12 +30,12 @@ public class RC extends DefaultDirective implements Directive {
             Directive sd = DirectiveProcessor.getDirective(subDir.getFunctor());
 
             // apply sub directive
-            Agent newAg = sd.process(subDir, outerContent, innerContent); 
+            Agent newAg = sd.process(subDir, outerContent, innerContent);
             if (newAg != null) {
 
                 // add -m : true <- .succeed_goal(g).
                 newAg.getPL().add(ASSyntax.parsePlan("-"+motivation+" <- .succeed_goal("+goal+")."));
-                
+
                 return newAg;
             }
         } catch (Exception e) {

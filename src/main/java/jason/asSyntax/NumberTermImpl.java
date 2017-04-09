@@ -13,12 +13,12 @@ public final class NumberTermImpl extends DefaultTerm implements NumberTerm {
     private static Logger logger = Logger.getLogger(NumberTermImpl.class.getName());
 
     private final double value;
-    
+
     public NumberTermImpl() {
         super();
         value = 0;
     }
-    
+
     /** @deprecated prefer to use ASSyntax.parseNumber */
     public NumberTermImpl(String sn) {
         double t = 0;
@@ -29,14 +29,14 @@ public final class NumberTermImpl extends DefaultTerm implements NumberTerm {
         }
         value = t;
     }
-    
+
     public NumberTermImpl(double vl) {
         value = vl;
     }
-    
+
     public NumberTermImpl(NumberTermImpl t) {
         value   = t.value;
-        srcInfo = t.srcInfo;        
+        srcInfo = t.srcInfo;
     }
 
     public double solve() {
@@ -46,7 +46,7 @@ public final class NumberTermImpl extends DefaultTerm implements NumberTerm {
     public NumberTerm clone() {
         return this;
     }
-    
+
     @Override
     public boolean isNumeric() {
         return true;
@@ -61,7 +61,7 @@ public final class NumberTermImpl extends DefaultTerm implements NumberTerm {
             try {
                 return solve() == st.solve();
             } catch (Exception e) { }
-        } 
+        }
         return false;
     }
 
@@ -69,7 +69,7 @@ public final class NumberTermImpl extends DefaultTerm implements NumberTerm {
     protected int calcHashCode() {
         return 37 * (int)value;
     }
-    
+
     @Override
     public int compareTo(Term o) {
         if (o instanceof VarTerm) {
@@ -92,11 +92,11 @@ public final class NumberTermImpl extends DefaultTerm implements NumberTerm {
             return String.valueOf(value);
         }
     }
-    
+
     /** get as XML */
     public Element getAsDOM(Document document) {
         Element u = (Element) document.createElement("number-term");
         u.appendChild(document.createTextNode(toString()));
         return u;
-    }    
+    }
 }
