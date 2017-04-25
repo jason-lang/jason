@@ -29,17 +29,17 @@ public class tia extends DefaultInternalAction {
         new Thread() {
             @Override
             synchronized public void run() {
-            	int arg = 0;  // gets the first argument          	
-            	try {
-					arg = (int)((NumberTerm)args[0]).solve();
-				} catch (NoValueException e1) {
-					e1.printStackTrace();
-				}
-            	
-            	VarTerm result = (VarTerm)args[1]; // gets the second argument
+                int arg = 0;  // gets the first argument            
+                try {
+                    arg = (int)((NumberTerm)args[0]).solve();
+                } catch (NoValueException e1) {
+                    e1.printStackTrace();
+                }
+                
+                VarTerm result = (VarTerm)args[1]; // gets the second argument
 
-            	// does the task...
-            	ts.getAg().getLogger().info("runnig tia thread for argument "+arg+"....");
+                // does the task...
+                ts.getAg().getLogger().info("runnig tia thread for argument "+arg+"....");
 
                 // do a long long task here
                 try {
