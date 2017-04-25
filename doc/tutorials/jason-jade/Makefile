@@ -3,7 +3,7 @@
 #
 
 adoc:
-	asciidoctor readme.adoc
+	asciidoctor -r ../../../src/main/resources/pygments_init.rb readme.adoc
 
 publish:
 	cp readme.html index.html

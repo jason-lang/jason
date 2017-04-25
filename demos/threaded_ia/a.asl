@@ -7,4 +7,4 @@
 // the following plan runs an internal action that
 // suspends the intention, runs a thread, and, when finished, resume the intention
 
-+!do_task <- .print("start...."); mylib.tia; .print("finish!").
++!do_task <- .print("start...."); mylib.tia(1000,X); .print("finish with X=",X).

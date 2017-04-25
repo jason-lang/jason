@@ -3,7 +3,7 @@ Jomi F. Hubner (with Rafael H. Bordini support)
 2015
 :toc: right
 :source-highlighter: pygments
-:pygments-style: autumn
+:pygments-style: jacamo
 :pygments-linenums-mode: inline
 :icons: font
 :prewrap!:

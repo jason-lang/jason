@@ -13,14 +13,14 @@ public class tia extends DefaultInternalAction {
     }
 
     @Override
-    public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {
+    public Object execute(final TransitionSystem ts, final Unifier un, final Term[] args) throws Exception {
         // execute the internal action
         ts.getAg().getLogger().info("executing internal action 'mylib.tia'");
 
-        Circumstance C = ts.getC();
+        final Circumstance C = ts.getC();
 
         // suspends the intention
-        Intention i = C.getSelectedIntention(); // the intention running this internal action
+        final Intention i = C.getSelectedIntention(); // the intention running this internal action
         i.setSuspended(true);
         final String pendingId = "suspended by tia "+i.getId(); // creates and unique id for this suspension (e.g. to be seens in mind inspector)
         C.addPendingIntention(pendingId, i);
@@ -29,7 +29,17 @@ public class tia extends DefaultInternalAction {
         new Thread() {
             @Override
             synchronized public void run() {
-                ts.getAg().getLogger().info("runnig tia thread....");
+            	int arg = 0;  // gets the first argument          	
+            	try {
+					arg = (int)((NumberTerm)args[0]).solve();
+				} catch (NoValueException e1) {
+					e1.printStackTrace();
+				}
+            	
+            	VarTerm result = (VarTerm)args[1]; // gets the second argument
+
+            	// does the task...
+            	ts.getAg().getLogger().info("runnig tia thread for argument "+arg+"....");
 
                 // do a long long task here
                 try {
@@ -44,6 +54,9 @@ public class tia extends DefaultInternalAction {
                     i.setSuspended(false);
                     i.peek().removeCurrentStep(); // removes the tia call in the plan
                     C.resumeIntention(i); // puts the intention back to the set of active intentions
+                    
+                    // change the Unifier with the value for the var
+                    un.unifies(result, ASSyntax.createNumber(arg*1.618));
                 }
             }
         } .start();
