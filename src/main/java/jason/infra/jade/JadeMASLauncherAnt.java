@@ -161,11 +161,15 @@ public class JadeMASLauncherAnt extends CentralisedMASLauncherAnt implements MAS
             StringBuilder agents = new StringBuilder();
             if (container.equals("Main-Container")) {
                 // include environment (if not cartago)
-                if (!JadeAgArch.isCartagoJadeCase(project)) {
+                if (!JadeAgArch.isCartagoJadeCase(project) &&
+                        project.getEnvClass() != null &&
+                        !jason.environment.Environment.class.getName().equals(project.getEnvClass().getClassName())) {
                     agents.append(RunJadeMAS.environmentName+":"+JadeEnvironment.class.getName()+"(j-project,"+project.getProjectFile().getName()+")");
                     sep = ";";
                 }
-                args = Config.get().getJadeArgs();
+                args = "";
+                if (Config.get().getJadeArgs() != null)
+                    args += Config.get().getJadeArgs();
                 if (mainHostPort > 0)
                     args += " -port "+mainHostPort;
                 if (Config.get().getBoolean(Config.JADE_RMA))

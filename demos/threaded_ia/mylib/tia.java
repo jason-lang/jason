@@ -55,7 +55,7 @@ public class tia extends DefaultInternalAction {
                     i.peek().removeCurrentStep(); // removes the tia call in the plan
                     C.resumeIntention(i); // puts the intention back to the set of active intentions
                     
-                    // change the Unifier with the value for the var
+                    // changes the Unifier with the value for the var
                     un.unifies(result, ASSyntax.createNumber(arg*1.618));
                 }
             }

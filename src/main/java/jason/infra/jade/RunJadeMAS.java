@@ -178,8 +178,8 @@ public class RunJadeMAS extends RunCentralisedMAS {
             // the cartago + jade case
             if (JadeAgArch.isCartagoJadeCase(getProject())) {
                 JadeAgArch.startCartagoNode(getProject().getEnvClass().getParametersArray());
-            } else {
-                logger.fine("Creating environment " + getProject().getEnvClass());
+            } else if (!getProject().getEnvClass().getClassName().equals(jason.environment.Environment.class.getName())){
+                logger.info("Creating environment " + getProject().getEnvClass());
                 envc = cc.createNewAgent(environmentName, JadeEnvironment.class.getName(), new Object[] { getProject().getEnvClass() });
             }
         } catch (Exception e) {

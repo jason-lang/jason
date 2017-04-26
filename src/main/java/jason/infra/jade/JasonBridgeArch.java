@@ -215,9 +215,10 @@ public class JasonBridgeArch extends AgArch {
         return new JadeRuntimeServices(jadeAg.getContainerController(), jadeAg);
     }
 
+    private boolean consultEnv = false;
     private AID getEnvironmentAg() {
         // get the name of the environment
-        if (environmentAID == null) {
+        if (!consultEnv) {
             DFAgentDescription template = new DFAgentDescription();
             ServiceDescription sd = new ServiceDescription();
             sd.setType("jason");
@@ -227,11 +228,11 @@ public class JasonBridgeArch extends AgArch {
                 DFAgentDescription[] ans = DFService.search(jadeAg, template);
                 if (ans.length > 0) {
                     environmentAID =  ans[0].getName();
-                    return environmentAID;
                 }
             } catch (Exception e) {
                 logger.log(Level.SEVERE,"Error getting environment from DF.",e);
             }
+            consultEnv = true;
         }
         return environmentAID;
     }
@@ -244,11 +245,7 @@ public class JasonBridgeArch extends AgArch {
                 ActionExec a = myPA.remove(irt);
                 // was it a pending action?
                 if (a != null) {
-                    if (m.getContent().equals("ok")) {
-                        a.setResult(true);
-                    } else {
-                        a.setResult(false);
-                    }
+                    a.setResult(m.getContent().equals("ok"));
                     actionExecuted(a);
                 } else {
                     logger.log(Level.SEVERE, "Error: received feedback for an Action that is not pending. The message is "+m);
@@ -258,6 +255,4 @@ public class JasonBridgeArch extends AgArch {
         }
         return false;
     }
-
-
 }
