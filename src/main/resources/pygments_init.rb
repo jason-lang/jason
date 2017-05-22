@@ -1,7 +1,7 @@
 require 'pygments'
 
 # use a custom Pygments installation (directory that contains pygmentize)
-Pygments.start '$PYGMENTS_PATH'
+Pygments.start ENV["PYGMENTS_PATH"] + '/..'
 
 # example of registering a missing or additional lexer
 Pygments::Lexer.create name: 'JasonAgent', aliases: ['jasonagent'],
