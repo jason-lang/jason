@@ -1,16 +1,16 @@
 package jason.asSyntax;
 
-import jason.NoValueException;
-import jason.asSemantics.Agent;
-import jason.asSemantics.Unifier;
-import jason.asSyntax.parser.as2j;
-
 import java.io.StringReader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+
+import jason.NoValueException;
+import jason.asSemantics.Agent;
+import jason.asSemantics.Unifier;
+import jason.asSyntax.parser.as2j;
 
 /**
   Represents and solve arithmetic expressions like "10 + 30".
@@ -157,6 +157,9 @@ public class ArithExpr extends ArithFunctionTerm implements NumberTerm {
                 value = new NumberTermImpl(op.eval(l, r));
             }
             return value;
+        } catch (ClassCastException e) {
+            logger.warning("The value of "+this+" is not a number! Unifier = "+u+". Code: "+getSrcInfo());
+            return new NumberTermImpl(Double.NaN);
         } catch (NoValueException e) {
             return clone();
         }
