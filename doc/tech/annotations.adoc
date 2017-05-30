@@ -49,16 +49,41 @@ p[a2|T] = p[a1,a2,a3];     // T unifies with [a1,a3]
 p[a1,a2,a3] = p[a1,a4|T];  // T unifies with [a2,a3]
 ----
 
-When the unification is between a triggering event and a plan's trigger, the triggering event is the _first_ argument of the unification. So for an event `+!g[a]`, the relevance of the following plans would be as follows:
+== Annotations in plan trigger
+
+When the unification is between a triggering event and a plan's trigger, the plan's trigger is the _first_ argument of the unification. So for an event `+!g[a]`, the relevance of the following plans is as follows:
 
 ----
-+!g : true <- ...       // relevant for event +!g[a]
++!g : true <- ...       // relevant for event +!g[a], since g = g[a]
 +!g[a] : true <- ...    // relevant for event +!g[a]
 +!g[a,b] : true <- ...  // not relevant for event +!g[a]
 +!g[b] : true <- ...    // not relevant for event +!g[a]
 ----
 
 However, for an event `+!g` a plan with trigger `+!g[a]` is not relevant. In other words, to put an annotation is a plan's trigger means "this plan is relevant only for events with (at least) these annotations, or annotations that unify with these".
+
+A plan like
+----
++!g : ... <- ....
+----
+can handle goals `!g`, `!g[a]`, `!g[a,b]`, ...
+
+A plan like
+----
++!g[a] : ... <- ....
+----
+can handle goals `!g[a]`, `!g[a,b]`, ... It can thus be relevant for any goal `g` with at least the annotation `a`.
+
+== Annotations in rules
+
+When the unification is between a query event and a rule, the query is the _first_ argument of the unification.
+
+The rule
+----
+r[a] :- true.
+----
+is relevant for the query `?r`, since the agent believes in `r` (`r = r[a]`). The query `?r[a]`, of course, also succeeds. However, the query `?r[a,b]` fails, the agent does not believe in `r` with both annotations (`r[a,b] \= r[a]`).
+
 
 == Unification Between Variables
 

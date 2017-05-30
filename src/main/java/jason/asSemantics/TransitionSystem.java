@@ -1164,7 +1164,7 @@ public class TransitionSystem {
                 confP.C.addEvent(failEvent);
                 if (logger.isLoggable(Level.FINE)) logger.fine("Generating goal deletion " + failEvent.getTrigger() + " from goal: " + im.getTrigger());
             } else {
-                logger.warning("No failure event was generated for " + failEvent.getTrigger());
+                logger.warning("No failure event was generated for " + failEvent.getTrigger() + "\n"+i);
                 i.fail(getC());
             }
         }
@@ -1206,8 +1206,10 @@ public class TransitionSystem {
                 //logger.warning("Generating goal deletion " + failEvent.getTrigger() + " from event: " + ev.getTrigger());
             } else {
                 logger.warning("No fail event was generated for " + ev.getTrigger());
-                if (ev.intention != null)
+                if (ev.intention != null) {
                     ev.intention.fail(getC());
+                    logger.warning("\n"+ev.intention);
+                }
             }
         } else if (ev.isInternal()) {
             logger.warning("Could not finish intention:\n" + ev.intention);

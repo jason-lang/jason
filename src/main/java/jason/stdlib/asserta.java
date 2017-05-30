@@ -6,6 +6,7 @@ import jason.asSemantics.TransitionSystem;
 import jason.asSemantics.Unifier;
 import jason.asSyntax.Literal;
 import jason.asSyntax.Term;
+import jason.bb.BeliefBase;
 
 import java.util.List;
 
@@ -44,8 +45,10 @@ public class asserta extends DefaultInternalAction {
 
     @Override public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {
         checkArguments(args);
-
-        List<Literal>[] result = ts.getAg().brf((Literal)args[0],null,null,false);
+        Literal l = (Literal)args[0];
+        if (!l.hasSource())
+            l.addAnnot(BeliefBase.TSelf);
+        List<Literal>[] result = ts.getAg().brf(l,null,null,false);
         if (result != null) { // really added something
             // generate events
             ts.updateEvents(result,null);

@@ -1,5 +1,13 @@
 package test;
 
+import static jason.asSyntax.ASSyntax.createRule;
+import static jason.asSyntax.ASSyntax.parseFormula;
+import static jason.asSyntax.ASSyntax.parseLiteral;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
 import jason.RevisionFailedException;
 import jason.asSemantics.Agent;
 import jason.asSemantics.Unifier;
@@ -11,14 +19,6 @@ import jason.asSyntax.Structure;
 import jason.asSyntax.Term;
 import jason.asSyntax.VarTerm;
 import jason.asSyntax.parser.ParseException;
-import static jason.asSyntax.ASSyntax.parseLiteral;
-import static jason.asSyntax.ASSyntax.parseFormula;
-import static jason.asSyntax.ASSyntax.createRule;
-
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-
 import junit.framework.TestCase;
 
 /** JUnit test case for syntax package */
