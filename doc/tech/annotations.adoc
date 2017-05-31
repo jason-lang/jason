@@ -84,6 +84,8 @@ r[a] :- true.
 ----
 is relevant for the query `?r`, since the agent believes in `r` (`r = r[a]`). The query `?r[a]`, of course, also succeeds. However, the query `?r[a,b]` fails, the agent does not believe in `r` with both annotations (`r[a,b] \= r[a]`).
 
+NOTE: The handling of annotations in rules and plans is not symmetrical. The plan `+!g[a] <- ...` is applicable for `!g[a,b]`, however, the rule
+`r[a] :- ...` is not applicable for `?r[a,b]`! One reason is that rules and plans are of different natures when used by the interpreter. When we query `?r[a]` we are interested in the *final* result of a process (i.e., whether the theoretical reasoning can produce `r[a]` or not). When we add a goal `!g[a]` we are providing a motivation to *start* a process (i.e. the practical reasoning).
 
 == Unification Between Variables
 
