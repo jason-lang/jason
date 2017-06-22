@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 # this script creates the Ant script (build.xml)
 # to run a Jason project
