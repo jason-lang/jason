@@ -1,10 +1,5 @@
 package jason.asSyntax;
 
-import jason.asSemantics.Agent;
-import jason.asSemantics.InternalAction;
-import jason.asSemantics.Unifier;
-import jason.stdlib.puts;
-
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.logging.Level;
@@ -12,6 +7,11 @@ import java.util.logging.Logger;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+
+import jason.asSemantics.Agent;
+import jason.asSemantics.InternalAction;
+import jason.asSemantics.Unifier;
+import jason.stdlib.puts;
 
 
 /**
@@ -97,6 +97,10 @@ public class InternalActionLiteral extends Structure implements LogicalFormula {
                 }*/
 
                 InternalAction ia = getIA(ag);
+                if (!ia.canBeUsedInContext()) {
+                    logger.log(Level.SEVERE, getErrorMsg() + ": internal action "+getFunctor()+" cannot be used in context or rules!");
+                    return LogExpr.EMPTY_UNIF_LIST.iterator();
+                }
                 // calls IA's execute method
                 Object oresult = ia.execute(ag.getTS(), un, ia.prepareArguments(this, un));
                 if (oresult instanceof Boolean && (Boolean)oresult) {
