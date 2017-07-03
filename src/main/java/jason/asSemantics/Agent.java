@@ -594,7 +594,7 @@ public class Agent {
             for (Literal b: a.initialBels) {
                 this.addInitialBel(b);
                 try {
-                    fixAgInIAandFunctions(this,b);
+                    fixAgInIAandFunctions(this, b);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -605,6 +605,12 @@ public class Agent {
 
             for (Plan p: a.getPL())
                 this.getPL().add(p, false);
+            // reset Ag in internal actions of plans
+            try {
+                fixAgInIAandFunctions(this);
+            } catch (Exception e) {
+                e.printStackTrace();
+            } 
 
             if (getPL().hasMetaEventPlans())
                 getTS().addGoalListener(new GoalListenerForMetaEvents(getTS()));

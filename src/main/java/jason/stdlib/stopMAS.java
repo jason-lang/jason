@@ -32,6 +32,11 @@ public class stopMAS extends DefaultInternalAction {
     }
 
     @Override
+    public boolean canBeUsedInContext() {
+        return false;
+    }
+    
+    @Override
     public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {
         checkArguments(args);
 

@@ -1,5 +1,3 @@
-// Internal action code for project clone.mas2j
-
 package jason.stdlib;
 
 import jason.asSemantics.DefaultInternalAction;
