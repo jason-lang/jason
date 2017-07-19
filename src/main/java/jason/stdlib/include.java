@@ -18,7 +18,7 @@ import jason.asSyntax.directives.Include;
   <p>Description: loads an .asl file, i.e., includes beliefs, goals, and plans from a file.
 
   <p>Parameters:<ul>
-  <li>+ the file (string): the file name.<br/>
+  <li>+ the file (string): the file name or any valid URL<br/>
   <li>+ the name space (atom or var): sets the name space where the included components (bels, plans, ...)
   will be placed. If this argument is a
   var, it will unifies with and random new name space.<br/>
@@ -26,6 +26,8 @@ import jason.asSyntax.directives.Include;
 
   <p>Examples:<ul>
   <li> <code>.include("x.asl")</code>.</li>
+  <li> <code>.include("https://raw.githubusercontent.com/jason-lang/jason/master/examples/auction/ag3.asl")</code>.</li>
+  <li> <code>.include("jar:file:/Users/jomi/lib/test.jar!/l.asl")</code> includes from a local jar file.</li>
   </ul>
 
  */

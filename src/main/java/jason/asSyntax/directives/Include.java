@@ -52,7 +52,6 @@ public class Include extends DefaultDirective implements Directive {
                         outerPrefix = outerPrefix.substring(0,outerPrefix.indexOf("!")+1) + "/";
                         file = checkPathAndFixWithSourcePath(file, aslSourcePath, outerPrefix);
                         in = new URL(file).openStream();
-
                     } else if (outerPrefix.startsWith(CRPrefix)) {
                         // outer is loaded from a resource ("application".jar) file, used for java web start
                         int posSlash = outerPrefix.lastIndexOf("/");
@@ -65,8 +64,12 @@ public class Include extends DefaultDirective implements Directive {
 
                         file = checkPathAndFixWithSourcePath(file, newpath, CRPrefix+"/");
                         in = Agent.class.getResource(file.substring(CRPrefix.length())).openStream();
-                    } else if (outerPrefix.startsWith("file:") || outerPrefix.startsWith("http:")) {
+                    } else if (outerPrefix.startsWith("file:") || outerPrefix.startsWith("http:") || outerPrefix.startsWith("https:")) {
                         URL url = new URL(new URL(outerPrefix), file);
+                        file = url.toString();
+                        in = url.openStream();
+                    } else if (file.startsWith("jar:") || file.startsWith("file:") || file.startsWith("http:") || file.startsWith("https:")) {
+                        URL url = new URL(file);
                         file = url.toString();
                         in = url.openStream();
                     } else {
