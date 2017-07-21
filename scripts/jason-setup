@@ -1,7 +1,6 @@
 #!/bin/bash
 
-JasonREL=2.2-SNAPSHOT
-JadeREL=4.3
+JasonREL=2.2
 
 if [ -z $JASON_HOME ] ; then
     CURDIR=`pwd`
@@ -35,16 +34,16 @@ export PATH=$JDK_HOME/bin:$PATH
 
 
 JASON_JAR=$JASON_HOME/libs/jason-$JasonREL.jar
-JADE_JAR=$JASON_HOME/libs/jade-$JadeREL.jar
+JADE_JAR=$JASON_HOME/libs/JadeJar
 
 if [ ! -f $JASON_JAR ] ; then
-    echo Jason.jar is not properly set!
+    echo Jason jar is not properly set!
     echo Value is $JASON_JAR
     JASON_JAR=`find $JASON_HOME/libs  -name jason*.jar`
     echo New value is $JASON_JAR
 fi
 if [ ! -f $JADE_JAR ] ; then
-    echo Jade.jar is not properly set!
+    echo Jade jar is not properly set!
     echo Value is $JADE_JAR
 fi
 
