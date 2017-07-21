@@ -1,6 +1,6 @@
 #!/bin/bash
 
-JasonREL=2.1
+JasonREL=2.2-SNAPSHOT
 JadeREL=4.3
 
 if [ -z $JASON_HOME ] ; then
