@@ -67,11 +67,13 @@ public class wait extends DefaultInternalAction {
 
     public static final String waitAtom = ".wait";
 
+    private boolean suspendAfterUse = true;
+    
     @Override public boolean canBeUsedInContext() {
         return false;
     }
     @Override public boolean suspendIntention()   {
-        return true;
+        return suspendAfterUse;
     }
 
     @Override public int getMinArgs() {
@@ -85,6 +87,7 @@ public class wait extends DefaultInternalAction {
     public Object execute(final TransitionSystem ts, Unifier un, Term[] args) throws Exception {
         checkArguments(args);
 
+        suspendAfterUse = true;
         long timeout = -1;
         Trigger te = null;
         LogicalFormula f = null;
@@ -98,8 +101,10 @@ public class wait extends DefaultInternalAction {
             te = Trigger.tryToGetTrigger(args[0]);   // wait for event
             if (te == null && args[0] instanceof LogicalFormula) { // wait for an expression to become true
                 f = (LogicalFormula)args[0];
-                if (ts.getAg().believes(f, un))
+                if (ts.getAg().believes(f, un)) {
+                    suspendAfterUse = false;
                     return true;
+                }
             }
             if (args.length >= 2)
                 timeout = (long) ((NumberTerm) args[1]).solve();
