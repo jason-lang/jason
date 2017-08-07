@@ -67,13 +67,11 @@ public class wait extends DefaultInternalAction {
 
     public static final String waitAtom = ".wait";
 
-    private boolean suspendAfterUse = true;
-    
     @Override public boolean canBeUsedInContext() {
         return false;
     }
     @Override public boolean suspendIntention()   {
-        return suspendAfterUse;
+        return true;
     }
 
     @Override public int getMinArgs() {
@@ -87,7 +85,6 @@ public class wait extends DefaultInternalAction {
     public Object execute(final TransitionSystem ts, Unifier un, Term[] args) throws Exception {
         checkArguments(args);
 
-        suspendAfterUse = true;
         long timeout = -1;
         Trigger te = null;
         LogicalFormula f = null;
@@ -96,13 +93,22 @@ public class wait extends DefaultInternalAction {
         if (args[0].isNumeric()) {
             // time in milliseconds
             NumberTerm time = (NumberTerm)args[0];
-            timeout = (long) time.solve();
+            try {
+                timeout = (long) time.solve();
+            } catch (Exception e) {
+                if (!args[0].isGround())
+                    throw new JasonException("Expression "+args[0]+" is not ground!");
+                throw new JasonException("Expression "+args[0]+" can not be evaluated!", e);
+            }
         } else {
             te = Trigger.tryToGetTrigger(args[0]);   // wait for event
             if (te == null && args[0] instanceof LogicalFormula) { // wait for an expression to become true
                 f = (LogicalFormula)args[0];
-                if (ts.getAg().believes(f, un)) {
-                    suspendAfterUse = false;
+                if (ts.getAg().believes(f, un)) { // if the agent already believes f
+                    // place current intention back in I, since .wait usually does not do that
+                    Intention si = ts.getC().getSelectedIntention();
+                    si.peek().removeCurrentStep();
+                    ts.getC().addIntention(si);
                     return true;
                 }
             }
