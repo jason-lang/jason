@@ -747,7 +747,7 @@ public class TransitionSystem {
                 if (ok && !ia.suspendIntention())
                     updateIntention(curInt);
             } catch (NoValueException e) {
-            	// add not ground vars in the message
+                // add not ground vars in the message
                 String msg = e.getMessage() + " Ungrounded variables = [";
                 String v = "";
                 for (VarTerm var: body.getSingletonVars()) {
