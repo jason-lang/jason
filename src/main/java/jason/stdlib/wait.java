@@ -93,13 +93,7 @@ public class wait extends DefaultInternalAction {
         if (args[0].isNumeric()) {
             // time in milliseconds
             NumberTerm time = (NumberTerm)args[0];
-            try {
-                timeout = (long) time.solve();
-            } catch (Exception e) {
-                if (!args[0].isGround())
-                    throw new JasonException("Expression "+args[0]+" is not ground!");
-                throw new JasonException("Expression "+args[0]+" can not be evaluated!", e);
-            }
+            timeout = (long) time.solve();
         } else {
             te = Trigger.tryToGetTrigger(args[0]);   // wait for event
             if (te == null && args[0] instanceof LogicalFormula) { // wait for an expression to become true

@@ -340,7 +340,7 @@ public class VarTerm extends LiteralImpl implements NumberTerm, ListTerm { //, S
     // ----------
 
     public double solve() throws NoValueException {
-        throw new NoValueException();
+        throw new NoValueException("Error evaluating "+this+". It is not ground!");
     }
 
     // ----------
