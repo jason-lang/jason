@@ -47,8 +47,8 @@ import errorlist.DefaultErrorSource;
 import errorlist.ErrorSource;
 import jason.infra.MASLauncherInfraTier;
 import jason.infra.RunProjectListener;
-import jason.infra.centralised.CentralisedMASLauncherAnt;
 import jason.infra.centralised.BaseCentralisedMAS;
+import jason.infra.centralised.CentralisedMASLauncherAnt;
 import jason.mas2j.AgentParameters;
 import jason.mas2j.MAS2JProject;
 import jason.mas2j.parser.ParseException;
@@ -373,7 +373,7 @@ public class JasonID extends JPanel implements EBComponent, RunProjectListener {
             MAS2JProject project = parser.mas();
             project.setDirectory(projectBufffer.getDirectory());
             project.setProjectFile(new File(projectBufffer.getPath()));
-            project.fixAgentsSrc(null);
+            project.fixAgentsSrc();
             textArea.append(" parsed successfully!\n");
             return project;
 

@@ -1,11 +1,5 @@
 package jason.mas2j;
 
-import jason.architecture.AgArch;
-import jason.asSemantics.Agent;
-import jason.asSyntax.directives.Include;
-import jason.bb.DefaultBeliefBase;
-import jason.runtime.Settings;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -13,6 +7,11 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import jason.architecture.AgArch;
+import jason.asSemantics.Agent;
+import jason.bb.DefaultBeliefBase;
+import jason.runtime.Settings;
 
 /**
  * represents the agent declaration in the MAS2J project file.
@@ -69,17 +68,6 @@ public class AgentParameters {
             bbClass = new ClassParameters(DefaultBeliefBase.class.getName());
         }
 
-    }
-
-    /** fix source of the asl code based on aslsourcepath, also considers code from a jar file (if urlPrefix is not null) */
-    public boolean fixSrc(List<String> srcpath, String urlPrefix) {
-        String r = Include.checkPathAndFixWithSourcePath(asSource.toString(), srcpath, urlPrefix);
-        if (r != null) {
-            asSource = new File(r);
-            return true;
-        } else {
-            return false;
-        }
     }
 
     public ClassParameters getBBClass() {

@@ -45,6 +45,7 @@ import jason.runtime.MASConsoleGUI;
 import jason.runtime.MASConsoleLogFormatter;
 import jason.runtime.MASConsoleLogHandler;
 import jason.runtime.Settings;
+import jason.runtime.SourcePath;
 import jason.util.Config;
 
 /**
@@ -124,7 +125,7 @@ public class RunCentralisedMAS extends BaseCentralisedMAS {
                 InputStream inProject;
                 if (readFromJAR) {
                     inProject = RunCentralisedMAS.class.getResource("/"+defaultProjectFileName).openStream();
-                    urlPrefix = Include.CRPrefix + "/";
+                    urlPrefix = SourcePath.CRPrefix + "/";
                 } else {
                     URL file;
                     // test if the argument is an URL
@@ -145,12 +146,12 @@ public class RunCentralisedMAS extends BaseCentralisedMAS {
             }
 
             project.setupDefault();
-
+            project.getSourcePaths().setUrlPrefix(urlPrefix);
             project.registerDirectives();
             // set the aslSrcPath in the include
             ((Include)DirectiveProcessor.getDirective("include")).setSourcePath(project.getSourcePaths());
 
-            project.fixAgentsSrc(urlPrefix);
+            project.fixAgentsSrc();
 
             if (MASConsoleGUI.hasConsole()) {
                 MASConsoleGUI.get().setTitle("MAS Console - " + project.getSocName());
@@ -196,14 +197,19 @@ public class RunCentralisedMAS extends BaseCentralisedMAS {
 
     public synchronized void setupLogger() {
         if (readFromJAR) {
-            Handler[] hs = Logger.getLogger("").getHandlers();
-            for (int i = 0; i < hs.length; i++) {
-                Logger.getLogger("").removeHandler(hs[i]);
+            try {
+                LogManager.getLogManager().readConfiguration(
+                        RunCentralisedMAS.class.getResource("/"+logPropFile).openStream());
+            } catch (Exception e) {
+                Handler[] hs = Logger.getLogger("").getHandlers();
+                for (int i = 0; i < hs.length; i++) {
+                    Logger.getLogger("").removeHandler(hs[i]);
+                }
+                Handler h = new MASConsoleLogHandler();
+                h.setFormatter(new MASConsoleLogFormatter());
+                Logger.getLogger("").addHandler(h);
+                Logger.getLogger("").setLevel(Level.INFO);
             }
-            Handler h = new MASConsoleLogHandler();
-            h.setFormatter(new MASConsoleLogFormatter());
-            Logger.getLogger("").addHandler(h);
-            Logger.getLogger("").setLevel(Level.INFO);
         } else {
             // checks a local log configuration file
             if (new File(logPropFile).exists()) {
@@ -838,7 +844,7 @@ public class RunCentralisedMAS extends BaseCentralisedMAS {
         JFrame frame = new JFrame("Project "+project.getSocName()+" sources");
         JTabbedPane pane = new JTabbedPane();
         frame.getContentPane().add(pane);
-        project.fixAgentsSrc(urlPrefix);
+        project.fixAgentsSrc();
 
         for (AgentParameters ap : project.getAgents()) {
             try {
@@ -846,8 +852,8 @@ public class RunCentralisedMAS extends BaseCentralisedMAS {
 
                 // read sources
                 InputStream in = null;
-                if (tmpAsSrc.startsWith(Include.CRPrefix)) {
-                    in = RunCentralisedMAS.class.getResource(tmpAsSrc.substring(Include.CRPrefix.length())).openStream();
+                if (tmpAsSrc.startsWith(SourcePath.CRPrefix)) {
+                    in = RunCentralisedMAS.class.getResource(tmpAsSrc.substring(SourcePath.CRPrefix.length())).openStream();
                 } else {
                     try {
                         in = new URL(tmpAsSrc).openStream();

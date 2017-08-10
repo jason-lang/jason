@@ -47,7 +47,6 @@ import jason.asSyntax.Trigger;
 import jason.asSyntax.Trigger.TEOperator;
 import jason.asSyntax.Trigger.TEType;
 import jason.asSyntax.directives.FunctionRegister;
-import jason.asSyntax.directives.Include;
 import jason.asSyntax.parser.ParseException;
 import jason.asSyntax.parser.as2j;
 import jason.bb.BeliefBase;
@@ -57,6 +56,7 @@ import jason.functions.Count;
 import jason.functions.RuleToFunction;
 import jason.mas2j.ClassParameters;
 import jason.runtime.Settings;
+import jason.runtime.SourcePath;
 import jason.util.Config;
 
 
@@ -163,9 +163,9 @@ public class Agent {
                 asSrc = asSrc.replaceAll("\\\\", "/");
                 setASLSrc(asSrc);
 
-                if (asSrc.startsWith(Include.CRPrefix)) {
+                if (asSrc.startsWith(SourcePath.CRPrefix)) {
                     // loads the class from a jar file (for example)
-                    parseAS(Agent.class.getResource(asSrc.substring(Include.CRPrefix.length())).openStream());
+                    parseAS(Agent.class.getResource(asSrc.substring(SourcePath.CRPrefix.length())).openStream());
                 } else {
                     // check whether source is an URL string
                     try {

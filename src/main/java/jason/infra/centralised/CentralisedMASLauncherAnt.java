@@ -50,6 +50,10 @@ public class CentralisedMASLauncherAnt implements MASLauncherInfraTier {
         this.listener = listener;
     }
 
+    public void setTask(String t) {
+        task = t;
+    }
+    
     public void run() {
         try {
             String[] command = getStartCommandArray();

@@ -136,7 +136,7 @@ public class JadeAgArch extends JadeAg {
                 if (ap == null) {
                     logger.log(Level.SEVERE, "There is no agent '"+args[2]+"' in project '"+args[1]+"'.");
                 } else {
-                    ap.fixSrc(project.getSourcePaths(), null);
+                    ap.asSource = new File(project.getSourcePaths().fixPath(ap.asSource.toString()));
                     //if (ap.qty > 1)
                     //    logger.warning("Ignoring quantity of agents from mas2j, jade arch creates only ONE agent.");
                 }
