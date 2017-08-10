@@ -5,6 +5,8 @@ ifdef::env-github[:outfilesuffix: .adoc]
 
 == version 2.2
 
+- this release just fixes some bugs and improves documentation
+
 == version 2.1
 
 (a built package is available at https://sourceforge.net/projects/jason/files/jason/version%202.1/[here])
