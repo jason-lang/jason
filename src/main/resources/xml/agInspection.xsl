@@ -108,11 +108,11 @@
 			                    <xsl:for-each select="namespaces/namespace">
     		                        <xsl:variable name="nsId" select="@id" />
 		                            <xsl:for-each select="../../literal[@namespace=$nsId]">
-		                                <xsl:sort select="structure/@functor" />
+		                                <!-- xsl:sort select="structure/@functor" / -->
 		                                <tr style="{$trh-style}">
 		                                    <td style="text-align: left">
-			                                    <xsl:if test="$nsId != 'default' and position()=1">
-			                                       <br/><b><xsl:value-of select="$nsId" /><xsl:text>::</xsl:text></b> <br/>
+			                                    <xsl:if test="@namespace != 'default' and position()=1">
+			                                       <br/><b><xsl:value-of select="@namespace" /><xsl:text>::</xsl:text></b> <br/>
 			                                    </xsl:if>
 		                                        <span style="color: {$bc}">
 		                                            <xsl:apply-templates select="." />
