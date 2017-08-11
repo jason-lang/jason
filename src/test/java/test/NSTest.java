@@ -298,7 +298,7 @@ public class NSTest extends TestCase {
         assertTrue(a.getPL().toString().contains("ns2::tk; +#"));
 
     }
-    
+
     public void testAbolish() throws ParseException, JasonException {
         as2j parser = new as2j(new StringReader("b(10). b(20). b(tell). ns71::b(30). default::b(40). !g(ok). +!g(X) <- .print(kk, 10, X). "));
         parser.setNS(new Atom("ns3"));

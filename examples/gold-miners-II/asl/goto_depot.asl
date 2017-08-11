@@ -25,13 +25,13 @@
    <- !announce_not_handled_golds(R).
 
 +!ensure(drop, N) : carrying_gold(0).
-+!ensure(drop, N) 
-  :  N < 4 & depot(_,X,Y) & pos(X,Y,_) 
-  <- do(drop); 
-     !ensure(drop,N+1). 
++!ensure(drop, N)
+  :  N < 4 & depot(_,X,Y) & pos(X,Y,_)
+  <- do(drop);
+     !ensure(drop,N+1).
 
-  
-// leave depot: prefer go towards an enemy, so I push it out 
+
+// leave depot: prefer go towards an enemy, so I push it out
 // (actions in depot do not fail!!!)
 
 +!leave_depot : pos(X,Y,_) & cell(X+1,Y,enemy) <- do(right). // enemy right

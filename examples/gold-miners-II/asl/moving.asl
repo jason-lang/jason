@@ -3,7 +3,7 @@
 last_dir(null). // the last movement
 
 
-/* next_step: do an action towards some destination, 
+/* next_step: do an action towards some destination,
    the destination may be unachievable */
 +!next_step(X,Y)
    :  pos(AgX,AgY,_)
@@ -21,15 +21,15 @@ last_dir(null). // the last movement
 
 
 /* pos is used when it is algways possible to go */
-+!pos(X,Y) 
++!pos(X,Y)
   :  .desire(spos(OX,OY))
   <- .current_intention(I);
      .print("** Trying to go to ",X,",",Y," while another !pos to ",OX,",",OY," is running by intention ",I);
       .fail.
-+!pos(X,Y) 
-  <- jia.set_target(X,Y); 
++!pos(X,Y)
+  <- jia.set_target(X,Y);
      !spos(X,Y).
-  
+
 +!spos(X,Y) : pos(X,Y,_). // <- .print("I've reached ",X,"x",Y).
 +!spos(X,Y) : not jia.obstacle(X,Y) // the obstacle may be discovered after !pos(X,Y), so spos should fail.
   <- !next_step(X,Y);

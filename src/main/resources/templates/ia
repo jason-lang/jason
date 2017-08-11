@@ -15,7 +15,7 @@ public class <IA_NAME> extends <SUPER_CLASS> {
         if (true) { // just to show how to throw another kind of exception
             throw new JasonException("not implemented!");
         }
-        
+
         // everything ok, so returns true
         return true;
     }

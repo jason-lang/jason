@@ -6,19 +6,19 @@ default_bid_value(3).
 ally(ag2).
 threshold(3).
 
-+auction(N)[source(S)] 
-   :  (threshold(T) & N < T) 
++auction(N)[source(S)]
+   :  (threshold(T) & N < T)
       |
       (.my_name(I) & winner(I) & ally(A) & not alliance(I,A))
    <- !bid_normally(S,N).
 
-+auction(N)[source(S)] 
++auction(N)[source(S)]
    :  .my_name(I) & not winner(I) & ally(A) & not alliance(I,A)
    <- !alliance(A);
       !bid_normally(S,N).
 
 @palliance
-+auction(N)[source(S)] 
++auction(N)[source(S)]
    :  alliance(_,A)
    <- ?default_bid_value(B);
       ?bid(A,C);
@@ -31,4 +31,4 @@ threshold(3).
 @prop_alliance[breakpoint]
 +!alliance(A) : true
    <- .send(A,tell,alliance).
-   
+

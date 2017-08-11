@@ -1,15 +1,15 @@
 !start.
 
-+!start 
-   <- .print(init); 
++!start
+   <- .print(init);
       !!g(9)[hard_deadline(7000)]; // creates a new intention for g with deadline of 7 seconds
       !g(4)[hard_deadline(3000)];  // creates a subgoal with deadline of 3 seconds
-      !g(1)[hard_deadline(2000)]; 
-      .print(end1); 
+      !g(1)[hard_deadline(2000)];
+      .print(end1);
       !g(1);
-      !g(1);  
-      !g(1);  
-      !g(1);  
+      !g(1);
+      !g(1);
+      !g(1);
       !g(1);
       .print(end2).
 

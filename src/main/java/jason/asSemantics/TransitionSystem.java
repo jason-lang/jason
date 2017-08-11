@@ -751,7 +751,7 @@ public class TransitionSystem {
                 String msg = e.getMessage() + " Ungrounded variables = [";
                 String v = "";
                 for (VarTerm var: body.getSingletonVars()) {
-                    if (u.get(var) == null) {  
+                    if (u.get(var) == null) {
                         msg += v+var;
                         v = ",";
                     }
@@ -762,7 +762,7 @@ public class TransitionSystem {
                 if (!generateGoalDeletion(curInt, errorAnnots))
                     logger.log(Level.SEVERE, body.getErrorMsg()+": "+ e.getMessage());
                 ok = true; // just to not generate the event again
-                
+
             } catch (JasonException e) {
                 errorAnnots = e.getErrorTerms();
                 if (!generateGoalDeletion(curInt, errorAnnots))

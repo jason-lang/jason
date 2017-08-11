@@ -55,7 +55,7 @@ reactive solution and finish with a more goal-oriented version.
 - the moving strategy is coded in two sets of plans, so to change
   the strategy we need change all plans
 - if you leave the agent running for a long time, it eventually stop.
-  the reason is that sometimes the robot does not perceive neither 
+  the reason is that sometimes the robot does not perceive neither
   dirty nor clean and thus no plan are selected. The following
   code solves that:
 

@@ -5,8 +5,8 @@ import jason.asunit.TestAgent;
 import org.junit.Before;
 import org.junit.Test;
 
-/** bug reported by Igor 
- * 
+/** bug reported by Igor
+ *
  * https://github.com/jason-lang/jason/issues/12
  */
 public class BugWait {

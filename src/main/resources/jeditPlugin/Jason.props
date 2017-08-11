@@ -42,7 +42,7 @@ jason.asl2html.label=ASL to HTML
 jason.asl2tex.label=ASL to LaTeX
 jason.create-jar.label=Create an executable jar
 jason.create-jnlp.label=Create a Java Web Start application
-  
+
 # Dockables
 jason.title=Jason IDE
 jason.label=Jason

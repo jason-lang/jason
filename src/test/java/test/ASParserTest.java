@@ -164,7 +164,7 @@ public class ASParserTest extends TestCase {
         t1 = ArithExpr.parseExpr("8 / 4 / 2");
         assertTrue(t1 != null);
         assertEquals(t1.solve(), 1.0);
-        
+
         t1 = ArithExpr.parseExpr("-0.5 * 2");
         assertTrue(t1 != null);
         assertEquals(t1.solve(), -1.0);

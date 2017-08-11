@@ -2,7 +2,7 @@
 
 <!DOCTYPE MODE SYSTEM "xmode.dtd">
 
-<!--    
+<!--
     jEdit Syntax for the AgentSpeak language (see http://jason.sf.net)
     written by Jomi F. Hubner & Rafael H. Bordini
 -->
@@ -60,7 +60,7 @@
         <SEQ_REGEXP TYPE="MARKUP" HASH_CHAR="-" AT_WORD_START="TRUE">[-][?]([~])?[a-z]([[:alnum:]])*</SEQ_REGEXP>
         <SEQ_REGEXP TYPE="MARKUP" HASH_CHAR="!" AT_WORD_START="TRUE">[!]([~])?[a-z]([[:alnum:]])*</SEQ_REGEXP>
         <SEQ_REGEXP TYPE="MARKUP" HASH_CHAR="!" AT_WORD_START="TRUE">[!]([~])?[!][a-z]([[:alnum:]])*</SEQ_REGEXP>
-        <SEQ_REGEXP TYPE="MARKUP" HASH_CHAR="?" AT_WORD_START="TRUE">[?]([~])?[a-z]([[:alnum:]])*</SEQ_REGEXP>      
+        <SEQ_REGEXP TYPE="MARKUP" HASH_CHAR="?" AT_WORD_START="TRUE">[?]([~])?[a-z]([[:alnum:]])*</SEQ_REGEXP>
 
         <!-- Vars -->
         <SEQ_REGEXP TYPE="LITERAL3" HASH_CHAR="A">A([[:alnum:]])*</SEQ_REGEXP>
@@ -152,7 +152,7 @@
         <SEQ TYPE="KEYWORD1">:</SEQ>
         <SEQ TYPE="KEYWORD1" DELEGATE="BODY">&lt;-</SEQ>
         <SEQ TYPE="KEYWORD1" AT_END_WORD="TRUE">.</SEQ>
-        
+
         <!-- Operators -->
         <SEQ TYPE="OPERATOR">==</SEQ>
         <SEQ TYPE="OPERATOR">\==</SEQ>
@@ -229,7 +229,7 @@
         <SEQ_REGEXP TYPE="LABEL" HASH_CHAR="-" AT_WORD_START="TRUE">[-]([+])?([~])?[a-z]([[:alnum:]])*</SEQ_REGEXP>
         <SEQ_REGEXP TYPE="MARKUP" HASH_CHAR="!" AT_WORD_START="TRUE">[!]([~])?[a-z]([[:alnum:]])*</SEQ_REGEXP>
         <SEQ_REGEXP TYPE="MARKUP" HASH_CHAR="!" AT_WORD_START="TRUE">[!]([~])?[!][a-z]([[:alnum:]])*</SEQ_REGEXP>
-        <SEQ_REGEXP TYPE="MARKUP" HASH_CHAR="?" AT_WORD_START="TRUE">[?]([~])?[a-z]([[:alnum:]])*</SEQ_REGEXP>      
+        <SEQ_REGEXP TYPE="MARKUP" HASH_CHAR="?" AT_WORD_START="TRUE">[?]([~])?[a-z]([[:alnum:]])*</SEQ_REGEXP>
 
         <!-- Vars -->
         <SEQ_REGEXP TYPE="LITERAL3" HASH_CHAR="A">A([[:alnum:]])*</SEQ_REGEXP>

@@ -7,7 +7,7 @@ resource_needed(1).
 
 // Plans
 
-+my_pos(X,Y) 
++my_pos(X,Y)
    :  checking_cells & not building_finished
    <- !check_for_resources.
 
@@ -15,7 +15,7 @@ resource_needed(1).
    :  resource_needed(R) & found(R)
    <- !stop_checking;
       !take(R,boss);
-      !continue_mine.   
+      !continue_mine.
 
 +!check_for_resources
    :  resource_needed(R) & not found(R)
@@ -37,7 +37,7 @@ resource_needed(1).
       +checking_cells;
       !check_for_resources.
 
-+!go(Position) 
++!go(Position)
    :  pos(Position,X,Y) & my_pos(X,Y)
    <- true.
 
@@ -48,11 +48,11 @@ resource_needed(1).
 
 @psf[atomic]
 +!search_for(NewResource) : resource_needed(OldResource)
-   <- +resource_needed(NewResource);    
+   <- +resource_needed(NewResource);
       -resource_needed(OldResource).
 
 @pbf[atomic]
 +building_finished : true
    <- .drop_all_desires;
       !go(boss).
-      
+

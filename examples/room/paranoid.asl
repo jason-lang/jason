@@ -3,4 +3,4 @@
 
 //+locked(door) : true
 //  <- .print("Thanks for locking the door!").
-  
+

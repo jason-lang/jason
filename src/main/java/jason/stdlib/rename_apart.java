@@ -13,7 +13,7 @@ import jason.asSyntax.VarTerm;
 
   <p>Examples:<ul>
 
-  <li> <code>.rename_apart(b(X,Y,a), R)</code>: R will unifies with 
+  <li> <code>.rename_apart(b(X,Y,a), R)</code>: R will unifies with
   <code>b(_33_X,_34_Y,a)</code>.</li>
   </ul>
 
@@ -27,18 +27,18 @@ public class rename_apart extends DefaultInternalAction {
     @Override public int getMaxArgs() {
         return 2;
     }
-    
+
     @Override
     public Term[] prepareArguments(Literal body, Unifier un) {
         return body.getTermsArray();
     }
-    
+
     @Override
     public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {
         checkArguments(args);
         Literal newl = (Literal)args[0];
-        if (newl.isVar()) { // does 1 step unification  
-            Literal vl = (Literal)un.get( (VarTerm)newl); 
+        if (newl.isVar()) { // does 1 step unification
+            Literal vl = (Literal)un.get( (VarTerm)newl);
             if (vl != null)
                 newl = vl;
         }

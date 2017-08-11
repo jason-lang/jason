@@ -8,7 +8,7 @@
 
 /* Plans */
 
-+!start : true 
++!start : true
   <- +boss(1,"Vercouter");
      +boss(2,"Rosine");
      +boss(2,"Boissier"); // will replace "boss(2,Rosine)" since both have the same key

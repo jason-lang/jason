@@ -610,7 +610,7 @@ public class Agent {
                 fixAgInIAandFunctions(this);
             } catch (Exception e) {
                 e.printStackTrace();
-            } 
+            }
 
             if (getPL().hasMetaEventPlans())
                 getTS().addGoalListener(new GoalListenerForMetaEvents(getTS()));

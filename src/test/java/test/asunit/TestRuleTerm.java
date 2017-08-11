@@ -25,7 +25,7 @@ public class TestRuleTerm {
             "+!test4a     <- jason.asunit.print(bu). \n" +
 
             "+!test5  <- +{ +!k <- jason.asunit.print(ok) }; !k. " +
-            
+
             "r1 :- b. "+
             "r2[a1,a2] :- q & r." +
             "+!test6 : r1[an] <- jason.asunit.print(nok). "+
@@ -54,7 +54,7 @@ public class TestRuleTerm {
         ag.addGoal("test4");
         ag.assertPrint("ok", 5);
     }
-    
+
     @Test(timeout=2000)
     public void testRule2() {
         ag.addGoal("test6");

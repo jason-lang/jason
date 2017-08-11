@@ -9,7 +9,7 @@
 
 /* define a new function in AgentSpeak */
 
-{ register_function("myf.sum",2,"sum") } 
+{ register_function("myf.sum",2,"sum") }
                                  // Register an user defined function
                                  // myf.sum is the name of the function
                                  // 2 is its arity
@@ -19,12 +19,12 @@
                                  // the code of this function is in the
                                  // rule sum below, the last argument
                                  // is the return of the function
-sum(X,Y,S) :- S = X + Y.                                 
-                                 
+sum(X,Y,S) :- S = X + Y.
+
 { register_function("myf.limit", 0,"limit") } // example of constant function
 limit(10).
 
-                                 
+
 /* Initial beliefs (used to show the use of .count) */
 b(10).
 b(20).
@@ -37,8 +37,8 @@ t(x).
 
 /* Plans */
 
-+!show_predef_function  
-   <- X = math.max(4, math.abs(-10)); 
++!show_predef_function
+   <- X = math.max(4, math.abs(-10));
       .print("Max=",X);
       .print("Max=",math.max(4, math.abs(-10)));
       .print("Number of b/1 beliefs=", .count(b(_))).
@@ -48,4 +48,4 @@ t(x).
       .print("1+2         =", myf.sum(1,2));
       .print("limit       =", myf.limit);
       .print("5+(2+limit) =", myf.sum(5,myf.sum(2,myf.limit))).
-   
+

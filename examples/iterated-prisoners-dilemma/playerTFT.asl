@@ -9,7 +9,7 @@
   :  true
   <- -last_move(O,_); // NB: cannot use -+ here!
      +last_move(O,M).
- 
+
 /*** ... as my strategy is ... ***/
 
 // TFT:

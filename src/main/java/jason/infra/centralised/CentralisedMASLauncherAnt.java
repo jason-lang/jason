@@ -53,7 +53,7 @@ public class CentralisedMASLauncherAnt implements MASLauncherInfraTier {
     public void setTask(String t) {
         task = t;
     }
-    
+
     public void run() {
         try {
             String[] command = getStartCommandArray();

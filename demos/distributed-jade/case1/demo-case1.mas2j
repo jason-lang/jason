@@ -3,7 +3,7 @@
 
 MAS demo_distributed_jade {
 
-    infrastructure: Jade(main_container_host("localhost")) 
+    infrastructure: Jade(main_container_host("localhost"))
     // replace localhost by the name or IP of the host where the main container will run
 
     agents:

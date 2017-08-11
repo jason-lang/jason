@@ -1,18 +1,18 @@
-/* 
+/*
 
-Jason Project 
+Jason Project
 
-It is a very simple example of an agent (bob) 
+It is a very simple example of an agent (bob)
 that sends messages to another agent (maria)
 
 */
 
 MAS communication {
-   
-    infrastructure: Centralised 
+
+    infrastructure: Centralised
           /* to use Jade, replace Centralised above by Jade
              and run as usual by the "play" button
-             
+
              to run on several machines (A,B,C):
                1. replace Centralised by Jade(main_container_host("localhost"))
                2. go to host A, cd <project dir>/bin, ant main-container

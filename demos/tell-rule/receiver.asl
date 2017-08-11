@@ -19,4 +19,4 @@ c.
       // get all rules and print them
       .relevant_rules(_,LR);
       .print("Rules: ",LR).
-      
+

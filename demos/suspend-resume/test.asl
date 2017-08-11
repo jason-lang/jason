@@ -8,7 +8,7 @@
 /* Plans */
 
 // loop printing dots
-+!dots 
++!dots
   <- .print(".");
      !!dots.
 

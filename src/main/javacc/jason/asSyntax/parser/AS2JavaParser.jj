@@ -680,7 +680,7 @@ Literal literal() :
 {
   ( (
       // namespace
-      [ LOOKAHEAD(27)         
+      [ LOOKAHEAD(27)
         [
         (tns = <ATOM>         { if (tns.image.equals("default"))
                                      NS = Literal.DefaultNS;

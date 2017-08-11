@@ -1,20 +1,20 @@
 //----------------------------------------------------------------------------
 // Copyright (C) 2003  Rafael H. Bordini, Jomi F. Hubner, et al.
-// 
+//
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
 // version 2.1 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-// 
+//
 // To contact the authors:
 // http://www.dur.ac.uk/r.bordini
 // http://www.inf.furb.br/~jomi
@@ -50,7 +50,7 @@ public class mas2j {
       String name;
       mas2j parser;
       MAS2JProject project = new MAS2JProject();
-      
+
       if (args.length == 0) {
 		System.out.println("mas2j: usage must be:");
 		System.out.println("      java mas2j <MASConfFile>");
@@ -66,10 +66,10 @@ public class mas2j {
 		  return;
         }
       }
-      
+
       boolean debugmas = args.length >= 2 && args[1].equals("debug");
-      boolean runmas   = debugmas || args.length >= 2 && args[1].equals("run"); 
-      
+      boolean runmas   = debugmas || args.length >= 2 && args[1].equals("run");
+
       // parsing
       try {
 		project = parser.mas();
@@ -82,7 +82,7 @@ public class mas2j {
 		MASLauncherInfraTier launcher = project.getInfrastructureFactory().createMASLauncher();
 		launcher.setProject(project);
 		launcher.writeScripts(debugmas, true);
-		
+
 		if (runmas) {
 		    new Thread(launcher, "MAS-Launcher").start();
 		} else {
@@ -143,7 +143,7 @@ TOKEN : {
           | (["0"-"9"])+ (["e","E"] (["+","-"])? (["0"-"9"])+) >
 
 // Strings
-|  <STRING: 
+|  <STRING:
       "\""
       (   (~["\"","\\","\n","\r"])
         | ("\\"
@@ -180,20 +180,20 @@ MAS2JProject mas() :           { Token soc; }
   <MAS>
   soc = <ASID>                 { project = new MAS2JProject();
                                  project.setSocName(soc.image); }
-  "{" 
-  
+  "{"
+
   infra()
 
   environment()
 
   control()
-  
+
   agents()
 
   directives()
-  
+
   classpath()
-  
+
   sourcepath()
 
   "}"
@@ -201,10 +201,10 @@ MAS2JProject mas() :           { Token soc; }
 }
 
 void infra() :              { ClassParameters infra; }
-{                           
-  [ <INFRA> 
-    ":"  
-    infra = classDef()      { project.setInfrastructure(infra); }     
+{
+  [ <INFRA>
+    ":"
+    infra = classDef()      { project.setInfrastructure(infra); }
   ]
 }
 
@@ -217,23 +217,23 @@ void agents() :             { project.initAgMap(); }
 }
 
 
-void agent() :              { Token agName; 
+void agent() :              { Token agName;
                               Token qty; Token value;
-                              Token host; 
+                              Token host;
                               AgentParameters ag = new AgentParameters();
                               Map opts;
                               ClassParameters arch;
                             }
 {
-  agName = <ASID>           
+  agName = <ASID>
 
                             { ag.name = agName.image;
-                              ag.asSource = new File(agName.image+".asl"); 
+                              ag.asSource = new File(agName.image+".asl");
                             }
-                            
+
   [ ag.asSource  = fileName() ]
 
-  opts = ASoptions()       { ag.setOptions(opts); }        
+  opts = ASoptions()       { ag.setOptions(opts); }
 
   (
   <ASAGARCHCLASS> arch = classDef()
@@ -242,25 +242,25 @@ void agent() :              { Token agName;
   <ASAGCLASS> ag.agClass = classDef()
   |
   <BBCLASS> ag.bbClass = classDef()
-  |  
+  |
   "#" qty = <NUMBER>      { ag.setNbInstances( Integer.parseInt(qty.image) ); }
   |
   <AT> host = <STRING>    { ag.setHost(host.image); }
   )*
-  
+
   ";"
-                            { project.addAgent(ag); } 
+                            { project.addAgent(ag); }
 }
 
 
-File fileName() :           { String path = ""; 
-                              Token t; 
+File fileName() :           { String path = "";
+                              Token t;
                               Token i;
-                              Token e; 
+                              Token e;
                               String ext = ".asl"; }
 {
   [ t = <PATH>              { path = t.image; } ]
-    i = <ASID>               
+    i = <ASID>
   [ "." e = <ASID>          { ext = "." + e.image; } ]
                             { //if (!path.startsWith(File.separator)) {
                               //  path = destDir + path;
@@ -280,7 +280,7 @@ ClassParameters classDef() :  { Token c; String s; ClassParameters cp = new Clas
      "("
 	   [
 	     (s=parameter())                { cp.addParameter(s); }
-   	     ( 
+   	     (
    	       "," (s=parameter())          { cp.addParameter(s); }
    	     )*
    	   ]
@@ -295,7 +295,7 @@ String parameter() :       { Token c; String s; ClassParameters cp; }
       | c=<NUMBER>         { return c.image; }
       | c=<STRING>         { return c.image; }
       | s=listParameters() { return s; }
-      ) 
+      )
 }
 
 
@@ -303,7 +303,7 @@ String listParameters() :  { String s; List l = new ArrayList(); }
 {
      "["
 	     (s=parameter())       { l.add(s); }
-   	     ( 
+   	     (
    	       "," s=parameter()   { l.add(s); }
    	     )*
      "]"
@@ -322,13 +322,13 @@ Map procOption(Map opts): { Token opt; Token oval; }
   ( opt=<ASOEE>     "=" oval=<ASOEEV>  {opts.put(opt.image,oval.image);}
   | opt=<ASOIB>     "=" oval=<ASOIBV>  {opts.put(opt.image,oval.image);}
   | opt=<ASOSYNC>   "=" oval=<ASOBOOL> {opts.put(opt.image,oval.image);}
-  | opt=<ASONRC>    "=" oval=<NUMBER>  {opts.put(opt.image,oval.image);} 
-  | opt=<ASOV>      "=" oval=<NUMBER>  {opts.put(opt.image,oval.image);} 
+  | opt=<ASONRC>    "=" oval=<NUMBER>  {opts.put(opt.image,oval.image);}
+  | opt=<ASOV>      "=" oval=<NUMBER>  {opts.put(opt.image,oval.image);}
   | opt=<ASID>      "=" (oval=<STRING>|oval=<ASID>|oval=<NUMBER>|oval=<ID>|oval=<ASOBOOL>)
-                                       {opts.put(opt.image,oval.image);} 
+                                       {opts.put(opt.image,oval.image);}
   )
-                                       { 
-                                         return opts; 
+                                       {
+                                         return opts;
                                        }
 }
 
@@ -337,10 +337,10 @@ void environment() :        { Token host = null; ClassParameters envClass = null
 {
 
   [  <ENV> ":"
-     envClass = classDef() 
+     envClass = classDef()
      [ <AT> host = <STRING> ]
-  ]   
-                            { 
+  ]
+                            {
                               project.setEnvClass(envClass);
                               if (host != null) {
 		                          envClass.setHost(host.image);
@@ -351,10 +351,10 @@ void environment() :        { Token host = null; ClassParameters envClass = null
 
 void control() :            { Token host =  null; }
 {
-                            { ClassParameters controlClass = null; 
+                            { ClassParameters controlClass = null;
                             }
-                            
-  [ <CONTROL> ":" controlClass = classDef() 
+
+  [ <CONTROL> ":" controlClass = classDef()
     [ <AT> host = <STRING> ]
   ]
                             { project.setControlClass(controlClass);
@@ -366,7 +366,7 @@ void control() :            { Token host =  null; }
 
 void classpath() :          { Token cp; }
 {
-  [ <CLASSPATH> ":" 
+  [ <CLASSPATH> ":"
     ( cp = <STRING> ";"     { project.addClassPath(cp.image); }
     )+
   ]
@@ -374,7 +374,7 @@ void classpath() :          { Token cp; }
 
 void sourcepath() :         { Token cp; }
 {
-  [ <SOURCEPATH> ":" 
+  [ <SOURCEPATH> ":"
     ( cp = <STRING> ";"     { project.addSourcePath(cp.image); }
     )+
   ]
@@ -383,13 +383,13 @@ void sourcepath() :         { Token cp; }
 
 void directives() :         {  Token directiveId; ClassParameters directiveClass = null;  }
 {
-  [ <DIRECTIVE> ":" 
-    ( 
-       directiveId = <ASID> 
-       "=" 
-       directiveClass = classDef()  
+  [ <DIRECTIVE> ":"
+    (
+       directiveId = <ASID>
+       "="
+       directiveClass = classDef()
        ";"
-                            { project.addDirectiveClass(directiveId.image, directiveClass); }    
+                            { project.addDirectiveClass(directiveId.image, directiveClass); }
     )+
   ]
 

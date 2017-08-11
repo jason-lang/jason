@@ -12,7 +12,7 @@ x(V) :- V < 30.
 
 /* Plans */
 
-+!start : true 
++!start : true
    <- .send(receiver,tellRule, [{a :- b & c}]); // send a list with a single rule
       .wait(100);
       .send(receiver,achieve,test);

@@ -14,13 +14,13 @@
 % This stylesheet is not finished
 \documentclass{article}
 
-\newenvironment{asl}{\ttfamily\begin{tabbing}~~~\=$\leftarrow$ \= ~~~ \= 
+\newenvironment{asl}{\ttfamily\begin{tabbing}~~~\=$\leftarrow$ \= ~~~ \=
 \kill}{\end{tabbing}}
 
 </xsl:text>
 
 	<xsl:call-template name="commands" />
-    <xsl:if test="string-length(@source) > 0"> 
+    <xsl:if test="string-length(@source) > 0">
 <xsl:text>
 \title{</xsl:text><xsl:value-of select="@source" /><xsl:text>}
 </xsl:text>
@@ -29,7 +29,7 @@
 
 \begin{document}
     \maketitle
-    
+
     <xsl:apply-templates select="//beliefs" />
 
 
@@ -39,7 +39,7 @@
 \begin{asl}
     <xsl:apply-templates select="//plans"/>
 
-		
+
 \end{asl}
 \end{document}
 </xsl:template>
@@ -62,7 +62,7 @@
             <xsl:apply-templates select="context" />
 	    <xsl:text>}</xsl:text>
 	</xsl:if>
-        
+
         <xsl:if test="count(body/body-literal) > 0">
 	    <xsl:text>\\
 </xsl:text>
@@ -82,7 +82,7 @@
 	<xsl:text>\\
 </xsl:text>
     </xsl:template>
-    
+
 
     <xsl:template match="body">
         <xsl:for-each select="body-literal">
@@ -107,7 +107,7 @@
         		<xsl:otherwise>
 	        		<xsl:value-of select="@type"/>
 					<xsl:apply-templates />
-        		</xsl:otherwise>        		
+        		</xsl:otherwise>
         	  </xsl:choose>
           <xsl:if test="not(position()=last())">
 			<xsl:text>;\\

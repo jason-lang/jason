@@ -7,8 +7,8 @@ adjacent(X,Y,X-1,Y).
 adjacent(X,Y,X,Y+1).
 adjacent(X,Y,X,Y-1).
 
-out_of_grid(X,Y) :-  
-   borders(BottomLeftX, BottomLeftX, TopRightX, TopRightY) & 
+out_of_grid(X,Y) :-
+   borders(BottomLeftX, BottomLeftX, TopRightX, TopRightY) &
    (X < BottomLeftX | Y < BottomLeftX | X > TopRightX | Y > TopRightY).
 
 visited(X,Y) :- ~breeze(X,Y) | breeze(X,Y).
@@ -35,7 +35,7 @@ pit(X,Y) :- breeze(X-1,Y) & ~pit(X-2,Y) & ~pit(X-1,Y-1) & ~pit(X-1,Y+1). // p4
 
 might_be_pit(X,Y) :-  adjacent(X,Y,X2,Y2) & breeze(X2,Y2). // might have a pit, could be useful to select an action if no ok location is available
 
-   
+
 /* wumpus inference */
 ~wumpus(X,Y) :- ~stench(X,Y).
 ~wumpus(X,Y) :- adjacent(X,Y,X2,Y2) & ~stench(X2,Y2).

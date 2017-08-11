@@ -1,12 +1,12 @@
 /*
 
  See description at http://www.cs.otago.ac.nz/staffpriv/ok/santa/
-  
+
  This is a Jason solution to "The Santa Claus problem",
  as discussed by Simon Peyton Jones (with a Haskell solution using
  Software Transactional Memory) in "Beautiful code".
  He quotes J.A.Trono "A new exercise in concurrency", SIGCSE 26:8-10, 1994.
-   
+
   Santa repeatedly sleeps until wakened by either all of his
   nine reindeer, back from their holidays, or by a group of three
   of his ten elves.  If awakened by the reindeer, he harnesses

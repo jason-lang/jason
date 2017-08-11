@@ -355,7 +355,7 @@ public class DefaultBeliefBase extends BeliefBase {
                     }
                     ebels.appendChild(enss);
                     // copy bels to an array to sort it
-                    allBels = new ArrayList<Literal>(size()); 
+                    allBels = new ArrayList<Literal>(size());
                     for (Literal l: this)
                         allBels.add(l);
                 }
