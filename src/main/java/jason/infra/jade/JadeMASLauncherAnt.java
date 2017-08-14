@@ -168,8 +168,7 @@ public class JadeMASLauncherAnt extends CentralisedMASLauncherAnt implements MAS
                     sep = ";";
                 }
                 args = "";
-                if (Config.get().getJadeArgs() != null)
-                    args += Config.get().getJadeArgs();
+                args += Config.get().getJadeArgs();
                 if (mainHostPort > 0)
                     args += " -port "+mainHostPort;
                 if (Config.get().getBoolean(Config.JADE_RMA))

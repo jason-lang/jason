@@ -11,6 +11,7 @@ import jason.asSyntax.StringTerm;
 import jason.asSyntax.StringTermImpl;
 import jason.asSyntax.Structure;
 import jason.asSyntax.Term;
+import jason.asSyntax.UnnamedVar;
 import jason.asSyntax.VarTerm;
 import jason.asSyntax.parser.ParseException;
 
@@ -95,7 +96,6 @@ public class puts extends DefaultInternalAction {
     @Override
     public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {
         checkArguments(args);
-
         StringBuffer sb = new StringBuffer();
         for (Term term : args) {
             if (!term.isString()) {
@@ -105,15 +105,18 @@ public class puts extends DefaultInternalAction {
             Matcher matcher = regex.matcher(st.getString());
 
             while (matcher.find()) {
-                /*
-                 * System.out.println("I found the text \""+matcher.group()+ "\"
-                 * starting at index "+matcher.start()+ " and ending at index
-                 * "+matcher.end());
-                 */
+                
+                //System.out.println("I found the text \""+matcher.group()+ "\"starting at index "+matcher.start()+ " and ending at index "+matcher.end());
+                 
                 String sVar = matcher.group();
                 sVar = sVar.substring(2, sVar.length() - 1);
                 try {
-                    Term t = ASSyntax.parseTerm(sVar);
+                    Term t = null;
+                    if (sVar.startsWith("_") && sVar.length() > 1) // deals with unnamed vars, where we cannot use parseTerm
+                        t = new UnnamedVar( Integer.valueOf( sVar.substring(1)));
+                    else
+                        t = ASSyntax.parseTerm(sVar);
+                         
                     //We use t.apply to evaluate any logical or arithmetic expression in Jason
                     t = t.capply(un);
                     matcher.appendReplacement(sb, t.toString());

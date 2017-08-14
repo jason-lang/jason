@@ -168,7 +168,8 @@ public class Config extends Properties {
 
     /** Return the jade args (those used in jade.Boot) */
     public String getJadeArgs() {
-        return getProperty(JADE_ARGS);
+        String a = getProperty(JADE_ARGS);
+        return a == null ? "" : a;
     }
 
     public String[] getJadeArrayArgs() {
