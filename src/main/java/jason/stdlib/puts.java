@@ -118,8 +118,8 @@ public class puts extends DefaultInternalAction {
                         t = ASSyntax.parseTerm(sVar);
                          
                     //We use t.apply to evaluate any logical or arithmetic expression in Jason
-                    t = t.capply(un);
-                    matcher.appendReplacement(sb, t.toString());
+                    t = t.capply(un);                    
+                    matcher.appendReplacement(sb, t.isString() ? ((StringTerm)t).getString() : t.toString());
                 } catch (ParseException pe) {
                     // TODO: handle exception
                     // TODO: Decide whether or not we should ignore the exception and print the call instead
