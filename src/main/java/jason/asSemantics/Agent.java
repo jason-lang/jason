@@ -514,35 +514,33 @@ public class Agent {
     /** add the initial beliefs in BB and produce the corresponding events */
     public void addInitialBelsInBB() throws RevisionFailedException {
         // Once beliefs are stored in a Stack in the BB, insert them in inverse order
-        for (int i=initialBels.size()-1; i >=0; i--) {
-            Literal b = initialBels.get(i);
-
-            // if l is not a rule and has free vars (like l(X)), convert it into a rule like "l(X) :- true."
-            if (!b.isRule() && !b.isGround())
-                b = new Rule(b,Literal.LTrue);
-
-            // does not do BRF for rules (and so do not produce events +bel for rules)
-            if (b.isRule()) {
-                getBB().add(b);
-            } else {
-                b = (Literal)b.capply(null); // to solve arithmetic expressions
-                addBel(b);
-            }
-        }
+        for (int i=initialBels.size()-1; i >=0; i--)
+            addInitBel(initialBels.get(i));
         initialBels.clear();
     }
 
     protected void addInitialBelsFromProjectInBB() {
         String sBels = getTS().getSettings().getUserParameter(Settings.INIT_BELS);
-        if (sBels != null) {
+        if (sBels != null)
             try {
-                for (Term t: ASSyntax.parseList("["+sBels+"]")) {
-                    Literal b = ((Literal)t).forceFullLiteralImpl();
-                    addBel(b);
-                }
+                for (Term t: ASSyntax.parseList("["+sBels+"]"))
+                    addInitBel( ((Literal)t).forceFullLiteralImpl());
             } catch (Exception e) {
                 logger.log(Level.WARNING, "Initial beliefs from project '["+sBels+"]' is not a list of literals.");
             }
+    }
+
+    private void addInitBel(Literal b) throws RevisionFailedException {
+        // if l is not a rule and has free vars (like l(X)), convert it into a rule like "l(X) :- true."
+        if (!b.isRule() && !b.isGround())
+            b = new Rule(b,Literal.LTrue);
+
+        // does not do BRF for rules (and so do not produce events +bel for rules)
+        if (b.isRule()) {
+            getBB().add(b);
+        } else {
+            b = (Literal)b.capply(null); // to solve arithmetic expressions
+            addBel(b);
         }
     }
 
