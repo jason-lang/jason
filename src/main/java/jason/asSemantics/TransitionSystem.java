@@ -28,6 +28,7 @@ import jason.asSyntax.LiteralImpl;
 import jason.asSyntax.LogicalFormula;
 import jason.asSyntax.NumberTerm;
 import jason.asSyntax.NumberTermImpl;
+import jason.asSyntax.ObjectTermImpl;
 import jason.asSyntax.Plan;
 import jason.asSyntax.PlanBody;
 import jason.asSyntax.PlanBody.BodyType;
@@ -286,8 +287,9 @@ public class TransitionSystem {
                 try {
                     content = ASSyntax.parseTerm(m.getPropCont().toString());
                 } catch (ParseException e) {
-                    logger.warning("The content of the message '"+m.getPropCont()+"' is not a term!");
-                    return;
+                    //logger.warning("The content of the message '"+m.getPropCont()+"' is not a term! Using ObjectTerm.");
+                    content = new ObjectTermImpl(m.getPropCont());
+                    //return;
                 }
             }
 
