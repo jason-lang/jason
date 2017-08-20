@@ -609,7 +609,7 @@ Object body_formula() :
                        }
 }
 
-Term rule_plan_term():            { Trigger T = null; Object C = null; PlanBody B = null, B1 = null; Plan P = null;
+Term rule_plan_term():       { Trigger T = null; Object C = null; PlanBody B = null, B1 = null; Plan P = null;
                                boolean pb = true; // pb = "only plan body"
                                Pred L = null;
                                Literal h = null; Object t = null;
@@ -626,7 +626,7 @@ Term rule_plan_term():            { Trigger T = null; Object C = null; PlanBody 
      )
     ]
   ]
-  [ LOOKAHEAD(50)
+  [ LOOKAHEAD(150)
     h=literal()
     ":-"
     t = log_expr()
