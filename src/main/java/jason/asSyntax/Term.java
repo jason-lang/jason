@@ -46,6 +46,9 @@ public interface Term extends Cloneable, Comparable<Term>, Serializable, ToDOM {
     /** clone and applies together (and faster than clone and then apply) */
     public Term capply(Unifier u);
 
+    /** clone in another namespace */
+    public Term cloneNS(Atom newnamespace);
+
     /** Removes the value cached for hashCode */
     //public void resetHashCodeCache();
 

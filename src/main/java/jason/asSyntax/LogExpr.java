@@ -250,7 +250,10 @@ public class LogExpr extends BinaryStructure implements LogicalFormula {
 
     @Override
     public Literal cloneNS(Atom newnamespace) {
-        return (Literal)clone();
+        if (isUnary())
+            return new LogExpr(op, (LogicalFormula)getTerm(0).cloneNS(newnamespace));
+        else
+            return new LogExpr((LogicalFormula)getTerm(0).cloneNS(newnamespace), op, (LogicalFormula)getTerm(1).cloneNS(newnamespace));
     }
 
 

@@ -70,9 +70,6 @@ public abstract class Literal extends DefaultTerm implements LogicalFormula {
         return (Literal)clone(); // should call the clone, that is overridden in subclasses
     }
 
-    /** clone in another namespace */
-    public abstract Literal cloneNS(Atom newnamespace);
-
     /** returns the functor of this literal */
     public abstract String getFunctor();
 
@@ -609,6 +606,16 @@ public abstract class Literal extends DefaultTerm implements LogicalFormula {
         }
 
         @Override
+        public Literal cloneNS(Atom newnamespace) {
+        	return this;
+        }
+        
+        @Override
+        public Term capply(Unifier u) {
+        	return this;
+        }
+        
+        @Override
         public Iterator<Unifier> logicalConsequence(final Agent ag, final Unifier un) {
             return LogExpr.createUnifIterator(un);
         }
@@ -620,6 +627,16 @@ public abstract class Literal extends DefaultTerm implements LogicalFormula {
             super("false");
         }
 
+        @Override
+        public Literal cloneNS(Atom newnamespace) {
+        	return this;
+        }
+        
+        @Override
+        public Term capply(Unifier u) {
+        	return this;
+        }
+        
         @Override
         public Iterator<Unifier> logicalConsequence(final Agent ag, final Unifier un) {
             return LogExpr.EMPTY_UNIF_LIST.iterator();
