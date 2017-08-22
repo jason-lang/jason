@@ -111,7 +111,11 @@ public class MASConsoleColorGUI extends MASConsoleGUI {
                 }
                 try {
                     output.append(c, s);
-                } catch (IllegalArgumentException e) {
+                } catch (Throwable e) {
+                    // just try again once...
+                    try {
+                        output.append(c, s);
+                    } catch (Throwable e2) { }
                 }
             }
         } catch (Exception e) {

@@ -237,8 +237,8 @@ public class Plan extends Structure implements Cloneable, Serializable {
 
     @Override
     public Plan cloneNS(Atom ns) {
-    	// TODO: should we change the namespace of all elements of the plan?
-    	return (Plan)clone();
+        // TODO: should we change the namespace of all elements of the plan?
+        return (Plan)clone();
     }
     
     /** used to create a plan clone in a new IM */
