@@ -572,6 +572,20 @@ public class StdLibTest extends TestCase {
         u = new Unifier();
         assertTrue((Boolean)new jason.stdlib.delete().execute(null, u, new Term[] { new StringTermImpl("a"), new StringTermImpl("abaca"), v}));
         assertEquals("\"bc\"",u.get("X").toString());
+        
+        // test delete(2,4,l1,L)
+        u = new Unifier();
+        assertTrue((Boolean)new jason.stdlib.delete().execute(null, u, new Term[] { new NumberTermImpl(2), new NumberTermImpl(4), l1, v}));
+        assertEquals("[a,b,a]",u.get("X").toString());
+        u = new Unifier();
+        assertTrue((Boolean)new jason.stdlib.delete().execute(null, u, new Term[] { new NumberTermImpl(0), new NumberTermImpl(4), l1, v}));
+        assertEquals("[a]",u.get("X").toString());
+        
+        // test delete(2,4,"abcdef")
+        u = new Unifier();
+        assertTrue((Boolean)new jason.stdlib.delete().execute(null, u, new Term[] { new NumberTermImpl(2), new NumberTermImpl(4), new StringTermImpl("abcdef"), v}));
+        assertEquals("\"abef\"",u.get("X").toString());
+        
     }
     
     public void testPut() throws Exception {
