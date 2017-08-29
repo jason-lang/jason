@@ -36,8 +36,8 @@ public class BC extends DefaultDirective implements Directive {
             Agent newAg = sd.process((Pred)subDir, outerContent, innerContent);
             if (newAg != null) {
 
-                // add +!g : true <- !!g.
-                newAg.getPL().add(ASSyntax.parsePlan("+!"+goal+" <- !!"+goal+"."));
+                // add +!g : true <- !g.
+                newAg.getPL().add(ASSyntax.parsePlan("+!"+goal+" <- !"+goal+"."));
 
                 return newAg;
             }

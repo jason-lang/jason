@@ -25,6 +25,6 @@ MAS directive_demo {
     agents:
         a;
         b;
+        c;
     directives: ld = myp.LoggerDirective;
 }
-

@@ -76,15 +76,15 @@ public class delete extends DefaultInternalAction {
         checkArguments(args);
 
         if (args[0].isNumeric()) {
-        	int nextArg = 1;
-        	int start = (int)((NumberTerm)args[0]).solve();
-        	int end   = start+1;
-        	if (args.length == 4 && args[1].isNumeric()) {
-        		nextArg = 2;
-        		end = (int)((NumberTerm)args[1]).solve();
-        	}
-        	if (args[nextArg].isString()) {
-        		return un.unifies(args[nextArg+1], deleteFromString(start,end,(StringTerm)args[nextArg]));
+            int nextArg = 1;
+            int start = (int)((NumberTerm)args[0]).solve();
+            int end   = start+1;
+            if (args.length == 4 && args[1].isNumeric()) {
+                nextArg = 2;
+                end = (int)((NumberTerm)args[1]).solve();
+            }
+            if (args[nextArg].isString()) {
+                return un.unifies(args[nextArg+1], deleteFromString(start,end,(StringTerm)args[nextArg]));
             } else if (args[nextArg].isList()) {
                 return un.unifies(args[nextArg+1], deleteFromList(start,end,(ListTerm)args[nextArg]));
             }
@@ -124,7 +124,7 @@ public class delete extends DefaultInternalAction {
         for (Term t: l) {
             if (i < index || i >= end)
                 last = last.append(t.clone());
-        	i++;
+            i++;
         }
         return r;
     }
