@@ -39,5 +39,6 @@ execution:
 [c] b
 [c] b
 [c] b
+[c] finito
 
 */

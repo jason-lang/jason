@@ -132,18 +132,20 @@ public class Intention implements Serializable, Comparable<Intention>, Iterable<
         return false;
     }
 
-    /** remove all IMs until the IM with trigger te */
+    /** remove all IMs until the lowest IM with trigger te */
     public boolean dropGoal(Trigger te, Unifier un) {
+        boolean r = false;
         IntendedMeans im = getIM(te, un);
-        if (im != null) {
+        while (im != null) {
+            r = true;
             // remove the IMs until im-1
             while (peek() != im) {
                 pop();
             }
             pop(); // remove im
-            return true;
+            im = getIM(te, un);
         }
-        return false;
+        return r;
     }
 
     public void fail(Circumstance c) {
