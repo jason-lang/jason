@@ -554,9 +554,11 @@ public class TransitionSystem {
             // begin tail recursion optimisation (TRO)
             if (setts.isTROon()) {
                 IntendedMeans top = confP.C.SE.intention.peek(); // top = the IM that will be removed from the intention due to TRO
+                //System.out.println(top.getTrigger().isGoal()+"=1="+im.getTrigger().isGoal());
+                //System.out.println(top.getTrigger().getLiteral().getPredicateIndicator()+"=2="+im.getTrigger().getLiteral().getPredicateIndicator());
                 if (top != null && top.getTrigger().isGoal() && im.getTrigger().isGoal() && // are both goal
                         top.getCurrentStep().getBodyNext() == null && // the plan below is finished
-                        top.getTrigger().getPredicateIndicator().equals( im.getTrigger().getPredicateIndicator()) // goals are equals
+                        top.getTrigger().getLiteral().getPredicateIndicator().equals( im.getTrigger().getLiteral().getPredicateIndicator()) // goals are equals (do not consider - or + from the trigger -- required in the case of goal patterns where -!g <- !g is used)
                    ) {
                     confP.C.SE.intention.pop(); // remove the top IM
 
@@ -584,8 +586,8 @@ public class TransitionSystem {
                         }
                     }
                 }
-                // end of TRO
             }
+            // end of TRO
 
             confP.C.SE.intention.push(im);
             confP.C.addIntention(confP.C.SE.intention);

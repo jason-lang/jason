@@ -80,8 +80,7 @@ public class fail_goal extends succeed_goal {
                 Event failEvent = null;
                 if (!i.isFinished()) {
                     failEvent = ts.findEventForFailure(i, i.peek().getTrigger());
-                }
-                if (failEvent == null) { 
+                } else { // should be an "else" (see SMC pattern) 
                 	// it was an intention with g as the only IM (that was dropped), normally when !! is used
                     failEvent = ts.findEventForFailure(i, g); // find fail event for the goal just dropped
                 }
