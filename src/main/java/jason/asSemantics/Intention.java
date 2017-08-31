@@ -143,7 +143,7 @@ public class Intention implements Serializable, Comparable<Intention>, Iterable<
                 pop();
             }
             pop(); // remove im
-            im = getIM(te, un);
+            im = getIM(te, un); // keep removing other occurrences of te
         }
         return r;
     }

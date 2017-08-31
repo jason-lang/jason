@@ -177,7 +177,9 @@ TOKEN : {
                         | ["0"-"3"] ["0"-"7"] ["0"-"7"]))* "\"">
 
 // Identifiers
-|  <ATOM      : (<LC_LETTER> | "." <CHAR>) (<CHAR> | "." <CHAR>)*>
+|  <ATOM      : (<LC_LETTER> | "." <CHAR>) (<CHAR> | "." <CHAR>)*
+                | ("'" (~["'"])* "'")
+   >
 |  <UNNAMEDVAR: ("_" (<CHAR>)*) >
 |  <CHAR      : (<LETTER> | <DIGIT> | "_")>
 |  <LETTER    : ( <LC_LETTER> | <UP_LETTER> )>

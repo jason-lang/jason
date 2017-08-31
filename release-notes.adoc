@@ -5,7 +5,12 @@ ifdef::env-github[:outfilesuffix: .adoc]
 
 == version 2.2
 
-- this release just fixes some bugs and improves documentation
+- new syntax for atoms: as in Prolog, any sequence of characters enclosed by `'` can be used. Examples:
+** `'$%12'` (atom)
+** `b('@1')` (term using new syntax, in this case, the term is an atom and not a string)
+** `'$%12'(10)` (literal with functor using new syntax)
+
+- this release fixes some bugs and improves documentation
 
 == version 2.1
 
