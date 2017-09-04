@@ -178,8 +178,8 @@ TOKEN : {
 
 // Identifiers
 |  <ATOM      : (<LC_LETTER> | "." <CHAR>) (<CHAR> | "." <CHAR>)*
-                | ("'" (~["'"])* "'")
-   >
+                | ("'" (~["'"])* "'" ) >
+                { if (image.charAt(0) == '\'') matchedToken.image = image.substring(1, lengthOfMatch-1); }
 |  <UNNAMEDVAR: ("_" (<CHAR>)*) >
 |  <CHAR      : (<LETTER> | <DIGIT> | "_")>
 |  <LETTER    : ( <LC_LETTER> | <UP_LETTER> )>
