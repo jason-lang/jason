@@ -33,6 +33,7 @@ public class SourcePath {
             cp = cp.substring(1,cp.length()-1);
         if (cp.endsWith("/"))
         	cp = cp.substring(0,cp.length()-1);
+        cp = cp.replaceAll("\\\\", "/"); // use unix path separator
         paths.add(cp);
     }
 
@@ -47,13 +48,14 @@ public class SourcePath {
         List<String> r = new ArrayList<String>();
         if (paths.isEmpty()) {
             r.add(root);
-        }
-        for (String p: paths) {
-            r.add(p);
-            if ( !p.startsWith(".") && !p.startsWith("/") && p.charAt(1) != ':' && !root.equals(".")) {
-                // try both, with and without the current directory
-                r.add(root+"/"+p);
-            }
+        } else {
+	        for (String p: paths) {
+	            r.add(p);
+	            if ( !p.startsWith(".") && !p.startsWith("/") && p.charAt(1) != ':' && !root.equals(".")) {
+	                // try both, with and without the current directory
+	                r.add(root+"/"+p);
+	            }
+	        }
         }
         return r;
     }
