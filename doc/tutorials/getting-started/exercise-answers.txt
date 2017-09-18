@@ -148,7 +148,7 @@ reactive solution and finish with a more goal-oriented version.
 !pause. // initial goal to break
 
 +!clean : clean <- !move; !clean.
-+!clean : dirty <- suck; !move; !clean.
++!clean : dirty <- suck;  !clean.
 -!clean         <- !clean.
 
 +!move : pos(1) <- right.

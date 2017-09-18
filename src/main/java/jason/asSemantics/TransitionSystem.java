@@ -563,8 +563,9 @@ public class TransitionSystem {
                     confP.C.SE.intention.pop(); // remove the top IM
 
                     IntendedMeans imBase = confP.C.SE.intention.peek(); // base = where the new IM will be place on top of
-                    if (imBase != null) {
+                    if (imBase != null && imBase.renamedVars != null) {
                         // move top relevant values into the base (relevant = renamed vars in base)
+                        
                         for (VarTerm v: imBase.renamedVars) {
                             VarTerm vvl = (VarTerm)imBase.renamedVars.function.get(v);
                             Term t = top.unif.get(vvl);

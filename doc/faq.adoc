@@ -1116,7 +1116,7 @@ Note that the plan that handles this event is not obliged to use any
   example:
 +
 --------------------------------------------------------------------------------
--!g[error(ia_failed)]       <- ... plan to handle error of type \ia_failed' ....
+-!g[error(ia_failed)]       <- ... plan to handle error of type 'ia_failed'
 -!g[error(no_applicable)]   <- ... plan to handle error of type 'no_applicable'
 -!g[code_src("/tmp/x.asl")] <- ... plan to handle error in plans of file x.asl
 --------------------------------------------------------------------------------
