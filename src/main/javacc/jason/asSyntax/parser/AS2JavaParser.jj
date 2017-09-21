@@ -159,6 +159,7 @@ TOKEN : {
 
 | <TK_IF:     "if" >
 | <TK_ELSE:   "else" >
+| <TK_ELIF:   "elif" >
 | <TK_FOR:    "for" >
 | <TK_WHILE:  "while" >
 
@@ -464,34 +465,38 @@ PlanBody plan_body_factor() : { Object F; PlanBody R = null; } // boolean hasPV 
 }
 
 
-PlanBody stmtIF() :    { Object B; Term T1; Term T2 = null; Literal stmtLiteral; boolean useElse = false; }
+PlanBody stmtIF() :    { PlanBody B; }
 {
    <TK_IF>
+   B = stmtIFCommon()
+   { return B; }
+}
+
+PlanBody stmtIFCommon() :    { Object B; Term T1; Term T2 = null; Literal stmtLiteral = null; } // PlanBody PB = null; }
+{
    "("
    B = log_expr()
    ")"
    T1 = rule_plan_term()
-   [ [ <TK_ELSE>       { useElse = true; }
-     ]
-     T2 = rule_plan_term()
+   [ (
+     <TK_ELIF> T2 = stmtIFCommon() 
+     |
+     <TK_ELSE> T2 = rule_plan_term() 
+     )
    ]
                        { try {
                             if (T1.isRule()) {
                                throw new ParseException(getSourceRef(T1)+" if requires a plan body.");
                             }
-                            if (T2 == null) {
+                            if (T2 == null) { // && PB == null) {
                                 stmtLiteral = new InternalActionLiteral(ASSyntax.createStructure(".if_then_else", (Term)B, T1), curAg);
-                                stmtLiteral.setSrcInfo( ((Term)B).getSrcInfo() );
-                            } else {
+                            } else if (T2 != null) { // else case
                                 if (T2.isRule()) {
                                   throw new ParseException(getSourceRef(T2)+" if (else) requires a plan body.");
                                 }
                                 stmtLiteral = new InternalActionLiteral(ASSyntax.createStructure(".if_then_else", (Term)B, T1, T2), curAg);
-                                stmtLiteral.setSrcInfo( ((Term)B).getSrcInfo() );
-                                if (! useElse) {
-                                   logger.warning(getSourceRef(stmtLiteral)+" warning: use keyword 'else' before the else part of if.");
-                                }
                             }
+	                        stmtLiteral.setSrcInfo( ((Term)B).getSrcInfo() );
                             return new PlanBodyImpl(BodyType.internalAction, stmtLiteral);
                          } catch (Exception e) {
                             e.printStackTrace();

@@ -59,6 +59,12 @@ public class MindInspectorWebImpl extends MindInspectorWeb {
         }
     }
 
+    @Override
+    public void stoptHttpServer() {
+        httpServer.stop(0);
+        httpServer = null;
+    }
+    
     private void registerRootBrowserView() {
         if (httpServer == null)
             return;

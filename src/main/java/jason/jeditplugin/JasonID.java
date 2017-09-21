@@ -45,6 +45,7 @@ import org.gjt.sp.jedit.gui.RolloverButton;
 
 import errorlist.DefaultErrorSource;
 import errorlist.ErrorSource;
+import jason.architecture.MindInspectorWeb;
 import jason.infra.MASLauncherInfraTier;
 import jason.infra.RunProjectListener;
 import jason.infra.centralised.BaseCentralisedMAS;
@@ -120,7 +121,15 @@ public class JasonID extends JPanel implements EBComponent, RunProjectListener {
 
         new CheckVersion().start();
 
-        Config.get().setProperty(Config.START_WEB_MI, "false");
+        // stop mind inspector in case it was started
+        new Thread() {
+            public void run() {
+                try {
+                   sleep(4000);
+                   MindInspectorWeb.stop();
+                } catch (Exception e) {}
+            };
+        }.start();
     }
 
     public synchronized void start() {

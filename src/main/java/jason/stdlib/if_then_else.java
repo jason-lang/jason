@@ -21,21 +21,27 @@ Implementation of <b>if</b>.
   if ( <i>logical formula</i> ) {
      <i>plan_body1</i>
   [ } else { <i>plan_body2</i> ]
+  [ } elif ( <i>logical formula </i> ) { <i>plan_body3</i> ]
   }
 </pre>
 </p>
 
 <p>if <i>logical formula</i> holds, <i>plan_body1</i> is executed;
-otherwise, <i>plan_body2</i> is executed.</p>
+otherwise, <i>plan_body2/3</i> is executed.</p>
 
 <p>Example:
 <pre>
 +event : context
-  <- ....
+  <- ...
      if (vl(X) & X > 10) { // where vl(X) is a belief
        .print("value > 10");
      }
-     ....
+     ...
+     if   (e(1)) { .print(a); }
+     elif (e(2)) { .print(b); }
+     elif (e(3)) { .print(c); }
+     else        { .print(d); }
+     ...      
 </pre>
 The unification is changed by the evaluation of the logical formula, i.e., X might have a value after if.
 </p>

@@ -10,6 +10,15 @@ ifdef::env-github[:outfilesuffix: .adoc]
 ** `b('@1')` (term using new syntax, in this case, the term is an atom and not a string)
 ** `'$%12'(10)` (literal with functor using new syntax)
 
+- new syntax: optional `elif` in conditional statement. Example:
++
+----
+if   (e(1)) { .print(a); }
+elif (e(2)) { .print(b); }
+elif (e(3)) { .print(c); }
+else        { .print(d); }
+----
+
 - this release fixes some bugs and improves documentation
 
 == version 2.1
