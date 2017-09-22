@@ -16,7 +16,7 @@ apply plugin: 'maven'
 apply plugin: 'maven-publish'
 apply plugin: 'signing'
 
-version '2.2-SNAPSHOT'
+version '2.2'
 group   'org.jason-lang'
 
 sourceCompatibility = 1.7
@@ -167,10 +167,6 @@ clean {
         }
     }
     emptyDirs.reverseEach { it.delete() }
-}
-
-test << {
-    delete fileTree('.')  { include '**/bookstore.*'  }
 }
 
 task config (type: JavaExec, dependsOn: ['jar', 'plugin']) {
@@ -386,7 +382,8 @@ task plugin(type: Jar, dependsOn: 'classes') {
 
 
 // transfer local maven artifact to our maven2 repository at sourceforge
-task publishMavenSF(dependsOn: [ 'build', 'publishToMavenLocal']) << {
+task publishMavenSF(dependsOn: [ 'build', 'publishToMavenLocal']) {
+  doLast {
     def wdir = System.getProperty("user.home")+'/.m2/repository/org/jason-lang/jason'
     def tdir = 'jomifred,jacamo@web.sf.net:/home/project-web/jacamo/htdocs/maven2/org/jason-lang/jason'
     exec {
@@ -401,10 +398,11 @@ task publishMavenSF(dependsOn: [ 'build', 'publishToMavenLocal']) << {
         commandLine 'scp', 'maven-metadata.xml', tdir
         workingDir wdir
     }
+  }
 }
 
 // Builds the distribution, documentation and a new release
-task doc(dependsOn: [ 'jjdoc', 'javadoc', 'renderAsciiDocs']) << {
+task doc(dependsOn: [ 'jjdoc', 'javadoc', 'renderAsciiDocs']) {
 }
 
 task renderAsciiDocs(type: Exec) {
@@ -420,11 +418,12 @@ task fixTab {
 }
 
 // Builds the distribution, documentation and a new release
-task release(dependsOn: [ 'build', 'doc', 'fixTab', 'zipRel', 'plugin' ]) << {
+task release(dependsOn: [ 'build', 'doc', 'fixTab', 'zipRel', 'plugin' ]) {
 }
 
 // copy files used to build a release
-task copyRel << {
+task copyRel {
+  doLast {
     copy {
         from '.'
         into 'build/jason-'+project.version
@@ -457,6 +456,7 @@ task copyRel << {
         from 'src'
         into 'build/jason-'+project.version+'/src'
     }
+  }
 }
 
 // creates a zip file for a release

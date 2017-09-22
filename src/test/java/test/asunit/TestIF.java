@@ -76,16 +76,16 @@ public class TestIF {
 
     @Test(timeout=2000)
     public void tesElseIf() {
-    	ag.addBel("e(5)");
+        ag.addBel("e(5)");
         ag.addGoal("testELIF");
         ag.assertPrint("4", 10);
-    	ag.addBel("e(3)");
+        ag.addBel("e(3)");
         ag.addGoal("testELIF");
         ag.assertPrint("3", 10);
-    	ag.addBel("e(2)");
+        ag.addBel("e(2)");
         ag.addGoal("testELIF");
         ag.assertPrint("2", 10);
-    	ag.addBel("e(1)");
+        ag.addBel("e(1)");
         ag.addGoal("testELIF");
         ag.assertPrint("1", 10);
     }

@@ -472,7 +472,7 @@ PlanBody stmtIF() :    { PlanBody B; }
    { return B; }
 }
 
-PlanBody stmtIFCommon() :    { Object B; Term T1; Term T2 = null; Literal stmtLiteral = null; } // PlanBody PB = null; }
+PlanBody stmtIFCommon() :    { Object B; Term T1; Term T2 = null; Literal stmtLiteral = null; }
 {
    "("
    B = log_expr()
@@ -486,9 +486,9 @@ PlanBody stmtIFCommon() :    { Object B; Term T1; Term T2 = null; Literal stmtLi
    ]
                        { try {
                             if (T1.isRule()) {
-                               throw new ParseException(getSourceRef(T1)+" if requires a plan body.");
+                                throw new ParseException(getSourceRef(T1)+" if requires a plan body.");
                             }
-                            if (T2 == null) { // && PB == null) {
+                            if (T2 == null) { 
                                 stmtLiteral = new InternalActionLiteral(ASSyntax.createStructure(".if_then_else", (Term)B, T1), curAg);
                             } else if (T2 != null) { // else case
                                 if (T2.isRule()) {
