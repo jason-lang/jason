@@ -3,13 +3,16 @@ package jason.infra.centralised;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
+
+import javax.management.NotificationBroadcasterSupport;
+
 import jason.mas2j.MAS2JProject;
 import jason.runtime.RuntimeServicesInfraTier;
 
 /**
  * Runs MASProject using centralised infrastructure.
  */
-public abstract class BaseCentralisedMAS {
+public abstract class BaseCentralisedMAS extends NotificationBroadcasterSupport {
 
     public final static String       logPropFile     = "logging.properties";
     public final static String       stopMASFileName = ".stop___MAS";
@@ -68,6 +71,10 @@ public abstract class BaseCentralisedMAS {
         return ags;
     }
 
+    public int getNbAgents() {
+        return ags.size();
+    }
+    
     public abstract void setupLogger();
 
     public abstract void finish();

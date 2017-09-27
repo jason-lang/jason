@@ -8,6 +8,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.management.ManagementFactory;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collections;
@@ -21,6 +22,8 @@ import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
+import javax.management.MBeanServer;
+import javax.management.ObjectName;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -51,7 +54,7 @@ import jason.util.Config;
 /**
  * Runs MASProject using centralised infrastructure.
  */
-public class RunCentralisedMAS extends BaseCentralisedMAS {
+public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentralisedMASMBean {
 
     private JButton                   btDebug;
 
@@ -72,12 +75,23 @@ public class RunCentralisedMAS extends BaseCentralisedMAS {
         RunCentralisedMAS r = new RunCentralisedMAS();
         runner = r;
         r.init(args);
+        r.registerMBean();
         r.create();
         r.start();
         r.waitEnd();
         r.finish();
     }
 
+    protected void registerMBean() {
+        try {
+            MBeanServer mbs = ManagementFactory.getPlatformMBeanServer(); 
+            ObjectName name = new ObjectName("jason.sf.net:type=runner");
+            mbs.registerMBean(this, name);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }       
+    }
+        
     protected int init(String[] args) {
         String projectFileName = null;
         if (args.length < 1) {
