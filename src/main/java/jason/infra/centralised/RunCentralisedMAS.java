@@ -85,13 +85,12 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
     protected void registerMBean() {
         try {
             MBeanServer mbs = ManagementFactory.getPlatformMBeanServer(); 
-            ObjectName name = new ObjectName("jason.sf.net:type=runner");
-            mbs.registerMBean(this, name);
+            mbs.registerMBean(this, new ObjectName("jason.sf.net:type=runner"));
         } catch (Exception e) {
             e.printStackTrace();
         }       
     }
-        
+    
     protected int init(String[] args) {
         String projectFileName = null;
         if (args.length < 1) {
@@ -741,6 +740,10 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
         for (CentralisedAgArch ag : ags.values()) {
             ag.stopAg();
         }
+    }
+    
+    public boolean killAg(String agName) {
+        return getRuntimeServices().killAgent(agName, "??");
     }
 
     /** change the current running MAS to debug mode */

@@ -1,6 +1,7 @@
 package jason.infra.centralised;
 
 public interface RunCentralisedMASMBean {
-    public void finish();
-    public int  getNbAgents();
+    public int     getNbAgents();
+    public boolean killAg(String agName);
+    public void    finish();
 }
