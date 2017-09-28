@@ -747,7 +747,7 @@ Bugs fixed
 . parser accepts initial goals and beliefs mixed with plans
 
 
-== version 1.0
+== version 1.0 (2007-08-22)
 
 Jason v 1.0 is used in the book
 'Programming Multi-Agent Systems in AgentSpeak using Jason'

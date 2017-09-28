@@ -120,7 +120,6 @@ public class send extends DefaultInternalAction {
     @Override
     public Object execute(final TransitionSystem ts, Unifier un, Term[] args) throws Exception {
         checkArguments(args);
-
         final Term to   = args[0];
         Term ilf  = args[1];
         Term pcnt = args[2];
