@@ -418,22 +418,25 @@ task fixTab {
 }
 
 // Builds the distribution, documentation and a new release
-task release(dependsOn: [ 'build', 'doc', 'fixTab', 'zipRel', 'plugin' ]) {
+task release(dependsOn: [ 'build', 'doc', 'fixTab', 'plugin', 'zipRel' ]) {
 }
 
 // copy files used to build a release
-task copyRel {
+task copyRel (dependsOn: ['plugin', 'jar']) {
   doLast {
     copy {
         from '.'
         into 'build/jason-'+project.version
         include '*.html'
         include 'LICENSE'
-        include 'scripts/**'
         include 'doc/**'
     }
     delete fileTree('build/jason-'+project.version+'/doc')  { include '**/*.adoc', '**/Makefile'  }
 
+    copy {
+        from 'build/scripts'
+        into 'build/jason-'+project.version+'/scripts'
+    }
     copy {
         from libsDir
         from configurations.runtime
