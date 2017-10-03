@@ -22,7 +22,7 @@ all_proposals_received(CNPId)
       .print("Sending CFP to ",LP);
       .send(LP,tell,cfp(Id,Task));
       // the deadline of the CNP is now + 4 seconds (or all proposals were received)
-      .wait(all_proposals_received(CNPId), 4000, _);
+      .wait(all_proposals_received(Id), 4000, _);
       !contract(Id).
 
 // this plan needs to be atomic so as not to accept
