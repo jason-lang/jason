@@ -679,6 +679,10 @@ public abstract class Literal extends DefaultTerm implements LogicalFormula {
 
         public String toString() {
             return getFunctor();
-        };
+        }
+        
+        protected Object readResolve() {
+            return Literal.DefaultNS;
+        }
     }
 }

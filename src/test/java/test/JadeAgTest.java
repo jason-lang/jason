@@ -15,7 +15,7 @@ public class JadeAgTest extends TestCase {
         assertEquals(JadeAg.kqmlToACL(JadeAg.aclPerformativeToKqml(new ACLMessage(ACLMessage.CFP))).getPerformative(),ACLMessage.CFP);
 
         ACLMessage m = JadeAg.kqmlToACL("untell");
-        assertEquals(m.getPerformative(), ACLMessage.INFORM_REF);
+        assertEquals(ACLMessage.INFORM_REF, m.getPerformative());
         assertNotNull(m.getUserDefinedParameter("kqml-performative"));
         assertEquals(m.getUserDefinedParameter("kqml-performative"),"untell");
 

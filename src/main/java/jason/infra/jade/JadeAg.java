@@ -144,15 +144,6 @@ public abstract class JadeAg extends Agent {
             return new ACLMessage(ACLMessage.QUERY_REF);
         } else if (p.equals("achieve")) {
             return new ACLMessage(ACLMessage.REQUEST);
-        } else if (p.equals("untell") ||
-                   p.equals("unachieve") ||
-                   p.equals("askAll") ||
-                   p.equals("askHow") ||
-                   p.equals("tellHow") ||
-                   p.equals("untellHow")) {
-            ACLMessage m = new ACLMessage(ACLMessage.INFORM_REF);
-            m.addUserDefinedParameter("kqml-performative", p);
-            return m;
         } else if (p.toLowerCase().equals("accept_proposal")) {
             return new ACLMessage(ACLMessage.ACCEPT_PROPOSAL);
         } else if (p.toLowerCase().equals("reject_proposal")) {
@@ -160,19 +151,15 @@ public abstract class JadeAg extends Agent {
         } else if (p.toLowerCase().equals("query_if")) {
             return new ACLMessage(ACLMessage.QUERY_IF);
         } else if (p.toLowerCase().equals("inform_if")) {
-            return new ACLMessage(ACLMessage.INFORM_IF);
-            /*} else if (p.equals("unachieve")) {
-                return UNACHIEVE;
-            } else if (p.equals("askAll")) {
-                return ASKALL;
-            } else if (p.equals("askHow")) {
-                return ASKHOW;
-            } else if (p.equals("tellHow")) {
-                return TELLHOW;
-            } else if (p.equals("untellHow")) {
-                return UNTELLHOW;*/
+            return new ACLMessage(ACLMessage.INFORM_IF);            
         }
-        return new ACLMessage(ACLMessage.getInteger(p));
+        int perf = ACLMessage.getInteger(p);
+        if (perf == -1 || perf == ACLMessage.NOT_UNDERSTOOD) {
+            ACLMessage m = new ACLMessage(ACLMessage.INFORM_REF);
+            m.addUserDefinedParameter("kqml-performative", p);
+            return m;
+        }
+        return new ACLMessage(perf);
     }
 
     public static String aclPerformativeToKqml(ACLMessage m) {
@@ -183,12 +170,6 @@ public abstract class JadeAg extends Agent {
             return "askOne";
         case ACLMessage.REQUEST:
             return "achieve";
-        /*case UNTELL: return "untell";
-        case UNACHIEVE: return "unachieve";
-        case ASKALL: return "askAll";
-        case ASKHOW: return "askHow";
-        case TELLHOW: return "tellHow";
-        case UNTELLHOW: return "untellHow";*/
         case ACLMessage.INFORM_REF:
             String kp = m.getUserDefinedParameter("kqml-performative");
             if (kp != null) {
