@@ -619,6 +619,10 @@ public abstract class Literal extends DefaultTerm implements LogicalFormula {
         public Iterator<Unifier> logicalConsequence(final Agent ag, final Unifier un) {
             return LogExpr.createUnifIterator(un);
         }
+        
+        protected Object readResolve() {
+            return Literal.LTrue;
+        }
     }
 
     @SuppressWarnings("serial")
@@ -640,6 +644,9 @@ public abstract class Literal extends DefaultTerm implements LogicalFormula {
         @Override
         public Iterator<Unifier> logicalConsequence(final Agent ag, final Unifier un) {
             return LogExpr.EMPTY_UNIF_LIST.iterator();
+        }
+        protected Object readResolve() {
+            return Literal.LFalse;
         }
     }
 
