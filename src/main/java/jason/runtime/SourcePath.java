@@ -43,6 +43,10 @@ public class SourcePath {
     	for (String p: sp.paths)
     		paths.add(p);
     }
+    
+    public void clearPaths() {
+    	paths.clear();
+    }
 
     public List<String> getPaths() {
         List<String> r = new ArrayList<String>();

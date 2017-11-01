@@ -38,7 +38,7 @@ public class MAS2JProject {
     private File   projectFile = null;
     private List<AgentParameters> agents = new ArrayList<AgentParameters>();
     private List<String> classpaths = new ArrayList<String>();
-    private SourcePath sourcepaths = new SourcePath();
+    private SourcePath aslSourcepaths = new SourcePath();
     private Map<String,String> directiveClasses = new HashMap<String,String>();
 
     public static MAS2JProject parse(String file) {
@@ -145,7 +145,7 @@ public class MAS2JProject {
     public void fixAgentsSrc() {
         for (AgentParameters agp: agents) {
             if (agp.asSource != null) {
-                agp.asSource = new File(sourcepaths.fixPath(agp.asSource.toString()));
+                agp.asSource = new File(aslSourcepaths.fixPath(agp.asSource.toString()));
             }
         }
     }
@@ -162,11 +162,11 @@ public class MAS2JProject {
     }
 
     public void addSourcePath(String cp) {
-        sourcepaths.addPath(cp);
+        aslSourcepaths.addPath(cp);
     }
 
     public SourcePath getSourcePaths() {
-        return sourcepaths;
+        return aslSourcepaths;
     }
 
     public void addDirectiveClass(String id, ClassParameters classname) {
@@ -243,9 +243,9 @@ public class MAS2JProject {
         }
 
         // sourcepath
-        if (!sourcepaths.isEmpty()) {
+        if (!aslSourcepaths.isEmpty()) {
             s.append("   aslSourcePath: ");
-            for (String cp: sourcepaths.getPaths()) {
+            for (String cp: aslSourcepaths.getPaths()) {
                 s.append("\""+cp+"\"; ");
             }
             s.append("\n");
