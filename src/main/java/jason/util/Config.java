@@ -75,6 +75,8 @@ public class Config extends Properties {
 
     protected static String    configFactory = null;
 
+    protected static boolean   showFixMsgs = true;
+    
     public static void setClassFactory(String f) {
         singleton = null;
         configFactory = f;
@@ -107,6 +109,10 @@ public class Config extends Properties {
     protected Config() {
     }
 
+    public void setShowFixMsgs(boolean b) {
+        showFixMsgs = b;        
+    }
+    
     /** returns the file where the user preferences are stored */
     public File getUserConfFile() {
         return new File(System.getProperties().get("user.home") + File.separator + ".jason/user.properties");
@@ -502,13 +508,15 @@ public class Config extends Properties {
     public void tryToFixJarFileConf(String jarEntry, String jarFilePrefix, int minSize) {
         String jarFile = getProperty(jarEntry);
         if (jarFile == null || !checkJar(jarFile, minSize)) {
-            System.out.println("Wrong configuration for " + jarFilePrefix + ", current is " + jarFile);
+            if (showFixMsgs)
+                System.out.println("Wrong configuration for " + jarFilePrefix + ", current is " + jarFile);
 
             // try eclipse installation
             jarFile = getJarFromEclipseInstallation(jarFilePrefix);
             if (checkJar(jarFile, minSize)) {
                 put(jarEntry, jarFile);
-                System.out.println("found at " + jarFile+" in eclipse installation");
+                if (showFixMsgs)
+                    System.out.println("found at " + jarFile+" in eclipse installation");
                 return;
             }
 
@@ -517,7 +525,8 @@ public class Config extends Properties {
             if (checkJar(jarFile, minSize)) {
                 try {
                     put(jarEntry, new File(jarFile).getCanonicalFile().getAbsolutePath());
-                    System.out.println("found at " + jarFile);
+                    if (showFixMsgs)
+                        System.out.println("found at " + jarFile);
                     return;
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -528,7 +537,8 @@ public class Config extends Properties {
             jarFile = getJarFromClassPath(jarFilePrefix);
             if (checkJar(jarFile, minSize)) {
                 put(jarEntry, jarFile);
-                System.out.println("found at " + jarFile+" by classpath");
+                if (showFixMsgs)
+                    System.out.println("found at " + jarFile+" by classpath");
                 return;
             }
 
@@ -538,7 +548,8 @@ public class Config extends Properties {
                 jarFile = findJarInDirectory(jasonjardir, jarFilePrefix);
                 if (checkJar(jarFile, minSize)) {
                     put(jarEntry, jarFile);
-                    System.out.println("found at " + jarFile+" by jason.jar directory");
+                    if (showFixMsgs)
+                        System.out.println("found at " + jarFile+" by jason.jar directory");
                     return;
                 }
             } catch (Exception e) {}
@@ -561,7 +572,8 @@ public class Config extends Properties {
             if (checkJar(jarFile, minSize)) {
                 try {
                     put(jarEntry, new File(jarFile).getCanonicalFile().getAbsolutePath());
-                    System.out.println("found at " + jarFile);
+                    if (showFixMsgs)
+                        System.out.println("found at " + jarFile);
                     return;
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -571,7 +583,8 @@ public class Config extends Properties {
             if (checkJar(jarFile, minSize)) {
                 try {
                     put(jarEntry, new File(jarFile).getCanonicalFile().getAbsolutePath());
-                    System.out.println("found at " + jarFile);
+                    if (showFixMsgs)
+                        System.out.println("found at " + jarFile);
                     return;
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -583,7 +596,8 @@ public class Config extends Properties {
             if (checkJar(jarFile, minSize)) {
                 try {
                     put(jarEntry, new File(jarFile).getCanonicalFile().getAbsolutePath());
-                    System.out.println("found at " + jarFile);
+                    if (showFixMsgs)
+                        System.out.println("found at " + jarFile);
                     return;
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -602,7 +616,8 @@ public class Config extends Properties {
             }
             if (jwsDir != null) {
                 jarFile = findFile(new File(jwsDir), jarFilePrefix, minSize);
-                System.out.print("Searching " + jarFilePrefix + " in " + jwsDir + " ... ");
+                if (showFixMsgs)
+                    System.out.print("Searching " + jarFilePrefix + " in " + jwsDir + " ... ");
                 if (jarFile != null && checkJar(jarFile)) {
                     System.out.println("found at " + jarFile);
                     put(jarEntry, jarFile);
@@ -611,7 +626,8 @@ public class Config extends Properties {
                     put(jarEntry, File.separator);
                 }
             }
-            System.out.println(jarFilePrefix+" not found");
+            if (showFixMsgs)
+                System.out.println(jarFilePrefix+" not found");
         }
 
     }
