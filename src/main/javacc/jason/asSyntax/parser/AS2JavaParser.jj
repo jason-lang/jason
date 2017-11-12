@@ -1001,7 +1001,7 @@ VarTerm var(Atom ns):      { Token K; VarTerm v; ListTerm lt = null; }
 
 StringTerm string():{ Token k; StringTermImpl s; }
 {
-  k = <STRING>      { s = new StringTermImpl(k.image.substring(1,k.image.length()-1).replaceAll("\\\\n", "\n"));
+  k = <STRING>      { s = new StringTermImpl(k.image.substring(1,k.image.length()-1).replaceAll("\\\\n", "\n").replaceAll("\\\\\"","\"") );
                       s.setSrcInfo(new SourceInfo(asSource,k.beginLine));
                       return s;
                     }
