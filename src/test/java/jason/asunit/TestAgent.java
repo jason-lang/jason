@@ -61,9 +61,9 @@ public class TestAgent extends Agent {
             // kqml Plans at the end of the ag PS
             setASLSrc("kqmlPlans.asl");
             if (JasonException.class.getResource("/asl/kqmlPlans.asl") == null)
-            	logger.warning("kqmlPlans not found!");
+                logger.warning("kqmlPlans not found!");
             else
-            	parseAS(JasonException.class.getResource("/asl/kqmlPlans.asl"));
+                parseAS(JasonException.class.getResource("/asl/kqmlPlans.asl"));
             setASLSrc("stringcode");
             return true;
         } catch (Exception e) {

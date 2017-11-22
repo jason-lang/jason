@@ -331,4 +331,8 @@ public class Plan extends Structure implements Cloneable, Serializable {
     public void setGoalCondition(LogicalFormula f) {
         goalCondition = f;
     }
+    
+    public LogicalFormula getGoalCondition() {
+        return goalCondition;
+    }
 }

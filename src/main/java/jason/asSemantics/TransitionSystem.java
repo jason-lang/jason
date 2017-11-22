@@ -47,6 +47,7 @@ import jason.runtime.Settings;
 import jason.stdlib.add_nested_source;
 import jason.stdlib.desire;
 import jason.stdlib.fail_goal;
+import jason.stdlib.succeed_goal;
 import jason.util.Config;
 
 
@@ -190,9 +191,14 @@ public class TransitionSystem {
     /* SEMANTIC RULES */
     /** ******************************************************************* */
 
-    private void applySemanticRuleSense() throws JasonException {
+    private void applySemanticRuleSense() throws Exception {
         switch (stepSense) {
         case StartRC:
+        case ClrInt:
+            confP.stepSense = State.ProcAct;
+            applyClrInt();
+            break;
+        case ProcAct:
             applyProcMsg();
             break;
         default:
@@ -235,10 +241,6 @@ public class TransitionSystem {
             break;
         case ExecInt:
             applyExecInt();
-            break;
-        case ClrInt:
-            confP.stepAct = State.StartRC;
-            applyClrInt(conf.C.SI);
             break;
         default:
             break;
@@ -659,7 +661,8 @@ public class TransitionSystem {
 
     @SuppressWarnings("unchecked")
     private void applyExecInt() throws JasonException {
-        confP.stepAct = State.ClrInt; // default next step
+        //confP.stepAct = State.ClrInt; // default next step
+        confP.stepAct = State.StartRC; // default next step
 
         final Intention curInt = conf.C.SI;
         if (curInt == null)
@@ -967,6 +970,22 @@ public class TransitionSystem {
         return body;
     }
 
+    private succeed_goal scia = new succeed_goal();
+    
+    public void applyClrInt() throws Exception {
+        applyClrInt(C.SI); // for old style
+        
+        // remove all intentions with GoalCondition satisfied
+        scia.drop(this, new IMCondition() {
+            public boolean test(Trigger t, Unifier u) {
+                return false;
+            }
+            public boolean test(IntendedMeans im, Unifier u) {
+                return im.isSatisfied(getAg());
+            }
+        }, new Unifier());
+    }
+    
     public void applyClrInt(Intention i) throws JasonException {
         while (true) { // quit the method by return
             // Rule ClrInt
@@ -979,13 +998,13 @@ public class TransitionSystem {
                 //conf.C.SI = null;
                 return;
             }
-
+            
             IntendedMeans im = i.peek();
-            if (!im.isFinished()) {
+            if (!im.isSatisfied(getAg())) {
                 // nothing to do
                 return;
             }
-
+            
             // remove the finished IM from the top of the intention
             IntendedMeans topIM = i.pop();
             Trigger topTrigger = topIM.getTrigger();
@@ -1029,13 +1048,6 @@ public class TransitionSystem {
                 if (!im.isFinished()) {
                     // removes !b or ?s
                     // unifies the final event with the body that called it
-
-                    // old code:
-                    /*topLiteral.apply(topIM.unif);
-                    topLiteral.makeVarsAnnon();
-                    Literal cstep = (Literal)im.removeCurrentStep();
-                    boolean r = im.unif.unifies(cstep,topLiteral);
-                    */
 
                     // new code optimised: handle directly renamed vars for the call
                     // get vars in the unifier that comes from makeVarAnnon (stored in renamedVars)
@@ -1359,7 +1371,7 @@ public class TransitionSystem {
          *           3 = simply removed without event
          */
         @Override
-        public int dropIntention(Intention i, Trigger g, TransitionSystem ts, Unifier un) throws JasonException {
+        public int dropIntention(Intention i, IMCondition c, TransitionSystem ts, Unifier un) throws JasonException {
             if (i != null) {
                 // only consider dropping if the intention is the one that created the deadline goal
                 if (intToDrop == null) {
@@ -1370,21 +1382,22 @@ public class TransitionSystem {
                     return 0;
                 }
 
-                if (i.dropGoal(g, un)) {
+                IntendedMeans im = i.dropGoal(c, un); 
+                if (im != null) {
                     // notify listener
                     if (ts.hasGoalListener())
                         for (GoalListener gl: ts.getGoalListeners())
-                            gl.goalFailed(g);
+                            gl.goalFailed(im.getTrigger());
 
                     // generate failure event
-                    Event failEvent = ts.findEventForFailure(i, g); // find fail event for the goal just dropped
+                    Event failEvent = ts.findEventForFailure(i, im.getTrigger()); // find fail event for the goal just dropped
                     if (failEvent != null) {
                         failEvent.getTrigger().getLiteral().addAnnots(JasonException.createBasicErrorAnnots("deadline_reached", ""));
                         ts.getC().addEvent(failEvent);
-                        ts.getLogger().fine("'hard_deadline("+g+")' is generating a goal deletion event: " + failEvent.getTrigger());
+                        ts.getLogger().fine("'hard_deadline("+im.getTrigger()+")' is generating a goal deletion event: " + failEvent.getTrigger());
                         return 2;
                     } else { // i is finished or without failure plan
-                        ts.getLogger().fine("'hard_deadline("+g+")' is removing the intention without event:\n" + i);
+                        ts.getLogger().fine("'hard_deadline("+im.getTrigger()+")' is removing the intention without event:\n" + i);
                         return 3;
                     }
                 }

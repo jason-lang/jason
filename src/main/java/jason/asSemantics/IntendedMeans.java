@@ -1,6 +1,7 @@
 package jason.asSemantics;
 
 import jason.asSyntax.ASSyntax;
+import jason.asSyntax.LogicalFormula;
 import jason.asSyntax.Plan;
 import jason.asSyntax.PlanBody;
 import jason.asSyntax.PlanBodyImpl;
@@ -8,6 +9,7 @@ import jason.asSyntax.Term;
 import jason.asSyntax.Trigger;
 
 import java.io.Serializable;
+import java.util.Iterator;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -22,6 +24,9 @@ public class IntendedMeans implements Serializable {
     private   Trigger  trigger; // the trigger which created this IM
 
     protected Unifier  renamedVars = null;
+    
+    protected LogicalFormula goalCondition = null;
+    protected Unifier        triggerUnif   = null;
 
     public IntendedMeans(Option opt, Trigger te) {
         plan     = opt.getPlan();
@@ -32,6 +37,12 @@ public class IntendedMeans implements Serializable {
             trigger = plan.getTrigger().capply(unif);
         } else {
             trigger = te.capply(unif);
+        }
+        
+        goalCondition = plan.getGoalCondition();
+        if (goalCondition != null) {
+            triggerUnif = unif.clone();
+            goalCondition = (LogicalFormula)goalCondition.capply(unif);
         }
     }
 
@@ -86,6 +97,15 @@ public class IntendedMeans implements Serializable {
 
     public boolean isFinished() {
         return planBody == null || planBody.isEmptyBody();
+    }
+    
+    public boolean isSatisfied(Agent ag) {
+        if (goalCondition == null) {
+            return isFinished();
+        } else {
+        	Iterator<Unifier> iun = goalCondition.logicalConsequence(ag, triggerUnif);
+            return iun != null && iun.hasNext();
+        }
     }
 
     public boolean isGoalAdd() {
