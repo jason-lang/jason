@@ -5,6 +5,8 @@ import jason.asSyntax.parser.as2j;
 
 import java.io.Serializable;
 import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -35,6 +37,9 @@ public class Plan extends Structure implements Cloneable, Serializable {
     private LogicalFormula    context;
     private PlanBody          body;
 
+    private LogicalFormula    goalCondition;
+    private List<Plan>        subplans;
+    
     private boolean isAtomic      = false;
     private boolean isAllUnifs    = false;
     private boolean hasBreakpoint = false;
@@ -267,18 +272,31 @@ public class Plan extends Structure implements Cloneable, Serializable {
 
     /** returns this plan in a string complaint with AS syntax */
     public String toASString() {
-        String b, e;
-        if (isTerm) {
-            b = "{ ";
-            e = " }";
+        StringBuilder out = new StringBuilder();
+        if (isTerm)
+            out.append("{ ");
+        out.append(((label == null) ? "" : "@" + label + " "));
+        out.append(tevent);
+        out.append(((context == null) ? "" : " : " + context));
+        out.append(((goalCondition == null) ? "" : " <: " + goalCondition));
+        if (subplans == null) {
+            if (!body.isEmptyBody()) 
+                out.append(" <- " + body);
+            if (isTerm)
+                out.append(" }");
+            else 
+                out.append(".");
         } else {
-            b = "";
-            e = ".";
+            out.append(" {");
+            if (!body.isEmptyBody()) 
+                out.append("\n   <- " + body + ".");
+            for (Plan p: subplans)
+                out.append("\n   "+p.toASString());
+            out.append("\n}");
+            if (isTerm)
+                out.append(" }");
         }
-        return b+((label == null) ? "" : "@" + label + " ") +
-               tevent + ((context == null) ? "" : " : " + context) +
-               (body.isEmptyBody() ? "" : " <- " + body) +
-               e;
+        return out.toString();
     }
 
     /** get as XML */
@@ -302,5 +320,15 @@ public class Plan extends Structure implements Cloneable, Serializable {
         }
 
         return u;
+    }
+    
+    public void addSubPlan(Plan p) {
+        if (subplans == null)
+            subplans = new ArrayList<>();
+        subplans.add(p);
+    }
+    
+    public void setGoalCondition(LogicalFormula f) {
+        goalCondition = f;
     }
 }

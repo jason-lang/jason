@@ -392,7 +392,7 @@ public class Agent {
         } catch (ParseException e) {
             logger.log(Level.SEVERE, "as2j: parsing error: " + e.getMessage());
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "as2j: error parsing \"" + asURL + "\"", e);
+            logger.log(Level.SEVERE, "as2j: parsing error: \"" + asURL + "\"", e);
         }
         return false;
     }

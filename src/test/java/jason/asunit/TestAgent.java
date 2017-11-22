@@ -60,7 +60,10 @@ public class TestAgent extends Agent {
 
             // kqml Plans at the end of the ag PS
             setASLSrc("kqmlPlans.asl");
-            parseAS(JasonException.class.getResource("/asl/kqmlPlans.asl"));
+            if (JasonException.class.getResource("/asl/kqmlPlans.asl") == null)
+            	logger.warning("kqmlPlans not found!");
+            else
+            	parseAS(JasonException.class.getResource("/asl/kqmlPlans.asl"));
             setASLSrc("stringcode");
             return true;
         } catch (Exception e) {
@@ -178,6 +181,22 @@ public class TestAgent extends Agent {
             fail("failed assertAct("+act+")");
     }
 
+    public void assertNoAct(String act, int maxCycles) {
+        try {
+            assertNoAct(ASSyntax.parseStructure(act), maxCycles);
+        } catch (ParseException e) {
+            fail("Parsing '"+act+"' as action failed!");
+        }
+    }
+    public void assertNoAct(final Structure act, final int maxCycles) {
+        Condition c = new Condition() {
+            public boolean test(TestArch arch) {
+                return arch.getActions().contains(act);
+            }
+        };
+        if (assertMaxCyclesAndAnotherCondition(c, maxCycles))
+            fail("failed assertNoAct("+act+")");
+    }
 
     public void assertIdle(final int maxCycles) {
         Condition c = new Condition() {
