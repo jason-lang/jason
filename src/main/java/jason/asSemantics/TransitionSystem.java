@@ -418,10 +418,16 @@ public class TransitionSystem {
             if (confP.C.SE != null) {
                 
                 // external events are copied for all intentions (new JasonER)
-                if (confP.C.SE.isExternal()) {
-                    for (Intention i: C.getIntentions())
-                        C.addEvent(new Event(confP.C.SE.getTrigger(), i));
-                    C.getIntentions().clear(); 
+                if (confP.C.SE.isExternal() && !confP.C.SE.getTrigger().isGoal() && confP.C.SE.getTrigger().isAddition()) {
+                    Iterator<Intention> ii = C.getIntentions().iterator();
+                    while (ii.hasNext()) {
+                        Intention i = ii.next();
+                        // if i has sub plans (so potentially interested in external events)
+                        if (i.hasIntestedInExternalEvents()) {
+                            C.addEvent(new Event(confP.C.SE.getTrigger(), i));
+                            ii.remove();
+                        }
+                    } 
                 }
                 
                 if (ag.hasCustomSelectOption() || setts.verbose() == 2) // verbose == 2 means debug mode
@@ -1000,11 +1006,11 @@ public class TransitionSystem {
     };
     
     public void applyClrInt() throws Exception {
-        applyClrInt(C.SI); // for old style
+        applyClrInt(C.SI); // as before JasonER
         
-        // TODO: run what follows only if some plan use GC, otherwise, avoid to run since it requires quite a lot of time
         // remove all intentions with GoalCondition satisfied (new JasonER)
-        scia.drop(this, imcondSat, new Unifier());
+        if (ag.getPL().hasPlansWithGoalCondition())
+            scia.drop(this, imcondSat, new Unifier());
     }
     
     public void applyClrInt(Intention i) throws JasonException {

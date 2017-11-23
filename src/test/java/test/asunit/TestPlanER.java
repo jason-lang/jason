@@ -1,6 +1,7 @@
 package test.asunit;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -64,6 +65,7 @@ public class TestPlanER {
         ag.assertAct("aroot(5)", 10);
         System.out.println(ag.getArch().getOutput());
         ag.assertAct("a1ing1", 10);
+        assertTrue(ag.getPL().hasPlansWithGoalCondition());
         ag.assertNoAct("a2ing1", 10); // not performed, since the GC is satisfied
         ag.assertAct("endtest", 10);
     }

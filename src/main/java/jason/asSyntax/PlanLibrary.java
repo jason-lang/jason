@@ -50,6 +50,8 @@ public class PlanLibrary implements Iterable<Plan> {
 
     private PlanLibrary father = null;
     
+    private boolean hasPlansWithGoalCondition = false;
+    
     public PlanLibrary() {
     }
     
@@ -66,6 +68,15 @@ public class PlanLibrary implements Iterable<Plan> {
     
     public void setFather(PlanLibrary pl) {
         father = pl;
+    }
+    
+    public boolean hasPlansWithGoalCondition() {
+        return hasPlansWithGoalCondition;
+    }
+    public void setHasPlansWithGoalCondition() {
+        hasPlansWithGoalCondition = true;
+        if (father != null)
+            father.setHasPlansWithGoalCondition();
     }
     
     public Object getLock() {
@@ -160,8 +171,9 @@ public class PlanLibrary implements Iterable<Plan> {
      */
     public void add(Plan p, boolean before) throws JasonException {
         p.setScope(this);
-        
         synchronized (lockPL) {
+            if (p.getGoalCondition() != null)
+                setHasPlansWithGoalCondition();
 
             // test p.label
             if (p.getLabel() != null && planLabels.keySet().contains( getStringForLabel(p.getLabel()))) {
