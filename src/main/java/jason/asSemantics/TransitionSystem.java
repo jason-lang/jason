@@ -996,11 +996,14 @@ public class TransitionSystem {
     }
 
     private succeed_goal scia = new succeed_goal();
+    int nbOfGoalConditions = 0;
     private IMCondition  imcondSat = new IMCondition() {
         public boolean test(Trigger t, Unifier u) {
             return false;
         }
         public boolean test(IntendedMeans im, Unifier u) {
+            if (im.getPlan().hasGoalCondition())
+                nbOfGoalConditions++;
             return im.isSatisfied(getAg());
         }
     };
@@ -1009,10 +1012,12 @@ public class TransitionSystem {
         applyClrInt(C.SI); // as before JasonER
         
         // remove all intentions with GoalCondition satisfied (new JasonER)
-        // TODO: optimise to hasIntentionWithGoalCondition
-        //if (ag.getPL().hasPlansWithGoalCondition())
-        if (C.hasIntentionWithGoalCondition())
+        if (C.hasIntentionWithGoalCondition()) {
+            nbOfGoalConditions = 0;
             scia.drop(this, imcondSat, new Unifier());
+            if (nbOfGoalConditions == 0) // if no intention with GC, stop checking
+                C.resetIntentionsWithGoalCondition();
+        }
     }
     
     public void applyClrInt(Intention i) throws JasonException {

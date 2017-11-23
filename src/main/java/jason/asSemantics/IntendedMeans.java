@@ -25,7 +25,7 @@ public class IntendedMeans implements Serializable {
 
     protected Unifier  renamedVars = null;
     
-    protected LogicalFormula goalCondition = null;
+    //protected LogicalFormula goalCondition = null;
     protected Unifier        triggerUnif   = null;
 
     public IntendedMeans(Option opt, Trigger te) {
@@ -39,10 +39,10 @@ public class IntendedMeans implements Serializable {
             trigger = te.capply(unif);
         }
         
-        goalCondition = plan.getGoalCondition();
-        if (goalCondition != null) {
+        //goalCondition = plan.getGoalCondition();
+        if (plan.getGoalCondition() != null) {
             triggerUnif = unif.clone();
-            goalCondition = (LogicalFormula)goalCondition.capply(unif);
+            //goalCondition = (LogicalFormula)goalCondition.capply(unif);
         }
     }
 
@@ -100,6 +100,7 @@ public class IntendedMeans implements Serializable {
     }
     
     public boolean isSatisfied(Agent ag) {
+        LogicalFormula goalCondition = getPlan().getGoalCondition();
         if (goalCondition == null) {
             return isFinished();
         } else {

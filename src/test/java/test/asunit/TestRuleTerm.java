@@ -49,7 +49,6 @@ public class TestRuleTerm {
         ag.addGoal("test2");
         ag.assertPrint("2", 10);
 
-        System.out.println(ag.getBB());
         ag.addGoal("test3(2)");
         ag.assertPrint("12", 10);
 

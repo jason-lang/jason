@@ -304,6 +304,9 @@ public class Circumstance implements Serializable {
     public boolean hasIntentionWithGoalCondition() {
         return intentionsWithGoalCondition > 0;
     }
+    public void resetIntentionsWithGoalCondition() {
+        intentionsWithGoalCondition = 0;
+    }
     
     public void addIntention(Intention intention) {
         if (intention.isAtomic())
@@ -312,7 +315,7 @@ public class Circumstance implements Serializable {
             I.offer(intention);
 
         if (intention.hasGoalCondition())
-            intentionsWithGoalCondition++; // TODO: how to decrease?
+            intentionsWithGoalCondition++;
         
         // notify
         if (listeners != null)
