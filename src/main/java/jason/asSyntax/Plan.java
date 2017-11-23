@@ -1,17 +1,16 @@
 package jason.asSyntax;
 
-import jason.asSemantics.Unifier;
-import jason.asSyntax.parser.as2j;
-
 import java.io.Serializable;
 import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+
+import jason.JasonException;
+import jason.asSemantics.Unifier;
+import jason.asSyntax.parser.as2j;
 
 /** Represents an AgentSpack plan
     (it extends structure to be used as a term)
@@ -38,7 +37,8 @@ public class Plan extends Structure implements Cloneable, Serializable {
     private PlanBody          body;
 
     private LogicalFormula    goalCondition;
-    private List<Plan>        subplans;
+    private PlanLibrary       subplans;
+    private PlanLibrary       scope;
     
     private boolean isAtomic      = false;
     private boolean isAllUnifs    = false;
@@ -322,10 +322,24 @@ public class Plan extends Structure implements Cloneable, Serializable {
         return u;
     }
     
-    public void addSubPlan(Plan p) {
+    public void addSubPlan(Plan p) throws JasonException {
         if (subplans == null)
-            subplans = new ArrayList<>();
+            subplans = new PlanLibrary(scope);
         subplans.add(p);
+    }
+    public boolean hasSubPlans() {
+        return subplans != null;
+    }
+    public PlanLibrary getSubPlans() {
+        return subplans;
+    }
+    public void setScope(PlanLibrary pl) {
+        scope = pl;
+        if (subplans != null)
+            subplans.setFather(scope);
+    }
+    public PlanLibrary getScope() {
+        return scope;
     }
     
     public void setGoalCondition(LogicalFormula f) {

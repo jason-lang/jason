@@ -24,7 +24,7 @@ public class Circumstance implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private   Queue<Event>             E;
-    private   Queue<Intention>         I;
+    protected Queue<Intention>         I;
     protected ActionExec               A;
     private   Queue<Message>           MB;
     protected List<Option>             RP;

@@ -13,7 +13,7 @@ public class Event implements Serializable {
 
     Trigger   trigger   = null;
     Intention intention = Intention.EmptyInt;
-
+    
     public Event(Trigger t, Intention i) {
         trigger   = t;
         intention = i;

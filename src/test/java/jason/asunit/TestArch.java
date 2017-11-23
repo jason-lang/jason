@@ -47,7 +47,7 @@ public class TestArch extends CentralisedAgArch implements Runnable {
     public void start(Condition c) {
         condition = c;
         cycle = 0;
-        actions.clear();
+        //actions.clear();
         new Thread(this).start();
     }
 
@@ -108,7 +108,11 @@ public class TestArch extends CentralisedAgArch implements Runnable {
         return output;
     }
 
-    public void clearOutput() {
+    public void clearPrintOutput() {
         output = new StringBuilder();
+    }
+    
+    public void clearDoneActions() {
+        actions.clear();
     }
 }

@@ -48,6 +48,26 @@ public class PlanLibrary implements Iterable<Plan> {
 
     private final Object lockPL = new Object();
 
+    private PlanLibrary father = null;
+    
+    public PlanLibrary() {
+    }
+    
+    public PlanLibrary(PlanLibrary father) {
+        this.father = father;
+    }
+
+    public boolean isRoot() {
+        return father == null;
+    }
+    public PlanLibrary getFather() {
+        return father;
+    }
+    
+    public void setFather(PlanLibrary pl) {
+        father = pl;
+    }
+    
     public Object getLock() {
         return lockPL;
     }
@@ -139,6 +159,8 @@ public class PlanLibrary implements Iterable<Plan> {
      * @throws JasonException
      */
     public void add(Plan p, boolean before) throws JasonException {
+        p.setScope(this);
+        
         synchronized (lockPL) {
 
             // test p.label
@@ -368,6 +390,15 @@ public class PlanLibrary implements Iterable<Plan> {
                                 l = new ArrayList<Plan>();
                             l.add(p);
                         }
+                }
+            }
+            
+            if (father != null) {
+                List<Plan> lf = father.getCandidatePlans(te);
+                if (lf != null && !lf.isEmpty()) {
+                    if (l == null)
+                        l = new ArrayList<Plan>();
+                    l.addAll(lf);
                 }
             }
             return l; // if no rel plan, have to return null instead of empty list

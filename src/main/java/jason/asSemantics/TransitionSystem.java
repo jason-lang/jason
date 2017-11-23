@@ -416,6 +416,14 @@ public class TransitionSystem {
             if (logger.isLoggable(Level.FINE))
                 logger.fine("Selected event "+confP.C.SE);
             if (confP.C.SE != null) {
+                
+                // external events are copied for all intentions (new JasonER)
+                if (confP.C.SE.isExternal()) {
+                    for (Intention i: C.getIntentions())
+                        C.addEvent(new Event(confP.C.SE.getTrigger(), i));
+                    C.I.clear(); 
+                }
+                
                 if (ag.hasCustomSelectOption() || setts.verbose() == 2) // verbose == 2 means debug mode
                     confP.stepDeliberate = State.RelPl;
                 else
@@ -514,21 +522,32 @@ public class TransitionSystem {
     private void applyFindOp() throws JasonException {
         confP.stepDeliberate = State.AddIM; // default next step
 
+        // consider scope (new JasonER)
+        // TODO: implement Scope for RelPl ApplPl SelAppl
+        PlanLibrary plib = ag.getPL();
+        if (conf.C.SE.isInternal()) {
+            Plan p = conf.C.SE.getIntention().peek().getPlan();
+            if (p.hasSubPlans()) {
+                plib = p.getSubPlans();
+            } else {
+                plib = p.getScope();
+            }
+        }
+
         // get all relevant plans for the selected event
-        //Trigger te = (Trigger) conf.C.SE.trigger.clone();
-        List<Plan> candidateRPs = conf.ag.pl.getCandidatePlans(conf.C.SE.trigger);
+        List<Plan> candidateRPs = plib.getCandidatePlans(conf.C.SE.getTrigger());
         if (candidateRPs != null) {
-            for (Plan pl : candidateRPs) {
-                Unifier relUn = pl.isRelevant(conf.C.SE.trigger);
+            for (Plan p : candidateRPs) {
+                Unifier relUn = p.isRelevant(conf.C.SE.trigger);
                 if (relUn != null) { // is relevant
-                    LogicalFormula context = pl.getContext();
+                    LogicalFormula context = p.getContext();
                     if (context == null) { // context is true
-                        confP.C.SO = new Option(pl, relUn);
+                        confP.C.SO = new Option(p, relUn);
                         return;
                     } else {
                         Iterator<Unifier> r = context.logicalConsequence(ag, relUn);
                         if (r != null && r.hasNext()) {
-                            confP.C.SO = new Option(pl, r.next());
+                            confP.C.SO = new Option(p, r.next());
                             return;
                         }
                     }
@@ -971,19 +990,21 @@ public class TransitionSystem {
     }
 
     private succeed_goal scia = new succeed_goal();
+    private IMCondition  imcondSat = new IMCondition() {
+        public boolean test(Trigger t, Unifier u) {
+            return false;
+        }
+        public boolean test(IntendedMeans im, Unifier u) {
+            return im.isSatisfied(getAg());
+        }
+    };
     
     public void applyClrInt() throws Exception {
         applyClrInt(C.SI); // for old style
         
+        // TODO: run what follows only if some plan use GC, otherwise, avoid to run since it requires quite a lot of time
         // remove all intentions with GoalCondition satisfied
-        scia.drop(this, new IMCondition() {
-            public boolean test(Trigger t, Unifier u) {
-                return false;
-            }
-            public boolean test(IntendedMeans im, Unifier u) {
-                return im.isSatisfied(getAg());
-            }
-        }, new Unifier());
+        scia.drop(this, imcondSat, new Unifier());
     }
     
     public void applyClrInt(Intention i) throws JasonException {

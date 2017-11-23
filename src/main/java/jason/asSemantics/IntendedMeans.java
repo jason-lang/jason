@@ -103,7 +103,7 @@ public class IntendedMeans implements Serializable {
         if (goalCondition == null) {
             return isFinished();
         } else {
-        	Iterator<Unifier> iun = goalCondition.logicalConsequence(ag, triggerUnif);
+            Iterator<Unifier> iun = goalCondition.logicalConsequence(ag, triggerUnif);
             return iun != null && iun.hasNext();
         }
     }

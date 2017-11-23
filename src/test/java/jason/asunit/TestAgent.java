@@ -84,6 +84,11 @@ public class TestAgent extends Agent {
         } else
             getTS().getLogger().setLevel(Level.INFO);
     }
+    
+    public void clearExecutionTrace() {
+        getArch().clearDoneActions();
+        getArch().clearPrintOutput();
+    }
 
     // --------------------------------------------
     //   methods to change the state of the agent
@@ -214,9 +219,7 @@ public class TestAgent extends Agent {
                 return arch.getOutput().indexOf(out) >= 0;
             }
         };
-        if (assertMaxCyclesAndAnotherCondition(c, maxCycles))
-            getArch().clearOutput();
-        else
+        if (!assertMaxCyclesAndAnotherCondition(c, maxCycles))
             fail("failed assertPrint("+out+")");
     }
 
