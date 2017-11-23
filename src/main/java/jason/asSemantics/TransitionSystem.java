@@ -421,7 +421,7 @@ public class TransitionSystem {
                 if (confP.C.SE.isExternal()) {
                     for (Intention i: C.getIntentions())
                         C.addEvent(new Event(confP.C.SE.getTrigger(), i));
-                    C.I.clear(); 
+                    C.getIntentions().clear(); 
                 }
                 
                 if (ag.hasCustomSelectOption() || setts.verbose() == 2) // verbose == 2 means debug mode
@@ -1003,7 +1003,7 @@ public class TransitionSystem {
         applyClrInt(C.SI); // for old style
         
         // TODO: run what follows only if some plan use GC, otherwise, avoid to run since it requires quite a lot of time
-        // remove all intentions with GoalCondition satisfied
+        // remove all intentions with GoalCondition satisfied (new JasonER)
         scia.drop(this, imcondSat, new Unifier());
     }
     

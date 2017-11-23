@@ -25,7 +25,8 @@ public class TestPlanER {
             "+c(X) <- croot(X)." +
 
             "+!g1(X) <: g1(X) { <- inig1. "+
-            "    +a(X) : X > 2 <- a1ing1; +g1(X); a2ing1. }" +
+            "    +a(X) : X > 2 <- a1ing1; +g1(X); a2ing1." +
+            "} " +
 
             "+!g2(X) { <- +a(X); !sg2. "+
             "    +!sg2 { <- !ssg2. "+
