@@ -330,6 +330,9 @@ public class Plan extends Structure implements Cloneable, Serializable {
     public boolean hasSubPlans() {
         return subplans != null;
     }
+    public boolean hasInterestInExernalEvents() {
+        return subplans != null && subplans.hasPlansForExternalEvents();
+    }
     public PlanLibrary getSubPlans() {
         return subplans;
     }
@@ -348,5 +351,8 @@ public class Plan extends Structure implements Cloneable, Serializable {
     
     public LogicalFormula getGoalCondition() {
         return goalCondition;
+    }
+    public boolean hasGoalCondition() {
+        return goalCondition != null;
     }
 }

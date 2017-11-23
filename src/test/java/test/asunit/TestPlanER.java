@@ -1,7 +1,6 @@
 package test.asunit;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -65,7 +64,7 @@ public class TestPlanER {
         ag.assertAct("aroot(5)", 10);
         System.out.println(ag.getArch().getOutput());
         ag.assertAct("a1ing1", 10);
-        assertTrue(ag.getPL().hasPlansWithGoalCondition());
+        //assertTrue(ag.getPL().hasPlansWithGoalCondition());
         ag.assertNoAct("a2ing1", 10); // not performed, since the GC is satisfied
         ag.assertAct("endtest", 10);
     }
@@ -77,7 +76,7 @@ public class TestPlanER {
         ag.assertAct("aroot(55)", 10);
         ag.assertAct("binsg2(10)", 10);
         ag.assertAct("croot(33)", 10); // +c/1 in scope of !g2 is not applicable, use +c/1 from root
-        System.out.println(ag.getArch().getActions());        
+        //System.out.println(ag.getArch().getActions());        
         assertEquals("[aroot(1), aroot(55), binsg2(10), croot(33)]",ag.getArch().getActions().toString());
     }
 }

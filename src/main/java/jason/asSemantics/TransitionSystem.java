@@ -1009,7 +1009,9 @@ public class TransitionSystem {
         applyClrInt(C.SI); // as before JasonER
         
         // remove all intentions with GoalCondition satisfied (new JasonER)
-        if (ag.getPL().hasPlansWithGoalCondition())
+        // TODO: optimise to hasIntentionWithGoalCondition
+        //if (ag.getPL().hasPlansWithGoalCondition())
+        if (C.hasIntentionWithGoalCondition())
             scia.drop(this, imcondSat, new Unifier());
     }
     

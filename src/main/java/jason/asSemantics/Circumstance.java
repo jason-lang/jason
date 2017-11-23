@@ -37,6 +37,8 @@ public class Circumstance implements Serializable {
     private   boolean                  atomicIntSuspended = false; // whether the current atomic intention is suspended in PA or PI
     //private   boolean                  hasAtomicEvent = false;
 
+    private int intentionsWithGoalCondition = 0;
+    
     private Map<Integer, ActionExec>   PA; // Pending actions, waiting action execution (key is the intention id)
     private List<ActionExec>           FA; // Feedback actions, those that are already executed
 
@@ -298,13 +300,20 @@ public class Circumstance implements Serializable {
     public boolean hasIntention(Intention i) {
         return i == AI || I.contains(i);
     }
-
+    
+    public boolean hasIntentionWithGoalCondition() {
+        return intentionsWithGoalCondition > 0;
+    }
+    
     public void addIntention(Intention intention) {
         if (intention.isAtomic())
             setAtomicIntention(intention);
         else
             I.offer(intention);
 
+        if (intention.hasGoalCondition())
+            intentionsWithGoalCondition++; // TODO: how to decrease?
+        
         // notify
         if (listeners != null)
             for (CircumstanceListener el : listeners)

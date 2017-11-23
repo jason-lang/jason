@@ -36,7 +36,10 @@ public class Intention implements Serializable, Comparable<Intention>, Iterable<
     private int     id;
     private int     atomicCount    = 0; // number of atomic intended means in the intention
     private boolean isSuspended = false;
-    private int     intestedInExternalEvents = 0; // new in JasonER
+    
+    // new in JasonER
+    private int     intestedInExternalEvents = 0;
+    private int     imWithGoalCondition      = 0; 
 
     private Deque<IntendedMeans> intendedMeans = new ArrayDeque<IntendedMeans>();
 
@@ -56,10 +59,10 @@ public class Intention implements Serializable, Comparable<Intention>, Iterable<
         intendedMeans.push(im);
         if (im.isAtomic())
             atomicCount++;
-        if (im.getPlan().hasSubPlans())
+        if (im.getPlan().hasInterestInExernalEvents())
             intestedInExternalEvents++;
-        //if (initialTrigger == null)
-        //    initialTrigger = im.getTrigger();
+        if (im.getPlan().hasGoalCondition())
+            imWithGoalCondition++;
     }
 
     public IntendedMeans peek() {
@@ -71,9 +74,10 @@ public class Intention implements Serializable, Comparable<Intention>, Iterable<
 
         if (isAtomic() && top.isAtomic())
             atomicCount--;
-        if (hasIntestedInExternalEvents() && top.getPlan().hasSubPlans()) 
+        if (hasIntestedInExternalEvents() && top.getPlan().hasInterestInExernalEvents()) 
             intestedInExternalEvents--;
-        
+        if (hasGoalCondition() && top.getPlan().hasGoalCondition())
+            imWithGoalCondition--;
         return top;
     }
 
@@ -88,7 +92,10 @@ public class Intention implements Serializable, Comparable<Intention>, Iterable<
     public boolean hasIntestedInExternalEvents() {
         return intestedInExternalEvents > 0;
     }
-
+    public boolean hasGoalCondition() {
+        return imWithGoalCondition > 0;
+    }
+    
     public Iterator<IntendedMeans> iterator() {
         return intendedMeans.iterator();
     }
