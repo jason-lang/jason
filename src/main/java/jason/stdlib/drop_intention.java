@@ -29,6 +29,8 @@ import jason.asSyntax.Trigger.TEType;
    with triggering event
   <code>+!go(1,3)</code> in the agent's current circumstance.
 
+  <li> <code>.drop_intention</code>: removes the current intention.
+
   </ul>
 
   @see jason.stdlib.intend
@@ -48,7 +50,7 @@ import jason.asSyntax.Trigger.TEType;
 public class drop_intention extends DefaultInternalAction {
 
     @Override public int getMinArgs() {
-        return 1;
+        return 0;
     }
     @Override public int getMaxArgs() {
         return 1;
@@ -56,14 +58,26 @@ public class drop_intention extends DefaultInternalAction {
 
     @Override protected void checkArguments(Term[] args) throws JasonException {
         super.checkArguments(args); // check number of arguments
-        if (!args[0].isLiteral() && !args[0].isVar())
+        if (args.length > 0 && !args[0].isLiteral() && !args[0].isVar())
             throw JasonException.createWrongArgument(this,"first argument '"+args[0]+"' must be a literal or variable");
     }
 
+    private boolean resultSuspend = false;
+    
+    @Override
+    public boolean suspendIntention() {
+    	return resultSuspend;
+    }
+    
     @Override
     public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {
         checkArguments(args);
-        dropInt(ts.getC(),(Literal)args[0],un);
+        resultSuspend = false;
+        if (args.length == 0) {
+        	resultSuspend = true; // to drop the current intention
+        } else {
+        	dropInt(ts.getC(),(Literal)args[0],un);
+        }
         return true;
     }
 

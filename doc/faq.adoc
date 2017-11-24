@@ -263,7 +263,7 @@ MAS masid {
    agents: .......
    classpath: "../../jdom.jar";
               "../../otherproject/classes";
-              "/apache/**/*.jar; // all jar files below /apache
+              "/apache/**/*.jar"; // all jar files below /apache
 }
 ---------------------------------------------------------------
 +

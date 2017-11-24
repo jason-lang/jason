@@ -619,7 +619,8 @@ public class Config extends Properties {
                 if (showFixMsgs)
                     System.out.print("Searching " + jarFilePrefix + " in " + jwsDir + " ... ");
                 if (jarFile != null && checkJar(jarFile)) {
-                    System.out.println("found at " + jarFile);
+                    if (showFixMsgs)
+                        System.out.println("found at " + jarFile);
                     put(jarEntry, jarFile);
                     return;
                 } else {
