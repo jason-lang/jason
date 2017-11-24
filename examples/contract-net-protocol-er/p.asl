@@ -24,6 +24,5 @@ plays(initiator,c).
 
    +reject_proposal(CNPId)
      <- .print("I lost CNP ",CNPId, ".");
-        //.drop_intention
-        .
+        .drop_intention.
 }
