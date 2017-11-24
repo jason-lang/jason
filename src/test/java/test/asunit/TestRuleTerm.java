@@ -44,12 +44,13 @@ public class TestRuleTerm {
         ag.assertBel("p", 20);
         ag.assertBel("p[source(self)]", 20);
         ag.assertBel("mybel(10)[source(self)]", 10);
-
+        ag.assertIdle(10);
+        
         ag.addGoal("test2");
         ag.assertPrint("2", 10);
 
         ag.addGoal("test3(2)");
-        ag.assertPrint("12", 5);
+        ag.assertPrint("12", 10);
 
         ag.addGoal("test4");
         ag.assertPrint("ok", 5);
