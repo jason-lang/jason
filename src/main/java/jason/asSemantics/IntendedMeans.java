@@ -25,8 +25,7 @@ public class IntendedMeans implements Serializable {
 
     protected Unifier  renamedVars = null;
     
-    //protected LogicalFormula goalCondition = null;
-    protected Unifier        triggerUnif   = null;
+    protected Unifier  triggerUnif   = null; // unif when the IM was created (used to check goal condition and g-plan scope vars)
 
     public IntendedMeans(Option opt, Trigger te) {
         plan     = opt.getPlan();
@@ -39,11 +38,7 @@ public class IntendedMeans implements Serializable {
             trigger = te.capply(unif);
         }
         
-        //goalCondition = plan.getGoalCondition();
-        if (plan.getGoalCondition() != null) {
-            triggerUnif = unif.clone();
-            //goalCondition = (LogicalFormula)goalCondition.capply(unif);
-        }
+        triggerUnif = unif.clone();
     }
 
     // used by clone
@@ -119,12 +114,14 @@ public class IntendedMeans implements Serializable {
         if (this.planBody != null)
             c.planBody = this.planBody.clonePB();
         c.trigger  = this.trigger.clone();
+        if (this.triggerUnif != null)
+            c.triggerUnif = this.triggerUnif.clone();
         c.plan     = this.plan;
         return c;
     }
 
     public String toString() {
-        return trigger + " <- ... " + planBody + " / " + unif;
+        return trigger + " <- " + (planBody == null ? "." : "... " + planBody) + " / " + unif;
     }
 
     public Term getAsTerm() {

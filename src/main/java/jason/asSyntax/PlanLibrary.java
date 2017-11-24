@@ -50,7 +50,6 @@ public class PlanLibrary implements Iterable<Plan> {
 
     private PlanLibrary father = null;
     
-    //private boolean hasPlansWithGoalCondition = false;
     private boolean hasPlansForExternalEvents = false;
     
     public PlanLibrary() {
@@ -71,15 +70,6 @@ public class PlanLibrary implements Iterable<Plan> {
         father = pl;
     }
     
-    /*public boolean hasPlansWithGoalCondition() {
-        return hasPlansWithGoalCondition;
-    }
-    public void setHasPlansWithGoalCondition() {
-        hasPlansWithGoalCondition = true;
-        if (father != null)
-            father.setHasPlansWithGoalCondition();
-    }*/
-
     public boolean hasPlansForExternalEvents() {
         return hasPlansForExternalEvents;
     }
@@ -177,9 +167,6 @@ public class PlanLibrary implements Iterable<Plan> {
     public void add(Plan p, boolean before) throws JasonException {
         p.setScope(this);
         synchronized (lockPL) {
-            //if (p.hasGoalCondition())
-            //    setHasPlansWithGoalCondition();
-
             // test p.label
             if (p.getLabel() != null && planLabels.keySet().contains( getStringForLabel(p.getLabel()))) {
                 // test if the new plan is equal, in this case, just add a source

@@ -143,9 +143,9 @@ public class Intention implements Serializable, Comparable<Intention>, Iterable<
     }
 
     /** remove all IMs until the lowest IM that succeeds in test c */
-    public IntendedMeans dropGoal(IMCondition c, Unifier u) { //Trigger te, Unifier un) {
+    public IntendedMeans dropGoal(IMCondition c, Unifier u) {
         IntendedMeans r = null;
-        IntendedMeans im = getIM(c,u); //te, un);
+        IntendedMeans im = getIM(c,u);
         while (im != null) {
             r = im;
             // remove the IMs until im-1
@@ -153,7 +153,7 @@ public class Intention implements Serializable, Comparable<Intention>, Iterable<
                 pop();
             }
             pop(); // remove im
-            im = getIM(c,u); //te, un); // keep removing other occurrences of te
+            im = getIM(c,u); // keep removing other occurrences of te
         }
         return r;
     }

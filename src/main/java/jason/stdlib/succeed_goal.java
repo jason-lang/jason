@@ -189,6 +189,7 @@ public class succeed_goal extends DefaultInternalAction {
     public int dropIntention(Intention i, IMCondition c, TransitionSystem ts, Unifier un) throws JasonException {
         if (i != null) {
             IntendedMeans im = i.dropGoal(c,un);
+            //System.out.println("dropped "+im+"\nfrom "+i);
             if (im != null) {
                 if (ts.hasGoalListener())
                     for (GoalListener gl: ts.getGoalListeners())

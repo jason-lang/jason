@@ -179,10 +179,11 @@ public class Plan extends Structure implements Cloneable, Serializable {
     /** returns an unifier if this plan is relevant for the event <i>te</i>,
         returns null otherwise.
     */
-    public Unifier isRelevant(Trigger te) {
+    public Unifier isRelevant(Trigger te, Unifier u) {
         // annots in plan's TE must be a subset of the ones in the event!
         // (see definition of Unifier.unifies for 2 Preds)
-        Unifier u = new Unifier();
+        if (u == null)
+            u = new Unifier();
         if (u.unifiesNoUndo(tevent, te))
             return u;
         else

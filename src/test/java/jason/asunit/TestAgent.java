@@ -184,6 +184,13 @@ public class TestAgent extends Agent {
         };
         if (!assertMaxCyclesAndAnotherCondition(c, maxCycles))
             fail("failed assertAct("+act+")");
+        
+        // run one extra cycle to place the intention back
+        assertMaxCyclesAndAnotherCondition(new Condition() {
+            public boolean test(TestArch arch) {
+                return false;
+            }
+        }, 1);
     }
 
     public void assertNoAct(String act, int maxCycles) {
