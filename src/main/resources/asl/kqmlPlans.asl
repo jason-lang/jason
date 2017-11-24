@@ -16,7 +16,7 @@
       .ground(Content) &
       not .list(Content) &
       .add_nested_source(Content, Sender, CA)
-   <- +NS::CA.
+   <- ++NS::CA.   // add with new focus (as external event)
 @kqmlReceivedTellList
 +!kqml_received(Sender, tell, Content, _)
    :  .list(Content)
@@ -30,7 +30,7 @@
    :  .literal(H) &
       .ground(H)
    <- .add_nested_source(H, Sender, CA);
-      +NS::CA;
+      ++NS::CA;
       !add_all_kqml_received(Sender,T).
 
 @kqmlReceivedTellList3
@@ -40,7 +40,7 @@
 @kqmlReceivedUnTell
 +!kqml_received(Sender, untell, NS::Content, _)
    <- .add_nested_source(Content, Sender, CA);
-      -NS::CA.
+      --NS::CA.
 
 
 /* ---- achieve performatives ---- */
