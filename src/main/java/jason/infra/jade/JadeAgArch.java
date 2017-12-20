@@ -121,7 +121,7 @@ public class JadeAgArch extends JadeAg {
         } else {
             if (args[0].toString().equals("j-project")) { // load parameters from .mas2j
                 if (args.length != 3) {
-                    logger.log(Level.SEVERE, "To start agents from .mas2j file, you have to provide as parameters: (j-project <file.mas2j> <nameofagent in mas2j>)");
+                    logger.log(Level.SEVERE, "To start agents from .mas2j file, you have to provide as parameters: (j-project,<file.mas2j>,<nameofagent in mas2j>)");
                     logger.log(Level.SEVERE, "Current parameters are:");
                     for (int i=0; i<args.length; i++) {
                         logger.log(Level.SEVERE, "   "+i+" = "+args[i]);                       
