@@ -733,11 +733,11 @@ public class Agent {
             perW.add(new StructureWrapperForLiteral(iper.next()));
 
 
-        // deleting percepts in the BB that is not perceived anymore
+        // deleting percepts in the BB that are not perceived anymore
         Iterator<Literal> perceptsInBB = getBB().getPercepts();
         while (perceptsInBB.hasNext()) {
             Literal l = perceptsInBB.next();
-            if (! perW.remove(new StructureWrapperForLiteral(l))) { // l is not perceived anymore
+            if (l.subjectToBUF() && ! perW.remove(new StructureWrapperForLiteral(l))) { // l is not perceived anymore
                 dels++;
                 perceptsInBB.remove(); // remove l as perception from BB
 
