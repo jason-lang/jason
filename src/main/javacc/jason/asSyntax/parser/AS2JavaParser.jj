@@ -560,6 +560,8 @@ Object body_formula() :
       )
     | ( "-"            { formType = BodyType.delBel; }
         ["+"           { formType = BodyType.delAddBel; }
+        |
+         "-"           { formType = BodyType.delBelNewFocus; }
         ]
       )
    ]

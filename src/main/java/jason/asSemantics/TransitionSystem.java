@@ -899,10 +899,12 @@ public class TransitionSystem {
             }
             break;
 
+        case delBelNewFocus:
         case delBel:
 
             newfocus = Intention.EmptyInt;
-            if (setts.sameFocus()) {
+            isSameFocus = setts.sameFocus() && h.getBodyType() != BodyType.delBelNewFocus;
+            if (isSameFocus) {
                 newfocus = curInt;
                 body = prepareBodyForEvent(body, u, newfocus.peek());
             } else {
@@ -914,7 +916,7 @@ public class TransitionSystem {
                 if (result != null) { // really change something
                     // generate events
                     updateEvents(result,newfocus);
-                    if (!setts.sameFocus()) {
+                    if (!isSameFocus) {
                         updateIntention(curInt);
                     }
                 } else {
