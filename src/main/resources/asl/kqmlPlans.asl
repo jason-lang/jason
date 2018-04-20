@@ -7,7 +7,6 @@
 //   MsgId:   message id (an atom)
 //
 
-
 /* ---- tell performatives ---- */
 
 @kqmlReceivedTellStructure
@@ -72,12 +71,17 @@
 
 /* ---- ask performatives ---- */
 
-@kqmlReceivedAskOne1
+@kqmlReceivedAskOne1a // (self belief, do not send back the source)
 +!kqml_received(Sender, askOne, NS::Content, MsgId)
-    : NS::Content[source(AGS)]
+    : NS::Content[source(self)] 
+   <- .send(Sender, tell, NS::Content, MsgId).
+
+@kqmlReceivedAskOne1b // (belief from other, sends back the source)
++!kqml_received(Sender, askOne, NS::Content, MsgId)
+    : NS::Content[source(AGS)] 
    <- .send(Sender, tell, NS::Content[source(AGS)], MsgId).
 
-@kqmlReceivedAskOne1b
+@kqmlReceivedAskOne1c // (no belief, try to trigger a plan with +?)
 +!kqml_received(Sender, askOne, NS::Content, MsgId)
    <- .add_nested_source(Content, Sender, CA);
       ?NS::CA;
@@ -92,9 +96,13 @@
 
 @kqmlReceivedAskAll2
 +!kqml_received(Sender, askAll, NS::Content, MsgId)
-   <- .findall(NS::Content[source(AGS)], NS::Content[source(AGS)], List);
-      .send(Sender, tell, List, MsgId).
+   <- .findall(NS::Content[source(AGS)], NS::Content[source(AGS)], List); 
+      !clear_source(self,List,L2);
+      .send(Sender, tell, L2, MsgId).
 
++!clear_source(S,[],[]).
++!clear_source(S,[B[source(self)]|R], [B           |RC]) <- !clear_source(S,R,RC).
++!clear_source(S,[B[source(O)]   |R], [B[source(O)]|RC]) <- !clear_source(S,R,RC).
 
 /* ---- know-how performatives ---- */
 

@@ -189,6 +189,7 @@ public class Agent {
             }
 
             loadKqmlPlans();
+            addInitialBelsInBB(); // in case kqml plan file has some belief 
 
             setASLSrc(asSrc);
         } catch (Exception e) {

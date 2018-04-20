@@ -31,6 +31,9 @@ public class TestKQML {
             "                 jason.asunit.print(t1,\" \",A). "+
             "+!send_ask4   <- .send(maria, askOne, fullname, A); "+
             "                 jason.asunit.print(A). "+
+            
+            "+!send_ask5   <- .send(maria, tell, myv(10)); .send(maria, askOne, myv(_)). "+
+            "+!send_ask6   <- .send(maria, tell, myv(10)); .send(maria, askOne, myv(_), A); jason.asunit.print(A). "+
 
             "+!send_askAll1 <- .send(maria, askAll, vl(_), L); "+
             "                  jason.asunit.print(L). "+
@@ -90,12 +93,28 @@ public class TestKQML {
     }
 
     @Test(timeout=2000)
+    public void testAsk5() {
+        bob.addGoal("send_ask5");
+        bob.assertIdle(20);   // let bob to send the messages
+        maria.assertIdle(20); // let maria to process the messages
+        bob.assertBel("myv(10)[source(maria)[source(bob)]]", 10);
+    }
+
+    @Test(timeout=2000)
+    public void testAsk6() {
+        bob.addGoal("send_ask6");
+        bob.assertIdle(20);   // let bob to send the messages
+        maria.assertIdle(20); // let maria to process the messages
+        bob.assertPrint("myv(10)[source(maria)[source(bob)]]", 20);
+    }
+
+    @Test(timeout=2000)
     public void testAskAll() {
         bob.addGoal("simple_send");
         bob.addGoal("send_askAll1");
         bob.assertIdle(10);
         maria.assertIdle(15);
-        bob.assertPrint("[vl(10)[source(maria)],vl(1)[source(maria)],vl(2)[source(maria)]]", 5);
+        bob.assertPrint("[vl(10)[source(maria)[source(bob)]],vl(1)[source(maria)],vl(2)[source(maria)]]", 5);
 
         bob.addGoal("send_askAll2");
         bob.assertIdle(10);
