@@ -74,8 +74,8 @@
 
 @kqmlReceivedAskOne1
 +!kqml_received(Sender, askOne, NS::Content, MsgId)
-    : NS::Content
-   <- .send(Sender, tell, NS::Content, MsgId).
+    : NS::Content[source(AGS)]
+   <- .send(Sender, tell, NS::Content[source(AGS)], MsgId).
 
 @kqmlReceivedAskOne1b
 +!kqml_received(Sender, askOne, NS::Content, MsgId)
@@ -92,7 +92,7 @@
 
 @kqmlReceivedAskAll2
 +!kqml_received(Sender, askAll, NS::Content, MsgId)
-   <- .findall(NS::Content, NS::Content, List);
+   <- .findall(NS::Content[source(AGS)], NS::Content[source(AGS)], List);
       .send(Sender, tell, List, MsgId).
 
 
