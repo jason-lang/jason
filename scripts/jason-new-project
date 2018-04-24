@@ -1,0 +1,7 @@
+#!/bin/bash
+
+source `dirname $0`/jason-setup
+
+echo Creating new Jason project: $1
+
+java -classpath $JASON_JAR jason.util.CreateNewProject $1

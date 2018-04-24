@@ -821,4 +821,11 @@ public class Config extends Properties {
     public String getMindInspectorWebServerClassName() {
         return "jason.architecture.MindInspectorWebImpl";
     }
+    
+    public String getPresentation() {
+        return "Jason "+getJasonVersion()+"\n"+
+               "     built on "+getJasonBuiltDate()+"\n"+
+               "     installed at "+getHome();
+    }
+
 }
