@@ -1,5 +1,6 @@
 package jason.stdlib;
 
+import jason.JasonException;
 import jason.asSemantics.DefaultInternalAction;
 import jason.asSemantics.InternalAction;
 import jason.asSemantics.TransitionSystem;
@@ -63,7 +64,11 @@ public class add_nested_source extends DefaultInternalAction {
 
     @Override public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {
         checkArguments(args);
-        return un.unifies(addAnnotToList(args[0], args[1]),args[2]);
+        try {
+        	return un.unifies(addAnnotToList(args[0], args[1]),args[2]);
+        } catch (Exception e) {
+			throw new JasonException("Error adding nest source '"+args[1]+"' to "+args[0], e);
+		}
     }
 
     public static Term addAnnotToList(Term l, Term source) {
@@ -77,7 +82,7 @@ public class add_nested_source extends DefaultInternalAction {
             }
             return result;
         } else if (l.isLiteral()) {
-            Literal result = ((Literal)l).forceFullLiteralImpl();
+            Literal result = ((Literal)l).forceFullLiteralImpl().copy();
 
             // create the source annots
             Literal ts = Pred.createSource(source).addAnnots(result.getAnnots("source"));
