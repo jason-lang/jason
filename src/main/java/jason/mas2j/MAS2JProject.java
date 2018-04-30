@@ -17,6 +17,7 @@ import java.util.logging.Logger;
 import jason.JasonException;
 import jason.asSyntax.directives.DirectiveProcessor;
 import jason.infra.InfrastructureFactory;
+import jason.runtime.SourcePath;
 import jason.util.Config;
 
 /**
@@ -37,7 +38,7 @@ public class MAS2JProject {
     private File   projectFile = null;
     private List<AgentParameters> agents = new ArrayList<AgentParameters>();
     private List<String> classpaths = new ArrayList<String>();
-    private List<String> sourcepaths = new ArrayList<String>();
+    private SourcePath aslSourcepaths = new SourcePath();
     private Map<String,String> directiveClasses = new HashMap<String,String>();
 
     public static MAS2JProject parse(String file) {
@@ -141,11 +142,10 @@ public class MAS2JProject {
 
     /** change the source of the agents using the source path information,
      *  also considers code from a jar file (if urlPrefix is not null) */
-    public void fixAgentsSrc(String urlPrefix) {
-        List<String> srcpath = getSourcePaths();
+    public void fixAgentsSrc() {
         for (AgentParameters agp: agents) {
             if (agp.asSource != null) {
-                agp.fixSrc(srcpath, urlPrefix);
+                agp.asSource = new File(aslSourcepaths.fixPath(agp.asSource.toString()));
             }
         }
     }
@@ -162,30 +162,11 @@ public class MAS2JProject {
     }
 
     public void addSourcePath(String cp) {
-        if (cp.startsWith("\"")) {
-            cp = cp.substring(1,cp.length()-1);
-        }
-        sourcepaths.add(cp);
+        aslSourcepaths.addPath(cp);
     }
 
-    public List<String> getSourcePaths() {
-        List<String> r = new ArrayList<String>();
-        if (sourcepaths.isEmpty()) {
-            r.add(getDirectory());
-        }
-        for (String p: sourcepaths) {
-            //if (getDirectory().startsWith(".") || getDirectory().startsWith("/") || getDirectory().charAt(1) == ':') {
-            if (p.startsWith(".") || p.startsWith("/") || p.charAt(1) == ':') {
-                r.add(p);
-            } else {
-                r.add(getDirectory()+"/"+p);
-            }
-        }
-        return r;
-    }
-
-    public void removeSourcePath(int index) {
-        sourcepaths.remove(index);
+    public SourcePath getSourcePaths() {
+        return aslSourcepaths;
     }
 
     public void addDirectiveClass(String id, ClassParameters classname) {
@@ -262,9 +243,9 @@ public class MAS2JProject {
         }
 
         // sourcepath
-        if (sourcepaths.size() > 0) {
+        if (!aslSourcepaths.isEmpty()) {
             s.append("   aslSourcePath: ");
-            for (String cp: sourcepaths) {
+            for (String cp: aslSourcepaths.getPaths()) {
                 s.append("\""+cp+"\"; ");
             }
             s.append("\n");

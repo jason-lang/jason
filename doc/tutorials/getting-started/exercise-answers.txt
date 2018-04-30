@@ -54,8 +54,8 @@ reactive solution and finish with a more goal-oriented version.
 * problems
 - the moving strategy is coded in two sets of plans, so to change
   the strategy we need change all plans
-- if you leave the agent running for a long time, it eventually stop.
-  the reason is that sometimes the robot does not perceive neither 
+- if you leave the agent running for a long time, it eventually stops.
+  the reason is that sometimes the robot does not perceive neither
   dirty nor clean and thus no plan are selected. The following
   code solves that:
 
@@ -148,7 +148,7 @@ reactive solution and finish with a more goal-oriented version.
 !pause. // initial goal to break
 
 +!clean : clean <- !move; !clean.
-+!clean : dirty <- suck; !move; !clean.
++!clean : dirty <- suck;  !clean.
 -!clean         <- !clean.
 
 +!move : pos(1) <- right.

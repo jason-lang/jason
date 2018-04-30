@@ -107,7 +107,7 @@ public class ArithFunctionTerm extends Structure implements NumberTerm {
         if (value == null) // try to solve without unifier
             capply(null);
         if (value == null)
-            throw new NoValueException();
+            throw new NoValueException("Error evaluating "+this+"."+ (isGround() ? "" : " It is not ground."));
         else
             return value.solve();
     }

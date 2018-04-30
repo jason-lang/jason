@@ -10,10 +10,10 @@ test(1).
 
 /* Plans */
 
-+!start 
-   <- +a(40); 
++!start
+   <- +a(40);
       .clone("bob");
       .send(bob,tell,p(10)).
-      
+
 +p(X) : a(V) <- .print(X," : ",V).
 

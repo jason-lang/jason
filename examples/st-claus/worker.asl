@@ -5,8 +5,8 @@ msg("Ho, ho, ho!  Let's deliver toys!")      :- kind(reindeer).
 +!start : secretary(S) <- .send(S,achieve,iamhere).
 
 // do the job asked by St Claus
-+!proceed[source(A)] : msg(M)      
-   <- .print(M); 
-      .send(A,tell,done); 
++!proceed[source(A)] : msg(M)
+   <- .print(M);
+      .send(A,tell,done);
       .wait( math.random(20)+10 );
       !!start.

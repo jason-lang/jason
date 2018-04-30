@@ -8,7 +8,7 @@ public class <ARTIFACT_NAME> extends <SUPER_CLASS> {
 	void init(int initialValue) {
 		defineObsProperty("count", initialValue);
 	}
-	
+
 	@OPERATION
 	void inc() {
 		ObsProperty prop = getObsProperty("count");

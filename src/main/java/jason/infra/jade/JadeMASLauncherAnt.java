@@ -168,8 +168,7 @@ public class JadeMASLauncherAnt extends CentralisedMASLauncherAnt implements MAS
                     sep = ";";
                 }
                 args = "";
-                if (Config.get().getJadeArgs() != null)
-                    args += Config.get().getJadeArgs();
+                args += Config.get().getJadeArgs();
                 if (mainHostPort > 0)
                     args += " -port "+mainHostPort;
                 if (Config.get().getBoolean(Config.JADE_RMA))
@@ -188,12 +187,15 @@ public class JadeMASLauncherAnt extends CentralisedMASLauncherAnt implements MAS
                     }
                 }
             }
+            if (agents.length() > 0)
+                agents.insert(0, " -agents ");
+            
             startContainers +=
                 "    <target name=\""+container+"\" depends=\"compile\" >\n" +
                 "        <echo message=\"Starting JADE Container "+container+"\" />\n"+
                 "        <java classname=\"jade.Boot\" failonerror=\"true\" fork=\"yes\" dir=\"${basedir}\" >\n"+
                 "            <classpath refid=\"project.classpath\"/>\n"+
-                "            <arg line=\""+args+" -agents "+agents+"\"/>\n"+
+                "            <arg line=\""+args+agents+"\"/>\n"+
                 "            <jvmarg line=\"-Xmx500M -Xss8M\"/>\n"+
                 "        </java>\n"+
                 "    </target>\n\n";

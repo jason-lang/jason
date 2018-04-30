@@ -28,6 +28,7 @@ import jason.asSyntax.LiteralImpl;
 import jason.asSyntax.LogicalFormula;
 import jason.asSyntax.NumberTerm;
 import jason.asSyntax.NumberTermImpl;
+import jason.asSyntax.ObjectTermImpl;
 import jason.asSyntax.Plan;
 import jason.asSyntax.PlanBody;
 import jason.asSyntax.PlanBody.BodyType;
@@ -286,8 +287,9 @@ public class TransitionSystem {
                 try {
                     content = ASSyntax.parseTerm(m.getPropCont().toString());
                 } catch (ParseException e) {
-                    logger.warning("The content of the message '"+m.getPropCont()+"' is not a term!");
-                    return;
+                    //logger.warning("The content of the message '"+m.getPropCont()+"' is not a term! Using ObjectTerm.");
+                    content = new ObjectTermImpl(m.getPropCont());
+                    //return;
                 }
             }
 
@@ -308,15 +310,11 @@ public class TransitionSystem {
                 if (m.isUnTell() && send.getTerm(1).toString().equals("askOne")) {
                     content = Literal.LFalse;
                 } else if (content.isLiteral()) { // adds source in the content if possible
-                    content = ((Literal)content).forceFullLiteralImpl();
-                    ((Literal)content).addSource(new Atom(m.getSender()));
+                    content = add_nested_source.addAnnotToList(content, new Atom(m.getSender()));
                 } else if (send.getTerm(1).toString().equals("askAll") && content.isList()) { // adds source in each answer if possible
                     ListTerm tail = new ListTermImpl();
                     for (Term t: ((ListTerm)content)) {
-                        if (t.isLiteral()) {
-                            t = ((Literal)t).forceFullLiteralImpl();
-                            ((Literal)t).addSource(new Atom(m.getSender()));
-                        }
+                        t = add_nested_source.addAnnotToList(t, new Atom(m.getSender()));
                         tail.append(t);
                     }
                     content = tail;
@@ -552,15 +550,18 @@ public class TransitionSystem {
             // begin tail recursion optimisation (TRO)
             if (setts.isTROon()) {
                 IntendedMeans top = confP.C.SE.intention.peek(); // top = the IM that will be removed from the intention due to TRO
+                //System.out.println(top.getTrigger().isGoal()+"=1="+im.getTrigger().isGoal());
+                //System.out.println(top.getTrigger().getLiteral().getPredicateIndicator()+"=2="+im.getTrigger().getLiteral().getPredicateIndicator());
                 if (top != null && top.getTrigger().isGoal() && im.getTrigger().isGoal() && // are both goal
                         top.getCurrentStep().getBodyNext() == null && // the plan below is finished
-                        top.getTrigger().getPredicateIndicator().equals( im.getTrigger().getPredicateIndicator()) // goals are equals
+                        top.getTrigger().getLiteral().getPredicateIndicator().equals( im.getTrigger().getLiteral().getPredicateIndicator()) // goals are equals (do not consider - or + from the trigger -- required in the case of goal patterns where -!g <- !g is used)
                    ) {
                     confP.C.SE.intention.pop(); // remove the top IM
 
                     IntendedMeans imBase = confP.C.SE.intention.peek(); // base = where the new IM will be place on top of
-                    if (imBase != null) {
+                    if (imBase != null && imBase.renamedVars != null) {
                         // move top relevant values into the base (relevant = renamed vars in base)
+                        
                         for (VarTerm v: imBase.renamedVars) {
                             VarTerm vvl = (VarTerm)imBase.renamedVars.function.get(v);
                             Term t = top.unif.get(vvl);
@@ -582,8 +583,8 @@ public class TransitionSystem {
                         }
                     }
                 }
-                // end of TRO
             }
+            // end of TRO
 
             confP.C.SE.intention.push(im);
             confP.C.addIntention(confP.C.SE.intention);
@@ -746,6 +747,23 @@ public class TransitionSystem {
 
                 if (ok && !ia.suspendIntention())
                     updateIntention(curInt);
+            } catch (NoValueException e) {
+                // add not ground vars in the message
+                String msg = e.getMessage() + " Ungrounded variables = [";
+                String v = "";
+                for (VarTerm var: body.getSingletonVars()) {
+                    if (u.get(var) == null) {
+                        msg += v+var;
+                        v = ",";
+                    }
+                }
+                msg += "].";
+                e = new NoValueException(msg);
+                errorAnnots = e.getErrorTerms();
+                if (!generateGoalDeletion(curInt, errorAnnots))
+                    logger.log(Level.SEVERE, body.getErrorMsg()+": "+ e.getMessage());
+                ok = true; // just to not generate the event again
+
             } catch (JasonException e) {
                 errorAnnots = e.getErrorTerms();
                 if (!generateGoalDeletion(curInt, errorAnnots))
@@ -877,10 +895,12 @@ public class TransitionSystem {
             }
             break;
 
+        case delBelNewFocus:
         case delBel:
 
             newfocus = Intention.EmptyInt;
-            if (setts.sameFocus()) {
+            isSameFocus = setts.sameFocus() && h.getBodyType() != BodyType.delBelNewFocus;
+            if (isSameFocus) {
                 newfocus = curInt;
                 body = prepareBodyForEvent(body, u, newfocus.peek());
             } else {
@@ -892,7 +912,7 @@ public class TransitionSystem {
                 if (result != null) { // really change something
                     // generate events
                     updateEvents(result,newfocus);
-                    if (!setts.sameFocus()) {
+                    if (!isSameFocus) {
                         updateIntention(curInt);
                     }
                 } else {

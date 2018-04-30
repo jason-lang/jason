@@ -19,7 +19,7 @@ import jason.asSyntax.Trigger.TEOperator;
   <p>Description: aborts goals <i>G</i> in the agent circumstance as if a plan
   for such goal had failed. Assuming that one of the plans requiring <i>G</i> was
   <code>G0 &lt;- !G; ...</code>, an event <code>-!G0</code> is generated. In
-  case <i>G</i> was triggered by <code>!!G</code> (and therefore
+  case <i>G</i> was triggered by <code>!!G</code> (and therefore it is
   not a subgoal, as happens also when an "achieve" performative is used),
   the generated event is <code>-!G</code>.  A literal <i>G</i>
   is a goal if there is a triggering event <code>+!G</code> in any plan within
@@ -32,7 +32,7 @@ import jason.asSyntax.Trigger.TEOperator;
 
   <li> <code>.fail_goal(go(1,3))</code>: aborts any attempt to achieve
   goals such as <code>!go(1,3)</code> as if a plan for it had failed. Assuming that
-  it is a subgoal in the plan <code>get_gold(X,Y) &lt;- go(X,Y); pick.</code>, the
+  it is a subgoal in the plan <code>get_gold(X,Y) &lt;- !go(X,Y); pick.</code>, the
   generated event is <code>-!get_gold(1,3)</code>.
 
   </ul>
@@ -80,7 +80,8 @@ public class fail_goal extends succeed_goal {
                 Event failEvent = null;
                 if (!i.isFinished()) {
                     failEvent = ts.findEventForFailure(i, i.peek().getTrigger());
-                } else { // it was an intention with g as the only IM (that was dropped), normally when !! is used
+                } else { // should be an "else" (see SMC pattern) 
+                	// it was an intention with g as the only IM (that was dropped), normally when !! is used
                     failEvent = ts.findEventForFailure(i, g); // find fail event for the goal just dropped
                 }
                 if (failEvent != null) {

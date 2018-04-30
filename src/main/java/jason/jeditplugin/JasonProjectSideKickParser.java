@@ -48,7 +48,7 @@ public class JasonProjectSideKickParser extends sidekick.SideKickParser {
             mas2j parser = new mas2j(new StringReader(text));
             MAS2JProject project = parser.mas();
             project.setDirectory(buf.getDirectory());
-            project.fixAgentsSrc(null);
+            project.fixAgentsSrc();
 
             // create nodes
             pd = new SideKickParsedData(buf.getName());

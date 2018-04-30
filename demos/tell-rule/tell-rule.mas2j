@@ -1,7 +1,7 @@
-/* 
+/*
 
 This example shows how to customise the KQML to add
-a new performative, identified by "tellRule", used by 
+a new performative, identified by "tellRule", used by
 one agent to send rules like "a :- b & c" to another
 agent.
 

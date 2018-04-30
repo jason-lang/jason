@@ -8,6 +8,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.management.ManagementFactory;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collections;
@@ -21,6 +22,8 @@ import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
+import javax.management.MBeanServer;
+import javax.management.ObjectName;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -45,12 +48,13 @@ import jason.runtime.MASConsoleGUI;
 import jason.runtime.MASConsoleLogFormatter;
 import jason.runtime.MASConsoleLogHandler;
 import jason.runtime.Settings;
+import jason.runtime.SourcePath;
 import jason.util.Config;
 
 /**
  * Runs MASProject using centralised infrastructure.
  */
-public class RunCentralisedMAS extends BaseCentralisedMAS {
+public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentralisedMASMBean {
 
     private JButton                   btDebug;
 
@@ -71,12 +75,22 @@ public class RunCentralisedMAS extends BaseCentralisedMAS {
         RunCentralisedMAS r = new RunCentralisedMAS();
         runner = r;
         r.init(args);
+        r.registerMBean();
         r.create();
         r.start();
         r.waitEnd();
         r.finish();
     }
 
+    protected void registerMBean() {
+        try {
+            MBeanServer mbs = ManagementFactory.getPlatformMBeanServer(); 
+            mbs.registerMBean(this, new ObjectName("jason.sf.net:type=runner"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }       
+    }
+    
     protected int init(String[] args) {
         String projectFileName = null;
         if (args.length < 1) {
@@ -124,7 +138,7 @@ public class RunCentralisedMAS extends BaseCentralisedMAS {
                 InputStream inProject;
                 if (readFromJAR) {
                     inProject = RunCentralisedMAS.class.getResource("/"+defaultProjectFileName).openStream();
-                    urlPrefix = Include.CRPrefix + "/";
+                    urlPrefix = SourcePath.CRPrefix + "/";
                 } else {
                     URL file;
                     // test if the argument is an URL
@@ -145,12 +159,12 @@ public class RunCentralisedMAS extends BaseCentralisedMAS {
             }
 
             project.setupDefault();
-
+            project.getSourcePaths().setUrlPrefix(urlPrefix);
             project.registerDirectives();
             // set the aslSrcPath in the include
             ((Include)DirectiveProcessor.getDirective("include")).setSourcePath(project.getSourcePaths());
 
-            project.fixAgentsSrc(urlPrefix);
+            project.fixAgentsSrc();
 
             if (MASConsoleGUI.hasConsole()) {
                 MASConsoleGUI.get().setTitle("MAS Console - " + project.getSocName());
@@ -196,14 +210,19 @@ public class RunCentralisedMAS extends BaseCentralisedMAS {
 
     public synchronized void setupLogger() {
         if (readFromJAR) {
-            Handler[] hs = Logger.getLogger("").getHandlers();
-            for (int i = 0; i < hs.length; i++) {
-                Logger.getLogger("").removeHandler(hs[i]);
+            try {
+                LogManager.getLogManager().readConfiguration(
+                        RunCentralisedMAS.class.getResource("/"+logPropFile).openStream());
+            } catch (Exception e) {
+                Handler[] hs = Logger.getLogger("").getHandlers();
+                for (int i = 0; i < hs.length; i++) {
+                    Logger.getLogger("").removeHandler(hs[i]);
+                }
+                Handler h = new MASConsoleLogHandler();
+                h.setFormatter(new MASConsoleLogFormatter());
+                Logger.getLogger("").addHandler(h);
+                Logger.getLogger("").setLevel(Level.INFO);
             }
-            Handler h = new MASConsoleLogHandler();
-            h.setFormatter(new MASConsoleLogFormatter());
-            Logger.getLogger("").addHandler(h);
-            Logger.getLogger("").setLevel(Level.INFO);
         } else {
             // checks a local log configuration file
             if (new File(logPropFile).exists()) {
@@ -722,6 +741,10 @@ public class RunCentralisedMAS extends BaseCentralisedMAS {
             ag.stopAg();
         }
     }
+    
+    public boolean killAg(String agName) {
+        return getRuntimeServices().killAgent(agName, "??");
+    }
 
     /** change the current running MAS to debug mode */
     protected void changeToDebugMode() {
@@ -838,7 +861,7 @@ public class RunCentralisedMAS extends BaseCentralisedMAS {
         JFrame frame = new JFrame("Project "+project.getSocName()+" sources");
         JTabbedPane pane = new JTabbedPane();
         frame.getContentPane().add(pane);
-        project.fixAgentsSrc(urlPrefix);
+        project.fixAgentsSrc();
 
         for (AgentParameters ap : project.getAgents()) {
             try {
@@ -846,8 +869,8 @@ public class RunCentralisedMAS extends BaseCentralisedMAS {
 
                 // read sources
                 InputStream in = null;
-                if (tmpAsSrc.startsWith(Include.CRPrefix)) {
-                    in = RunCentralisedMAS.class.getResource(tmpAsSrc.substring(Include.CRPrefix.length())).openStream();
+                if (tmpAsSrc.startsWith(SourcePath.CRPrefix)) {
+                    in = RunCentralisedMAS.class.getResource(tmpAsSrc.substring(SourcePath.CRPrefix.length())).openStream();
                 } else {
                     try {
                         in = new URL(tmpAsSrc).openStream();

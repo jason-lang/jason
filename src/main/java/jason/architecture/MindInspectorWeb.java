@@ -24,6 +24,13 @@ public abstract class MindInspectorWeb {
         }
         return singleton;
     }
+    
+    public static synchronized void stop() {
+        if (singleton != null) {
+            singleton.stoptHttpServer();
+            singleton = null;
+        }
+    }
 
     public static boolean isRunning() {
         return singleton != null;
@@ -37,6 +44,7 @@ public abstract class MindInspectorWeb {
     }
 
     public abstract String startHttpServer();
+    public abstract void   stoptHttpServer();
 
     /** add the agent in the list of available agent for mind inspection */
     public abstract void registerAg(Agent ag);

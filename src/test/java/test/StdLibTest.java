@@ -1,5 +1,7 @@
 package test;
 
+import java.util.Iterator;
+
 import jason.RevisionFailedException;
 import jason.asSemantics.Agent;
 import jason.asSemantics.IntendedMeans;
@@ -20,6 +22,7 @@ import jason.asSyntax.StringTermImpl;
 import jason.asSyntax.Structure;
 import jason.asSyntax.Term;
 import jason.asSyntax.Trigger;
+import jason.asSyntax.UnnamedVar;
 import jason.asSyntax.VarTerm;
 import jason.asSyntax.parser.ParseException;
 import jason.bb.BeliefBase;
@@ -30,9 +33,6 @@ import jason.stdlib.fail_goal;
 import jason.stdlib.relevant_plans;
 import jason.stdlib.remove_plan;
 import jason.stdlib.succeed_goal;
-
-import java.util.Iterator;
-
 import junit.framework.TestCase;
 
 /** JUnit test case for stdlib package */
@@ -572,6 +572,31 @@ public class StdLibTest extends TestCase {
         u = new Unifier();
         assertTrue((Boolean)new jason.stdlib.delete().execute(null, u, new Term[] { new StringTermImpl("a"), new StringTermImpl("abaca"), v}));
         assertEquals("\"bc\"",u.get("X").toString());
+        
+        // test delete(2,4,l1,L)
+        u = new Unifier();
+        assertTrue((Boolean)new jason.stdlib.delete().execute(null, u, new Term[] { new NumberTermImpl(2), new NumberTermImpl(4), l1, v}));
+        assertEquals("[a,b,a]",u.get("X").toString());
+        u = new Unifier();
+        assertTrue((Boolean)new jason.stdlib.delete().execute(null, u, new Term[] { new NumberTermImpl(0), new NumberTermImpl(4), l1, v}));
+        assertEquals("[a]",u.get("X").toString());
+        
+        // test delete(2,4,"abcdef")
+        u = new Unifier();
+        assertTrue((Boolean)new jason.stdlib.delete().execute(null, u, new Term[] { new NumberTermImpl(2), new NumberTermImpl(4), new StringTermImpl("abcdef"), v}));
+        assertEquals("\"abef\"",u.get("X").toString());
+        
+    }
+    
+    public void testPut() throws Exception {
+        Agent ag = new Agent();
+        ag.initAg();
+        TransitionSystem ts = new TransitionSystem(ag, null, null, null);
+
+        Unifier u = new Unifier();
+        u.unifies(ASSyntax.parseTerm("X"), ASSyntax.parseTerm("floripa"));
+        u.bind(new UnnamedVar(26), ASSyntax.parseTerm("blabal"));
+        assertTrue((Boolean)new jason.stdlib.puts().execute(ts, u, new Term[] { new StringTermImpl("Hello #{_26}, #{X}")}));
     }
 
     @SuppressWarnings({ "rawtypes" })

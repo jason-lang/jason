@@ -47,7 +47,6 @@ import jason.asSyntax.Trigger;
 import jason.asSyntax.Trigger.TEOperator;
 import jason.asSyntax.Trigger.TEType;
 import jason.asSyntax.directives.FunctionRegister;
-import jason.asSyntax.directives.Include;
 import jason.asSyntax.parser.ParseException;
 import jason.asSyntax.parser.as2j;
 import jason.bb.BeliefBase;
@@ -57,6 +56,7 @@ import jason.functions.Count;
 import jason.functions.RuleToFunction;
 import jason.mas2j.ClassParameters;
 import jason.runtime.Settings;
+import jason.runtime.SourcePath;
 import jason.util.Config;
 
 
@@ -163,9 +163,9 @@ public class Agent {
                 asSrc = asSrc.replaceAll("\\\\", "/");
                 setASLSrc(asSrc);
 
-                if (asSrc.startsWith(Include.CRPrefix)) {
+                if (asSrc.startsWith(SourcePath.CRPrefix)) {
                     // loads the class from a jar file (for example)
-                    parseAS(Agent.class.getResource(asSrc.substring(Include.CRPrefix.length())).openStream());
+                    parseAS(Agent.class.getResource(asSrc.substring(SourcePath.CRPrefix.length())).openStream());
                 } else {
                     // check whether source is an URL string
                     try {
@@ -189,6 +189,7 @@ public class Agent {
             }
 
             loadKqmlPlans();
+            addInitialBelsInBB(); // in case kqml plan file has some belief 
 
             setASLSrc(asSrc);
         } catch (Exception e) {
@@ -514,35 +515,33 @@ public class Agent {
     /** add the initial beliefs in BB and produce the corresponding events */
     public void addInitialBelsInBB() throws RevisionFailedException {
         // Once beliefs are stored in a Stack in the BB, insert them in inverse order
-        for (int i=initialBels.size()-1; i >=0; i--) {
-            Literal b = initialBels.get(i);
-
-            // if l is not a rule and has free vars (like l(X)), convert it into a rule like "l(X) :- true."
-            if (!b.isRule() && !b.isGround())
-                b = new Rule(b,Literal.LTrue);
-
-            // does not do BRF for rules (and so do not produce events +bel for rules)
-            if (b.isRule()) {
-                getBB().add(b);
-            } else {
-                b = (Literal)b.capply(null); // to solve arithmetic expressions
-                addBel(b);
-            }
-        }
+        for (int i=initialBels.size()-1; i >=0; i--)
+            addInitBel(initialBels.get(i));
         initialBels.clear();
     }
 
     protected void addInitialBelsFromProjectInBB() {
         String sBels = getTS().getSettings().getUserParameter(Settings.INIT_BELS);
-        if (sBels != null) {
+        if (sBels != null)
             try {
-                for (Term t: ASSyntax.parseList("["+sBels+"]")) {
-                    Literal b = ((Literal)t).forceFullLiteralImpl();
-                    addBel(b);
-                }
+                for (Term t: ASSyntax.parseList("["+sBels+"]"))
+                    addInitBel( ((Literal)t).forceFullLiteralImpl());
             } catch (Exception e) {
                 logger.log(Level.WARNING, "Initial beliefs from project '["+sBels+"]' is not a list of literals.");
             }
+    }
+
+    private void addInitBel(Literal b) throws RevisionFailedException {
+        // if l is not a rule and has free vars (like l(X)), convert it into a rule like "l(X) :- true."
+        if (!b.isRule() && !b.isGround())
+            b = new Rule(b,Literal.LTrue);
+
+        // does not do BRF for rules (and so do not produce events +bel for rules)
+        if (b.isRule()) {
+            getBB().add(b);
+        } else {
+            b = (Literal)b.capply(null); // to solve arithmetic expressions
+            addBel(b);
         }
     }
 
@@ -610,7 +609,7 @@ public class Agent {
                 fixAgInIAandFunctions(this);
             } catch (Exception e) {
                 e.printStackTrace();
-            } 
+            }
 
             if (getPL().hasMetaEventPlans())
                 getTS().addGoalListener(new GoalListenerForMetaEvents(getTS()));
@@ -735,11 +734,11 @@ public class Agent {
             perW.add(new StructureWrapperForLiteral(iper.next()));
 
 
-        // deleting percepts in the BB that is not perceived anymore
+        // deleting percepts in the BB that are not perceived anymore
         Iterator<Literal> perceptsInBB = getBB().getPercepts();
         while (perceptsInBB.hasNext()) {
             Literal l = perceptsInBB.next();
-            if (! perW.remove(new StructureWrapperForLiteral(l))) { // l is not perceived anymore
+            if (l.subjectToBUF() && ! perW.remove(new StructureWrapperForLiteral(l))) { // l is not perceived anymore
                 dels++;
                 perceptsInBB.remove(); // remove l as perception from BB
 

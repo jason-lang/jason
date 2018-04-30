@@ -29,13 +29,13 @@ public class tia extends DefaultInternalAction {
         new Thread() {
             @Override
             synchronized public void run() {
-                int arg = 0;  // gets the first argument            
+                int arg = 0;  // gets the first argument
                 try {
                     arg = (int)((NumberTerm)args[0]).solve();
                 } catch (NoValueException e1) {
                     e1.printStackTrace();
                 }
-                
+
                 VarTerm result = (VarTerm)args[1]; // gets the second argument
 
                 // does the task...
@@ -54,7 +54,7 @@ public class tia extends DefaultInternalAction {
                     i.setSuspended(false);
                     i.peek().removeCurrentStep(); // removes the tia call in the plan
                     C.resumeIntention(i); // puts the intention back to the set of active intentions
-                    
+
                     // changes the Unifier with the value for the var
                     un.unifies(result, ASSyntax.createNumber(arg*1.618));
                 }

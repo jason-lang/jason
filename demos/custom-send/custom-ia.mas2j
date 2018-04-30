@@ -1,0 +1,12 @@
+/*
+
+example of custom .send
+
+the intention running the .send is suspended until an ack
+is received from the message's receiver
+
+*/
+
+MAS cia {
+    agents: bob agentArchClass MyAgArch;
+}

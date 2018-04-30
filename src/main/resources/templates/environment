@@ -21,7 +21,7 @@ public class <ENV_NAME> extends Environment {
         if (true) { // you may improve this condition
              informAgsEnvironmentChanged();
         }
-        return true; // the action was executed with success 
+        return true; // the action was executed with success
     }
 
     /** Called before the end of MAS execution */

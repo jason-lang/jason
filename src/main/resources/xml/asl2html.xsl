@@ -4,14 +4,14 @@
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     version="1.0"
 >
-        
+
     <xsl:output method="html" />
     <xsl:strip-space elements="*"/>
     <xsl:include href="agInspection.xsl" />
-    
+
     <xsl:template match="agent">
         <html>
-            <xsl:if test="string-length(@source) > 0"> 
+            <xsl:if test="string-length(@source) > 0">
             	<h1><xsl:value-of select="@source" /></h1>
            	</xsl:if>
             <xsl:apply-templates select="//beliefs" />
@@ -20,7 +20,7 @@
     </xsl:template>
 
     <xsl:template match="beliefs">
-        <xsl:if test="count(literal) > 0"> 
+        <xsl:if test="count(literal) > 0">
 	        <h2>Beliefs</h2>
 	        <xsl:for-each select="literal">
 	            <span style="color: {$bc}">
@@ -30,7 +30,7 @@
 	            </span>
 	        </xsl:for-each>
        	</xsl:if>
-        <xsl:if test="count(rule) > 0"> 
+        <xsl:if test="count(rule) > 0">
 	        <h2>Rules</h2>
 	        <xsl:for-each select="rule">
 	            <span style="color: {$bc}">
@@ -39,9 +39,9 @@
 	            </span>
 	        </xsl:for-each>
        	</xsl:if>
-        
+
     </xsl:template>
-    
+
     <!-- do not show source(self)  [we need to show self annot in case of some rules] -->
     <xsl:template match="annotations">
         <!-- xsl:if test="count(list-term/literal/structure/arguments/literal/structure[@functor = 'self']) != count(list-term/literal)"-->
@@ -51,19 +51,19 @@
                 </sub>
             </span>
         <!-- /xsl:if -->
-    </xsl:template>    
-    
+    </xsl:template>
+
     <xsl:template match="plans">
         <h2>Plans</h2>
         <xsl:for-each select="plan|new-set-of-plans">
             <xsl:apply-templates select="." />
         </xsl:for-each>
     </xsl:template>
-    
+
     <xsl:template match="new-set-of-plans">
         <br/>
     </xsl:template>
-    
+
     <xsl:template match="body">
         <xsl:param name="in-plan" select="'false'" />
         <xsl:for-each select="body-literal">
@@ -85,15 +85,15 @@
                 </xsl:when>
                 <xsl:otherwise>
                     <xsl:value-of select="@type"/><xsl:apply-templates />
-                </xsl:otherwise>        		
+                </xsl:otherwise>
             </xsl:choose>
-            <xsl:if test="not(position()=last())"> 
-                <xsl:text>; </xsl:text> 
-                <xsl:if test="$in-plan='true'"> 
+            <xsl:if test="not(position()=last())">
+                <xsl:text>; </xsl:text>
+                <xsl:if test="$in-plan='true'">
                     <br/>
                 </xsl:if>
             </xsl:if>
         </xsl:for-each>
     </xsl:template>
-    
+
 </xsl:stylesheet>

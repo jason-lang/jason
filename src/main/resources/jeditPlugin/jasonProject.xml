@@ -2,7 +2,7 @@
 
 <!DOCTYPE MODE SYSTEM "xmode.dtd">
 
-<!--    
+<!--
     Syntax color for Jason projects (see http://jason.sf.net)
     written by Jomi F. Hubner and Rafael H. Bordini
 -->
@@ -17,7 +17,7 @@
     </PROPS>
 
     <RULES ESCAPE="\" IGNORE_CASE="FALSE" HIGHLIGHT_DIGITS="TRUE">
-    
+
         <!-- Comments -->
         <EOL_SPAN TYPE="COMMENT2">//</EOL_SPAN>
         <!--- ISO compliant C-style comments -->
@@ -25,7 +25,7 @@
             <BEGIN>/*</BEGIN>
             <END>*/</END>
         </SPAN>
-        
+
         <!-- String literals -->
         <SPAN TYPE="LITERAL1" NO_LINE_BREAK="TRUE">
             <BEGIN>"</BEGIN>
@@ -75,7 +75,7 @@
         <FUNCTION>true</FUNCTION>
         <FUNCTION>false</FUNCTION>
         </KEYWORDS>
-        
+
     </RULES>
 
 </MODE>

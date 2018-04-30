@@ -1,8 +1,8 @@
-/* 
+/*
  * Jason Team for the
  *   Multi-Agent Programming Contest 2007
  *   (http://cig.in.tu-clausthal.de/AgentContest2007)
- * 
+ *
  *   Configuration for local simulator
  *
  * By Jomi & Rafael
@@ -10,7 +10,7 @@
 
 MAS miners {
     infrastructure: Centralised
-    
+
     environment: env.MiningEnvironment(11, 0, yes, "dummy", "miner", 1000)
         // parameters: 1. environment configuration id (from 1 to 13)
         //                   11 is Fence in 2007 Contest
@@ -18,24 +18,24 @@ MAS miners {
         //                   13 is Overkill in 2007 Contest
         //             2. sleep time (in ms) after each action
         //             3. whether display the gui
-        //             4. name of the agents of red team 
-        //             5. name of the agents of blue team 
+        //             4. name of the agents of red team
+        //             5. name of the agents of blue team
         //             6. window size
-        
+
     agents:
         // red team
         dummy agentArchClass arch.LocalMinerArch #6;
-               
+
         // blue team
-        leader  
+        leader
                beliefBaseClass agent.DiscardBelsBB("my_status","picked","committed_to","cell");
-              
+
         miner  //[teamSize=6]
-               agentClass agent.SelectEvent 
+               agentClass agent.SelectEvent
                beliefBaseClass agent.UniqueBelsBB("gsize(_,_,_)","depot(_,_,_)","steps(_,_)","committed_to(_,_,key)")
-               agentArchClass arch.LocalMinerArch 
+               agentArchClass arch.LocalMinerArch
                #6;
-                      
+
     aslSourcePath: "asl";
 }
 

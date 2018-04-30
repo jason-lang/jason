@@ -15,9 +15,10 @@ import javax.swing.border.*;
 public class VCWorld extends Environment {
 
     /** world model */
-    private boolean[][] dirty = { { true, true },    // all dirty
+    private boolean[][] dirty =
+      { { true, true },    // all dirty
         { true, true }
-    };
+      };
 
     private int vcx = 0; // the vacuum cleaner location
     private int vcy = 0;

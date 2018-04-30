@@ -125,7 +125,7 @@ export CLASSPATH=~/jason/libs/jade-XXXX.jar:.  <1>
 cd jade-example
 javac examples/bookTrading/Book*
 ----
-<1> Where XXXX is the release of Jade in the `libs` folder.
+<1> Where XXXX is the release of Jade in the `libs` folder and `~/jason` is where Jason was installed.
 
 - Start the buyer, called `bob`, in a new container using
   the command

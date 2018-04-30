@@ -29,7 +29,12 @@ public class TestIF {
             "+!test2 <- -b(_); !test1. "+
 
             "+!test3 <- if( b(X)) { Y = X*10; Z = 10; } else { Y = 60; Z=20; }; jason.asunit.print(Y,\" \",Z). "+
-            "+!test4 <- -b(_); !test3. "
+            "+!test4 <- -b(_); !test3. \n"+
+            
+            "+!testELIF <- if   (e(1)) { jason.asunit.print(1); } "+
+            "              elif (e(2)) { jason.asunit.print(2); } "+
+            "              elif (e(3)) { jason.asunit.print(3); } "+
+            "              else        { jason.asunit.print(4); }. "
         );
         /*
         ag.parseAScode(
@@ -67,5 +72,21 @@ public class TestIF {
         ag.assertPrint("30 10", 5);
         ag.addGoal("test4");
         ag.assertPrint("60 20", 10);
+    }
+
+    @Test(timeout=2000)
+    public void tesElseIf() {
+        ag.addBel("e(5)");
+        ag.addGoal("testELIF");
+        ag.assertPrint("4", 10);
+        ag.addBel("e(3)");
+        ag.addGoal("testELIF");
+        ag.assertPrint("3", 10);
+        ag.addBel("e(2)");
+        ag.addGoal("testELIF");
+        ag.assertPrint("2", 10);
+        ag.addBel("e(1)");
+        ag.addGoal("testELIF");
+        ag.assertPrint("1", 10);
     }
 }

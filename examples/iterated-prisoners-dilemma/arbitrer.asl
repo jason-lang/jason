@@ -7,7 +7,7 @@ num_rounds(2000).
 { include("pd_payoffs.asl") }
 
 // Rule to select two random players among known players
-select(P1,P2) :- .count(player(_),N)  & 
+select(P1,P2) :- .count(player(_),N)  &
   two_randoms(R1,R2,N) & .findall(P,player(P),LP) &
   .nth(R1,LP,P1) & .nth(R2,LP,P2).
 

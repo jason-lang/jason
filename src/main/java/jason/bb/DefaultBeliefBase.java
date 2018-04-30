@@ -1,8 +1,11 @@
 package jason.bb;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Deque;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -334,6 +337,7 @@ public class DefaultBeliefBase extends BeliefBase {
     public Element getAsDOM(Document document) {
         int tries = 0;
         Element ebels = null;
+        List<Literal> allBels;
         while (tries < 10) { // max 10 tries
             try {
                 synchronized (getLock()) {
@@ -350,10 +354,15 @@ public class DefaultBeliefBase extends BeliefBase {
                         enss.appendChild(ens);
                     }
                     ebels.appendChild(enss);
+                    // copy bels to an array to sort it
+                    allBels = new ArrayList<Literal>(size());
                     for (Literal l: this)
-                        ebels.appendChild(l.getAsDOM(document));
-                    break; // quit the loop
+                        allBels.add(l);
                 }
+                Collections.sort(allBels);
+                for (Literal l: allBels)
+                    ebels.appendChild(l.getAsDOM(document));
+                break; // quit the loop
             } catch (Exception e) { // normally concurrent modification, but others happen
                 tries++;
                 e.printStackTrace();

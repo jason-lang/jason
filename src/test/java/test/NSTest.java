@@ -147,7 +147,7 @@ public class NSTest extends TestCase {
 
     }
 
-    public void testApply() throws ParseException {
+    public void testApply1() throws ParseException {
         Term t = ASSyntax.parseTerm("A::bob");
         Unifier u = new Unifier();
         u.unifies(new VarTerm("A"), new Atom("ns"));
@@ -169,7 +169,54 @@ public class NSTest extends TestCase {
         p = (Literal)p.capply(u);
         assertTrue(p.getTerm(0) == Literal.DefaultNS);
     }
+    
+    public void testApply2() throws ParseException {
+        Term t = ASSyntax.parseTerm("A::B");
+        Unifier u = new Unifier();
+        u.unifies(new VarTerm("A"), new Atom("ns"));
+        Term sa = ASSyntax.parseTerm("kk::b(10)");
+        u.unifies(new VarTerm(new Atom("kk"), "B"), sa);
+        t = t.capply(u);
+        assertEquals(sa.getClass().getName(), t.getClass().getName());
+        assertEquals("ns::b(10)", t.toString());
 
+        t = ASSyntax.parseTerm("A::B");
+        u = new Unifier();
+        u.unifies(new VarTerm("A"), new Atom("ns"));
+        sa = ASSyntax.parseTerm("b(10) > 8");
+        u.unifies(new VarTerm("B"), sa);
+        t = t.capply(u);
+        assertEquals(sa.getClass().getName(), t.getClass().getName());
+        assertEquals("(ns::b(10) > 8)", t.toString());
+
+        t = ASSyntax.parseTerm("A::B");
+        u = new Unifier();
+        u.unifies(new VarTerm("A"), new Atom("ns"));
+        sa = ASSyntax.parseTerm(".include(kk)");
+        u.unifies(new VarTerm("B"), sa);
+        t = t.capply(u);
+        assertEquals(sa.getClass().getName(), t.getClass().getName());
+        assertEquals("ns::.include(kk)", t.toString());
+    
+        t = ASSyntax.parseTerm("A::B");
+        u = new Unifier();
+        u.unifies(new VarTerm("A"), new Atom("ns"));
+        sa = ASSyntax.parseTerm("[a,kk::b,10]");
+        u.unifies(new VarTerm("B"), sa);
+        t = t.capply(u);
+        assertEquals(sa.getClass().getName(), t.getClass().getName());
+        assertEquals("[a,kk::b,10]", t.toString());
+
+        t = ASSyntax.parseTerm("A::B");
+        u = new Unifier();
+        u.unifies(new VarTerm("A"), new Atom("ns"));
+        sa = ASSyntax.parseTerm("{+!g : b <- act; +kk::b(10)}");
+        u.unifies(new VarTerm("B"), sa);
+        t = t.capply(u);
+        assertEquals(sa.getClass().getName(), t.getClass().getName());
+        assertEquals("{ +!g : b <- act; +kk::b(10) }", t.toString());
+    }
+    
     public void testConstants() throws ParseException {
         Unifier u = new Unifier();
 
@@ -298,4 +345,16 @@ public class NSTest extends TestCase {
         assertTrue(a.getPL().toString().contains("ns2::tk; +#"));
 
     }
+
+    public void testAbolish() throws ParseException, JasonException {
+        as2j parser = new as2j(new StringReader("b(10). b(20). b(tell). ns71::b(30). default::b(40). !g(ok). +!g(X) <- .print(kk, 10, X). "));
+        parser.setNS(new Atom("ns3"));
+        Agent a = new Agent();
+        a.initAg();
+        parser.agent(a);
+        a.addInitialBelsInBB();
+        a.abolish(ASSyntax.parseLiteral("ns3::_"), null);
+        assertEquals(2, a.getBB().size());
+    }
+    
 }

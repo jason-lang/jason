@@ -28,6 +28,7 @@ public class RunJasonProject {
         MAS2JProject project = new MAS2JProject();
 
         if (args.length == 0) {
+            System.out.println(Config.get().getPresentation()+"\n");
             System.out.println("usage must be:");
             System.out.println("      java "+RunJasonProject.class.getName()+" <MAS2j Project File>");
             return;

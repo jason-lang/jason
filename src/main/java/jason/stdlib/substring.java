@@ -1,15 +1,17 @@
 
 package jason.stdlib;
 
+import java.util.Iterator;
+
 import jason.asSemantics.DefaultInternalAction;
 import jason.asSemantics.InternalAction;
 import jason.asSemantics.TransitionSystem;
 import jason.asSemantics.Unifier;
+import jason.asSyntax.NumberTerm;
 import jason.asSyntax.NumberTermImpl;
 import jason.asSyntax.StringTerm;
+import jason.asSyntax.StringTermImpl;
 import jason.asSyntax.Term;
-
-import java.util.Iterator;
 
 /**
   <p>Internal action: <b><code>.substring</code></b>.
@@ -22,8 +24,10 @@ import java.util.Iterator;
 
   <p>Parameters:<ul>
   <li>+ substring (any term).<br/>
-  <li>+ string (any term).<br/>
-  <li>+/- position (optional -- integer): the position of
+  <li>+/- string (any term).<br/>
+  <li>+/- position (optional -- integer): the initial position of
+  the string where the sub-string occurs.
+  <li>+/- position (optional -- integer): the last position of
   the string where the sub-string occurs.
   </ul>
 
@@ -34,7 +38,9 @@ import java.util.Iterator;
   <li> <code>.substring("a","abbacca",X)</code>: true and <code>X</code> unifies with 0, 3, and 6.
   <li> <code>.substring("a","bbacc",0)</code>: false.
   <li> <code>.substring(a(10),b(t1,a(10)),X)</code>: true and <code>X</code> unifies with 5.
-  <li> <code>.substring(a(10),b("t1,a(10)"),X)</code>: true and <code>X</code> unifies with 6.
+  <li> <code>.substring(a(10),b("t1,a(10),kk"),X)</code>: true and <code>X</code> unifies with 6.
+  <li> <code>.substring(a(10,20),R,5)</code>: true and <code>R</code> unifies with "20)".
+  <li> <code>.substring(a(10,20),R,5,7)</code>: true and <code>R</code> unifies with "20".
   </ul>
 
   @see jason.stdlib.concat
@@ -56,7 +62,7 @@ public class substring extends DefaultInternalAction {
         return 2;
     }
     @Override public int getMaxArgs() {
-        return 3;
+        return 4;
     }
 
     @Override
@@ -78,6 +84,14 @@ public class substring extends DefaultInternalAction {
         if (args.length == 2) {
             // no backtracking utilisation
             return s1.indexOf(s0) >= 0;
+        } else if (args[2].isGround() && args[2].isNumeric() && args[1].isVar()) {
+            // no backtracking utilisation
+            // unifies the var with the substring
+            int start = (int)((NumberTerm)(args[2])).solve();
+            int end   = s0.length();
+            if (args.length == 4 && args[3].isNumeric())
+                end = (int)((NumberTerm)(args[3])).solve();
+            return un.unifies(args[1], new StringTermImpl( s0.substring(start,end)));
         } else {
 
             // backtrack version: unifies in the third argument all possible positions of s0 in s1

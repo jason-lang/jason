@@ -1,6 +1,6 @@
 /* Initial goals */
 
-!move. 
+!move.
 
 /* Plans for goals */
 
@@ -10,7 +10,7 @@
 
 +battery(low) <- !charge.
 
-+!charge <- plug; .wait({ -battery(low) }); unplug. 
++!charge <- plug; .wait({ -battery(low) }); unplug.
 
              // note: the plan for charge does not need to care about
              // other goals. the programmer of this plan is concerned

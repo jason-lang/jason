@@ -11,22 +11,22 @@ search( [p(F,[GoalState|Path],Actions) | _], GoalState, Solution) :-
    .reverse(Actions,Solution).
 
 search( [p(F,[State|Path],PrevActions)|Open], GoalState, Solution) :-
-   State \== GoalState & //.print("  ** ",State," ",PrevActions) & 
+   State \== GoalState & //.print("  ** ",State," ",PrevActions) &
    .findall(
-        p(NewF,[NewState,State|Path],[Action|PrevActions]), // new paths 
-        ( next_state(State,Action,NewState) & 
-          not .member(NewState, [State|Path]) & 
+        p(NewF,[NewState,State|Path],[Action|PrevActions]), // new paths
+        ( next_state(State,Action,NewState) &
+          not .member(NewState, [State|Path]) &
           NewF = search.h(NewState,GoalState) + .length(PrevActions) + 1
-        ), 
+        ),
         Sucs) &
-   .concat(Open,Sucs,LT) & 
+   .concat(Open,Sucs,LT) &
    .sort(LT,NewOpen) &  // sort by F (H+G), so A*
-   //.print("open nodes #",.length(NewOpen)) & //.print(" new open = ",NewOpen) & 
+   //.print("open nodes #",.length(NewOpen)) & //.print(" new open = ",NewOpen) &
    search( NewOpen, GoalState, Solution).
 
 // heuristic (distance to target + orientation towards the target)
 h( s(X,Y,O,G), s(TargetX,TargetY,_,_), H ) :-
-   dist(X,Y,TargetX,TargetY,D) & 
+   dist(X,Y,TargetX,TargetY,D) &
    orientation_to_target(h,X,TargetX,O,CostOX) &
    orientation_to_target(v,Y,TargetY,O,CostOY) &
    H = D + CostOX + CostOY.
@@ -60,10 +60,10 @@ next_state( s(X,Y,OldOr,G),  turn(right), s(X,Y,NewOr,G)) :- next_state( s(X,Y,N
 search( [p([GoalState|Path],Actions) | _], GoalState, p([GoalState|Path],Actions)).
 
 search( [p([State|Path],PrevActions)|Open], GoalState, Solution) :-
-   State \== GoalState & 
+   State \== GoalState &
    .findall(
-        p([NewState, State|Path],[Action|PrevActions]), // new paths 
-        ( next_state(State,Action,NewState) & not .member(NewState, [State|Path])), 
+        p([NewState, State|Path],[Action|PrevActions]), // new paths
+        ( next_state(State,Action,NewState) & not .member(NewState, [State|Path])),
         Suc) &
    .concat( Open, Suc, NewOpen) &
    search( NewOpen, GoalState, Solution).
@@ -79,8 +79,8 @@ insert_all([H|T],L1,L2,Goal) :- insert(H,L1,L1H,Goal) & insert_all(T,L1H,L2,Goal
 
 insert(P,[],    [P],     _).
 insert(P,[A|L], [P,A|L], Goal) :- better(P,A,Goal).
-insert(P,[A|L], [A|L2],  Goal) :- insert(P,L,L2,Goal). 
-   
+insert(P,[A|L], [A|L2],  Goal) :- insert(P,L,L2,Goal).
+
 //better(P1, P2,Goal) :- f(P1,F1,Goal) & f(P2,F2,Goal) & F1 < F2.
 
 better(p(F1,_,_), p(F2,_,_),Goal) :- F1 < F2.

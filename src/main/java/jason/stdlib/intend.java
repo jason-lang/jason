@@ -23,7 +23,7 @@ import java.util.Iterator;
   <p>Description: checks if <i>I</i> is an intention: <i>I</i> is an intention
   if there is a triggering event <code>+!I</code> in any plan within an
   intention; just note that intentions can appear in E (list of events), PA (intentions with pending actions),
-  and PI (intentions waiting for something) as well.
+  and PI (intentions waiting for something) as well. This internal action backtracks all values for I.
 
   <p>Example:<ul>
 

@@ -182,6 +182,11 @@ public class RelExpr extends BinaryStructure implements LogicalFormula {
         return new RelExpr(getTerm(0).clone(), op, getTerm(1).clone());
     }
 
+    @Override
+    public Literal cloneNS(Atom newnamespace) {
+        return new RelExpr(getTerm(0).cloneNS(newnamespace), op, getTerm(1).cloneNS(newnamespace));
+    }
+
     /** gets the Operation of this Expression */
     public RelationalOp getOp() {
         return op;

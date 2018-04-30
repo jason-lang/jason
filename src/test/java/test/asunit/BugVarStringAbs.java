@@ -25,7 +25,7 @@ public class BugVarStringAbs {
     public void testAbs() {
         ag.addGoal("start(3.5)");
         ag.assertPrint("10.5", 10);
-        
+
         ag.addGoal("start(\"a\")");
         ag.assertPrint("NaN", 10);
     }

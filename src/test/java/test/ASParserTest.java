@@ -66,7 +66,7 @@ public class ASParserTest extends TestCase {
         assertTrue(ag.parseAS(new File("src/main/resources/asl/kqmlPlans.asl")));
         assertTrue(ag.parseAS(new File("examples/auction/ag1.asl")));
         Plan p = ag.getPL().get("lbid");
-        System.out.println(ag.getPL());
+        //System.out.println(ag.getPL());
         assertNotNull(p);
         assertEquals(p.getBody().getPlanSize(), 1);
         assertEquals(((PlanBody)p.getBody()).getBodyType(), PlanBody.BodyType.internalAction);
@@ -164,6 +164,11 @@ public class ASParserTest extends TestCase {
         t1 = ArithExpr.parseExpr("8 / 4 / 2");
         assertTrue(t1 != null);
         assertEquals(t1.solve(), 1.0);
+
+        t1 = ArithExpr.parseExpr("-0.5 * 2");
+        assertTrue(t1 != null);
+        assertEquals(t1.solve(), -1.0);
+
     }
 
     public void testDirectives() throws Exception {

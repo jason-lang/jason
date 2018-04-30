@@ -8,7 +8,7 @@
 +step(_) : food(X,Y,see,_) & agent(_,X,Y,S,eating) & strength(MS) & MS > S <- attack(X,Y).
 
 // food I smell
-+step(_) : food(X,Y,smell,_) <- move(X,Y). 
++step(_) : food(X,Y,smell,_) <- move(X,Y).
 
 // nothing else
 +step(_) <- random_move.

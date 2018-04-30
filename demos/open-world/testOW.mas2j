@@ -1,8 +1,8 @@
 MAS testOW {
 
-    environment: 
+    environment:
         testOWEnv
-    
+
     agents:
         tow #3;
 

@@ -78,7 +78,17 @@ public class ConfigGUI {
 
     public void run() {
         final ConfigGUI jid = getNewInstance();
-        JFrame f = new JFrame(jid.getWindowTitle());
+        JFrame f = null;
+        try {
+            f = new JFrame(jid.getWindowTitle());
+        } catch (Exception e) {
+            // uses console
+            userProperties.fix();
+            userProperties.store();
+            System.out.println("\nYou can edit the file "+userProperties.getUserConfFile()+" for your local configuration.");
+            return;
+        }
+
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         JPanel pBt = new JPanel(new FlowLayout());

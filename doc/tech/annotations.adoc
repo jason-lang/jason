@@ -5,6 +5,15 @@
 :icons: font
 :prewrap!:
 
+ifdef::env-github[]
+:tip-caption: :bulb:
+:note-caption: :information_source:
+:important-caption: :heavy_exclamation_mark:
+:caution-caption: :fire:
+:warning-caption: :warning:
+endif::[]
+
+
 ifdef::env-github[:outfilesuffix: .adoc]
 
 == Introduction
@@ -20,7 +29,7 @@ However, in order to deal with annotations, we have had to create a more sophist
 Annotations are represented with the same syntax of a list in Prolog; however, this needs to be a list of terms rather than literals, and it must immediately follow the literal or term they are annotating (plans are annotated in the optional label they have, which is itself a predicate). For example:
 
 ----
- p(t)[source(ag)]
+p(t)[source(ag)]
 ----
 
 represents a belief literal `p(t)` with a single annotation `source(ag)` which is an annotation handled by Jason to say that this belief originating from agent `ag` telling this agent that `ag` believed `p(t)` to be true. Other possible sources are `source(percept)` and `source(self)`; the former means that belief `p(t)` originated from perceiving the environment and the latter from a mental note. In the following example:

@@ -1,15 +1,15 @@
-/* 
+/*
 
-Jason Project 
+Jason Project
 
 This project exemplifies the use of the class TimeSteppedEnvironment. The
 environment implemented by this class has
-steps where each agent can perform only one action. When all agents have 
+steps where each agent can perform only one action. When all agents have
 asked for the execution of an action, the actions are really executed, the
-perception updated and the next step starts. 
+perception updated and the next step starts.
 
 To see the impact of stepped environment, first run the project with the
-environment class "Env" and after run it again with the EnvSync.  
+environment class "Env" and after run it again with the EnvSync.
 
 */
 

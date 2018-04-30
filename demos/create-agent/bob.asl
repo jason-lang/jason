@@ -1,6 +1,6 @@
 init.
-+init : true 
++init : true
   <- .print("i am running").
-  
-+!a : true 
+
++!a : true
   <- .print("ok, I am here").

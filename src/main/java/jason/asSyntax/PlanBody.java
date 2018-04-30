@@ -49,6 +49,10 @@ public interface PlanBody extends Term {
                 return "-";
             }
         },
+        delBelNewFocus {  public String toString() {
+                return "--";
+            }
+        },
         delAddBel {       public String toString() {
                 return "-+";
             }

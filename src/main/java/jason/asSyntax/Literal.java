@@ -70,9 +70,6 @@ public abstract class Literal extends DefaultTerm implements LogicalFormula {
         return (Literal)clone(); // should call the clone, that is overridden in subclasses
     }
 
-    /** clone in another namespace */
-    public abstract Literal cloneNS(Atom newnamespace);
-
     /** returns the functor of this literal */
     public abstract String getFunctor();
 
@@ -212,6 +209,10 @@ public abstract class Literal extends DefaultTerm implements LogicalFormula {
     /** returns this if this literal can be added in the belief base (Atoms, for instance, can not be) */
     public boolean canBeAddedInBB() {
         return false;
+    }
+    /** returns this if this literal should be removed from BB while doing BUF */
+    public boolean subjectToBUF() {
+        return true;
     }
 
     /** returns whether this literal is negated or not, use Literal.LNeg and Literal.LPos to compare the returned value */
@@ -609,8 +610,22 @@ public abstract class Literal extends DefaultTerm implements LogicalFormula {
         }
 
         @Override
+        public Literal cloneNS(Atom newnamespace) {
+        	return this;
+        }
+        
+        @Override
+        public Term capply(Unifier u) {
+        	return this;
+        }
+        
+        @Override
         public Iterator<Unifier> logicalConsequence(final Agent ag, final Unifier un) {
             return LogExpr.createUnifIterator(un);
+        }
+        
+        protected Object readResolve() {
+            return Literal.LTrue;
         }
     }
 
@@ -621,8 +636,21 @@ public abstract class Literal extends DefaultTerm implements LogicalFormula {
         }
 
         @Override
+        public Literal cloneNS(Atom newnamespace) {
+        	return this;
+        }
+        
+        @Override
+        public Term capply(Unifier u) {
+        	return this;
+        }
+        
+        @Override
         public Iterator<Unifier> logicalConsequence(final Agent ag, final Unifier un) {
             return LogExpr.EMPTY_UNIF_LIST.iterator();
+        }
+        protected Object readResolve() {
+            return Literal.LFalse;
         }
     }
 
@@ -662,6 +690,10 @@ public abstract class Literal extends DefaultTerm implements LogicalFormula {
 
         public String toString() {
             return getFunctor();
-        };
+        }
+        
+        protected Object readResolve() {
+            return Literal.DefaultNS;
+        }
     }
 }

@@ -49,7 +49,7 @@ public class TestVarInContext {
         ag.addGoal("test3");
         ag.assertPrint("b4", 5);
     }
-    
+
     @Test(timeout=2000)
     public void testContext2() throws RevisionFailedException, ParseException {
         ag.addBel(ASSyntax.parseRule("is_old(P) :- (not P | (step(Current) & P[step(N)] & Current - N > 3)). "));

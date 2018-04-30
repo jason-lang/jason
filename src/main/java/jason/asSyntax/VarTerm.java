@@ -87,7 +87,6 @@ public class VarTerm extends LiteralImpl implements NumberTerm, ListTerm { //, S
 
                 if (vl.isLiteral()) {
                     if (getNS() != Literal.DefaultNS) {
-                        // TODO: change capply to has the new namespace as parameter and them remove this code
                         // use var ns for the value ns
                         vl = ((Literal)vl).cloneNS(  (Atom)getNS().capply(u) ); // this var ns could be a var, so capply
                     }
@@ -340,7 +339,7 @@ public class VarTerm extends LiteralImpl implements NumberTerm, ListTerm { //, S
     // ----------
 
     public double solve() throws NoValueException {
-        throw new NoValueException();
+        throw new NoValueException("Error evaluating "+this+". It is not ground!");
     }
 
     // ----------

@@ -10,8 +10,8 @@
 +step(_) : food(X,Y,see,-1)  & not agent(_,X,Y,_,_)               <- move(X,Y).
 
 // Rule-n4: if I see another agent eating food owned by others, attack it
-+step(_) : food(X,Y,see,OAg) & agent(AgId,X,Y,_,eating) & 
-           AgId \== OAg & OAg \== -1 
++step(_) : food(X,Y,see,OAg) & agent(AgId,X,Y,_,eating) &
+           AgId \== OAg & OAg \== -1
         <- attack(X,Y).
 
 // Rule-n5: if I smell my food, move to there

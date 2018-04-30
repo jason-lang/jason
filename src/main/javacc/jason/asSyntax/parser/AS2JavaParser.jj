@@ -159,6 +159,7 @@ TOKEN : {
 
 | <TK_IF:     "if" >
 | <TK_ELSE:   "else" >
+| <TK_ELIF:   "elif" >
 | <TK_FOR:    "for" >
 | <TK_WHILE:  "while" >
 
@@ -177,7 +178,9 @@ TOKEN : {
                         | ["0"-"3"] ["0"-"7"] ["0"-"7"]))* "\"">
 
 // Identifiers
-|  <ATOM      : (<LC_LETTER> | "." <CHAR>) (<CHAR> | "." <CHAR>)*>
+|  <ATOM      : (<LC_LETTER> | "." <CHAR>) (<CHAR> | "." <CHAR>)*
+                | ("'" (~["'"])* "'" ) >
+                { if (image.charAt(0) == '\'') matchedToken.image = image.substring(1, lengthOfMatch-1); }
 |  <UNNAMEDVAR: ("_" (<CHAR>)*) >
 |  <CHAR      : (<LETTER> | <DIGIT> | "_")>
 |  <LETTER    : ( <LC_LETTER> | <UP_LETTER> )>
@@ -462,34 +465,38 @@ PlanBody plan_body_factor() : { Object F; PlanBody R = null; } // boolean hasPV 
 }
 
 
-PlanBody stmtIF() :    { Object B; Term T1; Term T2 = null; Literal stmtLiteral; boolean useElse = false; }
+PlanBody stmtIF() :    { PlanBody B; }
 {
    <TK_IF>
+   B = stmtIFCommon()
+   { return B; }
+}
+
+PlanBody stmtIFCommon() :    { Object B; Term T1; Term T2 = null; Literal stmtLiteral = null; }
+{
    "("
    B = log_expr()
    ")"
    T1 = rule_plan_term()
-   [ [ <TK_ELSE>       { useElse = true; }
-     ]
-     T2 = rule_plan_term()
+   [ (
+     <TK_ELIF> T2 = stmtIFCommon() 
+     |
+     <TK_ELSE> T2 = rule_plan_term() 
+     )
    ]
                        { try {
                             if (T1.isRule()) {
-                               throw new ParseException(getSourceRef(T1)+" if requires a plan body.");
+                                throw new ParseException(getSourceRef(T1)+" if requires a plan body.");
                             }
-                            if (T2 == null) {
+                            if (T2 == null) { 
                                 stmtLiteral = new InternalActionLiteral(ASSyntax.createStructure(".if_then_else", (Term)B, T1), curAg);
-                                stmtLiteral.setSrcInfo( ((Term)B).getSrcInfo() );
-                            } else {
+                            } else if (T2 != null) { // else case
                                 if (T2.isRule()) {
                                   throw new ParseException(getSourceRef(T2)+" if (else) requires a plan body.");
                                 }
                                 stmtLiteral = new InternalActionLiteral(ASSyntax.createStructure(".if_then_else", (Term)B, T1, T2), curAg);
-                                stmtLiteral.setSrcInfo( ((Term)B).getSrcInfo() );
-                                if (! useElse) {
-                                   logger.warning(getSourceRef(stmtLiteral)+" warning: use keyword 'else' before the else part of if.");
-                                }
                             }
+	                        stmtLiteral.setSrcInfo( ((Term)B).getSrcInfo() );
                             return new PlanBodyImpl(BodyType.internalAction, stmtLiteral);
                          } catch (Exception e) {
                             e.printStackTrace();
@@ -553,6 +560,8 @@ Object body_formula() :
       )
     | ( "-"            { formType = BodyType.delBel; }
         ["+"           { formType = BodyType.delAddBel; }
+        |
+         "-"           { formType = BodyType.delBelNewFocus; }
         ]
       )
    ]
@@ -600,7 +609,7 @@ Object body_formula() :
                        }
 }
 
-Term rule_plan_term():            { Trigger T = null; Object C = null; PlanBody B = null, B1 = null; Plan P = null;
+Term rule_plan_term():       { Trigger T = null; Object C = null; PlanBody B = null, B1 = null; Plan P = null;
                                boolean pb = true; // pb = "only plan body"
                                Pred L = null;
                                Literal h = null; Object t = null;
@@ -617,7 +626,7 @@ Term rule_plan_term():            { Trigger T = null; Object C = null; PlanBody 
      )
     ]
   ]
-  [ LOOKAHEAD(50)
+  [ LOOKAHEAD(150)
     h=literal()
     ":-"
     t = log_expr()
@@ -671,7 +680,7 @@ Literal literal() :
 {
   ( (
       // namespace
-      [ LOOKAHEAD(27)         
+      [ LOOKAHEAD(27)
         [
         (tns = <ATOM>         { if (tns.image.equals("default"))
                                      NS = Literal.DefaultNS;
@@ -994,7 +1003,7 @@ VarTerm var(Atom ns):      { Token K; VarTerm v; ListTerm lt = null; }
 
 StringTerm string():{ Token k; StringTermImpl s; }
 {
-  k = <STRING>      { s = new StringTermImpl(k.image.substring(1,k.image.length()-1).replaceAll("\\\\n", "\n"));
+  k = <STRING>      { s = new StringTermImpl(k.image.substring(1,k.image.length()-1).replaceAll("\\\\n", "\n").replaceAll("\\\\\"","\"") );
                       s.setSrcInfo(new SourceInfo(asSource,k.beginLine));
                       return s;
                     }

@@ -19,4 +19,4 @@ resource_needed(1).
 // just tell collectors that I finished the building
 +building_finished: true
    <- .broadcast(tell,building_finished).
-   
+

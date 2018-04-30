@@ -8,12 +8,11 @@ import java.util.logging.Logger;
 import jason.JasonException;
 import jason.architecture.AgArch;
 import jason.asSemantics.Agent;
-import jason.asSyntax.directives.DirectiveProcessor;
-import jason.asSyntax.directives.Include;
 import jason.mas2j.AgentParameters;
 import jason.mas2j.ClassParameters;
 import jason.runtime.RuntimeServicesInfraTier;
 import jason.runtime.Settings;
+import jason.runtime.SourcePath;
 
 /** This class implements the centralised version of the runtime services. */
 public class CentralisedRuntimeServices implements RuntimeServicesInfraTier {
@@ -43,9 +42,9 @@ public class CentralisedRuntimeServices implements RuntimeServicesInfraTier {
             stts = new Settings();
 
         String prefix = null;
-        if (father != null && father.getASLSrc().startsWith(Include.CRPrefix))
-            prefix = Include.CRPrefix + "/";
-        agSource = Include.checkPathAndFixWithSourcePath(agSource, ((Include)DirectiveProcessor.getDirective("include")).getSourcePaths(), prefix);
+        if (father != null && father.getASLSrc().startsWith(SourcePath.CRPrefix))
+            prefix = SourcePath.CRPrefix + "/";
+        agSource = masRunner.getProject().getSourcePaths().fixPath(agSource, prefix);
 
         String nb = "";
         synchronized (logger) { // to avoid problems related to concurrent executions of .create_agent

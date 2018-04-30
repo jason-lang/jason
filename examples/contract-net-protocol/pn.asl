@@ -5,4 +5,4 @@ plays(initiator,c).
 +plays(initiator,In)
    :  .my_name(Me)
    <- .send(In,tell,introduction(participant,Me)).
-   
+

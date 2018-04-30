@@ -42,6 +42,12 @@ public class InternalActionLiteral extends Structure implements LogicalFormula {
         super((Structure) l, u);
         this.ia = l.ia;
     }
+    
+    // used by cloneNS
+    private InternalActionLiteral(Atom ns, InternalActionLiteral l) {
+        super(ns, (Structure)l);
+        this.ia = l.ia;
+    }
 
     // used by the parser
     public InternalActionLiteral(Structure p, Agent ag) throws Exception {
@@ -157,6 +163,10 @@ public class InternalActionLiteral extends Structure implements LogicalFormula {
         return new InternalActionLiteral(this);
     }
 
+    @Override
+    public Literal cloneNS(Atom newnamespace) {
+        return new InternalActionLiteral(newnamespace, this);
+    }
 
     /** get as XML */
     @Override

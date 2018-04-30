@@ -44,10 +44,10 @@
 
 </xsl:text>
     </xsl:template>
-    
+
     <xsl:template match="beliefs">
 
-        <xsl:if test="count(literal) > 0"> 
+        <xsl:if test="count(literal) > 0">
 <xsl:text>
 \subsection*{Beliefs}
 \noindent
@@ -62,7 +62,7 @@
 		<xsl:text>}</xsl:text>
 		</xsl:if>
 
-        <xsl:if test="count(rule) > 0"> 
+        <xsl:if test="count(rule) > 0">
 <xsl:text>
 \subsection*{Rules}
 \noindent
@@ -108,20 +108,20 @@ Intention: </xsl:text><xsl:value-of select="@id" />
 
         	<xsl:apply-templates select="unifier"/>
 	        <xsl:text>\\
-</xsl:text>			
-		
+</xsl:text>
+
 			<xsl:apply-templates select="plan"/>
 
 			<xsl:if test="not(position()=last())">
 		        <xsl:text>\\\midrule
 
-</xsl:text>			
-			</xsl:if> 
+</xsl:text>
+			</xsl:if>
 			<xsl:if test="position()=last()">
 		        <xsl:text>\\\bottomrule
 
-</xsl:text>			
-			</xsl:if> 
+</xsl:text>
+			</xsl:if>
         </xsl:for-each>
 
 		<xsl:text>\end{tabular}
@@ -139,7 +139,7 @@ Intention: </xsl:text><xsl:value-of select="@id" />
             <xsl:text>\\
 </xsl:text>
 	</xsl:if>
-        
+
         <xsl:if test="count(body/body-literal) > 0">
             <xsl:text disable-output-escaping="yes">&amp;&lt;- &amp; </xsl:text>
             <xsl:apply-templates select="body"/>
@@ -158,8 +158,8 @@ Intention: </xsl:text><xsl:value-of select="@id" />
             <xsl:text>\}</xsl:text>
         </xsl:if>
     </xsl:template>
-    
-    
+
+
     <xsl:template match="body">
         <xsl:for-each select="body-literal">
             <xsl:choose>
@@ -183,7 +183,7 @@ Intention: </xsl:text><xsl:value-of select="@id" />
                 <xsl:otherwise>
                     <xsl:value-of select="@type"/>
                     <xsl:apply-templates />
-                </xsl:otherwise>        		
+                </xsl:otherwise>
             </xsl:choose>
             <xsl:if test="not(position()=last())">
                 <xsl:text>;\\
@@ -203,22 +203,22 @@ Intention: </xsl:text><xsl:value-of select="@id" />
             </xsl:when>
             <xsl:otherwise>
                 <xsl:value-of select="@operator" />
-            </xsl:otherwise>        		
+            </xsl:otherwise>
         </xsl:choose>
         <xsl:apply-templates select="right" />
         <xsl:text>)</xsl:text>
     </xsl:template>
-    
-    
+
+
     <xsl:template match="trigger">
         <xsl:value-of select="@operator"/>
         <xsl:value-of select="@type"/>
         <xsl:apply-templates />
     </xsl:template>
-    
+
 
     <xsl:template match="rule">
-        <xsl:apply-templates select="head"/> 
+        <xsl:apply-templates select="head"/>
         <xsl:text>~:-\\\rulebody{
 </xsl:text>
         <xsl:apply-templates select="context" />
@@ -232,7 +232,7 @@ Intention: </xsl:text><xsl:value-of select="@id" />
         <xsl:apply-templates  />
     </xsl:template>
 
-        
+
     <xsl:template match="structure">
         <xsl:text/><xsl:value-of select="@functor"/><xsl:text/>
         <xsl:if test="count(arguments) > 0">
@@ -255,10 +255,10 @@ Intention: </xsl:text><xsl:value-of select="@id" />
             <xsl:apply-templates select="list-term" />
         	<xsl:text>}</xsl:text>
         <!-- /xsl:if -->
-    </xsl:template>    
+    </xsl:template>
 
 
-    
+
     <xsl:template match="var-term">
         <xsl:text>\aslvar{</xsl:text>
         <xsl:value-of select="@functor"/>
@@ -267,19 +267,19 @@ Intention: </xsl:text><xsl:value-of select="@id" />
             <xsl:apply-templates select="annotations" />
         </xsl:if>
     </xsl:template>
-    
+
     <xsl:template match="number-term">
         <xsl:text>\aslnumber{</xsl:text>
         <xsl:value-of select="text()"/>
         <xsl:text>}</xsl:text>
     </xsl:template>
-    
+
     <xsl:template match="string-term">
         <xsl:text>\aslstring{</xsl:text>
         <xsl:value-of select="text()"/>
         <xsl:text>}</xsl:text>
     </xsl:template>
-    
+
     <xsl:template match="list-term">
         <xsl:text>[</xsl:text>
         <xsl:for-each select="*">
@@ -288,5 +288,5 @@ Intention: </xsl:text><xsl:value-of select="@id" />
         </xsl:for-each>
         <xsl:text>]</xsl:text>
     </xsl:template>
-    
-</xsl:stylesheet> 
+
+</xsl:stylesheet>

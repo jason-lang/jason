@@ -26,17 +26,17 @@ book("Jason", 75, 10).
 +!kqml_received(Sender, cfp, Content, MsgId)
   :  book(Content, Price, Qtd) & Qtd > 0            // if I have the book
   <- .send(Sender, propose, Price, MsgId).          // propose
-  
+
 +!kqml_received(Sender, cfp, Content, MsgId)
   <- .send(Sender, refuse, "not-available", MsgId). // refuse otherwise
 
-  
-// ACCEPT-PROPOSAL   
+
+// ACCEPT-PROPOSAL
 +!kqml_received(Sender, accept_proposal, Content, MsgId)
   :  book(Content, Price, Qtd) & Qtd > 0  // If I still have the book
   <- -+book(Content, Price, Qtd-1);       // change stock
      .print("New stock for ",Content," is ", Qtd-1);
-     .send(Sender, tell, Content, MsgId). // confirm 
+     .send(Sender, tell, Content, MsgId). // confirm
 
 +!kqml_received(Sender, accept_proposal, Content, MsgId)
   <- .send(Sender, failure, "not-available", MsgId).

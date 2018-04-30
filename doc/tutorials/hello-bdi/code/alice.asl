@@ -1,6 +1,6 @@
 !start.
 
-+!start 
++!start
    <- .send(bob,tell,happy(bob));
       .send(bob,tell,happy(alice1));
       .send(bob,tell,happy(alice2));

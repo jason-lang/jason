@@ -1,17 +1,17 @@
 // Agent ag in project wumpus.mas2j
 
-{ include("kb.asl") } 
-{ include("search.asl") } 
-{ include("auxiliary.asl") } 
+{ include("kb.asl") }
+{ include("search.asl") }
+{ include("auxiliary.asl") }
 
 
 /* Initial beliefs and rules */
 
 pos(1,1).            // my initial location
-orientation(east).   // and orientation 
+orientation(east).   // and orientation
 
 // scenario borders
-// borders(BottomLeftX, BottomLeftY, TopRightX, TopRightY) 
+// borders(BottomLeftX, BottomLeftY, TopRightX, TopRightY)
 borders(1, 1, 4, 4). // for R&N
 
 
@@ -25,13 +25,13 @@ borders(1, 1, 4, 4). // for R&N
    <- !init;
       !find(gold);
       !quit_cave.
-          
-+!init 
+
++!init
    <- !update(breeze); // update perception for location 1,1
-      !update(stench).    
+      !update(stench).
 
 +!find(gold) : has_gold.
-+!find(gold) 
++!find(gold)
    <- !explore;
       !find(gold).
 
@@ -40,8 +40,8 @@ borders(1, 1, 4, 4). // for R&N
       !goto(1,1);
       climb.
 
-      
-// TODO: find near safe and unvisited location    
+
+// TODO: find near safe and unvisited location
 +!explore
     : borders(BottomLeftX, BottomLeftY, TopRightX, TopRightY) &
       .range(X,BottomLeftX,TopRightX) &
@@ -53,10 +53,10 @@ borders(1, 1, 4, 4). // for R&N
 +!explore
    <- .print("no safe place to explore!").
 
-// TODO: shot wumpus if his location is known 
+// TODO: shot wumpus if his location is known
 // TODO: if no safe location is known, select the lest risky one to go
 
-+glitter 
++glitter
    <- grab;
       +has_gold;
       .succeed_goal(explore). // to stop exploring
@@ -66,15 +66,15 @@ borders(1, 1, 4, 4). // for R&N
       !goto(2,1);
       !goto(1,2);
       !goto(2,2);
-      !goto(2,3); 
+      !goto(2,3);
       !show_info;
       !quit_cave.
 
 
 +!goto(X,Y) : pos(X,Y).
-+!goto(X,Y) 
++!goto(X,Y)
     : pos(MyX,MyY) & orientation(O) &
-      search( [p(0,[s(MyX,MyY,O,no)],[])], s(X,Y,_,_), [Action|_]) 
+      search( [p(0,[s(MyX,MyY,O,no)],[])], s(X,Y,_,_), [Action|_])
    <- .print("doing ",Action);
       .wait(500);
       !do(Action);
@@ -86,7 +86,7 @@ borders(1, 1, 4, 4). // for R&N
    <- forward;
       ?pos(X,Y);
       ?orientation(O);
-      
+
       if (bump) {
          +wall(X,Y)
       } else {
@@ -95,9 +95,9 @@ borders(1, 1, 4, 4). // for R&N
          !update(stench);
       }.
 
-// perform action turn and update beliefs accordingly     
+// perform action turn and update beliefs accordingly
 +!do(turn(D))
-   <- turn(D); 
+   <- turn(D);
       ?orientation(O);
       !update(orientation(O),D).
 
@@ -105,10 +105,10 @@ borders(1, 1, 4, 4). // for R&N
 
 +!update(pos(X,Y), O) : next_state( s(X,Y,O,_), forward, s(NX,NY,_,_)) <- -+ pos(NX,NY). // next_state is define in search.asl
 
-+!update(breeze) : not breeze[source(percept)] & pos(X,Y) <- +~breeze(X,Y). 
-+!update(breeze) :     breeze[source(percept)] & pos(X,Y) <- +breeze(X,Y).  
++!update(breeze) : not breeze[source(percept)] & pos(X,Y) <- +~breeze(X,Y).
++!update(breeze) :     breeze[source(percept)] & pos(X,Y) <- +breeze(X,Y).
 
-+!update(stench) : not stench[source(percept)] & pos(X,Y) <- +~stench(X,Y). 
-+!update(stench) :     stench[source(percept)] & pos(X,Y) <- +stench(X,Y).  
++!update(stench) : not stench[source(percept)] & pos(X,Y) <- +~stench(X,Y).
++!update(stench) :     stench[source(percept)] & pos(X,Y) <- +stench(X,Y).
 
 +!update(orientation(Old),D) : next_state( s(_,_,Old,_),  turn(D), s(_,_,New,_)) <- -+ orientation(New). // next_state is define in search.asl

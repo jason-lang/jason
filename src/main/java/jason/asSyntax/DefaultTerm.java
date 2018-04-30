@@ -124,6 +124,10 @@ public abstract class DefaultTerm implements Term, Serializable {
     public Term capply(Unifier u) {
         return clone();
     }
+    
+    public Term cloneNS(Atom newnamespace) {
+        return clone();
+    }
 
     public SourceInfo getSrcInfo() {
         return srcInfo;

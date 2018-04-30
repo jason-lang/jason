@@ -65,8 +65,12 @@ public class term2string extends DefaultInternalAction {
         }
 
         // case 3, first is var
-        if (args[0].isVar() && args[1].isString()) {
-            return un.unifies(args[0], ASSyntax.parseTerm( ((StringTerm)args[1]).getString() ));
+        if (args[0].isVar()) {
+            if (args[1].isString()) {
+                return un.unifies(args[0], ASSyntax.parseTerm( ((StringTerm)args[1]).getString() ));
+            } else {
+                return un.unifies(args[0], ASSyntax.parseTerm( args[1].toString()));                
+            }
         }
 
         throw new JasonException("invalid case of term2string");

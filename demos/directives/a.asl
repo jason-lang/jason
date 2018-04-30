@@ -2,16 +2,16 @@ bel.
 
 !start.
 +!start
-   <- .list_plans; // just list the agent's plans 
+   <- .list_plans; // just list the agent's plans
       !g.
 
 /*
-    This agent uses a declarative goal identified by 
-    EBDG (Exclusive Backtracking Declarative Goal).  
-    This DG tries to achieve the goal g by many 
+    This agent uses a declarative goal identified by
+    EBDG (Exclusive Backtracking Declarative Goal).
+    This DG tries to achieve the goal g by many
     alternatives.
 */
-      
+
 { begin ebdg(g) }
 +!g : bel <- action1. // action1 does not achieve g
 +!g       <- action2. // action2 achieves

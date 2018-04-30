@@ -3,15 +3,37 @@
 
 ifdef::env-github[:outfilesuffix: .adoc]
 
-== version 2.2
+== version 2.3
 
-== version 2.1
+- new syntax: operator `--` to delete some belief with new focus for the event.
+
+== version 2.2 (2017-09-21)
+
+(a built package is available at https://sourceforge.net/projects/jason/files/jason/version%202.2/[here])
+
+- new syntax for atoms: as in Prolog, any sequence of characters enclosed by `'` can be used. Examples:
+** `'$%12'` (atom)
+** `b('@1')` (term using new syntax, in this case, the term is an atom and not a string)
+** `'$%12'(10)` (literal with functor using new syntax)
+
+- new syntax: optional `elif` in conditional statement. Example:
++
+----
+if   (e(1)) { .print(a); }
+elif (e(2)) { .print(b); }
+elif (e(3)) { .print(c); }
+else        { .print(d); }
+----
+
+- this release fixes some bugs and improves documentation
+
+== version 2.1 (2016-12-15)
 
 (a built package is available at https://sourceforge.net/projects/jason/files/jason/version%202.1/[here])
 
 - this release just fixes some bugs
 
-== version 2.0
+== version 2.0 (2016-09-15)
 
 (a built package is available at https://sourceforge.net/projects/jason/files/jason/version%202.0/[here])
 
@@ -59,7 +81,7 @@ NOTE: In Jason 2.0 the way to run the Jason IDE (based on jEdit) has changed. Ra
 
 *New Tutorial* on BDI (see link:doc/tutorials/hello-bdi/readme{outfilesuffix}[]).
 
-== version 1.4.2
+== version 1.4.2 (2015-03-03)
 
 revision 1821 on SVN of SF
 
@@ -71,7 +93,7 @@ New features
   and run agents while the MAS is running
 
 
-== version 1.4.1
+== version 1.4.1 (2014-08-06)
 
 revision 1792 on SVN
 
@@ -80,7 +102,7 @@ New features
 - web view of agent's mind (the url is usually http://localhost:3272)
 
 
-== version 1.4.0
+== version 1.4.0 (2014-03-06)
 
 revision 1759 on SVN
 
@@ -108,23 +130,23 @@ Changes in the API
 NB. TRO and capply have improved the performance of some applications by up to 30%.
 
 
-== version 1.3.10b
+== version 1.3.10b (2013-10-04)
 
 revision 1750 on SVN
 
 New features
 
 - (sub)goals can have a deadline, e.g.
-
++
 	...; !g(4)[hard_deadline(3000)]; ...
-
-  if g(4) is not finished in 3 seconds, a failure event is produced.
++
+if g(4) is not finished in 3 seconds, a failure event is produced.
 
 - the internal action .wait accepts a logical expression as argument, as in
-
++
        ...; .wait(b(X) & X > 10); ....
-
-   The intention will be suspended until the agent believes b(X) with X > 10.
++
+The intention will be suspended until the agent believes b(X) with X > 10.
    Timeout and elapse time arguments can be used as previously.
 
 
@@ -134,7 +156,7 @@ New example:
   http://www.cs.otago.ac.nz/staffpriv/ok/santa
 
 
-== version 1.3.9
+== version 1.3.9 (2013-03-14)
 
 revision 1721 on SVN
 
@@ -178,14 +200,11 @@ This parameter is stored in the ~/.jason/user.properties file and can be changed
 
 	java -jar lib/jason.jar
 
-NB: If in the user.properties file doesn't exist the first time someone runs
-  Jason, the file
-	<jason install directory>/jason.properties
-  will be used for initial user's parameters.
+NOTE: If in the user.properties file doesn't exist the first time someone runs  Jason, the file `<jason install directory>/jason.properties` will be used for initial user's parameters.
 
 - new internal action .shuffle to shuffle the elements of lists
 
-== version 1.3.8
+== version 1.3.8 (2012-08-10)
 
 revision 1709 on SVN
 
@@ -204,7 +223,7 @@ Bugs fixed
 - unique id of Intention wasn't thread safe
 - indexedBB didn't work on pool of threads
 
-== version 1.3.7
+== version 1.3.7 (2012-04-19)
 
 revision 1687 on SVN
 
@@ -220,7 +239,7 @@ Other changes
 - support for SACI is removed, users that still use this platform
   should not upgrade to this version
 
-== version 1.3.6a
+== version 1.3.6a (2011-11-10)
 
 revision 1668 on SVN
 
@@ -231,7 +250,7 @@ Bugs fixed
 - jade architecture not visible for other classes
 
 
-== version 1.3.6
+== version 1.3.6 (2011-09-12)
 
 revision 1659 on SVN
 
@@ -241,14 +260,13 @@ New features
  (e.g. Cartago and FailurePerception)
 
 Bugs fixed
-- .send ask with multiple receivers (in a variable ground to a list)
-   doesn't work
-- JADE infrastructure does not start the agents when used with
-   jEdit plugin
+
+- .send ask with multiple receivers (in a variable ground to a list) doesn't work
+- JADE infrastructure does not start the agents when used with jEdit plugin
 
 
 
-== version 1.3.5
+== version 1.3.5 (2011-08-23)
 
 revision 1656 on SVN
 
@@ -263,11 +281,12 @@ New features
 
 
 Bugs fixed
+
 - cartago + jade does not work together
 - execution control deadlock
 
 
-== version 1.3.4
+== version 1.3.4 (2010-11-19)
 
 revision 1628 on SVN
 
@@ -305,7 +324,7 @@ Other changes
 - JADE is updated to 4.0.1
 
 
-== version 1.3.3
+== version 1.3.3 (2010-07-09)
 
 revision 1603 on SVN
 
@@ -321,22 +340,22 @@ Creation of *meta events* for goal state change. Goal states are:
 
 The syntax for meta-events is
 ----
-	^<goal type><goal literal>[state(<s>)]
+^<goal type><goal literal>[state(<s>)]
 ----
 where `<goal type>` is `!` or `?` and `<s>` is one of the above states
 
 These events can than be handled by plans such as
 ----
-	^!goto(X,Y)[state(S)] <- .print("goto state is ",S).
+^!goto(X,Y)[state(S)] <- .print("goto state is ",S).
 ----
 for the state suspended, another annotation contains the suspension reason (.wait, .suspend, ...)
 ----
-	^!goto(X,Y)[state(S)[reason(R)]]
-           <- .print("goto state is ",S," due to ",R).
+^!goto(X,Y)[state(S)[reason(R)]]
+   <- .print("goto state is ",S," due to ",R).
 ----
 see demos/meta-events for an example
 
-== version 1.3.2
+== version 1.3.2 (2010-03-06)
 
 revision 1586 on SVN
 
@@ -362,9 +381,8 @@ Changes in the syntax
            bla;
       }
 ----
-";" is not required after "}"
-  last formula in <then> can be followed by ";"
-  keyword "else" is used
+";" is not required after "}" and the
+  last formula in <then> can be followed by ";".
 
 Bugs fixed
 
@@ -375,95 +393,92 @@ Bugs fixed
 - .relevant_plan with meta-variable plans as reported by Iain Wallance
 
 
-== version 1.3.1
+== version 1.3.1 (2009-09-10)
 
 revision 1553 on SVN
 
 New demo
+
 - use of controllers to write a customised mind inspector
 
 Internal actions
+
 - .random has an optional second parameter to setup backtrack
 
 Bugs fixed
+
 - foreach when no solution exists causes failure
 - perception of atoms cause failure with SACI
 - initialisation of TimeSteppedEnvironment (bug: waits for a first action to start)
 - .succeed_goal does not work when applied to 'itself' (the intention succeed itself)
 - !Var does no work correctly
 
-== version 1.3
+== version 1.3 (2009-04-20)
 
 revision 1489 on SVN
 
 New features
-- Plans and Triggers can be used as terms when enclosed by { and }
 
-  This feature is used in the following internal actions
-  .relevant_plans
-      e.g.       .relevant_plans({ +!g(_) }, ListOfPlans)
-      instead of .relevant_plans( "+!g(_)" , ListOfPlans)
-  .add_plan
-  .at
-  .wait
-
-  It may be used in send tellHow
-  .send(bob, tellHow, { +te : c <- a1 }).
-
-  It is also used by internal actions that 'return' plans, like
-  . plan_label
-  . relevant_plans
-  . current_intention
-
-  The advantages are that unification works
-       e.g. .at("now +1 m", {+stop(ID)})
-  and syntax errors are detected at compilation time
-
-  The old style (with strings) continues to work.
-
-  More complex meta-programming is also possible:
-  .... !myadd( { .print(a); .print(b) } ) ....
-       // pass the body of the plan as parameter to !myadd
-
-  +!myadd(Action) <-.add_plan( {+!g : c & b <- Action} ).
+- Plans and Triggers can be used as terms when enclosed by { and }.  This feature is used in the following internal actions
+** .relevant_plans, e.g. `.relevant_plans({ +!g(_) }, ListOfPlans)` instead of `.relevant_plans( "+!g(_)" , ListOfPlans)`
+**  .add_plan
+**  .at
+**  .wait
++
+It may be used in send tellHow `.send(bob, tellHow, { +te : c <- a1 })`. It is also used by internal actions that 'return' plans, like .plan_label, .relevant_plans, and .current_intention
++
+The advantages are that unification works
++
+        .at("now +1 m", {+stop(ID)})
++
+and syntax errors are detected at compilation time
++
+The old style (with strings) continues to work.
++
+More complex meta-programming is also possible:
++
+   !myadd( { .print(a); .print(b) } ) ....
+   // pass the body of the plan as parameter to !myadd
+   +!myadd(Action)
+      <- .add_plan( {+!g : c & b <- Action} ).
       // add a plan with a fixed event/context and body
       // given as a parameter
 
-- The performance is improved (+- 15%) by not cloning all the
-  plan in the creation of intended means
+- The performance is improved (+- 15%) by not cloning all the plan in the creation of intended means
 
 
 Changes in the GUI
-- When closing the window of MAS Console, the application is also
-  stopped.
+
+- When closing the window of MAS Console, the application is also stopped.
 
 
 Changes in communication
+
 - for messages sent to itself, the sender is 'self' now,
   and not the agent's name as in previous releases
 
 
 New internal actions
-- .puts: used for printing messages to the console (based on Ruby
-  similar method). Developed by Felipe Meneguzzi.
+
+- .puts: used for printing messages to the console (based on Ruby similar method). Developed by Felipe Meneguzzi.
 - .all_names: get the name of all agentes in the system.
 - .list_plans: print out the plans of agent's plan library
-- .prefix, .suffix and .sublist: see comments in the API doc, as
-  their implementation is currently generates slightly different results
-  from their usual implementation in logic programming.
+- .prefix, .suffix and .sublist: see comments in the API doc, as  their implementation is currently generates slightly different results  from their usual implementation in logic programming.
 
 
 Changes in internal actions
+
 - .relevant_plans has a third argument that gets the labels
   of the plans
 - .create_agent and .kill_agent accept strings for the agents' name
 
 
 New example
+
 - Blocks World
 
-
 Bugs fixed
+
 - arithmetic expressions are considered as Literal, causing
   failures in unification
 - variable unified with atom cannot be added in BB, as in
@@ -475,40 +490,40 @@ Bugs fixed
 - send askHow with 4th argument blocks the intention
 - TimeSteepedEnvironment wait timeout when it is not required to wait
 
-== version 1.2
+== version 1.2 (2009-01-06)
 the 5th Anniversary Release
 
 revision 1428 on SVN
 
 New features
+
 - customised belief bases can be organised in a chain so
   that several functionalities can be composed. For more
-  information
-  see the demo/chain-bb
-  see API doc of ChainBB and ChainBBAdapter
+  information see the demo/chain-bb and API doc of ChainBB and ChainBBAdapter.
 
-- annotations in failure events. All failure events are now
-  annotated with:
-     error(<atom: error id>): the identification of the type of error,
-     values used by Jason are:
-          no_applicable: no applicable plan
-          no_relevant: no relevant plan
-          no_option: no option selected
-          constraint_failed: constraint (i.e., a logic expression in
-              the plan body) failed
-          ia_failed: internal action returned false
-          action_failed: environment action failed
-          ask_failed: answer to an ask message failed (due to timeout)
-          wrong_arguments: wrong arguments (type and/or number) passed
-              to an internal action
+- annotations in failure events. All failure events are now annotated with:
++
+     error(<atom: error id>)
++
+the identification of the type of error, values used by Jason are:
 
-     error_msg(<string>): the human readable message for the error
-     code(<literal>): the part of the plan body where the failure occurred
-     code_src(<string>): the file where the failure was
-     code_line(<int>): the line in that file
-  see demo/failure for an example
-  see FAQ for more details
-  see code of JasonException and TS for more information
+** no_applicable: no applicable plan
+** no_relevant: no relevant plan
+**  no_option: no option selected
+** constraint_failed: constraint (i.e., a logic expression in the plan body) failed
+** ia_failed: internal action returned false
+** action_failed: environment action failed
+** ask_failed: answer to an ask message failed (due to timeout)
+** wrong_arguments: wrong arguments (type and/or number) passed to an internal action
++
+Other annotations:
+
+** error_msg(<string>): the human readable message for the error
+** code(<literal>): the part of the plan body where the failure occurred
+** code_src(<string>): the file where the failure was
+** code_line(<int>): the line in that file
++
+see demo/failure for an example, FAQ for more details, and code of JasonException and TS for more information
 
 - the version of JADE is upgraded to 3.6
 
@@ -524,38 +539,41 @@ New features
 
 
 New demo
-- java-object-terms: shows how variables may be unified to
-  Java objects
 
+- java-object-terms: shows how variables may be unified to Java objects
 
 New internal actions
+
 -  .term2string: transforms a term into a string and vice-versa
 
-
 New functions
+
 -  .math.sum: sums a list of numbers
 -  .math.average: returns the average of a list of numbers
 
 
 API changes
-- the most significant change is in the Literal class, which
-  is now abstract. To create a new literal, the previous method
+
+- the most significant change is in the Literal class, which  is now abstract. To create a new literal, the previous method
++
       Literal.parseLiteral(....)
-  still works, but
++
+still works, but
++
       new Literal(...)
-  has to be written as
++
+has to be written as
++
       ASSyntax.createLiteral(....)
-  the ASSyntax factory is the preferred approach for the creation of all
-  types of terms.
-  see API doc for further details.
-  see discussion about the Literal class in the jason-developers list.
++
+the ASSyntax factory is the preferred approach for the creation of all types of terms.
 
 
-== version 1.1.2
+== version 1.1.2 (2008-07-06)
 
 New features
-. (experimental) control of the execution in plan bodies with if, while,
-  and for.
+
+. (experimental) control of the execution in plan bodies with if, while,  and for.
 
   --- if ----
   syntax:
@@ -565,13 +583,13 @@ New features
   [ } else { <plan_body2> ]
   };
 
-  if <logical formula> holds, <plan_body1> is executed; otherwise,
+if <logical formula> holds, <plan_body1> is executed; otherwise,
   <plan_body2> is executed.
 
-  e.g.: if (vl(X) & X > 10 & X < 20) { // where vl(X) is a belief
+  if (vl(X) & X > 10 & X < 20) { // where vl(X) is a belief
            .print("value > 10 and ");
            .print("value < 20")
-        }
+  }
 
   --- while ---
   syntax:
@@ -580,11 +598,11 @@ New features
     <plan_body>
   };
 
-  while <logical formula> holds, the <plan_body> is executed.
+while <logical formula> holds, the <plan_body> is executed.
 
-  e.g.: while (vl(X) & X > 10) {
+  while (vl(X) & X > 10) {
            -+vl(X+1)
-        }
+  }
 
   --- for ---
   syntax:
@@ -593,25 +611,26 @@ New features
     <plan_body>
   };
 
-  the <plan_body> is executed for all unifications of <logical formula>.
+the <plan_body> is executed for all unifications of <logical formula>.
 
-  e.g.: for ( vl(X) ) {
+  for ( vl(X) ) {
           .print(X)
-        };
-        for ( .member(X,[a,b,c]) ) {
+  };
+  for ( .member(X,[a,b,c]) ) {
           .print(X)
-        };
-        for ( .range(I,1,10) ) {
+  };
+  for ( .range(I,1,10) ) {
            .print(I)    // print all values from 1 to 10
-        };
+  };
 
 
 New examples and demos:
+
 . demos/gui: two simple examples of how to make a GUI for individual agents
-. example/food-simulation: implementation of the scenario of simulation
-        presented in http://jasss.soc.surrey.ac.uk/1/3/3.html
+. example/food-simulation: implementation of the scenario of simulation presented in http://jasss.soc.surrey.ac.uk/1/3/3.html
 
 Bugs fixed:
+
 . BUF didn't add annotation "source(percept)" in the perception deletion event
 . drop_desire did not remove desires in Circumstance.Event correctly
   when annotations are used
@@ -620,14 +639,16 @@ Bugs fixed:
 . problem in unification when unbound vars were used as arguments
   for rules (as identified by Stephen Cranefield)
 
-== version 1.1.1
+== version 1.1.1 (2008-04-21)
 
 New features
+
 . Terms can be body plans enclosed by "{ ... }", as in the following
   example:
      test({ a1; !g; ?b(X); .print(X) }, 10)
 
 Bugs fixed:
+
 . unification in return of ! and ?
 . use nested source annotations in communication
 . add "source(self)" in goals without source
@@ -635,11 +656,11 @@ Bugs fixed:
 . timeout in .wait does not cause a runtime exception
 
 
-== version 1.1.0
+== version 1.1.0 (2008-04-08)
 
 New features
-. Performance improvements: in general, applications run 30%
-  faster.
+
+. Performance improvements: in general, applications run 30% faster.
 
 . Arithmetic functions: math.abs, math.max, ...
   see doc/index.html and demo/function for more information
@@ -659,18 +680,22 @@ New features
   (if the message is accepted).
 
 New example:
+
 . the Jason team used in the Agent Contest 2007 was added to the
   examples (folder gold-miners-II)
 . a GUI was added to the IPD example
 
 New demo:
+
 . function: shows how to create new arithmetic functions.
 
 New internal actions:
+
 . .reverse: reverse the order of lists and strings.
 . .union, .intersection and .difference of sets.
 
 Bugs fixed:
+
 . the internal action .concat did not clone the lists properly
 . +?b(X) plans did not "return" the X value (bug in 1.0.1 only)
 . +!A used to catch events of the form +p
@@ -679,29 +704,32 @@ Bugs fixed:
 . The parser allowed mixing initial beliefs and goals with plans.
 
 
-== version 1.0.1
+== version 1.0.1 (2007-12-09)
 
 New features
+
 . a new entry is added in the mas2j project: aslSourcePath. This entry
   allows the developer to set where the runtime will search for AgentSpeak
   sources. E.g:
-
++
      MAS ts {
        agents: a; b; c;
        aslSourcePath: "."; "src/asl"; "kk";
      }
-
-  search the sources of agents a, b, and c in the paths "." (current path),
++
+search the sources of agents a, b, and c in the paths "." (current path),
   "src/asl", and "kk".
   The default value is the project's directory.
 
 . a preliminary version of an eclipse plugin (http://jasonplugin.wikidot.com)
 
 New documentation
+
 . A getting started with Jason (see doc/index.html)
 . A mini-tutorial of interoperability between Jason and JADE (see doc/index.html)
 
 New Demo
+
 . demo/sync-environment shows how to use the SteppedEnvironment.
   This environment has steps where each agent can perform only one action.
   When all agents have asked for the execution of an action, the actions
@@ -710,18 +738,20 @@ New Demo
   environment.
 
 New internal actions
+
 . .suspend and .resume were moved from the example to the standard library.
   They can thus be used in any Jason application.
 . .delete to remove elements from lists or strings
 
 Bugs fixed
+
 . clone example
 . use-only-jason-bdi example
 . the save files when opening a new project locks the jEdit
 . parser accepts initial goals and beliefs mixed with plans
 
 
-== version 1.0
+== version 1.0 (2007-08-22)
 
 Jason v 1.0 is used in the book
 'Programming Multi-Agent Systems in AgentSpeak using Jason'
@@ -735,36 +765,39 @@ New Demo:
 . demo/clone shows how an agent can create a clone of itself.
 
 
-== version 0.9.7
-
+== version 0.9.7 (2007-08-22)
 
 New features:
+
 . First (experimental) version of JADE infrastructure
   (see FAQ for details)
 . Mind inspector has "bi-directional" debug and other improvements.
 
 New example:
+
 . iterated-prisoners-dilemma
 
 New Demos:
-. tell-rule: implements a new performative to tell rules like
-       a :- b & c.
-  to other agents.
+
+. tell-rule: implements a new performative to tell rules like `a :- b & c.` to other agents.
 
 . suspend-resume: implements two useful internal actions: one to
   suspend intentions and other to resume them.
 
 Bugs fixed:
+
 . JavaWebStart of Jason applications in windows.
 
 Changes:
+
 . new beliefs are added before the others in the belief base.
 . asynchronous acting in centralised infrastructure.
 
 
-== version 0.9.6
+== version 0.9.6 (2007-05-10)
 
 New features
+
 . test goal now can also have expressions, as in:
 	+e : true <- ... ?(a & b | d); ...
   unlike simple test goals, the event +? will not be generated
@@ -779,23 +812,25 @@ New features
   "jnlp": creates a JavaWebStart application
 
 New internal actions
+
 . min(<list>,<term>) gets the minimum value from the list.
 . max(<list>,<term>) gets the maximum value from the list.
 . .drop_event(D) removes the event +!D from the set of events
 
 Changes in internal actions
+
 . .drop_desire(D) also removes the intentions related to +!D.
 . .drop_all_desires also removes all intentions.
 
 Bugs fixed
+
 . broadcast did not work with SACI.
 . persistent BB in text files did not work
 . strong negation was not shown in the mind inspector
-. initial beliefs with negative arguments were not shown in
-  the mind inspector
+. initial beliefs with negative arguments were not shown in the mind inspector
 
 
-== version 0.9.5
+== version 0.9.5 (2007-03-07)
 
 New features
 
@@ -808,12 +843,14 @@ New features
   the intention. The answer is added to the sender's belief base.
 
 Changes in AgentSpeak semantics
+
 . "-b" in a plan removes "b[source(self)]" from the Belief Base and
   not b with its all annotations. However, the source(self) annotation
   is added only in case b has no annots. For -b[a], the "self" source is
   not added and only annotation "a" is removed.
 
 Changes in internal actions
+
 . Many internal actions were renamed to follow a Prolog pattern. E.g.,
   addPlan -> add_plan, createAgent -> create_agent.
 . .drop_desire does not produce events anymore, it just removes the
@@ -823,28 +860,33 @@ Changes in internal actions
 . new internal action .nth to select some term of a list.
 
 Documentation
+
 . all internal actions were documented using javadoc (see doc/api).
 
 Bugs fixed in 0.9.5b
+
 . The date in the application build.xml use latin characters.
 . The variable name in the KQML plans may conflict with users'
   variables.
 . .sort changes the first parameter.
 . the include directive can not be used before initial beliefs.
 
-== version 0.9.4
+== version 0.9.4 (2006-12-01)
 
 New features
+
 . The user can define class paths for Jason projects, see the Sniffer
   project file (Sniffer.mas2j) for an example.
 
 Examples:
+
 . Add support form message sniffing in centralised infrastructure
   and improve the Sniffer example to use it (and also store all
   messages in a data base)
 . Improve the wandering capabilities in the Gold-Miners example.
 
 Changes in the API
+
 . The TermImpl was renamed to Structure
 . The method that executes actions in the environment is not
 	executeAction(String agName, Term act)
@@ -854,12 +896,14 @@ Changes in the API
   work with this version.
 
 Bugs fixed:
+
 . unification of variable in annotations
 
 
-== version 0.9.3
+== version 0.9.3 (2006-10-09)
 
 New features
+
 . an event +!idle is generated when the agent has nothing to do
   (no other event, no intention, no message, ....)
 
@@ -884,10 +928,12 @@ New features
 
 
 New examples
+
 . Sniffer: shows how to get all messages sent by the agents.
 . ContractNetProtocol: shows how the CNP may be implemented with Jason
 
 New internal action:
+
 . dropGoal(<goal>,[true|false]): the implementation of the
   .dropGoal as specified in DALT 2006 paper. All intentions
   with goal <goal> will be popped until the <goal> intended means (im).
@@ -913,6 +959,7 @@ New internal action:
 
 
 Changes in the communication
+
 . performative ask is changed to askOne
 . the event for messages is now +!kqmlReceived (and not +!received)
 . send ask can have an 5th parameter: timeout.
@@ -935,24 +982,28 @@ Changes in the API
     }  }
 
 
-== version 0.9.2
+== version 0.9.2 (2006-08-21)
 
 New internal action:
+
 . count(<bel>,<var>): count the number of beliefs that match
   <bel>.
 
 New examples:
+
 . SimpleCommunication: briefly shows how to send and receive
   messages.
 . DomesticRobot: it is an improved version of the previous House robot.
 
 Bugs fixes:
+
 . performative ask does not work properly.
 
 
-== version 0.9.1
+== version 0.9.1 (2006-08-11)
 
 New internal actions:
+
 . random(X): unifies X with a random value from 0 to 1.
 . date(YY,MM,DD): gets the current date
 . time(HH,MM,SS): gets the current time
@@ -960,14 +1011,16 @@ New internal actions:
   verify whether X is a var, string, number, ground, or list.
 
 Bugs fixed:
+
 . Jason 0.9.1 correctly stops the running project (in windows).
   In Jason 0.9 some java.exe processes do not finish properly.
 
-== version 0.9
+== version 0.9 (2006-07-14)
 
 This version requires java 1.5.
 
 New features:
+
 . Belief Base (BB) can be customised. There are two available
   customisations: one that stores the beliefs in a text file and
   another that stores them in a relational DB. This latter
@@ -977,6 +1030,7 @@ New features:
   See the "persistentBelBase" example for more information.
 
 Changes in the AgentSpeak syntax
+
 . there can be initial goals in the source code, e.g.:
     bel(a).
     !initgoal.
@@ -1020,6 +1074,7 @@ Changes in the AgentSpeak syntax
 
 
 Changes in .mas2j file
+
 . the environment class can receive parameters from the .mas2j file.
   e.g. in a mas2j file:
       ...
@@ -1031,6 +1086,7 @@ Changes in .mas2j file
 
 
 Changes in the API
+
 . the BRF method, in the "Agent" class, was renamed to BUF (Belief Update
   Function). A new BRF method was added for belief *revision* rather
   than update.
@@ -1040,6 +1096,7 @@ Changes in the API
   customised to use BRF for the actual changes in the BB.
 
 Other changes
+
 . the "src/templates" folders contains all sources used by the JasonIDE
   to create new files (e.g., when users request a new agent or a new
   project to be created).
@@ -1054,10 +1111,11 @@ Other changes
   "+!received(...)".
 
 
-== version 0.8
+== version 0.8 (2006-05-02)
 
 New features
-   . Jason is now a jEdit (www.jedit.org) plugin.
+
+. Jason is now a jEdit (www.jedit.org) plugin.
    . Jason was prepared for new infrastructures (Jade, MadKit, ...)
      To create a new infrastructure, you shoud add an infrastrucure Factory
      in .jason/user.properties file and implement some classes.
@@ -1076,6 +1134,7 @@ New features
 
 
 Changes in .mas2j file
+
    . The user can inform its own parameters in the agent declaration, e.g.:
      .... agents: ag1 [verbose=2,file="a.xml",value=45];
      These extra parameters are stored in the Settings class and can be
@@ -1084,6 +1143,7 @@ Changes in .mas2j file
        ts.getSettings().getUserParameter("file");
 
 Changes in ASL syntax
+
    . the unnamed variable ("_") is added
    . annotations are an AS list, so it is possible constructions like
 	     p(t)[a,b,c] = p(t)[b|R]     (R is [a,c])
@@ -1106,11 +1166,13 @@ Changes in ASL syntax
    . new operator "div": integer division
 
 Changes in the agent architecture customisation
+
    . In this version, the user extends AgArch class instead of Centralised
      or Saci architectures. Thus, the same architecture
      customisation can be used in both infrastructures.
 
 Other changes
+
    . The Java logging API is used to output the execution.
      The default log configuration is in the
      src/logging.properties file. The user can copy this file to its
@@ -1122,9 +1184,10 @@ Other changes
      If the project has a file called c-build.xml, the build.xml file
      is not created and this script is used instead.
 
-== version 0.7
+== version 0.7 (2005-08-18)
 
 New features
+
 . atomic execution of intention. When an intention is created from
   a plan with a label that has an 'atomic' annotation
      @label[atomic] +.... : .... <- ....
@@ -1140,6 +1203,7 @@ New features
   classpath
 
 Changes in the Environment programming
+
 . Each agent has its own perception list in version 0.7.
   In the application Environment class, the user can change these lists by
   calling
@@ -1164,11 +1228,13 @@ Changes in the Environment programming
     addPercept(Literal.parseLiteral("~p(a)"));
 
 Changes in Internal Actions
+
    . Internal actions args are now terms and not Strings
    . Internal actions implements InternalAction interface
    . Each agent has its own IA objects -- IA has a state for its agent
 
 Other changes
+
    . auto-save before running
    . brf() was moved to Agent class (and architecture perceive returns a List of perceptions)
    . The log4j is used to output the execution. The default log configuration is in the
@@ -1179,28 +1245,33 @@ Other changes
    . initial beliefs generate events like + operator.
 
 
-== version 0.6
+== version 0.6 (2005-02-28)
 
 New features
+
 . Two execution modes: async and sync (see doc/faq.html)
 . Debugging execution mode with "mind inspector" tool
    (works both for centralised and distributed agents)
 
 Agent Communication
+
 . new implementation: all received messages create an event that
    is handled by standard AS plans (see bin/resources/kqmlPlans.asl file)
 . acceptTell/Trust functions are replaced by socAcc (see manual)
 
 Changes to AS syntax
+
 . variables can be used where literals are expected, and a few
    other changes (see manual)
 
 Changes to .mas2j file syntax
+
 . user can set a controller class (see grammar) and doc/faq
 . Environment.notifyEvents() was renamed to informAgsEnvironmentChanged()
 . default architecture is centralised, not Saci.
 
 Changes in the API
+
 . the classes was reorganised into new packages.
   An User's environment class
   needs the following imports:
@@ -1209,13 +1280,14 @@ Changes in the API
 	import jason.environment.*;
 
 Other changes
+
 . the ulibs dir. is not used anymore. The user classes should be
    placed in his/her project directory (or in any directory in your CLASSPATH)
 . source annotation in predicates now have the form "[source(self)]" instead of
    "[self]" (similarly for perception and other agents as sources).
 . Saci is included in the distribuion
 
-== version 0.5
+== version 0.5 (2004-11-22)
 
 Changes at .mas2j file syntax
 . the user can use java packages for his/her classes
@@ -1243,7 +1315,7 @@ Changes in the API
 A new internal action, .broadcast(<ilforce>,<content>), was added.
 
 
-== version 0.4
+== version 0.4 (2004-07-21)
 
 The implementation of the user-defined environment class has been
 changed so as to allow users to specify customised perception for
@@ -1307,13 +1379,13 @@ Briefly, the changes are as follows:
 The option "event=retrieve" was added. It makes the selectOption function be called even if there is not relevant plans.
 
 
-== version 0.3
+== version 0.3 (2004-04-12)
 
 Jason now has an IDE! This version of Jason also runs on MS
 Windows, if you must.
 
 
-== version 0.2
+== version 0.2 (2004-02-08)
 
 First public release.
 
@@ -1322,6 +1394,6 @@ needs to provide any customisation. The same environment code now
 works for Saci and Centralised.
 
 
-== version 0.1
+== version 0.1 (2004-01-06)
 
 The very first release of Jason!

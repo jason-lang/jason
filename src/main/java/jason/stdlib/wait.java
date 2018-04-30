@@ -98,8 +98,13 @@ public class wait extends DefaultInternalAction {
             te = Trigger.tryToGetTrigger(args[0]);   // wait for event
             if (te == null && args[0] instanceof LogicalFormula) { // wait for an expression to become true
                 f = (LogicalFormula)args[0];
-                if (ts.getAg().believes(f, un))
+                if (ts.getAg().believes(f, un)) { // if the agent already believes f
+                    // place current intention back in I, since .wait usually does not do that
+                    Intention si = ts.getC().getSelectedIntention();
+                    si.peek().removeCurrentStep();
+                    ts.getC().addIntention(si);
                     return true;
+                }
             }
             if (args.length >= 2)
                 timeout = (long) ((NumberTerm) args[1]).solve();

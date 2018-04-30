@@ -69,8 +69,8 @@ public class EBDG extends DefaultDirective implements Directive {
             }
 
 
-            // add -!g : true <- !!g.
-            newAg.getPL().add(ASSyntax.parsePlan("-!"+goal+" <- !!"+goal+"."));
+            // add -!g : true <- !g.
+            newAg.getPL().add(ASSyntax.parsePlan("-!"+goal+" <- !"+goal+"."));
 
             // add +g : true <- .abolish(p__f(_,g)); .succeed_goal(g).
             newAg.getPL().add(ASSyntax.parsePlan("+"+goal+" <- .abolish(p__f(_,"+goal+")); .succeed_goal("+goal+")."));
