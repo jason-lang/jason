@@ -563,7 +563,7 @@ public class TransitionSystem {
     private void applyFindOp() throws JasonException {
         stepDeliberate = State.AddIM; // default next step
 
-        // consider scope (new JasonER)
+        // consider scope (new in JasonER)
         // TODO: implement Scope for RelPl ApplPl SelAppl
         List<Plan> candidateRPs = C.SE.getRelPlans(); // in case the rel plans are already computed before
         if (candidateRPs == null) {        
@@ -585,7 +585,7 @@ public class TransitionSystem {
             for (Plan p : candidateRPs) {
                 Unifier relUn = null;
                 if (C.SE.isInternal()) {
-                    // use IM vars in the context for sub-plans
+                    // use IM vars in the context for sub-plans (new in JasonER)
                     for (IntendedMeans im: C.SE.getIntention()) {
                         if (im.getPlan().hasSubPlans() && im.getPlan().getSubPlans().get(p.getLabel()) != null) {
                             relUn = im.triggerUnif.clone();
@@ -1148,7 +1148,7 @@ public class TransitionSystem {
         List<Plan> candidateRPs = ag.pl.getCandidatePlans(te);
         if (candidateRPs != null) {
             for (Plan pl : candidateRPs) {
-                Unifier relUn = null; // TODO: implement scope of vars (see findOp)
+                Unifier relUn = null;
                 relUn = pl.isRelevant(te, relUn);
                 if (relUn != null) {
                     if (rp == null) rp = new LinkedList<Option>();
