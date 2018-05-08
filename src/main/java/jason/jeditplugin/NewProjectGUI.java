@@ -5,6 +5,8 @@ import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -181,6 +183,8 @@ public class NewProjectGUI extends NewAgentGUI {
         String projDecl = Config.get().getTemplate("project");
         projDecl = projDecl.replace("<PROJECT_NAME>", name);
         projDecl = projDecl.replace("<INFRA>", projInfra.getSelectedItem().toString());
+        projDecl = projDecl.replace("<VERSION>", Config.get().getJasonVersion());
+        projDecl = projDecl.replace("<DATE>", new SimpleDateFormat("MMMM dd, yyyy - HH:mm:ss").format(new Date()));
         return projDecl;
     }
 }
