@@ -1,4 +1,14 @@
-/* Jason Project */
+/*
+    <PROJECT_NAME>
+    ---------------------------
+
+    Jason Project File
+
+    This file defines the initial state of the MAS
+
+    Jason <VERSION>
+    <DATE>
+*/
 
 MAS <PROJECT_NAME> {
 

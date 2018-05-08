@@ -68,7 +68,7 @@ import java.util.concurrent.TimeUnit;
   asynchronous ask since it
   does not suspend jomi's intention. If rafael has, for instance, the literal
   <code>value(beer,2)</code>
-  in its belief base, this belief is automatically sent to jomi. Otherwise an event
+  in its belief base, this belief is automatically sent back to jomi. Otherwise an event
   like <code>+?value(beer,X)[source(self)]</code> is generated in rafael's side
   and the result of this query is then sent to jomi. In the jomi's side, the rafael's answer
   is added in the jomi's belief base and an event like

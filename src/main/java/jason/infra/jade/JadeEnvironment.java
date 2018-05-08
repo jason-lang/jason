@@ -55,11 +55,11 @@ public class JadeEnvironment extends JadeAg implements EnvironmentInfraTier {
                     userEnv.init(ep.getParametersArray());
 
                 } else {
-                    args = args[0].toString().split(" ");
+                    //args = args[0].toString().split(" ");
                     //for (Object o: args) System.out.println("*** "+o);
                     if (args[0].toString().equals("j-project")) { // load parameters from .mas2j
                         if (args.length != 2) {
-                            logger.log(Level.SEVERE, "To start the environment from .mas2j file, you have to provide as parameters: (j-project <file.mas2j>)");
+                            logger.log(Level.SEVERE, "To start the environment from .mas2j file, you have to provide as parameters: (j-project,<file.mas2j>)");
                             return;
                         }
                         jason.mas2j.parser.mas2j parser = new jason.mas2j.parser.mas2j(new FileReader(args[1].toString()));

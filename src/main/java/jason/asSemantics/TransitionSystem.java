@@ -303,15 +303,11 @@ public class TransitionSystem {
                 if (m.isUnTell() && send.getTerm(1).toString().equals("askOne")) {
                     content = Literal.LFalse;
                 } else if (content.isLiteral()) { // adds source in the content if possible
-                    content = ((Literal)content).forceFullLiteralImpl();
-                    ((Literal)content).addSource(new Atom(m.getSender()));
+                    content = add_nested_source.addAnnotToList(content, new Atom(m.getSender()));
                 } else if (send.getTerm(1).toString().equals("askAll") && content.isList()) { // adds source in each answer if possible
                     ListTerm tail = new ListTermImpl();
                     for (Term t: ((ListTerm)content)) {
-                        if (t.isLiteral()) {
-                            t = ((Literal)t).forceFullLiteralImpl();
-                            ((Literal)t).addSource(new Atom(m.getSender()));
-                        }
+                        t = add_nested_source.addAnnotToList(t, new Atom(m.getSender()));
                         tail.append(t);
                     }
                     content = tail;
@@ -977,10 +973,12 @@ public class TransitionSystem {
             }
             break;
 
+        case delBelNewFocus:
         case delBel:
 
             newfocus = Intention.EmptyInt;
-            if (setts.sameFocus()) {
+            isSameFocus = setts.sameFocus() && h.getBodyType() != BodyType.delBelNewFocus;
+            if (isSameFocus) {
                 newfocus = curInt;
                 body = prepareBodyForEvent(body, u, newfocus.peek());
             } else {
@@ -992,7 +990,7 @@ public class TransitionSystem {
                 if (result != null) { // really change something
                     // generate events
                     updateEvents(result,newfocus);
-                    if (!setts.sameFocus()) {
+                    if (!isSameFocus) {
                         removeActionReQueue(curInt);
                     }
                 } else {

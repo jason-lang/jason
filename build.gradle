@@ -260,7 +260,6 @@ publishing {
 
 // from http://central.sonatype.org/pages/gradle.html
 
-// uncomment to produce maven jar
 task javadocJar (type: Jar, dependsOn: javadoc) {
     baseName 'jason'
     classifier = 'javadoc'
@@ -273,9 +272,17 @@ task sourceJar (type : Jar) {
     from sourceSets.main.allSource
 }
 
+// see http://central.sonatype.org/pages/releasing-the-deployment.html
+// run gradle uploadArchives
+// login https://oss.sonatype.org/
+// select Staging Repositories
+// search jason, close, refresh, release
+
+// uncomment to produce maven jar
+
 /*
 artifacts {
-    archives sourceJar //, javadocJar
+    archives sourceJar, javadocJar
 }
 
 signing {

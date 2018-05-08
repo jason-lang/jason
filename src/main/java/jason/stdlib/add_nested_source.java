@@ -1,14 +1,13 @@
 package jason.stdlib;
 
+import jason.JasonException;
 import jason.asSemantics.DefaultInternalAction;
 import jason.asSemantics.InternalAction;
 import jason.asSemantics.TransitionSystem;
 import jason.asSemantics.Unifier;
-import jason.asSyntax.Atom;
 import jason.asSyntax.ListTerm;
 import jason.asSyntax.ListTermImpl;
 import jason.asSyntax.Literal;
-import jason.asSyntax.LiteralImpl;
 import jason.asSyntax.Pred;
 import jason.asSyntax.Term;
 
@@ -65,7 +64,11 @@ public class add_nested_source extends DefaultInternalAction {
 
     @Override public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {
         checkArguments(args);
-        return un.unifies(addAnnotToList(args[0], args[1]),args[2]);
+        try {
+        	return un.unifies(addAnnotToList(args[0], args[1]),args[2]);
+        } catch (Exception e) {
+			throw new JasonException("Error adding nest source '"+args[1]+"' to "+args[0], e);
+		}
     }
 
     public static Term addAnnotToList(Term l, Term source) {
@@ -79,15 +82,9 @@ public class add_nested_source extends DefaultInternalAction {
             }
             return result;
         } else if (l.isLiteral()) {
-            Literal result;
-            if (l.isAtom()) {
-                result = new LiteralImpl((Atom)l);
-            } else {
-                result = (Literal)l.clone();
-            }
+            Literal result = ((Literal)l).forceFullLiteralImpl().copy();
 
             // create the source annots
-            //Literal ts = new Pred("source",1).addTerms(source).addAnnots(result.getAnnots("source"));
             Literal ts = Pred.createSource(source).addAnnots(result.getAnnots("source"));
 
             result.delSources();

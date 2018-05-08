@@ -210,6 +210,10 @@ public abstract class Literal extends DefaultTerm implements LogicalFormula {
     public boolean canBeAddedInBB() {
         return false;
     }
+    /** returns this if this literal should be removed from BB while doing BUF */
+    public boolean subjectToBUF() {
+        return true;
+    }
 
     /** returns whether this literal is negated or not, use Literal.LNeg and Literal.LPos to compare the returned value */
     public boolean negated()        {

@@ -21,7 +21,7 @@ MAS wumpus {
     environment: jason.eis.EISAdapter(
                          "lib/wumpusenv.jar",    // EIS environment
                          agent_entity(ag,agent), // entities
-                         map(file,"maps/wumpus.kt5.wld")) // initialisation parameters
+                         map(file,"maps/wumpus.kt2.wld")) // initialisation parameters
 
     agents:
         ag;
