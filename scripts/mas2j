@@ -10,6 +10,6 @@ then
     exit
 fi
 
-source `dirname $0`/jason-setup
+source "`dirname "$0"`/jason-setup"
 
-java -cp $JASON_JAR:$JADE_JAR jason.mas2j.parser.mas2j $1 $2
+java -cp "$JASON_JAR":"$JADE_JAR" jason.mas2j.parser.mas2j $1 $2
