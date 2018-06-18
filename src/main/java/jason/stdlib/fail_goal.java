@@ -77,14 +77,9 @@ public class fail_goal extends succeed_goal {
                         gl.goalFailed(g);
 
                 // generate failure event
-                Event failEvent = null;
-                if (!i.isFinished()) {
-                    failEvent = ts.findEventForFailure(i, i.peek().getTrigger());
-                } else { // should be an "else" (see SMC pattern) 
-                	// it was an intention with g as the only IM (that was dropped), normally when !! is used
-                    failEvent = ts.findEventForFailure(i, g); // find fail event for the goal just dropped
-                }
+                Event failEvent = ts.findEventForFailure(i, g); // find fail event for the goal just dropped
                 if (failEvent != null) {
+                	failEvent = new Event(failEvent.getTrigger().capply(un),failEvent.getIntention());
                     ts.getC().addEvent(failEvent);
                     ts.getLogger().fine("'.fail_goal("+g+")' is generating a goal deletion event: " + failEvent.getTrigger());
                     return 2;

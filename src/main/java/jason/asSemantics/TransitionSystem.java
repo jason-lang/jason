@@ -1323,7 +1323,7 @@ public class TransitionSystem {
                     public void run() {
                         boolean drop = false;
                         if (intention == null) { // deadline in !!g, test if the agent still desires it
-                            drop = desire.allDesires(C, body, new Unifier()).hasNext();
+                            drop = desire.allDesires(C, body, null, new Unifier()).hasNext();
                         } else if (intention.size() >= isize && intention.hasTrigger(evt.getTrigger(), new Unifier())) {
                             drop = true;
                         }
