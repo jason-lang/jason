@@ -116,7 +116,7 @@ public class IntendedMeans implements Serializable {
                 bd = (PlanBody)((PlanBodyImpl)planBody.clone()).makeVarsAnnon();
             }
             bd.setAsBodyTerm(true);
-            Trigger te = getTrigger();
+            Trigger te = getTrigger().clone();
             te.setAsTriggerTerm(true);
             return ASSyntax.createStructure("im", ASSyntax.createString(plan.getLabel()), te, bd, unif.getAsTerm());
         } else {
