@@ -195,7 +195,7 @@ public class ASParserTest extends TestCase {
         a.initAg();
         a.setASLSrc("test1");
         parser.agent(a);
-        assertTrue(a.getPL().getPlans().size() == 8);
+        assertEquals(9, a.getPL().getPlans().size());
         assertEquals("@l1[source(self)] +!at(X,left(H)) : not (b(X)) <- go(3,Y); ?at(X,left(H)).", a.getPL().get("l1").toString());
 
         source =  " { begin mg(at(10,10)) } \n";
