@@ -103,7 +103,7 @@ public class IntendedMeans implements Serializable {
     }
 
     public String toString() {
-    	return trigger + " <- " + (planBody == null ? "." : "... " + planBody) + " / " + unif;
+        return trigger + " <- " + (planBody == null ? "." : "... " + planBody) + " / " + unif;
     }
 
     public Term getAsTerm() {
