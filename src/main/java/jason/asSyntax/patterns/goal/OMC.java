@@ -35,7 +35,12 @@ public class OMC extends DefaultDirective implements Directive {
             Agent newAg = sd.process(subDir, outerContent, innerContent);
             if (newAg != null) {
                 // add +f : true <- .fail_goal(g).
-                Plan pf = ASSyntax.parsePlan("+"+fail+" <- .fail_goal("+goal+").");
+                Plan pf 
+                    = ASSyntax.parsePlan("+"+fail+" : .intend("+goal+",intention(_,[_,im(_,{+!G},_,_)|_])) <- .fail_goal(G).");
+                pf.setSrcInfo(new SourceInfo(outerContent+"/"+directive, 0));
+                newAg.getPL().add(pf);
+                
+                pf = ASSyntax.parsePlan("+"+fail+" <- .drop_intention("+goal+")."); // no super goal, simply drop
                 pf.setSrcInfo(new SourceInfo(outerContent+"/"+directive, 0));
                 newAg.getPL().add(pf);
 

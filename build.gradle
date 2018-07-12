@@ -357,7 +357,7 @@ jjdoc {
 }
 
 // Builds jEdit plugin
-task plugin(type: Jar, dependsOn: 'classes') {
+task plugin(type: Jar, dependsOn: 'jar') {
     archiveName 'jason-jedit-plugin.jar'
     destinationDir file('build/jedit/jars')
     from 'build/classes/main'

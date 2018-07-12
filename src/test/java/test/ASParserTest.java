@@ -4,6 +4,12 @@ import static jason.asSyntax.ASSyntax.createAtom;
 import static jason.asSyntax.ASSyntax.createLiteral;
 import static jason.asSyntax.ASSyntax.createNumber;
 import static jason.asSyntax.ASSyntax.createString;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.StringReader;
+import java.util.Iterator;
+
 import jason.asSemantics.Agent;
 import jason.asSemantics.Unifier;
 import jason.asSyntax.ASSyntax;
@@ -20,17 +26,12 @@ import jason.asSyntax.RelExpr;
 import jason.asSyntax.Structure;
 import jason.asSyntax.Term;
 import jason.asSyntax.Trigger;
+import jason.asSyntax.UnnamedVar;
 import jason.asSyntax.parser.ParseException;
 import jason.asSyntax.parser.as2j;
 import jason.asSyntax.parser.as2jConstants;
 import jason.mas2j.MAS2JProject;
 import jason.mas2j.parser.mas2j;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.StringReader;
-import java.util.Iterator;
-
 import junit.framework.TestCase;
 
 /** JUnit test case for syntax package */
@@ -194,7 +195,7 @@ public class ASParserTest extends TestCase {
         a.initAg();
         a.setASLSrc("test1");
         parser.agent(a);
-        assertTrue(a.getPL().getPlans().size() == 8);
+        assertEquals(9, a.getPL().getPlans().size());
         assertEquals("@l1[source(self)] +!at(X,left(H)) : not (b(X)) <- go(3,Y); ?at(X,left(H)).", a.getPL().get("l1").toString());
 
         source =  " { begin mg(at(10,10)) } \n";
@@ -309,6 +310,16 @@ public class ASParserTest extends TestCase {
         assertEquals(Literal.LTrue, s.getTerm(2));
     }
 
+    public void testParsingPlanBodyStephenBug() throws ParseException {
+        Plan t = (Plan)ASSyntax.parseTerm("{ +!say_hello <- .my_name(_34Me); .println(_34Me) }");
+        assertTrue(t.isPlanTerm());
+        assertEquals("{ +!say_hello <- .my_name(_34Me); .println(_34Me) }", t.toString());
+        UnnamedVar v1 = new UnnamedVar(34);
+        UnnamedVar v2 = new UnnamedVar(-34);
+        assertFalse( ((Literal)t.getBody().getBodyNext().getBodyTerm()).getTerm(0).equals(v1) );
+        assertTrue(  ((Literal)t.getBody().getBodyNext().getBodyTerm()).getTerm(0).equals(v2) );
+    }    
+    
     public void testParsingAllSources() {
         parseDir(new File("./examples"));
         parseDir(new File("./demos"));

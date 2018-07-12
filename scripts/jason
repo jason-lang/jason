@@ -1,5 +1,5 @@
 #!/bin/bash
 
-source `dirname $0`/jason-setup
+source "`dirname "$0"`/jason-setup"
 
-java -cp $JASON_JAR:$JADE_JAR jason.runtime.RunJasonProject $1
+java -cp "$JASON_JAR":"$JADE_JAR" jason.runtime.RunJasonProject $1

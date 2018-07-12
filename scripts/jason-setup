@@ -2,47 +2,47 @@
 
 JasonREL=2.2
 
-if [ -z $JASON_HOME ] ; then
-    CURDIR=`pwd`
-    JASON_HOME=`dirname $0`
+if [ -z "$JASON_HOME" ] ; then
+    CURDIR="`pwd`"
+    JASON_HOME="`dirname "$0"`"
     cd "$JASON_HOME/.."
-    JASON_HOME=`pwd`
-    cd $CURDIR
-    echo Jason home is $JASON_HOME
+    JASON_HOME="`pwd`"
+    cd "$CURDIR"
+    echo "Jason home is $JASON_HOME"
 fi
 
-if [ -z $JDK_HOME ] ; then
-    if [ -n $JAVA_HOME ] ; then
-	    JDK_HOME=$JAVA_HOME
+if [ -z "$JDK_HOME" ] ; then
+    if [ -n "$JAVA_HOME" ] ; then
+	    JDK_HOME="$JAVA_HOME"
     fi
 fi
 
 # try to fix JDK_HOME on MacOS
-if [ -z $JDK_HOME ] ; then
+if [ -z "$JDK_HOME" ] ; then
     if [ `uname` == Darwin ] ; then
            JDK_HOME=`find /Library/Java/JavaVirtualMachines -name javac | tail -1`
-           JDK_HOME=`dirname $JDK_HOME`
-           JDK_HOME=`dirname $JDK_HOME`
+           JDK_HOME=`dirname "$JDK_HOME"`
+           JDK_HOME=`dirname "$JDK_HOME"`
        fi
 fi
 
 # check JDK_HOME
-if [ ! -f $JDK_HOME/bin/javac ] ; then
+if [ ! -f "$JDK_HOME/bin/javac" ] ; then
    echo JDK_HOME is not properly set! Value is $JDK_HOME
 fi
-export PATH=$JDK_HOME/bin:$PATH
+export PATH="$JDK_HOME/bin":$PATH
 
 
-JASON_JAR=$JASON_HOME/libs/jason-$JasonREL.jar
-JADE_JAR=$JASON_HOME/libs/JadeJar
+JASON_JAR="$JASON_HOME/libs/jason-$JasonREL.jar"
+JADE_JAR="$JASON_HOME/libs/JadeJar"
 
-if [ ! -f $JASON_JAR ] ; then
+if [ ! -f "$JASON_JAR" ] ; then
     echo Jason jar is not properly set!
     echo Value is $JASON_JAR
     JASON_JAR=`find $JASON_HOME/libs  -name jason*.jar`
     echo New value is $JASON_JAR
 fi
-if [ ! -f $JADE_JAR ] ; then
+if [ ! -f "$JADE_JAR" ] ; then
     echo Jade jar is not properly set!
     echo Value is $JADE_JAR
 fi

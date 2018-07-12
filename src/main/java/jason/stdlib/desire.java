@@ -46,7 +46,7 @@ public class desire extends intend {
     @Override
     public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {
         checkArguments(args);
-        return allDesires(ts.getC(),(Literal)args[0],un);
+        return allDesires(ts.getC(),(Literal)args[0],args.length == 2 ? args[1] : null, un);
     }
 
     /*
@@ -86,7 +86,7 @@ public class desire extends intend {
 
     //private static Logger logger = Logger.getLogger(desire.class.getName());
 
-    public static Iterator<Unifier> allDesires(final Circumstance C, final Literal l, final Unifier un) {
+    public static Iterator<Unifier> allDesires(final Circumstance C, final Literal l, final Term intAsTerm, final Unifier un) {
         final Trigger teFromL = new Trigger(TEOperator.add, TEType.achieve, l);
 
         return new Iterator<Unifier>() {
@@ -157,7 +157,7 @@ public class desire extends intend {
 
                 case useIntends:
                     if (intendInterator == null)
-                        intendInterator = allIntentions(C,l,un);
+                        intendInterator = allIntentions(C,l,intAsTerm,un);
 
                     if (intendInterator.hasNext()) {
                         solution = intendInterator.next();

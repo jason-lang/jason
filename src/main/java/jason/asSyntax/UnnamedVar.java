@@ -53,6 +53,13 @@ public class UnnamedVar extends VarTerm {
             return v;
         }
     }
+    
+    // create unnamed var with an id and name (usually from parsing something like _34Me) 
+    public static UnnamedVar create(Atom ns, int id, String name) {
+        UnnamedVar v = new UnnamedVar(ns, name);
+        v.myId = id*-1; // since the ID is defined by the name (not automatically from this class), to avoid clash we change the signal
+        return v;
+    }
 
     public Term clone() {
         return cloneNS(getNS());
