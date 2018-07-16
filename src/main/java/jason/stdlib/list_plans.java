@@ -30,11 +30,11 @@ public class list_plans extends DefaultInternalAction {
             te = Trigger.tryToGetTrigger(args[0]);
 
         for (Plan p: ts.getAg().getPL()) {
-            if (!p.getLabel().toString().startsWith("kqml")) { // do not list kqml plans
+            //if (!p.getLabel().toString().startsWith("kqml")) { // do not list kqml plans
                 if (te == null || new Unifier().unifies(p.getTrigger(), te)) {
                     ts.getLogger().info(p.toString());
                 }
-            }
+            //}
         }
         return true;
     }

@@ -147,6 +147,35 @@ public class NSTest extends TestCase {
 
     }
 
+    public void testUnifiesVarNS2() throws ParseException {
+        Literal p1 = ASSyntax.parseLiteral("ns::_");
+        Literal p2 = ASSyntax.parseLiteral("ns::bob");
+        Literal p3 = ASSyntax.parseLiteral("_::bob");
+        Literal p4 = ASSyntax.parseLiteral("bob");
+        Literal p5 = ASSyntax.parseLiteral("_::_");
+        Literal p6 = ASSyntax.parseLiteral("NS::C");
+
+        // ns::_ = ns::bob // _ -> bob
+        Unifier u = new Unifier();
+        assertTrue(u.unifies(p1, p2));
+
+        // ns::bob = _::bob 
+        u = new Unifier();
+        assertTrue(u.unifies(p2, p3));
+
+        // ns::bob = _::_ 
+        u = new Unifier();
+        assertTrue(u.unifies(p2, p5));
+
+        // bob = _::_ 
+        u = new Unifier();
+        assertTrue(u.unifies(p4, p5));
+
+        // NS::_ = _::_
+        u = new Unifier();
+        assertTrue(u.unifies(p5, p6));
+    }
+
     public void testApply1() throws ParseException {
         Term t = ASSyntax.parseTerm("A::bob");
         Unifier u = new Unifier();
@@ -306,7 +335,7 @@ public class NSTest extends TestCase {
         Agent a = new Agent();
         a.initAg();
         parser.agent(a);
-        System.out.println(a.getPL());
+        //System.out.println(a.getPL());
         assertTrue(a.getPL().toString().contains("-!NoPlan[b,k,error(no_relevant),source(AgenteAdversario)] <- .print(NS)"));
     }
 
@@ -332,8 +361,8 @@ public class NSTest extends TestCase {
         parser.agent(a);
         a.addInitialBelsInBB();
         //System.out.println(a.getBB());
-        for (Plan p: a.getPL())
-            System.out.println(p);
+        //for (Plan p: a.getPL())
+        //    System.out.println(p);
         //assertTrue(a.getPL().toString().contains("+ns1::tick <- .print(ns1::t); !ns1::g(ns1::u)"));
         //assertTrue(a.getPL().toString().contains("+#1ns2::tk <- .print(#1ns2::t); +ns1::tick; !#1ns2::g5(#1ns2::u)"));
         //assertTrue(a.getPL().toString().contains("+!nsd::g2(nsd::V) <- +nsd::b3(nsd::h); +ns1::tick; +#1ns2::tk; +#2ns3::b5(#1ns2::t)"));
