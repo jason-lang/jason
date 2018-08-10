@@ -18,6 +18,7 @@ import java.util.logging.Level;
 
 
   @see jason.stdlib.print
+  @see jason.stdlib.printf
 
 */
 public class println extends DefaultInternalAction {
