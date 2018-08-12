@@ -31,6 +31,7 @@ import jason.asSemantics.InternalAction;
   </ul>
 
   @see jason.stdlib.println
+  @see jason.stdlib.printf
 
 */
 public class print extends println implements InternalAction {
