@@ -357,7 +357,7 @@ public class ASSyntax {
                 return d;
             }
         } else if (t.isString()) {
-            return ((StringTerm)t).getString(); //(t.toString()).substring(1,t.toString().length()-1);
+            return ((StringTerm)t).getString();
         } else if (t.isList()) {
             List<Object> list = new ArrayList<>();
             for (Term t1: (ListTerm)t){
