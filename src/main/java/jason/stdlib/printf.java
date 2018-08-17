@@ -19,7 +19,7 @@ import jason.asSyntax.Term;
   <p>Description: used for printing messages to the console inspired by Java printf/format.
 
   NB.: do not use "%d" since all numbers used by this internal action are translated from Jason to a Java double.
-	
+    
   <p>Examples:<ul>
   <li> <code>.printf("Value %08.0f%n",N)</code>: prints <code>Value 00461012</code>.</li>
   <li> <code>.printf("Value "%10.3f"",N)</code>: prints <code>Value      3.142</code>.</li>

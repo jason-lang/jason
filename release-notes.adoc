@@ -12,7 +12,7 @@ ifdef::env-github[:outfilesuffix: .adoc]
 ----
 I=4;
 D=34.123;
-.printf("i=%08d and d=%10.2f", I, D);
+.printf("i=%08.0f and d=%10.2f", I, D);
 ----
 +
 produces:
