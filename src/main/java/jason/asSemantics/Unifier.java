@@ -220,7 +220,7 @@ public class Unifier implements Cloneable, Iterable<VarTerm> {
             } else if (t2vl != null) {
                 return bind(t1gv, t2vl);
             } else {                 // unify two vars
-                if (! t1gv.getNS().equals(t2gv.getNS()))
+                if (! unifyTerms(t1gv.getNS(),t2gv.getNS()))
                     return false;
 
                 if (t1gv.negated() != t2gv.negated())

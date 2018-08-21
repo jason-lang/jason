@@ -31,6 +31,8 @@ PARSER_BEGIN(as2j)
   import java.util.*;
   import java.io.*;
   import java.util.logging.*;
+  import java.util.regex.Matcher;
+  import java.util.regex.Pattern;
 
   import jason.*;
   import jason.asSemantics.*;
@@ -58,6 +60,7 @@ PARSER_BEGIN(as2j)
     private static Logger logger = Logger.getLogger("aslparser");
     private static Set<String> parsedFiles = new HashSet<String>();
     private static Config config = Config.get(false);
+    private static Pattern patternUnnamedWithId = Pattern.compile("_(\\d+)(.*)");
 
     public void setAg(Agent ag) { curAg = ag; }
     public void setNS(Atom  ns) { namespace = ns; thisnamespace = ns; }
@@ -181,6 +184,7 @@ TOKEN : {
 |  <ATOM      : (<LC_LETTER> | "." <CHAR>) (<CHAR> | "." <CHAR>)*
                 | ("'" (~["'"])* "'" ) >
                 { if (image.charAt(0) == '\'') matchedToken.image = image.substring(1, lengthOfMatch-1); }
+|  <UNNAMEDVARID: ("_" (<DIGIT>)+ (<CHAR>)*) >
 |  <UNNAMEDVAR: ("_" (<CHAR>)*) >
 |  <CHAR      : (<LETTER> | <DIGIT> | "_")>
 |  <LETTER    : ( <LC_LETTER> | <UP_LETTER> )>
@@ -1013,8 +1017,15 @@ Term function():          { Literal l; }
 
 VarTerm var(Atom ns):      { Token K; VarTerm v; ListTerm lt = null; }
 {
- ( K = <VAR>        { v = new VarTerm(ns, K.image); v.setSrcInfo(new SourceInfo(asSource, K.beginLine));}
- | K = <UNNAMEDVAR> { v = UnnamedVar.create(ns, K.image); }
+ ( K = <VAR>          { v = new VarTerm(ns, K.image); v.setSrcInfo(new SourceInfo(asSource, K.beginLine));}
+ | K = <UNNAMEDVARID> { Matcher matcher = patternUnnamedWithId.matcher(K.image);
+                        if (matcher.find()) {
+                            v = UnnamedVar.create(ns, Integer.parseInt(matcher.group(1)), K.image);
+                        } else {
+        	                v = UnnamedVar.create(ns, K.image);
+                        }
+                      }
+ | K = <UNNAMEDVAR>   { v = UnnamedVar.create(ns, K.image); }
  )
  [
    lt = list()      { v.setAnnots(lt); }

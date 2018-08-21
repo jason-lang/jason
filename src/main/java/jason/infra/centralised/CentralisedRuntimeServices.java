@@ -58,6 +58,16 @@ public class CentralisedRuntimeServices implements RuntimeServicesInfraTier {
             agArch.createArchs(ap.getAgArchClasses(), ap.agClass.getClassName(), ap.getBBClass(), agSource, stts, masRunner);
             agArch.setEnvInfraTier(masRunner.getEnvironmentInfraTier());
             agArch.setControlInfraTier(masRunner.getControllerInfraTier());
+            
+            // if debug mode is active, set up new agent to be synchronous and visible for ExecutionControlGUI
+            if (masRunner.isDebug()) {
+                stts.setVerbose(2);
+                stts.setSync(true);
+                agArch.getLogger().setLevel(Level.FINE);
+                agArch.getTS().getLogger().setLevel(Level.FINE);
+                agArch.getTS().getAg().getLogger().setLevel(Level.FINE);
+            }
+
             masRunner.addAg(agArch);
         }
 

@@ -134,7 +134,9 @@ public class IntendedMeans implements Serializable {
                 bd = (PlanBody)((PlanBodyImpl)planBody.clone()).makeVarsAnnon();
             }
             bd.setAsBodyTerm(true);
-            return ASSyntax.createStructure("im", ASSyntax.createString(plan.getLabel()), bd, unif.getAsTerm());
+            Trigger te = getTrigger().clone();
+            te.setAsTriggerTerm(true);
+            return ASSyntax.createStructure("im", ASSyntax.createString(plan.getLabel()), te, bd, unif.getAsTerm());
         } else {
             return ASSyntax.createAtom("noimplementedforclass"+planBody.getClass().getSimpleName());
         }

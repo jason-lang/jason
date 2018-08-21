@@ -6,6 +6,19 @@ ifdef::env-github[:outfilesuffix: .adoc]
 == version 2.3
 
 - new syntax: operator `--` to delete some belief with new focus for the event.
+- new internal action: printf, inspired in Java Format
+  (https://docs.oracle.com/javase/tutorial/java/data/numberformat.html)
++
+----
+I=4;
+D=34.123;
+.printf("i=%08.0f and d=%10.2f", I, D);
+----
++
+produces:
+----
+i=00000004 and d=     34.12
+----
 
 == version 2.2 (2017-09-21)
 

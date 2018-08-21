@@ -1,10 +1,10 @@
 #!/bin/bash
 
-source `dirname $0`/jason-setup
+source "`dirname "$0"`/jason-setup"
 
 JEDIT_HOME=$JASON_HOME/jedit
 
 # run jIDE
 java \
--classpath $JASON_JAR:$JEDIT_HOME/jedit.jar:$JEDIT_HOME/jars/ErrorList.jar:$JEDIT_HOME/jars/SideKick.jar:$JADE_JAR \
+-classpath "$JASON_JAR":"$JEDIT_HOME/jedit.jar":"$JEDIT_HOME/jars/ErrorList.jar":"$JEDIT_HOME/jars/SideKick.jar":"$JADE_JAR" \
    org.gjt.sp.jedit.jEdit $1

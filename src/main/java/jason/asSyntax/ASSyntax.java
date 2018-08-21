@@ -1,13 +1,16 @@
 package jason.asSyntax;
 
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import jason.NoValueException;
 import jason.asSyntax.parser.ParseException;
 import jason.asSyntax.parser.as2j;
 import jason.asSyntax.parser.as2jConstants;
-
-import java.io.StringReader;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
   Factory for objects used in Jason AgentSpeak syntax.
@@ -318,4 +321,54 @@ public class ASSyntax {
             throw new ParseException("Expected <EOF> after "+r+" for parameter '"+sRule+"'");
         return r;
     }
+    
+    /**
+     * Convert a Jason term into a Java Object
+     * 
+     * @param t Jason term
+     */
+    public static Object termToObject(Term t){
+        if (t.isAtom()) {
+            Atom t2 = (Atom)t;
+            if (t2.equals(Atom.LTrue)){
+                return Boolean.TRUE;
+            } else if (t2.equals(Atom.LFalse)){
+                return Boolean.FALSE;
+            } else {
+                return t2.toString();
+            }
+        } else if (t.isNumeric()) {
+            NumberTerm nt = (NumberTerm)t;
+            double d = 0;
+            try {
+                d = nt.solve();
+            } catch (NoValueException e) {
+                e.printStackTrace();
+            }
+            if (((byte)d)==d){
+                return (byte)d; 
+            } else if (((int)d)==d){
+                return (int)d;
+            } else if (((float)d)==d){
+                return (float)d;
+            } else if (((long)d)==d){
+                return (long)d;
+            } else {
+                return d;
+            }
+        } else if (t.isString()) {
+            return ((StringTerm)t).getString();
+        } else if (t.isList()) {
+            List<Object> list = new ArrayList<>();
+            for (Term t1: (ListTerm)t){
+                list.add(termToObject(t1));
+            }
+            return list;
+        } else if (t instanceof ObjectTerm){
+            return ((ObjectTerm)t).getObject();
+        } else {
+            return t.toString();
+        }
+    }
+    
 }

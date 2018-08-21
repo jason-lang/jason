@@ -135,6 +135,10 @@ public class Plan extends Structure implements Cloneable, Serializable {
     public void setAsPlanTerm(boolean b) {
         isTerm = b;
     }
+    
+    public boolean isPlanTerm() {
+        return isTerm;
+    }
 
     /** prefer using ASSyntax.parsePlan */
     public static Plan parse(String sPlan) {

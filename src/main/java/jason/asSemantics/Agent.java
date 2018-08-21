@@ -535,6 +535,8 @@ public class Agent {
         // if l is not a rule and has free vars (like l(X)), convert it into a rule like "l(X) :- true."
         if (!b.isRule() && !b.isGround())
             b = new Rule(b,Literal.LTrue);
+        if (!b.hasSource()) // so that rules also have source
+            b.addAnnot(BeliefBase.TSelf);
 
         // does not do BRF for rules (and so do not produce events +bel for rules)
         if (b.isRule()) {
