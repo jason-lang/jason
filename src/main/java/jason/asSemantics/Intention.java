@@ -36,6 +36,10 @@ public class Intention implements Serializable, Comparable<Intention>, Iterable<
     private int     id;
     private int     atomicCount    = 0; // number of atomic intended means in the intention
     private boolean isSuspended = false;
+    
+    // new in JasonER
+    private int     intestedInExternalEvents = 0;
+    private int     imWithGoalCondition      = 0; 
 
     private Deque<IntendedMeans> intendedMeans = new ArrayDeque<IntendedMeans>();
 
@@ -55,8 +59,10 @@ public class Intention implements Serializable, Comparable<Intention>, Iterable<
         intendedMeans.push(im);
         if (im.isAtomic())
             atomicCount++;
-        //if (initialTrigger == null)
-        //    initialTrigger = im.getTrigger();
+        if (im.getPlan().hasInterestInExernalEvents())
+            intestedInExternalEvents++;
+        if (im.getPlan().hasGoalCondition())
+            imWithGoalCondition++;
     }
 
     public IntendedMeans peek() {
@@ -66,15 +72,12 @@ public class Intention implements Serializable, Comparable<Intention>, Iterable<
     public IntendedMeans pop() {
         IntendedMeans top = intendedMeans.pop();
 
-        if (isAtomic() && top.isAtomic()) {
+        if (isAtomic() && top.isAtomic())
             atomicCount--;
-            /* for (IntendedMeans im : intendedMeans) {
-                if (im.isAtomic()) {
-                    isAtomic = true;
-                    break;
-                }
-            }*/
-        }
+        if (hasIntestedInExternalEvents() && top.getPlan().hasInterestInExernalEvents()) 
+            intestedInExternalEvents--;
+        if (hasGoalCondition() && top.getPlan().hasGoalCondition())
+            imWithGoalCondition--;
         return top;
     }
 
@@ -86,6 +89,13 @@ public class Intention implements Serializable, Comparable<Intention>, Iterable<
         atomicCount = a;
     }
 
+    public boolean hasIntestedInExternalEvents() {
+        return intestedInExternalEvents > 0;
+    }
+    public boolean hasGoalCondition() {
+        return imWithGoalCondition > 0;
+    }
+    
     public Iterator<IntendedMeans> iterator() {
         return intendedMeans.iterator();
     }
@@ -110,11 +120,11 @@ public class Intention implements Serializable, Comparable<Intention>, Iterable<
         return isSuspended;
     }
 
-    /** returns the IntendedMeans with TE = g, returns null if there isn't one */
-    public IntendedMeans getIM(Trigger g, Unifier u) {
+    /** returns the IntendedMeans that succeeds in test c, returns null if there isn't one */
+    public IntendedMeans getIM(IMCondition c, Unifier u) { //Trigger g, Unifier u) {
         for (IntendedMeans im : intendedMeans)
             //System.out.println(g + " = "+ im.getTrigger()+" = "+u.unifies(g, im.getTrigger()));
-            if (u.unifies(g, im.getTrigger()))
+            if (c.test(im,u)) //u.unifies(g, im.getTrigger()))
                 return im;
         return null;
     }
@@ -132,18 +142,18 @@ public class Intention implements Serializable, Comparable<Intention>, Iterable<
         return false;
     }
 
-    /** remove all IMs until the lowest IM with trigger te */
-    public boolean dropGoal(Trigger te, Unifier un) {
-        boolean r = false;
-        IntendedMeans im = getIM(te, un);
+    /** remove all IMs until the lowest IM that succeeds in test c */
+    public IntendedMeans dropGoal(IMCondition c, Unifier u) {
+        IntendedMeans r = null;
+        IntendedMeans im = getIM(c,u);
         while (im != null) {
-            r = true;
+            r = im;
             // remove the IMs until im-1
             while (peek() != im) {
                 pop();
             }
             pop(); // remove im
-            im = getIM(te, un); // keep removing other occurrences of te
+            im = getIM(c,u); // keep removing other occurrences of te
         }
         return r;
     }
