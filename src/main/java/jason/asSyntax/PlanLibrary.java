@@ -48,32 +48,6 @@ public class PlanLibrary implements Iterable<Plan> {
 
     private final Object lockPL = new Object();
 
-    private PlanLibrary father = null;
-    
-    private boolean hasPlansForExternalEvents = false;
-    
-    public PlanLibrary() {
-    }
-    
-    public PlanLibrary(PlanLibrary father) {
-        this.father = father;
-    }
-
-    public boolean isRoot() {
-        return father == null;
-    }
-    public PlanLibrary getFather() {
-        return father;
-    }
-    
-    public void setFather(PlanLibrary pl) {
-        father = pl;
-    }
-    
-    public boolean hasPlansForExternalEvents() {
-        return hasPlansForExternalEvents;
-    }
-    
     public Object getLock() {
         return lockPL;
     }
@@ -165,8 +139,8 @@ public class PlanLibrary implements Iterable<Plan> {
      * @throws JasonException
      */
     public void add(Plan p, boolean before) throws JasonException {
-        p.setScope(this);
         synchronized (lockPL) {
+
             // test p.label
             if (p.getLabel() != null && planLabels.keySet().contains( getStringForLabel(p.getLabel()))) {
                 // test if the new plan is equal, in this case, just add a source
@@ -211,9 +185,6 @@ public class PlanLibrary implements Iterable<Plan> {
                         else
                             lp.add(p);
             } else {
-                if (pte.isAddition() && !pte.isGoal())
-                    hasPlansForExternalEvents = true;
-                
                 List<Plan> codesList = relPlans.get(pte.getPredicateIndicator());
                 if (codesList == null) {
                     codesList = new ArrayList<Plan>();
@@ -397,15 +368,6 @@ public class PlanLibrary implements Iterable<Plan> {
                                 l = new ArrayList<Plan>();
                             l.add(p);
                         }
-                }
-            }
-            
-            if (father != null) {
-                List<Plan> lf = father.getCandidatePlans(te);
-                if (lf != null && !lf.isEmpty()) {
-                    if (l == null)
-                        l = new ArrayList<Plan>();
-                    l.addAll(lf);
                 }
             }
             return l; // if no rel plan, have to return null instead of empty list

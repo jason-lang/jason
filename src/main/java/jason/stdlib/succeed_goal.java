@@ -10,8 +10,6 @@ import jason.asSemantics.Intention;
 import jason.asSemantics.TransitionSystem;
 import jason.asSemantics.Unifier;
 import jason.asSemantics.GoalListener.FinishStates;
-import jason.asSemantics.IMCondition;
-import jason.asSemantics.IntendedMeans;
 import jason.asSyntax.Literal;
 import jason.asSyntax.Term;
 import jason.asSyntax.Trigger;
@@ -77,31 +75,23 @@ public class succeed_goal extends DefaultInternalAction {
         drop(ts, (Literal)args[0], un);
         return true;
     }
-    
-    public void drop(TransitionSystem ts, Literal l, Unifier un) throws Exception {
-        final Trigger g = new Trigger(TEOperator.add, TEType.achieve, l);
-        drop(ts, new IMCondition() {
-            public boolean test(Trigger t, Unifier u) {
-                return u.unifies(g, t);
-            }
-        }, un);
-    }
 
-    public void drop(TransitionSystem ts, IMCondition c, Unifier un) throws Exception {
+    public void drop(TransitionSystem ts, Literal l, Unifier un) throws Exception {
+        Trigger g = new Trigger(TEOperator.add, TEType.achieve, l);
         Circumstance C = ts.getC();
         Unifier bak = un.clone();
 
         Iterator<Intention> itint = C.getIntentionsPlusAtomic();
         while (itint.hasNext()) {
             Intention i = itint.next();
-            if (dropIntention(i, c, ts, un) > 1) {
+            if (dropIntention(i, g, ts, un) > 1) {
                 C.dropIntention(i);
                 un = bak.clone();
             }
         }
 
         // dropping the current intention?
-        dropIntention(C.getSelectedIntention(), c, ts, un);
+        dropIntention(C.getSelectedIntention(), g, ts, un);
         un = bak.clone();
 
         // dropping G in Events
@@ -110,7 +100,7 @@ public class succeed_goal extends DefaultInternalAction {
             Event e = ie.next();
             // test in the intention
             Intention i = e.getIntention();
-            int r = dropIntention(i, c, ts, un);
+            int r = dropIntention(i, g, ts, un);
             if (r > 0) {
                 C.removeEvent(e);
                 if (r == 1) {
@@ -123,7 +113,7 @@ public class succeed_goal extends DefaultInternalAction {
                 if (i != Intention.EmptyInt && !i.isFinished()) {
                     t = t.capply(i.peek().getUnif());
                 }
-                if (c.test(t, un)) {
+                if (un.unifies(g, t)) {
                     dropInEvent(ts,e,i);
                     un = bak.clone();
                 }
@@ -135,7 +125,7 @@ public class succeed_goal extends DefaultInternalAction {
             // test in the intention
             Event e = C.getPendingEvents().get(ek);
             Intention i = e.getIntention();
-            int r = dropIntention(i, c, ts, un);
+            int r = dropIntention(i, g, ts, un);
             if (r > 0) {
                 C.removePendingEvent(ek);
                 if (r == 1) {
@@ -148,7 +138,7 @@ public class succeed_goal extends DefaultInternalAction {
                 if (i != Intention.EmptyInt && !i.isFinished()) { //i.size() > 0) {
                     t = t.capply(i.peek().getUnif());
                 }
-                if (c.test(t, un)) {
+                if (un.unifies(g, t)) {
                     dropInEvent(ts,e,i);
                     un = bak.clone();
                 }
@@ -158,7 +148,7 @@ public class succeed_goal extends DefaultInternalAction {
         // dropping from Pending Actions
         for (ActionExec a: C.getPendingActions().values()) {
             Intention i = a.getIntention();
-            int r = dropIntention(i, c, ts, un);
+            int r = dropIntention(i, g, ts, un);
             if (r > 0) { // i was changed
                 C.removePendingAction(i.getId());  // remove i from PA
                 if (r == 1) {                      // i must continue running
@@ -170,7 +160,7 @@ public class succeed_goal extends DefaultInternalAction {
 
         // dropping from Pending Intentions
         for (Intention i: C.getPendingIntentions().values()) {
-            int r = dropIntention(i, c, ts, un);
+            int r = dropIntention(i, g, ts, un);
             if (r > 0) {
                 C.removePendingIntention(i.getId());
                 if (r == 1) {
@@ -186,25 +176,21 @@ public class succeed_goal extends DefaultInternalAction {
      *           2 = fail event was generated and added in C.E
      *           3 = simply removed without event
      */
-    public int dropIntention(Intention i, IMCondition c, TransitionSystem ts, Unifier un) throws JasonException {
-        if (i != null) {
-            IntendedMeans im = i.dropGoal(c,un);
-            //System.out.println("dropped "+im+"\nfrom "+i);
-            if (im != null) {
-                if (ts.hasGoalListener())
-                    for (GoalListener gl: ts.getGoalListeners())
-                        gl.goalFinished(im.getTrigger(), FinishStates.achieved);
-    
-                // continue the intention
-                if (!i.isFinished()) { // could be finished after i.dropGoal() !!
-                    if (ts.getC().getSelectedIntention() != i) // if i is not the current intention, remove
-                        i.peek().removeCurrentStep();
-                    ts.applyClrInt(i);
-                    return 1;
-                } else {
-                    ts.applyClrInt(i);
-                    return 3;
-                }
+    public int dropIntention(Intention i, Trigger g, TransitionSystem ts, Unifier un) throws JasonException {
+        if (i != null && i.dropGoal(g, un)) {
+            if (ts.hasGoalListener())
+                for (GoalListener gl: ts.getGoalListeners())
+                    gl.goalFinished(g, FinishStates.achieved);
+
+            // continue the intention
+            if (!i.isFinished()) { // could be finished after i.dropGoal() !!
+                if (ts.getC().getSelectedIntention() != i) // if i is not the current intention, remove
+                    i.peek().removeCurrentStep();
+                ts.applyClrInt(i);
+                return 1;
+            } else {
+                ts.applyClrInt(i);
+                return 3;
             }
         }
         return 0;

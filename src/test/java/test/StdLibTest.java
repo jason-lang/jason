@@ -4,7 +4,6 @@ import java.util.Iterator;
 
 import jason.RevisionFailedException;
 import jason.asSemantics.Agent;
-import jason.asSemantics.IMCondition;
 import jason.asSemantics.IntendedMeans;
 import jason.asSemantics.Intention;
 import jason.asSemantics.Option;
@@ -260,14 +259,10 @@ public class StdLibTest extends TestCase {
 
     }
 
-    public void testDropGoal1() throws Exception {
+    public void testDropGoal1() throws ParseException {
         assertEquals(intention1.size(), 4);
-        final Trigger g = ASSyntax.parseTrigger("+!g1");
-        assertNotNull(intention1.dropGoal(new IMCondition() {
-            public boolean test(Trigger t, Unifier u) {
-                return u.unifies(g, t);
-            }
-        }, new Unifier()));
+        Trigger g = ASSyntax.parseTrigger("+!g1");
+        assertTrue(intention1.dropGoal(g, new Unifier()));
         assertEquals(intention1.size(), 1);
     }
 

@@ -1,5 +1,8 @@
 package jason.asSyntax;
 
+import jason.asSemantics.Unifier;
+import jason.asSyntax.parser.as2j;
+
 import java.io.Serializable;
 import java.io.StringReader;
 import java.util.logging.Level;
@@ -7,10 +10,6 @@ import java.util.logging.Logger;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-
-import jason.JasonException;
-import jason.asSemantics.Unifier;
-import jason.asSyntax.parser.as2j;
 
 /** Represents an AgentSpack plan
     (it extends structure to be used as a term)
@@ -36,10 +35,6 @@ public class Plan extends Structure implements Cloneable, Serializable {
     private LogicalFormula    context;
     private PlanBody          body;
 
-    private LogicalFormula    goalCondition;
-    private PlanLibrary       subplans;
-    private PlanLibrary       scope;
-    
     private boolean isAtomic      = false;
     private boolean isAllUnifs    = false;
     private boolean hasBreakpoint = false;
@@ -183,11 +178,10 @@ public class Plan extends Structure implements Cloneable, Serializable {
     /** returns an unifier if this plan is relevant for the event <i>te</i>,
         returns null otherwise.
     */
-    public Unifier isRelevant(Trigger te, Unifier u) {
+    public Unifier isRelevant(Trigger te) {
         // annots in plan's TE must be a subset of the ones in the event!
         // (see definition of Unifier.unifies for 2 Preds)
-        if (u == null)
-            u = new Unifier();
+        Unifier u = new Unifier();
         if (u.unifiesNoUndo(tevent, te))
             return u;
         else
@@ -277,31 +271,18 @@ public class Plan extends Structure implements Cloneable, Serializable {
 
     /** returns this plan in a string complaint with AS syntax */
     public String toASString() {
-        StringBuilder out = new StringBuilder();
-        if (isTerm)
-            out.append("{ ");
-        out.append(((label == null) ? "" : "@" + label + " "));
-        out.append(tevent);
-        out.append(((context == null) ? "" : " : " + context));
-        out.append(((goalCondition == null) ? "" : " <: " + goalCondition));
-        if (subplans == null) {
-            if (!body.isEmptyBody()) 
-                out.append(" <- " + body);
-            if (isTerm)
-                out.append(" }");
-            else 
-                out.append(".");
+        String b, e;
+        if (isTerm) {
+            b = "{ ";
+            e = " }";
         } else {
-            out.append(" {");
-            if (!body.isEmptyBody()) 
-                out.append("\n   <- " + body + ".");
-            for (Plan p: subplans)
-                out.append("\n   "+p.toASString());
-            out.append("\n}");
-            if (isTerm)
-                out.append(" }");
+            b = "";
+            e = ".";
         }
-        return out.toString();
+        return b+((label == null) ? "" : "@" + label + " ") +
+               tevent + ((context == null) ? "" : " : " + context) +
+               (body.isEmptyBody() ? "" : " <- " + body) +
+               e;
     }
 
     /** get as XML */
@@ -325,39 +306,5 @@ public class Plan extends Structure implements Cloneable, Serializable {
         }
 
         return u;
-    }
-    
-    public void addSubPlan(Plan p) throws JasonException {
-        if (subplans == null)
-            subplans = new PlanLibrary(scope);
-        subplans.add(p);
-    }
-    public boolean hasSubPlans() {
-        return subplans != null;
-    }
-    public boolean hasInterestInExernalEvents() {
-        return subplans != null && subplans.hasPlansForExternalEvents();
-    }
-    public PlanLibrary getSubPlans() {
-        return subplans;
-    }
-    public void setScope(PlanLibrary pl) {
-        scope = pl;
-        if (subplans != null)
-            subplans.setFather(scope);
-    }
-    public PlanLibrary getScope() {
-        return scope;
-    }
-    
-    public void setGoalCondition(LogicalFormula f) {
-        goalCondition = f;
-    }
-    
-    public LogicalFormula getGoalCondition() {
-        return goalCondition;
-    }
-    public boolean hasGoalCondition() {
-        return goalCondition != null;
     }
 }

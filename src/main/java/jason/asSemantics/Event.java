@@ -1,10 +1,8 @@
 package jason.asSemantics;
 
-import jason.asSyntax.Plan;
 import jason.asSyntax.Trigger;
 
 import java.io.Serializable;
-import java.util.List;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -15,8 +13,7 @@ public class Event implements Serializable {
 
     Trigger   trigger   = null;
     Intention intention = Intention.EmptyInt;
-    List<Plan> relPlans = null; // rel plans computed for this event
-    
+
     public Event(Trigger t, Intention i) {
         trigger   = t;
         intention = i;
@@ -33,13 +30,6 @@ public class Event implements Serializable {
         intention = i;
     }
 
-    public void setRelPlans(List<Plan> rl) {
-        relPlans = rl;
-    }
-    public List<Plan> getRelPlans() {
-        return relPlans;
-    }
-    
     public boolean sameTE(Object t) {
         return trigger.equals(t);
     }

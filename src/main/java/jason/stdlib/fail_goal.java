@@ -4,13 +4,12 @@ import jason.JasonException;
 import jason.asSemantics.Event;
 import jason.asSemantics.GoalListener;
 import jason.asSemantics.GoalListener.FinishStates;
-import jason.asSemantics.IMCondition;
-import jason.asSemantics.IntendedMeans;
 import jason.asSemantics.Intention;
 import jason.asSemantics.TransitionSystem;
 import jason.asSemantics.Unifier;
 import jason.asSyntax.Literal;
 import jason.asSyntax.Term;
+import jason.asSyntax.Trigger;
 import jason.asSyntax.Trigger.TEOperator;
 
 /**
@@ -65,27 +64,26 @@ public class fail_goal extends succeed_goal {
      *           3 = simply removed without event
      */
     @Override
-    public int dropIntention(Intention i, IMCondition c, TransitionSystem ts, Unifier un) throws JasonException {
+    public int dropIntention(Intention i, Trigger g, TransitionSystem ts, Unifier un) throws JasonException {
         if (i != null) {
-        	IntendedMeans im = i.dropGoal(c, un);
-        	if (im != null) {
+            if (i.dropGoal(g, un)) {
                 // notify listener
                 if (ts.hasGoalListener())
                     for (GoalListener gl: ts.getGoalListeners())
-                        gl.goalFailed(im.getTrigger());
+                        gl.goalFailed(g);
 
                 // generate failure event
                 Event failEvent = ts.findEventForFailure(i, g); // find fail event for the goal just dropped
                 if (failEvent != null) {
                 	failEvent = new Event(failEvent.getTrigger().capply(un),failEvent.getIntention());
                     ts.getC().addEvent(failEvent);
-                    ts.getLogger().fine("'.fail_goal("+im.getTrigger()+")' is generating a goal deletion event: " + failEvent.getTrigger());
+                    ts.getLogger().fine("'.fail_goal("+g+")' is generating a goal deletion event: " + failEvent.getTrigger());
                     return 2;
                 } else { // i is finished or without failure plan
-                    ts.getLogger().fine("'.fail_goal("+im.getTrigger()+")' is removing the intention without event:\n" + i);
+                    ts.getLogger().fine("'.fail_goal("+g+")' is removing the intention without event:\n" + i);
                     if (ts.hasGoalListener())
                         for (GoalListener gl: ts.getGoalListeners())
-                            gl.goalFinished(im.getTrigger(), FinishStates.unachieved);
+                            gl.goalFinished(g, FinishStates.unachieved);
 
                     i.fail(ts.getC());
                     return 3;
