@@ -571,9 +571,9 @@ Object body_formula() :
    ]
 
    (
-   B = rule_plan_term()
-   |
-   B = log_expr()
+      B = rule_plan_term()
+    |
+      B = log_expr()
    )
                        { if (formType == BodyType.action && B instanceof RelExpr) {
                             return new PlanBodyImpl(BodyType.constraint, (RelExpr)B); // constraint
