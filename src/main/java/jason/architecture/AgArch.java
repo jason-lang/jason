@@ -28,7 +28,7 @@ import jason.runtime.RuntimeServicesInfraTier;
  *
  * Users can customise the architecture by overriding some methods of this class.
  */
-public class AgArch implements AgArchInfraTier, Comparable<AgArch> {
+public class AgArch implements Comparable<AgArch> {
 
     private TransitionSystem ts = null;
 
@@ -121,15 +121,6 @@ public class AgArch implements AgArchInfraTier, Comparable<AgArch> {
         //    q.setNbReasoningCycles(getCycleNumber());
         if (successor != null)
             successor.reasoningCycleStarting();
-    }
-
-
-    /** returns the last arch in the chain, which is supposed to be the infra tier */
-    public AgArchInfraTier getArchInfraTier() {
-        if (this.successor == null)
-            return this;
-        else
-            return successor.getArchInfraTier();
     }
 
 
