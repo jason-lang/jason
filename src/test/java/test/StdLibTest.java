@@ -270,20 +270,20 @@ public class StdLibTest extends TestCase {
         Agent ag = new Agent();
         ag.initAg();
         TransitionSystem ts = new TransitionSystem(ag, null, null, null);
-        ts.getC().addIntention(intention1);
+        ts.getC().addRunningIntention(intention1);
         assertFalse(ts.hasGoalListener());
-        new succeed_goal().drop(ts, Literal.parseLiteral("g2"), new Unifier());
+        new succeed_goal().findGoalAndDrop(ts, Literal.parseLiteral("g2"), new Unifier());
         assertEquals(intention1.size(), 1);
         intention1.push(new IntendedMeans(new Option(p4,new Unifier()), null));
-        new succeed_goal().drop(ts, Literal.parseLiteral("g4"), new Unifier());
+        new succeed_goal().findGoalAndDrop(ts, Literal.parseLiteral("g4"), new Unifier());
         assertTrue(intention1.isFinished());
     }
 
     public void testDropGoal3() throws Exception {
         //Circumstance c = new Circumstance();
         TransitionSystem ts = new TransitionSystem(ag, null, null, null);
-        ts.getC().addIntention(intention1);
-        new fail_goal().drop(ts, Literal.parseLiteral("g2"), new Unifier());
+        ts.getC().addRunningIntention(intention1);
+        new fail_goal().findGoalAndDrop(ts, Literal.parseLiteral("g2"), new Unifier());
         assertEquals(intention1.size(),2);
         assertEquals(ts.getC().getEvents().size(),1);
     }

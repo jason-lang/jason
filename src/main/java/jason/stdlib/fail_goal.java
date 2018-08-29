@@ -54,7 +54,7 @@ public class fail_goal extends succeed_goal {
     @Override
     public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {
         checkArguments(args);
-        drop(ts, (Literal)args[0], un);
+        findGoalAndDrop(ts, (Literal)args[0], un);
         return true;
     }
 
@@ -64,7 +64,7 @@ public class fail_goal extends succeed_goal {
      *           3 = simply removed without event
      */
     @Override
-    public int dropIntention(Intention i, Trigger g, TransitionSystem ts, Unifier un) throws JasonException {
+    public int dropGoal(Intention i, Trigger g, TransitionSystem ts, Unifier un) throws JasonException {
         if (i != null) {
             if (i.dropGoal(g, un)) {
                 // notify listener
@@ -94,7 +94,7 @@ public class fail_goal extends succeed_goal {
     }
 
     @Override
-    void dropInEvent(TransitionSystem ts, Event e, Intention i) throws Exception {
+    void dropGoalInEvent(TransitionSystem ts, Event e, Intention i) throws Exception {
         e.getTrigger().setTrigOp(TEOperator.del);
     }
 }

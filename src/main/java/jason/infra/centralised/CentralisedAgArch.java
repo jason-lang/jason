@@ -197,7 +197,7 @@ public class CentralisedAgArch extends AgArch implements Runnable {
         int i = 0;
         int ca = cyclesAct;
         if (cyclesAct == 9999)
-            ca = ts.getC().getIntentions().size();
+            ca = ts.getC().getRunningIntentions().size();
 
         while (running && i++ < ca && !ts.canSleepAct()) {
             ts.act();

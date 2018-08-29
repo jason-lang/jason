@@ -61,7 +61,7 @@ public abstract class ReplAg extends Agent {
             //Literal g = ASSyntax.createLiteral("run_repl_expr", lCmd);
             //getTS().getLogger().info("running "+i);
             //getTS().getC().addAchvGoal(g, null);
-            getTS().getC().addIntention(i);
+            getTS().getC().addRunningIntention(i);
             cmdCounter++;
             clear();
             getTS().getUserAgArch().wake();

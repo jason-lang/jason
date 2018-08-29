@@ -1,5 +1,8 @@
 package jason.stdlib;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import jason.JasonException;
 import jason.asSemantics.Circumstance;
 import jason.asSemantics.DefaultInternalAction;
@@ -21,9 +24,6 @@ import jason.asSyntax.Structure;
 import jason.asSyntax.Term;
 import jason.asSyntax.Trigger;
 import jason.util.Pair;
-
-import java.util.HashSet;
-import java.util.Set;
 
 /**
 Implementation of <b>.fort</b> (used for |& and || operators).
@@ -107,7 +107,7 @@ public class fork extends DefaultInternalAction {
             im.insertAsNextStep(whattoadd);
             im.removeCurrentStep(); // remove the .fork
             i.push(im);
-            ts.getC().addIntention(i);
+            ts.getC().addRunningIntention(i);
         }
 
 
@@ -176,7 +176,7 @@ public class fork extends DefaultInternalAction {
         public void fail(Circumstance c) {
             if (size() >= forkPoint && fd.isAnd) { // the fail is above fork, is an fork and, remove the others
                 for (Intention ifo: fd.intentions) {
-                    drop_intention.dropInt(c, ifo);
+                    c.dropIntention(ifo);
                 }
             }
         }
@@ -189,7 +189,7 @@ public class fork extends DefaultInternalAction {
                     //System.out.println("*** remove other forks");
                     fd.intentions.remove(this);
                     for (Intention ifo: fd.intentions) {
-                        drop_intention.dropInt(c, ifo);
+                        c.dropIntention(ifo);
                     }
                 } else {
                     //System.out.println("*** case or, do not search for fail plan below fork point");

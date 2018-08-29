@@ -543,7 +543,7 @@ public class TransitionSystem {
         if (conf.C.SE.intention == Intention.EmptyInt) {
             Intention intention = new Intention();
             intention.push(im);
-            confP.C.addIntention(intention);
+            confP.C.addRunningIntention(intention);
         } else {
             // Rule IntEv
 
@@ -587,7 +587,7 @@ public class TransitionSystem {
             // end of TRO
 
             confP.C.SE.intention.push(im);
-            confP.C.addIntention(confP.C.SE.intention);
+            confP.C.addRunningIntention(confP.C.SE.intention);
         }
         confP.stepDeliberate = State.ProcAct;
     }
@@ -641,9 +641,9 @@ public class TransitionSystem {
         }
 
         // Rule SelInt1
-        if (!conf.C.isAtomicIntentionSuspended() && conf.C.hasIntention()) { // the isAtomicIntentionSuspended is necessary because the atomic intention may be suspended (the above removeAtomicInt returns null in that case)
+        if (!conf.C.isAtomicIntentionSuspended() && conf.C.hasRunningIntention()) { // the isAtomicIntentionSuspended is necessary because the atomic intention may be suspended (the above removeAtomicInt returns null in that case)
             // but no other intention could be selected
-            confP.C.SI = conf.ag.selectIntention(conf.C.getIntentions());
+            confP.C.SI = conf.ag.selectIntention(conf.C.getRunningIntentions());
             if (logger.isLoggable(Level.FINE)) logger.fine("Selected intention "+confP.C.SI);
             if (confP.C.SI != null) { // the selectIntention function returned null
                 return;
@@ -973,7 +973,7 @@ public class TransitionSystem {
 
             if (i.isFinished()) {
                 // intention finished, remove it
-                confP.C.dropIntention(i);
+                confP.C.dropRunningIntention(i);
                 //conf.C.SI = null;
                 return;
             }
@@ -1151,7 +1151,7 @@ public class TransitionSystem {
     private void updateIntention(Intention i) {
         if (!i.isFinished()) {
             i.peek().removeCurrentStep();
-            confP.C.addIntention(i);
+            confP.C.addRunningIntention(i);
         } else {
             logger.fine("trying to update a finished intention!");
         }
@@ -1330,7 +1330,7 @@ public class TransitionSystem {
                         if (drop) {
                             try {
                                 FailWithDeadline ia = new FailWithDeadline(intention, evt.getTrigger());
-                                ia.drop(TransitionSystem.this, body, new Unifier());
+                                ia.findGoalAndDrop(TransitionSystem.this, body, new Unifier());
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
@@ -1357,7 +1357,7 @@ public class TransitionSystem {
          *           3 = simply removed without event
          */
         @Override
-        public int dropIntention(Intention i, Trigger g, TransitionSystem ts, Unifier un) throws JasonException {
+        public int dropGoal(Intention i, Trigger g, TransitionSystem ts, Unifier un) throws JasonException {
             if (i != null) {
                 // only consider dropping if the intention is the one that created the deadline goal
                 if (intToDrop == null) {
@@ -1394,7 +1394,7 @@ public class TransitionSystem {
     public boolean canSleep() {
         return    (C.isAtomicIntentionSuspended() && !C.hasFeedbackAction() && !conf.C.hasMsg())  // atomic case
                   || (!conf.C.hasEvent() &&    // other cases (deliberate)
-                      !conf.C.hasIntention() && !conf.C.hasFeedbackAction() && // (action)
+                      !conf.C.hasRunningIntention() && !conf.C.hasFeedbackAction() && // (action)
                       !conf.C.hasMsg() &&  // (sense)
                       taskForBeginOfCycle.isEmpty() &&
                       getUserAgArch().canSleep());
@@ -1410,7 +1410,7 @@ public class TransitionSystem {
 
     public boolean canSleepAct() {
         //&& !C.hasPendingAction()
-        return !C.hasIntention() && !C.hasFeedbackAction() && C.getSelectedIntention() == null && getUserAgArch().canSleep();
+        return !C.hasRunningIntention() && !C.hasFeedbackAction() && C.getSelectedIntention() == null && getUserAgArch().canSleep();
     }
 
     /**
