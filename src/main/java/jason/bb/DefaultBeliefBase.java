@@ -206,13 +206,14 @@ public class DefaultBeliefBase extends BeliefBase {
 
             Iterator<BelEntry> ibe = ins.next().values().iterator();
             Iterator<Literal>  il  = null;
+            Iterator<Literal>  ilr = null; // used by remove
             Literal            l   = null;
             {
                 goNext();
             }
 
             public boolean hasNext() {
-                return il != null && il.hasNext(); //l != null;
+                return il != null && il.hasNext();
             }
 
             private void goNext() {
@@ -228,13 +229,14 @@ public class DefaultBeliefBase extends BeliefBase {
             }
 
             public Literal next() {
-                l = il.next(); // store it for remove
+                l = il.next();
+                ilr = il;
                 goNext();
                 return l;
             }
 
             public void remove() {
-                il.remove();
+                ilr.remove();
                 if (l.hasAnnot(TPercept)) {
                     percepts.remove(l);
                 }

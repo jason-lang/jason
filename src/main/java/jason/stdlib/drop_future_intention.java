@@ -82,6 +82,7 @@ public class drop_future_intention extends drop_intention {
                         C.dropIntention(i);
                         isCurrentInt = isCurrentInt || i.equals(C.getSelectedIntention());
                         un = bak.clone();
+            break;
                     }
                 }
                 pb = pb.getBodyNext();
