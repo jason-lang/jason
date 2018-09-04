@@ -552,7 +552,12 @@ public class TransitionSystem {
                 IntendedMeans top = confP.C.SE.intention.peek(); // top = the IM that will be removed from the intention due to TRO
                 //System.out.println(top.getTrigger().isGoal()+"=1="+im.getTrigger().isGoal());
                 //System.out.println(top.getTrigger().getLiteral().getPredicateIndicator()+"=2="+im.getTrigger().getLiteral().getPredicateIndicator());
-                if (top != null && top.getTrigger().isGoal() && im.getTrigger().isGoal() && // are both goal
+                //System.out.println(top.getTrigger()+"=3="+im.getTrigger());
+
+                // next test if the condition for TOR (comparing top and the IM being added) 
+                if (top != null &&
+                        top.getTrigger().isAddition() && // failure plans should not be subject of TRO
+                        top.getTrigger().isGoal() && im.getTrigger().isGoal() && // are both goal
                         top.getCurrentStep().getBodyNext() == null && // the plan below is finished
                         top.getTrigger().getLiteral().getPredicateIndicator().equals( im.getTrigger().getLiteral().getPredicateIndicator()) // goals are equals (do not consider - or + from the trigger -- required in the case of goal patterns where -!g <- !g is used)
                    ) {
@@ -983,7 +988,7 @@ public class TransitionSystem {
                 // nothing to do
                 return;
             }
-
+            
             // remove the finished IM from the top of the intention
             IntendedMeans topIM = i.pop();
             Trigger topTrigger = topIM.getTrigger();
@@ -1027,13 +1032,6 @@ public class TransitionSystem {
                 if (!im.isFinished()) {
                     // removes !b or ?s
                     // unifies the final event with the body that called it
-
-                    // old code:
-                    /*topLiteral.apply(topIM.unif);
-                    topLiteral.makeVarsAnnon();
-                    Literal cstep = (Literal)im.removeCurrentStep();
-                    boolean r = im.unif.unifies(cstep,topLiteral);
-                    */
 
                     // new code optimised: handle directly renamed vars for the call
                     // get vars in the unifier that comes from makeVarAnnon (stored in renamedVars)
