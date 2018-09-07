@@ -917,6 +917,7 @@ public class Agent {
                         result = new List[2];
                         result[0] = Collections.singletonList(beliefToAdd);
                         result[1] = Collections.emptyList();
+                        if (logger.isLoggable(Level.FINE)) logger.fine("brf added " + beliefToAdd);
                     }
                 }
 
