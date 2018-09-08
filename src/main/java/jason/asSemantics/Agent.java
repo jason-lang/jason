@@ -934,14 +934,16 @@ public class Agent {
                     boolean removed = getBB().remove(beliefToDel);
                     if (!removed && !beliefToDel.isGround()) { // then try to unify the parameter with a belief in BB
                         Iterator<Literal> il = getBB().getCandidateBeliefs(beliefToDel.getPredicateIndicator());
-                        while (il.hasNext()) {
-                            Literal linBB = il.next();
-                            if (u.unifies(linBB, beliefToDel)) {
-                                il.remove();
-                                beliefToDel = (Literal)beliefToDel.capply(u);
-                                removed = true;
-                                break;
-                            }
+                        if (il != null) {
+                                while (il.hasNext()) {
+                                Literal linBB = il.next();
+                                if (u.unifies(linBB, beliefToDel)) {
+                                    il.remove();
+                                    beliefToDel = (Literal)beliefToDel.capply(u);
+                                    removed = true;
+                                    break;
+                                }
+                                }
                         }
                     }
 
