@@ -660,14 +660,14 @@ public class Circumstance implements Serializable {
                     if (getSelectedEvent() != null) {
                         curInt = getSelectedEvent().getIntention();
                         if (curInt != null)
-                                return;
+                            return;
                     } 
                     find();
                     return;
 
                 case selInt:
                     curStep = Step.evt; // set next step
-                    // we need to check the selected intention in this cycle too!!!
+                    // we need to check the selected intention in this reasoning cycle too!!!
                     curInt = getSelectedIntention();
                     if (curInt != null)
                         return;                    
@@ -678,9 +678,10 @@ public class Circumstance implements Serializable {
                     if (evtIterator == null)
                         evtIterator = getEventsPlusAtomic();
 
-                    if (evtIterator.hasNext()) {
+                    while (evtIterator.hasNext()) {
                         curInt = evtIterator.next().getIntention();
-                        return;
+                        if (curInt != null)
+                            return;
                     } 
                     curStep = Step.pendEvt; // set next step
                     find();
@@ -690,9 +691,10 @@ public class Circumstance implements Serializable {
                     if (pendEvtIterator == null)
                         pendEvtIterator = getPendingEvents().values().iterator();
 
-                    if (pendEvtIterator.hasNext()) {
+                    while (pendEvtIterator.hasNext()) {
                         curInt = pendEvtIterator.next().getIntention();
-                        return;
+                        if (curInt != null)
+                            return;
                     }
                     curStep = Step.pendAct; // set next step
                     find();
@@ -704,20 +706,18 @@ public class Circumstance implements Serializable {
                         if (pendActIterator == null)
                             pendActIterator = getPendingActions().values().iterator();
 
-                        if (pendActIterator.hasNext()) {
+                        while (pendActIterator.hasNext()) {
                             curInt = pendActIterator.next().getIntention();
-                            return;
-                        } else {
-                            curStep = Step.pendInt; // set next step
+                            if (curInt != null)
+                                return;
                         }
-                    } else {
-                        curStep = Step.pendInt; // set next step
                     }
+                    curStep = Step.pendInt; // set next step
                     find();
                     return;
 
                 case pendInt:
-                    // intention may be suspended in PI! (in the new semantics)
+                    // intention may be suspended in PI!
                     if (hasPendingIntention()) {
                         if (pendIntIterator == null)
                             pendIntIterator = getPendingIntentions().values().iterator();
@@ -725,12 +725,9 @@ public class Circumstance implements Serializable {
                         if (pendIntIterator.hasNext()) {
                             curInt  = pendIntIterator.next();
                             return;
-                        } else {
-                            curStep = Step.intentions; // set next step
                         }
-                    } else {
-                        curStep = Step.intentions; // set next step
                     }
+                    curStep = Step.intentions; // set next step
                     find();
                     return;
 
