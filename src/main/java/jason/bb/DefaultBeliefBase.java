@@ -287,7 +287,7 @@ public class DefaultBeliefBase extends BeliefBase {
 
         BelEntry entry = pi2entry.get(pi);
         if (entry != null) {
-            return new EntryIteratorWrapper(entry.list.iterator());
+            return new EntryIteratorWrapper(entry);
         } else {
             return null;
         }
@@ -296,9 +296,11 @@ public class DefaultBeliefBase extends BeliefBase {
     class EntryIteratorWrapper implements Iterator<Literal> {
         Literal last = null;
         Iterator<Literal> il = null;
+        BelEntry entry = null;
         
-        public EntryIteratorWrapper(Iterator<Literal> i) {
-            il = i;
+        public EntryIteratorWrapper(BelEntry e) {
+                entry = e;
+            il = entry.list.iterator();
         }
         @Override public boolean hasNext() {
             return il.hasNext();
@@ -309,6 +311,7 @@ public class DefaultBeliefBase extends BeliefBase {
         }
         @Override public void remove() {
             il.remove();
+            entry.remove(last);
             if (last.hasAnnot(TPercept)) {
                 percepts.remove(last);
             }
@@ -339,7 +342,7 @@ public class DefaultBeliefBase extends BeliefBase {
             BelEntry entry = belsMap.get(l.getPredicateIndicator());
             if (entry != null) {
                 //System.out.println(l.getNS() + "::::"+ l+ "  ==> " + entry.list);
-                return new EntryIteratorWrapper(entry.list.iterator());
+                return new EntryIteratorWrapper(entry);
             } else {
                 return null;
             }

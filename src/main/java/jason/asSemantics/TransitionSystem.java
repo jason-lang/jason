@@ -638,7 +638,7 @@ public class TransitionSystem {
 
     private void applySelInt() throws JasonException {
         confP.stepAct = State.ExecInt; // default next step
-
+        
         // Rule for Atomic Intentions
         confP.C.SI = C.removeAtomicIntention();
         if (confP.C.SI != null) {
@@ -913,7 +913,7 @@ public class TransitionSystem {
             }
             // call BRF
             try {
-                List<Literal>[] result = ag.brf(null, body, curInt); // the intention is not the new focus
+                List<Literal>[] result = ag.brf(null, body, curInt); 
                 if (result != null) { // really change something
                     // generate events
                     updateEvents(result,newfocus);
