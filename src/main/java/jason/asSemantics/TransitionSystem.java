@@ -556,7 +556,7 @@ public class TransitionSystem {
 
                 // next test if the condition for TOR (comparing top and the IM being added) 
                 if (top != null &&
-                        top.getTrigger().isAddition() && // failure plans should not be subject of TRO
+                        top.getTrigger().isAddition() && // failure plans should not be subject of TRO (see BugFail)
                         top.getTrigger().isGoal() && im.getTrigger().isGoal() && // are both goal
                         top.getCurrentStep().getBodyNext() == null && // the plan below is finished
                         top.getTrigger().getLiteral().getPredicateIndicator().equals( im.getTrigger().getLiteral().getPredicateIndicator()) // goals are equals (do not consider - or + from the trigger -- required in the case of goal patterns where -!g <- !g is used)
