@@ -64,7 +64,7 @@ public class drop_intention extends DefaultInternalAction {
     
     @Override
     public boolean suspendIntention() {
-    		return resultSuspend;
+		return resultSuspend;
     }
     
     @Override
@@ -72,9 +72,9 @@ public class drop_intention extends DefaultInternalAction {
         checkArguments(args);
         resultSuspend = false;
         if (args.length == 0) {
-        		resultSuspend = true; // to drop the current intention
+    		resultSuspend = true; // to drop the current intention
         } else {
-        		resultSuspend = dropInt(ts.getC(),(Literal)args[0],un); // to drop the current intention        			
+        	resultSuspend = dropInt(ts.getC(),(Literal)args[0],un); // to drop the current intention        			
         }
         return true;
     }
@@ -90,7 +90,7 @@ public class drop_intention extends DefaultInternalAction {
         boolean isCurrentInt = false;
         Iterator<Intention> iint = C.getAllIntentions();
         while (iint.hasNext()) { // for all intentions
-        		Intention i = iint.next();
+    		Intention i = iint.next();
             if (i.hasTrigger(g, un)) { // if the intention i has goal g
                 C.dropIntention(i);
                 isCurrentInt = isCurrentInt || i.equals(C.getSelectedIntention());

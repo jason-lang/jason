@@ -47,7 +47,7 @@ import jason.asSyntax.Term;
  * @see jason.stdlib.resume
  * 
  */
-public class drop_future_intention extends drop_intention {
+public class drop_future_intention extends drop_desire {
 
     @Override
     public int getMinArgs() {
@@ -82,7 +82,7 @@ public class drop_future_intention extends drop_intention {
                         C.dropIntention(i);
                         isCurrentInt = isCurrentInt || i.equals(C.getSelectedIntention());
                         un = bak.clone();
-            break;
+                        break;
                     }
                 }
                 pb = pb.getBodyNext();

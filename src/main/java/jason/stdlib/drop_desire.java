@@ -47,10 +47,8 @@ public class drop_desire extends drop_intention {
 
     @Override
     public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {
-        checkArguments(args);
-
+        super.execute(ts, un, args);
         dropEvt(ts.getC(), (Literal)args[0], un);
-        dropInt(ts.getC(), (Literal)args[0], un);
         return true;
     }
 

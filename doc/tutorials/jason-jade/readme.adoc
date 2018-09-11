@@ -11,8 +11,8 @@ ifdef::env-github[:outfilesuffix: .adoc]
 This document aims to show how to create Jason agents that
 participate in a multi-agent system (MAS) formed by "`normal`" JADE
 agents (by normal we mean being not developed considering
-interoperability with Jason, i.e., any existing JADE agent). We will
-develop a Jason book-seller agent that joints the system of the
+interoperability with Jason). We will
+develop a Jason book-seller agent that joins the system of the
 traditional example of book trading that comes with JADE. The JADE
 code will remain as in the example, it will not be changed to
 interoperate with Jason.
