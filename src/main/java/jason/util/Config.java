@@ -725,7 +725,7 @@ public class Config extends Properties {
         return System.getProperty("os.name").startsWith("Windows");
     }
 
-    static private String getJarFromClassPath(String file) {
+    static protected String getJarFromClassPath(String file) {
         StringTokenizer st = new StringTokenizer(System.getProperty("java.class.path"), File.pathSeparator);
         while (st.hasMoreTokens()) {
             String token = st.nextToken();
