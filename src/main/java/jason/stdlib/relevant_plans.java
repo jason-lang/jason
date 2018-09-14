@@ -40,7 +40,7 @@ import java.util.List;
   <li> <code>.relevant_plans({+!go(X,Y)},LP, LL)</code>: same as above but also
   unifies LL with a list of labels of plans in LP.</li>
 
-  <li> <code>.relevant_plans({+!_},_,LL)</code>: gets the labels of all achievement goals.</li>
+  <li> <code>.relevant_plans({+!_},_,LL)</code>: gets the labels of all plans for achievement goals.</li>
 
   </ul>
 

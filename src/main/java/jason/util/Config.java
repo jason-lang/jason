@@ -118,7 +118,7 @@ public class Config extends Properties {
         return new File(System.getProperties().get("user.home") + File.separator + ".jason/user.properties");
     }
 
-    public File getMasterConfFile() {
+    public File getLocalConfFile() {
         return new File("jason.properties");
     }
 
@@ -129,14 +129,14 @@ public class Config extends Properties {
     /** Returns true if the file is loaded correctly */
     public boolean load() {
         try {
-            File f = getUserConfFile();
+            File f = getLocalConfFile();
             if (f.exists()) {
                 super.load(new FileInputStream(f));
                 return true;
-            } else { // load master configuration file
-                f = getMasterConfFile();
+            } else {
+                f = getUserConfFile();
                 if (f.exists()) {
-                    System.out.println("User config file not found, loading master: "+f.getAbsolutePath());
+                    //System.out.println("User config file not found, loading master: "+f.getAbsolutePath());
                     super.load(new FileInputStream(f));
                     return true;
                 }

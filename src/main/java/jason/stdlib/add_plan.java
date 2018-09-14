@@ -60,7 +60,7 @@ import jason.bb.BeliefBase;
 
   <li> <code>.add_plan([{+b &lt;- .print(b)}, {+b : bel &lt;-
   .print(bel)}], rafa)</code>: adds both plans with "rafa" as their
-  sources.</li>
+  source.</li>
 
   </ul>
 
