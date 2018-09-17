@@ -35,8 +35,6 @@ public class Config extends Properties {
 
     /** path to jade.jar */
     public static final String JADE_JAR      = "jadeJar";
-    //public static final String MOISE_JAR     = "moiseJar";
-    //public static final String JACAMO_JAR    = "jacamoJar";
 
     /** runtime jade arguments (the same used in jade.Boot) */
     public static final String JADE_ARGS     = "jadeArgs";
@@ -169,7 +167,12 @@ public class Config extends Properties {
 
     /** Returns the full path to the jade.jar file */
     public String getJadeJar() {
-        return getProperty(JADE_JAR);
+        String r = getProperty(JADE_JAR);
+        if (r == null) {
+            tryToFixJarFileConf(JADE_JAR,   "jade",  2000000);
+            r = getProperty(JADE_JAR);
+        }
+        return r;
     }
 
     /** Return the jade args (those used in jade.Boot) */
@@ -253,8 +256,6 @@ public class Config extends Properties {
     }
 
     public void resetSomeProps() {
-        //System.out.println("Reseting configuration of "+Config.MOISE_JAR);
-        //remove(Config.MOISE_JAR);
         //System.out.println("Reseting configuration of "+Config.JASON_JAR);
         remove(Config.JASON_JAR);
         //System.out.println("Reseting configuration of "+Config.JADE_JAR);
@@ -268,10 +269,6 @@ public class Config extends Properties {
     /** Set most important parameters with default values */
     public void fix() {
         tryToFixJarFileConf(JASON_JAR,  "jason",  700000);
-        tryToFixJarFileConf(JADE_JAR,   "jade",  2000000);
-        //tryToFixJarFileConf(MOISE_JAR,  "moise",  300000);
-        //tryToFixJarFileConf(JACAMO_JAR, "jacamo",   5000);
-        tryToFixJarFileConf(JASON_JAR,  "jason",  700000); // in case jacamo is found
 
         // fix java home
         if (get(JAVA_HOME) == null || !checkJavaHomePath(getProperty(JAVA_HOME))) {
@@ -389,7 +386,6 @@ public class Config extends Properties {
     private void setDefaultInfra() {
         put("infrastructure.Centralised", CentralisedFactory.class.getName());
         put("infrastructure.Jade", JadeFactory.class.getName());
-        //put("infrastructure.JaCaMo", "jacamo.infra.JaCaMoInfrastructureFactory");
     }
 
     public void store() {
@@ -511,6 +507,15 @@ public class Config extends Properties {
             if (showFixMsgs)
                 System.out.println("Wrong configuration for " + jarFilePrefix + ", current is " + jarFile);
 
+            // try to get from classpath (the most common case)
+            jarFile = getJarFromClassPath(jarFilePrefix);
+            if (checkJar(jarFile, minSize)) {
+                put(jarEntry, jarFile);
+                if (showFixMsgs)
+                    System.out.println("found at " + jarFile+" by classpath");
+                return;
+            }
+
             // try eclipse installation
             jarFile = getJarFromEclipseInstallation(jarFilePrefix);
             if (checkJar(jarFile, minSize)) {
@@ -520,6 +525,7 @@ public class Config extends Properties {
                 return;
             }
 
+            /*
             // try current dir
             jarFile = findJarInDirectory(new File("."), jarFilePrefix);
             if (checkJar(jarFile, minSize)) {
@@ -533,15 +539,6 @@ public class Config extends Properties {
                 }
             }
 
-            // try to get from classpath
-            jarFile = getJarFromClassPath(jarFilePrefix);
-            if (checkJar(jarFile, minSize)) {
-                put(jarEntry, jarFile);
-                if (showFixMsgs)
-                    System.out.println("found at " + jarFile+" by classpath");
-                return;
-            }
-
             try {
                 // try jason jar
                 File jasonjardir = new File(getJasonJar()).getAbsoluteFile().getCanonicalFile().getParentFile();
@@ -553,20 +550,9 @@ public class Config extends Properties {
                     return;
                 }
             } catch (Exception e) {}
-
-            /*
-            try {
-                // try jacamo jar
-                File jacamojardir= new File(getProperty(JACAMO_JAR)).getAbsoluteFile().getCanonicalFile().getParentFile();
-                jarFile = findJarInDirectory(jacamojardir, jarFilePrefix);
-                if (checkJar(jarFile, minSize)) {
-                    put(jarEntry, jarFile);
-                    System.out.println("found at " + jarFile+" by jacamo.jar directory");
-                    return;
-                }
-            } catch (Exception e) {}
             */
-
+            
+            /*
             // try current dir + lib
             jarFile = findJarInDirectory(new File(".." + File.separator + "libs"), jarFilePrefix);
             if (checkJar(jarFile, minSize)) {
@@ -603,7 +589,7 @@ public class Config extends Properties {
                     e.printStackTrace();
                 }
             }
-
+            */
             // try from java web start
             String jwsDir = System.getProperty("jnlpx.deployment.user.home");
             if (jwsDir == null) {
