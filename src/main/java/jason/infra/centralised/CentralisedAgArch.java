@@ -19,7 +19,7 @@ import jason.asSemantics.TransitionSystem;
 import jason.asSyntax.Atom;
 import jason.asSyntax.Literal;
 import jason.mas2j.ClassParameters;
-import jason.runtime.RuntimeServicesInfraTier;
+import jason.runtime.RuntimeServices;
 import jason.runtime.Settings;
 import jason.util.Config;
 
@@ -410,7 +410,7 @@ public class CentralisedAgArch extends AgArch implements Runnable {
         infraControl.receiveFinishedCycle(getAgName(), breakpoint, cycle);
     }
 
-    public RuntimeServicesInfraTier getRuntimeServices() {
+    public RuntimeServices getRuntimeServices() {
         return new CentralisedRuntimeServices(masRunner);
     }
 

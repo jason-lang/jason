@@ -13,7 +13,7 @@ import jason.asSyntax.StringTermImpl;
 import jason.asSyntax.Structure;
 import jason.asSyntax.Term;
 import jason.mas2j.ClassParameters;
-import jason.runtime.RuntimeServicesInfraTier;
+import jason.runtime.RuntimeServices;
 import jason.runtime.Settings;
 
 /**
@@ -67,7 +67,7 @@ import jason.runtime.Settings;
   @see jason.stdlib.kill_agent
   @see jason.stdlib.save_agent
   @see jason.stdlib.stopMAS
-  @see jason.runtime.RuntimeServicesInfraTier
+  @see jason.runtime.RuntimeServices
 */
 public class create_agent extends DefaultInternalAction {
 
@@ -110,7 +110,7 @@ public class create_agent extends DefaultInternalAction {
                 }
             }
         }
-        RuntimeServicesInfraTier rs = ts.getUserAgArch().getRuntimeServices();
+        RuntimeServices rs = ts.getUserAgArch().getRuntimeServices();
         name = rs.createAgent(name, source, agClass, agArchClasses, bbPars, getSettings(ts), ts.getAg());
         rs.startAgent(name);
 

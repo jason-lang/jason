@@ -20,7 +20,7 @@ import jason.environment.EnvironmentInfraTier;
 import jason.infra.centralised.BaseCentralisedMAS;
 import jason.mas2j.ClassParameters;
 import jason.mas2j.MAS2JProject;
-import jason.runtime.RuntimeServicesInfraTier;
+import jason.runtime.RuntimeServices;
 
 /**
  * This class implements the Jade version of the environment
@@ -197,7 +197,7 @@ public class JadeEnvironment extends JadeAg implements EnvironmentInfraTier {
         }
     }
 
-    public RuntimeServicesInfraTier getRuntimeServices() {
+    public RuntimeServices getRuntimeServices() {
         return new JadeRuntimeServices(getContainerController(), this);
     }
 }

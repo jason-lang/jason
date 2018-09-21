@@ -5,7 +5,7 @@ import jason.architecture.AgArch;
 import jason.control.ExecutionControl;
 import jason.control.ExecutionControlInfraTier;
 import jason.mas2j.ClassParameters;
-import jason.runtime.RuntimeServicesInfraTier;
+import jason.runtime.RuntimeServices;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -83,7 +83,7 @@ public class CentralisedExecutionControl implements ExecutionControlInfraTier {
         }
     }
 
-    public RuntimeServicesInfraTier getRuntimeServices() {
+    public RuntimeServices getRuntimeServices() {
         return new CentralisedRuntimeServices(masRunner);
     }
 }

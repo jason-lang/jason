@@ -37,7 +37,7 @@ import java.io.FileWriter;
   @see jason.stdlib.kill_agent
   @see jason.stdlib.create_agent
   @see jason.stdlib.stopMAS
-  @see jason.runtime.RuntimeServicesInfraTier
+  @see jason.runtime.RuntimeServices
 */
 public class save_agent extends DefaultInternalAction {
 

@@ -6,10 +6,15 @@ all_proposals_received(CNPId)
      .count(refuse(CNPId)[source(_)], NR) &      // number of refusals received
      NP = NO + NR.
 
+
+
 /* Initial goals */
 
 !startCNP(1,fix(computer)).
 //!startCNP(2,banana).
+
+!register.
++!register <- .df_register(initiator).
 
 /* Plans */
 
@@ -18,7 +23,7 @@ all_proposals_received(CNPId)
    <- .print("Waiting participants for task ",Task,"...");
       .wait(2000);  // wait participants introduction
       +cnp_state(Id,propose);   // remember the state of the CNP
-      .findall(Name,introduction(participant,Name),LP);
+      .df_search(participant,LP);
       .print("Sending CFP to ",LP);
       .send(LP,tell,cfp(Id,Task));
       // the deadline of the CNP is now + 4 seconds (or all proposals were received)

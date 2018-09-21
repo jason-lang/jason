@@ -22,7 +22,7 @@ import jason.asSyntax.Literal;
 import jason.asSyntax.StringTermImpl;
 import jason.asSyntax.Term;
 import jason.mas2j.AgentParameters;
-import jason.runtime.RuntimeServicesInfraTier;
+import jason.runtime.RuntimeServices;
 
 public class JasonBridgeArch extends AgArch {
 
@@ -211,7 +211,7 @@ public class JasonBridgeArch extends AgArch {
     }
 
     @Override
-    public RuntimeServicesInfraTier getRuntimeServices() {
+    public RuntimeServices getRuntimeServices() {
         return new JadeRuntimeServices(jadeAg.getContainerController(), jadeAg);
     }
 

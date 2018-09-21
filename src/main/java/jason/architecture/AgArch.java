@@ -10,7 +10,7 @@ import jason.asSemantics.Message;
 import jason.asSemantics.TransitionSystem;
 import jason.asSyntax.Literal;
 import jason.infra.centralised.CentralisedAgArch;
-import jason.runtime.RuntimeServicesInfraTier;
+import jason.runtime.RuntimeServices;
 
 /**
  * Base agent architecture class that defines the overall agent architecture;
@@ -204,7 +204,7 @@ public class AgArch implements Comparable<AgArch> {
     }
 
 
-    public RuntimeServicesInfraTier getRuntimeServices() {
+    public RuntimeServices getRuntimeServices() {
         if (successor == null)
             return null;
         else

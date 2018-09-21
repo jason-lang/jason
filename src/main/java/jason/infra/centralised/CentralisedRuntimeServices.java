@@ -1,5 +1,6 @@
 package jason.infra.centralised;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
@@ -8,19 +9,19 @@ import java.util.logging.Logger;
 import jason.JasonException;
 import jason.architecture.AgArch;
 import jason.asSemantics.Agent;
+import jason.asSyntax.Literal;
 import jason.mas2j.AgentParameters;
 import jason.mas2j.ClassParameters;
-import jason.runtime.RuntimeServicesInfraTier;
+import jason.runtime.RuntimeServices;
 import jason.runtime.Settings;
 import jason.runtime.SourcePath;
 
 /** This class implements the centralised version of the runtime services. */
-public class CentralisedRuntimeServices implements RuntimeServicesInfraTier {
+public class CentralisedRuntimeServices implements RuntimeServices {
 
     private static Logger logger = Logger.getLogger(CentralisedRuntimeServices.class.getName());
 
     protected BaseCentralisedMAS masRunner;
-
     public CentralisedRuntimeServices(BaseCentralisedMAS masRunner) {
         this.masRunner = masRunner;
     }
@@ -119,4 +120,26 @@ public class CentralisedRuntimeServices implements RuntimeServicesInfraTier {
     public void stopMAS() throws Exception {
         masRunner.finish();
     }
+
+    @Override    
+    public void dfRegister(String agName, Literal service) {
+        masRunner.dfRegister(agName, service);
+    }
+
+    @Override    
+    public void dfDeRegister(String agName, Literal service) {
+        masRunner.dfDeRegister(agName, service);
+    }
+    
+    @Override    
+    public Collection<String> dfSearch(Literal service) {
+        return masRunner.dfSearch(service);
+    }
+    
+    @Override    
+    public void dfSubscribe(String agName, Literal service) {
+        masRunner.dfSubscribe(agName, service);
+    }
+    
 }
+

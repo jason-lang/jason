@@ -11,7 +11,7 @@ import jason.JasonException;
 import jason.architecture.AgArch;
 import jason.mas2j.AgentParameters;
 import jason.mas2j.ClassParameters;
-import jason.runtime.RuntimeServicesInfraTier;
+import jason.runtime.RuntimeServices;
 import jason.runtime.Settings;
 
 import java.io.File;
@@ -21,7 +21,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class JadeRuntimeServices implements RuntimeServicesInfraTier {
+public class JadeRuntimeServices implements RuntimeServices {
 
     private static Logger logger  = Logger.getLogger(JadeRuntimeServices.class.getName());
 
