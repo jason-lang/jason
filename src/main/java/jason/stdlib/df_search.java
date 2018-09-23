@@ -9,10 +9,10 @@ import jason.asSyntax.ListTermImpl;
 import jason.asSyntax.Term;
 
 /**
-  <p>Internal action: <b><code>.df_search(S,L)</code></b>.
+  <p>Internal action: <b><code>.df_search(S [,T] , L)</code></b>.
 
-  <p>Description: unifies in L a list of all agents providing the service S (see FIPA Directory Facilitator specification).
-    An option second argument can be used to define the type of the service.
+  <p>Description: unifies in L a list of all agents providing the service S of type T (see FIPA Directory Facilitator specification).
+    An optional second argument can be used to define the type of the service.
 
   <p>Examples:<ul>
   <li> <code>.df_search("sell(book)",L)</code>: unifies L with [bob,alice] in case these two agents have registered as book sellers.

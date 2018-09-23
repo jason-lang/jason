@@ -6,10 +6,10 @@ import jason.asSemantics.Unifier;
 import jason.asSyntax.Term;
 
 /**
-  <p>Internal action: <b><code>.df_deregister(S)</code></b>.
+  <p>Internal action: <b><code>.df_deregister(S [,T])</code></b>.
 
-  <p>Description: removes the agent in the Directory Facilitator as a provider of service S (see FIPA specification).
-    An option second argument can be used to define the type of the service.
+  <p>Description: removes the agent in the Directory Facilitator as a provider of service S of type T (see FIPA specification).
+    An optional second argument can be used to define the type of the service.
 
   <p>Examples:<ul>
   <li> <code>.df_deregister("sell(book)")</code>: deregister the agent as a book seller.

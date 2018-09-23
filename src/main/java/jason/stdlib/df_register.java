@@ -8,14 +8,15 @@ import jason.asSyntax.StringTerm;
 import jason.asSyntax.Term;
 
 /**
-  <p>Internal action: <b><code>.df_register(S)</code></b>.
+  <p>Internal action: <b><code>.df_register(S [,T])</code></b>.
 
-  <p>Description: register the agent in the Directory Facilitator as a provider of service S (see FIPA specification).
-    An option second argument can be used to define the type of the service.
+  <p>Description: register the agent in the Directory Facilitator as a provider of service S of type T (see FIPA specification).
+    An optional second argument can be used to define the type of the service.
     
   <p>Examples:<ul>
   <li> <code>.df_register("sell(book)")</code>: register the agent as a book seller.
-  </ul>
+  <li> <code>.df_deregister("sell(book)","book-trading")</code>: register the agent as a book seller of type "book-trading".
+</ul>
 
   @see jason.stdlib.df_deregister
   @see jason.stdlib.df_search

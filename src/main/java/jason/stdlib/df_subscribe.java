@@ -6,12 +6,12 @@ import jason.asSemantics.Unifier;
 import jason.asSyntax.Term;
 
 /**
-  <p>Internal action: <b><code>.df_subscribe(S)</code></b>.
+  <p>Internal action: <b><code>.df_subscribe(S [,T])</code></b>.
 
-  <p>Description: subscribes the agent as interested in providers of service S.
+  <p>Description: subscribes the agent as interested in providers of service S of type T.
   For each new agent providing this service, the agent will receive a message <tell provider(Ag,Service)>.
 
-    An option second argument can be used to define the type of the service.
+    An optional second argument can be used to define the type of the service.
 
   <p>Examples:<ul>
   <li> <code>.df_subscribe("sell(book)")</code>: subscribe the agent for providers of agents that sell books.
