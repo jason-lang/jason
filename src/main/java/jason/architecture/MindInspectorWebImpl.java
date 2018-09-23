@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.Executors;
 
@@ -22,7 +23,6 @@ import com.sun.net.httpserver.HttpServer;
 
 import jason.asSemantics.Agent;
 import jason.infra.centralised.BaseCentralisedMAS;
-import jason.runtime.RuntimeServices;
 import jason.runtime.Settings;
 import jason.util.Config;
 import jason.util.asl2html;
@@ -157,7 +157,7 @@ public class MindInspectorWebImpl extends MindInspectorWeb {
                             responseBody.write( ("- <a href=\"/agent-mind/"+a+"/latest\" target=\"am\" style=\"font-family: arial; text-decoration: none\">"+a+"</a><br/>").getBytes());
                         }
                         
-                        if (runner != null) {
+                        if (runner != null && !runner.getDF().isEmpty()) {
                             responseBody.write( ("<br/><a href=\"/df\" target=\"am\" style=\"font-family: arial; text-decoration: none\">DF</a><br/>").getBytes());                            
                         }
                     }
@@ -380,7 +380,7 @@ public class MindInspectorWebImpl extends MindInspectorWeb {
                                         
                     responseBody.write("<table border=\"0\" cellspacing=\"3\" cellpadding=\"6\" >".getBytes());
                     responseBody.write("<tr style='background-color: #ece7e6; font-family: arial;'><td><b>Agent</b></td><td><b>Services</b></td></tr>".getBytes());
-                    Map<String, List<String>> df = runner.getDF();
+                    Map<String, Set<String>> df = runner.getDF();
                     for (String a: df.keySet()) {
                         responseBody.write(("<tr style='font-family: arial;'><td>"+a+"</td>").getBytes());
                         for (String s: df.get(a)) {

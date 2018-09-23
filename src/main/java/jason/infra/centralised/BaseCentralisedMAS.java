@@ -15,11 +15,9 @@ import javax.management.NotificationBroadcasterSupport;
 import jason.asSemantics.Message;
 import jason.asSyntax.ASSyntax;
 import jason.asSyntax.Atom;
-import jason.asSyntax.Literal;
 import jason.asSyntax.StringTermImpl;
 import jason.mas2j.MAS2JProject;
 import jason.runtime.RuntimeServices;
-import jason.stdlib.string;
 import jason.util.Pair;
 
 /**
@@ -42,7 +40,7 @@ public abstract class BaseCentralisedMAS extends NotificationBroadcasterSupport 
     protected CentralisedExecutionControl   control     = null;
     protected Map<String,CentralisedAgArch> ags         = new ConcurrentHashMap<String,CentralisedAgArch>();
 
-    protected Map<String, List<String>>     df = new HashMap<>();
+    protected Map<String, Set<String>>     df = new HashMap<>();
     protected List<Pair<String, String>>    subscribers = new ArrayList<>();
 
     public boolean isDebug() {
@@ -105,9 +103,9 @@ public abstract class BaseCentralisedMAS extends NotificationBroadcasterSupport 
     
     public void dfRegister(String agName, String service) {
         synchronized (df) {         
-            List<String> s = df.get(agName);
+            Set<String> s = df.get(agName);
             if (s == null)
-                s = new ArrayList<>();
+                s = new HashSet<>();
             s.add(service);
             df.put(agName, s);
             
@@ -121,7 +119,7 @@ public abstract class BaseCentralisedMAS extends NotificationBroadcasterSupport 
 
     public void dfDeRegister(String agName, String service) {
         synchronized (df) {         
-            List<String> s = df.get(agName);
+            Set<String> s = df.get(agName);
             if (s == null)
                 return;
             else
@@ -158,7 +156,7 @@ public abstract class BaseCentralisedMAS extends NotificationBroadcasterSupport 
         getAg(receiver).receiveMsg(m);
     }
     
-    public Map<String, List<String>> getDF() {
+    public Map<String, Set<String>> getDF() {
             return df;
     }
 }
