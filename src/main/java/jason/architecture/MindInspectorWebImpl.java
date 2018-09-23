@@ -21,6 +21,8 @@ import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 
 import jason.asSemantics.Agent;
+import jason.infra.centralised.BaseCentralisedMAS;
+import jason.runtime.RuntimeServices;
 import jason.runtime.Settings;
 import jason.util.Config;
 import jason.util.asl2html;
@@ -34,6 +36,8 @@ public class MindInspectorWebImpl extends MindInspectorWeb {
     private Map<String,Integer>        lastStepSeenByUser = new HashMap<String, Integer>();
     private Map<String,Agent>          registeredAgents = new HashMap<String, Agent>();
 
+    private BaseCentralisedMAS         runner = null;
+    
     public MindInspectorWebImpl() {
     }
 
@@ -151,6 +155,10 @@ public class MindInspectorWebImpl extends MindInspectorWeb {
                         responseBody.write(("<font size=\"+2\"><p style='color: red; font-family: arial;'>Agents</p></font>").getBytes());
                         for (String a: histories.keySet()) {
                             responseBody.write( ("- <a href=\"/agent-mind/"+a+"/latest\" target=\"am\" style=\"font-family: arial; text-decoration: none\">"+a+"</a><br/>").getBytes());
+                        }
+                        
+                        if (runner != null) {
+                            responseBody.write( ("<br/><a href=\"/df\" target=\"am\" style=\"font-family: arial; text-decoration: none\">DF</a><br/>").getBytes());                            
                         }
                     }
                     responseBody.write("<hr/>by <a href=\"http://jason.sf.net\" target=\"_blank\">Jason</a>".getBytes());
@@ -352,6 +360,42 @@ public class MindInspectorWebImpl extends MindInspectorWeb {
             e.printStackTrace();
             return "Error XML transformation (MindInspector)";
         }
+    }
+
+    public synchronized void registerCentRunner(BaseCentralisedMAS rs) {
+        if (rs == null) return;
+        
+        this.runner = rs;
+        httpServer.createContext("/df", new HttpHandler() {
+            public void handle(HttpExchange exchange) throws IOException {
+                String requestMethod = exchange.getRequestMethod();
+                Headers responseHeaders = exchange.getResponseHeaders();
+                responseHeaders.set("Content-Type", "text/html");
+                exchange.sendResponseHeaders(200, 0);
+                OutputStream responseBody = exchange.getResponseBody();
+
+                if (requestMethod.equalsIgnoreCase("GET")) {
+                    responseBody.write(("<html><head><title>Directory Facilitator State</title><meta http-equiv=\"refresh\" content=\""+refreshInterval+"\" ></head><body>").getBytes());
+                    responseBody.write(("<font size=\"+2\"><p style='color: red; font-family: arial;'>Directory Facilitator State</p></font>").getBytes());
+                                        
+                    responseBody.write("<table border=\"0\" cellspacing=\"3\" cellpadding=\"6\" >".getBytes());
+                    responseBody.write("<tr style='background-color: #ece7e6; font-family: arial;'><td><b>Agent</b></td><td><b>Services</b></td></tr>".getBytes());
+                    Map<String, List<String>> df = runner.getDF();
+                    for (String a: df.keySet()) {
+                        responseBody.write(("<tr style='font-family: arial;'><td>"+a+"</td>").getBytes());
+                        for (String s: df.get(a)) {
+                            responseBody.write(("<td>"+s+"<br/></td>").getBytes());
+                        }
+                        responseBody.write("</tr>".getBytes());
+                            
+                    }
+                    responseBody.write("</table>".getBytes());
+                }
+                responseBody.write("</body></html>".getBytes());
+                responseBody.close();
+            }
+        });
+            
     }
 
 }

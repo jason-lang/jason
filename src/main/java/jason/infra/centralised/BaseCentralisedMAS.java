@@ -19,6 +19,7 @@ import jason.asSyntax.Literal;
 import jason.asSyntax.StringTermImpl;
 import jason.mas2j.MAS2JProject;
 import jason.runtime.RuntimeServices;
+import jason.stdlib.string;
 import jason.util.Pair;
 
 /**
@@ -155,5 +156,9 @@ public abstract class BaseCentralisedMAS extends NotificationBroadcasterSupport 
     protected void sendProvider(String receiver, String provider, String service) {
         Message m = new Message("tell", "df", receiver, ASSyntax.createLiteral("provider", new Atom(provider), new StringTermImpl(service)));
         getAg(receiver).receiveMsg(m);
+    }
+    
+    public Map<String, List<String>> getDF() {
+            return df;
     }
 }
