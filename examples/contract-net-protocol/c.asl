@@ -1,11 +1,10 @@
 /* Initial beliefs and rules */
 
 all_proposals_received(CNPId)
-  :- .count(introduction(participant,_),NP) &    // number of participants
+  :- nb_participants(CNPId,NP) &                 // number of participants
      .count(propose(CNPId,_)[source(_)], NO) &   // number of proposes received
      .count(refuse(CNPId)[source(_)], NR) &      // number of refusals received
      NP = NO + NR.
-
 
 
 /* Initial goals */
@@ -23,8 +22,9 @@ all_proposals_received(CNPId)
    <- .print("Waiting participants for task ",Task,"...");
       .wait(2000);  // wait participants introduction
       +cnp_state(Id,propose);   // remember the state of the CNP
-      .df_search(participant,LP);
+      .df_search("participant",LP);
       .print("Sending CFP to ",LP);
+      +nb_participants(Id,.length(LP));
       .send(LP,tell,cfp(Id,Task));
       // the deadline of the CNP is now + 4 seconds (or all proposals were received)
       .wait(all_proposals_received(Id), 4000, _);

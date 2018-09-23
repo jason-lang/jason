@@ -16,6 +16,7 @@ import jason.asSemantics.Message;
 import jason.asSyntax.ASSyntax;
 import jason.asSyntax.Atom;
 import jason.asSyntax.Literal;
+import jason.asSyntax.StringTermImpl;
 import jason.mas2j.MAS2JProject;
 import jason.runtime.RuntimeServices;
 import jason.util.Pair;
@@ -40,8 +41,8 @@ public abstract class BaseCentralisedMAS extends NotificationBroadcasterSupport 
     protected CentralisedExecutionControl   control     = null;
     protected Map<String,CentralisedAgArch> ags         = new ConcurrentHashMap<String,CentralisedAgArch>();
 
-    protected Map<String, List<Literal>>    df = new HashMap<>();
-    protected List<Pair<String, Literal>>   subscribers = new ArrayList<>();
+    protected Map<String, List<String>>     df = new HashMap<>();
+    protected List<Pair<String, String>>    subscribers = new ArrayList<>();
 
     public boolean isDebug() {
         return debug;
@@ -101,25 +102,25 @@ public abstract class BaseCentralisedMAS extends NotificationBroadcasterSupport 
     
     /** DF methods **/
     
-    public void dfRegister(String agName, Literal service) {
+    public void dfRegister(String agName, String service) {
         synchronized (df) {         
-            List<Literal> s = df.get(agName);
+            List<String> s = df.get(agName);
             if (s == null)
                 s = new ArrayList<>();
             s.add(service);
             df.put(agName, s);
             
             // inform subscribers
-            for (Pair<String,Literal> p: subscribers) {
+            for (Pair<String,String> p: subscribers) {
                 if (p.getSecond().equals(service))
                     sendProvider(p.getFirst(), agName, service);
             }
         }
     }
 
-    public void dfDeRegister(String agName, Literal service) {
+    public void dfDeRegister(String agName, String service) {
         synchronized (df) {         
-            List<Literal> s = df.get(agName);
+            List<String> s = df.get(agName);
             if (s == null)
                 return;
             else
@@ -127,11 +128,11 @@ public abstract class BaseCentralisedMAS extends NotificationBroadcasterSupport 
         }
     }
     
-    public Collection<String> dfSearch(Literal service) {
+    public Collection<String> dfSearch(String service) {
         synchronized (df) {         
             Set<String> ags = new HashSet<>();
             for (String ag: df.keySet()) {
-                for (Literal l: df.get(ag)) {
+                for (String l: df.get(ag)) {
                     if (l.equals(service)) {
                         ags.add(ag);
                     }
@@ -141,7 +142,7 @@ public abstract class BaseCentralisedMAS extends NotificationBroadcasterSupport 
         }
     }
     
-    public void dfSubscribe(String agName, Literal service) {
+    public void dfSubscribe(String agName, String service) {
         synchronized (df) {         
             // sends him all current providers
             for (String a: dfSearch(service)) 
@@ -151,8 +152,8 @@ public abstract class BaseCentralisedMAS extends NotificationBroadcasterSupport 
         }
     }
     
-    protected void sendProvider(String receiver, String provider, Literal service) {
-        Message m = new Message("tell", "df", receiver, ASSyntax.createLiteral("provider", new Atom(provider), service));
+    protected void sendProvider(String receiver, String provider, String service) {
+        Message m = new Message("tell", "df", receiver, ASSyntax.createLiteral("provider", new Atom(provider), new StringTermImpl(service)));
         getAg(receiver).receiveMsg(m);
     }
 }

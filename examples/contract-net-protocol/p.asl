@@ -4,12 +4,13 @@ price(_Service,X) :- .random(R) & X = (10*R)+100.
 
 !register.
 
-+!register <- .df_register(participant);
-              .df_subscribe(initiator).
++!register <- .df_register("participant");
+              .df_subscribe("initiator").
 
 // answer to Call For Proposal
 @c1 +cfp(CNPId,Task)[source(A)]
-   :  provider(A,initiator) & price(Task,Offer)
+   :  provider(A,"initiator") & 
+      price(Task,Offer)
    <- +proposal(CNPId,Task,Offer); // remember my proposal
       .send(A,tell,propose(CNPId,Offer)).
 

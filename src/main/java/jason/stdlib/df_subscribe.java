@@ -1,10 +1,8 @@
 package jason.stdlib;
 
-import jason.asSemantics.DefaultInternalAction;
 import jason.asSemantics.InternalAction;
 import jason.asSemantics.TransitionSystem;
 import jason.asSemantics.Unifier;
-import jason.asSyntax.Literal;
 import jason.asSyntax.Term;
 
 /**
@@ -13,8 +11,10 @@ import jason.asSyntax.Term;
   <p>Description: subscribes the agent as interested in providers of service S.
   For each new agent providing this service, the agent will receive a message <tell provider(Ag,Service)>.
 
+    An option second argument can be used to define the type of the service.
+
   <p>Examples:<ul>
-  <li> <code>.df_subscribe(sell(book))</code>: subscribe the agent for providers of agents that sell books.
+  <li> <code>.df_subscribe("sell(book)")</code>: subscribe the agent for providers of agents that sell books.
   </ul>
 
 
@@ -23,7 +23,7 @@ import jason.asSyntax.Term;
   @see jason.stdlib.df_subscribe
 
  */
-public class df_subscribe extends DefaultInternalAction {
+public class df_subscribe extends df_register {
 
     private static InternalAction singleton = null;
     public static InternalAction create() {
@@ -36,13 +36,13 @@ public class df_subscribe extends DefaultInternalAction {
         return 1;
     }
     @Override public int getMaxArgs() {
-        return 1;
+        return 2;
     }
 
     @Override
     public Object execute(final TransitionSystem ts, Unifier un, Term[] args) throws Exception {
         checkArguments(args);
-        ts.getUserAgArch().getRuntimeServices().dfSubscribe(ts.getUserAgArch().getAgName(), (Literal)args[0]);
+        ts.getUserAgArch().getRuntimeServices().dfSubscribe(ts.getUserAgArch().getAgName(), getService(args), getType(args));
         return true;        
     }
 }

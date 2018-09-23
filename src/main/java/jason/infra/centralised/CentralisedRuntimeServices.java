@@ -9,7 +9,6 @@ import java.util.logging.Logger;
 import jason.JasonException;
 import jason.architecture.AgArch;
 import jason.asSemantics.Agent;
-import jason.asSyntax.Literal;
 import jason.mas2j.AgentParameters;
 import jason.mas2j.ClassParameters;
 import jason.runtime.RuntimeServices;
@@ -122,22 +121,22 @@ public class CentralisedRuntimeServices implements RuntimeServices {
     }
 
     @Override    
-    public void dfRegister(String agName, Literal service) {
+    public void dfRegister(String agName, String service, String type) {
         masRunner.dfRegister(agName, service);
     }
 
     @Override    
-    public void dfDeRegister(String agName, Literal service) {
+    public void dfDeRegister(String agName, String service, String type) {
         masRunner.dfDeRegister(agName, service);
     }
     
     @Override    
-    public Collection<String> dfSearch(Literal service) {
+    public Collection<String> dfSearch(String service, String type) {
         return masRunner.dfSearch(service);
     }
     
     @Override    
-    public void dfSubscribe(String agName, Literal service) {
+    public void dfSubscribe(String agName, String service, String type) {
         masRunner.dfSubscribe(agName, service);
     }
     

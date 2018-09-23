@@ -20,13 +20,9 @@ interoperate with Jason.
 == Accessing the JADE DF
 
 The first thing a seller agent should do is to register itself as a
-book seller in the JADE DF (Directory Facilitator) service. The
-standard AgentSpeak language does not have a command for this purpose,
-of course; however, in Jason, we can create a new internal action in
-Java that can do the job.
+book seller in the JADE DF (Directory Facilitator) service.
 
-The following steps create a new Jason project for our seller agent
-and an internal action that register it in JADE's DF:
+The following steps create a new Jason project for our seller agent:
 
 - Create a new project called "`book_trading`" that uses Jade as
   the infrastructure.
@@ -56,27 +52,7 @@ book("Jason", 50, 10).
 
 /* Plans */
 
-+!registerDF <- jadedf.register("book-selling","JADE-book-trading").
-----
-+
-The `jadedf.register("book-selling","JADE-book-trading")`
-  code calls the internal action named `register` in a package
-  called `jadedf`.
-
-- To create this internal action, click on
-  the image:./figures/createIA.gif[] ican and fill in the form
-  as follows:
-+
-image:./figures/screen-create-ia.png[]
-+
-The source code of this internal action is as follows (the
-  `execute` method has the code for the internal action and
-  `args` contains the arguments given in the AgentSpeak code):
-+
-[source,java]
-.jadedf/register.java
-----
-include::book_trading/jadedf/register.java[]
++!registerDF <- .df_register("JADE-book-trading", "book-selling"). // name, type
 ----
 +
 - You can now run the project and use the menu option Tools ->
@@ -123,7 +99,7 @@ Follow the steps below to run the system with JADE and Jason agents:
 ----
 export CLASSPATH=~/jason/libs/jade-XXXX.jar:.  <1>
 cd jade-example
-javac examples/bookTrading/Book*
+javac examples/bookTrading/Book*.java
 ----
 <1> Where XXXX is the release of Jade in the `libs` folder and `~/jason` is where Jason was installed.
 

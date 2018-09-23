@@ -20,7 +20,7 @@ public interface InfrastructureFactory {
 
     /**
      * Every infrastructure factory should be able to create an
-     * instance of RuntimeServicesInfraTier, this instance provides
+     * instance of RuntimeServices, this instance provides
      * services for controlling the MAS, as agent creation,
      * destruction, etc. These services are normally used by user
      * classes as AgArch and Environments.

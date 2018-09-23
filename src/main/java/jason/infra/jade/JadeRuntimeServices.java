@@ -1,8 +1,19 @@
 package jason.infra.jade;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import jade.core.Agent;
 import jade.domain.DFService;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
+import jade.domain.FIPAAgentManagement.SearchConstraints;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.wrapper.AgentController;
 import jade.wrapper.ContainerController;
@@ -13,13 +24,6 @@ import jason.mas2j.AgentParameters;
 import jason.mas2j.ClassParameters;
 import jason.runtime.RuntimeServices;
 import jason.runtime.Settings;
-
-import java.io.File;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class JadeRuntimeServices implements RuntimeServices {
 
@@ -141,5 +145,94 @@ public class JadeRuntimeServices implements RuntimeServices {
             } .start();
         }
     }
+    
+    @Override
+    public void dfRegister(String agName, String service, String type) {
+        try {
+            DFAgentDescription dfd = new DFAgentDescription();
+            dfd.setName( jadeAgent.getAID() );
+                        
+            DFAgentDescription[] result = DFService.search(jadeAgent, dfd);
+            if (result.length>0) {
+                // copy current services
+                Iterator<ServiceDescription> i = result[0].getAllServices();
+                while (i.hasNext()) {
+                    dfd.addServices(i.next());
+                }
+                
+                DFService.deregister(jadeAgent);
+            }
+            
+            // add new service
+            ServiceDescription sd  = new ServiceDescription();
+            sd.setType( type );
+            sd.setName( service );            
+            dfd.addServices(sd);                            
+            
+            DFService.register(jadeAgent, dfd );                
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    @Override
+    public void dfDeRegister(String agName, String service, String type) {
+        try { 
+            // removes only service
+            DFAgentDescription dfd = new DFAgentDescription();
+            dfd.setName( jadeAgent.getAID() );
+                        
+            DFAgentDescription[] result = DFService.search(jadeAgent, dfd);
+            if (result.length>0) {
+                // copy current services
+                Iterator<ServiceDescription> i = result[0].getAllServices();
+                while (i.hasNext()) {
+                    if (!i.next().toString().contains(service))
+                        dfd.addServices(i.next());
+                }
+                
+                DFService.deregister(jadeAgent);
+            }
+            
+            DFService.register(jadeAgent, dfd );                
+        } catch (Exception e) {
+            e.printStackTrace();
+        }    
+    }
 
+    @Override
+    public Collection<String> dfSearch(String service, String type) {
+        List<String> r = new ArrayList<>();
+        try { 
+            DFAgentDescription dfd = new DFAgentDescription();
+            ServiceDescription sd  = new ServiceDescription();
+            sd.setType( type );
+            sd.setName( service );
+            dfd.addServices(sd);
+            
+            DFAgentDescription[] result = DFService.search(jadeAgent, dfd);
+            
+            for (int i=0; i<result.length; i++) {
+                r.add(result[i].getName().getLocalName());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }    
+        return r;
+    }
+
+    @Override
+    public void dfSubscribe(String agName, String service, String type) {
+        try {
+            DFAgentDescription dfd = new DFAgentDescription();
+            ServiceDescription sd = new ServiceDescription();
+            sd.setType( type );
+            sd.setName( service );
+            dfd.addServices(sd);
+
+            jadeAgent.send(DFService.createSubscriptionMessage(jadeAgent, jadeAgent.getDefaultDF(), dfd, new SearchConstraints()));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

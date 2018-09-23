@@ -1,3 +1,3 @@
 !register.
 
-+!register <- .df_register(participant).
++!register <- .df_register("participant").

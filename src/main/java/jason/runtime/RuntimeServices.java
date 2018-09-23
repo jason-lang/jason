@@ -8,7 +8,6 @@ import java.util.Set;
 import jason.JasonException;
 import jason.architecture.AgArch;
 import jason.asSemantics.Agent;
-import jason.asSyntax.Literal;
 import jason.mas2j.ClassParameters;
 
 /**
@@ -62,8 +61,8 @@ public interface RuntimeServices {
     /** Stops all MAS (the agents, the environment, the controller, ...) */
     public void stopMAS() throws Exception;
     
-    default public void dfRegister(String agName, Literal service) {}
-    default public void dfDeRegister(String agName, Literal service) {}
-    default public Collection<String> dfSearch(Literal service) { return new ArrayList<>(); }
-    default public void dfSubscribe(String agName, Literal service) {}
+    default public void dfRegister(String agName, String service, String type) {}
+    default public void dfDeRegister(String agName, String service, String type) {}
+    default public Collection<String> dfSearch(String service, String type) { return new ArrayList<>(); }
+    default public void dfSubscribe(String agName, String service, String type) {}
 }
