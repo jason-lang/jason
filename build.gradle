@@ -37,9 +37,9 @@ repositories {
     }
 }
 
-configurations {
+/*configurations {
     umljavadoc  // see http://www.umlgraph.org/doc/indexw.html
-}
+}*/
 
 
 dependencies {
@@ -56,7 +56,7 @@ dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
     testCompile name: 'hsqldb'
 
-    umljavadoc 'org.umlgraph:umlgraph:5.6'
+    //umljavadoc 'org.umlgraph:umlgraph:5.6'
 }
 
 // copy dep jars and scritps into build directory
@@ -219,6 +219,31 @@ eclipse {
     }
 }
 
+javadoc {
+    options.showAll()
+    options.encoding('UTF-8')
+    options.setUse(true)
+    options.author(true)
+    options.version(true)
+    options.windowTitle('Jason API')
+    options.docTitle('Jason API')
+    options.footer('<a href=http://jason.sf.net>Jason Site</a>')
+    doFirst {
+        javadoc.title = 'Jason API'
+        javadoc.options.docTitle = javadoc.title
+    }
+}
+
+// the following lines is used to avoid errors while generating javadoc
+if (JavaVersion.current().isJava8Compatible()) {
+    allprojects {
+      tasks.withType(Javadoc) {
+        options.addStringOption('Xdoclint:none', '-quiet')
+      }
+    }
+}
+
+/*
 task javadoc(overwrite: true, dependsOn: compileJava) {
     setDescription('Generates Javadoc API documentation with UMLGraph diagrams')
     setGroup(JavaBasePlugin.DOCUMENTATION_GROUP)
@@ -246,6 +271,7 @@ task javadoc(overwrite: true, dependsOn: compileJava) {
         }
     }
 }
+*/
 
 publishing {
     publications {

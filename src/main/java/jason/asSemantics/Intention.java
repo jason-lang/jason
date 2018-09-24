@@ -25,7 +25,7 @@ import org.w3c.dom.Element;
  * The comparable sorts the intentions based on the atomic property:
  * atomic intentions comes first.
  *
- * @author Jomi & Rafael
+ * @author Jomi and Rafael
  */
 public class Intention implements Serializable, Comparable<Intention>, Iterable<IntendedMeans> {
 
@@ -173,7 +173,7 @@ public class Intention implements Serializable, Comparable<Intention>, Iterable<
     }
 
 
-    /** implements atomic intentions > not atomic intentions */
+    /** implements atomic intentions grater than not atomic intentions */
     public int compareTo(Intention o) {
         if (o.atomicCount > this.atomicCount) return 1;
         if (this.atomicCount > o.atomicCount) return -1;

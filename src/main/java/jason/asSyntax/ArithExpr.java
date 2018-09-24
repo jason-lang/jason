@@ -14,8 +14,6 @@ import jason.asSyntax.parser.as2j;
 
 /**
   Represents and solve arithmetic expressions like "10 + 30".
-
-  @navassoc - op - ArithmeticOp
  */
 public class ArithExpr extends ArithFunctionTerm implements NumberTerm {
 
