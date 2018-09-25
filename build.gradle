@@ -386,7 +386,7 @@ jjdoc {
 task plugin(type: Jar, dependsOn: 'jar') {
     archiveName 'jason-jedit-plugin.jar'
     destinationDir file('build/jedit/jars')
-    from 'build/classes/main'
+    from 'build/classes/java/main'
     from 'build/resources/main'
     from 'build/resources/main/jeditPlugin'
     manifest {
