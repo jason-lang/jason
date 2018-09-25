@@ -74,7 +74,7 @@ public class Config extends Properties {
     protected static String    configFactory = null;
 
     protected static boolean   showFixMsgs = true;
-    
+
     public static void setClassFactory(String f) {
         singleton = null;
         configFactory = f;
@@ -108,9 +108,9 @@ public class Config extends Properties {
     }
 
     public void setShowFixMsgs(boolean b) {
-        showFixMsgs = b;        
+        showFixMsgs = b;
     }
-    
+
     /** returns the file where the user preferences are stored */
     public File getUserConfFile() {
         return new File(System.getProperties().get("user.home") + File.separator + ".jason/user.properties");
@@ -456,7 +456,7 @@ public class Config extends Properties {
 
     public String getJasonVersion() {
         Package j = Package.getPackage("jason.util");
-        if (j != null) {
+        if (j != null && j.getSpecificationVersion() != null) {
             return j.getSpecificationVersion();
         }
         return "?";
@@ -551,7 +551,7 @@ public class Config extends Properties {
                 }
             } catch (Exception e) {}
             */
-            
+
             /*
             // try current dir + lib
             jarFile = findJarInDirectory(new File(".." + File.separator + "libs"), jarFilePrefix);
@@ -807,7 +807,7 @@ public class Config extends Properties {
     public String getMindInspectorWebServerClassName() {
         return "jason.architecture.MindInspectorWebImpl";
     }
-    
+
     public String getPresentation() {
         return "Jason "+getJasonVersion()+"\n"+
                "     built on "+getJasonBuiltDate()+"\n"+

@@ -277,8 +277,8 @@ publishing {
     publications {
         maven(MavenPublication) {
             from components.java
-			artifact sourceJar
-			artifact javadocJar
+			      artifact sourceJar
+			      artifact javadocJar
             artifactId 'jason'
         }
     }
@@ -389,6 +389,12 @@ task plugin(type: Jar, dependsOn: 'jar') {
     from 'build/classes/main'
     from 'build/resources/main'
     from 'build/resources/main/jeditPlugin'
+    manifest {
+        attributes 'Main-Class': 'jason.util.ConfigGUI',
+                   'Specification-Title': 'Jason Language',
+                   'Specification-Version': project.version,
+                   'Implementation-Version': new Date().toString()
+    }
 
     from ( configurations.compile.collect { zipTree(it) } ) {
         include 'jade/**/*.class'
