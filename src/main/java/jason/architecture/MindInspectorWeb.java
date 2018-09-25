@@ -4,7 +4,6 @@ import org.w3c.dom.Document;
 
 import jason.asSemantics.Agent;
 import jason.infra.centralised.BaseCentralisedMAS;
-import jason.runtime.RuntimeServices;
 import jason.util.Config;
 
 public abstract class MindInspectorWeb {

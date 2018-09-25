@@ -33,14 +33,14 @@ public class DefaultBeliefBase extends BeliefBase {
      * belsMap is a table where the key is the bel.getFunctorArity and the value
      * is a list of literals with the same functorArity.
      */
-    private Map<PredicateIndicator, BelEntry> belsMapDefaultNS = new ConcurrentHashMap<PredicateIndicator, BelEntry>();
+    private Map<PredicateIndicator, BelEntry> belsMapDefaultNS = new ConcurrentHashMap<>();
 
-    private Map<Atom, Map<PredicateIndicator, BelEntry>> nameSpaces = new ConcurrentHashMap<Atom, Map<PredicateIndicator,BelEntry>>();
+    private Map<Atom, Map<PredicateIndicator, BelEntry>> nameSpaces = new ConcurrentHashMap<>();
 
     private int size = 0;
 
     /** set of beliefs with percept annot, used to improve performance of buf */
-    protected Set<Literal> percepts = new HashSet<Literal>();
+    protected Set<Literal> percepts = new HashSet<>();
 
     public DefaultBeliefBase() {
         nameSpaces.put(Literal.DefaultNS, belsMapDefaultNS);
@@ -155,7 +155,7 @@ public class DefaultBeliefBase extends BeliefBase {
         if (l.getNS() != Literal.DefaultNS) {
             belsMap = nameSpaces.get(l.getNS());
             if (belsMap == null) {
-                belsMap = new ConcurrentHashMap<PredicateIndicator, DefaultBeliefBase.BelEntry>();
+                belsMap = new ConcurrentHashMap<>();
                 nameSpaces.put(l.getNS(), belsMap);
             }
         }
@@ -384,7 +384,7 @@ public class DefaultBeliefBase extends BeliefBase {
                     }
                     ebels.appendChild(enss);
                     // copy bels to an array to sort it
-                    allBels = new ArrayList<Literal>(size());
+                    allBels = new ArrayList<>(size());
                     for (Literal l: this)
                         allBels.add(l);
                 }
@@ -404,8 +404,8 @@ public class DefaultBeliefBase extends BeliefBase {
     /** each predicate indicator has one BelEntry assigned to it */
     final class BelEntry {
 
-        final private Deque<Literal> list = new LinkedBlockingDeque<Literal>();  // maintains the order of the beliefs
-        final private Map<StructureWrapperForLiteral,Literal> map = new ConcurrentHashMap<StructureWrapperForLiteral,Literal>(); // to find content faster
+        final private Deque<Literal> list = new LinkedBlockingDeque<>();  // maintains the order of the beliefs
+        final private Map<StructureWrapperForLiteral,Literal> map = new ConcurrentHashMap<>(); // to find content faster
 
         public void add(Literal l, boolean addInEnd) {
             map.put(new StructureWrapperForLiteral(l), l);

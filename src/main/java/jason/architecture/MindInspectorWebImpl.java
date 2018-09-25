@@ -32,9 +32,9 @@ public class MindInspectorWebImpl extends MindInspectorWeb {
 
     private HttpServer httpServer = null;
 
-    private Map<String,List<Document>> histories = new TreeMap<String,List<Document>>();
-    private Map<String,Integer>        lastStepSeenByUser = new HashMap<String, Integer>();
-    private Map<String,Agent>          registeredAgents = new HashMap<String, Agent>();
+    private Map<String,List<Document>> histories = new TreeMap<>();
+    private Map<String,Integer>        lastStepSeenByUser = new HashMap<>();
+    private Map<String,Agent>          registeredAgents = new HashMap<>();
 
     private BaseCentralisedMAS         runner = null;
     
@@ -190,7 +190,7 @@ public class MindInspectorWebImpl extends MindInspectorWeb {
         String agName = ag.getTS().getUserAgArch().getAgName();
         List<Document> h = histories.get(agName);
         if (h == null) {
-            h = new ArrayList<Document>();
+            h = new ArrayList<>();
             histories.put(agName, h);
         }
         if (h.isEmpty())
@@ -333,7 +333,7 @@ public class MindInspectorWebImpl extends MindInspectorWeb {
     */
 
     protected asl2xml   mindInspectorTransformer = null;
-    Map<String,Boolean> show = new HashMap<String,Boolean>();
+    Map<String,Boolean> show = new HashMap<>();
 
     synchronized String getAgStateAsString(Document ag, boolean full) { // full means with show all
         try {

@@ -67,7 +67,7 @@ public class AgArch implements Comparable<AgArch> {
         return successor;
     }
     public List<String> getAgArchClassesChain() {
-        List<String> all = new ArrayList<String>();
+        List<String> all = new ArrayList<>();
         AgArch a = getFirstAgArch();
         while (a != null) {
             all.add(0,a.getClass().getName());
