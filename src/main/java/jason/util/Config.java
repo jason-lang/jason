@@ -459,7 +459,7 @@ public class Config extends Properties {
         if (j != null && j.getSpecificationVersion() != null) {
             return j.getSpecificationVersion();
         }
-        return "--";
+        return "";
         /*
         try {
             Properties p = new Properties();
