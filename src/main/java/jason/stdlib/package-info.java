@@ -1,8 +1,6 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
-<html>
-<body bgcolor="white">
+/**
 
-Provides all default internal actions of Jason.
+Internal actions of Jason.
 
 <h2>BDI</h2>
 <ul>
@@ -57,6 +55,10 @@ Provides all default internal actions of Jason.
   <li>{@link jason.stdlib.broadcast broadcast}: broadcast messages.</li>
   <li>{@link jason.stdlib.my_name my_name}: get the agent's name.</li>
   <li>{@link jason.stdlib.all_names all_names}: get the names of all agents in the system.</li>
+  <li>{@link jason.stdlib.df_register df_register}: register a service in the Directory Facilitator.</li>
+  <li>{@link jason.stdlib.df_deregister df_deregister}: removes a service in the Directory Facilitator.</li>
+  <li>{@link jason.stdlib.df_search df_search}: search for a service in the Directory Facilitator.</li>
+  <li>{@link jason.stdlib.df_subscribe df_subscribe}: subscribe for new providers of a service in the Directory Facilitator.</li>
 </ul>
 
 
@@ -139,14 +141,18 @@ Provides all default internal actions of Jason.
 
   <li>{@link jason.stdlib.date date}: get the current date.</li>
   <li>{@link jason.stdlib.time time}: get the current time.</li>
+  
   <li>{@link jason.stdlib.fail fail}: an action that always fails.</li>
   <li>{@link jason.stdlib.perceive perceive}: force perception.</li>
+
   <li>{@link jason.stdlib.range range}: backtrack values in a range (used in <b>for</b>).</li>
 
   <li>{@link jason.stdlib.random random}: produces random numbers.</li>
 
   <li>{@link jason.stdlib.include include}: imports a source code at run time.</li>
+  
+  <li>{@link jason.stdlib.printf printf}: formated print.</li>
+  
 </ul>
-
-</body>
-</html>
+*/
+package jason.stdlib;

@@ -37,9 +37,9 @@ repositories {
     }
 }
 
-/*configurations {
+configurations {
     umljavadoc  // see http://www.umlgraph.org/doc/indexw.html
-}*/
+}
 
 
 dependencies {
@@ -56,7 +56,7 @@ dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
     testCompile name: 'hsqldb'
 
-    //umljavadoc 'org.umlgraph:umlgraph:5.6'
+    umljavadoc 'org.umlgraph:umlgraph:5.6'
 }
 
 // copy dep jars and scritps into build directory
@@ -228,6 +228,7 @@ javadoc {
     options.windowTitle('Jason API')
     options.docTitle('Jason API')
     options.footer('<a href=http://jason.sf.net>Jason Site</a>')
+    destinationDir = file("${buildDir}/../doc/api")
     doFirst {
         javadoc.title = 'Jason API'
         javadoc.options.docTitle = javadoc.title
@@ -243,6 +244,7 @@ if (JavaVersion.current().isJava8Compatible()) {
     }
 }
 
+
 /*
 task javadoc(overwrite: true, dependsOn: compileJava) {
     setDescription('Generates Javadoc API documentation with UMLGraph diagrams')
@@ -253,7 +255,7 @@ task javadoc(overwrite: true, dependsOn: compileJava) {
                     sourcepath: file('src/main/java'),
                     packagenames: '*',
                     destdir: "${docsDir}/../../doc/api",
-                    private: 'true',
+                    private: 'true' ,
                     docletpath: configurations.umljavadoc.asPath) {
             doclet(name: 'org.umlgraph.doclet.UmlGraphDoc') {
                 //param(name: '-inferrel')
