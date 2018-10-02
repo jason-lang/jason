@@ -45,8 +45,8 @@ repositories {
 dependencies {
 	compile group: 'net.sf.ingenias', name: 'jade', version: '4.3'
     //compile group: 'com.tilab.jade', name: 'jade', version: '4.4.0'
-    compile group: 'org.jacamo',     name: 'cartago', version: '2.3-SNAPSHOT'
-    compile group: 'org.jacamo',     name: 'jaca',    version: '2.3-SNAPSHOT'
+    compile group: 'org.jacamo',     name: 'cartago', version: '2.3'
+    compile group: 'org.jacamo',     name: 'jaca',    version: '2.3'
 
     // from jEdit
     compile fileTree(dir: 'jedit', include: '*.jar') // using fileTree, jedit jars are not included as a dependency in the pom file
@@ -303,6 +303,14 @@ task sourceJar (type : Jar) {
 }
 
 // see http://central.sonatype.org/pages/releasing-the-deployment.html
+// comment cartago and jaca dependencies
+// check gradle.properties for
+//    signing.keyId=
+//    signing.password=
+//    signing.secretKeyRingFile=
+//    ossrhUsername=
+//    ossrhPassword=
+//
 // run gradle uploadArchives
 // login https://oss.sonatype.org/
 // select Staging Repositories
@@ -310,7 +318,6 @@ task sourceJar (type : Jar) {
 
 // uncomment to produce maven jar
 
-/*
 artifacts {
     archives sourceJar, javadocJar
 }
@@ -319,6 +326,7 @@ signing {
     sign configurations.archives
 }
 
+/*
 uploadArchives {
     group = 'net.sf.jason'
     repositories {
