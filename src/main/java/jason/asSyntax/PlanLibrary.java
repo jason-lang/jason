@@ -25,18 +25,18 @@ import jason.util.Config;
 public class PlanLibrary implements Iterable<Plan> {
 
     /** a MAP from TE to a list of relevant plans */
-    private Map<PredicateIndicator,List<Plan>> relPlans = new ConcurrentHashMap<PredicateIndicator,List<Plan>>();
+    private Map<PredicateIndicator,List<Plan>> relPlans = new ConcurrentHashMap<>();
 
     /**
      * All plans as defined in the AS code (maintains the order of the plans)
      */
-    private List<Plan> plans = new ArrayList<Plan>();
+    private List<Plan> plans = new ArrayList<>();
 
     /** list of plans that have var as TE */
-    private List<Plan> varPlans = new ArrayList<Plan>();
+    private List<Plan> varPlans = new ArrayList<>();
 
     /** A map from labels to plans */
-    private Map<String,Plan> planLabels = new ConcurrentHashMap<String,Plan>();
+    private Map<String,Plan> planLabels = new ConcurrentHashMap<>();
 
     private boolean hasMetaEventPlans = false;
 
@@ -187,7 +187,7 @@ public class PlanLibrary implements Iterable<Plan> {
             } else {
                 List<Plan> codesList = relPlans.get(pte.getPredicateIndicator());
                 if (codesList == null) {
-                    codesList = new ArrayList<Plan>();
+                    codesList = new ArrayList<>();
                     // copy plans from var plans
                     for (Plan vp: varPlans)
                         if (vp.getTrigger().sameType(pte))
@@ -356,7 +356,7 @@ public class PlanLibrary implements Iterable<Plan> {
                 for (Plan p: this)
                     if (p.getTrigger().sameType(te)) {
                         if (l == null)
-                            l = new ArrayList<Plan>();
+                            l = new ArrayList<>();
                         l.add(p);
                     }
             } else {
@@ -365,7 +365,7 @@ public class PlanLibrary implements Iterable<Plan> {
                     for (Plan p: varPlans)
                         if (p.getTrigger().sameType(te)) {
                             if (l == null)
-                                l = new ArrayList<Plan>();
+                                l = new ArrayList<>();
                             l.add(p);
                         }
                 }

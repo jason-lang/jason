@@ -3,7 +3,10 @@
 
 ifdef::env-github[:outfilesuffix: .adoc]
 
-== version 2.3
+== version 2.3 (2018-10-01)
+
+(a built package is available at https://sourceforge.net/projects/jason/files/jason/version%202.3/[here])
+
 
 - New internal actions to support Directory Facilitator services:
     * `.df_register(S)`: register the agent in the DF as a provider of service `S`

@@ -16,7 +16,7 @@ apply plugin: 'maven'
 apply plugin: 'maven-publish'
 apply plugin: 'signing'
 
-version '2.3'
+version '2.4-SNAPSHOT'
 group   'org.jason-lang'
 
 sourceCompatibility = 1.8
@@ -26,12 +26,8 @@ targetCompatibility = 1.8
 repositories {
     mavenCentral()
 
-    maven {
-        url "http://jacamo.sourceforge.net/maven2"
-    }
-    //maven {
-    //    url "http://jade.tilab.com/maven"
-    //}
+    maven { url "http://jacamo.sourceforge.net/maven2"  }
+    //maven { url "http://jade.tilab.com/maven"  //}
     flatDir {
 	   dirs 'jedit', 'demos/persistent-belief-base/lib'
     }
@@ -302,6 +298,10 @@ task sourceJar (type : Jar) {
     from sourceSets.main.allSource
 }
 
+artifacts {
+    archives sourceJar, javadocJar
+}
+
 // see http://central.sonatype.org/pages/releasing-the-deployment.html
 // comment cartago and jaca dependencies
 // check gradle.properties for
@@ -318,15 +318,11 @@ task sourceJar (type : Jar) {
 
 // uncomment to produce maven jar
 
-artifacts {
-    archives sourceJar, javadocJar
-}
-
+/*
 signing {
     sign configurations.archives
 }
 
-/*
 uploadArchives {
     group = 'net.sf.jason'
     repositories {
