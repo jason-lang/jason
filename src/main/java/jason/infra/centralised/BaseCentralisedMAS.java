@@ -51,10 +51,14 @@ public abstract class BaseCentralisedMAS extends NotificationBroadcasterSupport 
         return runner;
     }
 
+    private RuntimeServices singRTS = null;
     public RuntimeServices getRuntimeServices() {
-        return new CentralisedRuntimeServices(runner);
+    	if (singRTS == null)
+    		singRTS = new CentralisedRuntimeServices(runner);
+    	return singRTS;
     }
 
+    
     public CentralisedExecutionControl getControllerInfraTier() {
         return control;
     }

@@ -411,7 +411,7 @@ public class CentralisedAgArch extends AgArch implements Runnable {
     }
 
     public RuntimeServices getRuntimeServices() {
-        return new CentralisedRuntimeServices(masRunner);
+    	return masRunner.getRuntimeServices();
     }
 
     private RConf conf;
