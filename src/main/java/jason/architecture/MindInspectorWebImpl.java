@@ -347,8 +347,8 @@ public class MindInspectorWebImpl extends MindInspectorWeb {
                 show.put("mb", false);
                 show.put("int", false);
                 show.put("int-details", false);
-                show.put("plan", false);
-                show.put("plan-details", false);
+                //show.put("plan", false);
+                //show.put("plan-details", false);
             }
             for (String p: show.keySet())
                 if (full)
