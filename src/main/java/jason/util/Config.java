@@ -182,7 +182,7 @@ public class Config extends Properties {
     }
 
     public String[] getJadeArrayArgs() {
-        List<String> ls = new ArrayList<String>();
+        List<String> ls = new ArrayList<>();
         String jadeargs = getProperty(JADE_ARGS);
         if (jadeargs != null && jadeargs.length() > 0) {
             StringTokenizer t = new StringTokenizer(jadeargs);
@@ -407,7 +407,7 @@ public class Config extends Properties {
 
     public String[] getAvailableInfrastructures() {
         try {
-            List<String> infras = new ArrayList<String>();
+            List<String> infras = new ArrayList<>();
             infras.add("Centralised"); // set Centralised as the first
             for (Object k: keySet()) {
                 String sk = k.toString();
@@ -501,7 +501,7 @@ public class Config extends Properties {
         }*/
     }
 
-    public void tryToFixJarFileConf(String jarEntry, String jarFilePrefix, int minSize) {
+    public boolean tryToFixJarFileConf(String jarEntry, String jarFilePrefix, int minSize) {
         String jarFile = getProperty(jarEntry);
         if (jarFile == null || !checkJar(jarFile, minSize)) {
             if (showFixMsgs)
@@ -513,7 +513,7 @@ public class Config extends Properties {
                 put(jarEntry, jarFile);
                 if (showFixMsgs)
                     System.out.println("found at " + jarFile+" by classpath");
-                return;
+                return true;
             }
 
             // try eclipse installation
@@ -522,7 +522,7 @@ public class Config extends Properties {
                 put(jarEntry, jarFile);
                 if (showFixMsgs)
                     System.out.println("found at " + jarFile+" in eclipse installation");
-                return;
+                return true;
             }
 
             /*
@@ -608,15 +608,16 @@ public class Config extends Properties {
                     if (showFixMsgs)
                         System.out.println("found at " + jarFile);
                     put(jarEntry, jarFile);
-                    return;
+                    return true;
                 } else {
                     put(jarEntry, File.separator);
                 }
             }
             if (showFixMsgs)
                 System.out.println(jarFilePrefix+" not found");
+            return false;
         }
-
+        return true;
     }
 
     static String findFile(File p, String file, int minSize) {

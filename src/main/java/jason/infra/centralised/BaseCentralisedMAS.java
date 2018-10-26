@@ -53,9 +53,9 @@ public abstract class BaseCentralisedMAS extends NotificationBroadcasterSupport 
 
     private RuntimeServices singRTS = null;
     public RuntimeServices getRuntimeServices() {
-    	if (singRTS == null)
-    		singRTS = new CentralisedRuntimeServices(runner);
-    	return singRTS;
+        if (singRTS == null)
+            singRTS = new CentralisedRuntimeServices(runner);
+        return singRTS;
     }
 
     

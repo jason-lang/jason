@@ -151,7 +151,7 @@ public class MindInspectorWebImpl extends MindInspectorWeb {
                     OutputStream responseBody = exchange.getResponseBody();
 
                     if (requestMethod.equalsIgnoreCase("GET")) {
-                        responseBody.write(("<html><head><title>Jason (list of agents)</title><meta http-equiv=\"refresh\" content=\""+refreshInterval+"\" ></head><body>").getBytes());
+                        responseBody.write(("<html><head><title>Jason (list of agents)</title></head><body>").getBytes());
                         responseBody.write(("<font size=\"+2\"><p style='color: red; font-family: arial;'>Agents</p></font>").getBytes());
                         for (String a: histories.keySet()) {
                             responseBody.write( ("- <a href=\"/agent-mind/"+a+"/latest\" target=\"am\" style=\"font-family: arial; text-decoration: none\">"+a+"</a><br/>").getBytes());
@@ -260,7 +260,7 @@ public class MindInspectorWebImpl extends MindInspectorWeb {
                                         } catch (Exception e) {}
                                     }
                                     if (i == -1) {
-                                        so.append("<meta http-equiv=\"refresh\" content=\""+refreshInterval+"\">");
+                                        //so.append("<meta http-equiv=\"refresh\" content=\""+refreshInterval+"\">");
                                         agState = h.get(h.size()-1);
                                     } else {
                                         agState = h.get(i-1);
@@ -375,7 +375,7 @@ public class MindInspectorWebImpl extends MindInspectorWeb {
                 OutputStream responseBody = exchange.getResponseBody();
 
                 if (requestMethod.equalsIgnoreCase("GET")) {
-                    responseBody.write(("<html><head><title>Directory Facilitator State</title><meta http-equiv=\"refresh\" content=\""+refreshInterval+"\" ></head><body>").getBytes());
+                    responseBody.write(("<html><head><title>Directory Facilitator State</title></head><body>").getBytes());
                     responseBody.write(("<font size=\"+2\"><p style='color: red; font-family: arial;'>Directory Facilitator State</p></font>").getBytes());
                                         
                     responseBody.write("<table border=\"0\" cellspacing=\"3\" cellpadding=\"6\" >".getBytes());

@@ -132,10 +132,10 @@ public class Agent {
         if (bb == null) bb = new DefaultBeliefBase();
         if (pl == null) pl = new PlanLibrary();
 
-        if (initialGoals == null) initialGoals = new ArrayList<Literal>();
-        if (initialBels  == null) initialBels  = new ArrayList<Literal>();
+        if (initialGoals == null) initialGoals = new ArrayList<>();
+        if (initialBels  == null) initialBels  = new ArrayList<>();
 
-        if (internalActions == null) internalActions = new HashMap<String, InternalAction>();
+        if (internalActions == null) internalActions = new HashMap<>();
         initDefaultFunctions();
 
         if (ts == null) ts = new TransitionSystem(this, null, null, new AgArch());
@@ -304,7 +304,7 @@ public class Agent {
             e.printStackTrace();
         }
         a.aslSource = this.aslSource;
-        a.internalActions = new HashMap<String, InternalAction>();
+        a.internalActions = new HashMap<>();
         a.setTS(new TransitionSystem(a, this.getTS().getC().clone(), this.getTS().getSettings(), arch));
         if (a.getPL().hasMetaEventPlans())
             a.getTS().addGoalListener(new GoalListenerForMetaEvents(a.getTS()));
@@ -449,7 +449,7 @@ public class Agent {
 
     public void initDefaultFunctions() {
         if (functions == null)
-            functions = new HashMap<String, ArithFunction>();
+            functions = new HashMap<>();
         addFunction(Count.class, false);
     }
 
@@ -730,7 +730,7 @@ public class Agent {
         //long startTime = qProfiling == null ? 0 : System.nanoTime();
 
         // to copy percepts allows the use of contains below
-        Set<StructureWrapperForLiteral> perW = new HashSet<StructureWrapperForLiteral>();
+        Set<StructureWrapperForLiteral> perW = new HashSet<>();
         Iterator<Literal> iper = percepts.iterator();
         while (iper.hasNext())
             perW.add(new StructureWrapperForLiteral(iper.next()));
@@ -1002,7 +1002,7 @@ public class Agent {
         If <i>un</i> is null, an empty Unifier is used.
      */
     public void abolish(Literal bel, Unifier un) throws RevisionFailedException {
-        List<Literal> toDel = new ArrayList<Literal>();
+        List<Literal> toDel = new ArrayList<>();
         if (un == null) un = new Unifier();
         synchronized (bb.getLock()) {
             Iterator<Literal> il = getBB().getCandidateBeliefs(bel, un);
@@ -1071,7 +1071,7 @@ public class Agent {
         ag.setAttribute("cycle", ""+ts.getUserAgArch().getCycleNumber());
 
         ag.appendChild(bb.getAsDOM(document));
-        // ag.appendChild(ps.getAsDOM(document));
+        //ag.appendChild(getPL().getAsDOM(document));
         return ag;
     }
 

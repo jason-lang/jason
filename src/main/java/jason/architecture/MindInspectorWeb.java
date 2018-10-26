@@ -12,7 +12,7 @@ public abstract class MindInspectorWeb {
 
     protected String     httpServerURL = "http://localhost:3272";
     protected int        httpServerPort = 3272;
-    protected int        refreshInterval = 5;
+    //protected int        refreshInterval = 5;
 
     public static synchronized MindInspectorWeb get() {
         if (singleton == null) {
