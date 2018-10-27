@@ -1,6 +1,6 @@
 #!/bin/bash
 
-JasonREL=2.3
+JasonREL=2.4
 
 if [ -z "$JASON_HOME" ] ; then
     CURDIR="`pwd`"
@@ -46,4 +46,3 @@ if [ ! -f "$JADE_JAR" ] ; then
     echo Jade jar is not properly set!
     echo Value is $JADE_JAR
 fi
-
