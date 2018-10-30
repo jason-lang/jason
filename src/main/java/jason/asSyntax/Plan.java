@@ -68,7 +68,7 @@ public class Plan extends Structure implements Cloneable, Serializable {
         return 4;
     }
 
-    public void setFile(String f) { this.file = f; }
+    public void setFile(String f) { if (f!=null) this.file = f; }
     public String getFile()       { return this.file; }
     
     private static final Term noLabelAtom = new Atom("nolabel");

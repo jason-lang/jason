@@ -48,7 +48,7 @@ PARSER_BEGIN(as2j)
   import jason.util.*;
 
   public class as2j {
-    private String    asSource = null;
+    private String    asSource = "no-asl-source";
     private Agent     curAg    = null;
 
     private Atom      namespace     = Literal.DefaultNS;
@@ -66,6 +66,8 @@ PARSER_BEGIN(as2j)
     public void setNS(Atom  ns) { namespace = ns; thisnamespace = ns; }
     public Atom getNS()         { return namespace; }
 
+    public void setASLSource(String src) { asSource = src; }
+    
     private String getSourceRef(SourceInfo s) {
         if (s == null)
             return "[]";
@@ -205,7 +207,7 @@ boolean agent(Agent a) throws jason.JasonException :
                                 Literal g;
                                 Plan    p;
                                 curAg = a;
-                                if (a != null && a.getASLSrc() != null) asSource = a.getASLSrc();
+                                //if (a != null && a.getASLSrc() != null) asSource = a.getASLSrc();
                                 boolean endDir = false;
                               }
 {

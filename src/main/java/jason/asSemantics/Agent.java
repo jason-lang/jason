@@ -159,13 +159,13 @@ public class Agent {
         // set the agent
         try {
             boolean parsingOk = true;
-            if (asSrc != null) {
+            if (asSrc != null && !asSrc.isEmpty()) {
                 asSrc = asSrc.replaceAll("\\\\", "/");
-                setASLSrc(asSrc);
+                //setASLSrc(asSrc);
 
                 if (asSrc.startsWith(SourcePath.CRPrefix)) {
                     // loads the class from a jar file (for example)
-                    parseAS(Agent.class.getResource(asSrc.substring(SourcePath.CRPrefix.length())).openStream());
+                    parseAS(Agent.class.getResource(asSrc.substring(SourcePath.CRPrefix.length())).openStream() , asSrc);
                 } else {
                     // check whether source is an URL string
                     try {
@@ -193,10 +193,28 @@ public class Agent {
 
             setASLSrc(asSrc);
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Error creating customised Agent class!", e);
-            throw new JasonException("Error creating customised Agent class! - " + e);
+            logger.log(Level.SEVERE, "Error loading code from "+asSrc, e);
+            throw new JasonException("Error loading code from "+asSrc + " ---- " + e);
         }
     }
+
+    /** parse and load asl code */
+    public void load(InputStream in, String sourceId) throws JasonException {
+        try {
+            parseAS(in, sourceId);
+
+            if (getPL().hasMetaEventPlans())
+                getTS().addGoalListener(new GoalListenerForMetaEvents(getTS()));
+
+            addInitialBelsInBB();
+            addInitialGoalsInTS();
+            fixAgInIAandFunctions(this); // used to fix agent reference in functions used inside includes
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new JasonException("Error loading plans from stream " + e);
+        }
+    }
+
 
 
     public void loadKqmlPlans() {
@@ -208,8 +226,7 @@ public class Agent {
             if (c.getKqmlFunctor().equals(Message.kqmlReceivedFunctor)) {
                 String file = Message.kqmlDefaultPlans.substring(Message.kqmlDefaultPlans.indexOf("/"));
                 if (JasonException.class.getResource(file) != null) {
-                    setASLSrc("kqmlPlans.asl");
-                    parseAS(JasonException.class.getResource(file));
+                    parseAS(JasonException.class.getResource(file)); //, "kqmlPlans.asl");
                 } else {
                     logger.warning("The kqmlPlans.asl was not found!");
                 }
@@ -385,7 +402,7 @@ public class Agent {
     /** Adds beliefs and plans form an URL */
     public boolean parseAS(URL asURL) {
         try {
-            parseAS(asURL.openStream());
+            parseAS(asURL.openStream(), asURL.toString());
             logger.fine("as2j: AgentSpeak program '" + asURL + "' parsed successfully!");
             return true;
         } catch (IOException e) {
@@ -401,7 +418,7 @@ public class Agent {
     /** Adds beliefs and plans form a file */
     public boolean parseAS(File asFile) {
         try {
-            parseAS(new FileInputStream(asFile));
+            parseAS(new FileInputStream(asFile), asFile.getName());
             logger.fine("as2j: AgentSpeak program '" + asFile + "' parsed successfully!");
             return true;
         } catch (FileNotFoundException e) {
@@ -414,12 +431,14 @@ public class Agent {
         return false;
     }
 
-    public void parseAS(InputStream asIn) throws ParseException, JasonException {
+    public void parseAS(InputStream asIn, String sourceId) throws ParseException, JasonException {
         as2j parser = new as2j(asIn);
+        parser.setASLSource(sourceId);
         parser.agent(this);
     }
-    public void parseAS(Reader asIn) throws ParseException, JasonException {
+    public void parseAS(Reader asIn, String sourceId) throws ParseException, JasonException {
         as2j parser = new as2j(asIn);
+        parser.setASLSource(sourceId);
         parser.agent(this);
     }
 
@@ -1061,7 +1080,7 @@ public class Agent {
 
     @Override
     public String toString() {
-        return "Agent "+getASLSrc();
+        return "Agent from "+getASLSrc();
     }
 
     /** Gets the agent "mind" as XML */
