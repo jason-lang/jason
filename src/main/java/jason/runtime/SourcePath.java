@@ -76,6 +76,8 @@ public class SourcePath {
     public String fixPath(String f, String urlPrefix) {
     	if (f==null)
     		return f;
+    	if (f.isEmpty())
+    		return f;
         if (urlPrefix == null || urlPrefix.length() == 0) {
             if (new File(f).exists()) {
                 return f;

@@ -42,7 +42,7 @@ public class CentralisedRuntimeServices implements RuntimeServices {
             stts = new Settings();
 
         String prefix = null;
-        if (father != null && father.getASLSrc().startsWith(SourcePath.CRPrefix))
+        if (father != null && father.getASLSrc() != null && father.getASLSrc().startsWith(SourcePath.CRPrefix))
             prefix = SourcePath.CRPrefix + "/";
         agSource = masRunner.getProject().getSourcePaths().fixPath(agSource, prefix);
 
