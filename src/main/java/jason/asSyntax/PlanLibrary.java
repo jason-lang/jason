@@ -2,6 +2,7 @@ package jason.asSyntax;
 
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -395,6 +396,40 @@ public class PlanLibrary implements Iterable<Plan> {
         return plans.toString();
     }
 
+    /** get as txt */
+    public String getAsTxt(boolean includeKQMLPlans) {
+        Map<String, StringBuilder> splans = new HashMap<>();
+        StringBuilder r;
+        for (Plan p: plans) {
+            r = splans.get(p.getFile());
+            if (r == null) {
+                r = new StringBuilder();
+                if (p.getFile().isEmpty()) {
+                    r.append("\n\n// plans without file\n\n");
+                } else {
+                    r.append("\n\n// plans from "+p.getFile()+"\n\n");
+                }
+                splans.put(p.getFile(), r);
+            }
+            r.append(p.toString()+"\n");            
+        }
+        
+        r = new StringBuilder();
+        StringBuilder end = new StringBuilder("\n");
+        for (String f: splans.keySet()) {
+            if (f.contains("kqmlPlans"))
+                if (includeKQMLPlans)
+                    end.append(splans.get(f));
+                else
+                    continue;
+            if (f.isEmpty())
+                end.append(splans.get(f));
+            else
+                r.append(splans.get(f));
+        }
+        return r.toString()+end.toString();
+    }
+    
     /** get as XML */
     public Element getAsDOM(Document document) {
         Element eplans = (Element) document.createElement("plans");

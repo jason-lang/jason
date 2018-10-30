@@ -41,6 +41,8 @@ public class Plan extends Structure implements Cloneable, Serializable {
 
     private boolean     isTerm = false; // it is true when the plan body is used as a term instead of an element of a plan
 
+    private String file = ""; // the file where this plan was inside
+    
     // used by clone
     public Plan() {
         super("plan", 0);
@@ -66,6 +68,9 @@ public class Plan extends Structure implements Cloneable, Serializable {
         return 4;
     }
 
+    public void setFile(String f) { this.file = f; }
+    public String getFile()       { return this.file; }
+    
     private static final Term noLabelAtom = new Atom("nolabel");
 
     @Override

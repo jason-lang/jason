@@ -1,18 +1,17 @@
 package jason.stdlib;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+
 import jason.asSemantics.DefaultInternalAction;
 import jason.asSemantics.TransitionSystem;
 import jason.asSemantics.Unifier;
 import jason.asSyntax.ListTerm;
 import jason.asSyntax.ListTermImpl;
 import jason.asSyntax.Literal;
-import jason.asSyntax.Plan;
 import jason.asSyntax.StringTerm;
 import jason.asSyntax.Term;
 import jason.bb.BeliefBase;
-
-import java.io.BufferedWriter;
-import java.io.FileWriter;
 
 /**
   <p>Internal action: <b><code>.save_agent</code></b>.
@@ -80,11 +79,7 @@ public class save_agent extends DefaultInternalAction {
 
 
         // store plans
-        out.append("\n\n// plans\n");
-        for (Plan p: ts.getAg().getPL()) {
-            if (!p.getLabel().toString().startsWith("kqmlReceived") && !p.getLabel().toString().startsWith("kqmlError"))
-                out.append(p+"\n");
-        }
+        out.append(ts.getAg().getPL().getAsTxt(false));
         out.close();
         return true;
     }
