@@ -38,7 +38,7 @@ public abstract class BaseCentralisedMAS extends NotificationBroadcasterSupport 
 
     protected CentralisedEnvironment        env         = null;
     protected CentralisedExecutionControl   control     = null;
-    protected Map<String,CentralisedAgArch> ags         = new ConcurrentHashMap<String,CentralisedAgArch>();
+    protected Map<String,CentralisedAgArch> ags         = new ConcurrentHashMap<>();
 
     protected Map<String, Set<String>>     df = new HashMap<>();
     protected List<Pair<String, String>>    subscribers = new ArrayList<>();
@@ -51,13 +51,17 @@ public abstract class BaseCentralisedMAS extends NotificationBroadcasterSupport 
         return runner;
     }
 
-    private RuntimeServices singRTS = null;
+    protected RuntimeServices singRTS = null;
+    
     public RuntimeServices getRuntimeServices() {
         if (singRTS == null)
             singRTS = new CentralisedRuntimeServices(runner);
         return singRTS;
     }
 
+    public void setRuntimeServives(RuntimeServices rts) {
+        singRTS = rts;
+    }
     
     public CentralisedExecutionControl getControllerInfraTier() {
         return control;
