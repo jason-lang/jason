@@ -5,6 +5,7 @@ import jason.asSemantics.InternalAction;
 import jason.asSemantics.TransitionSystem;
 import jason.asSemantics.Unifier;
 import jason.asSyntax.Atom;
+import jason.asSyntax.Literal;
 import jason.asSyntax.Plan;
 import jason.asSyntax.Term;
 
@@ -58,8 +59,8 @@ public class plan_label extends DefaultInternalAction {
 
         Term label = args[1];
         Plan p;
-        if (label.isAtom())
-            p = ts.getAg().getPL().get( (Atom)label);
+        if (label.isLiteral())
+            p = ts.getAg().getPL().get( (Literal)label);
         else
             p = ts.getAg().getPL().get( new Atom(label.toString()));
 

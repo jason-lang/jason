@@ -5,6 +5,7 @@ import jason.asSemantics.TransitionSystem;
 import jason.asSemantics.Unifier;
 import jason.asSyntax.Atom;
 import jason.asSyntax.ListTerm;
+import jason.asSyntax.Literal;
 import jason.asSyntax.Term;
 import jason.bb.BeliefBase;
 
@@ -72,10 +73,10 @@ public class remove_plan extends DefaultInternalAction {
         if (label.isList()) { // arg[0] is a list
             for (Term t: (ListTerm)args[0]) {
                 //r = r && ts.getAg().getPL().remove((Atom)t, source);
-                ts.getAg().getPL().remove((Atom)t, source);
+                ts.getAg().getPL().remove((Literal)t, source);
             }
         } else { // args[0] is a plan label
-            ts.getAg().getPL().remove((Atom)label, source);
+            ts.getAg().getPL().remove((Literal)label, source);
         }
         return true;
     }

@@ -227,11 +227,16 @@ public class PlanLibrary implements Iterable<Plan> {
         }
     }
 
-    private String getStringForLabel(Atom p) {
-        if (p.getNS() == Literal.DefaultNS)
-            return p.getFunctor();
-        else
-            return p.getNS()+"::"+p.getFunctor();
+    private String getStringForLabel(Literal p) {
+        // use functor + terms
+        StringBuilder l = new StringBuilder();
+        if (p.getNS() != Literal.DefaultNS)
+            l.append(p.getNS()+"::");
+        l.append(p.getFunctor());
+        if (p.hasTerm())
+            for (Term t: p.getTerms())
+                l.append(t.toString());
+        return l.toString();
     }
 
     public boolean hasMetaEventPlans() {
@@ -256,7 +261,7 @@ public class PlanLibrary implements Iterable<Plan> {
         return get(new Atom(label));
     }
     /** return a plan for a label */
-    public Plan get(Atom label) {
+    public Plan get(Literal label) {
         return planLabels.get(getStringForLabel(label));
     }
 
@@ -284,7 +289,7 @@ public class PlanLibrary implements Iterable<Plan> {
      * Remove a plan represented by the label <i>pLabel</i>.
      * In case the plan has many sources, only the plan's source is removed.
      */
-    public boolean remove(Atom pLabel, Term source) {
+    public boolean remove(Literal pLabel, Term source) {
         // find the plan
         Plan p = get(pLabel);
         if (p != null) {
@@ -300,7 +305,7 @@ public class PlanLibrary implements Iterable<Plan> {
     }
 
     /** remove the plan with label <i>pLabel</i> */
-    public Plan remove(Atom pLabel) {
+    public Plan remove(Literal pLabel) {
         synchronized (lockPL) {
             Plan p = planLabels.remove( getStringForLabel(pLabel) );
 
