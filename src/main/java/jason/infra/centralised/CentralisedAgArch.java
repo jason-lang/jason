@@ -47,13 +47,13 @@ public class CentralisedAgArch extends AgArch implements Runnable {
 
     private String           agName  = "";
     private volatile boolean running = true;
-    private Queue<Message>   mbox    = new ConcurrentLinkedQueue<Message>();
+    private Queue<Message>   mbox    = new ConcurrentLinkedQueue<>();
     protected Logger         logger  = Logger.getLogger(CentralisedAgArch.class.getName());
 
     private static List<MsgListener> msgListeners = null;
     public static void addMsgListener(MsgListener l) {
         if (msgListeners == null) {
-            msgListeners = new ArrayList<MsgListener>();
+            msgListeners = new ArrayList<>();
         }
         msgListeners.add(l);
     }

@@ -109,6 +109,9 @@ public class Plan extends Structure implements Cloneable, Serializable {
 
     public void setLabel(Pred p) {
         label = p;
+        isAtomic      = false;
+        hasBreakpoint = false;
+        isAllUnifs    = false;
         if (p != null && p.hasAnnot()) {
             for (Term t: label.getAnnots()) {
                 if (t.equals(TAtomic))
@@ -117,13 +120,16 @@ public class Plan extends Structure implements Cloneable, Serializable {
                     hasBreakpoint = true;
                 if (t.equals(TAllUnifs))
                     isAllUnifs = true;
-                // if change here, also change the clone()!
             }
         }
     }
 
     public Pred getLabel() {
         return label;
+    }
+    
+    public void delLabel() {
+        setLabel(null);
     }
 
     public void setContext(LogicalFormula le) {
@@ -227,12 +233,8 @@ public class Plan extends Structure implements Cloneable, Serializable {
 
     public Term clone() {
         Plan p = new Plan();
-        if (label != null) {
-            p.label         = (Pred) label.clone();
-            p.isAtomic      = isAtomic;
-            p.hasBreakpoint = hasBreakpoint;
-            p.isAllUnifs    = isAllUnifs;
-        }
+        if (label != null)
+            p.setLabel((Pred) label.clone());
 
         p.tevent = tevent.clone();
         if (context != null)

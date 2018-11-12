@@ -20,7 +20,7 @@ import java.util.Random;
   <p>Parameter:<ul>
 
   <li>- value (number): the variable to receive the random value<br/>
-  <li><i>+ quantity of random numbers</i> (number, optional): default value is 1, value = 0 means that an infinify number of random numbers will be produced (this is useful for some backtrack circumstances).</li>
+  <li><i>+ quantity of random numbers</i> (number, optional): default value is 1, value = 0 means that an infinity number of random numbers will be produced (this is useful for some backtrack circumstances).</li>
 
   </ul>
 

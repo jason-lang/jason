@@ -125,6 +125,10 @@ public class add_plan extends DefaultInternalAction {
         } */else {
             throw JasonException.createWrongArgument(this, "The term '"+t+"' ("+t.getClass().getSimpleName()+") can not be used as a plan for .add_plan.");
         }
+        if (p.getLabel() != null && p.getLabel().getFunctor().startsWith("l__")) {
+        	// if the label is automatic label, remove it
+        	p.delLabel();        	
+        }
         return p;
     }
 }

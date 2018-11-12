@@ -1,5 +1,7 @@
 package jason.stdlib;
 
+import java.util.List;
+
 import jason.JasonException;
 import jason.asSemantics.DefaultInternalAction;
 import jason.asSemantics.Option;
@@ -10,9 +12,9 @@ import jason.asSyntax.ListTermImpl;
 import jason.asSyntax.Plan;
 import jason.asSyntax.Term;
 import jason.asSyntax.Trigger;
+import jason.asSyntax.UnnamedVar;
 import jason.asSyntax.parser.ParseException;
 
-import java.util.List;
 
 /**
   <p>Internal action: <b><code>.relevant_plans</code></b>.
@@ -73,6 +75,10 @@ public class relevant_plans extends DefaultInternalAction {
         ListTerm labels = new ListTermImpl();
         ListTerm lt = new ListTermImpl();
         ListTerm last = lt;
+        if (!te.getLiteral().hasSource()) {
+        	// the ts.relevantPlans requires a source to work properly
+        	te.getLiteral().addSource(new UnnamedVar());
+        }
         List<Option> rp = ts.relevantPlans(te);
         if (rp != null) {
             for (Option opt: rp) {

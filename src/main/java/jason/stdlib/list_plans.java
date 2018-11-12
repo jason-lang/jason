@@ -6,6 +6,7 @@ import jason.asSemantics.Unifier;
 import jason.asSyntax.Plan;
 import jason.asSyntax.Term;
 import jason.asSyntax.Trigger;
+import jason.asSyntax.UnnamedVar;
 
 /**
 <p>Internal action: <b><code>.list_plans</code></b>.
@@ -27,6 +28,9 @@ public class list_plans extends DefaultInternalAction {
     @Override public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {
         if (args.length == 1 && args[0] instanceof Trigger) {
             Trigger te = Trigger.tryToGetTrigger(args[0]);
+            if (!te.getLiteral().hasSource()) {
+                te.getLiteral().addSource(new UnnamedVar());
+            }
 
             for (Plan p: ts.getAg().getPL()) {
                 //if (!p.getLabel().toString().startsWith("kqml")) { // do not list kqml plans

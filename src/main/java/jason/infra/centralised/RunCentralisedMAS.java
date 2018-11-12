@@ -403,7 +403,7 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
         int nbAg = 0;
         Agent pag = null;
 
-        // create the agents
+        // create agents
         for (AgentParameters ap : project.getAgents()) {
             try {
 
@@ -473,7 +473,7 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
                     agArch.setConf(agentConf);
                     agArch.setAgName(numberedAg);
                     agArch.setEnvInfraTier(env);
-                    if ((generalConf != RConf.THREADED) && cAg > 0 && ap.getAgArchClasses().isEmpty() && ap.getBBClass().equals(DefaultBeliefBase.class.getName())) {
+                    if ((generalConf != RConf.THREADED) && cAg > 0 && ap.getAgArchClasses().isEmpty() && ap.getBBClass().getClassName().equals(DefaultBeliefBase.class.getName())) {
                         // creation by cloning previous agent (which is faster -- no parsing, for instance)
                         agArch.createArchs(ap.getAgArchClasses(), pag, this);
                     } else {

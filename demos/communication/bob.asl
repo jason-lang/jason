@@ -38,14 +38,14 @@
       .send(A, askOne, fullname, FN);
       .println("Full name is ",FN);
 
-      // Ask maria plans to goto
-      .send(A, askHow, {+!goto(_,_)[source(_)]});
-      .wait(500); // wait answer
+      // Ask maria plans for goto
+      .send(A, askHow, {+!goto(_,_)});
+      .wait(500); // wait the answer
       .print("Received plans:");
-      .list_plans( {+!goto(_,_)[source(_)]} );
+      .list_plans( {+!goto(_,_)} );
       .print;
       // another implementation (that do not include the received plans automaticaly in the PL)
-      .send(A, askHow, {+!goto(_,_)[source(_)]}, ListOfPlans);
+      .send(A, askHow, {+!goto(_,_)}, ListOfPlans);
       .print("Received plans by askHow: ", ListOfPlans);
 
       // Send to maria a plan to achieve the goal hello

@@ -3,9 +3,11 @@ package jason.stdlib;
 import jason.asSemantics.DefaultInternalAction;
 import jason.asSemantics.TransitionSystem;
 import jason.asSemantics.Unifier;
+import jason.asSyntax.ASSyntax;
 import jason.asSyntax.Atom;
 import jason.asSyntax.ListTerm;
 import jason.asSyntax.Literal;
+import jason.asSyntax.StringTerm;
 import jason.asSyntax.Term;
 import jason.bb.BeliefBase;
 
@@ -76,6 +78,10 @@ public class remove_plan extends DefaultInternalAction {
                 ts.getAg().getPL().remove((Literal)t, source);
             }
         } else { // args[0] is a plan label
+        	if (label.isString() && ((StringTerm)label).getString().startsWith("@")) {
+        		// as used in the book
+        		label = ASSyntax.parseTerm(((StringTerm)label).getString().substring(1));
+        	}
             ts.getAg().getPL().remove((Literal)label, source);
         }
         return true;
