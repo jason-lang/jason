@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Scanner;
 
 /**
  * class used to create an initial jason project:
@@ -37,11 +38,21 @@ public class CreateNewProject {
             if ("--console".equals(args[i])) 
                 consoleApp = true;
 
+        String pId = null;
         if (args.length == 0 || (args.length == 1 && consoleApp)) {
             System.out.println(Config.get().getPresentation()+"\n");
-            System.out.println("usage must be:");
-            System.out.println("      java "+CreateNewProject.class.getName()+" <id of new application>");
-            return;
+            System.out.print("\n\nEnter the identification of the new application: ");
+            pId = new Scanner(System.in).nextLine();
+            if (pId.length() == 0) {
+                System.out.println("      you should enter a project id!");
+                return;
+            }
+
+            //System.out.println("usage must be:");
+            //System.out.println("      java "+CreateNewProject.class.getName()+" <id of new application>");
+            //return;
+        } else {
+            pId = args[0];
         }
 
         if (Config.get().getJasonHome().isEmpty()) {
@@ -49,7 +60,7 @@ public class CreateNewProject {
             Config.get().fix();
         }
 
-        CreateNewProject p = new CreateNewProject(new File(args[0]));
+        CreateNewProject p = new CreateNewProject(new File(pId));
         p.consoleApp = consoleApp;
         p.createDirs();
         p.copyFiles();
