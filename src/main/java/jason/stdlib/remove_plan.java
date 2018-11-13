@@ -9,6 +9,7 @@ import jason.asSyntax.ListTerm;
 import jason.asSyntax.Literal;
 import jason.asSyntax.StringTerm;
 import jason.asSyntax.Term;
+import jason.asSyntax.parser.ParseException;
 import jason.bb.BeliefBase;
 
 /**
@@ -75,15 +76,19 @@ public class remove_plan extends DefaultInternalAction {
         if (label.isList()) { // arg[0] is a list
             for (Term t: (ListTerm)args[0]) {
                 //r = r && ts.getAg().getPL().remove((Atom)t, source);
-                ts.getAg().getPL().remove((Literal)t, source);
+                ts.getAg().getPL().remove(fixLabel(t), source);
             }
         } else { // args[0] is a plan label
-        	if (label.isString() && ((StringTerm)label).getString().startsWith("@")) {
-        		// as used in the book
-        		label = ASSyntax.parseTerm(((StringTerm)label).getString().substring(1));
-        	}
-            ts.getAg().getPL().remove((Literal)label, source);
+            ts.getAg().getPL().remove(fixLabel(label), source);
         }
         return true;
+    }
+    
+    protected Literal fixLabel(Term label) throws ParseException {
+    	if (label.isString() && ((StringTerm)label).getString().startsWith("@")) {
+    		// as used in the book
+    		label = ASSyntax.parseTerm(((StringTerm)label).getString().substring(1));
+    	}    	
+    	return (Literal)label;
     }
 }
