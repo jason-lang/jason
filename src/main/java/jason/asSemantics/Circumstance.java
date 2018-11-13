@@ -43,7 +43,7 @@ public class Circumstance implements Serializable {
     private Map<String, Intention>     PI; // pending intentions, intentions suspended by any other reason
     private Map<String, Event>         PE; // pending events, events suspended by .suspend
 
-    private Queue<CircumstanceListener> listeners = new ConcurrentLinkedQueue<CircumstanceListener>();
+    private Queue<CircumstanceListener> listeners = new ConcurrentLinkedQueue<>();
 
     private TransitionSystem ts = null;
 
@@ -61,13 +61,13 @@ public class Circumstance implements Serializable {
     /** creates new collections for E, I, MB, PA, PI, and FA */
     public void create() {
         // use LinkedList since we use a lot of remove(0) in selectEvent
-        E  = new ConcurrentLinkedQueue<Event>();
-        I  = new ConcurrentLinkedQueue<Intention>();
-        MB = new ConcurrentLinkedQueue<Message>();
-        PA = new ConcurrentHashMap<Integer, ActionExec>();
-        PI = new ConcurrentHashMap<String, Intention>();
-        PE = new ConcurrentHashMap<String, Event>();
-        FA = new ArrayList<ActionExec>();
+        E  = new ConcurrentLinkedQueue<>();
+        I  = new ConcurrentLinkedQueue<>();
+        MB = new ConcurrentLinkedQueue<>();
+        PA = new ConcurrentHashMap<>();
+        PI = new ConcurrentHashMap<>();
+        PE = new ConcurrentHashMap<>();
+        FA = new ArrayList<>();
     }
 
     /** set null for A, RP, AP, SE, SO, and SI */
@@ -119,7 +119,7 @@ public class Circumstance implements Serializable {
 
     public void insertMetaEvent(Event ev) {
         // meta events have to be placed in the begin of the queue, but not before other meta events
-        List<Event> newE = new ArrayList<Event>(E); // make a list of events to find the best place to insert the new event
+        List<Event> newE = new ArrayList<>(E); // make a list of events to find the best place to insert the new event
         int pos = 0;
         for (Event e: newE) {
             if (!e.getTrigger().isMetaEvent()) {
@@ -194,7 +194,7 @@ public class Circumstance implements Serializable {
         if (AE == null) {
             return E.iterator();
         } else {
-            List<Event> l = new ArrayList<Event>(E.size()+1);
+            List<Event> l = new ArrayList<>(E.size()+1);
             l.add(AE);
             l.addAll(E);
             return l.iterator();
@@ -285,7 +285,7 @@ public class Circumstance implements Serializable {
         if (AI == null) {
             return I.iterator();
         } else {
-            List<Intention> l = new ArrayList<Intention>(I.size()+1);
+            List<Intention> l = new ArrayList<>(I.size()+1);
             l.add(AI);
             l.addAll(I);
             return l.iterator();
@@ -406,6 +406,7 @@ public class Circumstance implements Serializable {
             atomicIntSuspended = true;
         }
         PI.put(id, i);
+        i.setSuspendedReason(id);
 
         if (listeners != null)
             for (CircumstanceListener el : listeners)
@@ -565,6 +566,7 @@ public class Circumstance implements Serializable {
             atomicIntSuspended = true;
         }
         PA.put(i.getId(), a);
+        i.setSuspendedReason(a.getActionTerm().toString());
 
         if (listeners != null)
             for (CircumstanceListener el : listeners)
@@ -668,8 +670,9 @@ public class Circumstance implements Serializable {
                 case selInt:
                     curStep = Step.evt; // set next step
                     // we need to check the selected intention in this reasoning cycle too!!!
+                    Intention prev = curInt;
                     curInt = getSelectedIntention();
-                    if (curInt != null)
+                    if (curInt != null && !curInt.equals(prev))
                         return;                    
                     find();
                     return;
@@ -680,7 +683,7 @@ public class Circumstance implements Serializable {
 
                     while (evtIterator.hasNext()) {
                         curInt = evtIterator.next().getIntention();
-                        if (curInt != null)
+                        if (curInt != null && !curInt.equals(getSelectedIntention()))
                             return;
                     } 
                     curStep = Step.pendEvt; // set next step
@@ -896,7 +899,7 @@ public class Circumstance implements Serializable {
 
         // relPlans
         Element plans = (Element) document.createElement("options");
-        List<Object> alreadyIn = new ArrayList<Object>();
+        List<Object> alreadyIn = new ArrayList<>();
 
         // option
         if (getSelectedOption() != null) {
@@ -939,6 +942,22 @@ public class Circumstance implements Serializable {
         // intentions
         Element ints = (Element) document.createElement("intentions");
         Element selIntEle = null;
+
+        Iterator<Intention> ii = getAllIntentions();
+        while (ii.hasNext()) {
+            Intention i = ii.next();
+            
+            selIntEle = i.getAsDOM(document);
+            if (i.equals(getSelectedIntention()))
+                selIntEle.setAttribute("selected", "true");
+            if (i.isSuspended())
+                selIntEle.setAttribute("pending", i.getSuspendedReason());
+            ints.appendChild(selIntEle);
+            
+        }
+        
+        /*
+        Element selIntEle = null;
         Intention ci = getSelectedIntention();
         if (ci != null) {
             selIntEle = ci.getAsDOM(document);
@@ -975,9 +994,10 @@ public class Circumstance implements Serializable {
                 }
             }
         }
+        */
 
         Element acts = (Element) document.createElement("actions");
-        alreadyIn = new ArrayList<Object>();
+        alreadyIn = new ArrayList<>();
 
         // action
         if (getAction() != null) {

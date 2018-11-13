@@ -1,0 +1,264 @@
+<html>
+<span style="color: red; font-family: arial;"><font size="+2">
+                    Inspection of agent <b>alice</b>
+                        (cycle #2)
+                    </font></span>
+<hr>
+<details open="true">
+<summary style="text-align: left; color: blue; font-family: arial">Beliefs</summary>
+<blockquote>
+<details open="false">
+<summary style="text-align: left; color: blue; font-family: arial">default</summary>
+</details>
+</blockquote>
+<blockquote>
+<details open="false">
+<summary style="text-align: left; color: blue; font-family: arial">tv</summary>
+<span style="font-family: arial; vertical-align: top; color: rgb(0 ,170, 0)">nb_participants(<i>6</i>)<span style="color: rgb(0 ,190, 0)"><sub>[source(self)]</sub></span></span>.<br>
+<span style="font-family: arial; vertical-align: top; color: rgb(0 ,170, 0)">propose(<i>10.50586843741821</i>)<span style="color: rgb(0 ,190, 0)"><sub>[source(company_A2)]</sub></span></span>.<br>
+<span style="font-family: arial; vertical-align: top; color: rgb(0 ,170, 0)">propose(<i>12.852959654105087</i>)<span style="color: rgb(0 ,190, 0)"><sub>[source(company_A3)]</sub></span></span>.<br>
+<span style="font-family: arial; vertical-align: top; color: rgb(0 ,170, 0)">propose(<i>12.964993705838628</i>)<span style="color: rgb(0 ,190, 0)"><sub>[source(company_A1)]</sub></span></span>.<br>
+</details>
+</blockquote>
+<blockquote>
+<details open="false">
+<summary style="text-align: left; color: blue; font-family: arial">#8priv</summary>
+<span style="font-family: arial; vertical-align: top; color: rgb(0 ,170, 0)">state(propose)<span style="color: rgb(0 ,190, 0)"><sub>[source(self)]</sub></span></span>.<br>
+</details>
+</blockquote>
+<blockquote>
+<details open="false">
+<summary style="text-align: left; color: blue; font-family: arial">pc</summary>
+<span style="font-family: arial; vertical-align: top; color: rgb(0 ,170, 0)">nb_participants(<i>6</i>)<span style="color: rgb(0 ,190, 0)"><sub>[source(self)]</sub></span></span>.<br>
+<span style="font-family: arial; vertical-align: top; color: rgb(0 ,170, 0)">propose(<i>10.812170227162138</i>)<span style="color: rgb(0 ,190, 0)"><sub>[source(company_A1)]</sub></span></span>.<br>
+<span style="font-family: arial; vertical-align: top; color: rgb(0 ,170, 0)">propose(<i>12.253141211695096</i>)<span style="color: rgb(0 ,190, 0)"><sub>[source(company_A3)]</sub></span></span>.<br>
+<span style="font-family: arial; vertical-align: top; color: rgb(0 ,170, 0)">propose(<i>12.440947231224444</i>)<span style="color: rgb(0 ,190, 0)"><sub>[source(company_A2)]</sub></span></span>.<br>
+</details>
+</blockquote>
+<blockquote>
+<details open="false">
+<summary style="text-align: left; color: blue; font-family: arial">#6priv</summary>
+<span style="font-family: arial; vertical-align: top; color: rgb(0 ,170, 0)">state(contract)<span style="color: rgb(0 ,190, 0)"><sub>[source(self)]</sub></span></span>.<br>
+</details>
+</blockquote>
+<blockquote>
+<details open="false">
+<summary style="text-align: left; color: blue; font-family: arial">oven</summary>
+<span style="font-family: arial; vertical-align: top; color: rgb(0 ,170, 0)">nb_participants(<i>6</i>)<span style="color: rgb(0 ,190, 0)"><sub>[source(self)]</sub></span></span>.<br>
+<span style="font-family: arial; vertical-align: top; color: rgb(0 ,170, 0)">propose(<i>10.364209843805531</i>)<span style="color: rgb(0 ,190, 0)"><sub>[source(company_A2)]</sub></span></span>.<br>
+<span style="font-family: arial; vertical-align: top; color: rgb(0 ,170, 0)">propose(<i>10.46471827797219</i>)<span style="color: rgb(0 ,190, 0)"><sub>[source(company_A1)]</sub></span></span>.<br>
+<span style="font-family: arial; vertical-align: top; color: rgb(0 ,170, 0)">propose(<i>11.018512441302288</i>)<span style="color: rgb(0 ,190, 0)"><sub>[source(company_A3)]</sub></span></span>.<br>
+</details>
+</blockquote>
+<blockquote>
+<details open="false">
+<summary style="text-align: left; color: blue; font-family: arial">#7priv</summary>
+<span style="font-family: arial; vertical-align: top; color: rgb(0 ,170, 0)">state(propose)<span style="color: rgb(0 ,190, 0)"><sub>[source(self)]</sub></span></span>.<br>
+</details>
+</blockquote>
+<br>
+</details>
+<details>
+<summary style="text-align: left; color: blue; font-family: arial">Rules</summary>
+<blockquote>
+<span style="font-family: arial; vertical-align: top; color: rgb(0 ,170, 0);">all_proposals_received<span style="color: rgb(0 ,190, 0)"><sub>[source(self)]</sub></span><font color="black"><b> :- </b></font>
+<table>
+<tr>
+<td width="20"></td><td><span style="color: rgb(0 ,170, 0)"><span style="color: black">(</span>nb_participants(<span style="color: rgb(0, 0, 200)">NP</span>)<span style="color: black"> &amp; </span><span style="color: black">(</span>.count(propose(<span style="color: rgb(0, 0, 200)">_180</span>)<span style="color: rgb(0 ,190, 0)"><sub>[source(<span style="color: rgb(0, 0, 200)">_181</span>)]</sub></span>,<span style="color: rgb(0, 0, 200)">NO</span>)<span style="color: black"> &amp; </span><span style="color: black">(</span>.count(refuse<span style="color: rgb(0 ,190, 0)"><sub>[source(<span style="color: rgb(0, 0, 200)">_182</span>)]</sub></span>,<span style="color: rgb(0, 0, 200)">NR</span>)<span style="color: black"> &amp; </span><span style="color: black">(</span><span style="color: rgb(0, 0, 200)">NP</span><span style="color: black"> = </span><span style="color: black">(</span><span style="color: rgb(0, 0, 200)">NO</span><span style="color: black">+</span><span style="color: rgb(0, 0, 200)">NR</span><span style="color: black">)</span><span style="color: black">)</span><span style="color: black">)</span><span style="color: black">)</span><span style="color: black">)</span></span>.</td>
+</tr>
+</table>
+</span><span style="font-family: arial; vertical-align: top; color: rgb(0 ,170, 0);">all_proposals_received<span style="color: rgb(0 ,190, 0)"><sub>[source(self)]</sub></span><font color="black"><b> :- </b></font>
+<table>
+<tr>
+<td width="20"></td><td><span style="color: rgb(0 ,170, 0)"><span style="color: black">(</span>nb_participants(<span style="color: rgb(0, 0, 200)">NP</span>)<span style="color: black"> &amp; </span><span style="color: black">(</span>.count(propose(<span style="color: rgb(0, 0, 200)">_189</span>)<span style="color: rgb(0 ,190, 0)"><sub>[source(<span style="color: rgb(0, 0, 200)">_190</span>)]</sub></span>,<span style="color: rgb(0, 0, 200)">NO</span>)<span style="color: black"> &amp; </span><span style="color: black">(</span>.count(refuse<span style="color: rgb(0 ,190, 0)"><sub>[source(<span style="color: rgb(0, 0, 200)">_191</span>)]</sub></span>,<span style="color: rgb(0, 0, 200)">NR</span>)<span style="color: black"> &amp; </span><span style="color: black">(</span><span style="color: rgb(0, 0, 200)">NP</span><span style="color: black"> = </span><span style="color: black">(</span><span style="color: rgb(0, 0, 200)">NO</span><span style="color: black">+</span><span style="color: rgb(0, 0, 200)">NR</span><span style="color: black">)</span><span style="color: black">)</span><span style="color: black">)</span><span style="color: black">)</span><span style="color: black">)</span></span>.</td>
+</tr>
+</table>
+</span><span style="font-family: arial; vertical-align: top; color: rgb(0 ,170, 0);">all_proposals_received<span style="color: rgb(0 ,190, 0)"><sub>[source(self)]</sub></span><font color="black"><b> :- </b></font>
+<table>
+<tr>
+<td width="20"></td><td><span style="color: rgb(0 ,170, 0)"><span style="color: black">(</span>nb_participants(<span style="color: rgb(0, 0, 200)">NP</span>)<span style="color: black"> &amp; </span><span style="color: black">(</span>.count(propose(<span style="color: rgb(0, 0, 200)">_198</span>)<span style="color: rgb(0 ,190, 0)"><sub>[source(<span style="color: rgb(0, 0, 200)">_199</span>)]</sub></span>,<span style="color: rgb(0, 0, 200)">NO</span>)<span style="color: black"> &amp; </span><span style="color: black">(</span>.count(refuse<span style="color: rgb(0 ,190, 0)"><sub>[source(<span style="color: rgb(0, 0, 200)">_200</span>)]</sub></span>,<span style="color: rgb(0, 0, 200)">NR</span>)<span style="color: black"> &amp; </span><span style="color: black">(</span><span style="color: rgb(0, 0, 200)">NP</span><span style="color: black"> = </span><span style="color: black">(</span><span style="color: rgb(0, 0, 200)">NO</span><span style="color: black">+</span><span style="color: rgb(0, 0, 200)">NR</span><span style="color: black">)</span><span style="color: black">)</span><span style="color: black">)</span><span style="color: black">)</span><span style="color: black">)</span></span>.</td>
+</tr>
+</table>
+</span>
+<br>
+</blockquote>
+</details>
+<details>
+<summary style="text-align: left; color: blue; font-family: arial">Events</summary>
+<blockquote>
+<table cellspacing="0" cellpadding="3">
+<tr style="font-family: arial; vertical-align: top;">
+<th valign="top" style="text-align: left; color: blue; font-family: arial">Sel</th><th valign="top" style="text-align: left; color: blue; font-family: arial">Trigger</th><th valign="top" style="text-align: left; color: blue; font-family: arial">Intention</th>
+</tr>
+<tr style="font-family: arial; vertical-align: top;">
+<td valign="top" style="text-align: center; vertical-align: top;"></td><td valign="top" style="text-align: left; vertical-align: top;"><span style="color: rgb(200, 0, 0)">+!contract(pc)<span style="color: rgb(0 ,190, 0)"><sub>[source(self)]</sub></span></span></td><td valign="top" style="text-align: center; vertical-align: top;">11</td>
+</tr>
+<tr style="font-family: arial; vertical-align: top;">
+<td valign="top" style="text-align: center; vertical-align: top;"></td><td valign="top" style="text-align: left; vertical-align: top;"><span style="color: rgb(200, 0, 0)">+!contract(oven)<span style="color: rgb(0 ,190, 0)"><sub>[source(self)]</sub></span></span></td><td valign="top" style="text-align: center; vertical-align: top;">12</td>
+</tr>
+<tr style="font-family: arial; vertical-align: top;">
+<td valign="top" style="text-align: center; vertical-align: top;"></td><td valign="top" style="text-align: left; vertical-align: top;"><span style="color: rgb(200, 0, 0)">+state(contract)<span style="color: rgb(0 ,190, 0)"><sub>[source(self)]</sub></span></span></td><td valign="top" style="text-align: center; vertical-align: top;">10</td>
+</tr>
+<tr style="font-family: arial; vertical-align: top;">
+<td valign="top" style="text-align: center; vertical-align: top;"><b>X</b></td><td valign="top" style="text-align: left; vertical-align: top;"><span style="color: rgb(200, 0, 0)">+!contract(tv)<span style="color: rgb(0 ,190, 0)"><sub>[source(self)]</sub></span></span></td><td valign="top" style="text-align: center; vertical-align: top;">10</td>
+</tr>
+</table>
+</blockquote>
+</details>
+<details>
+<summary style="text-align: left; color: blue; font-family: arial">Options</summary>
+<blockquote>
+<table ellspacing="0" cellpadding="3">
+<tr style="font-family: arial; vertical-align: top;">
+<th valign="top" style="text-align: left; color: blue; font-family: arial">App</th><th valign="top" style="text-align: left; color: blue; font-family: arial">Sel</th><th valign="top" style="text-align: left; color: blue; font-family: arial">Plan</th><th valign="top" style="text-align: left; color: blue; font-family: arial">Unifier</th>
+</tr>
+<tr style="font-family: arial; vertical-align: top;">
+<td valign="top" style="text-align: center; vertical-align: top;">
+                    X
+                </td><td valign="top" style="text-align: center; vertical-align: top;"><b>X</b></td><td valign="top" style="text-align: left; vertical-align: top;">+!contract(<span style="color: rgb(0, 0, 200)">Ns</span>)</td><td valign="top" style="text-align: left; vertical-align: top;">
+            {
+            <span style="color: rgb(0, 0, 200)">Ns</span>
+                =
+                tv, <span style="color: rgb(0, 0, 200)">_232</span>
+                =
+                propose
+            }
+        </td>
+</tr>
+<tr style="font-family: arial; vertical-align: top;">
+<td valign="top" style="text-align: center; vertical-align: top;">
+                    X
+                </td><td valign="top" style="text-align: center; vertical-align: top;"></td><td valign="top" style="text-align: left; vertical-align: top;">+!contract(<span style="color: rgb(0, 0, 200)">_185</span>)</td><td valign="top" style="text-align: left; vertical-align: top;">
+            {
+            <span style="color: rgb(0, 0, 200)">_185</span>
+                =
+                tv
+            }
+        </td>
+</tr>
+</table>
+</blockquote>
+</details>
+<details>
+<summary style="text-align: left; color: blue; font-family: arial">Intentions</summary>
+<blockquote>
+<table cellspacing="0" cellpadding="5">
+<tr style="font-family: arial; vertical-align: top;">
+<th valign="top" style="text-align: left; color: blue; font-family: arial">Sel</th><th valign="top" style="text-align: left; color: blue; font-family: arial">Id</th><th valign="top" style="text-align: left; color: blue; font-family: arial">Pen</th><th valign="top" style="text-align: left; color: blue; font-family: arial">Intended Means</th>
+</tr>
+<tr style="font-family: arial; vertical-align: top;">
+<td valign="top" style="text-align: center; vertical-align: top;"></td><td valign="top" style="text-align: center; vertical-align: top;">10</td><td valign="top" style="text-align: center; vertical-align: top;"></td><td valign="top">
+<details>
+<summary>+!#6priv::contract(tv)[source(self)]</summary>
+<pre>+!#6priv::contract(tv)[source(self)]</pre>
+<pre>     &lt;- ... -+state(contract); <span style="color: rgb(80, 40, 20)">.findall(offer(<span style="color: rgb(0, 0, 200)">Price</span>,<span style="color: rgb(0, 0, 200)">A</span>),propose(<span style="color: rgb(0, 0, 200)">Price</span>)<span style="color: rgb(0 ,190, 0)"><sub>[source(<span style="color: rgb(0, 0, 200)">A</span>)]</sub></span>,<span style="color: rgb(0, 0, 200)">L</span>)</span>; <span style="color: rgb(80, 40, 20)">.print(<span style="color: rgb(0, 0, 250)">"Offers in CNP taking place in "</span>,<span style="color: rgb(0, 0, 200)">Ns</span>,<span style="color: rgb(0, 0, 250)">" are "</span>,<span style="color: rgb(0, 0, 200)">L</span>)</span>; <span style="color: rgb(80, 40, 20)"><span style="color: black">(</span><span style="color: rgb(0, 0, 200)">L</span><span style="color: black"> \== </span>[]<span style="color: black">)</span></span>; <span style="color: rgb(80, 40, 20)">.min(<span style="color: rgb(0, 0, 200)">L</span>,offer(<span style="color: rgb(0, 0, 200)">WOf</span>,<span style="color: rgb(0, 0, 200)">WAg</span>))</span>; <span style="color: rgb(0 ,170, 0)">+winner(<span style="color: rgb(0, 0, 200)">WAg</span>)</span>; <span style="color: rgb(0, 0, 120)">!announce_result(<span style="color: rgb(0, 0, 200)">Ns</span>,<span style="color: rgb(0, 0, 200)">L</span>)</span>; -+state(finished)</pre>
+<font size="-2"><span style="text-align: left; vertical-align: top;">
+<br>
+            {
+            <span style="color: rgb(0, 0, 200)">Ns</span>
+                =
+                tv, <span style="color: rgb(0, 0, 200)">_232</span>
+                =
+                propose
+            }
+        </span></font>
+<pre>+!tv::startCNP(fix(tv))[source(self)]</pre>
+<pre>     &lt;- ... <span style="color: rgb(0, 0, 120)">!contract(tv)</span>
+</pre>
+<font size="-2"><span style="text-align: left; vertical-align: top;">
+<br>
+            {
+            <span style="color: rgb(0, 0, 200)">Task</span>
+                =
+                fix(tv), <span style="color: rgb(0, 0, 200)">LP</span>
+                =
+                [company_B1,company_B3,company_A2,company_B2,company_A1,company_A3], <span style="color: rgb(0, 0, 200)">_183</span>
+                =
+                <i>8552</i>
+            }
+        </span></font>
+</details>
+</td>
+</tr>
+<tr style="font-family: arial; vertical-align: top;">
+<td valign="top" style="text-align: center; vertical-align: top;"></td><td valign="top" style="text-align: center; vertical-align: top;">11</td><td valign="top" style="text-align: center; vertical-align: top;"></td><td valign="top">
+<details>
+<summary>+!pc::startCNP(fix(pc))[source(self)]</summary>
+<pre>+!pc::startCNP(fix(pc))[source(self)]</pre>
+<pre>     &lt;- ... <span style="color: rgb(0, 0, 120)">!contract(pc)</span>
+</pre>
+<font size="-2"><span style="text-align: left; vertical-align: top;">
+<br>
+            {
+            <span style="color: rgb(0, 0, 200)">_192</span>
+                =
+                <i>8541</i>, <span style="color: rgb(0, 0, 200)">Task</span>
+                =
+                fix(pc), <span style="color: rgb(0, 0, 200)">LP</span>
+                =
+                [company_B1,company_B3,company_A2,company_B2,company_A1,company_A3]
+            }
+        </span></font>
+</details>
+</td>
+</tr>
+<tr style="font-family: arial; vertical-align: top;">
+<td valign="top" style="text-align: center; vertical-align: top;"></td><td valign="top" style="text-align: center; vertical-align: top;">12</td><td valign="top" style="text-align: center; vertical-align: top;"></td><td valign="top">
+<details>
+<summary>+!oven::startCNP(fix(oven))[source(self)]</summary>
+<pre>+!oven::startCNP(fix(oven))[source(self)]</pre>
+<pre>     &lt;- ... <span style="color: rgb(0, 0, 120)">!contract(oven)</span>
+</pre>
+<font size="-2"><span style="text-align: left; vertical-align: top;">
+<br>
+            {
+            <span style="color: rgb(0, 0, 200)">Task</span>
+                =
+                fix(oven), <span style="color: rgb(0, 0, 200)">LP</span>
+                =
+                [company_B1,company_B3,company_A2,company_B2,company_A1,company_A3], <span style="color: rgb(0, 0, 200)">_201</span>
+                =
+                <i>8538</i>
+            }
+        </span></font>
+</details>
+</td>
+</tr>
+<tr style="font-family: arial; vertical-align: top;">
+<td valign="top" style="text-align: center; vertical-align: top;"></td><td valign="top" style="text-align: center; vertical-align: top;">10</td><td valign="top" style="text-align: center; vertical-align: top;"></td><td valign="top">
+<details>
+<summary>+!#6priv::contract(tv)[source(self)]</summary>
+<pre>+!#6priv::contract(tv)[source(self)]</pre>
+<pre>     &lt;- ... -+state(contract); <span style="color: rgb(80, 40, 20)">.findall(offer(<span style="color: rgb(0, 0, 200)">Price</span>,<span style="color: rgb(0, 0, 200)">A</span>),propose(<span style="color: rgb(0, 0, 200)">Price</span>)<span style="color: rgb(0 ,190, 0)"><sub>[source(<span style="color: rgb(0, 0, 200)">A</span>)]</sub></span>,<span style="color: rgb(0, 0, 200)">L</span>)</span>; <span style="color: rgb(80, 40, 20)">.print(<span style="color: rgb(0, 0, 250)">"Offers in CNP taking place in "</span>,<span style="color: rgb(0, 0, 200)">Ns</span>,<span style="color: rgb(0, 0, 250)">" are "</span>,<span style="color: rgb(0, 0, 200)">L</span>)</span>; <span style="color: rgb(80, 40, 20)"><span style="color: black">(</span><span style="color: rgb(0, 0, 200)">L</span><span style="color: black"> \== </span>[]<span style="color: black">)</span></span>; <span style="color: rgb(80, 40, 20)">.min(<span style="color: rgb(0, 0, 200)">L</span>,offer(<span style="color: rgb(0, 0, 200)">WOf</span>,<span style="color: rgb(0, 0, 200)">WAg</span>))</span>; <span style="color: rgb(0 ,170, 0)">+winner(<span style="color: rgb(0, 0, 200)">WAg</span>)</span>; <span style="color: rgb(0, 0, 120)">!announce_result(<span style="color: rgb(0, 0, 200)">Ns</span>,<span style="color: rgb(0, 0, 200)">L</span>)</span>; -+state(finished)</pre>
+<font size="-2"><span style="text-align: left; vertical-align: top;">
+<br>
+            {
+            <span style="color: rgb(0, 0, 200)">Ns</span>
+                =
+                tv, <span style="color: rgb(0, 0, 200)">_232</span>
+                =
+                propose
+            }
+        </span></font>
+<pre>+!tv::startCNP(fix(tv))[source(self)]</pre>
+<pre>     &lt;- ... <span style="color: rgb(0, 0, 120)">!contract(tv)</span>
+</pre>
+<font size="-2"><span style="text-align: left; vertical-align: top;">
+<br>
+            {
+            <span style="color: rgb(0, 0, 200)">Task</span>
+                =
+                fix(tv), <span style="color: rgb(0, 0, 200)">LP</span>
+                =
+                [company_B1,company_B3,company_A2,company_B2,company_A1,company_A3], <span style="color: rgb(0, 0, 200)">_183</span>
+                =
+                <i>8552</i>
+            }
+        </span></font>
+</details>
+</td>
+</tr>
+</table>
+</blockquote>
+</details>
+</html>

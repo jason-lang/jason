@@ -280,7 +280,13 @@ public class MindInspectorWebImpl extends MindInspectorWeb {
                                         so.append("<a href=\"/agent-mind/"+agName+"/clear\">clear history</a> ");
                                         so.append("<hr/>");
                                     }
-                                    so.append(getAgStateAsString(agState, false));
+                                    so.append(getAgStateAsString(agState));
+                                    if (show.get("annots")) {
+                                        so.append("<hr/><a href='hide?annots'> hide annotations </a> ");
+                                    } else {
+                                        so.append("<hr/><a href='show?annots'> show annotations </a> ");
+                                        
+                                    }
                                     //so.append("<hr/><a href=\"/\"> list of agents</a> ");
                                 } else {
                                     so.append("select an agent");
@@ -335,26 +341,14 @@ public class MindInspectorWebImpl extends MindInspectorWeb {
     protected asl2xml   mindInspectorTransformer = null;
     Map<String,Boolean> show = new HashMap<>();
 
-    synchronized String getAgStateAsString(Document ag, boolean full) { // full means with show all
+    synchronized String getAgStateAsString(Document ag) { // full means with show all
         try {
             if (mindInspectorTransformer == null) {
                 mindInspectorTransformer = new asl2html("/xml/agInspection.xsl");
-
-                show.put("bels", true);
                 show.put("annots", Config.get().getBoolean(Config.SHOW_ANNOTS));
-                show.put("rules", false);
-                show.put("evt", true);
-                show.put("mb", false);
-                show.put("int", false);
-                show.put("int-details", false);
-                //show.put("plan", false);
-                //show.put("plan-details", false);
             }
             for (String p: show.keySet())
-                if (full)
-                    mindInspectorTransformer.setParameter("show-"+p, "true");
-                else
-                    mindInspectorTransformer.setParameter("show-"+p, show.get(p)+"");
+                mindInspectorTransformer.setParameter("show-"+p, show.get(p)+"");
             return mindInspectorTransformer.transform(ag); // transform to HTML
         } catch (Exception e) {
             e.printStackTrace();

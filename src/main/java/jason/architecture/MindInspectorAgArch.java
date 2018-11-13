@@ -211,7 +211,7 @@ public class MindInspectorAgArch extends AgArch {
         }
 
         if (format.equals("text/html")) {
-            mindInspectorTransformer = new asl2html("/xml/agInspection.xsl");
+            mindInspectorTransformer = new asl2html("/xml/agInspection-nd.xsl");
         }
     }
 

@@ -44,6 +44,13 @@ public class Event implements Serializable {
         return intention != null && intention.isAtomic();
     }
 
+    @Override
+    public int hashCode() {
+        int r = trigger.hashCode();
+        if (intention != null)
+            r = r + intention.hashCode();
+        return r;
+    }
 
     @Override
     public boolean equals(Object o) {
