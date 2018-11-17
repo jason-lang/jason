@@ -77,6 +77,7 @@ public class relevant_plans extends DefaultInternalAction {
         ListTerm last = lt;
         if (!te.getLiteral().hasSource()) {
         	// the ts.relevantPlans requires a source to work properly
+        	te.setLiteral(te.getLiteral().forceFullLiteralImpl());
         	te.getLiteral().addSource(new UnnamedVar());
         }
         List<Option> rp = ts.relevantPlans(te);

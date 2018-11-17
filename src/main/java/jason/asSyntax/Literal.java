@@ -311,7 +311,7 @@ public abstract class Literal extends DefaultTerm implements LogicalFormula {
 
     /** adds the annotation source(<i>agName</i>) */
     public Literal addSource(Term agName)       {
-        logger.log(Level.SEVERE, "addSource is not implemented in the class "+this.getClass().getSimpleName(), new Exception());
+        logger.log(Level.SEVERE, "("+this+") addSource is not implemented in the class "+this.getClass().getSimpleName(), new Exception());
         return null;
     }
     /** deletes one source(<i>agName</i>) annotation, return true if deleted */

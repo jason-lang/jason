@@ -384,7 +384,7 @@ Trigger trigger() :
     )
   ]
 
-  F=literal()  { return new Trigger(teOp,teType,F); }
+  F=literal()  { return new Trigger(teOp,teType,F.forceFullLiteralImpl()); }
 }
 
 
