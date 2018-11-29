@@ -273,19 +273,6 @@ task javadoc(overwrite: true, dependsOn: compileJava) {
 }
 */
 
-publishing {
-    publications {
-        maven(MavenPublication) {
-            from components.java
-			      artifact sourceJar
-			      artifact javadocJar
-            artifactId 'jason'
-        }
-    }
-}
-
-// from http://central.sonatype.org/pages/gradle.html
-
 task javadocJar (type: Jar, dependsOn: javadoc) {
     baseName 'jason'
     classifier = 'javadoc'
@@ -301,6 +288,20 @@ task sourceJar (type : Jar) {
 artifacts {
     archives sourceJar, javadocJar
 }
+
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from components.java
+			      artifact sourceJar
+			      artifact javadocJar
+            artifactId 'jason'
+        }
+    }
+}
+
+// from http://central.sonatype.org/pages/gradle.html
 
 // see http://central.sonatype.org/pages/releasing-the-deployment.html
 // comment cartago and jaca dependencies

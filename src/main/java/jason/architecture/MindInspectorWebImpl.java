@@ -285,7 +285,6 @@ public class MindInspectorWebImpl extends MindInspectorWeb {
                                         so.append("<hr/><a href='hide?annots'> hide annotations </a> ");
                                     } else {
                                         so.append("<hr/><a href='show?annots'> show annotations </a> ");
-                                        
                                     }
                                     //so.append("<hr/><a href=\"/\"> list of agents</a> ");
                                 } else {
