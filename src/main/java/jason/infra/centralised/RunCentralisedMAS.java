@@ -47,6 +47,7 @@ import jason.mas2j.parser.ParseException;
 import jason.runtime.MASConsoleGUI;
 import jason.runtime.MASConsoleLogFormatter;
 import jason.runtime.MASConsoleLogHandler;
+import jason.runtime.RuntimeServices;
 import jason.runtime.Settings;
 import jason.runtime.SourcePath;
 import jason.util.Config;
@@ -403,6 +404,8 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
         int nbAg = 0;
         Agent pag = null;
 
+        RuntimeServices rs = getRuntimeServices();
+        
         // create agents
         for (AgentParameters ap : project.getAgents()) {
             try {
@@ -419,14 +422,10 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
                         // numberedAg += String.format("%0"+String.valueOf(ap.qty).length()+"d", cAg + 1);
                     }
 
-                    String nb = "";
-                    int    n  = 1;
-                    while (getAg(numberedAg+nb) != null)
-                        nb = "_" + (n++);
-                    numberedAg += nb;
-
+                    numberedAg = rs.getNewAgentName(numberedAg);
+                    
+                    ap.addArchClass(rs.getDefaultAgArchs());
                     logger.fine("Creating agent " + numberedAg + " (" + (cAg + 1) + "/" + ap.getNbInstances() + ")");
-                    CentralisedAgArch agArch;
 
                     RConf agentConf;
                     if (ap.getOption("rc") == null) {
@@ -455,6 +454,7 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
                     }
 
                     // Create agents according to the specific architecture
+                    CentralisedAgArch agArch;
                     if (agentConf == RConf.POOL_SYNCH) {
                         agArch = new CentralisedAgArchForPool();
                     } else if (agentConf == RConf.POOL_SYNCH_SCHEDULED) {

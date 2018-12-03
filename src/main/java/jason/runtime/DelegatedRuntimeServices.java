@@ -15,9 +15,11 @@ public class DelegatedRuntimeServices implements RuntimeServices {
         this.delegate  = delegate;
     }
 
-    @Override
     public void registerDefaultAgArch(String agArch) {
         delegate.registerDefaultAgArch(agArch);
+    }
+    public Collection<String> getDefaultAgArchs() {
+        return delegate.getDefaultAgArchs();
     }
 
     public String getNewAgentName(String baseName) {

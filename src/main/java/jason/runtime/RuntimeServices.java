@@ -40,6 +40,8 @@ public interface RuntimeServices {
 
     /** register a class to be included as new agents archs */
     default public void registerDefaultAgArch(String agArch) {}
+
+    default public Collection<String> getDefaultAgArchs() { return new ArrayList<>(); }
     
     /** starts an agent (e.g. create thread for it) */
     public void startAgent(String agName);

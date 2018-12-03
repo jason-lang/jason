@@ -100,14 +100,17 @@ public class AgentParameters {
     public void addArchClass(String... cs) {
         if (cs == null)
             return;
-        for (String c: cs)
-            archClasses.add(new ClassParameters(c));
+        for (String c: cs) {
+        	ClassParameters cp = new ClassParameters(c);
+        	if (!archClasses.contains(cp))
+        		archClasses.add(cp);
+        }
     }
     public void addArchClass(Collection<String> cs) {
         if (cs == null)
             return;
         for (String c: cs)
-            archClasses.add(new ClassParameters(c));
+            addArchClass(c);
     }
     public void addArchClass(ClassParameters... cps) {
         if (cps == null)
@@ -121,6 +124,7 @@ public class AgentParameters {
         for (ClassParameters c: cps)
             archClasses.add(0,c);
     }
+
     /** gets a list of all custom arch classes defined in the jason project */
     public Collection<String> getAgArchClasses() {
         List<String> all = new ArrayList<>();

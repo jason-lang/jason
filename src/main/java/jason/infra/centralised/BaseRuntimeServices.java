@@ -18,6 +18,10 @@ public abstract class BaseRuntimeServices implements RuntimeServices {
     public void registerDefaultAgArch(String agArch) {
         defaultAgArchs.add(agArch);
     }
+    @Override
+    public Collection<String> getDefaultAgArchs() {
+        return defaultAgArchs;
+    }
 
     public String getNewAgentName(String baseName) {
         int n = 1;
