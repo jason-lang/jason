@@ -122,7 +122,7 @@ public class AgentParameters {
             archClasses.add(0,c);
     }
     /** gets a list of all custom arch classes defined in the jason project */
-    public List<String> getAgArchClasses() {
+    public Collection<String> getAgArchClasses() {
         List<String> all = new ArrayList<>();
         for (ClassParameters c: archClasses) {
             all.add(c.getClassName());

@@ -91,7 +91,7 @@ public class AgArch implements Comparable<AgArch> {
             successor.setFirstAgArch(arch);
     }
 
-    public void createCustomArchs(List<String> archs) throws Exception {
+    public void createCustomArchs(Collection<String> archs) throws Exception {
         if (archs == null)
             return;
         for (String agArchClass: archs) {

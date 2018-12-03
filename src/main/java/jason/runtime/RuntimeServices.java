@@ -2,8 +2,6 @@ package jason.runtime;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
-import java.util.Set;
 
 import jason.JasonException;
 import jason.architecture.AgArch;
@@ -19,19 +17,30 @@ public interface RuntimeServices {
     /**
      * Creates a new agent with <i>agName</i> from source
      * <i>agSource</i>, using <i>agClass</i> as agent class (default
-     * value is "jason.asSemantics.Agent"), <i>archClass</i> as agent
-     * architecture class (default value is "jason.architecture.AgArch"),
+     * value is "jason.asSemantics.Agent"), <i>archClasses</i> as agent
+     * architecture classes,
      * <i>bbPars</i> as the belief base
      * class (default value is "DefaultBeliefBase"), <i>stts</i> as
      * Settings (default value is new Settings()), and
      * <i>father</i> is the agent creating this agent (null is none).
+     * 
+     * if no archClasses is informed (null value), 
+     *    if fathers is informed
+     *        use father's ag archs
+     *    else
+     *        use default ag archs (see registerDefaultAgArch) 
      *
      * <p> Example: createAgent("bob", "bob.asl", "mypkg.MyAgent", null, null, null);
      *
      * Returns the name of the agent
      */
-    public String createAgent(String agName, String agSource, String agClass, List<String> archClasses, ClassParameters bbPars, Settings stts, Agent father) throws Exception;
+    public String createAgent(String agName, String agSource, String agClass, Collection<String> archClasses, ClassParameters bbPars, Settings stts, Agent father) throws Exception;
 
+    public String getNewAgentName(String baseName);
+
+    /** register a class to be included as new agents archs */
+    default public void registerDefaultAgArch(String agArch) {}
+    
     /** starts an agent (e.g. create thread for it) */
     public void startAgent(String agName);
 
@@ -44,7 +53,7 @@ public interface RuntimeServices {
      * @return the agent arch created
      * @throws JasonException
      */
-    public AgArch clone(Agent source, List<String> archClasses, String agName) throws JasonException;
+    public AgArch clone(Agent source, Collection<String> archClasses, String agName) throws JasonException;
 
     /**
      * Kills the agent named <i>agName</i> as a requested by <i>byAg</i>.
@@ -53,7 +62,7 @@ public interface RuntimeServices {
     public boolean killAgent(String agName, String byAg);
 
     /** Returns a set of all agents' name */
-    public Set<String> getAgentsNames();
+    public Collection<String> getAgentsNames();
 
     /** Gets the number of agents in the MAS. */
     public int getAgentsQty();
