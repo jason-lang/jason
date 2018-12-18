@@ -372,9 +372,9 @@ public class DefaultBeliefBase extends BeliefBase {
 
     @Override
     public Element getAsDOM(Document document) {
-    	if (eDOMbels != null)
-    		return eDOMbels;
-    	
+        if (eDOMbels != null)
+            return eDOMbels;
+        
         int tries = 0;
         List<Literal> allBels;
         while (tries < 10) { // max 10 tries

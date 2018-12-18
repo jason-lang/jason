@@ -53,9 +53,6 @@ public class PlanLibrary implements Iterable<Plan> {
         return lockPL;
     }
 
-    // for cache
-    protected Element eDOMPlans = null;
-
     /**
      *  Add a new plan written as a String. The source
      *  normally is "self" or the agent that sent this plan.
@@ -441,12 +438,15 @@ public class PlanLibrary implements Iterable<Plan> {
         return r.toString()+end.toString();
     }
     
+    // for cache
+    protected Element eDOMPlans = null;
+
     /** get as XML */
     public Element getAsDOM(Document document) {
-    	if (eDOMPlans != null)
-    		return eDOMPlans;
-    	
-    	eDOMPlans = (Element) document.createElement("plans");
+        if (eDOMPlans != null)
+            return eDOMPlans;
+        
+        eDOMPlans = (Element) document.createElement("plans");
         String lastFunctor = null;
         synchronized (lockPL) {
             for (Plan p: plans) {
