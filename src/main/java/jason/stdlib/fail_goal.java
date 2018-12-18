@@ -75,7 +75,7 @@ public class fail_goal extends succeed_goal {
                         gl.goalFailed(im.getTrigger());
 
                 // generate failure event
-                Event failEvent = ts.findEventForFailure(i, g); // find fail event for the goal just dropped
+                Event failEvent = ts.findEventForFailure(i, c.getTrigger()); // find fail event for the goal just dropped
                 if (failEvent != null) {
                 	failEvent = new Event(failEvent.getTrigger().capply(un),failEvent.getIntention());
                     ts.getC().addEvent(failEvent);

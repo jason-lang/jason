@@ -84,6 +84,10 @@ public class succeed_goal extends DefaultInternalAction {
             public boolean test(Trigger t, Unifier u) {
                 return u.unifies(g, t);
             }
+            @Override
+            public Trigger getTrigger() {
+                return g;
+            }
         }, un);
     }
 

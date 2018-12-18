@@ -450,6 +450,9 @@ public class TransitionSystem {
         public boolean test(Trigger t, Unifier u) {
             return false;
         }
+        public Trigger getTrigger() {
+        	return null;
+        }
         public boolean test(IntendedMeans im, Unifier u) {
             if (im.getPlan().hasGoalCondition()) {
                 //System.out.println("test "+im.getPlan().getGoalCondition()+ "="+im.isSatisfied(getAg()));

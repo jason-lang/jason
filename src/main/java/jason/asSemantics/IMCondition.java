@@ -12,4 +12,5 @@ public abstract class IMCondition {
         return test(im.getTrigger(),u);
     }
     public abstract boolean test(Trigger t, Unifier u);
+    public abstract Trigger getTrigger();
 }
