@@ -99,14 +99,14 @@ public class Include extends DefaultDirective implements Directive {
             }
             Agent ag = new Agent();
             ag.initAg();
-            ag.setASLSrc(file);
             as2j sparser = new as2j(in);
+            sparser.setASLSource(file);
             sparser.setNS(ns);
             sparser.agent(ag);
             logger.fine("as2j: AgentSpeak program '"+file+"' parsed successfully!");
             return ag;
         } catch (FileNotFoundException e) {
-            logger.log(Level.SEVERE,"The included file '"+file+"' was not found! (it is being included in the agent '"+outerContent.getASLSrc()+"')");
+            logger.log(Level.SEVERE,"The included file '"+file+"' was not found! (it is being included in the agent '"+outerContent.getTS().getUserAgArch().getAgName()+"')");
         } catch (Exception e) {
             logger.log(Level.SEVERE,"as2j: error parsing \"" + file + "\"", e);
         }
