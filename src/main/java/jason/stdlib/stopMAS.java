@@ -4,7 +4,7 @@ import jason.asSemantics.DefaultInternalAction;
 import jason.asSemantics.TransitionSystem;
 import jason.asSemantics.Unifier;
 import jason.asSyntax.Term;
-import jason.runtime.RuntimeServices;
+import jason.runtime.RuntimeServicesInfraTier;
 
 /**
   <p>Internal action: <b><code>.stopMAS</code></b>.
@@ -20,7 +20,7 @@ import jason.runtime.RuntimeServices;
 
   @see jason.stdlib.create_agent
   @see jason.stdlib.kill_agent
-  @see jason.runtime.RuntimeServices
+  @see jason.runtime.RuntimeServicesInfraTier
  */
 public class stopMAS extends DefaultInternalAction {
 
@@ -40,7 +40,7 @@ public class stopMAS extends DefaultInternalAction {
     public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {
         checkArguments(args);
 
-        RuntimeServices rs = ts.getUserAgArch().getRuntimeServices();
+        RuntimeServicesInfraTier rs = ts.getUserAgArch().getRuntimeServices();
         rs.stopMAS();
         return true;
     }

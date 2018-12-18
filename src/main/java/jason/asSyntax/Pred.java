@@ -406,10 +406,9 @@ public class Pred extends Structure {
     }
 
     @Override
-    public Literal addSource(Term agName) {
+    public void addSource(Term agName) {
         if (agName != null)
             addAnnot(createSource(agName));
-        return this;
     }
 
     @Override

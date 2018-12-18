@@ -10,7 +10,7 @@ import jason.asSemantics.Message;
 import jason.asSemantics.TransitionSystem;
 import jason.asSyntax.Literal;
 import jason.infra.centralised.CentralisedAgArch;
-import jason.runtime.RuntimeServices;
+import jason.runtime.RuntimeServicesInfraTier;
 
 /**
  * Base agent architecture class that defines the overall agent architecture;
@@ -28,7 +28,7 @@ import jason.runtime.RuntimeServices;
  *
  * Users can customise the architecture by overriding some methods of this class.
  */
-public class AgArch implements Comparable<AgArch> {
+public class AgArch implements AgArchInfraTier, Comparable<AgArch> {
 
     private TransitionSystem ts = null;
 
@@ -67,7 +67,7 @@ public class AgArch implements Comparable<AgArch> {
         return successor;
     }
     public List<String> getAgArchClassesChain() {
-        List<String> all = new ArrayList<>();
+        List<String> all = new ArrayList<String>();
         AgArch a = getFirstAgArch();
         while (a != null) {
             all.add(0,a.getClass().getName());
@@ -91,7 +91,7 @@ public class AgArch implements Comparable<AgArch> {
             successor.setFirstAgArch(arch);
     }
 
-    public void createCustomArchs(Collection<String> archs) throws Exception {
+    public void createCustomArchs(List<String> archs) throws Exception {
         if (archs == null)
             return;
         for (String agArchClass: archs) {
@@ -121,6 +121,15 @@ public class AgArch implements Comparable<AgArch> {
         //    q.setNbReasoningCycles(getCycleNumber());
         if (successor != null)
             successor.reasoningCycleStarting();
+    }
+
+
+    /** returns the last arch in the chain, which is supposed to be the infra tier */
+    public AgArchInfraTier getArchInfraTier() {
+        if (this.successor == null)
+            return this;
+        else
+            return successor.getArchInfraTier();
     }
 
 
@@ -204,7 +213,7 @@ public class AgArch implements Comparable<AgArch> {
     }
 
 
-    public RuntimeServices getRuntimeServices() {
+    public RuntimeServicesInfraTier getRuntimeServices() {
         if (successor == null)
             return null;
         else

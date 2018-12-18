@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Scanner;
 
 /**
  * class used to create an initial jason project:
@@ -20,7 +19,6 @@ public class CreateNewProject {
     File main, path;
     String id;
     static Config c = Config.get();
-    boolean consoleApp = false;
 
     public CreateNewProject(File m) {
         main = m;
@@ -33,35 +31,14 @@ public class CreateNewProject {
 
 
     public static void main(String[] args) throws Exception {
-        boolean consoleApp = false;
-        for (int i=0; i<args.length; i++)
-            if ("--console".equals(args[i])) 
-                consoleApp = true;
-
-        String pId = null;
-        if (args.length == 0 || (args.length == 1 && consoleApp)) {
+        if (args.length == 0) {
             System.out.println(Config.get().getPresentation()+"\n");
-            System.out.print("\n\nEnter the identification of the new application: ");
-            pId = new Scanner(System.in).nextLine();
-            if (pId.length() == 0) {
-                System.out.println("      you should enter a project id!");
-                return;
-            }
-
-            //System.out.println("usage must be:");
-            //System.out.println("      java "+CreateNewProject.class.getName()+" <id of new application>");
-            //return;
-        } else {
-            pId = args[0];
+            System.out.println("usage must be:");
+            System.out.println("      java "+CreateNewProject.class.getName()+" <id of new application>");
+            return;
         }
 
-        if (Config.get().getJasonHome().isEmpty()) {
-            Config.get().setShowFixMsgs(false);
-            Config.get().fix();
-        }
-
-        CreateNewProject p = new CreateNewProject(new File(pId));
-        p.consoleApp = consoleApp;
+        CreateNewProject p = new CreateNewProject(new File(args[0]));
         p.createDirs();
         p.copyFiles();
         p.usage();
@@ -70,12 +47,6 @@ public class CreateNewProject {
     void usage() {
         System.out.println("\n\nYou can run your application with:");
         System.out.println("   $ jason "+path+"/"+id+".mas2j");
-        System.out.println("or");
-        System.out.println("   $ cd "+path);
-        System.out.println("   $ gradle -q --console=plain\n");
-        System.out.println("an eclipse project can be created with");
-        System.out.println("   $ gradle eclipse");
-        System.out.println("or 'Gradle Import Project' from Eclipse menu File/Import\n");
     }
 
     void createDirs() {
@@ -84,14 +55,13 @@ public class CreateNewProject {
             path.mkdirs();
         }
 
-        //new File(path + "/lib").mkdirs();
+        new File(path + "/lib").mkdirs();
     }
 
     void copyFiles() {
         copyFile("project", new File( path+"/"+id+".mas2j"));
         copyFile("agent", new File( path + "/sample_agent.asl"));
         copyFile("logging.properties", new File( path + "/logging.properties"));
-        copyFile("build.gradle", new File( path + "/build.gradle"));
     }
 
     void copyFile(String source, File target) {
@@ -105,16 +75,13 @@ public class CreateNewProject {
                 l = l.replace("<INFRA>", "Centralised");
                 l = l.replace("<VERSION>", c.getJasonVersion());
                 l = l.replace("<DATE>", new SimpleDateFormat("MMMM dd, yyyy - HH:mm:ss").format(new Date()));
-                l = l.replace("<PROJECT-RUNNER-CLASS>", jason.infra.centralised.RunCentralisedMAS.class.getName());
-                l = l.replace("<PROJECT-FILE>", id+".mas2j");
 
                 l = l.replace("agents:", "agents: sample_agent;");
                 l = l.replace("<AG_NAME>", "sample_agent");
 
-                if (consoleApp) {
-                    l = l.replace("handlers = jason.runtime.MASConsoleLogHandler", "#handlers = jason.runtime.MASConsoleLogHandler");
-                    l = l.replace("#handlers= java.util.logging.ConsoleHandler", "handlers= java.util.logging.ConsoleHandler");
-                }
+                l = l.replace("handlers = jason.runtime.MASConsoleLogHandler", "#handlers = jason.runtime.MASConsoleLogHandler");
+                l = l.replace("#handlers= java.util.logging.ConsoleHandler", "handlers= java.util.logging.ConsoleHandler");
+
                 out.append(l+"\n");
                 l = in.readLine();
             }

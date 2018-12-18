@@ -32,7 +32,7 @@ import jason.asSyntax.StringTerm;
   @see jason.stdlib.create_agent
   @see jason.stdlib.save_agent
   @see jason.stdlib.stopMAS
-  @see jason.runtime.RuntimeServices
+  @see jason.runtime.RuntimeServicesInfraTier
 
 */
 public class kill_agent extends DefaultInternalAction {

@@ -2,7 +2,6 @@ package jason.asSyntax;
 
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -26,18 +25,18 @@ import jason.util.Config;
 public class PlanLibrary implements Iterable<Plan> {
 
     /** a MAP from TE to a list of relevant plans */
-    private Map<PredicateIndicator,List<Plan>> relPlans = new ConcurrentHashMap<>();
+    private Map<PredicateIndicator,List<Plan>> relPlans = new ConcurrentHashMap<PredicateIndicator,List<Plan>>();
 
     /**
      * All plans as defined in the AS code (maintains the order of the plans)
      */
-    private List<Plan> plans = new ArrayList<>();
+    private List<Plan> plans = new ArrayList<Plan>();
 
     /** list of plans that have var as TE */
-    private List<Plan> varPlans = new ArrayList<>();
+    private List<Plan> varPlans = new ArrayList<Plan>();
 
     /** A map from labels to plans */
-    private Map<String,Plan> planLabels = new ConcurrentHashMap<>();
+    private Map<String,Plan> planLabels = new ConcurrentHashMap<String,Plan>();
 
     private boolean hasMetaEventPlans = false;
 
@@ -49,12 +48,35 @@ public class PlanLibrary implements Iterable<Plan> {
 
     private final Object lockPL = new Object();
 
+    private PlanLibrary father = null;
+    
+    private boolean hasPlansForExternalEvents = false;
+    
+    public PlanLibrary() {
+    }
+    
+    public PlanLibrary(PlanLibrary father) {
+        this.father = father;
+    }
+
+    public boolean isRoot() {
+        return father == null;
+    }
+    public PlanLibrary getFather() {
+        return father;
+    }
+    
+    public void setFather(PlanLibrary pl) {
+        father = pl;
+    }
+    
+    public boolean hasPlansForExternalEvents() {
+        return hasPlansForExternalEvents;
+    }
+    
     public Object getLock() {
         return lockPL;
     }
-
-    // for cache
-    protected Element eDOMPlans = null;
 
     /**
      *  Add a new plan written as a String. The source
@@ -143,8 +165,8 @@ public class PlanLibrary implements Iterable<Plan> {
      * @throws JasonException
      */
     public void add(Plan p, boolean before) throws JasonException {
+        p.setScope(this);
         synchronized (lockPL) {
-
             // test p.label
             if (p.getLabel() != null && planLabels.keySet().contains( getStringForLabel(p.getLabel()))) {
                 // test if the new plan is equal, in this case, just add a source
@@ -189,9 +211,12 @@ public class PlanLibrary implements Iterable<Plan> {
                         else
                             lp.add(p);
             } else {
+                if (pte.isAddition() && !pte.isGoal())
+                    hasPlansForExternalEvents = true;
+                
                 List<Plan> codesList = relPlans.get(pte.getPredicateIndicator());
                 if (codesList == null) {
-                    codesList = new ArrayList<>();
+                    codesList = new ArrayList<Plan>();
                     // copy plans from var plans
                     for (Plan vp: varPlans)
                         if (vp.getTrigger().sameType(pte))
@@ -212,7 +237,6 @@ public class PlanLibrary implements Iterable<Plan> {
             else
                 plans.add(p);
         }
-        eDOMPlans = null;
     }
 
     public void addAll(PlanLibrary pl) throws JasonException {
@@ -231,16 +255,11 @@ public class PlanLibrary implements Iterable<Plan> {
         }
     }
 
-    private String getStringForLabel(Literal p) {
-        // use functor + terms
-        StringBuilder l = new StringBuilder();
-        if (p.getNS() != Literal.DefaultNS)
-            l.append(p.getNS()+"::");
-        l.append(p.getFunctor());
-        if (p.hasTerm())
-            for (Term t: p.getTerms())
-                l.append(t.toString());
-        return l.toString();
+    private String getStringForLabel(Atom p) {
+        if (p.getNS() == Literal.DefaultNS)
+            return p.getFunctor();
+        else
+            return p.getNS()+"::"+p.getFunctor();
     }
 
     public boolean hasMetaEventPlans() {
@@ -265,7 +284,7 @@ public class PlanLibrary implements Iterable<Plan> {
         return get(new Atom(label));
     }
     /** return a plan for a label */
-    public Plan get(Literal label) {
+    public Plan get(Atom label) {
         return planLabels.get(getStringForLabel(label));
     }
 
@@ -287,14 +306,13 @@ public class PlanLibrary implements Iterable<Plan> {
         plans.clear();
         varPlans.clear();
         relPlans.clear();
-        eDOMPlans = null;
     }
 
     /**
      * Remove a plan represented by the label <i>pLabel</i>.
      * In case the plan has many sources, only the plan's source is removed.
      */
-    public boolean remove(Literal pLabel, Term source) {
+    public boolean remove(Atom pLabel, Term source) {
         // find the plan
         Plan p = get(pLabel);
         if (p != null) {
@@ -310,7 +328,7 @@ public class PlanLibrary implements Iterable<Plan> {
     }
 
     /** remove the plan with label <i>pLabel</i> */
-    public Plan remove(Literal pLabel) {
+    public Plan remove(Atom pLabel) {
         synchronized (lockPL) {
             Plan p = planLabels.remove( getStringForLabel(pLabel) );
 
@@ -338,7 +356,6 @@ public class PlanLibrary implements Iterable<Plan> {
                     relPlans.remove(p.getTrigger().getPredicateIndicator());
                 }
             }
-            eDOMPlans = null;
             return p;
         }
     }
@@ -368,7 +385,7 @@ public class PlanLibrary implements Iterable<Plan> {
                 for (Plan p: this)
                     if (p.getTrigger().sameType(te)) {
                         if (l == null)
-                            l = new ArrayList<>();
+                            l = new ArrayList<Plan>();
                         l.add(p);
                     }
             } else {
@@ -377,9 +394,18 @@ public class PlanLibrary implements Iterable<Plan> {
                     for (Plan p: varPlans)
                         if (p.getTrigger().sameType(te)) {
                             if (l == null)
-                                l = new ArrayList<>();
+                                l = new ArrayList<Plan>();
                             l.add(p);
                         }
+                }
+            }
+            
+            if (father != null) {
+                List<Plan> lf = father.getCandidatePlans(te);
+                if (lf != null && !lf.isEmpty()) {
+                    if (l == null)
+                        l = new ArrayList<Plan>();
+                    l.addAll(lf);
                 }
             }
             return l; // if no rel plan, have to return null instead of empty list
@@ -407,57 +433,20 @@ public class PlanLibrary implements Iterable<Plan> {
         return plans.toString();
     }
 
-    /** get as txt */
-    public String getAsTxt(boolean includeKQMLPlans) {
-        Map<String, StringBuilder> splans = new HashMap<>();
-        StringBuilder r;
-        for (Plan p: plans) {
-            r = splans.get(p.getFile());
-            if (r == null) {
-                r = new StringBuilder();
-                if (p.getFile().isEmpty()) {
-                    r.append("\n\n// plans without file\n\n");
-                } else {
-                    r.append("\n\n// plans from "+p.getFile()+"\n\n");
-                }
-                splans.put(p.getFile(), r);
-            }
-            r.append(p.toString()+"\n");            
-        }
-        
-        r = new StringBuilder();
-        StringBuilder end = new StringBuilder("\n");
-        for (String f: splans.keySet()) {
-            if (f.contains("kqmlPlans"))
-                if (includeKQMLPlans)
-                    end.append(splans.get(f));
-                else
-                    continue;
-            if (f.isEmpty())
-                end.append(splans.get(f));
-            else
-                r.append(splans.get(f));
-        }
-        return r.toString()+end.toString();
-    }
-    
     /** get as XML */
     public Element getAsDOM(Document document) {
-    	if (eDOMPlans != null)
-    		return eDOMPlans;
-    	
-    	eDOMPlans = (Element) document.createElement("plans");
+        Element eplans = (Element) document.createElement("plans");
         String lastFunctor = null;
         synchronized (lockPL) {
             for (Plan p: plans) {
                 String currentFunctor = p.getTrigger().getLiteral().getFunctor();
                 if (lastFunctor != null && !currentFunctor.equals(lastFunctor)) {
-                    eDOMPlans.appendChild((Element) document.createElement("new-set-of-plans"));
+                    eplans.appendChild((Element) document.createElement("new-set-of-plans"));
                 }
                 lastFunctor = currentFunctor;
-                eDOMPlans.appendChild(p.getAsDOM(document));
+                eplans.appendChild(p.getAsDOM(document));
             }
         }
-        return eDOMPlans;
+        return eplans;
     }
 }

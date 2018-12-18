@@ -30,7 +30,7 @@ import java.util.Map;
  */
 public class IndexedBB extends ChainBBAdapter {
 
-    Map<String,Structure> indexedBels = new HashMap<>();
+    Map<String,Structure> indexedBels = new HashMap<String,Structure>();
     Unifier               u = new Unifier();
 
     public IndexedBB() {  }
@@ -94,7 +94,7 @@ public class IndexedBB extends ChainBBAdapter {
     @Override
     public BeliefBase clone() {
         IndexedBB nbb = new IndexedBB(nextBB.clone());
-        nbb.indexedBels = new HashMap<>(this.indexedBels);
+        nbb.indexedBels = new HashMap<String,Structure>(this.indexedBels);
         return nbb;
     }
 

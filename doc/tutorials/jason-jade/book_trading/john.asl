@@ -17,7 +17,8 @@ book("Jason", 75, 10).
 
 /* Plans */
 
-+!registerDF <- .df_register("JADE-book-trading", "book-selling"). // name, type 
++!registerDF <- jadedf.register("book-selling","JADE-book-trading").
+
 
 /* handle CFP performatives */
 
@@ -39,3 +40,4 @@ book("Jason", 75, 10).
 
 +!kqml_received(Sender, accept_proposal, Content, MsgId)
   <- .send(Sender, failure, "not-available", MsgId).
+

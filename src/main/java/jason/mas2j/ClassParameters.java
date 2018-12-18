@@ -1,12 +1,12 @@
 package jason.mas2j;
 
+import jason.asSyntax.Structure;
+import jason.asSyntax.Term;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-
-import jason.asSyntax.Structure;
-import jason.asSyntax.Term;
 
 /**
  * Used to store class parameters in .mas2j file, e.g.
@@ -19,7 +19,7 @@ import jason.asSyntax.Term;
  */
 public class ClassParameters {
     private String className;
-    private List<String> parameters = new ArrayList<>();
+    private List<String> parameters = new ArrayList<String>();
     private String host;
 
     public ClassParameters() {}
@@ -37,7 +37,7 @@ public class ClassParameters {
 
     public ClassParameters copy() {
         ClassParameters newcp = new ClassParameters(this.className);
-        newcp.parameters = new ArrayList<>(this.parameters);
+        newcp.parameters = new ArrayList<String>(this.parameters);
         newcp.host = this.host;
         return newcp;
     }
@@ -155,20 +155,5 @@ public class ClassParameters {
         } else {
             return s;
         }
-    }
-
-    @Override
-    public int hashCode() {
-    	return className.hashCode();
-    }
-    
-    @Override
-    public boolean equals(Object obj) {
-    	if (obj == null) return false;
-    	if (obj == this) return true;
-    	if (! (obj instanceof ClassParameters)) return false;
-    	ClassParameters o = (ClassParameters)obj;
-    	if (!this.className.equals(o.className)) return false;
-    	return true;
     }
 }

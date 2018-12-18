@@ -16,43 +16,47 @@ apply plugin: 'maven'
 apply plugin: 'maven-publish'
 apply plugin: 'signing'
 
-version '2.4-SNAPSHOT'
+version '2.3-SNAPSHOT'
 group   'org.jason-lang'
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
 
 
 repositories {
     mavenCentral()
 
-    maven { url "http://jacamo.sourceforge.net/maven2"  }
-    //maven { url "http://jade.tilab.com/maven"  //}
+    maven {
+        url "http://jacamo.sourceforge.net/maven2"
+    }
+    //maven {
+    //    url "http://jade.tilab.com/maven"
+    //}
     flatDir {
 	   dirs 'jedit', 'demos/persistent-belief-base/lib'
     }
 }
 
-/*configurations {
+configurations {
     umljavadoc  // see http://www.umlgraph.org/doc/indexw.html
-}*/
+}
 
 
 dependencies {
 	compile group: 'net.sf.ingenias', name: 'jade', version: '4.3'
     //compile group: 'com.tilab.jade', name: 'jade', version: '4.4.0'
-    compile group: 'org.jacamo',     name: 'cartago', version: '2.3'
-    compile group: 'org.jacamo',     name: 'jaca',    version: '2.3'
+    compile group: 'org.jacamo',     name: 'cartago', version: '2.3-SNAPSHOT'
+    compile group: 'org.jacamo',     name: 'jaca',    version: '2.3-SNAPSHOT'
 
     // from jEdit
     compile fileTree(dir: 'jedit', include: '*.jar') // using fileTree, jedit jars are not included as a dependency in the pom file
 
-    runtime group: 'org.apache.ant',  name: 'ant',  version: '1.10.+'
+    runtime group: 'org.apache.ant',  name: 'ant',  version: '1.9.7'
 
     testCompile group: 'junit', name: 'junit', version: '4.12'
     testCompile name: 'hsqldb'
 
-    //umljavadoc 'org.umlgraph:umlgraph:5.6'
+    umljavadoc 'org.umlgraph:umlgraph:5.6'
 }
 
 // copy dep jars and scritps into build directory
@@ -124,8 +128,6 @@ clean {
     delete 'bin'
     delete 'doc/api'
     delete 'doc/faq.html'
-    delete 'doc/index.html'
-    delete 'doc/readme.html'
     delete 'readme.html'
     delete 'release-notes.html'
 
@@ -169,7 +171,7 @@ clean {
 
 task config (type: JavaExec, dependsOn: ['jar', 'plugin']) {
     main = 'jason.util.Config'
-    classpath project.buildDir.absolutePath + '/libs/jason-' +project.version+'.jar'
+    classpath sourceSets.main.runtimeClasspath
     workingDir project.buildDir.absolutePath + '/libs'
 
     doFirst {
@@ -217,33 +219,6 @@ eclipse {
     }
 }
 
-javadoc {
-    options.showAll()
-    options.encoding('UTF-8')
-    options.setUse(true)
-    options.author(true)
-    options.version(true)
-    options.windowTitle('Jason API')
-    options.docTitle('Jason API')
-    options.footer('<a href=http://jason.sf.net>Jason Site</a>')
-    destinationDir = file("${buildDir}/../doc/api")
-    doFirst {
-        javadoc.title = 'Jason API'
-        javadoc.options.docTitle = javadoc.title
-    }
-}
-
-// the following lines is used to avoid errors while generating javadoc
-if (JavaVersion.current().isJava8Compatible()) {
-    allprojects {
-      tasks.withType(Javadoc) {
-        options.addStringOption('Xdoclint:none', '-quiet')
-      }
-    }
-}
-
-
-/*
 task javadoc(overwrite: true, dependsOn: compileJava) {
     setDescription('Generates Javadoc API documentation with UMLGraph diagrams')
     setGroup(JavaBasePlugin.DOCUMENTATION_GROUP)
@@ -253,7 +228,7 @@ task javadoc(overwrite: true, dependsOn: compileJava) {
                     sourcepath: file('src/main/java'),
                     packagenames: '*',
                     destdir: "${docsDir}/../../doc/api",
-                    private: 'true' ,
+                    private: 'true',
                     docletpath: configurations.umljavadoc.asPath) {
             doclet(name: 'org.umlgraph.doclet.UmlGraphDoc') {
                 //param(name: '-inferrel')
@@ -271,7 +246,19 @@ task javadoc(overwrite: true, dependsOn: compileJava) {
         }
     }
 }
-*/
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from components.java
+			artifact sourceJar
+			artifact javadocJar
+            artifactId 'jason'
+        }
+    }
+}
+
+// from http://central.sonatype.org/pages/gradle.html
 
 task javadocJar (type: Jar, dependsOn: javadoc) {
     baseName 'jason'
@@ -285,33 +272,7 @@ task sourceJar (type : Jar) {
     from sourceSets.main.allSource
 }
 
-artifacts {
-    archives sourceJar, javadocJar
-}
-
-
-publishing {
-    publications {
-        maven(MavenPublication) {
-            from components.java
-			      artifact sourceJar
-			      artifact javadocJar
-            artifactId 'jason'
-        }
-    }
-}
-
-// from http://central.sonatype.org/pages/gradle.html
-
 // see http://central.sonatype.org/pages/releasing-the-deployment.html
-// comment cartago and jaca dependencies
-// check gradle.properties for
-//    signing.keyId=
-//    signing.password=
-//    signing.secretKeyRingFile=
-//    ossrhUsername=
-//    ossrhPassword=
-//
 // run gradle uploadArchives
 // login https://oss.sonatype.org/
 // select Staging Repositories
@@ -320,6 +281,10 @@ publishing {
 // uncomment to produce maven jar
 
 /*
+artifacts {
+    archives sourceJar, javadocJar
+}
+
 signing {
     sign configurations.archives
 }
@@ -395,15 +360,9 @@ jjdoc {
 task plugin(type: Jar, dependsOn: 'jar') {
     archiveName 'jason-jedit-plugin.jar'
     destinationDir file('build/jedit/jars')
-    from 'build/classes/java/main'
+    from 'build/classes/main'
     from 'build/resources/main'
     from 'build/resources/main/jeditPlugin'
-    manifest {
-        attributes 'Main-Class': 'jason.util.ConfigGUI',
-                   'Specification-Title': 'Jason Language',
-                   'Specification-Version': project.version,
-                   'Implementation-Version': new Date().toString()
-    }
 
     from ( configurations.compile.collect { zipTree(it) } ) {
         include 'jade/**/*.class'

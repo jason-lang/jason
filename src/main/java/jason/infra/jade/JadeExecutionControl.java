@@ -7,7 +7,7 @@ import jade.lang.acl.ACLMessage;
 import jason.control.ExecutionControl;
 import jason.control.ExecutionControlInfraTier;
 import jason.mas2j.ClassParameters;
-import jason.runtime.RuntimeServices;
+import jason.runtime.RuntimeServicesInfraTier;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -199,7 +199,7 @@ public class JadeExecutionControl extends JadeAg implements ExecutionControlInfr
         return state;
     }
 
-    public RuntimeServices getRuntimeServices() {
+    public RuntimeServicesInfraTier getRuntimeServices() {
         return new JadeRuntimeServices(getContainerController(), this);
     }
 }

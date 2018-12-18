@@ -7,7 +7,7 @@ import jason.asSyntax.Atom;
 import jason.asSyntax.ListTerm;
 import jason.asSyntax.ListTermImpl;
 import jason.asSyntax.Term;
-import jason.runtime.RuntimeServices;
+import jason.runtime.RuntimeServicesInfraTier;
 
 /**
   <p>Internal action: <b><code>.all_names</code></b>.
@@ -27,7 +27,7 @@ import jason.runtime.RuntimeServices;
   </ul>
 
   @see jason.stdlib.my_name
-  @see jason.runtime.RuntimeServices
+  @see jason.runtime.RuntimeServicesInfraTier
 */
 public class all_names extends DefaultInternalAction {
 
@@ -41,7 +41,7 @@ public class all_names extends DefaultInternalAction {
     @Override
     public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {
         checkArguments(args);
-        RuntimeServices rs = ts.getUserAgArch().getRuntimeServices();
+        RuntimeServicesInfraTier rs = ts.getUserAgArch().getRuntimeServices();
         ListTerm ln = new ListTermImpl();
         ListTerm tail = ln;
         for (String a: rs.getAgentsNames()) {

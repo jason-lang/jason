@@ -80,7 +80,7 @@ public class ChainBB extends ChainBBAdapter {
 
     @SuppressWarnings("rawtypes")
     public List<Class> getChainClasses() {
-        List<Class> r = new ArrayList<>();
+        List<Class> r = new ArrayList<Class>();
         ChainBBAdapter c = getNextAdapter();
         while (c != null) {
             r.add(c.getClass());

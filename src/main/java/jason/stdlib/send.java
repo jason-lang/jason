@@ -202,9 +202,7 @@ public class send extends DefaultInternalAction {
         String rec = null;
         if (to.isString())
             rec = ((StringTerm)to).getString();
-        else if (to.isAtom())
-        	rec = ((Atom)to).getFunctor(); // remove annotations 
-    	else
+        else
             rec = to.toString();
         if (rec.equals("self"))
             rec = ts.getUserAgArch().getAgName();

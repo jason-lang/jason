@@ -13,7 +13,7 @@ ifdef::env-github[:outfilesuffix: .adoc]
 
 Jason is an interpreter for an extended version of AgentSpeak. It implements the operational semantics of that language, and provides a platform for the development of multi-agent systems, with many user-customisable features. Jason is available as Open Source, and is distributed under GNU LGPL.
 
-Jason is developed by http://jomi.das.ufsc.br[Jomi F. Hübner] and http://www.inf.pucrs.br/r.bordini[Rafael H. Bordini], based on previous work done with many colleagues, in particular Michael Fisher, Joyce Martins, Álvaro Moreira, Renata Vieira, Willem Visser, Mike Wooldridge, but also many others, as acknowledged in the manual (see the http://jason.sourceforge.net/wp/documents/[documents] page).
+Jason is developed by http://http://jomi.das.ufsc.br[Jomi F. Hübner] and http://www.inf.pucrs.br/r.bordini[Rafael H. Bordini], based on previous work done with many colleagues, in particular Michael Fisher, Joyce Martins, Álvaro Moreira, Renata Vieira, Willem Visser, Mike Wooldridge, but also many others, as acknowledged in the manual (see the http://jason.sourceforge.net/wp/documents/[documents] page).
 
 == Documentation
 

@@ -6,7 +6,6 @@ import jason.asSemantics.Unifier;
 import jason.asSyntax.Plan;
 import jason.asSyntax.Term;
 import jason.asSyntax.Trigger;
-import jason.asSyntax.UnnamedVar;
 
 /**
 <p>Internal action: <b><code>.list_plans</code></b>.
@@ -26,21 +25,16 @@ import jason.asSyntax.UnnamedVar;
 public class list_plans extends DefaultInternalAction {
 
     @Override public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {
-        if (args.length == 1 && args[0] instanceof Trigger) {
-            Trigger te = Trigger.tryToGetTrigger(args[0]);
-            if (!te.getLiteral().hasSource()) {
-                te.getLiteral().addSource(new UnnamedVar());
-            }
+        Trigger te = null;
+        if (args.length == 1 && args[0] instanceof Trigger)
+            te = Trigger.tryToGetTrigger(args[0]);
 
-            for (Plan p: ts.getAg().getPL()) {
-                //if (!p.getLabel().toString().startsWith("kqml")) { // do not list kqml plans
-                    if (te == null || new Unifier().unifies(p.getTrigger(), te)) {
-                        ts.getLogger().info(p.toString());
-                    }
-                //}
-            }
-        } else {
-            ts.getLogger().info(ts.getAg().getPL().getAsTxt(false));
+        for (Plan p: ts.getAg().getPL()) {
+            //if (!p.getLabel().toString().startsWith("kqml")) { // do not list kqml plans
+                if (te == null || new Unifier().unifies(p.getTrigger(), te)) {
+                    ts.getLogger().info(p.toString());
+                }
+            //}
         }
         return true;
     }

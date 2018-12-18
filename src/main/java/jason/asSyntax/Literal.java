@@ -1,17 +1,17 @@
 package jason.asSyntax;
 
+import jason.JasonException;
+import jason.architecture.AgArch;
+import jason.asSemantics.Agent;
+import jason.asSemantics.Unifier;
+import jason.asSyntax.parser.as2j;
+
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import jason.JasonException;
-import jason.architecture.AgArch;
-import jason.asSemantics.Agent;
-import jason.asSemantics.Unifier;
-import jason.asSyntax.parser.as2j;
 
 /**
  This class represents an abstract literal (an Atom, Structure, Predicate, etc), it is mainly
@@ -111,7 +111,7 @@ public abstract class Literal extends DefaultTerm implements LogicalFormula {
             return Structure.emptyTermArray;
     }
 
-    private static final List<VarTerm> emptyListVar = new ArrayList<>();
+    private static final List<VarTerm> emptyListVar = new ArrayList<VarTerm>();
     /** returns all singleton vars (that appears once) in this literal */
     public List<VarTerm> getSingletonVars() {
         return emptyListVar;
@@ -310,9 +310,8 @@ public abstract class Literal extends DefaultTerm implements LogicalFormula {
     }
 
     /** adds the annotation source(<i>agName</i>) */
-    public Literal addSource(Term agName)       {
-        logger.log(Level.SEVERE, "("+this+") addSource is not implemented in the class "+this.getClass().getSimpleName(), new Exception());
-        return null;
+    public void addSource(Term agName)       {
+        logger.log(Level.SEVERE, "addSource is not implemented in the class "+this.getClass().getSimpleName(), new Exception());
     }
     /** deletes one source(<i>agName</i>) annotation, return true if deleted */
     public boolean delSource(Term agName)    {

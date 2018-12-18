@@ -2,15 +2,18 @@
 // a random value between 100 and 110.
 price(_Service,X) :- .random(R) & X = (10*R)+100.
 
-!register.
+plays(initiator,c).
 
-+!register <- .df_register("participant");
-              .df_subscribe("initiator").
+/* Plans */
+
+// send a message to the initiator introducing myself as a participant
++plays(initiator,In)
+   :  .my_name(Me)
+   <- .send(In,tell,introduction(participant,Me)).
 
 // answer to Call For Proposal
 @c1 +cfp(CNPId,Task)[source(A)]
-   :  provider(A,"initiator") & 
-      price(Task,Offer)
+   :  plays(initiator,A) & price(Task,Offer)
    <- +proposal(CNPId,Task,Offer); // remember my proposal
       .send(A,tell,propose(CNPId,Offer)).
 

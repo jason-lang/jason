@@ -59,7 +59,7 @@ public class MindInspectorAgArch extends AgArch {
     protected        String         mindInspectorDirectory;
 
     // Which item is to be shown in HTML interface
-    Map<String,Boolean> show = new HashMap<>();
+    Map<String,Boolean> show = new HashMap<String,Boolean>();
 
     // what is currently shown
     Document agState = null;
@@ -176,7 +176,7 @@ public class MindInspectorAgArch extends AgArch {
         if (! hasHistory) {
             mindInspectorTab.add(getAgName(), new JScrollPane(mindInspectorPanel));
         } else {
-            mindInspectorHistory = new ArrayList<>();
+            mindInspectorHistory = new ArrayList<Document>();
             JPanel pHistory = new JPanel(new BorderLayout());//new FlowLayout(FlowLayout.CENTER));
             pHistory.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Agent History", TitledBorder.LEFT, TitledBorder.TOP));
             mindInspectorHistorySlider = new JSlider();
@@ -211,7 +211,7 @@ public class MindInspectorAgArch extends AgArch {
         }
 
         if (format.equals("text/html")) {
-            mindInspectorTransformer = new asl2html("/xml/agInspection-nd.xsl");
+            mindInspectorTransformer = new asl2html("/xml/agInspection.xsl");
         }
     }
 
@@ -239,7 +239,7 @@ public class MindInspectorAgArch extends AgArch {
         if (size < 0)
             return;
 
-        Hashtable<Integer,Component> labelTable = new Hashtable<>();
+        Hashtable<Integer,Component> labelTable = new Hashtable<Integer,Component>();
         labelTable.put( 0, new JLabel("mind 0") );
         labelTable.put( size, new JLabel("mind "+size) );
         mindInspectorHistorySlider.setLabelTable( labelTable );

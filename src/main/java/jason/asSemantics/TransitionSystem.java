@@ -47,6 +47,7 @@ import jason.runtime.Settings;
 import jason.stdlib.add_nested_source;
 import jason.stdlib.desire;
 import jason.stdlib.fail_goal;
+import jason.stdlib.succeed_goal;
 import jason.util.Config;
 
 
@@ -73,11 +74,6 @@ public class TransitionSystem {
 
     private List<GoalListener>  goalListeners = null;
 
-    // both configuration and configuration' point to this
-    // object, this is just to make it look more like the SOS
-    private TransitionSystem      confP;
-    private TransitionSystem      conf;
-
     private Queue<Runnable> taskForBeginOfCycle = new ConcurrentLinkedQueue<Runnable>();
 
     public TransitionSystem(Agent a, Circumstance c, Settings s, AgArch ar) {
@@ -94,9 +90,6 @@ public class TransitionSystem {
         else
             C = c;
         C.setTS(this);
-
-        // we need to initialise this "aliases"
-        conf = confP = this;
 
         nrcslbr = setts.nrcbp(); // to do BR to start with
 
@@ -190,7 +183,7 @@ public class TransitionSystem {
     /* SEMANTIC RULES */
     /** ******************************************************************* */
 
-    private void applySemanticRuleSense() throws JasonException {
+    private void applySemanticRuleSense() throws Exception {
         switch (stepSense) {
         case StartRC:
             applyProcMsg();
@@ -236,9 +229,9 @@ public class TransitionSystem {
         case ExecInt:
             applyExecInt();
             break;
-        case ClrInt:
-            confP.stepAct = State.StartRC;
-            applyClrInt(conf.C.SI);
+        case ClrInt:        
+            stepAct = State.StartRC;        
+            applyClrInt(C.SI);      
             break;
         default:
             break;
@@ -262,8 +255,8 @@ public class TransitionSystem {
         case ProcAct:   applyProcAct(); break;
         case SelInt:    applySelInt(); break;
         case ExecInt:   applyExecInt(); break;
-        case ClrInt:    confP.step = State.StartRC;
-                        applyClrInt(conf.C.SI);
+        case ClrInt:    step = State.StartRC;
+                        applyClrInt(C.SI);
                         break;
         }
     }
@@ -274,9 +267,9 @@ public class TransitionSystem {
     private final String kqmlReceivedFunctor = Config.get().getKqmlFunctor();
 
     private void applyProcMsg() throws JasonException {
-        confP.stepSense = State.SelEv;
-        if (conf.C.hasMsg()) {
-            Message m = conf.ag.selectMessage(conf.C.getMailBox());
+        stepSense = State.SelEv;
+        if (C.hasMsg()) {
+            Message m = ag.selectMessage(C.getMailBox());
             if (m == null) return;
 
             // get the content, it can be any term (literal, list, number, ...; see ask)
@@ -341,7 +334,7 @@ public class TransitionSystem {
                 }
 
                 // the message is not an ask answer
-            } else if (conf.ag.socAcc(m)) {
+            } else if (ag.socAcc(m)) {
 
                 if (! m.isReplyToSyncAsk()) { // ignore answer after the timeout
                     // generate an event
@@ -390,71 +383,129 @@ public class TransitionSystem {
     }
 
     private void applySelEv() throws JasonException {
-
         // Rule for atomic, if there is an atomic intention, do not select event
         if (C.hasAtomicIntention()) {
-            confP.stepDeliberate = State.ProcAct; // need to go to ProcAct to see if an atomic intention received a feedback action
+            stepDeliberate = State.ProcAct; // need to go to ProcAct to see if an atomic intention received a feedback action
             return;
         }
 
         // Rule for atomic, events from atomic intention have priority
-        confP.C.SE = C.removeAtomicEvent();
-        if (confP.C.SE != null) {
-            confP.stepDeliberate = State.RelPl;
+        C.SE = C.removeAtomicEvent();
+        if (C.SE != null) {
+            stepDeliberate = State.RelPl;
             return;
         }
 
-        if (conf.C.hasEvent()) {
+        if (C.hasEvent()) {
             // Rule SelEv1
-            confP.C.SE = conf.ag.selectEvent(confP.C.getEvents());
+            C.SE = ag.selectEvent(C.getEvents());
             if (logger.isLoggable(Level.FINE))
-                logger.fine("Selected event "+confP.C.SE);
-            if (confP.C.SE != null) {
+                logger.fine("Selected event "+C.SE);
+            if (C.SE != null) {
+                
+                // external events are copied for all intentions (new JasonER)
+                if (C.SE.isExternal() && !C.SE.getTrigger().isGoal() && C.SE.getTrigger().isAddition()) {
+                    Iterator<Intention> ii = C.getIntentions().iterator();
+                    while (ii.hasNext()) {
+                        Intention i = ii.next();
+                        // if i has sub plans (so potentially interested in external events)
+                        if (i.hasIntestedInExternalEvents()) {
+                            // but, do not consider plans at root level
+                            List<Plan> relPlans = null;
+                            if (i.peek().getPlan().hasSubPlans())
+                                relPlans = i.peek().getPlan().getSubPlans().getCandidatePlans(C.SE.getTrigger());
+                            if (relPlans != null) {
+                                relPlans = new ArrayList<>(relPlans);
+                                Iterator<Plan> ip = relPlans.iterator();
+                                while (ip.hasNext())
+                                    if (ip.next().getScope().isRoot())
+                                        ip.remove();
+                                if (!relPlans.isEmpty()) {
+                                    Event e = new Event(C.SE.getTrigger(), i);
+                                    e.setRelPlans(relPlans);
+                                    C.addEvent(e);
+                                    ii.remove();
+                                }
+                            }
+                        }
+                    } 
+                }
+                                
                 if (ag.hasCustomSelectOption() || setts.verbose() == 2) // verbose == 2 means debug mode
-                    confP.stepDeliberate = State.RelPl;
+                    stepDeliberate = State.RelPl;
                 else
-                    confP.stepDeliberate = State.FindOp;
-                return;
+                    stepDeliberate = State.FindOp;
             }
-        }
-        // Rule SelEv2
-        // directly to ProcAct if no event to handle
-        confP.stepDeliberate = State.ProcAct;
+        } else {
+            // Rule SelEv2
+            // directly to ProcAct if no event to handle
+            stepDeliberate = State.ProcAct;
+        }        
     }
 
+    // used to handle goal condition (new in JasonER)
+    private succeed_goal scia = new succeed_goal();
+    int nbOfGoalConditions = 0;
+    private IMCondition  imcondSat = new IMCondition() {
+        public boolean test(Trigger t, Unifier u) {
+            return false;
+        }
+        public boolean test(IntendedMeans im, Unifier u) {
+            if (im.getPlan().hasGoalCondition()) {
+                //System.out.println("test "+im.getPlan().getGoalCondition()+ "="+im.isSatisfied(getAg()));
+                nbOfGoalConditions++;
+            }
+            return im.isSatisfied(getAg());
+        }
+    };
+
+    private void applyClrSatInt() {        
+        // remove all intentions with GoalCondition satisfied (new JasonER)
+        if (C.hasIntentionWithGoalCondition()) {
+            nbOfGoalConditions = 0;
+            try {
+                scia.drop(this, imcondSat, new Unifier());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            if (nbOfGoalConditions == 0) // if no intention with GC, stop checking
+                C.resetIntentionsWithGoalCondition();
+        }       
+    }
+    
     private void applyRelPl() throws JasonException {
         // get all relevant plans for the selected event
-        confP.C.RP = relevantPlans(conf.C.SE.trigger);
+        C.RP = relevantPlans(C.SE.trigger);
 
         // Rule Rel1
-        if (confP.C.RP != null || setts.retrieve())
+        if (C.RP != null || setts.retrieve())
             // retrieve is mainly for Coo-AgentSpeak
-            confP.stepDeliberate = State.ApplPl;
+            stepDeliberate = State.ApplPl;
         else
             applyRelApplPlRule2("relevant");
     }
 
     private void applyApplPl() throws JasonException {
-        confP.C.AP = applicablePlans(confP.C.RP);
+        C.AP = applicablePlans(C.RP);
 
         // Rule Appl1
-        if (confP.C.AP != null || setts.retrieve())
+        if (C.AP != null || setts.retrieve())
             // retrieve is mainly for Coo-AgentSpeak
-            confP.stepDeliberate = State.SelAppl;
+            stepDeliberate = State.SelAppl;
         else
             applyRelApplPlRule2("applicable");
     }
 
     /** generates goal deletion event */
     private void applyRelApplPlRule2(String m) throws JasonException {
-        confP.stepDeliberate = State.ProcAct; // default next step
-        if (conf.C.SE.trigger.isGoal() && !conf.C.SE.trigger.isMetaEvent()) {
+        stepDeliberate = State.ProcAct; // default next step
+        if (C.SE.trigger.isGoal() && !C.SE.trigger.isMetaEvent()) {
             // can't carry on, no relevant/applicable plan.
             try {
-                if (conf.C.SE.getIntention() != null && conf.C.SE.getIntention().size() > 3000) {
-                    logger.warning("we are likely in a problem with event "+conf.C.SE.getTrigger()+" the intention stack has already "+conf.C.SE.getIntention().size()+" intended means!");
+                if (C.SE.getIntention() != null && C.SE.getIntention().size() > 3000) {
+                    logger.warning("we are likely in a problem with event "+C.SE.getTrigger()+" the intention stack has already "+C.SE.getIntention().size()+" intended means!");
                 }
-                String msg = "Found a goal for which there is no "+m+" plan:" + conf.C.SE.getTrigger();
+                String msg = "Found a goal for which there is no "+m+" plan:" + C.SE.getTrigger();
                 if (!generateGoalDeletionFromEvent(JasonException.createBasicErrorAnnots("no_"+m, msg))) {
                     logger.warning(msg);
                 }
@@ -463,38 +514,38 @@ public class TransitionSystem {
                 return;
             }
 
-        } else if (conf.C.SE.isInternal()) {
+        } else if (C.SE.isInternal()) {
             // e.g. belief addition as internal event, just go ahead
             // but note that the event was relevant, yet it is possible
             // the programmer just wanted to add the belief and it was
             // relevant by chance, so just carry on instead of dropping the
             // intention
-            Intention i = conf.C.SE.intention;
+            Intention i = C.SE.intention;
             joinRenamedVarsIntoIntentionUnifier(i.peek(), i.peek().unif);
-            updateIntention(i);
+            removeActionReQueue(i);
         } else if (setts.requeue()) {
             // if external, then needs to check settings
-            confP.C.addEvent(conf.C.SE);
+            C.addEvent(C.SE);
         } else {
             // current event is external and irrelevant,
             // discard that event and select another one
-            confP.stepDeliberate = State.SelEv;
+            stepDeliberate = State.SelEv;
         }
     }
 
 
     private void applySelAppl() throws JasonException {
         // Rule SelAppl
-        confP.C.SO = conf.ag.selectOption(confP.C.AP);
+        C.SO = ag.selectOption(C.AP);
 
-        if (confP.C.SO != null) {
-            confP.stepDeliberate = State.AddIM;
-            if (logger.isLoggable(Level.FINE)) logger.fine("Selected option "+confP.C.SO+" for event "+confP.C.SE);
+        if (C.SO != null) {
+            stepDeliberate = State.AddIM;
+            if (logger.isLoggable(Level.FINE)) logger.fine("Selected option "+C.SO+" for event "+C.SE);
         } else {
             logger.fine("** selectOption returned null!");
             generateGoalDeletionFromEvent(JasonException.createBasicErrorAnnots("no_option", "selectOption returned null"));
             // can't carry on, no applicable plan.
-            confP.stepDeliberate = State.ProcAct;
+            stepDeliberate = State.ProcAct;
         }
     }
 
@@ -506,23 +557,49 @@ public class TransitionSystem {
      * @since 1.1
      */
     private void applyFindOp() throws JasonException {
-        confP.stepDeliberate = State.AddIM; // default next step
+        stepDeliberate = State.AddIM; // default next step
 
-        // get all relevant plans for the selected event
-        //Trigger te = (Trigger) conf.C.SE.trigger.clone();
-        List<Plan> candidateRPs = conf.ag.pl.getCandidatePlans(conf.C.SE.trigger);
+        // consider scope (new in JasonER)
+        // TODO: implement Scope for RelPl ApplPl SelAppl
+        List<Plan> candidateRPs = C.SE.getRelPlans(); // in case the rel plans are already computed before
+        if (candidateRPs == null) {        
+            PlanLibrary plib = ag.getPL();
+            if (C.SE.isInternal()) {
+                Plan p = C.SE.getIntention().peek().getPlan();
+                if (p.hasSubPlans()) {
+                    plib = p.getSubPlans();
+                } else {
+                    plib = p.getScope();
+                }
+            }
+    
+            // get all relevant plans for the selected event
+            candidateRPs = plib.getCandidatePlans(C.SE.getTrigger());
+        }
+
         if (candidateRPs != null) {
-            for (Plan pl : candidateRPs) {
-                Unifier relUn = pl.isRelevant(conf.C.SE.trigger);
+            for (Plan p : candidateRPs) {
+                Unifier relUn = null;
+                if (C.SE.isInternal()) {
+                    // use IM vars in the context for sub-plans (new in JasonER)
+                    for (IntendedMeans im: C.SE.getIntention()) {
+                        if (im.getPlan().hasSubPlans() && im.getPlan().getSubPlans().get(p.getLabel()) != null) {
+                            relUn = im.triggerUnif.clone();
+                            break;
+                        }
+                    }
+                }
+                
+                relUn = p.isRelevant(C.SE.trigger, relUn);
                 if (relUn != null) { // is relevant
-                    LogicalFormula context = pl.getContext();
+                    LogicalFormula context = p.getContext();
                     if (context == null) { // context is true
-                        confP.C.SO = new Option(pl, relUn);
+                        C.SO = new Option(p, relUn);
                         return;
                     } else {
                         Iterator<Unifier> r = context.logicalConsequence(ag, relUn);
                         if (r != null && r.hasNext()) {
-                            confP.C.SO = new Option(pl, r.next());
+                            C.SO = new Option(p, r.next());
                             return;
                         }
                     }
@@ -537,33 +614,28 @@ public class TransitionSystem {
 
     private void applyAddIM() throws JasonException {
         // create a new intended means
-        IntendedMeans im = new IntendedMeans(conf.C.SO, conf.C.SE.getTrigger());
+        IntendedMeans im = new IntendedMeans(C.SO, C.SE.getTrigger());
 
         // Rule ExtEv
-        if (conf.C.SE.intention == Intention.EmptyInt) {
+        if (C.SE.intention == Intention.EmptyInt) {
             Intention intention = new Intention();
             intention.push(im);
-            confP.C.addRunningIntention(intention);
+            C.addIntention(intention);
         } else {
             // Rule IntEv
 
             // begin tail recursion optimisation (TRO)
             if (setts.isTROon()) {
-                IntendedMeans top = confP.C.SE.intention.peek(); // top = the IM that will be removed from the intention due to TRO
+                IntendedMeans top = C.SE.intention.peek(); // top = the IM that will be removed from the intention due to TRO
                 //System.out.println(top.getTrigger().isGoal()+"=1="+im.getTrigger().isGoal());
                 //System.out.println(top.getTrigger().getLiteral().getPredicateIndicator()+"=2="+im.getTrigger().getLiteral().getPredicateIndicator());
-                //System.out.println(top.getTrigger()+"=3="+im.getTrigger());
-
-                // next test if the condition for TOR (comparing top and the IM being added) 
-                if (top != null &&
-                        top.getTrigger().isAddition() && im.getTrigger().isAddition() && // failure plans should not be subject of TRO (see BugFail)
-                        top.getTrigger().isGoal() && im.getTrigger().isGoal() && // are both goal
+                if (top != null && top.getTrigger().isGoal() && im.getTrigger().isGoal() && // are both goal
                         top.getCurrentStep().getBodyNext() == null && // the plan below is finished
                         top.getTrigger().getLiteral().getPredicateIndicator().equals( im.getTrigger().getLiteral().getPredicateIndicator()) // goals are equals (do not consider - or + from the trigger -- required in the case of goal patterns where -!g <- !g is used)
                    ) {
-                    confP.C.SE.intention.pop(); // remove the top IM
+                    C.SE.intention.pop(); // remove the top IM
 
-                    IntendedMeans imBase = confP.C.SE.intention.peek(); // base = where the new IM will be place on top of
+                    IntendedMeans imBase = C.SE.intention.peek(); // base = where the new IM will be place on top of
                     if (imBase != null && imBase.renamedVars != null) {
                         // move top relevant values into the base (relevant = renamed vars in base)
                         
@@ -579,7 +651,7 @@ public class TransitionSystem {
                                     im.unif.function.put(vvl, t);
                                 }
                             } else {
-                                // the vvl was renamed again in top, just replace the new value in base 
+                                // the vvl was renamed again in top, just replace in base the new value
                                 VarTerm v0 = (VarTerm)top.renamedVars.function.get(vvl);
                                 if (v0 != null) {
                                     imBase.renamedVars.function.put(v, v0);
@@ -591,18 +663,20 @@ public class TransitionSystem {
             }
             // end of TRO
 
-            confP.C.SE.intention.push(im);
-            confP.C.addRunningIntention(confP.C.SE.intention);
+            C.SE.intention.push(im);
+            C.addIntention(C.SE.intention);
         }
-        confP.stepDeliberate = State.ProcAct;
+        stepDeliberate = State.ProcAct;
     }
 
     private void applyProcAct() throws JasonException {
-        confP.stepAct = State.SelInt; // default next step
-        if (conf.C.hasFeedbackAction()) {
+        applyClrSatInt();
+
+        stepAct = State.SelInt; // default next step
+        if (C.hasFeedbackAction()) {
             ActionExec a = null;
-            synchronized (conf.C.getFeedbackActions()) {
-                a = conf.ag.selectAction(conf.C.getFeedbackActions());
+            synchronized (C.getFeedbackActions()) {
+                a = ag.selectAction(C.getFeedbackActions());
             }
             if (a != null) {
                 final Intention curInt = a.getIntention();
@@ -613,7 +687,7 @@ public class TransitionSystem {
                 if (C.removePendingAction(curInt.getId()) != null) {
                     if (a.getResult()) {
                         // add the intention back in I
-                        updateIntention(curInt);
+                        removeActionReQueue(curInt);
                         applyClrInt(curInt);
 
                         if (hasGoalListener())
@@ -637,38 +711,37 @@ public class TransitionSystem {
     }
 
     private void applySelInt() throws JasonException {
-        confP.stepAct = State.ExecInt; // default next step
-        
+        stepAct = State.ExecInt; // default next step
+
         // Rule for Atomic Intentions
-        confP.C.SI = C.removeAtomicIntention();
-        if (confP.C.SI != null) {
+        C.SI = C.removeAtomicIntention();
+        if (C.SI != null) {
             return;
         }
 
         // Rule SelInt1
-        if (!conf.C.isAtomicIntentionSuspended() && conf.C.hasRunningIntention()) { // the isAtomicIntentionSuspended is necessary because the atomic intention may be suspended (the above removeAtomicInt returns null in that case)
+        if (!C.isAtomicIntentionSuspended() && C.hasIntention()) { // the isAtomicIntentionSuspended is necessary because the atomic intention may be suspended (the above removeAtomicInt returns null in that case)
             // but no other intention could be selected
-            confP.C.SI = conf.ag.selectIntention(conf.C.getRunningIntentions());
-            if (logger.isLoggable(Level.FINE)) logger.fine("Selected intention "+confP.C.SI);
-            if (confP.C.SI != null) { // the selectIntention function returned null
+            C.SI = ag.selectIntention(C.getIntentions());
+            if (logger.isLoggable(Level.FINE)) logger.fine("Selected intention "+C.SI);
+            if (C.SI != null) { // the selectIntention function returned null
                 return;
             }
         }
 
-        confP.stepAct = State.StartRC;
+        stepAct = State.StartRC;
     }
 
     @SuppressWarnings("unchecked")
     private void applyExecInt() throws JasonException {
-        confP.stepAct = State.ClrInt; // default next step
+        stepAct = State.ClrInt; // default next step
 
-        final Intention curInt = conf.C.SI;
+        final Intention curInt = C.SI;
         if (curInt == null)
             return;
 
-        if (curInt.isFinished()) {
+        if (curInt.isFinished())
             return;
-        }
 
         // get next formula in the body of the intended means
         // on the top of the selected intention
@@ -677,7 +750,7 @@ public class TransitionSystem {
 
         if (im.isFinished()) {
             // for empty plans! may need unif, etc
-            updateIntention(curInt);
+            removeActionReQueue(curInt);
             return;
         }
         Unifier     u = im.unif;
@@ -725,7 +798,7 @@ public class TransitionSystem {
         // Rule Action
         case action:
             body = (Literal)body.capply(u);
-            confP.C.A = new ActionExec(body, curInt);
+            C.A = new ActionExec(body, curInt);
             break;
 
         case internalAction:
@@ -751,7 +824,7 @@ public class TransitionSystem {
                 }
 
                 if (ok && !ia.suspendIntention())
-                    updateIntention(curInt);
+                    removeActionReQueue(curInt);
             } catch (NoValueException e) {
                 // add not ground vars in the message
                 String msg = e.getMessage() + " Ungrounded variables = [";
@@ -789,7 +862,7 @@ public class TransitionSystem {
             Iterator<Unifier> iu = ((LogicalFormula)bTerm).logicalConsequence(ag, u);
             if (iu.hasNext()) {
                 im.unif = iu.next();
-                updateIntention(curInt);
+                removeActionReQueue(curInt);
             } else {
                 String msg = "Constraint "+h+" was not satisfied ("+h.getSrcInfo()+") un="+u;
                 generateGoalDeletion(curInt, JasonException.createBasicErrorAnnots(new Atom("constraint_failed"), msg));
@@ -800,24 +873,24 @@ public class TransitionSystem {
         // Rule Achieve
         case achieve:
             body = prepareBodyForEvent(body, u, curInt.peek());
-            Event evt = conf.C.addAchvGoal(body, curInt);
-            confP.stepAct = State.StartRC;
+            Event evt = C.addAchvGoal(body, curInt);
+            stepAct = State.StartRC;
             checkHardDeadline(evt);
             break;
 
         // Rule Achieve as a New Focus (the !! operator)
         case achieveNF:
             body = prepareBodyForEvent(body, u, null);
-            evt  = conf.C.addAchvGoal(body, Intention.EmptyInt);
+            evt  = C.addAchvGoal(body, Intention.EmptyInt);
             checkHardDeadline(evt);
-            updateIntention(curInt);
+            removeActionReQueue(curInt);
             break;
 
         // Rule Test
         case test:
             LogicalFormula f = (LogicalFormula)bTerm;
-            if (conf.ag.believes(f, u)) {
-                updateIntention(curInt);
+            if (ag.believes(f, u)) {
+                removeActionReQueue(curInt);
             } else {
                 boolean fail = true;
                 // generate event when using literal in the test (no events for log. expr. like ?(a & b))
@@ -828,8 +901,8 @@ public class TransitionSystem {
                         evt = new Event(te, curInt);
                         if (ag.getPL().hasCandidatePlan(te)) {
                             if (logger.isLoggable(Level.FINE)) logger.fine("Test Goal '" + bTerm + "' failed as simple query. Generating internal event for it: "+te);
-                            conf.C.addEvent(evt);
-                            confP.stepAct = State.StartRC;
+                            C.addEvent(evt);
+                            stepAct = State.StartRC;
                             fail = false;
                         }
                     }
@@ -890,10 +963,10 @@ public class TransitionSystem {
                     // generate events
                     updateEvents(result,newfocus);
                     if (!isSameFocus) {
-                        updateIntention(curInt);
+                        removeActionReQueue(curInt);
                     }
                 } else {
-                    updateIntention(curInt);
+                    removeActionReQueue(curInt);
                 }
             } catch (RevisionFailedException re) {
                 generateGoalDeletion(curInt, null);
@@ -913,15 +986,15 @@ public class TransitionSystem {
             }
             // call BRF
             try {
-                List<Literal>[] result = ag.brf(null, body, curInt); 
+                List<Literal>[] result = ag.brf(null, body, curInt); // the intention is not the new focus
                 if (result != null) { // really change something
                     // generate events
                     updateEvents(result,newfocus);
                     if (!isSameFocus) {
-                        updateIntention(curInt);
+                        removeActionReQueue(curInt);
                     }
                 } else {
-                    updateIntention(curInt);
+                    removeActionReQueue(curInt);
                 }
             } catch (RevisionFailedException re) {
                 generateGoalDeletion(curInt, null);
@@ -969,7 +1042,7 @@ public class TransitionSystem {
         }
         return body;
     }
-
+    
     public void applyClrInt(Intention i) throws JasonException {
         while (true) { // quit the method by return
             // Rule ClrInt
@@ -978,13 +1051,12 @@ public class TransitionSystem {
 
             if (i.isFinished()) {
                 // intention finished, remove it
-                confP.C.dropRunningIntention(i);
-                //conf.C.SI = null;
+                C.dropIntention(i);
                 return;
             }
-
+            
             IntendedMeans im = i.peek();
-            if (!im.isFinished()) {
+            if (!im.isSatisfied(getAg())) {
                 // nothing to do
                 return;
             }
@@ -1071,10 +1143,11 @@ public class TransitionSystem {
     public List<Option> relevantPlans(Trigger teP) throws JasonException {
         Trigger te = teP.clone();
         List<Option> rp = null;
-        List<Plan> candidateRPs = conf.ag.pl.getCandidatePlans(te);
+        List<Plan> candidateRPs = ag.pl.getCandidatePlans(te);
         if (candidateRPs != null) {
             for (Plan pl : candidateRPs) {
-                Unifier relUn = pl.isRelevant(te);
+                Unifier relUn = null;
+                relUn = pl.isRelevant(te, relUn);
                 if (relUn != null) {
                     if (rp == null) rp = new LinkedList<Option>();
                     rp.add(new Option(pl, relUn));
@@ -1139,17 +1212,18 @@ public class TransitionSystem {
         // Note: we have to add events even if they are not relevant to
         // a) allow the user to override selectOption and then provide an "unknown" plan; or then
         // b) create the failure event (it is done by SelRelPlan)
-        if (e.isInternal() || C.hasListener() || ag.getPL().hasCandidatePlan(e.trigger)) {
+        //if (e.isInternal() || C.hasListener() || ag.getPL().hasCandidatePlan(e.trigger)) {
+        // complex to optimise (the above if) in JasonER
             C.addEvent(e);
             if (logger.isLoggable(Level.FINE)) logger.fine("Added event " + e+ ", events = "+C.getEvents());
-        }
+        //}
     }
 
     /** remove the top action and requeue the current intention */
-    private void updateIntention(Intention i) {
+    private void removeActionReQueue(Intention i) {
         if (!i.isFinished()) {
             i.peek().removeCurrentStep();
-            confP.C.addRunningIntention(i);
+            C.addIntention(i);
         } else {
             logger.fine("trying to update a finished intention!");
         }
@@ -1179,7 +1253,7 @@ public class TransitionSystem {
                 }
 
             if (failEventIsRelevant) {
-                confP.C.addEvent(failEvent);
+                C.addEvent(failEvent);
                 if (logger.isLoggable(Level.FINE)) logger.fine("Generating goal deletion " + failEvent.getTrigger() + " from goal: " + im.getTrigger());
             } else {
                 logger.warning("No failure event was generated for " + failEvent.getTrigger() + "\n"+i);
@@ -1192,7 +1266,7 @@ public class TransitionSystem {
             // get the external event (or the one that started
             // the whole focus of attention) and requeue it
             im = i.peek(); //get(0);
-            confP.C.addExternalEv(im.getTrigger());
+            C.addExternalEv(im.getTrigger());
         } else {
             logger.warning("Could not finish intention: " + i + "\tTrigger: " + failEvent.getTrigger());
         }
@@ -1201,9 +1275,9 @@ public class TransitionSystem {
 
     // similar to the one above, but for an Event rather than intention
     private boolean generateGoalDeletionFromEvent(List<Term> failAnnots) throws JasonException {
-        Event ev = conf.C.SE;
+        Event ev = C.SE;
         if (ev == null) {
-            logger.warning("** It was impossible to generate a goal deletion event because SE is null! " + conf.C);
+            logger.warning("** It was impossible to generate a goal deletion event because SE is null! " + C);
             return false;
         }
 
@@ -1219,7 +1293,7 @@ public class TransitionSystem {
             Event failEvent = findEventForFailure(ev.intention, tevent);
             if (failEvent != null) {
                 setDefaultFailureAnnots(failEvent, tevent.getLiteral(), failAnnots);
-                confP.C.addEvent(failEvent);
+                C.addEvent(failEvent);
                 failEeventGenerated = true;
                 //logger.warning("Generating goal deletion " + failEvent.getTrigger() + " from event: " + ev.getTrigger());
             } else {
@@ -1235,7 +1309,7 @@ public class TransitionSystem {
         // if "discard" is set, we are deleting the whole intention!
         // it is simply not going back to I nor anywhere else!
         else if (setts.requeue()) {
-            confP.C.addEvent(ev);
+            C.addEvent(ev);
             logger.warning("Requeing external event: " + ev);
         } else
             logger.warning("Discarding external event: " + ev);
@@ -1328,7 +1402,7 @@ public class TransitionSystem {
                         if (drop) {
                             try {
                                 FailWithDeadline ia = new FailWithDeadline(intention, evt.getTrigger());
-                                ia.findGoalAndDrop(TransitionSystem.this, body, new Unifier());
+                                ia.drop(TransitionSystem.this, body, new Unifier());
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
@@ -1355,7 +1429,7 @@ public class TransitionSystem {
          *           3 = simply removed without event
          */
         @Override
-        public int dropGoal(Intention i, Trigger g, TransitionSystem ts, Unifier un) throws JasonException {
+        public int dropIntention(Intention i, IMCondition c, TransitionSystem ts, Unifier un) throws JasonException {
             if (i != null) {
                 // only consider dropping if the intention is the one that created the deadline goal
                 if (intToDrop == null) {
@@ -1366,21 +1440,22 @@ public class TransitionSystem {
                     return 0;
                 }
 
-                if (i.dropGoal(g, un)) {
+                IntendedMeans im = i.dropGoal(c, un); 
+                if (im != null) {
                     // notify listener
                     if (ts.hasGoalListener())
                         for (GoalListener gl: ts.getGoalListeners())
-                            gl.goalFailed(g);
+                            gl.goalFailed(im.getTrigger());
 
                     // generate failure event
-                    Event failEvent = ts.findEventForFailure(i, g); // find fail event for the goal just dropped
+                    Event failEvent = ts.findEventForFailure(i, im.getTrigger()); // find fail event for the goal just dropped
                     if (failEvent != null) {
                         failEvent.getTrigger().getLiteral().addAnnots(JasonException.createBasicErrorAnnots("deadline_reached", ""));
                         ts.getC().addEvent(failEvent);
-                        ts.getLogger().fine("'hard_deadline("+g+")' is generating a goal deletion event: " + failEvent.getTrigger());
+                        ts.getLogger().fine("'hard_deadline("+im.getTrigger()+")' is generating a goal deletion event: " + failEvent.getTrigger());
                         return 2;
                     } else { // i is finished or without failure plan
-                        ts.getLogger().fine("'hard_deadline("+g+")' is removing the intention without event:\n" + i);
+                        ts.getLogger().fine("'hard_deadline("+im.getTrigger()+")' is removing the intention without event:\n" + i);
                         return 3;
                     }
                 }
@@ -1390,10 +1465,10 @@ public class TransitionSystem {
     }
 
     public boolean canSleep() {
-        return    (C.isAtomicIntentionSuspended() && !C.hasFeedbackAction() && !conf.C.hasMsg())  // atomic case
-                  || (!conf.C.hasEvent() &&    // other cases (deliberate)
-                      !conf.C.hasRunningIntention() && !conf.C.hasFeedbackAction() && // (action)
-                      !conf.C.hasMsg() &&  // (sense)
+        return    (C.isAtomicIntentionSuspended() && !C.hasFeedbackAction() && !C.hasMsg())  // atomic case
+                  || (!C.hasEvent() &&    // other cases (deliberate)
+                      !C.hasIntention() && !C.hasFeedbackAction() && // (action)
+                      !C.hasMsg() &&  // (sense)
                       taskForBeginOfCycle.isEmpty() &&
                       getUserAgArch().canSleep());
     }
@@ -1408,7 +1483,7 @@ public class TransitionSystem {
 
     public boolean canSleepAct() {
         //&& !C.hasPendingAction()
-        return !C.hasRunningIntention() && !C.hasFeedbackAction() && C.getSelectedIntention() == null && getUserAgArch().canSleep();
+        return !C.hasIntention() && !C.hasFeedbackAction() && C.getSelectedIntention() == null && getUserAgArch().canSleep();
     }
 
     /**
@@ -1485,8 +1560,8 @@ public class TransitionSystem {
             } while (stepSense != State.SelEv && getUserAgArch().isRunning());
 
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "*** ERROR in the transition system (sense). "+conf.C+"\nCreating a new C!", e);
-            conf.C.create();
+            logger.log(Level.SEVERE, "*** ERROR in the transition system (sense). "+C+"\nCreating a new C!", e);
+            C.create();
         }
     }
 
@@ -1507,8 +1582,8 @@ public class TransitionSystem {
             } while (stepDeliberate != State.ProcAct && getUserAgArch().isRunning());
 
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "*** ERROR in the transition system (deliberate). "+conf.C+"\nCreating a new C!", e);
-            conf.C.create();
+            logger.log(Level.SEVERE, "*** ERROR in the transition system (deliberate). "+C+"\nCreating a new C!", e);
+            C.create();
         }
     }
 
@@ -1529,8 +1604,8 @@ public class TransitionSystem {
                 getUserAgArch().act(action); //, C.getFeedbackActionsWrapper());
             }
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "*** ERROR in the transition system (act). "+conf.C+"\nCreating a new C!", e);
-            conf.C.create();
+            logger.log(Level.SEVERE, "*** ERROR in the transition system (act). "+C+"\nCreating a new C!", e);
+            C.create();
         }
     }
 
@@ -1628,7 +1703,7 @@ public class TransitionSystem {
 
          } catch (Exception e) {
              logger.log(Level.SEVERE, "*** ERROR in the transition system. "+conf.C+"\nCreating a new C!", e);
-             conf.C.create();
+             C.create();
          }
 
          return true;
