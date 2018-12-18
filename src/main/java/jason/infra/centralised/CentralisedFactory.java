@@ -2,7 +2,7 @@ package jason.infra.centralised;
 
 import jason.infra.InfrastructureFactory;
 import jason.infra.MASLauncherInfraTier;
-import jason.runtime.RuntimeServices;
+import jason.runtime.RuntimeServicesInfraTier;
 
 public class CentralisedFactory implements InfrastructureFactory {
 
@@ -10,7 +10,7 @@ public class CentralisedFactory implements InfrastructureFactory {
         return new CentralisedMASLauncherAnt();
     }
 
-    public RuntimeServices createRuntimeServices() {
+    public RuntimeServicesInfraTier createRuntimeServices() {
         return new CentralisedRuntimeServices(BaseCentralisedMAS.getRunner());
     }
 

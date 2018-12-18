@@ -28,7 +28,7 @@ public abstract class ReplAg extends Agent {
 
     @Override
     public void load(String asSrc) throws JasonException {
-        super.load("");
+        super.load(null);
         /*try {
             getPL().add(ASSyntax.parsePlan("+!run_repl_expr(Cmd__TR) <- Cmd__TR; jason.infra.repl.print_unifier."));
         } catch (ParseException e) {
@@ -61,7 +61,7 @@ public abstract class ReplAg extends Agent {
             //Literal g = ASSyntax.createLiteral("run_repl_expr", lCmd);
             //getTS().getLogger().info("running "+i);
             //getTS().getC().addAchvGoal(g, null);
-            getTS().getC().addRunningIntention(i);
+            getTS().getC().addIntention(i);
             cmdCounter++;
             clear();
             getTS().getUserAgArch().wake();

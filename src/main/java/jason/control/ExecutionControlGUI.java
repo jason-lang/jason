@@ -68,7 +68,7 @@ public class ExecutionControlGUI extends ExecutionControl {
     // xml components
     asl2xml  agTransformerXML  = new asl2xml();
     asl2tex  agTransformerTex  = new asl2tex("/xml/ag2tex.xsl");
-    asl2html agTransformerHtml = new asl2html("/xml/agInspection-nd.xsl");
+    asl2html agTransformerHtml = new asl2html("/xml/agInspection.xsl");
     asl2xml  agTransformer     = null;
 
 

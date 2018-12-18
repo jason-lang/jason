@@ -107,12 +107,12 @@ public class suspend extends DefaultInternalAction {
             }
         }
 
-        Iterator<Intention> itint = C.getRunningIntentionsPlusAtomic();
+        Iterator<Intention> itint = C.getIntentionsPlusAtomic();
         while (itint.hasNext()) {
             Intention i = itint.next();
             if (i.hasTrigger(g, un)) {
                 i.setSuspended(true);
-                C.removeRunningIntention(i);
+                C.removeIntention(i);
                 C.addPendingIntention(SUSPENDED_INT+i.getId(), i);
                 //System.out.println("sus "+g+" from I "+i.getId()+" #"+C.getPendingIntentions().size());
             }

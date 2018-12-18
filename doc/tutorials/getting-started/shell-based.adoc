@@ -1,59 +1,11 @@
-= Jason in a command shell
-:toc: right
+= Creating Jason projects in the shell command
+for unix users
 
-== with Gradle
+. Download Jason https://sourceforge.net/projects/jason/files/jason/[here] and unzip it
 
-Requirements:
+. Make sure you have `JASON_HOME` properly set (it should have the directories `libs` and `scripts` inside), then setup the `PATH`:
 
-- Java >= 8
-- Gradle
-
-You have to install https://gradle.org[Gradle] on your computer and then run the following commands to create a new application (the first time you run them, it takes a while to finish since it downloads Jason first):
------
-curl -s -O http://jason.sourceforge.net/np/np24.gradle
-gradle -b np24.gradle --console=plain
------
-
-NOTE: `np24.gradle` creates an application based on Jason 2.4. You can replace it by `npss.gradle` to create a JaCaMo application based on the current snap shot version. https://curl.haxx.se[`curl`] is a program that simply downloads the `np24.gradle` file from http://jason.sourceforge.net/np/np24.gradle.
-
-You will be asked to enter the identification of the application and then instructions about how to run it will be shown.
-
-Example of output:
-----
-> Task :run
-Jason 2.4 built on Mon Oct 01 20:50:56 BRT 2018
-
-Enter the identification of the new application: bobob
-Creating path /Users/jomi/tmp/bobob
-
-You can run your application with:
-   $ cd /Users/jomi/tmp/bobob
-   $ gradle -q --console=plain
-
-an eclipse project can be created from menu File/Import,
-option 'Existing Gradle Project'.
-----
-
-If you want to run a Jason application that was not created with a `build.gradle` file, you can download a template from https://raw.githubusercontent.com/jason-lang/jason/master/src/main/resources/templates/build.gradle[here] and replace
-
-- `<VERSION>` by the required Jason release (e.g. `2.4`)
-- `<PROJECT-FILE>` by your .mas2j file (e.g. `hello.mas2j`).
-- `<PROJECT-RUNNER-CLASS>` by `jason.infra.centralised.RunCentralisedMAS`
-
-== with Scripts
-
-Requirements:
-
-- Java >= 8
-
-The first step is to download Jason https://sourceforge.net/projects/jason/files/jason/[here] and unzip it. Then configure some environment variables: `JASON_HOME` should be the directory where you unzip the downloaded file (it should have the directories `libs` and `scripts` inside) and `PATH`. For example;
-
-    export JASON_HOME=$HOME/pro/jason-2.4
     export PATH=$JASON_HOME/scripts:$PATH
-
-. New applications can be created with
-
-     jason-new-project nameofapplication
 
 . The Jason IDE based on jEdit can be run with
 +
@@ -64,10 +16,3 @@ jason-ide
 . Jason projects (`.mas2j` files) can be run with
 
     jason ../somewhere/some-project.mas2j
-
-
-== Atom
-
-For an IDE lighter than Eclipse, we recommend https://atom.io[Atom]. The following package provide syntax highlight for AgentSpeak (the Jason language): https://atom.io/packages/language-agentspeak[language-agentspeak].
-
-image:http://jacamo.sourceforge.net/doc/tutorials/hello-world/screens/atom2.png[]

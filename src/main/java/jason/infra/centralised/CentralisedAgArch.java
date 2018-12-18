@@ -19,7 +19,7 @@ import jason.asSemantics.TransitionSystem;
 import jason.asSyntax.Atom;
 import jason.asSyntax.Literal;
 import jason.mas2j.ClassParameters;
-import jason.runtime.RuntimeServices;
+import jason.runtime.RuntimeServicesInfraTier;
 import jason.runtime.Settings;
 import jason.util.Config;
 
@@ -47,13 +47,13 @@ public class CentralisedAgArch extends AgArch implements Runnable {
 
     private String           agName  = "";
     private volatile boolean running = true;
-    private Queue<Message>   mbox    = new ConcurrentLinkedQueue<>();
+    private Queue<Message>   mbox    = new ConcurrentLinkedQueue<Message>();
     protected Logger         logger  = Logger.getLogger(CentralisedAgArch.class.getName());
 
     private static List<MsgListener> msgListeners = null;
     public static void addMsgListener(MsgListener l) {
         if (msgListeners == null) {
-            msgListeners = new ArrayList<>();
+            msgListeners = new ArrayList<MsgListener>();
         }
         msgListeners.add(l);
     }
@@ -66,7 +66,7 @@ public class CentralisedAgArch extends AgArch implements Runnable {
      * jason.architecture.AgArch. The arch will create the agent that creates
      * the TS.
      */
-    public void createArchs(Collection<String> agArchClasses, String agClass, ClassParameters bbPars, String asSrc, Settings stts, BaseCentralisedMAS masRunner) throws JasonException {
+    public void createArchs(List<String> agArchClasses, String agClass, ClassParameters bbPars, String asSrc, Settings stts, BaseCentralisedMAS masRunner) throws JasonException {
         try {
             this.masRunner = masRunner;
             Agent.create(this, agClass, bbPars, asSrc, stts);
@@ -88,7 +88,7 @@ public class CentralisedAgArch extends AgArch implements Runnable {
     }
 
     /** init the agent architecture based on another agent */
-    public void createArchs(Collection<String> agArchClasses, Agent ag, BaseCentralisedMAS masRunner) throws JasonException {
+    public void createArchs(List<String> agArchClasses, Agent ag, BaseCentralisedMAS masRunner) throws JasonException {
         try {
             this.masRunner = masRunner;
             setTS(ag.clone(this).getTS());
@@ -197,7 +197,7 @@ public class CentralisedAgArch extends AgArch implements Runnable {
         int i = 0;
         int ca = cyclesAct;
         if (cyclesAct == 9999)
-            ca = ts.getC().getRunningIntentions().size();
+            ca = ts.getC().getIntentions().size();
 
         while (running && i++ < ca && !ts.canSleepAct()) {
             ts.act();
@@ -410,8 +410,8 @@ public class CentralisedAgArch extends AgArch implements Runnable {
         infraControl.receiveFinishedCycle(getAgName(), breakpoint, cycle);
     }
 
-    public RuntimeServices getRuntimeServices() {
-        return masRunner.getRuntimeServices();
+    public RuntimeServicesInfraTier getRuntimeServices() {
+        return new CentralisedRuntimeServices(masRunner);
     }
 
     private RConf conf;

@@ -8,10 +8,11 @@
 hall::acceptable(build(_)).
 comm::acceptable(build(_)).
 
-!registerDF.
-+!registerDF <- .df_register("participant").
-
 +N::cnp_started[source(bob)]
-     : .member(N,[hall,comm])
-    <- + {+?N::price(build(T),P) : supp::gain(N,G) <- ?supp::price(T,M); P = M*(1+G)};
-       .include("participant.asl",N).
+    : .member(N,[hall,comm])
+    <-  .include("participant.asl",N);
+        .add_plan({+?N::price(build(T),P) : supp::gain(N,G)
+                            <-  ?supp::price (T,M);
+                                P=M *(1+ G)
+                   });
+        !N::joinCNP[source(bob)].

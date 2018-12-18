@@ -11,14 +11,14 @@ import javax.swing.JPanel;
 import javax.swing.ListSelectionModel;
 import javax.swing.border.TitledBorder;
 
-import jason.runtime.RuntimeServices;
+import jason.runtime.RuntimeServicesInfraTier;
 
 public class KillAgentGUI extends BaseDialogGUI {
 
     private static final long serialVersionUID = 1L;
 
     private JList lAgs;
-    private RuntimeServices services;
+    private RuntimeServicesInfraTier services;
 
     public KillAgentGUI(Frame f, String title) {
         super(f, title);

@@ -34,7 +34,7 @@ public class RunJasonProject {
             return;
         } else {
             name = args[0];
-            //System.err.println("reading from file " + name + " ..." );
+            System.err.println("reading from file " + name + " ..." );
             try {
                 parser = new mas2j(new java.io.FileInputStream(name));
             } catch(java.io.FileNotFoundException e) {
@@ -48,13 +48,12 @@ public class RunJasonProject {
             File file = new File(name);
             project = parser.mas();
             if (Config.get().getJasonJar() == null) {
-                //System.out.println("Jason is not configured, creating a default configuration");
-                Config.get().setShowFixMsgs(false);
+                System.out.println("Jason is not configured, creating a default configuration");
                 Config.get().fix();
             }
             project.setProjectFile(file);
             project.setDirectory(file.getAbsoluteFile().getParentFile().getAbsolutePath());
-            //System.out.println("file "+name+" parsed successfully!\n");
+            System.out.println("file "+name+" parsed successfully!\n");
 
             launcher = project.getInfrastructureFactory().createMASLauncher();
             launcher.setProject(project);

@@ -6,7 +6,6 @@ communication no actions are actually performed.
 
 The agent c plays the initiator (who need a service)
 and the agents p* play participant (who provide a service).
-The agents register their services/role in the DF (Directory Facilitator)
 
 For more information about the CNP see
 http://www.fipa.org/specs/fipa00029/

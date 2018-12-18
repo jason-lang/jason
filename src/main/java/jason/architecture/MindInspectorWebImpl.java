@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.Executors;
 
@@ -22,7 +21,6 @@ import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 
 import jason.asSemantics.Agent;
-import jason.infra.centralised.BaseCentralisedMAS;
 import jason.runtime.Settings;
 import jason.util.Config;
 import jason.util.asl2html;
@@ -32,12 +30,10 @@ public class MindInspectorWebImpl extends MindInspectorWeb {
 
     private HttpServer httpServer = null;
 
-    private Map<String,List<Document>> histories = new TreeMap<>();
-    private Map<String,Integer>        lastStepSeenByUser = new HashMap<>();
-    private Map<String,Agent>          registeredAgents = new HashMap<>();
+    private Map<String,List<Document>> histories = new TreeMap<String,List<Document>>();
+    private Map<String,Integer>        lastStepSeenByUser = new HashMap<String, Integer>();
+    private Map<String,Agent>          registeredAgents = new HashMap<String, Agent>();
 
-    private BaseCentralisedMAS         runner = null;
-    
     public MindInspectorWebImpl() {
     }
 
@@ -151,14 +147,10 @@ public class MindInspectorWebImpl extends MindInspectorWeb {
                     OutputStream responseBody = exchange.getResponseBody();
 
                     if (requestMethod.equalsIgnoreCase("GET")) {
-                        responseBody.write(("<html><head><title>Jason (list of agents)</title></head><body>").getBytes());
+                        responseBody.write(("<html><head><title>Jason (list of agents)</title><meta http-equiv=\"refresh\" content=\""+refreshInterval+"\" ></head><body>").getBytes());
                         responseBody.write(("<font size=\"+2\"><p style='color: red; font-family: arial;'>Agents</p></font>").getBytes());
                         for (String a: histories.keySet()) {
                             responseBody.write( ("- <a href=\"/agent-mind/"+a+"/latest\" target=\"am\" style=\"font-family: arial; text-decoration: none\">"+a+"</a><br/>").getBytes());
-                        }
-                        
-                        if (runner != null && !runner.getDF().isEmpty()) {
-                            responseBody.write( ("<br/><a href=\"/df\" target=\"am\" style=\"font-family: arial; text-decoration: none\">DF</a><br/>").getBytes());                            
                         }
                     }
                     responseBody.write("<hr/>by <a href=\"http://jason.sf.net\" target=\"_blank\">Jason</a>".getBytes());
@@ -190,7 +182,7 @@ public class MindInspectorWebImpl extends MindInspectorWeb {
         String agName = ag.getTS().getUserAgArch().getAgName();
         List<Document> h = histories.get(agName);
         if (h == null) {
-            h = new ArrayList<>();
+            h = new ArrayList<Document>();
             histories.put(agName, h);
         }
         if (h.isEmpty())
@@ -260,7 +252,7 @@ public class MindInspectorWebImpl extends MindInspectorWeb {
                                         } catch (Exception e) {}
                                     }
                                     if (i == -1) {
-                                        //so.append("<meta http-equiv=\"refresh\" content=\""+refreshInterval+"\">");
+                                        so.append("<meta http-equiv=\"refresh\" content=\""+refreshInterval+"\">");
                                         agState = h.get(h.size()-1);
                                     } else {
                                         agState = h.get(i-1);
@@ -280,12 +272,7 @@ public class MindInspectorWebImpl extends MindInspectorWeb {
                                         so.append("<a href=\"/agent-mind/"+agName+"/clear\">clear history</a> ");
                                         so.append("<hr/>");
                                     }
-                                    so.append(getAgStateAsString(agState));
-                                    if (show.get("annots")) {
-                                        so.append("<hr/><a href='hide?annots'> hide annotations </a> ");
-                                    } else {
-                                        so.append("<hr/><a href='show?annots'> show annotations </a> ");
-                                    }
+                                    so.append(getAgStateAsString(agState, false));
                                     //so.append("<hr/><a href=\"/\"> list of agents</a> ");
                                 } else {
                                     so.append("select an agent");
@@ -338,57 +325,33 @@ public class MindInspectorWebImpl extends MindInspectorWeb {
     */
 
     protected asl2xml   mindInspectorTransformer = null;
-    Map<String,Boolean> show = new HashMap<>();
+    Map<String,Boolean> show = new HashMap<String,Boolean>();
 
-    synchronized String getAgStateAsString(Document ag) { // full means with show all
+    synchronized String getAgStateAsString(Document ag, boolean full) { // full means with show all
         try {
             if (mindInspectorTransformer == null) {
                 mindInspectorTransformer = new asl2html("/xml/agInspection.xsl");
+
+                show.put("bels", true);
                 show.put("annots", Config.get().getBoolean(Config.SHOW_ANNOTS));
+                show.put("rules", false);
+                show.put("evt", true);
+                show.put("mb", false);
+                show.put("int", false);
+                show.put("int-details", false);
+                show.put("plan", false);
+                show.put("plan-details", false);
             }
             for (String p: show.keySet())
-                mindInspectorTransformer.setParameter("show-"+p, show.get(p)+"");
+                if (full)
+                    mindInspectorTransformer.setParameter("show-"+p, "true");
+                else
+                    mindInspectorTransformer.setParameter("show-"+p, show.get(p)+"");
             return mindInspectorTransformer.transform(ag); // transform to HTML
         } catch (Exception e) {
             e.printStackTrace();
             return "Error XML transformation (MindInspector)";
         }
-    }
-
-    public synchronized void registerCentRunner(BaseCentralisedMAS rs) {
-        if (rs == null) return;
-        
-        this.runner = rs;
-        httpServer.createContext("/df", new HttpHandler() {
-            public void handle(HttpExchange exchange) throws IOException {
-                String requestMethod = exchange.getRequestMethod();
-                Headers responseHeaders = exchange.getResponseHeaders();
-                responseHeaders.set("Content-Type", "text/html");
-                exchange.sendResponseHeaders(200, 0);
-                OutputStream responseBody = exchange.getResponseBody();
-
-                if (requestMethod.equalsIgnoreCase("GET")) {
-                    responseBody.write(("<html><head><title>Directory Facilitator State</title></head><body>").getBytes());
-                    responseBody.write(("<font size=\"+2\"><p style='color: red; font-family: arial;'>Directory Facilitator State</p></font>").getBytes());
-                                        
-                    responseBody.write("<table border=\"0\" cellspacing=\"3\" cellpadding=\"6\" >".getBytes());
-                    responseBody.write("<tr style='background-color: #ece7e6; font-family: arial;'><td><b>Agent</b></td><td><b>Services</b></td></tr>".getBytes());
-                    Map<String, Set<String>> df = runner.getDF();
-                    for (String a: df.keySet()) {
-                        responseBody.write(("<tr style='font-family: arial;'><td>"+a+"</td>").getBytes());
-                        for (String s: df.get(a)) {
-                            responseBody.write(("<td>"+s+"<br/></td>").getBytes());
-                        }
-                        responseBody.write("</tr>".getBytes());
-                            
-                    }
-                    responseBody.write("</table>".getBytes());
-                }
-                responseBody.write("</body></html>".getBytes());
-                responseBody.close();
-            }
-        });
-            
     }
 
 }

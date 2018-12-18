@@ -1,6 +1,6 @@
 package jason.control;
 
-import jason.runtime.RuntimeServices;
+import jason.runtime.RuntimeServicesInfraTier;
 
 import org.w3c.dom.Document;
 
@@ -28,5 +28,5 @@ public interface ExecutionControlInfraTier {
     public Document getAgState(String agName);
 
     /** Gets an object with infrastructure runtime services */
-    public RuntimeServices getRuntimeServices();
+    public RuntimeServicesInfraTier getRuntimeServices();
 }

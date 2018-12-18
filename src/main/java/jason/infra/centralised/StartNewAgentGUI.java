@@ -19,7 +19,7 @@ import javax.swing.filechooser.FileFilter;
 import jason.mas2j.AgentParameters;
 import jason.mas2j.ClassParameters;
 import jason.mas2j.MAS2JProject;
-import jason.runtime.RuntimeServices;
+import jason.runtime.RuntimeServicesInfraTier;
 
 public class StartNewAgentGUI extends BaseDialogGUI {
 
@@ -110,7 +110,7 @@ public class StartNewAgentGUI extends BaseDialogGUI {
             public void run() {
                 boolean debug = BaseCentralisedMAS.getRunner().isDebug();
                 boolean fs = BaseCentralisedMAS.getRunner().getControllerInfraTier() != null;
-                RuntimeServices services = BaseCentralisedMAS.getRunner().getRuntimeServices();
+                RuntimeServicesInfraTier services = BaseCentralisedMAS.getRunner().getRuntimeServices();
                 try {
                     String agClass = null;
                     if (ap.agClass != null) {

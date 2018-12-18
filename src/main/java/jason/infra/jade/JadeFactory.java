@@ -2,7 +2,7 @@ package jason.infra.jade;
 
 import jason.infra.InfrastructureFactory;
 import jason.infra.MASLauncherInfraTier;
-import jason.runtime.RuntimeServices;
+import jason.runtime.RuntimeServicesInfraTier;
 
 public class JadeFactory implements InfrastructureFactory {
 
@@ -10,7 +10,7 @@ public class JadeFactory implements InfrastructureFactory {
         return new JadeMASLauncherAnt();
     }
 
-    public RuntimeServices createRuntimeServices() {
+    public RuntimeServicesInfraTier createRuntimeServices() {
         return new JadeRuntimeServices(null, null);
     }
 }

@@ -3,8 +3,10 @@ package jason.stdlib;
 import java.util.Iterator;
 
 import jason.JasonException;
+import jason.asSemantics.ActionExec;
 import jason.asSemantics.Circumstance;
 import jason.asSemantics.DefaultInternalAction;
+import jason.asSemantics.Event;
 import jason.asSemantics.Intention;
 import jason.asSemantics.TransitionSystem;
 import jason.asSemantics.Unifier;
@@ -69,55 +71,63 @@ public class intend extends DefaultInternalAction {
         return allIntentions(ts.getC(),(Literal)args[0],args.length == 2 ? args[1] : null, un);
     }
 
-    /**
-     * returns all unifications for intentions with some goal
-     */
-    public static Iterator<Unifier> allIntentions(final Circumstance C, final Literal l, final Term intAsTerm, final Unifier un) {
-        final Trigger g = new Trigger(TEOperator.add, TEType.achieve, l);
-
-        return new Iterator<Unifier>() {
-            Unifier solution = null; // the current response (which is an unifier)
-            Intention curInt = null; 
-            Iterator<Intention> intInterator = C.getAllIntentions();
-
-            { find(); } // find first answer 
-            
-            public boolean hasNext() {
-                return solution != null;
-            }
-
-            public Unifier next() {
-                if (solution == null) find();
-                Unifier b = solution;
-                find(); // find next response
-                return b;
-            }
-            public void remove() {}
-
-            boolean isSolution() {
-                solution = un.clone();
-                if (curInt.hasTrigger(g, solution)) {
-                    if (intAsTerm != null) {
-                        return solution.unifies(intAsTerm, curInt.getAsTerm());
-                    } else {
-                        return true;
-                    }
-                }
-                return false;
-            }
-
-            void find() {
-                while (intInterator.hasNext()) { 
-                    curInt = intInterator.next();
-                    if (isSolution())
-                        return;
-                }
-                solution = null; // nothing found
-            }
-        };
-    }
-    
     /*
+    public boolean intends(Circumstance C, Literal l, Unifier un) {
+        Trigger g = new Trigger(TEOperator.add, TEType.achieve, l);
+
+        // we need to check the intention in the selected event in this cycle!!!
+        // (as it was already removed from E)
+        if (C.getSelectedEvent() != null) {
+            // logger.log(Level.SEVERE,"Int: "+g+" unif "+ts.C.SE);
+            if (C.getSelectedEvent().getIntention() != null)
+                if (C.getSelectedEvent().getIntention().hasTrigger(g, un))
+                    return true;
+        }
+
+        // we need to check the selected intention in this cycle too!!!
+        if (C.getSelectedIntention() != null) {
+            // logger.log(Level.SEVERE,"Int: "+g+" unif "+ts.C.SI);
+            if (C.getSelectedIntention().hasTrigger(g, un))
+                return true;
+        }
+
+        // intention may be in E
+        for (Event evt : C.getEvents()) {
+            if (evt.getIntention() != null && evt.getIntention().hasTrigger(g, un))
+                return true;
+        }
+
+        // intention may be suspended in PE
+        for (Event evt : C.getPendingEvents().values()) {
+            if (evt.getIntention() != null && evt.getIntention().hasTrigger(g, un))
+                return true;
+        }
+
+        // intention may be suspended in PA! (in the new semantics)
+        if (C.hasPendingAction()) {
+            for (ActionExec ac: C.getPendingActions().values()) {
+                if (ac.getIntention().hasTrigger(g, un))
+                    return true;
+            }
+        }
+
+        // intention may be suspended in PI! (in the new semantics)
+        if (C.hasPendingIntention()) {
+            for (Intention intention: C.getPendingIntentions().values()) {
+                if (intention.hasTrigger(g, un))
+                    return true;
+            }
+        }
+
+        for (Intention i : C.getIntentions()) {
+            if (i.hasTrigger(g, un))
+                return true;
+        }
+
+        return false;
+    }
+     */
+
     // data structures where intentions can be found
     enum Step { selEvt, selInt, evt, pendEvt, pendAct, pendInt, intentions, end }
 
@@ -257,7 +267,7 @@ public class intend extends DefaultInternalAction {
 
                 case intentions:
                     if (intInterator == null)
-                        intInterator = C.getRunningIntentionsPlusAtomic();
+                        intInterator = C.getIntentionsPlusAtomic();
 
                     if (intInterator.hasNext()) {
                         curInt = intInterator.next();
@@ -276,5 +286,5 @@ public class intend extends DefaultInternalAction {
             }
         };
     }
-    */
+
 }

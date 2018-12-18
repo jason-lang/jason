@@ -28,11 +28,11 @@ import jason.asSyntax.Trigger;
       The syntax of this string in the current implementation has
       the following format:<br>
       <blockquote>
-        <code>now + &lt;number&gt; [&lt;time_unit&gt;]</code>
+        <code>now + &lt;number> [&lt;time_unit>]</code>
       </blockquote > where &lt;time_unit> can be
       "s" or "second(s)",  "m" or "minute(s)", "h" or "hour(s)",
       "d" or "day(s)".
-      The default &lt;time_unit&gt; is milliseconds.<br/><br/>
+      The default &lt;time_unit> is milliseconds.<br/><br/>
 
   <li>+ event (trigger term): the event to be created. The event should
       follow the Jason Syntax for event and be

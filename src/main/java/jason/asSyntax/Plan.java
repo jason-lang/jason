@@ -1,8 +1,5 @@
 package jason.asSyntax;
 
-import jason.asSemantics.Unifier;
-import jason.asSyntax.parser.as2j;
-
 import java.io.Serializable;
 import java.io.StringReader;
 import java.util.logging.Level;
@@ -10,6 +7,10 @@ import java.util.logging.Logger;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+
+import jason.JasonException;
+import jason.asSemantics.Unifier;
+import jason.asSyntax.parser.as2j;
 
 /** Represents an AgentSpack plan
     (it extends structure to be used as a term)
@@ -35,14 +36,16 @@ public class Plan extends Structure implements Cloneable, Serializable {
     private LogicalFormula    context;
     private PlanBody          body;
 
+    private LogicalFormula    goalCondition;
+    private PlanLibrary       subplans;
+    private PlanLibrary       scope;
+    
     private boolean isAtomic      = false;
     private boolean isAllUnifs    = false;
     private boolean hasBreakpoint = false;
 
     private boolean     isTerm = false; // it is true when the plan body is used as a term instead of an element of a plan
 
-    private String file = ""; // the file where this plan was inside
-    
     // used by clone
     public Plan() {
         super("plan", 0);
@@ -68,9 +71,6 @@ public class Plan extends Structure implements Cloneable, Serializable {
         return 4;
     }
 
-    public void setFile(String f) { if (f!=null) this.file = f; }
-    public String getFile()       { return this.file; }
-    
     private static final Term noLabelAtom = new Atom("nolabel");
 
     @Override
@@ -109,9 +109,6 @@ public class Plan extends Structure implements Cloneable, Serializable {
 
     public void setLabel(Pred p) {
         label = p;
-        isAtomic      = false;
-        hasBreakpoint = false;
-        isAllUnifs    = false;
         if (p != null && p.hasAnnot()) {
             for (Term t: label.getAnnots()) {
                 if (t.equals(TAtomic))
@@ -120,16 +117,13 @@ public class Plan extends Structure implements Cloneable, Serializable {
                     hasBreakpoint = true;
                 if (t.equals(TAllUnifs))
                     isAllUnifs = true;
+                // if change here, also change the clone()!
             }
         }
     }
 
     public Pred getLabel() {
         return label;
-    }
-    
-    public void delLabel() {
-        setLabel(null);
     }
 
     public void setContext(LogicalFormula le) {
@@ -189,10 +183,11 @@ public class Plan extends Structure implements Cloneable, Serializable {
     /** returns an unifier if this plan is relevant for the event <i>te</i>,
         returns null otherwise.
     */
-    public Unifier isRelevant(Trigger te) {
+    public Unifier isRelevant(Trigger te, Unifier u) {
         // annots in plan's TE must be a subset of the ones in the event!
         // (see definition of Unifier.unifies for 2 Preds)
-        Unifier u = new Unifier();
+        if (u == null)
+            u = new Unifier();
         if (u.unifiesNoUndo(tevent, te))
             return u;
         else
@@ -233,8 +228,12 @@ public class Plan extends Structure implements Cloneable, Serializable {
 
     public Term clone() {
         Plan p = new Plan();
-        if (label != null)
-            p.setLabel((Pred) label.clone());
+        if (label != null) {
+            p.label         = (Pred) label.clone();
+            p.isAtomic      = isAtomic;
+            p.hasBreakpoint = hasBreakpoint;
+            p.isAllUnifs    = isAllUnifs;
+        }
 
         p.tevent = tevent.clone();
         if (context != null)
@@ -278,18 +277,31 @@ public class Plan extends Structure implements Cloneable, Serializable {
 
     /** returns this plan in a string complaint with AS syntax */
     public String toASString() {
-        String b, e;
-        if (isTerm) {
-            b = "{ ";
-            e = " }";
+        StringBuilder out = new StringBuilder();
+        if (isTerm)
+            out.append("{ ");
+        out.append(((label == null) ? "" : "@" + label + " "));
+        out.append(tevent);
+        out.append(((context == null) ? "" : " : " + context));
+        out.append(((goalCondition == null) ? "" : " <: " + goalCondition));
+        if (subplans == null) {
+            if (!body.isEmptyBody()) 
+                out.append(" <- " + body);
+            if (isTerm)
+                out.append(" }");
+            else 
+                out.append(".");
         } else {
-            b = "";
-            e = ".";
+            out.append(" {");
+            if (!body.isEmptyBody()) 
+                out.append("\n   <- " + body + ".");
+            for (Plan p: subplans)
+                out.append("\n   "+p.toASString());
+            out.append("\n}");
+            if (isTerm)
+                out.append(" }");
         }
-        return b+((label == null) ? "" : "@" + label + " ") +
-               tevent + ((context == null) ? "" : " : " + context) +
-               (body.isEmptyBody() ? "" : " <- " + body) +
-               e;
+        return out.toString();
     }
 
     /** get as XML */
@@ -313,5 +325,39 @@ public class Plan extends Structure implements Cloneable, Serializable {
         }
 
         return u;
+    }
+    
+    public void addSubPlan(Plan p) throws JasonException {
+        if (subplans == null)
+            subplans = new PlanLibrary(scope);
+        subplans.add(p);
+    }
+    public boolean hasSubPlans() {
+        return subplans != null;
+    }
+    public boolean hasInterestInExernalEvents() {
+        return subplans != null && subplans.hasPlansForExternalEvents();
+    }
+    public PlanLibrary getSubPlans() {
+        return subplans;
+    }
+    public void setScope(PlanLibrary pl) {
+        scope = pl;
+        if (subplans != null)
+            subplans.setFather(scope);
+    }
+    public PlanLibrary getScope() {
+        return scope;
+    }
+    
+    public void setGoalCondition(LogicalFormula f) {
+        goalCondition = f;
+    }
+    
+    public LogicalFormula getGoalCondition() {
+        return goalCondition;
+    }
+    public boolean hasGoalCondition() {
+        return goalCondition != null;
     }
 }

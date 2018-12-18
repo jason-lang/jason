@@ -27,7 +27,7 @@ public class Structure extends Atom {
     private static final long serialVersionUID = 1L;
     private static Logger logger = Logger.getLogger(Structure.class.getName());
 
-    protected static final List<Term> emptyTermList  = new ArrayList<>(0);
+    protected static final List<Term> emptyTermList  = new ArrayList<Term>(0);
     protected static final Term[]     emptyTermArray = new Term[0]; // just to have a type for toArray in the getTermsArray method
 
     private List<Term> terms;
@@ -53,7 +53,7 @@ public class Structure extends Atom {
         super(namespace, l);
         final int tss = l.getArity();
         if (tss > 0) {
-            terms = new ArrayList<>(tss);
+            terms = new ArrayList<Term>(tss);
             for (int i = 0; i < tss; i++)
                 terms.add(l.getTerm(i).clone());
         }
@@ -65,7 +65,7 @@ public class Structure extends Atom {
         super(l, u);
         final int tss = l.getArity();
         if (tss > 0) {
-            terms = new ArrayList<>(tss);
+            terms = new ArrayList<Term>(tss);
             for (int i = 0; i < tss; i++)
                 terms.add(l.getTerm(i).capply(u));
         }
@@ -81,7 +81,7 @@ public class Structure extends Atom {
     public Structure(String functor, int termsSize) {
         super(functor);
         if (termsSize > 0)
-            terms = new ArrayList<>(termsSize);
+            terms = new ArrayList<Term>(termsSize);
     }
 
     public static Structure parse(String sTerm) {
@@ -198,7 +198,7 @@ public class Structure extends Atom {
     @Override
     public void addTerm(Term t) {
         if (t == null) return;
-        if (terms == null) terms = new ArrayList<>(5);
+        if (terms == null) terms = new ArrayList<Term>(5);
         terms.add(t);
         //if (!t.isGround())
         //    isGround = false;
@@ -217,7 +217,7 @@ public class Structure extends Atom {
 
     @Override
     public Literal addTerms(Term ... ts ) {
-        if (terms == null) terms = new ArrayList<>(5);
+        if (terms == null) terms = new ArrayList<Term>(5);
         for (Term t: ts)
             terms.add(t);
         predicateIndicatorCache = null;
@@ -227,7 +227,7 @@ public class Structure extends Atom {
 
     @Override
     public Literal addTerms(List<Term> l) {
-        if (terms == null) terms = new ArrayList<>(5);
+        if (terms == null) terms = new ArrayList<Term>(5);
         for (Term t: l)
             terms.add(t);
         predicateIndicatorCache = null;
@@ -246,7 +246,7 @@ public class Structure extends Atom {
 
     @Override
     public void setTerm(int i, Term t) {
-        if (terms == null) terms = new ArrayList<>(5);
+        if (terms == null) terms = new ArrayList<Term>(5);
         terms.set(i,t);
         resetHashCodeCache();
         //if (!t.isGround() && isGround())
@@ -410,9 +410,9 @@ public class Structure extends Atom {
     }
 
     public List<VarTerm> getSingletonVars() {
-        Map<VarTerm, Integer> all  = new HashMap<>();
+        Map<VarTerm, Integer> all  = new HashMap<VarTerm, Integer>();
         countVars(all);
-        List<VarTerm> r = new ArrayList<>();
+        List<VarTerm> r = new ArrayList<VarTerm>();
         for (VarTerm k: all.keySet()) {
             if (all.get(k) == 1 && !k.isUnnamedVar())
                 r.add(k);

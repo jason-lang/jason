@@ -1,7 +1,7 @@
 package jason.environment;
 
 import jason.asSyntax.Structure;
-import jason.runtime.RuntimeServices;
+import jason.runtime.RuntimeServicesInfraTier;
 
 import java.util.Collection;
 
@@ -27,7 +27,7 @@ public interface EnvironmentInfraTier {
     public void informAgsEnvironmentChanged(Collection<String> agents);
 
     /** Gets an object with infrastructure runtime services */
-    public RuntimeServices getRuntimeServices();
+    public RuntimeServicesInfraTier getRuntimeServices();
 
     /** returns true if the infrastructure environment is running */
     public boolean isRunning();

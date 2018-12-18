@@ -1,9 +1,5 @@
 package test;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import jason.RevisionFailedException;
 import jason.asSemantics.Agent;
 import jason.asSemantics.Intention;
@@ -17,7 +13,6 @@ import jason.asSyntax.LogExpr;
 import jason.asSyntax.LogicalFormula;
 import jason.asSyntax.Pred;
 import jason.asSyntax.PredicateIndicator;
-import jason.asSyntax.Rule;
 import jason.asSyntax.Structure;
 import jason.asSyntax.Term;
 import jason.asSyntax.VarTerm;
@@ -25,6 +20,11 @@ import jason.asSyntax.parser.ParseException;
 import jason.bb.BeliefBase;
 import jason.bb.DefaultBeliefBase;
 import jason.bb.JDBCPersistentBB;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import junit.framework.TestCase;
 
 /** JUnit test case for syntax package */
@@ -274,25 +274,6 @@ public class BeliefBaseTest extends TestCase {
         assertEquals(l, Literal.parseLiteral("pos(2,3)"));
 
         assertTrue(ag.getBB().remove(l));
-    }
-    
-    public void testRemUnground1() throws RevisionFailedException {
-        Agent ag = new Agent();
-        ag.initAg();
-
-        ag.addBel(Literal.parseLiteral("pos(_)"));
-        Literal l = Literal.parseLiteral("pos(_)");
-        assertTrue(ag.delBel(l));
-    }
-    public void testRemUnground2() throws RevisionFailedException {
-        Agent ag = new Agent();
-        ag.initAg();
-
-        ag.addBel(new Rule(Literal.parseLiteral("pos(_)"), Literal.LTrue));
-        ag.addBel(Literal.parseLiteral("something(I,I)"));
-
-        Literal l = Literal.parseLiteral("pos(_)");
-        assertTrue(ag.delBel(l));
     }
 
     @SuppressWarnings("unused")
@@ -616,7 +597,7 @@ public class BeliefBaseTest extends TestCase {
 
         rbrf = ag.brf(null, Literal.parseLiteral("c(_)"), Intention.EmptyInt);
         assertTrue(rbrf[1].size() == 1);
-        assertEquals("[c(y)]",rbrf[1].toString());
+        assertEquals(rbrf[1].toString(), "[c(y)]");
 
         // can not remove b without source
         rbrf = ag.brf(null, Literal.parseLiteral("b(_,_)"), Intention.EmptyInt);

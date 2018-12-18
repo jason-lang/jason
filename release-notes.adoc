@@ -3,23 +3,10 @@
 
 ifdef::env-github[:outfilesuffix: .adoc]
 
-== version 2.3 (2018-10-01)
+== version 2.3
 
-(a built package is available at https://sourceforge.net/projects/jason/files/jason/version%202.3/[here])
-
-
-- New internal actions to support Directory Facilitator services:
-    * `.df_register(S)`: register the agent in the DF as a provider of service `S`
-    * `.df_deregister(S)`: removes the agent in the DF as a provider of service `S`
-    * `.df_search(S, L)`: unifies in `L` a list of all agents providing the service `S`
-    * `.df_subscribe(S)`: subscribes the agent as interested in providers of service `S`
-+
-When JADE is used, this services are mapped to the JADE DF service.
-
-- Java 1.8 a is now used
 - new syntax: operator `--` to delete some belief with new focus for the event.
-- new internal action: `.drop_future_intention` (see javadoc api for more information)
-- new internal action: `.printf`, inspired in Java Format
+- new internal action: printf, inspired in Java Format
   (https://docs.oracle.com/javase/tutorial/java/data/numberformat.html)
 +
 ----

@@ -1,6 +1,7 @@
 package jason.infra.centralised;
 
-import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -9,52 +10,48 @@ import jason.architecture.AgArch;
 import jason.asSemantics.Agent;
 import jason.mas2j.AgentParameters;
 import jason.mas2j.ClassParameters;
+import jason.runtime.RuntimeServicesInfraTier;
 import jason.runtime.Settings;
 import jason.runtime.SourcePath;
 
 /** This class implements the centralised version of the runtime services. */
-public class CentralisedRuntimeServices extends BaseRuntimeServices {
+public class CentralisedRuntimeServices implements RuntimeServicesInfraTier {
 
     private static Logger logger = Logger.getLogger(CentralisedRuntimeServices.class.getName());
 
+    protected BaseCentralisedMAS masRunner;
+
     public CentralisedRuntimeServices(BaseCentralisedMAS masRunner) {
-        super(masRunner);
+        this.masRunner = masRunner;
     }
 
     protected CentralisedAgArch newAgInstance() {
         return new CentralisedAgArch();
     }
-    
-    @Override
-    public String createAgent(String agName, String agSource, String agClass, Collection<String> archClasses, ClassParameters bbPars, Settings stts, Agent father) throws Exception {
+
+    public String createAgent(String agName, String agSource, String agClass, List<String> archClasses, ClassParameters bbPars, Settings stts, Agent father) throws Exception {
         if (logger.isLoggable(Level.FINE))
             logger.fine("Creating centralised agent " + agName + " from source " + agSource + " (agClass=" + agClass + ", archClass=" + archClasses + ", settings=" + stts);
 
         AgentParameters ap = new AgentParameters();
         ap.setAgClass(agClass);
+        ap.addArchClass(archClasses);
         ap.setBB(bbPars);
-        if (archClasses != null && !archClasses.isEmpty()) {
-            ap.addArchClass(archClasses);           
-        } else {
-            if (father != null) {
-                // use father agArchs
-                ap.addArchClass(father.getTS().getUserAgArch().getAgArchClassesChain());
-            } else {
-                // use default agArch
-                ap.addArchClass(defaultAgArchs);
-            }
-        } 
 
         if (stts == null)
             stts = new Settings();
 
         String prefix = null;
-        if (father != null && father.getASLSrc() != null && father.getASLSrc().startsWith(SourcePath.CRPrefix))
+        if (father != null && father.getASLSrc().startsWith(SourcePath.CRPrefix))
             prefix = SourcePath.CRPrefix + "/";
         agSource = masRunner.getProject().getSourcePaths().fixPath(agSource, prefix);
 
+        String nb = "";
         synchronized (logger) { // to avoid problems related to concurrent executions of .create_agent
-            agName = getNewAgentName(agName);
+            int n = 1;
+            while (masRunner.getAg(agName+nb) != null)
+                nb = "_" + (n++);
+            agName = agName + nb;
 
             CentralisedAgArch agArch = newAgInstance();
             agArch.setAgName(agName);
@@ -78,7 +75,6 @@ public class CentralisedRuntimeServices extends BaseRuntimeServices {
         return agName;
     }
 
-    @Override
     public void startAgent(String agName) {
         // create the agent thread
         CentralisedAgArch agArch = masRunner.getAg(agName);
@@ -87,8 +83,7 @@ public class CentralisedRuntimeServices extends BaseRuntimeServices {
         agThread.start();
     }
 
-    @Override
-    public AgArch clone(Agent source, Collection<String> archClasses, String agName) throws JasonException {
+    public AgArch clone(Agent source, List<String> archClasses, String agName) throws JasonException {
         // create a new infra arch
         CentralisedAgArch agArch = newAgInstance();
         agArch.setAgName(agName);
@@ -102,7 +97,14 @@ public class CentralisedRuntimeServices extends BaseRuntimeServices {
         return agArch.getUserAgArch();
     }
 
-    @Override
+    public Set<String> getAgentsNames() {
+        return masRunner.getAgs().keySet();
+    }
+
+    public int getAgentsQty() {
+        return masRunner.getAgs().keySet().size();
+    }
+
     public boolean killAgent(String agName, String byAg) {
         logger.fine("Killing centralised agent " + agName);
         CentralisedAgArch ag = masRunner.getAg(agName);
@@ -113,5 +115,8 @@ public class CentralisedRuntimeServices extends BaseRuntimeServices {
         }
         return false;
     }
-}
 
+    public void stopMAS() throws Exception {
+        masRunner.finish();
+    }
+}

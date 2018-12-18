@@ -12,7 +12,7 @@ public class SourcePath {
 
     protected String       root = ".";
     protected String       urlPrefix = null;
-    protected List<String> paths = new ArrayList<>();
+    protected List<String> paths = new ArrayList<String>();
 
     public void setRoot(String r) {
         root = r;
@@ -49,7 +49,7 @@ public class SourcePath {
     }
 
     public List<String> getPaths() {
-        List<String> r = new ArrayList<>();
+        List<String> r = new ArrayList<String>();
         if (paths.isEmpty()) {
             r.add(root);
         } else {
@@ -74,10 +74,6 @@ public class SourcePath {
 
     /** fix path of the asl code based on aslSourcePath, also considers code from a jar file (if urlPrefix is not null) */
     public String fixPath(String f, String urlPrefix) {
-    	if (f==null)
-    		return f;
-    	if (f.isEmpty())
-    		return f;
         if (urlPrefix == null || urlPrefix.length() == 0) {
             if (new File(f).exists()) {
                 return f;
