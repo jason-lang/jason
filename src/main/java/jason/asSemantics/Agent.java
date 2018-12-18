@@ -1089,7 +1089,7 @@ public class Agent {
         ag.setAttribute("cycle", ""+ts.getUserAgArch().getCycleNumber());
 
         ag.appendChild(bb.getAsDOM(document));
-        //ag.appendChild(getPL().getAsDOM(document));
+        ag.appendChild(getPL().getAsDOM(document));
         return ag;
     }
 
