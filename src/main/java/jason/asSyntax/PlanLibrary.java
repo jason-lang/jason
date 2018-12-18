@@ -318,7 +318,7 @@ public class PlanLibrary implements Iterable<Plan> {
      * Remove a plan represented by the label <i>pLabel</i>.
      * In case the plan has many sources, only the plan's source is removed.
      */
-    public boolean remove(Atom pLabel, Term source) {
+    public boolean remove(Literal pLabel, Term source) {
         // find the plan
         Plan p = get(pLabel);
         if (p != null) {
@@ -334,7 +334,7 @@ public class PlanLibrary implements Iterable<Plan> {
     }
 
     /** remove the plan with label <i>pLabel</i> */
-    public Plan remove(Atom pLabel) {
+    public Plan remove(Literal pLabel) {
         synchronized (lockPL) {
             Plan p = planLabels.remove( getStringForLabel(pLabel) );
 

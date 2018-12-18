@@ -229,7 +229,7 @@ public class Trigger extends Structure implements Cloneable {
                 else if (p.getBodyType() == BodyType.delBel)
                     op = TEOperator.del;
                 if (op != null) {
-                    Literal l = (Literal)p.getBodyTerm().clone();
+                    Literal l = ((Literal)p.getBodyTerm().clone()).forceFullLiteralImpl();
                     l.delAnnot(BeliefBase.TSelf); // remove the eventual auto added annotation of source
                     return new Trigger(op, TEType.belief, l);
 

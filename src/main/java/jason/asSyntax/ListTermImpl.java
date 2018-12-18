@@ -176,7 +176,7 @@ public class ListTermImpl extends Structure implements ListTerm {
     /** return the this ListTerm elements (0=Term, 1=ListTerm) */
     public List<Term> getTerms() {
         logger.warning("Do not use getTerms in lists!");
-        List<Term> l = new ArrayList<Term>(2);
+        List<Term> l = new ArrayList<>(2);
         if (term != null) l.add(term);
         if (next != null) l.add(next);
         return l;
@@ -375,7 +375,7 @@ public class ListTermImpl extends Structure implements ListTerm {
 
     /** returns a new (cloned) list representing the set resulting of the union of this list and lt. */
     public ListTerm union(ListTerm lt) {
-        Set<Term> set = new TreeSet<Term>();
+        Set<Term> set = new TreeSet<>();
         set.addAll(lt);
         set.addAll(this);
         return setToList(set);
@@ -383,7 +383,7 @@ public class ListTermImpl extends Structure implements ListTerm {
 
     /** returns a new (cloned) list representing the set resulting of the intersection of this list and lt. */
     public ListTerm intersection(ListTerm lt) {
-        Set<Term> set = new TreeSet<Term>();
+        Set<Term> set = new TreeSet<>();
         set.addAll(lt);
         set.retainAll(this);
         return setToList(set);
@@ -391,7 +391,7 @@ public class ListTermImpl extends Structure implements ListTerm {
 
     /** returns a new (cloned) list representing the set resulting of the difference of this list and lt. */
     public ListTerm difference(ListTerm lt) {
-        Set<Term> set = new TreeSet<Term>();
+        Set<Term> set = new TreeSet<>();
         set.addAll(this);
         set.removeAll(lt);
         return setToList(set);
@@ -417,7 +417,7 @@ public class ListTermImpl extends Structure implements ListTerm {
 
             public boolean hasNext() {
                 if (open == null) {
-                    open = new LinkedList<SubSetSearchState>(); // states to explore
+                    open = new LinkedList<>(); // states to explore
                     //open.add(new SubSetSearchState(new ArrayList<Term>(), getAsList(), k)); // initial state (root of search tree)
                     thisAsArray = getAsList().toArray(thisAsArray);
                     open.add(new SubSetSearchState(0, k, null, null)); // initial state (root of search tree)
@@ -473,7 +473,7 @@ public class ListTermImpl extends Structure implements ListTerm {
                 }
 
                 List<Term> getAsList() {
-                    LinkedList<Term> np = new LinkedList<Term>();
+                    LinkedList<Term> np = new LinkedList<>();
                     SubSetSearchState c = this;
                     while (c.value != null) {
                         np.addFirst(c.value);
@@ -603,7 +603,7 @@ public class ListTermImpl extends Structure implements ListTerm {
      * Note: the tail of the list, if any, is not included!
      */
     public List<Term> getAsList() {
-        List<Term> l = new ArrayList<Term>();
+        List<Term> l = new ArrayList<>();
         for (Term t: this)
             l.add(t);
         return l;

@@ -1,5 +1,7 @@
 package test.asunit;
 
+import jason.asSyntax.ASSyntax;
+import jason.asSyntax.parser.ParseException;
 import jason.asunit.TestAgent;
 
 import org.junit.Assert;
@@ -44,6 +46,7 @@ public class TestKQML {
             "                    .send(maria,tellHow,Plan); "+
             "                    .send(maria,achieve, hello(bob)). "+
             "+!send_untellHow <- .send(maria,untellHow,hp). "+
+            "+!send_askHow    <- .send(maria,askHow,{+!goto(_,_)},LP); .add_plan(LP); jason.asunit.print(LP). "+
 
             "@hp +!hello(Who)  <- jason.asunit.print(\"Hello \",Who)."
         );
@@ -133,4 +136,14 @@ public class TestKQML {
         maria.assertIdle(10);
         Assert.assertTrue(maria.getPL().get("hp") == null);
     }
+
+    @Test(timeout=2000)
+    public void testAskHow() throws ParseException {
+        bob.addGoal("send_askHow");
+        bob.assertIdle(10);
+        maria.assertIdle(10);
+        bob.assertPrint("+!goto(", 20);
+        Assert.assertEquals(1,bob.getPL().getCandidatePlans(ASSyntax.parseTrigger("+!goto(_,_)")).size());
+    }
+
 }
