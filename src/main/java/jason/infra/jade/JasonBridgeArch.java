@@ -17,12 +17,13 @@ import jason.asSemantics.ActionExec;
 import jason.asSemantics.Agent;
 import jason.asSemantics.Message;
 import jason.asSyntax.ASSyntax;
+import jason.asSyntax.Atom;
 import jason.asSyntax.ListTermImpl;
 import jason.asSyntax.Literal;
 import jason.asSyntax.StringTermImpl;
 import jason.asSyntax.Term;
 import jason.mas2j.AgentParameters;
-import jason.runtime.RuntimeServicesInfraTier;
+import jason.runtime.RuntimeServices;
 
 public class JasonBridgeArch extends AgArch {
 
@@ -145,7 +146,11 @@ public class JasonBridgeArch extends AgArch {
                         replyWith = "noid";
                     }
 
-                    Object propCont = translateContentToJason(m);
+                    Object propCont = translateDFSubscribeToJason(m);
+
+                    if (propCont == null) // not a DF subscribe answer 
+                            propCont = translateContentToJason(m);
+
                     if (propCont != null) {
                         jason.asSemantics.Message im = new jason.asSemantics.Message(ilForce, sender, getAgName(), propCont, replyWith);
                         if (irt != null) {
@@ -187,6 +192,23 @@ public class JasonBridgeArch extends AgArch {
         return propCont;
     }
 
+    protected Literal translateDFSubscribeToJason(ACLMessage m) {
+        String ilForce   = JadeAg.aclPerformativeToKqml(m);
+        String sender    = m.getSender().getLocalName();
+        String content = m.getContent();
+        if (ilForce.equals("tell") && sender.equals("df") && content.indexOf("(search (df-agent-description") > 0) {
+            content = cutString(content, "(set (service-description :name ");
+            String service = content.substring(0, content.indexOf(":")).trim();
+            content = cutString(content, "(sequence (df-agent-description :name (agent-identifier :name ");
+            String provider = content.substring(0, content.indexOf("@")).trim();
+            return ASSyntax.createLiteral("provider", new Atom(provider), new StringTermImpl(service));
+        } else {
+                return null;
+        }
+    }
+    private String cutString(String s, String c) {
+        return s.substring( s.indexOf(c) + c.length());
+    }
 
     @Override
     public void act(ActionExec action) {
@@ -211,7 +233,7 @@ public class JasonBridgeArch extends AgArch {
     }
 
     @Override
-    public RuntimeServicesInfraTier getRuntimeServices() {
+    public RuntimeServices getRuntimeServices() {
         return new JadeRuntimeServices(jadeAg.getContainerController(), jadeAg);
     }
 

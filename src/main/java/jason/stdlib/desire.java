@@ -1,5 +1,7 @@
 package jason.stdlib;
 
+import java.util.Iterator;
+
 import jason.asSemantics.Circumstance;
 import jason.asSemantics.Event;
 import jason.asSemantics.Intention;
@@ -10,8 +12,6 @@ import jason.asSyntax.Term;
 import jason.asSyntax.Trigger;
 import jason.asSyntax.Trigger.TEOperator;
 import jason.asSyntax.Trigger.TEType;
-
-import java.util.Iterator;
 
 /**
   <p>Internal action: <b><code>.desire(<i>D</i>)</code></b>.
@@ -49,42 +49,7 @@ public class desire extends intend {
         return allDesires(ts.getC(),(Literal)args[0],args.length == 2 ? args[1] : null, un);
     }
 
-    /*
-    public boolean desires(Circumstance C, Literal l, Unifier un) {
-        Trigger teFromL = new Trigger(TEOperator.add, TEType.achieve, l);
-
-        // we need to check the selected event in this cycle (already removed from E)
-        if (C.getSelectedEvent() != null) {
-            Trigger   t = C.getSelectedEvent().getTrigger();
-            Intention i = C.getSelectedEvent().getIntention();
-            if (i != Intention.EmptyInt && i.size() > 0) {
-                t = t.clone();
-                t.apply(i.peek().getUnif());
-            }
-            if (un.unifies(teFromL, t)) {
-                return true;
-            }
-        }
-
-        for (Event ei : C.getEvents()) {
-            Trigger   t = ei.getTrigger();
-            Intention i = ei.getIntention();
-            if (i != Intention.EmptyInt && i.size() > 0) {
-                t = t.clone();
-                t.apply(i.peek().getUnif());
-            }
-            if (un.unifies(teFromL, t)) {
-                return true;
-            }
-        }
-
-        return super.intends(C, l, un); // Int subset Des (see the formal definitions)
-    }
-     */
-
     enum Step { selEvt, evt, useIntends, end }
-
-    //private static Logger logger = Logger.getLogger(desire.class.getName());
 
     public static Iterator<Unifier> allDesires(final Circumstance C, final Literal l, final Term intAsTerm, final Unifier un) {
         final Trigger teFromL = new Trigger(TEOperator.add, TEType.achieve, l);
@@ -94,13 +59,10 @@ public class desire extends intend {
             Unifier solution = null; // the current response (which is an unifier)
             Iterator<Event>      evtIterator     = null;
             Iterator<Unifier>    intendInterator = null;
-            {
-                find();
-            }
+
+            { find(); }
 
             public boolean hasNext() {
-                //if (solution == null)
-                //    logger.info("* no more solution for "+teFromL+C);
                 return solution != null;
             }
 

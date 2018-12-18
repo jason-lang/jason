@@ -65,7 +65,7 @@ public class ASSyntax {
 
     public static final String hardDeadLineStr = "hard_deadline";
 
-    private static Set<PredicateIndicator> keywords = new HashSet<PredicateIndicator>();
+    private static Set<PredicateIndicator> keywords = new HashSet<>();
 
     static {
         keywords.add(new PredicateIndicator("atomic", 0));

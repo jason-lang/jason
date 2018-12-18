@@ -49,17 +49,17 @@ public class join extends DefaultInternalAction {
             if (fd.toFinish == 0) {
                 //System.out.println("join finished!");
                 currentInt.peek().removeCurrentStep();
-                ts.getC().addIntention(currentInt);
+                ts.getC().addRunningIntention(currentInt);
             }
         } else {
             // the first intention has finished, drop others
             fd.intentions.remove(currentInt);
             for (Intention i: fd.intentions) {
                 //System.out.println("drop "+i.getId());
-                drop_intention.dropInt(ts.getC(), i);
+                    ts.getC().dropIntention(i);
             }
             currentInt.peek().removeCurrentStep();
-            ts.getC().addIntention(currentInt);
+            ts.getC().addRunningIntention(currentInt);
         }
 
         return true;

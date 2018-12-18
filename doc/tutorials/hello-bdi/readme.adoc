@@ -109,7 +109,7 @@ in this case).
 
 * Create a new project (you can use either
 http://jason.sourceforge.net/mini-tutorial/getting-started/[Jason jEdit],
-http://jason.sourceforge.net/mini-tutorial/eclipse-plugin/[Jason Eclipse],  http://jacamo.sourceforge.net/eclipseplugin/tutorial/[JaCaMo Eclipse], or  http://jacamo.sourceforge.net/tutorial/hello-world/shell-based.html[JaCaMo shell based commands]).
+http://jason.sourceforge.net/mini-tutorial/eclipse-plugin/[Jason Eclipse],  http://jacamo.sourceforge.net/doc/install.html#_eclipse_plugin[JaCaMo Eclipse], or  http://jacamo.sourceforge.net/doc/install.html#_shell_command[JaCaMo shell based commands] to create and run the programs of this tutorial).
 * Create agent Bob with the source code above. The project should
 look like:
 +
@@ -134,7 +134,6 @@ mas bdi_hw {
 
     agent bob
 
-    asl-path: src/agt, src/agt/inc
 }
 ----------------
 
@@ -261,8 +260,6 @@ mas bdi_hw {
          focused-by: bob
       }
    }
-
-   asl-path: src/agt, src/agt/inc
 }
 --------------------------
 |===

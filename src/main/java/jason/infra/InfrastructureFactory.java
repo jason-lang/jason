@@ -1,6 +1,6 @@
 package jason.infra;
 
-import jason.runtime.RuntimeServicesInfraTier;
+import jason.runtime.RuntimeServices;
 
 /**
  * Every infrastructure for Jason must implement this interface.  The
@@ -20,10 +20,10 @@ public interface InfrastructureFactory {
 
     /**
      * Every infrastructure factory should be able to create an
-     * instance of RuntimeServicesInfraTier, this instance provides
+     * instance of RuntimeServices, this instance provides
      * services for controlling the MAS, as agent creation,
      * destruction, etc. These services are normally used by user
      * classes as AgArch and Environments.
      */
-    public RuntimeServicesInfraTier createRuntimeServices();
+    public RuntimeServices createRuntimeServices();
 }

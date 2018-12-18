@@ -26,7 +26,7 @@ public class TestIA {
         ag.addGoal("remove");
         int size = ag.getPL().size();
         ag.assertIdle(30);
-        Assert.assertTrue(size-1 == ag.getPL().size());
+        Assert.assertEquals(size-1, ag.getPL().size());
         ag.addGoal("test");
         ag.assertAct("act1", 10);
     }

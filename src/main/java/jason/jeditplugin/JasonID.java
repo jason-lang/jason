@@ -55,7 +55,6 @@ import jason.mas2j.MAS2JProject;
 import jason.mas2j.parser.ParseException;
 import jason.mas2j.parser.TokenMgrError;
 import jason.runtime.OutputStreamAdapter;
-import jason.util.CheckVersion;
 import jason.util.Config;
 import jason.util.asl2html;
 import jason.util.asl2tex;
@@ -119,7 +118,7 @@ public class JasonID extends JPanel implements EBComponent, RunProjectListener {
         // add myself in project parser
         JasonProjectSideKickParser.addPluginInstance(this);
 
-        new CheckVersion().start();
+        //new CheckVersion().start();
 
         // stop mind inspector in case it was started
         new Thread() {

@@ -47,10 +47,8 @@ public class drop_desire extends drop_intention {
 
     @Override
     public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {
-        checkArguments(args);
-
+        super.execute(ts, un, args);
         dropEvt(ts.getC(), (Literal)args[0], un);
-        dropInt(ts.getC(), (Literal)args[0], un);
         return true;
     }
 
@@ -59,24 +57,8 @@ public class drop_desire extends drop_intention {
 
         // search in E
         C.removeEvents(te, un);
-        //dropEvt(te, un, C.getEventsPlusAtomic());
 
         // search in PE (only the event need to be checked, the related intention is handled by dropInt)
         C.removePendingEvents(te, un);
-        //dropEvt(te, un, C.getPendingEvents().values().iterator());
     }
-
-    /* moved to circumstance
-    private static void dropEvt(Trigger te, Unifier un, Iterator<Event> ie) {
-        while (ie.hasNext()) {
-            Event  ei = ie.next();
-            Trigger t = ei.getTrigger();
-            if (ei.getIntention() != Intention.EmptyInt) { // since the unifier of the intention will not be used, apply it to the event before comparing to the event to be dropped
-                t = t.capply(ei.getIntention().peek().getUnif());
-            }
-            if (un.clone().unifiesNoUndo(te, t)) {
-                ie.remove();
-            }
-        }
-    }*/
 }

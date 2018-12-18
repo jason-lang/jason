@@ -1,11 +1,9 @@
 // participating in CNP
 
-+!joinCNP[source(A)]
-    <- .send(A,tell,::introduction(participant)).
-
 // Answer a Call For Proposal
 +cfp(Task)[source(A)] : acceptable(Task)
     <-  ?price(Task,Price);
+        .println("Proposing ",Price," for task ",Task," from agent ",A);
         .send(A,tell, ::propose(Price));
         +participating(Task).
 
@@ -18,5 +16,5 @@
     <-  .print("My proposal in ",this_ns," for task ",Task," won!").
         // do the task and report to initiator
 
-+reject_proposal : participating (Task)
++reject_proposal : participating(Task)
     <- .print("I lost CNP in ",this_ns," for task ",Task,".").

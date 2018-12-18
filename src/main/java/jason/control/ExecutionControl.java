@@ -1,6 +1,6 @@
 package jason.control;
 
-import jason.runtime.RuntimeServicesInfraTier;
+import jason.runtime.RuntimeServices;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -39,7 +39,7 @@ public class ExecutionControl {
 
     private Lock lock = new ReentrantLock();
     private Condition agFinishedCond = lock.newCondition();
-    private RuntimeServicesInfraTier runtime;
+    private RuntimeServices runtime;
 
     protected static Logger logger = Logger.getLogger(ExecutionControl.class.getName());
 

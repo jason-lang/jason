@@ -48,7 +48,7 @@ PARSER_BEGIN(as2j)
   import jason.util.*;
 
   public class as2j {
-    private String    asSource = null;
+    private String    asSource = "no-asl-source";
     private Agent     curAg    = null;
 
     private Atom      namespace     = Literal.DefaultNS;
@@ -66,6 +66,8 @@ PARSER_BEGIN(as2j)
     public void setNS(Atom  ns) { namespace = ns; thisnamespace = ns; }
     public Atom getNS()         { return namespace; }
 
+    public void setASLSource(String src) { asSource = src; }
+    
     private String getSourceRef(SourceInfo s) {
         if (s == null)
             return "[]";
@@ -205,7 +207,7 @@ boolean agent(Agent a) throws jason.JasonException :
                                 Literal g;
                                 Plan    p;
                                 curAg = a;
-                                if (a != null && a.getASLSrc() != null) asSource = a.getASLSrc();
+                                //if (a != null && a.getASLSrc() != null) asSource = a.getASLSrc();
                                 boolean endDir = false;
                               }
 {
@@ -223,6 +225,7 @@ boolean agent(Agent a) throws jason.JasonException :
 
   // plans and rules
   ( p = plan()                { if (a != null) {
+                                   p.setFile(asSource);
                                    a.getPL().add(p);
                                    // warning only not parsed files
                                    if (config.getBoolean(Config.WARN_SING_VAR) && !parsedFiles.contains(asSource)) {
@@ -338,33 +341,19 @@ Literal initial_goal() : { Literal g; }
 
 
 /* Plan */
-Plan plan() :         { Token k = null;
+Plan plan() :         { Token k;
                         Pred L = null; Literal L2;
                         Trigger T;
                         Object C = null;
-                        Object GC = null;
                         PlanBody B = null;
-                        List sps = null; Plan sp;
-                        int start = -1, end = -1;}
+                        int start = -1, end;}
 {
     [ k = <TK_LABEL_AT> L2=literal()  { start = k.beginLine; L = new Pred(L2); }   ] // use literal to allow namespace
     T=trigger()
-    [ k = ":"  C  = log_expr()   { if (start == -1) start = k.beginLine; } ]
-    [ k = "<:" GC = log_expr()   { if (start == -1) start = k.beginLine; } ] // NEW ER syntax for goal condition
-    (
-      [ k = "<-" B = plan_body()   { if (start == -1) start = k.beginLine; } ]
-      k = "."                      { if (start == -1) start = k.beginLine; }
-    |
-      [ "{" // NEW ER syntax for sub plans
-        [ k = "<-" B = plan_body() "." { if (start == -1) start = k.beginLine; } ]
-                                   { sps = new ArrayList(); }
-        (                          
-            sp = plan()            { sps.add(sp); }
-        )*
-        "}"
-      ]
-    )
-                   { if (k != null) end = k.beginLine;
+    [ k = ":"  C = log_expr()    { if (start == -1) start = k.beginLine; } ]
+    [ k = "<-" B = plan_body()   { if (start == -1) start = k.beginLine; } ]
+    k = "."                      { if (start == -1) start = k.beginLine; }
+                   { end = k.beginLine;
                      InternalActionLiteral ial = null;
                      try { ial = checkInternalActionsInContext((LogicalFormula)C, curAg); } catch (Exception e) {}
                      if (ial != null)
@@ -373,14 +362,6 @@ Plan plan() :         { Token k = null;
 	                    B = (PlanBody)B.getBodyNext();
                      Plan p = new Plan(L,T,(LogicalFormula)C, B);
                      p.setSrcInfo(new SourceInfo(asSource,start,end));
-                     p.setGoalCondition((LogicalFormula)GC);
-                     if (sps != null) 
-                     	for (Object o: sps)
-                     		try {
-                     		    p.addSubPlan((Plan)o);
-                     		} catch (Exception e) {
-                     			e.printStackTrace();
-                     		}
                      return p;
                    }
 }
@@ -403,7 +384,7 @@ Trigger trigger() :
     )
   ]
 
-  F=literal()  { return new Trigger(teOp,teType,F); }
+  F=literal()  { return new Trigger(teOp,teType,F.forceFullLiteralImpl()); }
 }
 
 
@@ -593,9 +574,9 @@ Object body_formula() :
    ]
 
    (
-   B = rule_plan_term()
-   |
-   B = log_expr()
+      B = rule_plan_term()
+    |
+      B = log_expr()
    )
                        { if (formType == BodyType.action && B instanceof RelExpr) {
                             return new PlanBodyImpl(BodyType.constraint, (RelExpr)B); // constraint

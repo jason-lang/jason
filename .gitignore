@@ -1,3 +1,4 @@
+.DS_Store
 bin
 build
 .project
@@ -32,3 +33,4 @@ doc/tech/annotations.html
 hs_err_pid*
 
 bookstore.*
+doc/index.html

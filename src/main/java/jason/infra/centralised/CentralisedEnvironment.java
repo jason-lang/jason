@@ -6,7 +6,7 @@ import jason.asSyntax.Structure;
 import jason.environment.Environment;
 import jason.environment.EnvironmentInfraTier;
 import jason.mas2j.ClassParameters;
-import jason.runtime.RuntimeServicesInfraTier;
+import jason.runtime.RuntimeServices;
 
 import java.util.Collection;
 import java.util.logging.Level;
@@ -109,7 +109,7 @@ public class CentralisedEnvironment implements EnvironmentInfraTier {
         }
     }
 
-    public RuntimeServicesInfraTier getRuntimeServices() {
+    public RuntimeServices getRuntimeServices() {
         return new CentralisedRuntimeServices(masRunner);
     }
 }

@@ -1,8 +1,19 @@
 package jason.infra.jade;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import jade.core.Agent;
 import jade.domain.DFService;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
+import jade.domain.FIPAAgentManagement.SearchConstraints;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.wrapper.AgentController;
 import jade.wrapper.ContainerController;
@@ -11,17 +22,10 @@ import jason.JasonException;
 import jason.architecture.AgArch;
 import jason.mas2j.AgentParameters;
 import jason.mas2j.ClassParameters;
-import jason.runtime.RuntimeServicesInfraTier;
+import jason.runtime.RuntimeServices;
 import jason.runtime.Settings;
 
-import java.io.File;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-public class JadeRuntimeServices implements RuntimeServicesInfraTier {
+public class JadeRuntimeServices implements RuntimeServices {
 
     private static Logger logger  = Logger.getLogger(JadeRuntimeServices.class.getName());
 
@@ -34,7 +38,12 @@ public class JadeRuntimeServices implements RuntimeServicesInfraTier {
         jadeAgent = ag;
     }
 
-    public String createAgent(String agName, String agSource, String agClass, List<String> archClasses, ClassParameters bbPars, Settings stts, jason.asSemantics.Agent father) throws Exception {
+    @Override
+    public String getNewAgentName(String baseName) {
+        return baseName;
+    }
+    
+    public String createAgent(String agName, String agSource, String agClass, Collection<String> archClasses, ClassParameters bbPars, Settings stts, jason.asSemantics.Agent father) throws Exception {
         try {
             if (logger.isLoggable(Level.FINE)) {
                 logger.fine("Creating jade agent " + agName + "from source " + agSource + "(agClass=" + agClass + ", archClass=" + archClasses + ", settings=" + stts);
@@ -47,7 +56,7 @@ public class JadeRuntimeServices implements RuntimeServicesInfraTier {
             ap.asSource = new File(agSource);
 
             if (stts == null) stts = new Settings();
-
+            agName = getNewAgentName(agName);
             cc.createNewAgent(agName, JadeAgArch.class.getName(), new Object[] { ap, false, false }).start();
 
             return agName;
@@ -61,15 +70,15 @@ public class JadeRuntimeServices implements RuntimeServicesInfraTier {
         // nothing to do, the jade create new agent is enough
     }
 
-    public AgArch clone(jason.asSemantics.Agent source, List<String> archClasses, String agName) throws JasonException {
+    public AgArch clone(jason.asSemantics.Agent source, Collection<String> archClasses, String agName) throws JasonException {
         throw new JasonException("clone for JADE is not implemented!");
     }
 
-    public Set<String> getAgentsNames() {
+    public Collection<String> getAgentsNames() {
         // TODO: make a cache list and update it when a new agent enters the system
         if (jadeAgent == null) return null;
         try {
-            Set<String> ags = new HashSet<String>();
+            Set<String> ags = new HashSet<>();
             DFAgentDescription template = new DFAgentDescription();
             ServiceDescription sd = new ServiceDescription();
             sd.setType("jason");
@@ -141,5 +150,94 @@ public class JadeRuntimeServices implements RuntimeServicesInfraTier {
             } .start();
         }
     }
+    
+    @Override
+    public void dfRegister(String agName, String service, String type) {
+        try {
+            DFAgentDescription dfd = new DFAgentDescription();
+            dfd.setName( jadeAgent.getAID() );
+                        
+            DFAgentDescription[] result = DFService.search(jadeAgent, dfd);
+            if (result.length>0) {
+                // copy current services
+                Iterator<ServiceDescription> i = result[0].getAllServices();
+                while (i.hasNext()) {
+                    dfd.addServices(i.next());
+                }
+                
+                DFService.deregister(jadeAgent);
+            }
+            
+            // add new service
+            ServiceDescription sd  = new ServiceDescription();
+            sd.setType( type );
+            sd.setName( service );            
+            dfd.addServices(sd);                            
+            
+            DFService.register(jadeAgent, dfd );                
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    @Override
+    public void dfDeRegister(String agName, String service, String type) {
+        try { 
+            // removes only service
+            DFAgentDescription dfd = new DFAgentDescription();
+            dfd.setName( jadeAgent.getAID() );
+                        
+            DFAgentDescription[] result = DFService.search(jadeAgent, dfd);
+            if (result.length>0) {
+                // copy current services
+                Iterator<ServiceDescription> i = result[0].getAllServices();
+                while (i.hasNext()) {
+                    if (!i.next().toString().contains(service))
+                        dfd.addServices(i.next());
+                }
+                
+                DFService.deregister(jadeAgent);
+            }
+            
+            DFService.register(jadeAgent, dfd );                
+        } catch (Exception e) {
+            e.printStackTrace();
+        }    
+    }
 
+    @Override
+    public Collection<String> dfSearch(String service, String type) {
+        List<String> r = new ArrayList<>();
+        try { 
+            DFAgentDescription dfd = new DFAgentDescription();
+            ServiceDescription sd  = new ServiceDescription();
+            sd.setType( type );
+            sd.setName( service );
+            dfd.addServices(sd);
+            
+            DFAgentDescription[] result = DFService.search(jadeAgent, dfd);
+            
+            for (int i=0; i<result.length; i++) {
+                r.add(result[i].getName().getLocalName());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }    
+        return r;
+    }
+
+    @Override
+    public void dfSubscribe(String agName, String service, String type) {
+        try {
+            DFAgentDescription dfd = new DFAgentDescription();
+            ServiceDescription sd = new ServiceDescription();
+            sd.setType( type );
+            sd.setName( service );
+            dfd.addServices(sd);
+
+            jadeAgent.send(DFService.createSubscriptionMessage(jadeAgent, jadeAgent.getDefaultDF(), dfd, new SearchConstraints()));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
