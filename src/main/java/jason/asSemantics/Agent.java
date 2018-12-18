@@ -132,10 +132,10 @@ public class Agent {
         if (bb == null) bb = new DefaultBeliefBase();
         if (pl == null) pl = new PlanLibrary();
 
-        if (initialGoals == null) initialGoals = new ArrayList<Literal>();
-        if (initialBels  == null) initialBels  = new ArrayList<Literal>();
+        if (initialGoals == null) initialGoals = new ArrayList<>();
+        if (initialBels  == null) initialBels  = new ArrayList<>();
 
-        if (internalActions == null) internalActions = new HashMap<String, InternalAction>();
+        if (internalActions == null) internalActions = new HashMap<>();
         initDefaultFunctions();
 
         if (ts == null) ts = new TransitionSystem(this, null, null, new AgArch());
@@ -159,13 +159,12 @@ public class Agent {
         // set the agent
         try {
             boolean parsingOk = true;
-            if (asSrc != null) {
+            if (asSrc != null && !asSrc.isEmpty()) {
                 asSrc = asSrc.replaceAll("\\\\", "/");
-                setASLSrc(asSrc);
 
                 if (asSrc.startsWith(SourcePath.CRPrefix)) {
                     // loads the class from a jar file (for example)
-                    parseAS(Agent.class.getResource(asSrc.substring(SourcePath.CRPrefix.length())).openStream());
+                    parseAS(Agent.class.getResource(asSrc.substring(SourcePath.CRPrefix.length())).openStream() , asSrc);
                 } else {
                     // check whether source is an URL string
                     try {
@@ -193,10 +192,28 @@ public class Agent {
 
             setASLSrc(asSrc);
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Error creating customised Agent class!", e);
-            throw new JasonException("Error creating customised Agent class! - " + e);
+            logger.log(Level.SEVERE, "Error loading code from "+asSrc, e);
+            throw new JasonException("Error loading code from "+asSrc + " ---- " + e);
         }
     }
+
+    /** parse and load asl code */
+    public void load(InputStream in, String sourceId) throws JasonException {
+        try {
+            parseAS(in, sourceId);
+
+            if (getPL().hasMetaEventPlans())
+                getTS().addGoalListener(new GoalListenerForMetaEvents(getTS()));
+
+            addInitialBelsInBB();
+            addInitialGoalsInTS();
+            fixAgInIAandFunctions(this); // used to fix agent reference in functions used inside includes
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new JasonException("Error loading plans from stream " + e);
+        }
+    }
+
 
 
     public void loadKqmlPlans() {
@@ -208,8 +225,7 @@ public class Agent {
             if (c.getKqmlFunctor().equals(Message.kqmlReceivedFunctor)) {
                 String file = Message.kqmlDefaultPlans.substring(Message.kqmlDefaultPlans.indexOf("/"));
                 if (JasonException.class.getResource(file) != null) {
-                    setASLSrc("kqmlPlans.asl");
-                    parseAS(JasonException.class.getResource(file));
+                    parseAS(JasonException.class.getResource(file)); //, "kqmlPlans.asl");
                 } else {
                     logger.warning("The kqmlPlans.asl was not found!");
                 }
@@ -304,7 +320,7 @@ public class Agent {
             e.printStackTrace();
         }
         a.aslSource = this.aslSource;
-        a.internalActions = new HashMap<String, InternalAction>();
+        a.internalActions = new HashMap<>();
         a.setTS(new TransitionSystem(a, this.getTS().getC().clone(), this.getTS().getSettings(), arch));
         if (a.getPL().hasMetaEventPlans())
             a.getTS().addGoalListener(new GoalListenerForMetaEvents(a.getTS()));
@@ -385,7 +401,7 @@ public class Agent {
     /** Adds beliefs and plans form an URL */
     public boolean parseAS(URL asURL) {
         try {
-            parseAS(asURL.openStream());
+            parseAS(asURL.openStream(), asURL.toString());
             logger.fine("as2j: AgentSpeak program '" + asURL + "' parsed successfully!");
             return true;
         } catch (IOException e) {
@@ -401,7 +417,7 @@ public class Agent {
     /** Adds beliefs and plans form a file */
     public boolean parseAS(File asFile) {
         try {
-            parseAS(new FileInputStream(asFile));
+            parseAS(new FileInputStream(asFile), asFile.getName());
             logger.fine("as2j: AgentSpeak program '" + asFile + "' parsed successfully!");
             return true;
         } catch (FileNotFoundException e) {
@@ -414,12 +430,14 @@ public class Agent {
         return false;
     }
 
-    public void parseAS(InputStream asIn) throws ParseException, JasonException {
+    public void parseAS(InputStream asIn, String sourceId) throws ParseException, JasonException {
         as2j parser = new as2j(asIn);
+        parser.setASLSource(sourceId);
         parser.agent(this);
     }
-    public void parseAS(Reader asIn) throws ParseException, JasonException {
+    public void parseAS(Reader asIn, String sourceId) throws ParseException, JasonException {
         as2j parser = new as2j(asIn);
+        parser.setASLSource(sourceId);
         parser.agent(this);
     }
 
@@ -449,7 +467,7 @@ public class Agent {
 
     public void initDefaultFunctions() {
         if (functions == null)
-            functions = new HashMap<String, ArithFunction>();
+            functions = new HashMap<>();
         addFunction(Count.class, false);
     }
 
@@ -730,7 +748,7 @@ public class Agent {
         //long startTime = qProfiling == null ? 0 : System.nanoTime();
 
         // to copy percepts allows the use of contains below
-        Set<StructureWrapperForLiteral> perW = new HashSet<StructureWrapperForLiteral>();
+        Set<StructureWrapperForLiteral> perW = new HashSet<>();
         Iterator<Literal> iper = percepts.iterator();
         while (iper.hasNext())
             perW.add(new StructureWrapperForLiteral(iper.next()));
@@ -917,6 +935,7 @@ public class Agent {
                         result = new List[2];
                         result[0] = Collections.singletonList(beliefToAdd);
                         result[1] = Collections.emptyList();
+                        if (logger.isLoggable(Level.FINE)) logger.fine("brf added " + beliefToAdd);
                     }
                 }
 
@@ -932,9 +951,17 @@ public class Agent {
 
                     boolean removed = getBB().remove(beliefToDel);
                     if (!removed && !beliefToDel.isGround()) { // then try to unify the parameter with a belief in BB
-                        if (believes(beliefToDel, u)) {
-                            beliefToDel = (Literal)beliefToDel.capply(u);
-                            removed = getBB().remove(beliefToDel);
+                        Iterator<Literal> il = getBB().getCandidateBeliefs(beliefToDel.getPredicateIndicator());
+                        if (il != null) {
+                                while (il.hasNext()) {
+                                Literal linBB = il.next();
+                                if (u.unifies(linBB, beliefToDel)) {
+                                    il.remove();
+                                    beliefToDel = (Literal)beliefToDel.capply(u);
+                                    removed = true;
+                                    break;
+                                }
+                                }
                         }
                     }
 
@@ -993,7 +1020,7 @@ public class Agent {
         If <i>un</i> is null, an empty Unifier is used.
      */
     public void abolish(Literal bel, Unifier un) throws RevisionFailedException {
-        List<Literal> toDel = new ArrayList<Literal>();
+        List<Literal> toDel = new ArrayList<>();
         if (un == null) un = new Unifier();
         synchronized (bb.getLock()) {
             Iterator<Literal> il = getBB().getCandidateBeliefs(bel, un);
@@ -1052,7 +1079,7 @@ public class Agent {
 
     @Override
     public String toString() {
-        return "Agent "+getASLSrc();
+        return "Agent from "+getASLSrc();
     }
 
     /** Gets the agent "mind" as XML */
@@ -1062,7 +1089,7 @@ public class Agent {
         ag.setAttribute("cycle", ""+ts.getUserAgArch().getCycleNumber());
 
         ag.appendChild(bb.getAsDOM(document));
-        // ag.appendChild(ps.getAsDOM(document));
+        //ag.appendChild(getPL().getAsDOM(document));
         return ag;
     }
 

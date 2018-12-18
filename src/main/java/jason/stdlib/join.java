@@ -56,7 +56,7 @@ public class join extends DefaultInternalAction {
             fd.intentions.remove(currentInt);
             for (Intention i: fd.intentions) {
                 //System.out.println("drop "+i.getId());
-                drop_intention.dropInt(ts.getC(), i);
+                    ts.getC().dropIntention(i);
             }
             currentInt.peek().removeCurrentStep();
             ts.getC().addRunningIntention(currentInt);
