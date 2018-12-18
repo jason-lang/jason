@@ -1,10 +1,9 @@
-plays(initiator,c).
-+plays(initiator,In)
-   :  .my_name(Me)
-   <- .send(In,tell,introduction(participant,Me)).
+!register.
+
++!register <- .df_register("participant");
+              .df_subscribe("initiator").
 
 // plan to answer a CFP
 +cfp(CNPId,_Service)[source(A)]
-   :   plays(initiator,A)
+   :   provider(A,"initiator")
    <- .send(A,tell,refuse(CNPId)).
-

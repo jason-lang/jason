@@ -10,7 +10,7 @@ import jason.asSemantics.Message;
 import jason.asSemantics.TransitionSystem;
 import jason.asSyntax.Literal;
 import jason.infra.centralised.CentralisedAgArch;
-import jason.runtime.RuntimeServicesInfraTier;
+import jason.runtime.RuntimeServices;
 
 /**
  * Base agent architecture class that defines the overall agent architecture;
@@ -28,7 +28,7 @@ import jason.runtime.RuntimeServicesInfraTier;
  *
  * Users can customise the architecture by overriding some methods of this class.
  */
-public class AgArch implements AgArchInfraTier, Comparable<AgArch> {
+public class AgArch implements Comparable<AgArch> {
 
     private TransitionSystem ts = null;
 
@@ -67,7 +67,7 @@ public class AgArch implements AgArchInfraTier, Comparable<AgArch> {
         return successor;
     }
     public List<String> getAgArchClassesChain() {
-        List<String> all = new ArrayList<String>();
+        List<String> all = new ArrayList<>();
         AgArch a = getFirstAgArch();
         while (a != null) {
             all.add(0,a.getClass().getName());
@@ -91,7 +91,7 @@ public class AgArch implements AgArchInfraTier, Comparable<AgArch> {
             successor.setFirstAgArch(arch);
     }
 
-    public void createCustomArchs(List<String> archs) throws Exception {
+    public void createCustomArchs(Collection<String> archs) throws Exception {
         if (archs == null)
             return;
         for (String agArchClass: archs) {
@@ -121,15 +121,6 @@ public class AgArch implements AgArchInfraTier, Comparable<AgArch> {
         //    q.setNbReasoningCycles(getCycleNumber());
         if (successor != null)
             successor.reasoningCycleStarting();
-    }
-
-
-    /** returns the last arch in the chain, which is supposed to be the infra tier */
-    public AgArchInfraTier getArchInfraTier() {
-        if (this.successor == null)
-            return this;
-        else
-            return successor.getArchInfraTier();
     }
 
 
@@ -213,7 +204,7 @@ public class AgArch implements AgArchInfraTier, Comparable<AgArch> {
     }
 
 
-    public RuntimeServicesInfraTier getRuntimeServices() {
+    public RuntimeServices getRuntimeServices() {
         if (successor == null)
             return null;
         else

@@ -47,6 +47,7 @@ import jason.mas2j.parser.ParseException;
 import jason.runtime.MASConsoleGUI;
 import jason.runtime.MASConsoleLogFormatter;
 import jason.runtime.MASConsoleLogHandler;
+import jason.runtime.RuntimeServices;
 import jason.runtime.Settings;
 import jason.runtime.SourcePath;
 import jason.util.Config;
@@ -109,7 +110,8 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
         }
 
         if (Config.get().getJasonJar() == null) {
-            System.out.println("Jason is not configured, creating a default configuration");
+            //System.out.println("Jason is not configured, creating a default configuration");
+            Config.get().setShowFixMsgs(false);
             Config.get().fix();
         }
 
@@ -402,7 +404,9 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
         int nbAg = 0;
         Agent pag = null;
 
-        // create the agents
+        RuntimeServices rs = getRuntimeServices();
+        
+        // create agents
         for (AgentParameters ap : project.getAgents()) {
             try {
 
@@ -418,14 +422,10 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
                         // numberedAg += String.format("%0"+String.valueOf(ap.qty).length()+"d", cAg + 1);
                     }
 
-                    String nb = "";
-                    int    n  = 1;
-                    while (getAg(numberedAg+nb) != null)
-                        nb = "_" + (n++);
-                    numberedAg += nb;
-
+                    numberedAg = rs.getNewAgentName(numberedAg);
+                    
+                    ap.addArchClass(rs.getDefaultAgArchs());
                     logger.fine("Creating agent " + numberedAg + " (" + (cAg + 1) + "/" + ap.getNbInstances() + ")");
-                    CentralisedAgArch agArch;
 
                     RConf agentConf;
                     if (ap.getOption("rc") == null) {
@@ -454,6 +454,7 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
                     }
 
                     // Create agents according to the specific architecture
+                    CentralisedAgArch agArch;
                     if (agentConf == RConf.POOL_SYNCH) {
                         agArch = new CentralisedAgArchForPool();
                     } else if (agentConf == RConf.POOL_SYNCH_SCHEDULED) {
@@ -472,7 +473,7 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
                     agArch.setConf(agentConf);
                     agArch.setAgName(numberedAg);
                     agArch.setEnvInfraTier(env);
-                    if ((generalConf != RConf.THREADED) && cAg > 0 && ap.getAgArchClasses().isEmpty() && ap.getBBClass().equals(DefaultBeliefBase.class.getName())) {
+                    if ((generalConf != RConf.THREADED) && cAg > 0 && ap.getAgArchClasses().isEmpty() && ap.getBBClass().getClassName().equals(DefaultBeliefBase.class.getName())) {
                         // creation by cloning previous agent (which is faster -- no parsing, for instance)
                         agArch.createArchs(ap.getAgArchClasses(), pag, this);
                     } else {
@@ -899,4 +900,6 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
         frame.pack();
         frame.setVisible(true);
     }
+
+    
 }

@@ -108,7 +108,7 @@ public class fork extends DefaultInternalAction {
             im.insertAsNextStep(whattoadd);
             im.removeCurrentStep(); // remove the .fork
             i.push(im);
-            ts.getC().addIntention(i);
+            ts.getC().addRunningIntention(i);
         }
 
 
@@ -117,7 +117,7 @@ public class fork extends DefaultInternalAction {
 
     class ForkData {
         boolean        isAnd = true;
-        Set<Intention> intentions = new HashSet<Intention>();
+        Set<Intention> intentions = new HashSet<>();
         int            toFinish = 0;
 
         public ForkData(boolean isAnd) {

@@ -113,7 +113,7 @@ public class drop_intention extends DefaultInternalAction {
             }
         }
 
-        Iterator<Intention> itint = C.getIntentionsPlusAtomic();
+        Iterator<Intention> itint = C.getRunningIntentionsPlusAtomic();
         while (itint.hasNext()) {
             Intention i = itint.next();
             if (i.hasTrigger(g, un)) {

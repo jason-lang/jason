@@ -267,7 +267,7 @@ public class intend extends DefaultInternalAction {
 
                 case intentions:
                     if (intInterator == null)
-                        intInterator = C.getIntentionsPlusAtomic();
+                        intInterator = C.getRunningIntentionsPlusAtomic();
 
                     if (intInterator.hasNext()) {
                         curInt = intInterator.next();

@@ -3,6 +3,7 @@ package jason.architecture;
 import org.w3c.dom.Document;
 
 import jason.asSemantics.Agent;
+import jason.infra.centralised.BaseCentralisedMAS;
 import jason.util.Config;
 
 public abstract class MindInspectorWeb {
@@ -11,13 +12,14 @@ public abstract class MindInspectorWeb {
 
     protected String     httpServerURL = "http://localhost:3272";
     protected int        httpServerPort = 3272;
-    protected int        refreshInterval = 5;
+    //protected int        refreshInterval = 5;
 
     public static synchronized MindInspectorWeb get() {
         if (singleton == null) {
             try {
                 singleton = (MindInspectorWeb) Class.forName( Config.get().getMindInspectorWebServerClassName()).newInstance();
                 singleton.startHttpServer();
+                singleton.registerCentRunner(BaseCentralisedMAS.getRunner());
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -51,5 +53,6 @@ public abstract class MindInspectorWeb {
 
     public abstract void removeAg(Agent ag);
     public abstract void addAgState(Agent ag, Document mind, boolean hasHistory);
+    public void registerCentRunner(BaseCentralisedMAS rs) {}
 
 }

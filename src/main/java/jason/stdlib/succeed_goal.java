@@ -95,7 +95,7 @@ public class succeed_goal extends DefaultInternalAction {
         Circumstance C = ts.getC();
         Unifier bak = un.clone();
 
-        Iterator<Intention> itint = C.getIntentionsPlusAtomic();
+        Iterator<Intention> itint = C.getRunningIntentionsPlusAtomic();
         while (itint.hasNext()) {
             Intention i = itint.next();
             if (dropIntention(i, c, ts, un) > 1) {
@@ -223,7 +223,7 @@ public class succeed_goal extends DefaultInternalAction {
                     gl.goalFinished(e.getTrigger(), FinishStates.achieved);
             i.peek().removeCurrentStep();
             ts.applyClrInt(i);
-            C.addIntention(i);
+            C.addRunningIntention(i);
         }
     }
 }

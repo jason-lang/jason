@@ -37,15 +37,13 @@ public class Circumstance implements Serializable {
     private   boolean                  atomicIntSuspended = false; // whether the current atomic intention is suspended in PA or PI
     //private   boolean                  hasAtomicEvent = false;
 
-    private int intentionsWithGoalCondition = 0;
-    
     private Map<Integer, ActionExec>   PA; // Pending actions, waiting action execution (key is the intention id)
     private List<ActionExec>           FA; // Feedback actions, those that are already executed
 
     private Map<String, Intention>     PI; // pending intentions, intentions suspended by any other reason
     private Map<String, Event>         PE; // pending events, events suspended by .suspend
 
-    private Queue<CircumstanceListener> listeners = new ConcurrentLinkedQueue<CircumstanceListener>();
+    private Queue<CircumstanceListener> listeners = new ConcurrentLinkedQueue<>();
 
     private TransitionSystem ts = null;
 
@@ -56,6 +54,17 @@ public class Circumstance implements Serializable {
         reset();
     }
 
+    // new JasonER
+    private int intentionsWithGoalCondition = 0;
+    
+    public boolean hasIntentionWithGoalCondition() {
+        return intentionsWithGoalCondition > 0;
+    }
+    public void resetIntentionsWithGoalCondition() {
+        intentionsWithGoalCondition = 0;
+    }  
+    
+    
     public void setTS(TransitionSystem ts) {
         this.ts = ts;
     }
@@ -63,13 +72,13 @@ public class Circumstance implements Serializable {
     /** creates new collections for E, I, MB, PA, PI, and FA */
     public void create() {
         // use LinkedList since we use a lot of remove(0) in selectEvent
-        E  = new ConcurrentLinkedQueue<Event>();
-        I  = new ConcurrentLinkedQueue<Intention>();
-        MB = new ConcurrentLinkedQueue<Message>();
-        PA = new ConcurrentHashMap<Integer, ActionExec>();
-        PI = new ConcurrentHashMap<String, Intention>();
-        PE = new ConcurrentHashMap<String, Event>();
-        FA = new ArrayList<ActionExec>();
+        E  = new ConcurrentLinkedQueue<>();
+        I  = new ConcurrentLinkedQueue<>();
+        MB = new ConcurrentLinkedQueue<>();
+        PA = new ConcurrentHashMap<>();
+        PI = new ConcurrentHashMap<>();
+        PE = new ConcurrentHashMap<>();
+        FA = new ArrayList<>();
     }
 
     /** set null for A, RP, AP, SE, SO, and SI */
@@ -121,7 +130,7 @@ public class Circumstance implements Serializable {
 
     public void insertMetaEvent(Event ev) {
         // meta events have to be placed in the begin of the queue, but not before other meta events
-        List<Event> newE = new ArrayList<Event>(E); // make a list of events to find the best place to insert the new event
+        List<Event> newE = new ArrayList<>(E); // make a list of events to find the best place to insert the new event
         int pos = 0;
         for (Event e: newE) {
             if (!e.getTrigger().isMetaEvent()) {
@@ -196,7 +205,7 @@ public class Circumstance implements Serializable {
         if (AE == null) {
             return E.iterator();
         } else {
-            List<Event> l = new ArrayList<Event>(E.size()+1);
+            List<Event> l = new ArrayList<>(E.size()+1);
             l.add(AE);
             l.addAll(E);
             return l.iterator();
@@ -278,45 +287,40 @@ public class Circumstance implements Serializable {
     /** Intentions */
 
     /** get the queue of intention (which does not include atomic intention) */
-    public Queue<Intention> getIntentions() {
+    public Queue<Intention> getRunningIntentions() {
         return I;
     }
 
-    /** get the all intentions (which include the atomic intention, if it exists) */
-    public Iterator<Intention> getIntentionsPlusAtomic() {
+    /** get  all running/active intentions (which include the atomic intention, if it exists) */
+    public Iterator<Intention> getRunningIntentionsPlusAtomic() {
         if (AI == null) {
             return I.iterator();
         } else {
-            List<Intention> l = new ArrayList<Intention>(I.size()+1);
+            List<Intention> l = new ArrayList<>(I.size()+1);
             l.add(AI);
             l.addAll(I);
             return l.iterator();
         }
     }
+    
 
-    public boolean hasIntention() {
+    public boolean hasRunningIntention() {
         return (I != null && !I.isEmpty()) || AI != null;
     }
-    public boolean hasIntention(Intention i) {
+    public boolean hasRunningIntention(Intention i) {
         return i == AI || I.contains(i);
     }
-    
-    public boolean hasIntentionWithGoalCondition() {
-        return intentionsWithGoalCondition > 0;
-    }
-    public void resetIntentionsWithGoalCondition() {
-        intentionsWithGoalCondition = 0;
-    }
-    
-    public void addIntention(Intention intention) {
+
+    public void addRunningIntention(Intention intention) {
         if (intention.isAtomic())
             setAtomicIntention(intention);
         else
             I.offer(intention);
-
-        if (intention.hasGoalCondition())
-            intentionsWithGoalCondition++;
         
+        // JasonER
+        if (intention.hasGoalCondition())
+        	intentionsWithGoalCondition++;
+
         // notify
         if (listeners != null)
             for (CircumstanceListener el : listeners)
@@ -325,7 +329,7 @@ public class Circumstance implements Serializable {
 
     /** add the intention back to I, and also notify meta listeners that the goals are resumed  */
     public void resumeIntention(Intention intention) {
-        addIntention(intention);
+        addRunningIntention(intention);
 
         // notify meta event listeners
         if (listeners != null)
@@ -334,7 +338,7 @@ public class Circumstance implements Serializable {
     }
 
     /** remove intention from set I */
-    public boolean removeIntention(Intention i) {
+    public boolean removeRunningIntention(Intention i) {
         if (i == AI) {
             setAtomicIntention(null);
             return true;
@@ -344,8 +348,8 @@ public class Circumstance implements Serializable {
     }
 
     /** removes and produces events to signal that the intention was dropped */
-    public boolean dropIntention(Intention i) {
-        if (removeIntention(i)) {
+    public boolean dropRunningIntention(Intention i) {
+        if (removeRunningIntention(i)) {
             if (listeners != null)
                 for (CircumstanceListener el : listeners)
                     el.intentionDropped(i);
@@ -355,7 +359,7 @@ public class Circumstance implements Serializable {
         }
     }
 
-    public void clearIntentions() {
+    public void clearRunningIntentions() {
         setAtomicIntention(null);
 
         if (listeners != null)
@@ -377,15 +381,13 @@ public class Circumstance implements Serializable {
                 return null;
             }
             Intention tmp = AI;
-            removeIntention(AI);
+            removeRunningIntention(AI);
             return tmp;
         }
         return null;
     }
 
     public boolean hasAtomicIntention() {
-        //String x = (AI != null ? ""+AI.size() : "");
-        //System.out.println(E.size()+" "+I.size()+" "+(AI != null)+" "+(AE != null)+" "+ x);
         return AI != null;
     }
 
@@ -419,6 +421,7 @@ public class Circumstance implements Serializable {
             atomicIntSuspended = true;
         }
         PI.put(id, i);
+        i.setSuspendedReason(id);
 
         if (listeners != null)
             for (CircumstanceListener el : listeners)
@@ -515,6 +518,7 @@ public class Circumstance implements Serializable {
 
     }
 
+    
     /** actions */
 
     public ActionExec getAction() {
@@ -577,6 +581,7 @@ public class Circumstance implements Serializable {
             atomicIntSuspended = true;
         }
         PA.put(i.getId(), a);
+        i.setSuspendedReason(a.getActionTerm().toString());
 
         if (listeners != null)
             for (CircumstanceListener el : listeners)
@@ -634,6 +639,168 @@ public class Circumstance implements Serializable {
         return false;
     }
 
+    // data structures where intentions can be found
+    enum Step { selEvt, selInt, evt, pendEvt, pendAct, pendInt, intentions, end }
+
+    /** gets all intentions (running, pending, suspended, ...) */
+    public Iterator<Intention> getAllIntentions() {
+        return new Iterator<Intention>() {
+            Step curStep = Step.selEvt;
+            Intention curInt = null; // the intention of solution
+            Iterator<Event>      evtIterator     = null;
+            Iterator<Event>      pendEvtIterator = null;
+            Iterator<ActionExec> pendActIterator = null;
+            Iterator<Intention>  pendIntIterator = null;
+            Iterator<Intention>  intInterator    = null;
+
+            { find(); } // find the first intention
+            
+            public boolean hasNext() {
+                return curInt != null;
+            }
+
+            public Intention next() {
+                if (curInt == null) find();
+                Intention b = curInt;
+                find(); // find next response
+                return b;
+            }
+            public void remove() {}
+
+            void find() {
+                switch (curStep) {
+
+                case selEvt:
+                    curStep = Step.selInt; // set next step
+                    // we need to check the intention in the selected event in this cycle!!!
+                    // (as it was already removed from E)
+                    if (getSelectedEvent() != null) {
+                        curInt = getSelectedEvent().getIntention();
+                        if (curInt != null)
+                            return;
+                    } 
+                    find();
+                    return;
+
+                case selInt:
+                    curStep = Step.evt; // set next step
+                    // we need to check the selected intention in this reasoning cycle too!!!
+                    Intention prev = curInt;
+                    curInt = getSelectedIntention();
+                    if (curInt != null && !curInt.equals(prev))
+                        return;                    
+                    find();
+                    return;
+
+                case evt:
+                    if (evtIterator == null)
+                        evtIterator = getEventsPlusAtomic();
+
+                    while (evtIterator.hasNext()) {
+                        curInt = evtIterator.next().getIntention();
+                        if (curInt != null && !curInt.equals(getSelectedIntention()))
+                            return;
+                    } 
+                    curStep = Step.pendEvt; // set next step
+                    find();
+                    return;
+
+                case pendEvt:
+                    if (pendEvtIterator == null)
+                        pendEvtIterator = getPendingEvents().values().iterator();
+
+                    while (pendEvtIterator.hasNext()) {
+                        curInt = pendEvtIterator.next().getIntention();
+                        if (curInt != null)
+                            return;
+                    }
+                    curStep = Step.pendAct; // set next step
+                    find();
+                    return;
+
+                case pendAct:
+                    // intention may be suspended in PA! (in the new semantics)
+                    if (hasPendingAction()) {
+                        if (pendActIterator == null)
+                            pendActIterator = getPendingActions().values().iterator();
+
+                        while (pendActIterator.hasNext()) {
+                            curInt = pendActIterator.next().getIntention();
+                            if (curInt != null)
+                                return;
+                        }
+                    }
+                    curStep = Step.pendInt; // set next step
+                    find();
+                    return;
+
+                case pendInt:
+                    // intention may be suspended in PI!
+                    if (hasPendingIntention()) {
+                        if (pendIntIterator == null)
+                            pendIntIterator = getPendingIntentions().values().iterator();
+
+                        if (pendIntIterator.hasNext()) {
+                            curInt  = pendIntIterator.next();
+                            return;
+                        }
+                    }
+                    curStep = Step.intentions; // set next step
+                    find();
+                    return;
+
+                case intentions:
+                    if (intInterator == null)
+                        intInterator = getRunningIntentionsPlusAtomic();
+
+                    if (intInterator.hasNext()) {
+                        curInt = intInterator.next();
+                        return;
+                    } 
+
+                    curStep = Step.end; // set next step
+                    find();
+                    return;
+
+                case end:
+
+                }
+                curInt = null; // nothing found
+            }
+        };
+    }
+
+    /**
+     * Drops an intention based on the intention id
+     * considers running, pending, ... intentions
+     */
+    public void dropIntention(Intention del) {
+
+        // intention may be suspended in E or PE
+        Iterator<Event> ie = getEventsPlusAtomic();
+        while (ie.hasNext()) {
+            Event e = ie.next();
+            Intention i = e.getIntention();
+            if (i != null && i.equals(del)) {
+                removeEvent(e);
+            }
+        }
+        for (String k: getPendingEvents().keySet()) {
+            Intention i = getPendingEvents().get(k).getIntention();
+            if (i != null && i.equals(del)) {
+                removePendingEvent(k);
+            }
+        }
+
+        // intention may be suspended in PA! (in the new semantics)
+        dropPendingAction(del);
+        dropRunningIntention(del);
+
+        // intention may be suspended in PI! (in the new semantics)
+        dropPendingIntention(del);
+    }
+    
+    
     public List<Option> getRelevantPlans() {
         return RP;
     }
@@ -702,7 +869,7 @@ public class Circumstance implements Serializable {
         }
         if (ts != null) {
             try {
-                for (Message m: ((CentralisedAgArch)ts.getUserAgArch().getArchInfraTier()).getMBox()) {
+                for (Message m: ((CentralisedAgArch)ts.getUserAgArch()).getMBox()) {
                     add = true;
                     e = (Element) document.createElement("message");
                     e.appendChild(document.createTextNode(m.toString() + " in arch inbox."));
@@ -747,7 +914,7 @@ public class Circumstance implements Serializable {
 
         // relPlans
         Element plans = (Element) document.createElement("options");
-        List<Object> alreadyIn = new ArrayList<Object>();
+        List<Object> alreadyIn = new ArrayList<>();
 
         // option
         if (getSelectedOption() != null) {
@@ -790,13 +957,29 @@ public class Circumstance implements Serializable {
         // intentions
         Element ints = (Element) document.createElement("intentions");
         Element selIntEle = null;
+
+        Iterator<Intention> ii = getAllIntentions();
+        while (ii.hasNext()) {
+            Intention i = ii.next();
+            
+            selIntEle = i.getAsDOM(document);
+            if (i.equals(getSelectedIntention()))
+                selIntEle.setAttribute("selected", "true");
+            if (i.isSuspended())
+                selIntEle.setAttribute("pending", i.getSuspendedReason());
+            ints.appendChild(selIntEle);
+            
+        }
+        
+        /*
+        Element selIntEle = null;
         Intention ci = getSelectedIntention();
         if (ci != null) {
             selIntEle = ci.getAsDOM(document);
             selIntEle.setAttribute("selected", "true");
             ints.appendChild(selIntEle);
         }
-        Iterator<Intention> itint = getIntentionsPlusAtomic();
+        Iterator<Intention> itint = getRunningIntentionsPlusAtomic();
         while (itint.hasNext()) {
             Intention in = itint.next();
             if (getSelectedIntention() != in) {
@@ -826,9 +1009,10 @@ public class Circumstance implements Serializable {
                 }
             }
         }
+        */
 
         Element acts = (Element) document.createElement("actions");
-        alreadyIn = new ArrayList<Object>();
+        alreadyIn = new ArrayList<>();
 
         // action
         if (getAction() != null) {

@@ -36,12 +36,13 @@ public class Intention implements Serializable, Comparable<Intention>, Iterable<
     private int     id;
     private int     atomicCount    = 0; // number of atomic intended means in the intention
     private boolean isSuspended = false;
+    private String  suspendedReason = null;
     
     // new in JasonER
     private int     intestedInExternalEvents = 0;
     private int     imWithGoalCondition      = 0; 
 
-    private Deque<IntendedMeans> intendedMeans = new ArrayDeque<IntendedMeans>();
+    private Deque<IntendedMeans> intendedMeans = new ArrayDeque<>();
 
     //private Trigger initialTrigger = null; // just for additional information/debug (not really necessary)
 
@@ -114,12 +115,24 @@ public class Intention implements Serializable, Comparable<Intention>, Iterable<
 
     public void setSuspended(boolean b) {
         isSuspended = b;
+        if (!b)		
+            suspendedReason = null;
     }
 
     public boolean isSuspended() {
         return isSuspended;
     }
 
+    public void setSuspendedReason(String r) {		
+        suspendedReason = r;		
+    }		
+    public String getSuspendedReason() {		
+        if (suspendedReason == null)		
+            return "";		
+        else		
+            return suspendedReason;		
+    }
+    
     /** returns the IntendedMeans that succeeds in test c, returns null if there isn't one */
     public IntendedMeans getIM(IMCondition c, Unifier u) { //Trigger g, Unifier u) {
         for (IntendedMeans im : intendedMeans)
@@ -176,9 +189,9 @@ public class Intention implements Serializable, Comparable<Intention>, Iterable<
                 posInStak--;
             }
             if (tevent.isGoal() && tevent.isAddition() && pl.hasCandidatePlan(failTrigger))
-                return new Pair<Event, Integer>(new Event(failTrigger.clone(), this), posInStak);
+                return new Pair<>(new Event(failTrigger.clone(), this), posInStak);
             else
-                return new Pair<Event, Integer>(null, 0);
+                return new Pair<>(null, 0);
         }
     }
 
@@ -208,7 +221,7 @@ public class Intention implements Serializable, Comparable<Intention>, Iterable<
         Intention i = new Intention();
         i.id = id;
         i.atomicCount = atomicCount;
-        i.intendedMeans = new ArrayDeque<IntendedMeans>();
+        i.intendedMeans = new ArrayDeque<>();
         for (IntendedMeans im: intendedMeans) {
             i.intendedMeans.add((IntendedMeans)im.clone());
         }
@@ -218,7 +231,7 @@ public class Intention implements Serializable, Comparable<Intention>, Iterable<
     // used by fork
     public void copyTo(Intention i) {
         i.atomicCount   = atomicCount;
-        i.intendedMeans = new ArrayDeque<IntendedMeans>(intendedMeans);
+        i.intendedMeans = new ArrayDeque<>(intendedMeans);
     }
 
     public String toString() {

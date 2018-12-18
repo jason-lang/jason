@@ -13,7 +13,7 @@ import jason.asSyntax.StringTermImpl;
 import jason.asSyntax.Structure;
 import jason.asSyntax.Term;
 import jason.mas2j.ClassParameters;
-import jason.runtime.RuntimeServicesInfraTier;
+import jason.runtime.RuntimeServices;
 import jason.runtime.Settings;
 
 /**
@@ -28,7 +28,7 @@ import jason.runtime.Settings;
   If this parameter is a variable, it will be unified with the name given to the agent.
   The agent's name will be the name of the variable and some number that makes it unique.<br/>
 
-  <li><i>+ source</i> (string): path to the file where the AgentSpeak code
+  <li><i>+ source</i> (string -- optional): path to the file where the AgentSpeak code
   for the new agent can be found.<br/>
 
   <li><i>+ customisations</i> (list -- optional): list of optional parameters
@@ -41,7 +41,7 @@ import jason.runtime.Settings;
   <li> <code>.create_agent(bob,"/tmp/x.asl")</code>: creates an agent named "bob"
   from the source file in "/tmp/x.asl".</li>
 
-  <li> <code>.create_agent(Bob,"/tmp/x.asl")</code>: creates an agent named "bob" (or "bob_1", "bob_2", ...)
+  <li> <code>.create_agent(bob,"/tmp/x.asl")</code>: creates an agent named "bob" (or "bob_1", "bob_2", ...)
   and unifies variable Bob with the given name.</li>
 
   <li>
@@ -67,7 +67,7 @@ import jason.runtime.Settings;
   @see jason.stdlib.kill_agent
   @see jason.stdlib.save_agent
   @see jason.stdlib.stopMAS
-  @see jason.runtime.RuntimeServicesInfraTier
+  @see jason.runtime.RuntimeServices
 */
 public class create_agent extends DefaultInternalAction {
 
@@ -110,7 +110,7 @@ public class create_agent extends DefaultInternalAction {
                 }
             }
         }
-        RuntimeServicesInfraTier rs = ts.getUserAgArch().getRuntimeServices();
+        RuntimeServices rs = ts.getUserAgArch().getRuntimeServices();
         name = rs.createAgent(name, source, agClass, agArchClasses, bbPars, getSettings(ts), ts.getAg());
         rs.startAgent(name);
 
@@ -149,7 +149,7 @@ public class create_agent extends DefaultInternalAction {
     }
 
     protected List<String> getAgArchClasses(Term[] args) {
-        List<String> agArchClasses = new ArrayList<String>();
+        List<String> agArchClasses = new ArrayList<>();
         if (args.length > 2) { // optional parameter
             // get the parameters
             for (Term t: (ListTerm)args[2]) {

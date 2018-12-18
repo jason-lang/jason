@@ -74,7 +74,7 @@ public class TestPlanER {
     public void testExtEvt1() {
         ag.addGoal("test");
         ag.assertAct("inig1", 10);
-        assertEquals(1, ag.getTS().getC().getIntentions().size());
+        assertEquals(1, ag.getTS().getC().getRunningIntentions().size());
         ag.addBel("a(5)"); // should trigger both +a/1 in root and inside g1
         ag.assertAct("aroot(5)", 10);
         ag.assertAct("a1ing1", 10);

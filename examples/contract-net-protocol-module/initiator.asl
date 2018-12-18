@@ -3,7 +3,7 @@
 //prefix :: forces a term to be considered in the abstract namespace
 
 priv::all_proposals_received
-    :-  .count(::introduction(participant)[source(_)], NP) &
+    :-  nb_participants(NP) &
         .count(::propose(_)[source(_)], NO) &
         .count(::refuse[source(_)], NR) &
         NP = NO + NR. // participants = proposals + refusals
@@ -11,13 +11,17 @@ priv::all_proposals_received
 // starts a CNP
 @p1
 +!startCNP(Task)
-    <-  .broadcast(tell, ::cnp_started); // tell everyone a CNP has started
+    <-  .wait(1000); // wait participants register
+        .print("Waiting participants for task ",Task," in ",this_ns ," ... ");
+        .df_search("participant",LP);
+        +nb_participants(.length(LP));
+        .send(LP, tell, ::cnp_started); // tell participants that a CNP has started
         // :: is a reference to the namespace where this module is loaded
         // in this example is the namespace where the CNP is being performed
-        .print("Waiting participants for task ",Task," in ",this_ns ," ... ");
-        .wait(3000); // wait participants introduction
+
+        .wait(1000); // wait participants to prepare themselves for the CNP
+
         +priv::state(propose); // remember the state of the CNP
-        .findall(A,::introduction(participant)[source(A)],LP);
         .print("Sending CFP for ",Task," to ",LP);
         .send(LP,tell,::cfp(Task)); // send call for proposals to participants
         // wait until all proposals are received for a maximum of 5 secs

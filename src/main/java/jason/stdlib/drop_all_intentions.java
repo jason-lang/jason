@@ -56,7 +56,7 @@ public class drop_all_intentions extends DefaultInternalAction {
         checkArguments(args);
 
         Circumstance C = ts.getC();
-        C.clearIntentions();
+        C.clearRunningIntentions();
         C.clearPendingIntentions();
         C.clearPendingActions();
 

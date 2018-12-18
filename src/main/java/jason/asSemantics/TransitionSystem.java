@@ -405,7 +405,7 @@ public class TransitionSystem {
                 
                 // external events are copied for all intentions (new JasonER)
                 if (C.SE.isExternal() && !C.SE.getTrigger().isGoal() && C.SE.getTrigger().isAddition()) {
-                    Iterator<Intention> ii = C.getIntentions().iterator();
+                    Iterator<Intention> ii = C.getRunningIntentions().iterator();
                     while (ii.hasNext()) {
                         Intention i = ii.next();
                         // if i has sub plans (so potentially interested in external events)
@@ -623,7 +623,7 @@ public class TransitionSystem {
         if (C.SE.intention == Intention.EmptyInt) {
             Intention intention = new Intention();
             intention.push(im);
-            C.addIntention(intention);
+            C.addRunningIntention(intention);
         } else {
             // Rule IntEv
 
@@ -667,7 +667,7 @@ public class TransitionSystem {
             // end of TRO
 
             C.SE.intention.push(im);
-            C.addIntention(C.SE.intention);
+            C.addRunningIntention(C.SE.intention);
         }
         stepDeliberate = State.ProcAct;
     }
@@ -723,9 +723,9 @@ public class TransitionSystem {
         }
 
         // Rule SelInt1
-        if (!C.isAtomicIntentionSuspended() && C.hasIntention()) { // the isAtomicIntentionSuspended is necessary because the atomic intention may be suspended (the above removeAtomicInt returns null in that case)
+        if (!C.isAtomicIntentionSuspended() && C.hasRunningIntention()) { // the isAtomicIntentionSuspended is necessary because the atomic intention may be suspended (the above removeAtomicInt returns null in that case)
             // but no other intention could be selected
-            C.SI = ag.selectIntention(C.getIntentions());
+            C.SI = ag.selectIntention(C.getRunningIntentions());
             if (logger.isLoggable(Level.FINE)) logger.fine("Selected intention "+C.SI);
             if (C.SI != null) { // the selectIntention function returned null
                 return;
@@ -1226,7 +1226,7 @@ public class TransitionSystem {
     private void removeActionReQueue(Intention i) {
         if (!i.isFinished()) {
             i.peek().removeCurrentStep();
-            C.addIntention(i);
+            C.addRunningIntention(i);
         } else {
             logger.fine("trying to update a finished intention!");
         }
@@ -1470,7 +1470,7 @@ public class TransitionSystem {
     public boolean canSleep() {
         return    (C.isAtomicIntentionSuspended() && !C.hasFeedbackAction() && !C.hasMsg())  // atomic case
                   || (!C.hasEvent() &&    // other cases (deliberate)
-                      !C.hasIntention() && !C.hasFeedbackAction() && // (action)
+                      !C.hasRunningIntention() && !C.hasFeedbackAction() && // (action)
                       !C.hasMsg() &&  // (sense)
                       taskForBeginOfCycle.isEmpty() &&
                       getUserAgArch().canSleep());
@@ -1486,7 +1486,7 @@ public class TransitionSystem {
 
     public boolean canSleepAct() {
         //&& !C.hasPendingAction()
-        return !C.hasIntention() && !C.hasFeedbackAction() && C.getSelectedIntention() == null && getUserAgArch().canSleep();
+        return !C.hasRunningIntention() && !C.hasFeedbackAction() && C.getSelectedIntention() == null && getUserAgArch().canSleep();
     }
 
     /**
