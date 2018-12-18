@@ -53,6 +53,9 @@ public class PlanLibrary implements Iterable<Plan> {
         return lockPL;
     }
 
+    // for cache
+    protected Element eDOMPlans = null;
+
     /**
      *  Add a new plan written as a String. The source
      *  normally is "self" or the agent that sent this plan.
@@ -209,6 +212,7 @@ public class PlanLibrary implements Iterable<Plan> {
             else
                 plans.add(p);
         }
+        eDOMPlans = null;
     }
 
     public void addAll(PlanLibrary pl) throws JasonException {
@@ -283,6 +287,7 @@ public class PlanLibrary implements Iterable<Plan> {
         plans.clear();
         varPlans.clear();
         relPlans.clear();
+        eDOMPlans = null;
     }
 
     /**
@@ -333,6 +338,7 @@ public class PlanLibrary implements Iterable<Plan> {
                     relPlans.remove(p.getTrigger().getPredicateIndicator());
                 }
             }
+            eDOMPlans = null;
             return p;
         }
     }
@@ -437,18 +443,21 @@ public class PlanLibrary implements Iterable<Plan> {
     
     /** get as XML */
     public Element getAsDOM(Document document) {
-        Element eplans = (Element) document.createElement("plans");
+    	if (eDOMPlans != null)
+    		return eDOMPlans;
+    	
+    	eDOMPlans = (Element) document.createElement("plans");
         String lastFunctor = null;
         synchronized (lockPL) {
             for (Plan p: plans) {
                 String currentFunctor = p.getTrigger().getLiteral().getFunctor();
                 if (lastFunctor != null && !currentFunctor.equals(lastFunctor)) {
-                    eplans.appendChild((Element) document.createElement("new-set-of-plans"));
+                    eDOMPlans.appendChild((Element) document.createElement("new-set-of-plans"));
                 }
                 lastFunctor = currentFunctor;
-                eplans.appendChild(p.getAsDOM(document));
+                eDOMPlans.appendChild(p.getAsDOM(document));
             }
         }
-        return eplans;
+        return eDOMPlans;
     }
 }
