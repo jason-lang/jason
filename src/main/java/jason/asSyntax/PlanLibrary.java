@@ -209,7 +209,6 @@ public class PlanLibrary implements Iterable<Plan> {
             else
                 plans.add(p);
         }
-        eDOMPlans = null;
     }
 
     public void addAll(PlanLibrary pl) throws JasonException {
@@ -284,7 +283,6 @@ public class PlanLibrary implements Iterable<Plan> {
         plans.clear();
         varPlans.clear();
         relPlans.clear();
-        eDOMPlans = null;
     }
 
     /**
@@ -335,7 +333,6 @@ public class PlanLibrary implements Iterable<Plan> {
                     relPlans.remove(p.getTrigger().getPredicateIndicator());
                 }
             }
-            eDOMPlans = null;
             return p;
         }
     }
@@ -438,15 +435,9 @@ public class PlanLibrary implements Iterable<Plan> {
         return r.toString()+end.toString();
     }
     
-    // for cache
-    protected Element eDOMPlans = null;
-
     /** get as XML */
     public Element getAsDOM(Document document) {
-        if (eDOMPlans != null)
-            return eDOMPlans;
-        
-        eDOMPlans = (Element) document.createElement("plans");
+        Element eDOMPlans = (Element) document.createElement("plans");
         String lastFunctor = null;
         synchronized (lockPL) {
             for (Plan p: plans) {

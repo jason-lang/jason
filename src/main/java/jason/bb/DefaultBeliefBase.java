@@ -42,9 +42,6 @@ public class DefaultBeliefBase extends BeliefBase {
     /** set of beliefs with percept annot, used to improve performance of buf */
     protected Set<Literal> percepts = new HashSet<>();
 
-    // for caching
-    protected Element eDOMbels = null;
-
     public DefaultBeliefBase() {
         nameSpaces.put(Literal.DefaultNS, belsMapDefaultNS);
     }
@@ -123,7 +120,6 @@ public class DefaultBeliefBase extends BeliefBase {
             logger.log(Level.SEVERE, "Error: '"+l+"' can not be added in the belief base.");
             return false;
         }
-        eDOMbels = null;
         
         Literal bl = contains(l);
         if (bl != null && !bl.isRule()) {
@@ -173,8 +169,6 @@ public class DefaultBeliefBase extends BeliefBase {
 
     @Override
     public boolean remove(Literal l) {
-        eDOMbels = null;
-        
         Literal bl = contains(l);
         if (bl != null) {
             if (l.hasSubsetAnnot(bl)) { // e.g. removing b[a] or b[a,d] from BB b[a,b,c]
@@ -253,8 +247,6 @@ public class DefaultBeliefBase extends BeliefBase {
 
     @Override
     public boolean abolish(Atom namespace, PredicateIndicator pi) {
-        eDOMbels = null;
-
         BelEntry entry = nameSpaces.get(namespace).remove(pi);
         if (entry != null) {
             size -= entry.size();
@@ -372,11 +364,9 @@ public class DefaultBeliefBase extends BeliefBase {
 
     @Override
     public Element getAsDOM(Document document) {
-        if (eDOMbels != null)
-            return eDOMbels;
-        
         int tries = 0;
         List<Literal> allBels;
+        Element eDOMbels = null;
         while (tries < 10) { // max 10 tries
             try {
                 synchronized (getLock()) {
