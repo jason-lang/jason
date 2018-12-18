@@ -475,7 +475,7 @@ public class PlanLibrary implements Iterable<Plan> {
     
     // for cache
     protected Element eDOMPlans = null;
-    
+
     /** get as XML */
     public Element getAsDOM(Document document) {
         if (eDOMPlans != null)
