@@ -451,7 +451,7 @@ public class TransitionSystem {
             return false;
         }
         public Trigger getTrigger() {
-        	return null;
+            return null;
         }
         public boolean test(IntendedMeans im, Unifier u) {
             if (im.getPlan().hasGoalCondition()) {

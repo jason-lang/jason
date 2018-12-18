@@ -53,8 +53,7 @@ public class TestAgent extends Agent {
     public boolean parseAScode(String aslCode) {
         try {
             getPL().clear(); // to force KQML plans to be after string plans
-            setASLSrc("stringcode");
-            parseAS(new StringReader(aslCode));
+            parseAS(new StringReader(aslCode), "stringcode");
             addInitialBelsInBB();
             addInitialGoalsInTS();
 

@@ -46,6 +46,8 @@ public class Plan extends Structure implements Cloneable, Serializable {
 
     private boolean     isTerm = false; // it is true when the plan body is used as a term instead of an element of a plan
 
+    private String file = ""; // the file where this plan was inside
+    
     // used by clone
     public Plan() {
         super("plan", 0);
@@ -71,6 +73,9 @@ public class Plan extends Structure implements Cloneable, Serializable {
         return 4;
     }
 
+    public void setFile(String f) { if (f!=null) this.file = f; }       
+    public String getFile()       { return this.file; }
+    
     private static final Term noLabelAtom = new Atom("nolabel");
 
     @Override
@@ -109,6 +114,9 @@ public class Plan extends Structure implements Cloneable, Serializable {
 
     public void setLabel(Pred p) {
         label = p;
+        isAtomic      = false;      
+        hasBreakpoint = false;      
+        isAllUnifs    = false;
         if (p != null && p.hasAnnot()) {
             for (Term t: label.getAnnots()) {
                 if (t.equals(TAtomic))
@@ -124,6 +132,9 @@ public class Plan extends Structure implements Cloneable, Serializable {
 
     public Pred getLabel() {
         return label;
+    }
+    public void delLabel() {        
+        setLabel(null);     
     }
 
     public void setContext(LogicalFormula le) {
@@ -228,12 +239,9 @@ public class Plan extends Structure implements Cloneable, Serializable {
 
     public Term clone() {
         Plan p = new Plan();
-        if (label != null) {
-            p.label         = (Pred) label.clone();
-            p.isAtomic      = isAtomic;
-            p.hasBreakpoint = hasBreakpoint;
-            p.isAllUnifs    = isAllUnifs;
-        }
+        
+        if (label != null) 
+            p.setLabel((Pred) label.clone());
 
         p.tevent = tevent.clone();
         if (context != null)

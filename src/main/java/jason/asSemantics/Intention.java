@@ -115,7 +115,7 @@ public class Intention implements Serializable, Comparable<Intention>, Iterable<
 
     public void setSuspended(boolean b) {
         isSuspended = b;
-        if (!b)		
+        if (!b)     
             suspendedReason = null;
     }
 
@@ -123,14 +123,14 @@ public class Intention implements Serializable, Comparable<Intention>, Iterable<
         return isSuspended;
     }
 
-    public void setSuspendedReason(String r) {		
-        suspendedReason = r;		
-    }		
-    public String getSuspendedReason() {		
-        if (suspendedReason == null)		
-            return "";		
-        else		
-            return suspendedReason;		
+    public void setSuspendedReason(String r) {      
+        suspendedReason = r;        
+    }       
+    public String getSuspendedReason() {        
+        if (suspendedReason == null)        
+            return "";      
+        else        
+            return suspendedReason;     
     }
     
     /** returns the IntendedMeans that succeeds in test c, returns null if there isn't one */

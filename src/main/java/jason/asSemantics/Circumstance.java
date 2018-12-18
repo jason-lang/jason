@@ -319,7 +319,7 @@ public class Circumstance implements Serializable {
         
         // JasonER
         if (intention.hasGoalCondition())
-        	intentionsWithGoalCondition++;
+            intentionsWithGoalCondition++;
 
         // notify
         if (listeners != null)
