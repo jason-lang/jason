@@ -33,14 +33,17 @@ public class DefaultBeliefBase extends BeliefBase {
      * belsMap is a table where the key is the bel.getFunctorArity and the value
      * is a list of literals with the same functorArity.
      */
-    private Map<PredicateIndicator, BelEntry> belsMapDefaultNS = new ConcurrentHashMap<PredicateIndicator, BelEntry>();
+    private Map<PredicateIndicator, BelEntry> belsMapDefaultNS = new ConcurrentHashMap<>();
 
-    private Map<Atom, Map<PredicateIndicator, BelEntry>> nameSpaces = new ConcurrentHashMap<Atom, Map<PredicateIndicator,BelEntry>>();
+    private Map<Atom, Map<PredicateIndicator, BelEntry>> nameSpaces = new ConcurrentHashMap<>();
 
     private int size = 0;
 
     /** set of beliefs with percept annot, used to improve performance of buf */
-    protected Set<Literal> percepts = new HashSet<Literal>();
+    protected Set<Literal> percepts = new HashSet<>();
+
+    // for caching
+    protected Element eDOMbels = null;
 
     public DefaultBeliefBase() {
         nameSpaces.put(Literal.DefaultNS, belsMapDefaultNS);
@@ -120,7 +123,8 @@ public class DefaultBeliefBase extends BeliefBase {
             logger.log(Level.SEVERE, "Error: '"+l+"' can not be added in the belief base.");
             return false;
         }
-
+        eDOMbels = null;
+        
         Literal bl = contains(l);
         if (bl != null && !bl.isRule()) {
             // add only annots
@@ -155,7 +159,7 @@ public class DefaultBeliefBase extends BeliefBase {
         if (l.getNS() != Literal.DefaultNS) {
             belsMap = nameSpaces.get(l.getNS());
             if (belsMap == null) {
-                belsMap = new ConcurrentHashMap<PredicateIndicator, DefaultBeliefBase.BelEntry>();
+                belsMap = new ConcurrentHashMap<>();
                 nameSpaces.put(l.getNS(), belsMap);
             }
         }
@@ -169,6 +173,8 @@ public class DefaultBeliefBase extends BeliefBase {
 
     @Override
     public boolean remove(Literal l) {
+        eDOMbels = null;
+        
         Literal bl = contains(l);
         if (bl != null) {
             if (l.hasSubsetAnnot(bl)) { // e.g. removing b[a] or b[a,d] from BB b[a,b,c]
@@ -206,13 +212,14 @@ public class DefaultBeliefBase extends BeliefBase {
 
             Iterator<BelEntry> ibe = ins.next().values().iterator();
             Iterator<Literal>  il  = null;
+            Iterator<Literal>  ilr = null; // used by remove
             Literal            l   = null;
             {
                 goNext();
             }
 
             public boolean hasNext() {
-                return il != null && il.hasNext(); //l != null;
+                return il != null && il.hasNext();
             }
 
             private void goNext() {
@@ -228,13 +235,14 @@ public class DefaultBeliefBase extends BeliefBase {
             }
 
             public Literal next() {
-                l = il.next(); // store it for remove
+                l = il.next();
+                ilr = il;
                 goNext();
                 return l;
             }
 
             public void remove() {
-                il.remove();
+                ilr.remove();
                 if (l.hasAnnot(TPercept)) {
                     percepts.remove(l);
                 }
@@ -245,6 +253,8 @@ public class DefaultBeliefBase extends BeliefBase {
 
     @Override
     public boolean abolish(Atom namespace, PredicateIndicator pi) {
+        eDOMbels = null;
+
         BelEntry entry = nameSpaces.get(namespace).remove(pi);
         if (entry != null) {
             size -= entry.size();
@@ -284,10 +294,37 @@ public class DefaultBeliefBase extends BeliefBase {
             return null;
 
         BelEntry entry = pi2entry.get(pi);
-        if (entry != null)
-            return entry.list.iterator();
-        else
+        if (entry != null) {
+            return new EntryIteratorWrapper(entry);
+        } else {
             return null;
+        }
+    }
+    
+    class EntryIteratorWrapper implements Iterator<Literal> {
+        Literal last = null;
+        Iterator<Literal> il = null;
+        BelEntry entry = null;
+        
+        public EntryIteratorWrapper(BelEntry e) {
+                entry = e;
+            il = entry.list.iterator();
+        }
+        @Override public boolean hasNext() {
+            return il.hasNext();
+        }
+        @Override public Literal next() {
+            last = il.next();
+            return last;
+        }
+        @Override public void remove() {
+            il.remove();
+            entry.remove(last);
+            if (last.hasAnnot(TPercept)) {
+                percepts.remove(last);
+            }
+            size--;
+        }       
     }
 
     @Override
@@ -313,7 +350,7 @@ public class DefaultBeliefBase extends BeliefBase {
             BelEntry entry = belsMap.get(l.getPredicateIndicator());
             if (entry != null) {
                 //System.out.println(l.getNS() + "::::"+ l+ "  ==> " + entry.list);
-                return entry.list.iterator();
+                return new EntryIteratorWrapper(entry);
             } else {
                 return null;
             }
@@ -335,13 +372,15 @@ public class DefaultBeliefBase extends BeliefBase {
 
     @Override
     public Element getAsDOM(Document document) {
+        if (eDOMbels != null)
+            return eDOMbels;
+        
         int tries = 0;
-        Element ebels = null;
         List<Literal> allBels;
         while (tries < 10) { // max 10 tries
             try {
                 synchronized (getLock()) {
-                    ebels = (Element) document.createElement("beliefs");
+                    eDOMbels = (Element) document.createElement("beliefs");
                     Element enss = (Element) document.createElement("namespaces");
                     Element ens = (Element) document.createElement("namespace");
                     ens.setAttribute("id", Literal.DefaultNS.toString()); // to ensure default is the first
@@ -353,15 +392,15 @@ public class DefaultBeliefBase extends BeliefBase {
                         ens.setAttribute("id", ns.getFunctor());
                         enss.appendChild(ens);
                     }
-                    ebels.appendChild(enss);
+                    eDOMbels.appendChild(enss);
                     // copy bels to an array to sort it
-                    allBels = new ArrayList<Literal>(size());
+                    allBels = new ArrayList<>(size());
                     for (Literal l: this)
                         allBels.add(l);
                 }
                 Collections.sort(allBels);
                 for (Literal l: allBels)
-                    ebels.appendChild(l.getAsDOM(document));
+                    eDOMbels.appendChild(l.getAsDOM(document));
                 break; // quit the loop
             } catch (Exception e) { // normally concurrent modification, but others happen
                 tries++;
@@ -369,14 +408,14 @@ public class DefaultBeliefBase extends BeliefBase {
                 // simply tries again
             }
         }
-        return ebels;
+        return eDOMbels;
     }
 
     /** each predicate indicator has one BelEntry assigned to it */
     final class BelEntry {
 
-        final private Deque<Literal> list = new LinkedBlockingDeque<Literal>();  // maintains the order of the beliefs
-        final private Map<StructureWrapperForLiteral,Literal> map = new ConcurrentHashMap<StructureWrapperForLiteral,Literal>(); // to find content faster
+        final private Deque<Literal> list = new LinkedBlockingDeque<>();  // maintains the order of the beliefs
+        final private Map<StructureWrapperForLiteral,Literal> map = new ConcurrentHashMap<>(); // to find content faster
 
         public void add(Literal l, boolean addInEnd) {
             map.put(new StructureWrapperForLiteral(l), l);

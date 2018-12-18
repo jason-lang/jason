@@ -60,7 +60,7 @@ import jason.bb.BeliefBase;
 
   <li> <code>.add_plan([{+b &lt;- .print(b)}, {+b : bel &lt;-
   .print(bel)}], rafa)</code>: adds both plans with "rafa" as their
-  sources.</li>
+  source.</li>
 
   </ul>
 
@@ -124,6 +124,10 @@ public class add_plan extends DefaultInternalAction {
             p = (Plan)((VarTerm)t).getValue();
         } */else {
             throw JasonException.createWrongArgument(this, "The term '"+t+"' ("+t.getClass().getSimpleName()+") can not be used as a plan for .add_plan.");
+        }
+        if (p.getLabel() != null && p.getLabel().getFunctor().startsWith("l__")) {
+        	// if the label is automatic label, remove it
+        	p.delLabel();        	
         }
         return p;
     }

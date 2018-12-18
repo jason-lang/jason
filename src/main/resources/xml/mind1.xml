@@ -1,0 +1,1301 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<agent cycle="2" name="alice">
+    <beliefs>
+        <namespaces>
+            <namespace id="default"/>
+            <namespace id="tv"/>
+            <namespace id="#8priv"/>
+            <namespace id="pc"/>
+            <namespace id="#6priv"/>
+            <namespace id="oven"/>
+            <namespace id="#7priv"/>
+        </namespaces>
+        <rule>
+            <head>
+                <literal namespace="#6priv">
+                    <structure functor="all_proposals_received">
+                        <annotations>
+                            <list-term>
+                                <structure functor="source" sep="">
+                                    <arguments>
+                                        <structure functor="self" name-space="default"/>
+                                    </arguments>
+                                </structure>
+                            </list-term>
+                        </annotations>
+                    </structure>
+                </literal>
+            </head>
+            <context>
+                <expression operator=" &amp; " type="logical">
+                    <left>
+                        <literal namespace="tv">
+                            <structure functor="nb_participants">
+                                <arguments>
+                                    <var-term functor="NP"/>
+                                </arguments>
+                            </structure>
+                        </literal>
+                    </left>
+                    <right>
+                        <expression operator=" &amp; " type="logical">
+                            <left>
+                                <structure functor=".count" ia="true">
+                                    <arguments>
+                                        <literal namespace="tv">
+                                            <structure functor="propose">
+                                                <arguments>
+                                                    <var-term functor="_180"/>
+                                                </arguments>
+                                                <annotations>
+                                                    <list-term>
+                                                        <literal namespace="default" sep="">
+                                                            <structure functor="source">
+                                                                <arguments>
+                                                                    <var-term functor="_181"/>
+                                                                </arguments>
+                                                            </structure>
+                                                        </literal>
+                                                    </list-term>
+                                                </annotations>
+                                            </structure>
+                                        </literal>
+                                        <var-term functor="NO"/>
+                                    </arguments>
+                                </structure>
+                            </left>
+                            <right>
+                                <expression operator=" &amp; " type="logical">
+                                    <left>
+                                        <structure functor=".count" ia="true">
+                                            <arguments>
+                                                <literal namespace="tv">
+                                                    <structure functor="refuse">
+                                                        <annotations>
+                                                            <list-term>
+                                                                <literal namespace="default" sep="">
+                                                                    <structure functor="source">
+                                                                        <arguments>
+                                                                            <var-term functor="_182"/>
+                                                                        </arguments>
+                                                                    </structure>
+                                                                </literal>
+                                                            </list-term>
+                                                        </annotations>
+                                                    </structure>
+                                                </literal>
+                                                <var-term functor="NR"/>
+                                            </arguments>
+                                        </structure>
+                                    </left>
+                                    <right>
+                                        <expression operator=" = " type="relational">
+                                            <left>
+                                                <var-term functor="NP"/>
+                                            </left>
+                                            <right>
+                                                <expression operator="+" type="arithmetic">
+                                                    <left>
+                                                        <var-term functor="NO"/>
+                                                    </left>
+                                                    <right>
+                                                        <var-term functor="NR"/>
+                                                    </right>
+                                                </expression>
+                                            </right>
+                                        </expression>
+                                    </right>
+                                </expression>
+                            </right>
+                        </expression>
+                    </right>
+                </expression>
+            </context>
+        </rule>
+        <literal namespace="#6priv">
+            <structure functor="state">
+                <arguments>
+                    <structure functor="contract" name-space="default"/>
+                </arguments>
+                <annotations>
+                    <list-term>
+                        <structure functor="source" sep="">
+                            <arguments>
+                                <structure functor="self" name-space="default"/>
+                            </arguments>
+                        </structure>
+                    </list-term>
+                </annotations>
+            </structure>
+        </literal>
+        <rule>
+            <head>
+                <literal namespace="#7priv">
+                    <structure functor="all_proposals_received">
+                        <annotations>
+                            <list-term>
+                                <structure functor="source" sep="">
+                                    <arguments>
+                                        <structure functor="self" name-space="default"/>
+                                    </arguments>
+                                </structure>
+                            </list-term>
+                        </annotations>
+                    </structure>
+                </literal>
+            </head>
+            <context>
+                <expression operator=" &amp; " type="logical">
+                    <left>
+                        <literal namespace="pc">
+                            <structure functor="nb_participants">
+                                <arguments>
+                                    <var-term functor="NP"/>
+                                </arguments>
+                            </structure>
+                        </literal>
+                    </left>
+                    <right>
+                        <expression operator=" &amp; " type="logical">
+                            <left>
+                                <structure functor=".count" ia="true">
+                                    <arguments>
+                                        <literal namespace="pc">
+                                            <structure functor="propose">
+                                                <arguments>
+                                                    <var-term functor="_189"/>
+                                                </arguments>
+                                                <annotations>
+                                                    <list-term>
+                                                        <literal namespace="default" sep="">
+                                                            <structure functor="source">
+                                                                <arguments>
+                                                                    <var-term functor="_190"/>
+                                                                </arguments>
+                                                            </structure>
+                                                        </literal>
+                                                    </list-term>
+                                                </annotations>
+                                            </structure>
+                                        </literal>
+                                        <var-term functor="NO"/>
+                                    </arguments>
+                                </structure>
+                            </left>
+                            <right>
+                                <expression operator=" &amp; " type="logical">
+                                    <left>
+                                        <structure functor=".count" ia="true">
+                                            <arguments>
+                                                <literal namespace="pc">
+                                                    <structure functor="refuse">
+                                                        <annotations>
+                                                            <list-term>
+                                                                <literal namespace="default" sep="">
+                                                                    <structure functor="source">
+                                                                        <arguments>
+                                                                            <var-term functor="_191"/>
+                                                                        </arguments>
+                                                                    </structure>
+                                                                </literal>
+                                                            </list-term>
+                                                        </annotations>
+                                                    </structure>
+                                                </literal>
+                                                <var-term functor="NR"/>
+                                            </arguments>
+                                        </structure>
+                                    </left>
+                                    <right>
+                                        <expression operator=" = " type="relational">
+                                            <left>
+                                                <var-term functor="NP"/>
+                                            </left>
+                                            <right>
+                                                <expression operator="+" type="arithmetic">
+                                                    <left>
+                                                        <var-term functor="NO"/>
+                                                    </left>
+                                                    <right>
+                                                        <var-term functor="NR"/>
+                                                    </right>
+                                                </expression>
+                                            </right>
+                                        </expression>
+                                    </right>
+                                </expression>
+                            </right>
+                        </expression>
+                    </right>
+                </expression>
+            </context>
+        </rule>
+        <literal namespace="#7priv">
+            <structure functor="state">
+                <arguments>
+                    <structure functor="propose" name-space="default"/>
+                </arguments>
+                <annotations>
+                    <list-term>
+                        <structure functor="source" sep="">
+                            <arguments>
+                                <structure functor="self" name-space="default"/>
+                            </arguments>
+                        </structure>
+                    </list-term>
+                </annotations>
+            </structure>
+        </literal>
+        <rule>
+            <head>
+                <literal namespace="#8priv">
+                    <structure functor="all_proposals_received">
+                        <annotations>
+                            <list-term>
+                                <structure functor="source" sep="">
+                                    <arguments>
+                                        <structure functor="self" name-space="default"/>
+                                    </arguments>
+                                </structure>
+                            </list-term>
+                        </annotations>
+                    </structure>
+                </literal>
+            </head>
+            <context>
+                <expression operator=" &amp; " type="logical">
+                    <left>
+                        <literal namespace="oven">
+                            <structure functor="nb_participants">
+                                <arguments>
+                                    <var-term functor="NP"/>
+                                </arguments>
+                            </structure>
+                        </literal>
+                    </left>
+                    <right>
+                        <expression operator=" &amp; " type="logical">
+                            <left>
+                                <structure functor=".count" ia="true">
+                                    <arguments>
+                                        <literal namespace="oven">
+                                            <structure functor="propose">
+                                                <arguments>
+                                                    <var-term functor="_198"/>
+                                                </arguments>
+                                                <annotations>
+                                                    <list-term>
+                                                        <literal namespace="default" sep="">
+                                                            <structure functor="source">
+                                                                <arguments>
+                                                                    <var-term functor="_199"/>
+                                                                </arguments>
+                                                            </structure>
+                                                        </literal>
+                                                    </list-term>
+                                                </annotations>
+                                            </structure>
+                                        </literal>
+                                        <var-term functor="NO"/>
+                                    </arguments>
+                                </structure>
+                            </left>
+                            <right>
+                                <expression operator=" &amp; " type="logical">
+                                    <left>
+                                        <structure functor=".count" ia="true">
+                                            <arguments>
+                                                <literal namespace="oven">
+                                                    <structure functor="refuse">
+                                                        <annotations>
+                                                            <list-term>
+                                                                <literal namespace="default" sep="">
+                                                                    <structure functor="source">
+                                                                        <arguments>
+                                                                            <var-term functor="_200"/>
+                                                                        </arguments>
+                                                                    </structure>
+                                                                </literal>
+                                                            </list-term>
+                                                        </annotations>
+                                                    </structure>
+                                                </literal>
+                                                <var-term functor="NR"/>
+                                            </arguments>
+                                        </structure>
+                                    </left>
+                                    <right>
+                                        <expression operator=" = " type="relational">
+                                            <left>
+                                                <var-term functor="NP"/>
+                                            </left>
+                                            <right>
+                                                <expression operator="+" type="arithmetic">
+                                                    <left>
+                                                        <var-term functor="NO"/>
+                                                    </left>
+                                                    <right>
+                                                        <var-term functor="NR"/>
+                                                    </right>
+                                                </expression>
+                                            </right>
+                                        </expression>
+                                    </right>
+                                </expression>
+                            </right>
+                        </expression>
+                    </right>
+                </expression>
+            </context>
+        </rule>
+        <literal namespace="#8priv">
+            <structure functor="state">
+                <arguments>
+                    <structure functor="propose" name-space="default"/>
+                </arguments>
+                <annotations>
+                    <list-term>
+                        <structure functor="source" sep="">
+                            <arguments>
+                                <structure functor="self" name-space="default"/>
+                            </arguments>
+                        </structure>
+                    </list-term>
+                </annotations>
+            </structure>
+        </literal>
+        <literal namespace="oven">
+            <structure functor="nb_participants">
+                <arguments>
+                    <number-term>6</number-term>
+                </arguments>
+                <annotations>
+                    <list-term>
+                        <structure functor="source" sep="">
+                            <arguments>
+                                <structure functor="self" name-space="default"/>
+                            </arguments>
+                        </structure>
+                    </list-term>
+                </annotations>
+            </structure>
+        </literal>
+        <literal namespace="oven">
+            <structure functor="propose">
+                <arguments>
+                    <number-term>10.364209843805531</number-term>
+                </arguments>
+                <annotations>
+                    <list-term>
+                        <structure functor="source" sep="">
+                            <arguments>
+                                <structure functor="company_A2" name-space="default"/>
+                            </arguments>
+                        </structure>
+                    </list-term>
+                </annotations>
+            </structure>
+        </literal>
+        <literal namespace="oven">
+            <structure functor="propose">
+                <arguments>
+                    <number-term>10.46471827797219</number-term>
+                </arguments>
+                <annotations>
+                    <list-term>
+                        <structure functor="source" sep="">
+                            <arguments>
+                                <structure functor="company_A1" name-space="default"/>
+                            </arguments>
+                        </structure>
+                    </list-term>
+                </annotations>
+            </structure>
+        </literal>
+        <literal namespace="oven">
+            <structure functor="propose">
+                <arguments>
+                    <number-term>11.018512441302288</number-term>
+                </arguments>
+                <annotations>
+                    <list-term>
+                        <structure functor="source" sep="">
+                            <arguments>
+                                <structure functor="company_A3" name-space="default"/>
+                            </arguments>
+                        </structure>
+                    </list-term>
+                </annotations>
+            </structure>
+        </literal>
+        <literal namespace="pc">
+            <structure functor="nb_participants">
+                <arguments>
+                    <number-term>6</number-term>
+                </arguments>
+                <annotations>
+                    <list-term>
+                        <structure functor="source" sep="">
+                            <arguments>
+                                <structure functor="self" name-space="default"/>
+                            </arguments>
+                        </structure>
+                    </list-term>
+                </annotations>
+            </structure>
+        </literal>
+        <literal namespace="pc">
+            <structure functor="propose">
+                <arguments>
+                    <number-term>10.812170227162138</number-term>
+                </arguments>
+                <annotations>
+                    <list-term>
+                        <structure functor="source" sep="">
+                            <arguments>
+                                <structure functor="company_A1" name-space="default"/>
+                            </arguments>
+                        </structure>
+                    </list-term>
+                </annotations>
+            </structure>
+        </literal>
+        <literal namespace="pc">
+            <structure functor="propose">
+                <arguments>
+                    <number-term>12.253141211695096</number-term>
+                </arguments>
+                <annotations>
+                    <list-term>
+                        <structure functor="source" sep="">
+                            <arguments>
+                                <structure functor="company_A3" name-space="default"/>
+                            </arguments>
+                        </structure>
+                    </list-term>
+                </annotations>
+            </structure>
+        </literal>
+        <literal namespace="pc">
+            <structure functor="propose">
+                <arguments>
+                    <number-term>12.440947231224444</number-term>
+                </arguments>
+                <annotations>
+                    <list-term>
+                        <structure functor="source" sep="">
+                            <arguments>
+                                <structure functor="company_A2" name-space="default"/>
+                            </arguments>
+                        </structure>
+                    </list-term>
+                </annotations>
+            </structure>
+        </literal>
+        <literal namespace="tv">
+            <structure functor="nb_participants">
+                <arguments>
+                    <number-term>6</number-term>
+                </arguments>
+                <annotations>
+                    <list-term>
+                        <structure functor="source" sep="">
+                            <arguments>
+                                <structure functor="self" name-space="default"/>
+                            </arguments>
+                        </structure>
+                    </list-term>
+                </annotations>
+            </structure>
+        </literal>
+        <literal namespace="tv">
+            <structure functor="propose">
+                <arguments>
+                    <number-term>10.50586843741821</number-term>
+                </arguments>
+                <annotations>
+                    <list-term>
+                        <structure functor="source" sep="">
+                            <arguments>
+                                <structure functor="company_A2" name-space="default"/>
+                            </arguments>
+                        </structure>
+                    </list-term>
+                </annotations>
+            </structure>
+        </literal>
+        <literal namespace="tv">
+            <structure functor="propose">
+                <arguments>
+                    <number-term>12.852959654105087</number-term>
+                </arguments>
+                <annotations>
+                    <list-term>
+                        <structure functor="source" sep="">
+                            <arguments>
+                                <structure functor="company_A3" name-space="default"/>
+                            </arguments>
+                        </structure>
+                    </list-term>
+                </annotations>
+            </structure>
+        </literal>
+        <literal namespace="tv">
+            <structure functor="propose">
+                <arguments>
+                    <number-term>12.964993705838628</number-term>
+                </arguments>
+                <annotations>
+                    <list-term>
+                        <structure functor="source" sep="">
+                            <arguments>
+                                <structure functor="company_A1" name-space="default"/>
+                            </arguments>
+                        </structure>
+                    </list-term>
+                </annotations>
+            </structure>
+        </literal>
+    </beliefs>
+    <circumstance>
+        <events>
+            <event intention="11">
+                <trigger operator="+" type="!">
+                    <literal namespace="#7priv">
+                        <structure functor="contract">
+                            <arguments>
+                                <structure functor="pc" name-space="default"/>
+                            </arguments>
+                            <annotations>
+                                <list-term>
+                                    <structure functor="source" sep="">
+                                        <arguments>
+                                            <structure functor="self" name-space="default"/>
+                                        </arguments>
+                                    </structure>
+                                </list-term>
+                            </annotations>
+                        </structure>
+                    </literal>
+                </trigger>
+            </event>
+            <event intention="12">
+                <trigger operator="+" type="!">
+                    <literal namespace="#8priv">
+                        <structure functor="contract">
+                            <arguments>
+                                <structure functor="oven" name-space="default"/>
+                            </arguments>
+                            <annotations>
+                                <list-term>
+                                    <structure functor="source" sep="">
+                                        <arguments>
+                                            <structure functor="self" name-space="default"/>
+                                        </arguments>
+                                    </structure>
+                                </list-term>
+                            </annotations>
+                        </structure>
+                    </literal>
+                </trigger>
+            </event>
+            <event intention="10">
+                <trigger operator="+" type="">
+                    <literal namespace="#6priv">
+                        <structure functor="state">
+                            <arguments>
+                                <structure functor="contract" name-space="default"/>
+                            </arguments>
+                            <annotations>
+                                <list-term>
+                                    <structure functor="source" sep="">
+                                        <arguments>
+                                            <structure functor="self" name-space="default"/>
+                                        </arguments>
+                                    </structure>
+                                </list-term>
+                            </annotations>
+                        </structure>
+                    </literal>
+                </trigger>
+            </event>
+            <event intention="10" selected="true">
+                <trigger operator="+" type="!">
+                    <literal namespace="#6priv">
+                        <structure functor="contract">
+                            <arguments>
+                                <structure functor="tv" name-space="default"/>
+                            </arguments>
+                            <annotations>
+                                <list-term>
+                                    <structure functor="source" sep="">
+                                        <arguments>
+                                            <structure functor="self" name-space="default"/>
+                                        </arguments>
+                                    </structure>
+                                </list-term>
+                            </annotations>
+                        </structure>
+                    </literal>
+                </trigger>
+            </event>
+        </events>
+        <options>
+            <option applicable="true" relevant="true" selected="true">
+                <plan>
+                    <label>
+                        <literal namespace="default">
+                            <structure functor="l__51">
+                                <annotations>
+                                    <list-term>
+                                        <structure functor="source" sep="">
+                                            <arguments>
+                                                <structure functor="self" name-space="default"/>
+                                            </arguments>
+                                        </structure>
+                                    </list-term>
+                                </annotations>
+                            </structure>
+                        </literal>
+                    </label>
+                    <trigger operator="+" type="!">
+                        <literal namespace="#6priv">
+                            <structure functor="contract">
+                                <arguments>
+                                    <var-term functor="Ns"/>
+                                </arguments>
+                            </structure>
+                        </literal>
+                    </trigger>
+                    <context>
+                        <expression operator=" &amp; " type="logical">
+                            <left>
+                                <literal namespace="#6priv">
+                                    <structure functor="state">
+                                        <arguments>
+                                            <structure functor="propose" name-space="default"/>
+                                        </arguments>
+                                    </structure>
+                                </literal>
+                            </left>
+                            <right>
+                                <expression operator="not " type="logical">
+                                    <right>
+                                        <structure functor=".intend" ia="true">
+                                            <arguments>
+                                                <literal namespace="#6priv">
+                                                    <structure functor="contract">
+                                                        <arguments>
+                                                            <var-term functor="_184"/>
+                                                        </arguments>
+                                                    </structure>
+                                                </literal>
+                                            </arguments>
+                                        </structure>
+                                    </right>
+                                </expression>
+                            </right>
+                        </expression>
+                    </context>
+                    <body>
+                        <body-literal type="-+">
+                            <literal namespace="#6priv">
+                                <structure functor="state">
+                                    <arguments>
+                                        <structure functor="contract" name-space="default"/>
+                                    </arguments>
+                                </structure>
+                            </literal>
+                        </body-literal>
+                        <body-literal>
+                            <structure functor=".findall" ia="true">
+                                <arguments>
+                                    <literal namespace="default">
+                                        <structure functor="offer">
+                                            <arguments>
+                                                <var-term functor="Price"/>
+                                                <var-term functor="A"/>
+                                            </arguments>
+                                        </structure>
+                                    </literal>
+                                    <literal namespace="Ns">
+                                        <structure functor="propose">
+                                            <arguments>
+                                                <var-term functor="Price"/>
+                                            </arguments>
+                                            <annotations>
+                                                <list-term>
+                                                    <literal namespace="default" sep="">
+                                                        <structure functor="source">
+                                                            <arguments>
+                                                                <var-term functor="A"/>
+                                                            </arguments>
+                                                        </structure>
+                                                    </literal>
+                                                </list-term>
+                                            </annotations>
+                                        </structure>
+                                    </literal>
+                                    <var-term functor="L"/>
+                                </arguments>
+                            </structure>
+                        </body-literal>
+                        <body-literal>
+                            <structure functor=".print" ia="true">
+                                <arguments>
+                                    <string-term>"Offers in CNP taking place in "</string-term>
+                                    <var-term functor="Ns"/>
+                                    <string-term>" are "</string-term>
+                                    <var-term functor="L"/>
+                                </arguments>
+                            </structure>
+                        </body-literal>
+                        <body-literal>
+                            <expression operator=" \== " type="relational">
+                                <left>
+                                    <var-term functor="L"/>
+                                </left>
+                                <right>
+                                    <list-term/>
+                                </right>
+                            </expression>
+                        </body-literal>
+                        <body-literal>
+                            <structure functor=".min" ia="true">
+                                <arguments>
+                                    <var-term functor="L"/>
+                                    <literal namespace="default">
+                                        <structure functor="offer">
+                                            <arguments>
+                                                <var-term functor="WOf"/>
+                                                <var-term functor="WAg"/>
+                                            </arguments>
+                                        </structure>
+                                    </literal>
+                                </arguments>
+                            </structure>
+                        </body-literal>
+                        <body-literal type="+">
+                            <literal namespace="Ns">
+                                <structure functor="winner">
+                                    <arguments>
+                                        <var-term functor="WAg"/>
+                                    </arguments>
+                                </structure>
+                            </literal>
+                        </body-literal>
+                        <body-literal type="!">
+                            <literal namespace="#6priv">
+                                <structure functor="announce_result">
+                                    <arguments>
+                                        <var-term functor="Ns"/>
+                                        <var-term functor="L"/>
+                                    </arguments>
+                                </structure>
+                            </literal>
+                        </body-literal>
+                        <body-literal type="-+">
+                            <literal namespace="#6priv">
+                                <structure functor="state">
+                                    <arguments>
+                                        <structure functor="finished" name-space="default"/>
+                                    </arguments>
+                                </structure>
+                            </literal>
+                        </body-literal>
+                    </body>
+                </plan>
+                <unifier>
+                    <map>
+                        <var-term functor="Ns"/>
+                        <value>
+                            <structure functor="tv" name-space="default"/>
+                        </value>
+                    </map>
+                    <map>
+                        <var-term functor="_232"/>
+                        <value>
+                            <structure functor="propose" name-space="default"/>
+                        </value>
+                    </map>
+                </unifier>
+            </option>
+            <option applicable="true" relevant="true">
+                <plan>
+                    <label>
+                        <literal namespace="default">
+                            <structure functor="l__52">
+                                <annotations>
+                                    <list-term>
+                                        <structure functor="source" sep="">
+                                            <arguments>
+                                                <structure functor="self" name-space="default"/>
+                                            </arguments>
+                                        </structure>
+                                    </list-term>
+                                </annotations>
+                            </structure>
+                        </literal>
+                    </label>
+                    <trigger operator="+" type="!">
+                        <literal namespace="#6priv">
+                            <structure functor="contract">
+                                <arguments>
+                                    <var-term functor="_185"/>
+                                </arguments>
+                            </structure>
+                        </literal>
+                    </trigger>
+                </plan>
+                <unifier>
+                    <map>
+                        <var-term functor="_185"/>
+                        <value>
+                            <structure functor="tv" name-space="default"/>
+                        </value>
+                    </map>
+                </unifier>
+            </option>
+        </options>
+        <intentions>
+            <intention finished="false" id="10" suspended="false">
+                <intended-means trigger="+!#6priv::contract(tv)[source(self)]">
+                    <body>
+                        <body-literal type="-+">
+                            <literal namespace="#6priv">
+                                <structure functor="state">
+                                    <arguments>
+                                        <structure functor="contract" name-space="default"/>
+                                    </arguments>
+                                </structure>
+                            </literal>
+                        </body-literal>
+                        <body-literal>
+                            <structure functor=".findall" ia="true">
+                                <arguments>
+                                    <literal namespace="default">
+                                        <structure functor="offer">
+                                            <arguments>
+                                                <var-term functor="Price"/>
+                                                <var-term functor="A"/>
+                                            </arguments>
+                                        </structure>
+                                    </literal>
+                                    <literal namespace="Ns">
+                                        <structure functor="propose">
+                                            <arguments>
+                                                <var-term functor="Price"/>
+                                            </arguments>
+                                            <annotations>
+                                                <list-term>
+                                                    <literal namespace="default" sep="">
+                                                        <structure functor="source">
+                                                            <arguments>
+                                                                <var-term functor="A"/>
+                                                            </arguments>
+                                                        </structure>
+                                                    </literal>
+                                                </list-term>
+                                            </annotations>
+                                        </structure>
+                                    </literal>
+                                    <var-term functor="L"/>
+                                </arguments>
+                            </structure>
+                        </body-literal>
+                        <body-literal>
+                            <structure functor=".print" ia="true">
+                                <arguments>
+                                    <string-term>"Offers in CNP taking place in "</string-term>
+                                    <var-term functor="Ns"/>
+                                    <string-term>" are "</string-term>
+                                    <var-term functor="L"/>
+                                </arguments>
+                            </structure>
+                        </body-literal>
+                        <body-literal>
+                            <expression operator=" \== " type="relational">
+                                <left>
+                                    <var-term functor="L"/>
+                                </left>
+                                <right>
+                                    <list-term/>
+                                </right>
+                            </expression>
+                        </body-literal>
+                        <body-literal>
+                            <structure functor=".min" ia="true">
+                                <arguments>
+                                    <var-term functor="L"/>
+                                    <literal namespace="default">
+                                        <structure functor="offer">
+                                            <arguments>
+                                                <var-term functor="WOf"/>
+                                                <var-term functor="WAg"/>
+                                            </arguments>
+                                        </structure>
+                                    </literal>
+                                </arguments>
+                            </structure>
+                        </body-literal>
+                        <body-literal type="+">
+                            <literal namespace="Ns">
+                                <structure functor="winner">
+                                    <arguments>
+                                        <var-term functor="WAg"/>
+                                    </arguments>
+                                </structure>
+                            </literal>
+                        </body-literal>
+                        <body-literal type="!">
+                            <literal namespace="#6priv">
+                                <structure functor="announce_result">
+                                    <arguments>
+                                        <var-term functor="Ns"/>
+                                        <var-term functor="L"/>
+                                    </arguments>
+                                </structure>
+                            </literal>
+                        </body-literal>
+                        <body-literal type="-+">
+                            <literal namespace="#6priv">
+                                <structure functor="state">
+                                    <arguments>
+                                        <structure functor="finished" name-space="default"/>
+                                    </arguments>
+                                </structure>
+                            </literal>
+                        </body-literal>
+                    </body>
+                    <unifier>
+                        <map>
+                            <var-term functor="Ns"/>
+                            <value>
+                                <structure functor="tv" name-space="default"/>
+                            </value>
+                        </map>
+                        <map>
+                            <var-term functor="_232"/>
+                            <value>
+                                <structure functor="propose" name-space="default"/>
+                            </value>
+                        </map>
+                    </unifier>
+                </intended-means>
+                <intended-means trigger="+!tv::startCNP(fix(tv))[source(self)]">
+                    <body>
+                        <body-literal type="!">
+                            <literal namespace="#6priv">
+                                <structure functor="contract">
+                                    <arguments>
+                                        <structure functor="tv" name-space="default"/>
+                                    </arguments>
+                                </structure>
+                            </literal>
+                        </body-literal>
+                    </body>
+                    <unifier>
+                        <map>
+                            <var-term functor="Task"/>
+                            <value>
+                                <literal namespace="default">
+                                    <structure functor="fix">
+                                        <arguments>
+                                            <structure functor="tv" name-space="default"/>
+                                        </arguments>
+                                    </structure>
+                                </literal>
+                            </value>
+                        </map>
+                        <map>
+                            <var-term functor="LP"/>
+                            <value>
+                                <list-term>
+                                    <structure functor="company_B1" name-space="default" sep=""/>
+                                    <structure functor="company_B3" name-space="default" sep=","/>
+                                    <structure functor="company_A2" name-space="default" sep=","/>
+                                    <structure functor="company_B2" name-space="default" sep=","/>
+                                    <structure functor="company_A1" name-space="default" sep=","/>
+                                    <structure functor="company_A3" name-space="default" sep=","/>
+                                </list-term>
+                            </value>
+                        </map>
+                        <map>
+                            <var-term functor="_183"/>
+                            <value>
+                                <number-term>8552</number-term>
+                            </value>
+                        </map>
+                    </unifier>
+                </intended-means>
+            </intention>
+            <intention finished="false" id="11" suspended="false">
+                <intended-means trigger="+!pc::startCNP(fix(pc))[source(self)]">
+                    <body>
+                        <body-literal type="!">
+                            <literal namespace="#7priv">
+                                <structure functor="contract">
+                                    <arguments>
+                                        <structure functor="pc" name-space="default"/>
+                                    </arguments>
+                                </structure>
+                            </literal>
+                        </body-literal>
+                    </body>
+                    <unifier>
+                        <map>
+                            <var-term functor="_192"/>
+                            <value>
+                                <number-term>8541</number-term>
+                            </value>
+                        </map>
+                        <map>
+                            <var-term functor="Task"/>
+                            <value>
+                                <literal namespace="default">
+                                    <structure functor="fix">
+                                        <arguments>
+                                            <structure functor="pc" name-space="default"/>
+                                        </arguments>
+                                    </structure>
+                                </literal>
+                            </value>
+                        </map>
+                        <map>
+                            <var-term functor="LP"/>
+                            <value>
+                                <list-term>
+                                    <structure functor="company_B1" name-space="default" sep=""/>
+                                    <structure functor="company_B3" name-space="default" sep=","/>
+                                    <structure functor="company_A2" name-space="default" sep=","/>
+                                    <structure functor="company_B2" name-space="default" sep=","/>
+                                    <structure functor="company_A1" name-space="default" sep=","/>
+                                    <structure functor="company_A3" name-space="default" sep=","/>
+                                </list-term>
+                            </value>
+                        </map>
+                    </unifier>
+                </intended-means>
+            </intention>
+            <intention finished="false" id="12" suspended="false">
+                <intended-means trigger="+!oven::startCNP(fix(oven))[source(self)]">
+                    <body>
+                        <body-literal type="!">
+                            <literal namespace="#8priv">
+                                <structure functor="contract">
+                                    <arguments>
+                                        <structure functor="oven" name-space="default"/>
+                                    </arguments>
+                                </structure>
+                            </literal>
+                        </body-literal>
+                    </body>
+                    <unifier>
+                        <map>
+                            <var-term functor="Task"/>
+                            <value>
+                                <literal namespace="default">
+                                    <structure functor="fix">
+                                        <arguments>
+                                            <structure functor="oven" name-space="default"/>
+                                        </arguments>
+                                    </structure>
+                                </literal>
+                            </value>
+                        </map>
+                        <map>
+                            <var-term functor="LP"/>
+                            <value>
+                                <list-term>
+                                    <structure functor="company_B1" name-space="default" sep=""/>
+                                    <structure functor="company_B3" name-space="default" sep=","/>
+                                    <structure functor="company_A2" name-space="default" sep=","/>
+                                    <structure functor="company_B2" name-space="default" sep=","/>
+                                    <structure functor="company_A1" name-space="default" sep=","/>
+                                    <structure functor="company_A3" name-space="default" sep=","/>
+                                </list-term>
+                            </value>
+                        </map>
+                        <map>
+                            <var-term functor="_201"/>
+                            <value>
+                                <number-term>8538</number-term>
+                            </value>
+                        </map>
+                    </unifier>
+                </intended-means>
+            </intention>
+            <intention finished="false" id="10" suspended="false">
+                <intended-means trigger="+!#6priv::contract(tv)[source(self)]">
+                    <body>
+                        <body-literal type="-+">
+                            <literal namespace="#6priv">
+                                <structure functor="state">
+                                    <arguments>
+                                        <structure functor="contract" name-space="default"/>
+                                    </arguments>
+                                </structure>
+                            </literal>
+                        </body-literal>
+                        <body-literal>
+                            <structure functor=".findall" ia="true">
+                                <arguments>
+                                    <literal namespace="default">
+                                        <structure functor="offer">
+                                            <arguments>
+                                                <var-term functor="Price"/>
+                                                <var-term functor="A"/>
+                                            </arguments>
+                                        </structure>
+                                    </literal>
+                                    <literal namespace="Ns">
+                                        <structure functor="propose">
+                                            <arguments>
+                                                <var-term functor="Price"/>
+                                            </arguments>
+                                            <annotations>
+                                                <list-term>
+                                                    <literal namespace="default" sep="">
+                                                        <structure functor="source">
+                                                            <arguments>
+                                                                <var-term functor="A"/>
+                                                            </arguments>
+                                                        </structure>
+                                                    </literal>
+                                                </list-term>
+                                            </annotations>
+                                        </structure>
+                                    </literal>
+                                    <var-term functor="L"/>
+                                </arguments>
+                            </structure>
+                        </body-literal>
+                        <body-literal>
+                            <structure functor=".print" ia="true">
+                                <arguments>
+                                    <string-term>"Offers in CNP taking place in "</string-term>
+                                    <var-term functor="Ns"/>
+                                    <string-term>" are "</string-term>
+                                    <var-term functor="L"/>
+                                </arguments>
+                            </structure>
+                        </body-literal>
+                        <body-literal>
+                            <expression operator=" \== " type="relational">
+                                <left>
+                                    <var-term functor="L"/>
+                                </left>
+                                <right>
+                                    <list-term/>
+                                </right>
+                            </expression>
+                        </body-literal>
+                        <body-literal>
+                            <structure functor=".min" ia="true">
+                                <arguments>
+                                    <var-term functor="L"/>
+                                    <literal namespace="default">
+                                        <structure functor="offer">
+                                            <arguments>
+                                                <var-term functor="WOf"/>
+                                                <var-term functor="WAg"/>
+                                            </arguments>
+                                        </structure>
+                                    </literal>
+                                </arguments>
+                            </structure>
+                        </body-literal>
+                        <body-literal type="+">
+                            <literal namespace="Ns">
+                                <structure functor="winner">
+                                    <arguments>
+                                        <var-term functor="WAg"/>
+                                    </arguments>
+                                </structure>
+                            </literal>
+                        </body-literal>
+                        <body-literal type="!">
+                            <literal namespace="#6priv">
+                                <structure functor="announce_result">
+                                    <arguments>
+                                        <var-term functor="Ns"/>
+                                        <var-term functor="L"/>
+                                    </arguments>
+                                </structure>
+                            </literal>
+                        </body-literal>
+                        <body-literal type="-+">
+                            <literal namespace="#6priv">
+                                <structure functor="state">
+                                    <arguments>
+                                        <structure functor="finished" name-space="default"/>
+                                    </arguments>
+                                </structure>
+                            </literal>
+                        </body-literal>
+                    </body>
+                    <unifier>
+                        <map>
+                            <var-term functor="Ns"/>
+                            <value>
+                                <structure functor="tv" name-space="default"/>
+                            </value>
+                        </map>
+                        <map>
+                            <var-term functor="_232"/>
+                            <value>
+                                <structure functor="propose" name-space="default"/>
+                            </value>
+                        </map>
+                    </unifier>
+                </intended-means>
+                <intended-means trigger="+!tv::startCNP(fix(tv))[source(self)]">
+                    <body>
+                        <body-literal type="!">
+                            <literal namespace="#6priv">
+                                <structure functor="contract">
+                                    <arguments>
+                                        <structure functor="tv" name-space="default"/>
+                                    </arguments>
+                                </structure>
+                            </literal>
+                        </body-literal>
+                    </body>
+                    <unifier>
+                        <map>
+                            <var-term functor="Task"/>
+                            <value>
+                                <literal namespace="default">
+                                    <structure functor="fix">
+                                        <arguments>
+                                            <structure functor="tv" name-space="default"/>
+                                        </arguments>
+                                    </structure>
+                                </literal>
+                            </value>
+                        </map>
+                        <map>
+                            <var-term functor="LP"/>
+                            <value>
+                                <list-term>
+                                    <structure functor="company_B1" name-space="default" sep=""/>
+                                    <structure functor="company_B3" name-space="default" sep=","/>
+                                    <structure functor="company_A2" name-space="default" sep=","/>
+                                    <structure functor="company_B2" name-space="default" sep=","/>
+                                    <structure functor="company_A1" name-space="default" sep=","/>
+                                    <structure functor="company_A3" name-space="default" sep=","/>
+                                </list-term>
+                            </value>
+                        </map>
+                        <map>
+                            <var-term functor="_183"/>
+                            <value>
+                                <number-term>8552</number-term>
+                            </value>
+                        </map>
+                    </unifier>
+                </intended-means>
+            </intention>
+        </intentions>
+    </circumstance>
+</agent>

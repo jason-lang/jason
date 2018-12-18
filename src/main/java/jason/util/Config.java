@@ -35,8 +35,6 @@ public class Config extends Properties {
 
     /** path to jade.jar */
     public static final String JADE_JAR      = "jadeJar";
-    //public static final String MOISE_JAR     = "moiseJar";
-    //public static final String JACAMO_JAR    = "jacamoJar";
 
     /** runtime jade arguments (the same used in jade.Boot) */
     public static final String JADE_ARGS     = "jadeArgs";
@@ -76,7 +74,7 @@ public class Config extends Properties {
     protected static String    configFactory = null;
 
     protected static boolean   showFixMsgs = true;
-    
+
     public static void setClassFactory(String f) {
         singleton = null;
         configFactory = f;
@@ -110,15 +108,15 @@ public class Config extends Properties {
     }
 
     public void setShowFixMsgs(boolean b) {
-        showFixMsgs = b;        
+        showFixMsgs = b;
     }
-    
+
     /** returns the file where the user preferences are stored */
     public File getUserConfFile() {
         return new File(System.getProperties().get("user.home") + File.separator + ".jason/user.properties");
     }
 
-    public File getMasterConfFile() {
+    public File getLocalConfFile() {
         return new File("jason.properties");
     }
 
@@ -129,14 +127,14 @@ public class Config extends Properties {
     /** Returns true if the file is loaded correctly */
     public boolean load() {
         try {
-            File f = getUserConfFile();
+            File f = getLocalConfFile();
             if (f.exists()) {
                 super.load(new FileInputStream(f));
                 return true;
-            } else { // load master configuration file
-                f = getMasterConfFile();
+            } else {
+                f = getUserConfFile();
                 if (f.exists()) {
-                    System.out.println("User config file not found, loading master: "+f.getAbsolutePath());
+                    //System.out.println("User config file not found, loading master: "+f.getAbsolutePath());
                     super.load(new FileInputStream(f));
                     return true;
                 }
@@ -169,7 +167,12 @@ public class Config extends Properties {
 
     /** Returns the full path to the jade.jar file */
     public String getJadeJar() {
-        return getProperty(JADE_JAR);
+        String r = getProperty(JADE_JAR);
+        if (r == null) {
+            tryToFixJarFileConf(JADE_JAR,   "jade",  2000000);
+            r = getProperty(JADE_JAR);
+        }
+        return r;
     }
 
     /** Return the jade args (those used in jade.Boot) */
@@ -179,7 +182,7 @@ public class Config extends Properties {
     }
 
     public String[] getJadeArrayArgs() {
-        List<String> ls = new ArrayList<String>();
+        List<String> ls = new ArrayList<>();
         String jadeargs = getProperty(JADE_ARGS);
         if (jadeargs != null && jadeargs.length() > 0) {
             StringTokenizer t = new StringTokenizer(jadeargs);
@@ -253,8 +256,6 @@ public class Config extends Properties {
     }
 
     public void resetSomeProps() {
-        //System.out.println("Reseting configuration of "+Config.MOISE_JAR);
-        //remove(Config.MOISE_JAR);
         //System.out.println("Reseting configuration of "+Config.JASON_JAR);
         remove(Config.JASON_JAR);
         //System.out.println("Reseting configuration of "+Config.JADE_JAR);
@@ -268,10 +269,6 @@ public class Config extends Properties {
     /** Set most important parameters with default values */
     public void fix() {
         tryToFixJarFileConf(JASON_JAR,  "jason",  700000);
-        tryToFixJarFileConf(JADE_JAR,   "jade",  2000000);
-        //tryToFixJarFileConf(MOISE_JAR,  "moise",  300000);
-        //tryToFixJarFileConf(JACAMO_JAR, "jacamo",   5000);
-        tryToFixJarFileConf(JASON_JAR,  "jason",  700000); // in case jacamo is found
 
         // fix java home
         if (get(JAVA_HOME) == null || !checkJavaHomePath(getProperty(JAVA_HOME))) {
@@ -389,7 +386,6 @@ public class Config extends Properties {
     private void setDefaultInfra() {
         put("infrastructure.Centralised", CentralisedFactory.class.getName());
         put("infrastructure.Jade", JadeFactory.class.getName());
-        //put("infrastructure.JaCaMo", "jacamo.infra.JaCaMoInfrastructureFactory");
     }
 
     public void store() {
@@ -411,7 +407,7 @@ public class Config extends Properties {
 
     public String[] getAvailableInfrastructures() {
         try {
-            List<String> infras = new ArrayList<String>();
+            List<String> infras = new ArrayList<>();
             infras.add("Centralised"); // set Centralised as the first
             for (Object k: keySet()) {
                 String sk = k.toString();
@@ -460,10 +456,10 @@ public class Config extends Properties {
 
     public String getJasonVersion() {
         Package j = Package.getPackage("jason.util");
-        if (j != null) {
+        if (j != null && j.getSpecificationVersion() != null) {
             return j.getSpecificationVersion();
         }
-        return "?";
+        return "";
         /*
         try {
             Properties p = new Properties();
@@ -505,11 +501,20 @@ public class Config extends Properties {
         }*/
     }
 
-    public void tryToFixJarFileConf(String jarEntry, String jarFilePrefix, int minSize) {
+    public boolean tryToFixJarFileConf(String jarEntry, String jarFilePrefix, int minSize) {
         String jarFile = getProperty(jarEntry);
         if (jarFile == null || !checkJar(jarFile, minSize)) {
             if (showFixMsgs)
                 System.out.println("Wrong configuration for " + jarFilePrefix + ", current is " + jarFile);
+
+            // try to get from classpath (the most common case)
+            jarFile = getJarFromClassPath(jarFilePrefix);
+            if (checkJar(jarFile, minSize)) {
+                put(jarEntry, jarFile);
+                if (showFixMsgs)
+                    System.out.println("found at " + jarFile+" by classpath");
+                return true;
+            }
 
             // try eclipse installation
             jarFile = getJarFromEclipseInstallation(jarFilePrefix);
@@ -517,9 +522,10 @@ public class Config extends Properties {
                 put(jarEntry, jarFile);
                 if (showFixMsgs)
                     System.out.println("found at " + jarFile+" in eclipse installation");
-                return;
+                return true;
             }
 
+            /*
             // try current dir
             jarFile = findJarInDirectory(new File("."), jarFilePrefix);
             if (checkJar(jarFile, minSize)) {
@@ -533,15 +539,6 @@ public class Config extends Properties {
                 }
             }
 
-            // try to get from classpath
-            jarFile = getJarFromClassPath(jarFilePrefix);
-            if (checkJar(jarFile, minSize)) {
-                put(jarEntry, jarFile);
-                if (showFixMsgs)
-                    System.out.println("found at " + jarFile+" by classpath");
-                return;
-            }
-
             try {
                 // try jason jar
                 File jasonjardir = new File(getJasonJar()).getAbsoluteFile().getCanonicalFile().getParentFile();
@@ -553,20 +550,9 @@ public class Config extends Properties {
                     return;
                 }
             } catch (Exception e) {}
-
-            /*
-            try {
-                // try jacamo jar
-                File jacamojardir= new File(getProperty(JACAMO_JAR)).getAbsoluteFile().getCanonicalFile().getParentFile();
-                jarFile = findJarInDirectory(jacamojardir, jarFilePrefix);
-                if (checkJar(jarFile, minSize)) {
-                    put(jarEntry, jarFile);
-                    System.out.println("found at " + jarFile+" by jacamo.jar directory");
-                    return;
-                }
-            } catch (Exception e) {}
             */
 
+            /*
             // try current dir + lib
             jarFile = findJarInDirectory(new File(".." + File.separator + "libs"), jarFilePrefix);
             if (checkJar(jarFile, minSize)) {
@@ -603,7 +589,7 @@ public class Config extends Properties {
                     e.printStackTrace();
                 }
             }
-
+            */
             // try from java web start
             String jwsDir = System.getProperty("jnlpx.deployment.user.home");
             if (jwsDir == null) {
@@ -622,15 +608,16 @@ public class Config extends Properties {
                     if (showFixMsgs)
                         System.out.println("found at " + jarFile);
                     put(jarEntry, jarFile);
-                    return;
+                    return true;
                 } else {
                     put(jarEntry, File.separator);
                 }
             }
             if (showFixMsgs)
                 System.out.println(jarFilePrefix+" not found");
+            return false;
         }
-
+        return true;
     }
 
     static String findFile(File p, String file, int minSize) {
@@ -725,7 +712,7 @@ public class Config extends Properties {
         return System.getProperty("os.name").startsWith("Windows");
     }
 
-    static private String getJarFromClassPath(String file) {
+    static protected String getJarFromClassPath(String file) {
         StringTokenizer st = new StringTokenizer(System.getProperty("java.class.path"), File.pathSeparator);
         while (st.hasMoreTokens()) {
             String token = st.nextToken();
@@ -821,7 +808,7 @@ public class Config extends Properties {
     public String getMindInspectorWebServerClassName() {
         return "jason.architecture.MindInspectorWebImpl";
     }
-    
+
     public String getPresentation() {
         return "Jason "+getJasonVersion()+"\n"+
                "     built on "+getJasonBuiltDate()+"\n"+

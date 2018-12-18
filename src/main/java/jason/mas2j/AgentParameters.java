@@ -26,7 +26,7 @@ public class AgentParameters {
     public ClassParameters       bbClass   = null;
     protected int                   nbInstances       = 1;
     protected Map<String, String>   options   = null;
-    protected List<ClassParameters> archClasses = new ArrayList<ClassParameters>();
+    protected List<ClassParameters> archClasses = new ArrayList<>();
 
     protected String               host      = null;
 
@@ -51,8 +51,8 @@ public class AgentParameters {
         newap.bbClass = this.bbClass.copy();
         newap.nbInstances = this.nbInstances;
         if (this.options != null)
-            newap.options = new HashMap<String, String>(this.options);
-        newap.archClasses = new ArrayList<ClassParameters>(this.archClasses);
+            newap.options = new HashMap<>(this.options);
+        newap.archClasses = new ArrayList<>(this.archClasses);
         newap.host = this.host;
     }
 
@@ -100,14 +100,17 @@ public class AgentParameters {
     public void addArchClass(String... cs) {
         if (cs == null)
             return;
-        for (String c: cs)
-            archClasses.add(new ClassParameters(c));
+        for (String c: cs) {
+        	ClassParameters cp = new ClassParameters(c);
+        	if (!archClasses.contains(cp))
+        		archClasses.add(cp);
+        }
     }
     public void addArchClass(Collection<String> cs) {
         if (cs == null)
             return;
         for (String c: cs)
-            archClasses.add(new ClassParameters(c));
+            addArchClass(c);
     }
     public void addArchClass(ClassParameters... cps) {
         if (cps == null)
@@ -121,9 +124,10 @@ public class AgentParameters {
         for (ClassParameters c: cps)
             archClasses.add(0,c);
     }
+
     /** gets a list of all custom arch classes defined in the jason project */
-    public List<String> getAgArchClasses() {
-        List<String> all = new ArrayList<String>();
+    public Collection<String> getAgArchClasses() {
+        List<String> all = new ArrayList<>();
         for (ClassParameters c: archClasses) {
             all.add(c.getClassName());
         }
@@ -142,7 +146,7 @@ public class AgentParameters {
 
     public void addOption(String k, String vl) {
         if (options == null)
-            options = new HashMap<String, String>();
+            options = new HashMap<>();
         options.put(k, vl);
     }
     public String getOption(String key) {
@@ -195,7 +199,7 @@ public class AgentParameters {
     public Settings getAsSetts(boolean debug, boolean forceSync) {
         Settings stts = new Settings();
         if (options != null) {
-            Map<String,Object> opt = new HashMap<String, Object>();
+            Map<String,Object> opt = new HashMap<>();
             //String s = ""; String v = "";
             for (String key: options.keySet()) {
                 opt.put(key, options.get(key));

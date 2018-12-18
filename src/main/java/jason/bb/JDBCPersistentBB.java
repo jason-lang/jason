@@ -111,7 +111,7 @@ public class JDBCPersistentBB extends ChainBBAdapter {
 
 
     // map of bels in DB
-    protected Map<PredicateIndicator, ResultSetMetaData> belsDB = new HashMap<PredicateIndicator, ResultSetMetaData>();
+    protected Map<PredicateIndicator, ResultSetMetaData> belsDB = new HashMap<>();
 
     @Override
     public void init(Agent ag, String[] args) {
@@ -447,7 +447,7 @@ public class JDBCPersistentBB extends ChainBBAdapter {
 
     @Override
     public Iterator<Literal> iterator() {
-        List<Literal> all = new ArrayList<Literal>(size());
+        List<Literal> all = new ArrayList<>(size());
 
         Iterator<Literal> is = nextBB.iterator();
         while (is.hasNext()) {

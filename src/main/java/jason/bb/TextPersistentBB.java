@@ -46,7 +46,7 @@ public class TextPersistentBB extends ChainBBAdapter {
             PrintWriter out = new PrintWriter(new FileWriter(file));
             out.println("// BB stored by TextPersistentBB\n");
             for (Literal b: this) {
-                if (! b.isRule()) {
+                if (! b.isRule() && !b.hasAnnot(BeliefBase.TPercept)) {
                     out.println(b.toString()+".");
                 }
             }
