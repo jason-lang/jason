@@ -29,6 +29,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 import jason.JasonException;
 import jason.RevisionFailedException;
@@ -1057,8 +1058,10 @@ public class Agent {
 
     static DocumentBuilder builder = null;
 
+    private Document docDOM = null; // to reuse docDOM
+    
     /** Gets the agent "mind" (beliefs, plans, and circumstance) as XML */
-    public Document getAgState() {
+    public synchronized Document getAgState() {
         if (builder == null) {
             try {
                 builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
@@ -1067,14 +1070,19 @@ public class Agent {
                 return null;
             }
         }
-        Document document = builder.newDocument();
-        document.appendChild(document.createProcessingInstruction("xml-stylesheet", "href='http://jason.sf.net/xml/agInspection.xsl' type='text/xsl' "));
+        if (docDOM == null) {
+            docDOM = builder.newDocument();
+            docDOM.appendChild(docDOM.createProcessingInstruction("xml-stylesheet", "href='http://jason.sf.net/xml/agInspection.xsl' type='text/xsl' "));
+        } else {
+            NodeList nds = docDOM.getChildNodes();
+            docDOM.removeChild(nds.item(1));
+        }
 
-        Element ag = getAsDOM(document);
-        document.appendChild(ag);
+        Element ag = getAsDOM(docDOM);
+        docDOM.appendChild(ag);
 
-        ag.appendChild(ts.getC().getAsDOM(document));
-        return document;
+        ag.appendChild(ts.getC().getAsDOM(docDOM));
+        return docDOM;
     }
 
     @Override

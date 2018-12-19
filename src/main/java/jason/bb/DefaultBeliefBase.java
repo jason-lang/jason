@@ -120,6 +120,7 @@ public class DefaultBeliefBase extends BeliefBase {
             logger.log(Level.SEVERE, "Error: '"+l+"' can not be added in the belief base.");
             return false;
         }
+        eDOMbels = null;
         
         Literal bl = contains(l);
         if (bl != null && !bl.isRule()) {
@@ -172,6 +173,8 @@ public class DefaultBeliefBase extends BeliefBase {
         Literal bl = contains(l);
         if (bl != null) {
             if (l.hasSubsetAnnot(bl)) { // e.g. removing b[a] or b[a,d] from BB b[a,b,c]
+                eDOMbels = null;
+                
                 // second case fails
                 if (l.hasAnnot(TPercept)) {
                     percepts.remove(bl);
@@ -249,6 +252,8 @@ public class DefaultBeliefBase extends BeliefBase {
     public boolean abolish(Atom namespace, PredicateIndicator pi) {
         BelEntry entry = nameSpaces.get(namespace).remove(pi);
         if (entry != null) {
+            eDOMbels = null;
+            
             size -= entry.size();
 
             // remove also in percepts list!
@@ -362,11 +367,16 @@ public class DefaultBeliefBase extends BeliefBase {
         return bb;
     }
 
+    // for cache
+    protected Element eDOMbels = null;
+    
     @Override
     public Element getAsDOM(Document document) {
+        if (eDOMbels != null)
+            return eDOMbels;
+        
         int tries = 0;
         List<Literal> allBels;
-        Element eDOMbels = null;
         while (tries < 10) { // max 10 tries
             try {
                 synchronized (getLock()) {
