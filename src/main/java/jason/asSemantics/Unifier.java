@@ -430,8 +430,9 @@ public class Unifier implements Cloneable, Iterable<VarTerm> {
         }
         return u;
     }
-    
+
+    /** changes the implementation of Var/Value mapping  -- should be used carefully */  
     public void setMap(Map<VarTerm, Term> newFunc) {
-    	function = newFunc;
+        function = newFunc;
     }
 }
