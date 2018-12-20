@@ -187,8 +187,9 @@ public class Pred extends Structure {
     }
 
     @Override
-    public void clearAnnots() {
+    public Literal clearAnnots() {
         annots = null;
+        return this;
     }
 
     @Override

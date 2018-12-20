@@ -170,8 +170,10 @@ public abstract class Literal extends DefaultTerm implements LogicalFormula {
         return true;
     }
 
-    /** removes all annotations */
-    public void    clearAnnots()    { }
+    /** removes all annotations and returns itself */
+    public Literal clearAnnots()    { 
+        return this;
+    }
 
     /**
      * returns all annots with the specified functor e.g.: from annots
@@ -293,6 +295,11 @@ public abstract class Literal extends DefaultTerm implements LogicalFormula {
         return false;
     }
 
+    public boolean delAnnots()   {
+        logger.log(Level.SEVERE, "delAnnots is not implemented in the class "+this.getClass().getSimpleName(), new Exception());
+        return false;
+    }
+    
     /**
      * "import" annots from another predicate <i>p</i>. p will be changed
      * to contain only the annots actually imported (for Event),
@@ -322,6 +329,11 @@ public abstract class Literal extends DefaultTerm implements LogicalFormula {
     /** deletes all source annotations */
     public void delSources()                 {
         logger.log(Level.SEVERE, "delSources is not implemented in the class "+this.getClass().getSimpleName(), new Exception());
+    }
+    
+    public Literal noSource() {
+    	delSources();
+    	return this;
     }
 
     // literal
@@ -604,7 +616,6 @@ public abstract class Literal extends DefaultTerm implements LogicalFormula {
     }
 
 
-    @SuppressWarnings("serial")
     static final class TrueLiteral extends Atom {
         public TrueLiteral() {
             super("true");
@@ -630,7 +641,6 @@ public abstract class Literal extends DefaultTerm implements LogicalFormula {
         }
     }
 
-    @SuppressWarnings("serial")
     static final class FalseLiteral extends Atom {
         public FalseLiteral() {
             super("false");

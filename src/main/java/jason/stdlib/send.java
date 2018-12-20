@@ -92,6 +92,20 @@ import java.util.concurrent.TimeUnit;
   @see jason.stdlib.my_name
 
 */
+@Manual(
+			literal=".send(receiver,performative,content)",
+			hint="used to send messages to other agents",
+			argsHint= {
+					"the name of the agent that will receive the message",
+					"the performative (tell, achieve, askOne,...)",
+					"the message content"
+			},
+			argsType= {
+					"atom or string",
+					"atom",
+					"literal"
+			}
+		)
 public class send extends DefaultInternalAction {
 
     @Override
