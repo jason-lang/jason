@@ -12,14 +12,6 @@ import java.lang.annotation.RetentionPolicy;
 public @interface Manual {
     String    hint()     default "no hint"; 
     String    literal()  default "noliteral(a,b,c)"; 
-    String[]  argsHint() default {  
-                                    "hint for arg a ", 
-                                    "hint for arg b ",
-                                    "hint for arg c "
-                                  }; 
-    String[]  argsType() default {  
-                                    "type of arg a ", 
-                                    "type of arg b ",
-                                    "type of arg c "
-                                };
+    String[]  argsHint() default ""; 
+    String[]  argsType() default "";
 }
