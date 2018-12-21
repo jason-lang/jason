@@ -120,7 +120,8 @@ public class DefaultBeliefBase extends BeliefBase {
             logger.log(Level.SEVERE, "Error: '"+l+"' can not be added in the belief base.");
             return false;
         }
-
+        eDOMbels = null;
+        
         Literal bl = contains(l);
         if (bl != null && !bl.isRule()) {
             // add only annots
@@ -172,6 +173,8 @@ public class DefaultBeliefBase extends BeliefBase {
         Literal bl = contains(l);
         if (bl != null) {
             if (l.hasSubsetAnnot(bl)) { // e.g. removing b[a] or b[a,d] from BB b[a,b,c]
+                eDOMbels = null;
+                
                 // second case fails
                 if (l.hasAnnot(TPercept)) {
                     percepts.remove(bl);
@@ -249,6 +252,8 @@ public class DefaultBeliefBase extends BeliefBase {
     public boolean abolish(Atom namespace, PredicateIndicator pi) {
         BelEntry entry = nameSpaces.get(namespace).remove(pi);
         if (entry != null) {
+            eDOMbels = null;
+            
             size -= entry.size();
 
             // remove also in percepts list!
@@ -362,15 +367,20 @@ public class DefaultBeliefBase extends BeliefBase {
         return bb;
     }
 
+    // for cache
+    protected Element eDOMbels = null;
+    
     @Override
     public Element getAsDOM(Document document) {
+        if (eDOMbels != null)
+            return eDOMbels;
+        
         int tries = 0;
-        Element ebels = null;
         List<Literal> allBels;
         while (tries < 10) { // max 10 tries
             try {
                 synchronized (getLock()) {
-                    ebels = (Element) document.createElement("beliefs");
+                    eDOMbels = (Element) document.createElement("beliefs");
                     Element enss = (Element) document.createElement("namespaces");
                     Element ens = (Element) document.createElement("namespace");
                     ens.setAttribute("id", Literal.DefaultNS.toString()); // to ensure default is the first
@@ -382,7 +392,7 @@ public class DefaultBeliefBase extends BeliefBase {
                         ens.setAttribute("id", ns.getFunctor());
                         enss.appendChild(ens);
                     }
-                    ebels.appendChild(enss);
+                    eDOMbels.appendChild(enss);
                     // copy bels to an array to sort it
                     allBels = new ArrayList<>(size());
                     for (Literal l: this)
@@ -390,7 +400,7 @@ public class DefaultBeliefBase extends BeliefBase {
                 }
                 Collections.sort(allBels);
                 for (Literal l: allBels)
-                    ebels.appendChild(l.getAsDOM(document));
+                    eDOMbels.appendChild(l.getAsDOM(document));
                 break; // quit the loop
             } catch (Exception e) { // normally concurrent modification, but others happen
                 tries++;
@@ -398,7 +408,7 @@ public class DefaultBeliefBase extends BeliefBase {
                 // simply tries again
             }
         }
-        return ebels;
+        return eDOMbels;
     }
 
     /** each predicate indicator has one BelEntry assigned to it */

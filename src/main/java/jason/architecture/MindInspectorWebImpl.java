@@ -285,7 +285,6 @@ public class MindInspectorWebImpl extends MindInspectorWeb {
                                         so.append("<hr/><a href='hide?annots'> hide annotations </a> ");
                                     } else {
                                         so.append("<hr/><a href='show?annots'> show annotations </a> ");
-                                        
                                     }
                                     //so.append("<hr/><a href=\"/\"> list of agents</a> ");
                                 } else {
@@ -344,7 +343,7 @@ public class MindInspectorWebImpl extends MindInspectorWeb {
     synchronized String getAgStateAsString(Document ag) { // full means with show all
         try {
             if (mindInspectorTransformer == null) {
-                mindInspectorTransformer = new asl2html("/xml/agInspection.xsl");
+                mindInspectorTransformer = new asl2html("/xml/agInspection-nd.xsl");
                 show.put("annots", Config.get().getBoolean(Config.SHOW_ANNOTS));
             }
             for (String p: show.keySet())

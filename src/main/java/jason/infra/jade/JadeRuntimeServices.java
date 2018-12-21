@@ -38,7 +38,12 @@ public class JadeRuntimeServices implements RuntimeServices {
         jadeAgent = ag;
     }
 
-    public String createAgent(String agName, String agSource, String agClass, List<String> archClasses, ClassParameters bbPars, Settings stts, jason.asSemantics.Agent father) throws Exception {
+    @Override
+    public String getNewAgentName(String baseName) {
+        return baseName;
+    }
+    
+    public String createAgent(String agName, String agSource, String agClass, Collection<String> archClasses, ClassParameters bbPars, Settings stts, jason.asSemantics.Agent father) throws Exception {
         try {
             if (logger.isLoggable(Level.FINE)) {
                 logger.fine("Creating jade agent " + agName + "from source " + agSource + "(agClass=" + agClass + ", archClass=" + archClasses + ", settings=" + stts);
@@ -51,7 +56,7 @@ public class JadeRuntimeServices implements RuntimeServices {
             ap.asSource = new File(agSource);
 
             if (stts == null) stts = new Settings();
-
+            agName = getNewAgentName(agName);
             cc.createNewAgent(agName, JadeAgArch.class.getName(), new Object[] { ap, false, false }).start();
 
             return agName;
@@ -65,15 +70,15 @@ public class JadeRuntimeServices implements RuntimeServices {
         // nothing to do, the jade create new agent is enough
     }
 
-    public AgArch clone(jason.asSemantics.Agent source, List<String> archClasses, String agName) throws JasonException {
+    public AgArch clone(jason.asSemantics.Agent source, Collection<String> archClasses, String agName) throws JasonException {
         throw new JasonException("clone for JADE is not implemented!");
     }
 
-    public Set<String> getAgentsNames() {
+    public Collection<String> getAgentsNames() {
         // TODO: make a cache list and update it when a new agent enters the system
         if (jadeAgent == null) return null;
         try {
-            Set<String> ags = new HashSet<String>();
+            Set<String> ags = new HashSet<>();
             DFAgentDescription template = new DFAgentDescription();
             ServiceDescription sd = new ServiceDescription();
             sd.setType("jason");

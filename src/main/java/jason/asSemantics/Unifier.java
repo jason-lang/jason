@@ -1,5 +1,14 @@
 package jason.asSemantics;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
 import jason.asSyntax.ASSyntax;
 import jason.asSyntax.CyclicTerm;
 import jason.asSyntax.ListTerm;
@@ -14,20 +23,11 @@ import jason.asSyntax.UnnamedVar;
 import jason.asSyntax.VarTerm;
 import jason.asSyntax.directives.NameSpace;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
 public class Unifier implements Cloneable, Iterable<VarTerm> {
 
     private static Logger logger = Logger.getLogger(Unifier.class.getName());
 
-    protected Map<VarTerm, Term> function = new HashMap<VarTerm, Term>();
+    protected Map<VarTerm, Term> function = new HashMap<>();
 
     /**
      * gets the value for a Var, if it is unified with another var, gets this
@@ -429,5 +429,10 @@ public class Unifier implements Cloneable, Iterable<VarTerm> {
             u.appendChild(map);
         }
         return u;
+    }
+
+    /** changes the implementation of Var/Value mapping  -- should be used carefully */  
+    public void setMap(Map<VarTerm, Term> newFunc) {
+        function = newFunc;
     }
 }

@@ -300,6 +300,10 @@ public class Plan extends Structure implements Cloneable, Serializable {
             l.appendChild(new LiteralImpl(label).getAsDOM(document));
             u.appendChild(l);
         }
+        if (file != null && !file.isEmpty()) {
+            u.setAttribute("file", file);
+        }
+        
         u.appendChild(tevent.getAsDOM(document));
 
         if (context != null) {

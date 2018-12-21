@@ -138,6 +138,7 @@ Internal actions of Jason.
   <li>{@link jason.stdlib.kill_agent kill_agent}: kill an agent.</li>
   <li>{@link jason.stdlib.clone}: clone an agent.</li>
   <li>{@link jason.stdlib.stopMAS stopMAS}: stop all agents.</li>
+  <li>{@link jason.stdlib.version version}: gets the Jason version.</li>
 
   <li>{@link jason.stdlib.date date}: get the current date.</li>
   <li>{@link jason.stdlib.time time}: get the current time.</li>

@@ -9,11 +9,16 @@ Jason is developed by http://jomi.das.ufsc.br[Jomi F. Hübner] and http://www.in
 
 == Documentation
 
+- Installation
+* link:./tutorials/getting-started/readme{outfilesuffix}[using jEdit]
+* http://jason.sourceforge.net/mini-tutorial/eclipse-plugin[using eclipse]
+* link:./tutorials/getting-started/shell-based{outfilesuffix}[using a command shell]
+
 - Tutorials
 * link:./tutorials/getting-started/readme{outfilesuffix}[Getting Started tutorial]
 * link:./tutorials/jason-jade/readme{outfilesuffix}[Interoperating with JADE]
 * link:./tutorials/hello-bdi/readme{outfilesuffix}[BDI concepts]
-* http://jason.sourceforge.net/mini-tutorial/eclipse-plugin[Eclipse plugin]
+
 
 - link:./faq{outfilesuffix}[FAQ]
 - link:./Jason.pdf[First Jason Manual]

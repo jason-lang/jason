@@ -156,4 +156,19 @@ public class ClassParameters {
             return s;
         }
     }
+
+    @Override
+    public int hashCode() {
+    	return className.hashCode();
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+    	if (obj == null) return false;
+    	if (obj == this) return true;
+    	if (! (obj instanceof ClassParameters)) return false;
+    	ClassParameters o = (ClassParameters)obj;
+    	if (!this.className.equals(o.className)) return false;
+    	return true;
+    }
 }
