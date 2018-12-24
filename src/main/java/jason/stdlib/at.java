@@ -48,9 +48,30 @@ import jason.asSyntax.Trigger;
   @see jason.stdlib.wait
 
  */
+@Manual(
+		literal=".at(when,event)",
+		hint="used to send messages to other agents",
+		argsHint= {
+				"the time for the event to be generated",
+				"the event to be created"
+		},
+		argsType= {
+				"string",
+				"trigger term"
+		},
+		examples= {
+				".at(\"now +3 minutes\", {+!g}): generates the event +!g 3 minutes from now.",
+				".at(\"now +1 m\", {+!g})",
+				".at(\"now +2 h\", {+!g})"
+		},
+		seeAlso= {
+				"jason.stdlib.wait"
+		}
+	)
+@SuppressWarnings("serial")
 public class at extends DefaultInternalAction {
 
-    public static final String atAtom = ".at";
+	public static final String atAtom = ".at";
 
     @Override public int getMinArgs() {
         return 2;

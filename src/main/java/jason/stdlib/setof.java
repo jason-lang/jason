@@ -14,9 +14,10 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
 
+@SuppressWarnings("serial")
 public class setof extends DefaultInternalAction {
 
-    @Override public int getMinArgs() {
+	@Override public int getMinArgs() {
         return 3;
     }
     @Override public int getMaxArgs() {

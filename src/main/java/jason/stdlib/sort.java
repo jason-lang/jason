@@ -59,9 +59,43 @@ import java.util.List;
   @see jason.stdlib.union
 
 */
+@Manual(
+		literal=".sort(list,result)",
+		hint="sorts a list of terms using the \"natural\" order. For different types, the order is: numbers &lt; atoms &lt; structures &lt; lists",
+		argsHint= {
+				"the list the be sorted",
+				"the resulting sorted list" 
+		},
+		argsType= {
+				"list",
+				"list"
+		},
+		examples= {
+				".sort([C,b(4),A,4,b(1,1),\"x\",[],[c]],X): X unifies with [4,\"x\",[],[c],b(4),b(1,1),A,C]",
+				".sort([a],[b,c],[a,b],~a(3),a(e,f),b,a(3)],X): X unifies with [[a],[a,b],[b,c],b,a(3),a(e,f),~a(3)]",
+				".sort(b(3),a(10)[30],a(10)[5],a,a(d,e)],X): X unifies with [a,a(10)[5],a(10)[30],b(3),a(d,e)]",
+				".sort([3,2,5],[2,3,5]): true",
+				".sort([3,2,5],[a,b,c]): false"
+		},
+		seeAlso= {
+				"jason.stdlib.concat", 
+				"jason.stdlib.delete", 
+				"jason.stdlib.length", 
+				"jason.stdlib.member", 
+				"jason.stdlib.shuffle", 
+				"jason.stdlib.nth", 
+				"jason.stdlib.max", 
+				"jason.stdlib.min", 
+				"jason.stdlib.reverse", 
+				"jason.stdlib.difference", 
+				"jason.stdlib.intersection",
+				"jason.stdlib.union"
+		}
+	)
+@SuppressWarnings("serial")
 public class sort extends DefaultInternalAction {
 
-    private static InternalAction singleton = null;
+	private static InternalAction singleton = null;
     public static InternalAction create() {
         if (singleton == null)
             singleton = new sort();

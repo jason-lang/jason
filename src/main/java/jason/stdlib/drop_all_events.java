@@ -21,7 +21,7 @@ import jason.asSyntax.Term;
 
   <p>Example:<ul>
 
-  <li> <code>.drop_all_events</code>.
+  <li> <code>.drop_all_events</code>: remove all not commited desires.
 
   </ul>
 
@@ -39,9 +39,38 @@ import jason.asSyntax.Term;
   @see jason.stdlib.resume
 
  */
+@Manual(
+		literal=".drop_all_events",
+		hint="removes all desires that the agent has not yet committed to",
+		argsHint= {
+				""
+		},
+		argsType= {
+				""
+		},
+		examples= {
+				".drop_all_events: remove all not commited desires"
+		},
+		seeAlso= {
+				"jason.stdlib.intend",
+				"jason.stdlib.desire",
+				"jason.stdlib.drop_all_desires",
+				"jason.stdlib.drop_all_intentions",
+				"jason.stdlib.drop_event",
+				"jason.stdlib.drop_intention",
+				"jason.stdlib.drop_desire",
+				"jason.stdlib.succeed_goal",
+				"jason.stdlib.fail_goal",
+				"jason.stdlib.current_intention",
+				"jason.stdlib.resume",
+				"jason.stdlib.suspend",
+				"jason.stdlib.suspended"
+		}
+	)
+@SuppressWarnings("serial")
 public class drop_all_events extends DefaultInternalAction {
 
-    @Override public int getMinArgs() {
+	@Override public int getMinArgs() {
         return 0;
     }
     @Override public int getMaxArgs() {

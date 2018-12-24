@@ -12,13 +12,30 @@ import jason.asSyntax.Term;
 <p>Description: prints out the rules in the belief base.
 
 <p>Example:<ul>
-<li> <code>.list_rules</code>
+<li> <code>.list_rules</code>: list rules in the agent's belief base
 </ul>
 
 */
+@Manual(
+		literal=".list_rules",
+		hint="prints out the rules in the belief base",
+		argsHint= {
+				""
+		},
+		argsType= {
+				""
+		},
+		examples= {
+				".list_rules: list rules in the agent's belief base"
+		},
+		seeAlso= {
+				""
+		}
+	)
+@SuppressWarnings("serial")
 public class list_rules extends DefaultInternalAction {
 
-    @Override public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {
+	@Override public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {
         for (Literal b: ts.getAg().getBB()) {
             if (b.isRule()) {
                 ts.getLogger().info(b.toString());

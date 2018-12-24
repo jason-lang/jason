@@ -35,9 +35,29 @@ import jason.asSyntax.StringTerm;
   @see jason.runtime.RuntimeServices
 
 */
+@Manual(
+		literal=".kill_agent(name)",
+		hint="kills the agent whose name is given as parameter",
+		argsHint= {
+				"the name of the agent to be killed"
+		},
+		argsType= {
+				"atom or string"
+		},
+		examples= {
+				".kill_agent(bob): kills the agent named bob"
+		},
+		seeAlso= {
+				"jason.stdlib.create_agent",
+				"jason.stdlib.save_agent",
+				"jason.stdlib.stopMAS",
+				"jason.runtime.RuntimeServices"
+		}
+	)
+@SuppressWarnings("serial")
 public class kill_agent extends DefaultInternalAction {
 
-    @Override public int getMinArgs() {
+	@Override public int getMinArgs() {
         return 1;
     }
     @Override public int getMaxArgs() {

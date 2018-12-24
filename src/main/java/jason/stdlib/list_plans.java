@@ -14,18 +14,36 @@ import jason.asSyntax.UnnamedVar;
 <p>Description: prints out the plans in the plan library.
 
 <p>Parameter:<ul>
-<li>+ trigger (trigger term, [optional]): list only plan that unifies this parameter as trigger event.<br/>
+<li>+ trigger (trigger term -- optional): list only plan that unifies this parameter as trigger event.<br/>
 </ul>
 
 <p>Examples:<ul>
-<li> <code>.list_plans</code>
-<li> <code>.list_plans({ +g(_) })</code>
+<li> <code>.list_plans</code>: list all agent's plans
+<li> <code>.list_plans({ +g(_) })</code>: list agent's plans that unifies with +g(_) 
 </ul>
 
 */
+@Manual(
+		literal=".list_plans[(trigger)]",
+		hint="prints out the plans in the plan library",
+		argsHint= {
+				"list only plan that unifies this parameter as trigger event"
+		},
+		argsType= {
+				"trigger term"
+		},
+		examples= {
+				".list_plans: list all agent's plans",
+				".list_plans({ +g(_) }): list agent's plans that unifies with +g(_)"
+		},
+		seeAlso= {
+				""
+		}
+	)
+@SuppressWarnings("serial")
 public class list_plans extends DefaultInternalAction {
 
-    @Override public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {
+	@Override public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {
         if (args.length == 1 && args[0] instanceof Trigger) {
             Trigger te = Trigger.tryToGetTrigger(args[0]);
             if (!te.getLiteral().hasSource()) {

@@ -46,10 +46,45 @@ import java.util.Iterator;
   @see jason.stdlib.intersection
   @see jason.stdlib.union
 */
-
+@Manual(
+		literal=".nth(index,list,term)",
+		hint="gets the nth term of a list",
+		argsHint= {
+				"the position of the term (the first term is at position 0)",
+				"the list where to get the term from",
+				"the term at referred position of the list."
+		},
+		argsType= {
+				"integer",
+				"list",
+				"term"
+		},
+		examples= {
+				".nth(0,[a,b,c],X): unifies X with a", 
+				".nth(2,[a,b,c],X): unifies X with c", 
+				".nth(0,[a,b,c],d): false",
+				".nth(0,[a,b,c],a): true", 
+				".nth(5,[a,b,c],X): error", 
+				".nth(X,[a,b,c,a,e],a): unifies X with 0 (and 3 if it backtracks)"
+		},
+		seeAlso= {
+				"jason.stdlib.concat", 
+				"jason.stdlib.delete", 
+				"jason.stdlib.length", 
+				"jason.stdlib.member", 
+				"jason.stdlib.sort", 
+				"jason.stdlib.max", 
+				"jason.stdlib.min", 
+				"jason.stdlib.reverse", 
+				"jason.stdlib.difference", 
+				"jason.stdlib.intersection",
+				"jason.stdlib.union"
+		}
+	)
+@SuppressWarnings("serial")
 public class nth extends DefaultInternalAction {
 
-    private static InternalAction singleton = null;
+	private static InternalAction singleton = null;
     public static InternalAction create() {
         if (singleton == null)
             singleton = new nth();

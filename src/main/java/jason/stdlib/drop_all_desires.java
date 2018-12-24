@@ -17,7 +17,7 @@ import jason.asSyntax.Term;
 
   <p>Example:<ul>
 
-  <li> <code>.drop_all_desires</code>.
+  <li> <code>.drop_all_desires</code>: events and all intentions are dropped.
 
   </ul>
 
@@ -35,9 +35,38 @@ import jason.asSyntax.Term;
   @see jason.stdlib.resume
 
  */
+@Manual(
+		literal=".drop_all_desires",
+		hint="removes all desires of the agent",
+		argsHint= {
+				""
+		},
+		argsType= {
+				""
+		},
+		examples= {
+				".drop_all_desires: events and all intentions are dropped"
+		},
+		seeAlso= {
+				"jason.stdlib.intend",
+				"jason.stdlib.desire",
+				"jason.stdlib.drop_all_events",
+				"jason.stdlib.drop_all_intentions",
+				"jason.stdlib.drop_event",
+				"jason.stdlib.drop_intention",
+				"jason.stdlib.drop_desire",
+				"jason.stdlib.succeed_goal",
+				"jason.stdlib.fail_goal",
+				"jason.stdlib.current_intention",
+				"jason.stdlib.resume",
+				"jason.stdlib.suspend",
+				"jason.stdlib.suspended"
+		}
+	)
+@SuppressWarnings("serial")
 public class drop_all_desires extends drop_all_intentions {
 
-    @Override
+	@Override
     public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {
         super.execute(ts, un, args);
         ts.getC().clearEvents();

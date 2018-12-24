@@ -48,9 +48,26 @@ i.e., the unification after the while is the same as before.
 @see jason.stdlib.foreach for
 
 */
+@Manual(
+		literal="while (formula) { plan_body }",
+		hint="while logical formula holds, the plan_body is executed",
+		argsHint= {
+				"the formula that when true makes the plan_body be executed"
+		},
+		argsType= {
+				"logical formula"
+		},
+		examples= {
+				"while(vl(X) & X > 10) { .print(\"value > 10\"); -+vl(X+1); }: where vl(X) is a belief, prints the message while X is greater than 10"
+		},
+		seeAlso= {
+				"jason.stdlib.foreach"
+		}
+	)
+@SuppressWarnings("serial")
 public class loop extends DefaultInternalAction {
 
-    private static InternalAction singleton = null;
+	private static InternalAction singleton = null;
     public static InternalAction create() {
         if (singleton == null)
             singleton = new loop();
