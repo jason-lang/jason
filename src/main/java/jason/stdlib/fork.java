@@ -163,7 +163,6 @@ public class fork extends DefaultInternalAction {
 
     class ForkIntention extends Intention {
 
-    	private static final long serialVersionUID = 6236070433277007098L;
 		ForkData fd;
         int forkPoint;
 
