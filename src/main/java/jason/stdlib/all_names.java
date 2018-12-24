@@ -17,7 +17,7 @@ import jason.runtime.RuntimeServices;
   infrastructure of the system (centralised, saci, jade, ...)
 
   <p>Parameters:<ul>
-  <li>+/- names (list).<br/>
+  <li>+/- names (list): this argument unifies with a list of all agents in the system.<br/>
   </ul>
 
   <p>Examples:<ul>
@@ -29,9 +29,29 @@ import jason.runtime.RuntimeServices;
   @see jason.stdlib.my_name
   @see jason.runtime.RuntimeServices
 */
+@Manual(
+		literal=".all_names(result)",
+		hint="get the names of all agents in the system",
+		argsHint= {
+				"the resulting unification with all agent's names"		
+		},
+		argsType= {
+				"list"
+		},
+		examples= {
+				".all_names(L): unifies with L a list of all agents in the system"
+		},
+		seeAlso= {
+				"jason.stdlib.broadcast", 
+				"jason.stdlib.send", 
+				"jason.stdlib.all_names",
+				"jason.runtime.RuntimeServices"
+		}
+	)
+@SuppressWarnings("serial")
 public class all_names extends DefaultInternalAction {
 
-    @Override public int getMinArgs() {
+	@Override public int getMinArgs() {
         return 1;
     }
     @Override public int getMaxArgs() {

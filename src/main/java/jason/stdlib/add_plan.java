@@ -29,10 +29,10 @@ import jason.bb.BeliefBase;
   If it is a list, each plan term or string in the list will be parsed into an
   AgentSpeak plan and added to the plan library.<br/>
 
-  <li><i>+ source</i> (atom, optional): the source of the
+  <li><i>+ source</i> (atom -- optional): the source of the
   plan(s). The default value for the source is <code>self</code>.<br/>
 
-  <li><i>+ position</i> (atom, optional): if the value is "begin" the plan
+  <li><i>+ position</i> (atom -- optional): if the value is "begin" the plan
   will be added in the begin of the plan library.
   The default value is <code>end</code>.<br/>
 
@@ -56,7 +56,7 @@ import jason.bb.BeliefBase;
   "rafa".</li>
 
   <li> <code>.add_plan({ +b : true &lt;- .print(b) }, rafa, begin)</code>: same as
-  the previous example, but the plan is added in the begin of the plan library.</li>
+  the previous example, but the plan is added at the beginning of the plan library.</li>
 
   <li> <code>.add_plan([{+b &lt;- .print(b)}, {+b : bel &lt;-
   .print(bel)}], rafa)</code>: adds both plans with "rafa" as their
@@ -70,9 +70,36 @@ import jason.bb.BeliefBase;
 
   @author Jomi
  */
+@Manual(
+		literal=".add_plan(plan[,source,position])",
+		hint="adds plan(s) to the agent's plan library",
+		argsHint= {
+				"the plan term enclosed by { and }",
+				"the source of the plan(s) [optional]",
+				"the position (begin/end) the plan will be added [optional]"	
+		},
+		argsType= {
+				"plan term, string, or list",
+				"atom",
+				"atom"
+		},
+		examples= {
+				".add_plan({ +b : true &lt;- .print(b) }): adds the plan +b : true &lt;- .print(b). to the agent's plan library with source(self)",
+				".add_plan(\"+b : true &lt;- .print(b).\"): adds the plan +b : true &lt;- .print(b). to the agent's plan library with source(self)",
+				".add_plan({ +b : true &lt;- .print(b) }, rafa): same, but with source(rafa)",
+				".add_plan({ +b : true &lt;- .print(b) }, rafa, begin): same, but the plan is added at the beginning of the plan library",
+				".add_plan([{+b &lt;- .print(b)}, {+b : bel &lt;- .print(bel)}], rafa): adds both plans with source \"rafa\" and \"self\""
+		},
+		seeAlso= {
+				"jason.stdlib.plan_label",
+				"jason.stdlib.relevant_plans",
+				"jason.stdlib.remove_plan"
+		}
+	)
+@SuppressWarnings("serial")
 public class add_plan extends DefaultInternalAction {
 
-    @Override public int getMinArgs() {
+	@Override public int getMinArgs() {
         return 1;
     }
     @Override public int getMaxArgs() {

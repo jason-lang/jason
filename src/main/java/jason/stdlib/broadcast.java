@@ -32,9 +32,30 @@ import jason.asSyntax.Term;
   @see jason.stdlib.my_name
 
 */
+@Manual(
+		literal=".broadcast(performative,content)",
+		hint="broadcasts a message to all known agents",
+		argsHint= {
+				"the performative (tell, achieve, askOne,...)", 
+				"the message content"
+		},
+		argsType= {
+				"atom",
+				"literal"
+		},
+		examples= {
+				".broadcast(tell,value(10)): sends value(10) as a \"tell\" message to all known agents in the society"
+		},
+		seeAlso= {
+				"jason.stdlib.send", 
+				"jason.stdlib.my_name",
+				"jason.stdlib.all_names"
+		}
+	)
+@SuppressWarnings("serial")
 public class broadcast extends DefaultInternalAction {
 
-    @Override public int getMinArgs() {
+	@Override public int getMinArgs() {
         return 2;
     }
     @Override public int getMaxArgs() {

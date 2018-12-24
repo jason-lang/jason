@@ -30,6 +30,7 @@ import java.util.List;
   <p>Examples:<ul>
 
   <li> <code>.prefix([a],[a,b,c])</code>: true.</li>
+  <li> <code>.prefix([a,b],[a,b,c])</code>: true.</li>
   <li> <code>.prefix([b,c],[a,b,c])</code>: false.</li>
   <li> <code>.prefix(X,[a,b,c])</code>: unifies X with any prefix of the list, i.e., [a,b,c], [a,b], [a], and [] in this order;
                                         note that this is different from what its usual implementation in logic programming would result,
@@ -52,9 +53,42 @@ import java.util.List;
   @see jason.stdlib.union
 
 */
+@Manual(
+		literal=".prefix(prefix,list)",
+		hint="checks if some list is a prefix of other list, backtracking all free variables",
+		argsHint= {
+				"the prefix to be checked",
+				"the list where the prefix is from"
+		},
+		argsType= {
+				"list",
+				"list"
+		},
+		examples= {
+				".prefix([a],[a,b,c]): true",
+				".prefix([a,b],[a,b,c]): true",
+				".prefix([b,c],[a,b,c]): false",
+				".prefix(X,[a,b,c]): unifies X with any prefix of the list, i.e., [a,b,c], [a,b], [a], and [] in this order"
+		},
+		seeAlso= {
+				"jason.stdlib.concat", 
+				"jason.stdlib.length", 
+				"jason.stdlib.sublist", 
+				"jason.stdlib.sort", 
+				"jason.stdlib.shuffle", 
+				"jason.stdlib.suffix", 
+				"jason.stdlib.nth", 
+				"jason.stdlib.max", 
+				"jason.stdlib.min", 
+				"jason.stdlib.reverse", 
+				"jason.stdlib.difference", 
+				"jason.stdlib.intersection",
+				"jason.stdlib.union"
+		}
+	)
+@SuppressWarnings("serial")
 public class prefix extends DefaultInternalAction {
 
-    private static final long serialVersionUID = -4736810884249871078L;
     private static InternalAction singleton = null;
     public static InternalAction create() {
         if (singleton == null)

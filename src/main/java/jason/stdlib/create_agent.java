@@ -41,7 +41,7 @@ import jason.runtime.Settings;
   <li> <code>.create_agent(bob,"/tmp/x.asl")</code>: creates an agent named "bob"
   from the source file in "/tmp/x.asl".</li>
 
-  <li> <code>.create_agent(bob,"/tmp/x.asl")</code>: creates an agent named "bob" (or "bob_1", "bob_2", ...)
+  <li> <code>.create_agent(Bob,"/tmp/x.asl")</code>: creates an agent named "bob" (or "bob_1", "bob_2", ...)
   and unifies variable Bob with the given name.</li>
 
   <li>
@@ -69,9 +69,38 @@ import jason.runtime.Settings;
   @see jason.stdlib.stopMAS
   @see jason.runtime.RuntimeServices
 */
+@Manual(
+		literal=".create_agent(name[,source,customisations])",
+		hint="creates agent using the referred AgentSpeak source code",
+		argsHint= {
+				"the name for the new agent",
+				"path to the AgentSpeak code file [optional]",
+				"list of optional parameters [optional]"		
+		},
+		argsType= {
+				"atom, string, or variable",
+				"string",
+				"list"
+		},
+		examples= {
+				".create_agent(bob,\"/tmp/x.asl\"): creates an agent named \"bob\" from the source file in \"/tmp/x.asl\"",
+				".create_agent(Bob,\"/tmp/x.asl\"): creates an agent named \"bob\" (or \"bob_1\", \"bob_2\", ...) and unifies variable Bob with the given name",
+				".create_agent(bob,\"x.asl\", [agentClass(\"myp.MyAgent\")]): creates the agent \"bob\" with customised agent class myp.MyAgent",
+				".create_agent(bob,\"x.asl\", [agentArchClass(\"myp.MyArch\")]): creates the agent with customised architecture class myp.MyArch",
+				".create_agent(bob,\"x.asl\", [beliefBaseClass(\"jason.bb.TextPersistentBB\")]): creates the agent with customised belief base jason.bb.TextPersistentBB",
+				".create_agent(bob,\"x.asl\", [agentClass(\"myp.MyAgent\"),	agentArchClass(\"myp.MyArch\"), beliefBaseClass(\"jason.bb.TextPersistentBB\")]): creates the customized agent"
+		},
+		seeAlso= {
+				"jason.stdlib.save_agent",
+				"jason.stdlib.kill_agent",
+				"jason.stdlib.stopMAS",
+				"jason.runtime.RuntimeServices"
+		}
+	)
+@SuppressWarnings("serial")
 public class create_agent extends DefaultInternalAction {
 
-    @Override public int getMinArgs() {
+	@Override public int getMinArgs() {
         return 1;
     }
     @Override public int getMaxArgs() {

@@ -49,9 +49,38 @@ import jason.asSyntax.Trigger.TEType;
   @see jason.stdlib.resume
 
  */
+@Manual(
+		literal=".suspend[(goal)]",
+		hint="suspend goals, i.e., all intentions trying to achieve given goal will stop running until a .resume",
+		argsHint= {
+				"the goals to be suspended [optional]"
+		},
+		argsType= {
+				"literal"
+		},
+		examples= {
+				".suspend(go(1,3)): suspends intentions to go to the location 1,3",
+				".suspend: suspends the current intention"
+		},
+		seeAlso= {
+				"jason.stdlib.suspended", 
+				"jason.stdlib.intend", 
+				"jason.stdlib.desire", 
+				"jason.stdlib.drop_all_desires", 
+				"jason.stdlib.drop_all_events", 
+				"jason.stdlib.drop_all_intentions", 
+				"jason.stdlib.drop_intention", 
+				"jason.stdlib.drop_desire", 
+				"jason.stdlib.succeed_goal", 
+				"jason.stdlib.fail_goal", 
+				"jason.stdlib.current_intention", 
+				"jason.stdlib.resume"
+		}
+	)
+@SuppressWarnings("serial")
 public class suspend extends DefaultInternalAction {
 
-    boolean suspendIntention = false;
+	boolean suspendIntention = false;
     public static final String SUSPENDED_INT      = "suspended-";
     public static final String SELF_SUSPENDED_INT = SUSPENDED_INT+"self-";
 

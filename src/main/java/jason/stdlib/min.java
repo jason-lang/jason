@@ -59,9 +59,43 @@ numbers &lt; atoms &lt; structures &lt; lists
   @see jason.stdlib.union
 
 */
+@Manual(
+		literal=".min(list,minimal)",
+		hint="gets the minimum value of a list of terms, using the \"natural\" order. "+
+			 "For different types, the order is: numbers &lt; atoms &lt; structures &lt; lists",
+		argsHint= {
+				"the list where to find the minimal term",
+				"the resulting minimal"
+		},
+		argsType= {
+				"list",
+				"term"
+		},
+		examples= {
+				".max([c,a,b],X): X unifies with a",
+				".max([b,c,10,g,f(10),5,f(4)],X): X unifies with 5",
+				".max([3,2,5],2]): true",
+				".max([3,2,5],5): false",
+				".max([],X): false"
+		},
+		seeAlso= {
+				"jason.stdlib.concat", 
+				"jason.stdlib.delete", 
+				"jason.stdlib.length", 
+				"jason.stdlib.member", 
+				"jason.stdlib.sort", 
+				"jason.stdlib.nth", 
+				"jason.stdlib.max", 
+				"jason.stdlib.reverse", 
+				"jason.stdlib.difference", 
+				"jason.stdlib.intersection",
+				"jason.stdlib.union"
+		}
+	)
+@SuppressWarnings("serial")
 public class min extends DefaultInternalAction {
 
-    private static InternalAction singleton = null;
+	private static InternalAction singleton = null;
     public static InternalAction create() {
         if (singleton == null)
             singleton = new min();

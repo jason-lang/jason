@@ -48,9 +48,40 @@ import jason.asSyntax.Trigger.TEType;
   @see jason.stdlib.resume
 
  */
+@Manual(
+		literal=".intend(goal[,intention])",
+		hint="checks if the referred goal is intended, optionally unify with the intention that contains the goal",
+		argsHint= {
+				"the goal to be checked",
+				"the intention that contains the goal [optional]"
+		},
+		argsType= {
+				"literal",
+				"term"
+		},
+		examples= {
+				".intend(go(1,3)): is true if a plan with triggering event +!go(1,3) appears in an intention of the agent", 
+				".intend(go(1,3),I): same, but I unifies with the intention that contains the goal"
+		},
+		seeAlso= {
+				"jason.stdlib.desire",
+				"jason.stdlib.drop_all_desires",
+				"jason.stdlib.drop_all_events",
+				"jason.stdlib.drop_all_intentions",
+				"jason.stdlib.drop_intention",
+				"jason.stdlib.drop_desire",
+				"jason.stdlib.succeed_goal",
+				"jason.stdlib.fail_goal",
+				"jason.stdlib.current_intention",
+				"jason.stdlib.resume",
+				"jason.stdlib.suspend",
+				"jason.stdlib.suspended"
+		}
+	)
+@SuppressWarnings("serial")
 public class intend extends DefaultInternalAction {
 
-    @Override public int getMinArgs() {
+	@Override public int getMinArgs() {
         return 1;
     }
     @Override public int getMaxArgs() {

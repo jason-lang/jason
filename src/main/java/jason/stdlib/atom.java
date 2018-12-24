@@ -38,9 +38,41 @@ import jason.asSyntax.Term;
   @see jason.stdlib.ground
 
 */
+@Manual(
+		literal=".atom(arg)",
+		hint="checks whether the argument is an atom (a structure with arity 0)",
+		argsHint= {
+				"the term to be checked"
+		},
+		argsType= {
+				"term"
+		},
+		examples= {
+				".atom(b(10)): false", 
+				".atom(b): true", 
+				".atom(~b): false", 
+				".atom(10): false", 
+				".atom(\"home page\"): false", 
+				".atom(X): only true if X is bound to an atom", 
+				".atom(a(X)): false", 
+				".atom(a[X]): false", 
+				".atom([a,b,c]): false", 
+				".atom([a,b,c(X)]): false"
+		},
+		seeAlso= {
+				"jason.stdlib.atom", 
+				"jason.stdlib.list", 
+				"jason.stdlib.literal", 
+				"jason.stdlib.number", 
+				"jason.stdlib.string", 
+				"jason.stdlib.structure", 
+				"jason.stdlib.ground"
+		}
+	)
+@SuppressWarnings("serial")
 public class atom extends DefaultInternalAction {
 
-    private static InternalAction singleton = null;
+	private static InternalAction singleton = null;
     public static InternalAction create() {
         if (singleton == null)
             singleton = new atom();

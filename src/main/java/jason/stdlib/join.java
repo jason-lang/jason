@@ -12,9 +12,10 @@ import jason.asSyntax.Term;
 import jason.stdlib.fork.ForkData;
 
 /** injected by .fork */
+@SuppressWarnings("serial")
 public class join extends DefaultInternalAction {
 
-    private static InternalAction singleton = null;
+	private static InternalAction singleton = null;
     public static InternalAction create() {
         if (singleton == null)
             singleton = new join();

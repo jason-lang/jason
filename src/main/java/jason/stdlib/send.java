@@ -76,7 +76,7 @@ import java.util.concurrent.TimeUnit;
 
   <li> <code>.send(rafael,askOne,value(beer,X),A)</code>: sends
   <code>value(beer,X)</code> to the agent named <code>rafael</code>. This askOne
-  is a synchronous askOne, it suspends <code>jomi</code>'s intention until
+  is a synchronous ask, it suspends <code>jomi</code>'s intention until
   <code>rafael</code>'s
   answer is received. The answer (something like <code>value(beer,10)</code>)
   unifies with <code>A</code>.</li>
@@ -93,22 +93,38 @@ import java.util.concurrent.TimeUnit;
 
 */
 @Manual(
-			literal=".send(receiver,performative,content)",
+			literal=".send(receiver,performative,content[,answer,timeout])",
 			hint="used to send messages to other agents",
 			argsHint= {
 					"the name of the agent that will receive the message",
 					"the performative (tell, achieve, askOne,...)",
-					"the message content"
+					"the message content",
+					"the answer of an ask message (for performatives askOne, askAll, and askHow) [optional]",
+					"timeout (in milliseconds) when waiting for an ask answer [optional]"
 			},
 			argsType= {
 					"atom or string",
 					"atom",
-					"literal"
+					"literal",
+					"term",
+					"number"
+			},
+			examples= {
+					".send(rafael,tell,value(10)): adds the literal value(10)[source(jomi)] in the rafael's belief base.",
+					".send(rafael,achieve,go(10,30): sends go(10,30) to the agent named rafael what creates an event &lt;+!go(10,30)[source(jomi)],T&gt; in rafael's event queue",
+					".send(rafael,askOne,value(beer,X)): sends value(beer,X) to the agent named rafael. This askOne is an asynchronous ask since it does not suspend jomi's intention. If rafael has, for instance, the literal value(beer,2) in its belief base, this belief is automatically sent back to jomi. Otherwise an event like +?value(beer,X)[source(self)] is generated in rafael's side and the result of this query is then sent to jomi. In the jomi's side, the rafael's answer is added in the jomi's belief base and an event like +value(beer,10)[source(rafael)] is generated",
+					".send(rafael,askOne,value(beer,X),A): sends value(beer,X) to the agent named rafael. This askOne is a synchronous ask, it suspends jomi's intention until rafael's answer is received. The answer (something like value(beer,10) unifies with A",
+					".send(rafael,askOne,value(beer,X),A,2000)</code>: as in the previous example, but agent jomi waits for 2 seconds. If no message is received by then, A unifies with timeout"
+			},
+			seeAlso= {
+					"jason.stdlib.broadcast", 
+					"jason.stdlib.my_name"
 			}
 		)
+@SuppressWarnings("serial")
 public class send extends DefaultInternalAction {
 
-    @Override
+	@Override
     public boolean canBeUsedInContext() {
         return false;
     }
