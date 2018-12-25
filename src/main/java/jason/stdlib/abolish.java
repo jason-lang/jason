@@ -20,7 +20,7 @@ import jason.asSyntax.Term;
 
   <p>Examples:<ul>
   <li> <code>.abolish(b(_))</code>: remove all <code>b/1</code> beliefs, regardless of the argument value and the source of the belief.</li>
-  <li> <code>.abolish(c(_,t))</code>: remove all <code>c/2</code> beliefs where the second argument is <code>2</code>.</li>
+  <li> <code>.abolish(c(_,t))</code>: remove all <code>c/2</code> beliefs where the second argument is <code>t</code>.</li>
   <li> <code>.abolish(c(_,_)[source(ag1)])</code>: remove all <code>c/2</code> beliefs that have <code>ag1</code> as source.</li>
   <li> <code>.abolish(_[source(ag1)])</code>: remove any beliefs that have <code>ag1</code> as source.</li>
   </ul>
@@ -29,9 +29,30 @@ import jason.asSyntax.Term;
   @see jason.stdlib.assertz
 
  */
+@Manual(
+        literal=".abolish(argument)",
+        hint="removes all beliefs that match the argument.",
+        argsHint= {
+                "the \"pattern\" for what should be removed."
+        },
+        argsType= {
+                "literal or variable"
+        },
+        examples= {
+        		".abolish(b(_)): remove all b/1 beliefs, regardless of the argument value and the source of the belief",
+        		".abolish(c(_,t)): remove all c/2 beliefs where the second argument is t",
+        		".abolish(c(_,_)[source(ag1)]): remove all c/2 beliefs that have ag1 as source",
+        		".abolish(_[source(ag1)]): remove any beliefs that have ag1 as source"
+        },
+		seeAlso= {
+				"jason.stdlib.asserta",
+				"jason.stdlib.assertz"
+		}
+    )
+@SuppressWarnings("serial")
 public class abolish extends DefaultInternalAction {
 
-    @Override public int getMinArgs() {
+	@Override public int getMinArgs() {
         return 1;
     }
     @Override public int getMaxArgs() {

@@ -15,20 +15,38 @@ import java.util.List;
   <p>Description: adds a new belief as the "+>" operator. However, it can be used in prolog like rules.
 
   <p>Parameters:<ul>
-  <li>+ belief (literal): the belief that will be added in the end of the belief base.<br/>
+  <li>+ belief (literal): the belief that will be added at the end of the belief base.<br/>
   </ul>
 
   <p>Examples:<ul>
-  <li> <code>.assertz(p)</code>: adds <code>p</code> in the belief base.</li>
+  <li> <code>.assertz(q)</code>: adds <code>q</code> at the end of the belief base.</li>
   </ul>
 
   @see jason.stdlib.asserta
   @see jason.stdlib.abolish
 
  */
+@Manual(
+		literal=".assertz(belief)",
+		hint="adds a new belief using prolog like rules",
+		argsHint= {
+				"the belief that will be added in the end the base"
+		},
+		argsType= {
+				"literal"
+		},
+		examples= {
+				".assertz(q): adds q at the end of the belief base"
+		},
+		seeAlso= {
+				"jason.stdlib.asserta",
+				"jason.stdlib.abolish"
+		}
+	)
+@SuppressWarnings("serial")
 public class assertz extends DefaultInternalAction {
 
-    @Override public int getMinArgs() {
+	@Override public int getMinArgs() {
         return 1;
     }
     @Override public int getMaxArgs() {

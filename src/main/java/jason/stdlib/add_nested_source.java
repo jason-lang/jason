@@ -18,8 +18,8 @@ import jason.asSyntax.Term;
 
   <p>Parameters:<ul>
 
-  <li>+ belief(s) (literal or list): the literal where the source annotation
-  is to be added. If this parameter is a list, all literals in the list
+  <li>+ belief(s) (literal or list): the literal where the source annotation's
+  source is to be added. If this parameter is a list, all literals in the list
   will have the source added.<br/>
 
   <li>+ source (atom): the source.<br/>
@@ -46,9 +46,32 @@ import jason.asSyntax.Term;
   </ul>
 
  */
+@Manual(
+		literal=".add_nested_source(belief,source,result)",
+		hint="adds a source annotation to a literal (used in communication)",
+		argsHint= {
+				"the literal where the source is to be added",
+				"the source",
+				"the resulting unification of the source addition"		
+		},
+		argsType= {
+				"literal or list",
+				"atom",
+				"literal or list"
+		},
+		examples= {
+				".add_nested_source(a,jomi,B): B unifies with a[source(jomi)]",
+				".add_nested_source([a1,a2], jomi, B): B unifies with [a1[source(jomi)], a2[source(jomi)]]",
+				".add_nested_source(a[source(bob)],jomi,B): B unifies with a[source(jomi)[source(bob)]] - i.e., the source for jomi was bob"
+		},
+		seeAlso= {
+				""
+		}
+	)
+@SuppressWarnings("serial")
 public class add_nested_source extends DefaultInternalAction {
 
-    private static InternalAction singleton = null;
+	private static InternalAction singleton = null;
     public static InternalAction create() {
         if (singleton == null)
             singleton = new add_nested_source();

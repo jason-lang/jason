@@ -12,7 +12,14 @@ import jason.asSyntax.Term;
 
   <p>Description: register the agent in the Directory Facilitator as a provider of service S of type T (see FIPA specification).
     An optional second argument can be used to define the type of the service.
-    
+
+  <p>Parameters:<ul>
+
+  <li>- service (literal): the service the agent is registered.</li>
+  <li>- type (string -- optional): the type of the service.</li>
+
+  </ul>
+  
   <p>Examples:<ul>
   <li> <code>.df_register("sell(book)")</code>: register the agent as a book seller.
   <li> <code>.df_deregister("sell(book)","book-trading")</code>: register the agent as a book seller of type "book-trading".
@@ -23,9 +30,32 @@ import jason.asSyntax.Term;
   @see jason.stdlib.df_subscribe
 
  */
+@Manual(
+		literal=".df_register(service[,type])",
+		hint="register the agent in the Directory Facilitator as a provider of the service and, optionally, the type",
+		argsHint= {
+				"the service the agent is to be registered",
+				"the type of the service [optional]"
+		},
+		argsType= {
+				"literal",
+				"string"
+		},
+		examples= {
+				".df_register(\"sell(book)\"): register the agent as a book seller",
+				".df_register(\"sell(book)\",\"book-trading\"): register the agent as a book seller of type \"book-trading\"",
+				".df_register(\"expert(stocks)\",\"finantial-consultant\"): register the agent as an expert in stocks of type \"finantial-consultant\""
+		},
+		seeAlso= {
+				"jason.stdlib.df_search",
+				"jason.stdlib.df_deregister",
+				"jason.stdlib.df_subscribe"
+		}
+	)
+@SuppressWarnings("serial")
 public class df_register extends DefaultInternalAction {
 
-    private static InternalAction singleton = null;
+	private static InternalAction singleton = null;
     public static InternalAction create() {
         if (singleton == null)
             singleton = new df_register();

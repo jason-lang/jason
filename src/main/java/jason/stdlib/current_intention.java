@@ -68,9 +68,38 @@ import jason.asSyntax.Term;
   @see jason.stdlib.suspended
   @see jason.stdlib.resume
 */
+@Manual(
+		literal=".current_intention(description)",
+		hint="returns a description of the current intention",
+		argsHint= {
+				"the variable that unifies with the intention description"		
+		},
+		argsType= {
+				"structure"
+		},
+		examples= {
+				".current_intention(X): X unifies with the description of the current intention"
+		},
+		seeAlso= {
+				"jason.stdlib.intend",
+				"jason.stdlib.desire",
+				"jason.stdlib.drop_all_desires",
+				"jason.stdlib.drop_all_events",
+				"jason.stdlib.drop_all_intentions",
+				"jason.stdlib.drop_event",
+				"jason.stdlib.drop_intention",
+				"jason.stdlib.drop_desire",
+				"jason.stdlib.succeed_goal",
+				"jason.stdlib.fail_goal",
+				"jason.stdlib.resume",
+				"jason.stdlib.suspend",
+				"jason.stdlib.suspended"
+		}
+	)
+@SuppressWarnings("serial")
 public class current_intention extends DefaultInternalAction {
 
-    @Override public int getMinArgs() {
+	@Override public int getMinArgs() {
         return 1;
     }
     @Override public int getMaxArgs() {

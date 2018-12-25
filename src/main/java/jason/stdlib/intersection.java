@@ -37,7 +37,46 @@ import jason.asSyntax.Term;
   @see jason.stdlib.difference
   @see jason.stdlib.union
 */
-public class intersection extends difference { // to inherit checkArgs
+@Manual(
+		literal=".intersection(arg0,arg1,arg2)",
+		hint="results a sorted set of the intersection of two sets",
+		argsHint= {
+				"the first set",
+				"the other set to intersect with the first",
+				"the result of the intersection"
+		},
+		argsType= {
+				"list",
+				"list",
+				"list"
+		},
+		examples= {
+				".intersection(\"[a,b,c]\",\"[b,e]\",X): X unifies with \"[b]\"", 
+				".intersection(\"[a,b,a,c]\",\"[f,e,a,c]\",X): X unifies with \"[a,c]\""
+		},
+		seeAlso= {
+				"jason.stdlib.concat", 
+				"jason.stdlib.delete", 
+				"jason.stdlib.length", 
+				"jason.stdlib.member", 
+				"jason.stdlib.sort", 
+				"jason.stdlib.shuffle", 
+				"jason.stdlib.substring", 
+				"jason.stdlib.prefix", 
+				"jason.stdlib.suffix", 
+				"jason.stdlib.nth", 
+				"jason.stdlib.max", 
+				"jason.stdlib.min", 
+				"jason.stdlib.reverse", 
+				"jason.stdlib.difference", 
+				"jason.stdlib.intersection",
+				"jason.stdlib.union"
+		}
+	)
+@SuppressWarnings("serial")
+public class intersection extends difference { 
+
+	// to inherit checkArgs
 
     private static InternalAction singleton = null;
     public static InternalAction create() {

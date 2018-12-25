@@ -21,11 +21,16 @@ import jason.asSyntax.Trigger.TEType;
   intentions of the agent (suspended intentions are also considered).
   No event is produced.
 
+  <p>Parameters:<ul>
+
+  <li>- goal (literal): the goal the intentions achieve.</li>
+
+  </ul>
+
   <p>Example:<ul>
 
-  <li> <code>.drop_intention(go(1,3))</code>: removes an intention having a plan
-   with triggering event
-  <code>+!go(1,3)</code> in the agent's current circumstance.
+  <li> <code>.drop_intention(go(1,3))</code>: removes intentions having a plan
+  with triggering event <code>+!go(1,3)</code> in the agent's current circumstance.
 
   <li> <code>.drop_intention</code>: removes the current intention.
 
@@ -45,9 +50,37 @@ import jason.asSyntax.Trigger.TEType;
   @see jason.stdlib.resume
 
  */
+@Manual(
+		literal=".drop_intention(goal)",
+		hint="removes intentions to achieve the referred goal",
+		argsHint= {
+				"the goal the intentions achieve"
+		},
+		argsType= {
+				"literal"
+		},
+		examples= {
+				".drop_intention(go(1,3)): removes intentions having a plan with triggering event +!go(1,3) in the agent's current circumstance."
+		},
+		seeAlso= {
+				"jason.stdlib.intend",
+				"jason.stdlib.desire",
+				"jason.stdlib.drop_all_desires",
+				"jason.stdlib.drop_all_events",
+				"jason.stdlib.drop_intention",
+				"jason.stdlib.drop_desire",
+				"jason.stdlib.succeed_goal",
+				"jason.stdlib.fail_goal",
+				"jason.stdlib.current_intention",
+				"jason.stdlib.resume",
+				"jason.stdlib.suspend",
+				"jason.stdlib.suspended"
+		}
+	)
+@SuppressWarnings("serial")
 public class drop_intention extends DefaultInternalAction {
 
-    @Override public int getMinArgs() {
+	@Override public int getMinArgs() {
         return 0;
     }
     @Override public int getMaxArgs() {

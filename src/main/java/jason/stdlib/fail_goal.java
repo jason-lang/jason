@@ -25,6 +25,12 @@ import jason.asSyntax.Trigger.TEOperator;
   <br/>
   The meta-event <code>^!G[state(failed)]</code> is produced.
 
+  <p>Parameters:<ul>
+
+  <li>- goal (literal): the goals to be aborted.</li>
+
+  </ul>
+
   <p>Example:<ul>
 
   <li> <code>.fail_goal(go(1,3))</code>: aborts an attempt to achieve
@@ -49,9 +55,38 @@ import jason.asSyntax.Trigger.TEOperator;
   @see jason.stdlib.resume
 
  */
+@Manual(
+		literal=".fail_goal(goal)",
+		hint="aborts referred goals in the agent circumstance as if a plan for such goal had failed",
+		argsHint= {
+				"the goals which the achieving attempts will be aborted"
+		},
+		argsType= {
+				"literal"
+		},
+		examples= {
+				".fail_goal(go(1,3)): aborts an attempt to achieve goals such as !go(1,3) as if a plan for it had failed, generating event -!go(1,3)"
+		},
+		seeAlso= {
+				"jason.stdlib.intend",
+				"jason.stdlib.desire",
+				"jason.stdlib.drop_all_desires",
+				"jason.stdlib.drop_all_events",
+				"jason.stdlib.drop_all_intentions",
+				"jason.stdlib.drop_intention",
+				"jason.stdlib.drop_desire",
+				"jason.stdlib.succeed_goal",
+				"jason.stdlib.fail_goal",
+				"jason.stdlib.current_intention",
+				"jason.stdlib.resume",
+				"jason.stdlib.suspend",
+				"jason.stdlib.suspended"
+		}
+	)
+@SuppressWarnings("serial")
 public class fail_goal extends succeed_goal {
 
-    @Override
+	@Override
     public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {
         checkArguments(args);
         findGoalAndDrop(ts, (Literal)args[0], un);

@@ -30,9 +30,34 @@ import jason.asSyntax.Term;
   @see jason.stdlib.ground
 
 */
+@Manual(
+		literal=".string(argument)",
+		hint="checks whether the argument is a string",
+		argsHint= {
+				"the term to be checked"
+		},
+		argsType= {
+				"term"
+		},
+		examples= {
+				".string(\"home page\"): true", 
+				".string(b(10)): false",
+				".string(b): false",
+				".string(X): false if X is free, true if X is bound to a string"
+		},
+		seeAlso= {
+				"jason.stdlib.atom", 
+				"jason.stdlib.list", 
+				"jason.stdlib.literal", 
+				"jason.stdlib.number", 
+				"jason.stdlib.structure", 
+				"jason.stdlib.ground"
+		}
+	)
+@SuppressWarnings("serial")
 public class string extends DefaultInternalAction {
 
-    private static InternalAction singleton = null;
+	private static InternalAction singleton = null;
     public static InternalAction create() {
         if (singleton == null)
             singleton = new string();

@@ -39,9 +39,46 @@ import jason.asSyntax.Term;
   @see jason.stdlib.intersection
   @see jason.stdlib.union
 */
+@Manual(
+		literal=".difference(arg0,arg1,arg2)",
+		hint="the difference between two sets",
+		argsHint= {
+				"the first list",
+				"the list to be compared with the first",
+				"the resulting list with the difference of the comparison"
+		},
+		argsType= {
+				"list",
+				"list",
+				"list"
+		},
+		examples= {
+				".difference(\"[a,b,c]\",\"[b,e]\",X): X unifies with \"[a,c]\"",
+				".difference(\"[a,b,a,c]\",\"[f,e,a,c]\",X): X unifies with \"[b]\""
+		},
+		seeAlso= {
+				"jason.stdlib.concat", 
+				"jason.stdlib.delete", 
+				"jason.stdlib.length", 
+				"jason.stdlib.member", 
+				"jason.stdlib.sort", 
+				"jason.stdlib.shuffle", 
+				"jason.stdlib.substring", 
+				"jason.stdlib.prefix", 
+				"jason.stdlib.suffix", 
+				"jason.stdlib.nth", 
+				"jason.stdlib.max", 
+				"jason.stdlib.min", 
+				"jason.stdlib.reverse", 
+				"jason.stdlib.difference", 
+				"jason.stdlib.intersection",
+				"jason.stdlib.union"
+		}
+	)
+@SuppressWarnings("serial")
 public class difference extends DefaultInternalAction {
 
-    private static InternalAction singleton = null;
+	private static InternalAction singleton = null;
     public static InternalAction create() {
         if (singleton == null)
             singleton = new difference();

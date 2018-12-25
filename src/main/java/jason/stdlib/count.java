@@ -45,9 +45,31 @@ import java.util.Iterator;
 
   @see jason.functions.Count function version
 */
+@Manual(
+		literal=".count(query,result)",
+		hint="counts the number of occurrences of a belief the belief base",
+		argsHint= {
+				"the formula used to count literals in the belief base",
+				"the resulting unification of the number of occurrences of the belief"		
+		},
+		argsType= {
+				"logical formula",
+				"number"
+		},
+		examples= {
+				".count(a(2,_),N): counts the number of beliefs that unify with a(2,_); N unifies with this quantity",
+				".count((a(2,X)& X>10),N): counts the number of beliefs that unify with a(2,X) and X > 10; N unifies with this quantity",
+				".count(a(2,_),5): succeeds if the BB has exactly 5 beliefs that unify with a(2,_)"
+		},
+		seeAlso= {
+				"jason.stdlib.findall",
+				"jason.functions.Count"
+		}
+	)
+@SuppressWarnings("serial")
 public class count extends DefaultInternalAction {
 
-    @Override public int getMinArgs() {
+	@Override public int getMinArgs() {
         return 2;
     }
     @Override public int getMaxArgs() {
