@@ -35,39 +35,39 @@ import jason.asSyntax.Term;
   @see jason.stdlib.ground
 */
 @Manual(
-		literal=".literal(argument)",
-		hint="checks whether the argument is a literal",
-		argsHint= {
-				"the term to be checked"
-		},
-		argsType= {
-				"term"
-		},
-		examples= {
-				".literal(b(10)): true", 
-				".literal(b(10)[a,b]): true", 
-				".literal(~b(20)[a,b]): true", 
-				".literal(b): true",
-				".literal(10): false", 
-				".literal(\"Jason\"): false", 
-				".literal(X): false if X is free, true if X is bound to a literal", 
-				".literal(a(X)): true",
-				".literal([a,b,c]): false", 
-				".literal([a,b,c(X)]): false"
-		},
-		seeAlso= {
-				"jason.stdlib.atom", 
-				"jason.stdlib.list", 
-				"jason.stdlib.number", 
-				"jason.stdlib.string", 
-				"jason.stdlib.structure", 
-				"jason.stdlib.ground"
-		}
-	)
+        literal=".literal(argument)",
+        hint="checks whether the argument is a literal",
+        argsHint= {
+                "the term to be checked"
+        },
+        argsType= {
+                "term"
+        },
+        examples= {
+                ".literal(b(10)): true", 
+                ".literal(b(10)[a,b]): true", 
+                ".literal(~b(20)[a,b]): true", 
+                ".literal(b): true",
+                ".literal(10): false", 
+                ".literal(\"Jason\"): false", 
+                ".literal(X): false if X is free, true if X is bound to a literal", 
+                ".literal(a(X)): true",
+                ".literal([a,b,c]): false", 
+                ".literal([a,b,c(X)]): false"
+        },
+        seeAlso= {
+                "jason.stdlib.atom", 
+                "jason.stdlib.list", 
+                "jason.stdlib.number", 
+                "jason.stdlib.string", 
+                "jason.stdlib.structure", 
+                "jason.stdlib.ground"
+        }
+    )
 @SuppressWarnings("serial")
 public class literal extends DefaultInternalAction {
 
-	private static InternalAction singleton = null;
+    private static InternalAction singleton = null;
     public static InternalAction create() {
         if (singleton == null)
             singleton = new literal();

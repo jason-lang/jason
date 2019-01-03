@@ -42,41 +42,41 @@ import jason.asSyntax.Term;
 
 */
 @Manual(
-		literal=".reverse(argument,result)",
-		hint="reverses strings or lists",
-		argsHint= {
-				"the string or list to be reversed",
-				"the resulting reversed string or list"
-		},
-		argsType= {
-				"string or list",
-				"string or list"
-		},
-		examples= {
-				".reverse(\"abc\",X): X unifies with \"cba\"",
-				".reverse(\"[a,b,c]\",X): X unifies with \"[c,b,a]\"", 
-				".reverse(\"[a,b,c|T]\",X): X unifies with \"[c,b,a|T]\""
-		},
-		seeAlso= {
-				"jason.stdlib.concat", 
-				"jason.stdlib.delete", 
-				"jason.stdlib.length", 
-				"jason.stdlib.member", 
-				"jason.stdlib.sort", 
-				"jason.stdlib.shuffle", 
-				"jason.stdlib.substring", 
-				"jason.stdlib.nth", 
-				"jason.stdlib.max", 
-				"jason.stdlib.min", 
-				"jason.stdlib.difference", 
-				"jason.stdlib.intersection",
-				"jason.stdlib.union"
-		}
-	)
+        literal=".reverse(argument,result)",
+        hint="reverses strings or lists",
+        argsHint= {
+                "the string or list to be reversed",
+                "the resulting reversed string or list"
+        },
+        argsType= {
+                "string or list",
+                "string or list"
+        },
+        examples= {
+                ".reverse(\"abc\",X): X unifies with \"cba\"",
+                ".reverse(\"[a,b,c]\",X): X unifies with \"[c,b,a]\"", 
+                ".reverse(\"[a,b,c|T]\",X): X unifies with \"[c,b,a|T]\""
+        },
+        seeAlso= {
+                "jason.stdlib.concat", 
+                "jason.stdlib.delete", 
+                "jason.stdlib.length", 
+                "jason.stdlib.member", 
+                "jason.stdlib.sort", 
+                "jason.stdlib.shuffle", 
+                "jason.stdlib.substring", 
+                "jason.stdlib.nth", 
+                "jason.stdlib.max", 
+                "jason.stdlib.min", 
+                "jason.stdlib.difference", 
+                "jason.stdlib.intersection",
+                "jason.stdlib.union"
+        }
+    )
 @SuppressWarnings("serial")
 public class reverse extends DefaultInternalAction {
 
-	private static InternalAction singleton = null;
+    private static InternalAction singleton = null;
     public static InternalAction create() {
         if (singleton == null)
             singleton = new reverse();

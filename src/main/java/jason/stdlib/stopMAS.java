@@ -23,27 +23,27 @@ import jason.runtime.RuntimeServices;
   @see jason.runtime.RuntimeServices
  */
 @Manual(
-		literal=".stopMAS",
-		hint="aborts the execution of all agents in the multi-agent system (and any simulated environment too)",
-		argsHint= {
-				"" 
-		},
-		argsType= {
-				""
-		},
-		examples= {
-				".stopMAS: close multi-agent system application"
-		},
-		seeAlso= {
-				"jason.stdlib.create_agent",
-				"jason.stdlib.kill_agent",
-				"jason.runtime.RuntimeServices"
-		}
-	)
+        literal=".stopMAS",
+        hint="aborts the execution of all agents in the multi-agent system (and any simulated environment too)",
+        argsHint= {
+                "" 
+        },
+        argsType= {
+                ""
+        },
+        examples= {
+                ".stopMAS: close multi-agent system application"
+        },
+        seeAlso= {
+                "jason.stdlib.create_agent",
+                "jason.stdlib.kill_agent",
+                "jason.runtime.RuntimeServices"
+        }
+    )
 @SuppressWarnings("serial")
 public class stopMAS extends DefaultInternalAction {
 
-	@Override public int getMinArgs() {
+    @Override public int getMinArgs() {
         return 0;
     }
     @Override public int getMaxArgs() {

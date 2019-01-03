@@ -47,39 +47,39 @@ import java.util.Iterator;
 
 */
 @Manual(
-		literal=".member(item,list)",
-		hint="checks if a given term is in a list. If the term is a free variable, backtracks all possible values",
-		argsHint= {
-				"the term to be checked",
-				"the list where the term should be in"
-		},
-		argsType= {
-				"term",
-				"list"
-		},
-		examples= {
-				".member(c,[a,b,c]): true", 
-				".member(3,[a,b,c]): false",
-				".member(X,[a,b,c]): unifies X with any member of the list"
-		},
-		seeAlso= {
-				"jason.stdlib.concat", 
-				"jason.stdlib.delete", 
-				"jason.stdlib.length", 
-				"jason.stdlib.sort", 
-				"jason.stdlib.nth", 
-				"jason.stdlib.max", 
-				"jason.stdlib.min", 
-				"jason.stdlib.reverse", 
-				"jason.stdlib.difference", 
-				"jason.stdlib.intersection",
-				"jason.stdlib.union"
-		}
-	)
+        literal=".member(item,list)",
+        hint="checks if a given term is in a list. If the term is a free variable, backtracks all possible values",
+        argsHint= {
+                "the term to be checked",
+                "the list where the term should be in"
+        },
+        argsType= {
+                "term",
+                "list"
+        },
+        examples= {
+                ".member(c,[a,b,c]): true", 
+                ".member(3,[a,b,c]): false",
+                ".member(X,[a,b,c]): unifies X with any member of the list"
+        },
+        seeAlso= {
+                "jason.stdlib.concat", 
+                "jason.stdlib.delete", 
+                "jason.stdlib.length", 
+                "jason.stdlib.sort", 
+                "jason.stdlib.nth", 
+                "jason.stdlib.max", 
+                "jason.stdlib.min", 
+                "jason.stdlib.reverse", 
+                "jason.stdlib.difference", 
+                "jason.stdlib.intersection",
+                "jason.stdlib.union"
+        }
+    )
 @SuppressWarnings("serial")
 public class member extends DefaultInternalAction {
 
-	private static InternalAction singleton = null;
+    private static InternalAction singleton = null;
     public static InternalAction create() {
         if (singleton == null)
             singleton = new member();

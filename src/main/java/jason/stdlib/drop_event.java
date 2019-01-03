@@ -44,37 +44,37 @@ import jason.asSyntax.Term;
 
  */
 @Manual(
-		literal=".drop_event(event)",
-		hint="removes referred event from the agent circumstance",
-		argsHint= {
-				"the event to be dropped"
-		},
-		argsType= {
-				"literal"
-		},
-		examples= {
-				".drop_event(go(X,Y)): removes events such as &lt;+!go(1,3),_&gt; from the set of events"
-		},
-		seeAlso= {
-				"jason.stdlib.intend",
-				"jason.stdlib.desire",
-				"jason.stdlib.drop_all_desires",
-				"jason.stdlib.drop_all_events",
-				"jason.stdlib.drop_all_intentions",
-				"jason.stdlib.drop_intention",
-				"jason.stdlib.drop_desire",
-				"jason.stdlib.succeed_goal",
-				"jason.stdlib.fail_goal",
-				"jason.stdlib.current_intention",
-				"jason.stdlib.resume",
-				"jason.stdlib.suspend",
-				"jason.stdlib.suspended"
-		}
-	)
+        literal=".drop_event(event)",
+        hint="removes referred event from the agent circumstance",
+        argsHint= {
+                "the event to be dropped"
+        },
+        argsType= {
+                "literal"
+        },
+        examples= {
+                ".drop_event(go(X,Y)): removes events such as &lt;+!go(1,3),_&gt; from the set of events"
+        },
+        seeAlso= {
+                "jason.stdlib.intend",
+                "jason.stdlib.desire",
+                "jason.stdlib.drop_all_desires",
+                "jason.stdlib.drop_all_events",
+                "jason.stdlib.drop_all_intentions",
+                "jason.stdlib.drop_intention",
+                "jason.stdlib.drop_desire",
+                "jason.stdlib.succeed_goal",
+                "jason.stdlib.fail_goal",
+                "jason.stdlib.current_intention",
+                "jason.stdlib.resume",
+                "jason.stdlib.suspend",
+                "jason.stdlib.suspended"
+        }
+    )
 @SuppressWarnings("serial")
 public class drop_event extends drop_desire {
 
-	@Override
+    @Override
     public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {
         checkArguments(args);
         dropEvt(ts.getC(), (Literal)args[0], un);

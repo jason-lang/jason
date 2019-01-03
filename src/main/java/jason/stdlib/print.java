@@ -35,28 +35,28 @@ import jason.asSemantics.InternalAction;
 
 */
 @Manual(
-		literal=".print(arg0[,arg1,...])",
-		hint="prints messages to the console where the system is running, this console output is configured on logging.properties file",
-		argsHint= {
-				"the term to be printed out",
-				"the term to be concatenated with prior one and printed out [optional]"
-		},
-		argsType= {
-				"term",
-				"term"
-		},
-		examples= {
-				".print(1,X,\"bla\"): prints out the concatenation of the string representations of the number 1, content of variable X, and the string \"bla\""
-		},
-		seeAlso= {
-				"jason.stdlib.println",
-				"jason.stdlib.printf"
-		}
-	)
+        literal=".print(arg0[,arg1,...])",
+        hint="prints messages to the console where the system is running, this console output is configured on logging.properties file",
+        argsHint= {
+                "the term to be printed out",
+                "the term to be concatenated with prior one and printed out [optional]"
+        },
+        argsType= {
+                "term",
+                "term"
+        },
+        examples= {
+                ".print(1,X,\"bla\"): prints out the concatenation of the string representations of the number 1, content of variable X, and the string \"bla\""
+        },
+        seeAlso= {
+                "jason.stdlib.println",
+                "jason.stdlib.printf"
+        }
+    )
 @SuppressWarnings("serial")
 public class print extends println implements InternalAction {
 
-	private static InternalAction singleton = null;
+    private static InternalAction singleton = null;
     public static InternalAction create() {
         if (singleton == null)
             singleton = new print();

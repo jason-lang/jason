@@ -64,27 +64,27 @@ import java.util.List;
 
 */
 @Manual(
-		literal="for (formula) { plan_body }",
-		hint="for all unifications of logical formula, the plan_body is executed",
-		argsHint= {
-				"the formula that when true makes the plan_body be executed"
-		},
-		argsType= {
-				"logical formula"
-		},
-		examples= {
-				"for ( vl(X) ) { .print(X); }: print all values of X",
-				"for ( .member(X,[a,b,c]) ) { .print(X); }: print all members of the list",
-				"for ( .range(I,1,10) ) { .print(I); }: print all values from 1 to 10"
-		},
-		seeAlso= {
-				""
-		}
-	)
+        literal="for (formula) { plan_body }",
+        hint="for all unifications of logical formula, the plan_body is executed",
+        argsHint= {
+                "the formula that when true makes the plan_body be executed"
+        },
+        argsType= {
+                "logical formula"
+        },
+        examples= {
+                "for ( vl(X) ) { .print(X); }: print all values of X",
+                "for ( .member(X,[a,b,c]) ) { .print(X); }: print all members of the list",
+                "for ( .range(I,1,10) ) { .print(I); }: print all values from 1 to 10"
+        },
+        seeAlso= {
+                ""
+        }
+    )
 @SuppressWarnings("serial")
 public class foreach extends DefaultInternalAction {
 
-	private static InternalAction singleton = null;
+    private static InternalAction singleton = null;
     public static InternalAction create() {
             if (singleton == null)
                 singleton = new foreach();

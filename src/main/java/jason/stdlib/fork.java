@@ -45,25 +45,25 @@ Implementation of <b>.fork</b> (used for |& and || operators).
 
 */
 @Manual(
-		literal=".fork",
-		hint="Implementation of .fork (occurring when |& and || operators are used)",
-		argsHint= {
-				""
-		},
-		argsType= {
-				""
-		},
-		examples= {
-				""
-		},
-		seeAlso= {
-				""
-		}
-	)
+        literal=".fork",
+        hint="Implementation of .fork (occurring when |& and || operators are used)",
+        argsHint= {
+                ""
+        },
+        argsType= {
+                ""
+        },
+        examples= {
+                ""
+        },
+        seeAlso= {
+                ""
+        }
+    )
 @SuppressWarnings("serial")
 public class fork extends DefaultInternalAction {
 
-	private static InternalAction singleton = null;
+    private static InternalAction singleton = null;
     public static InternalAction create() {
         if (singleton == null)
             singleton = new fork();
@@ -163,7 +163,7 @@ public class fork extends DefaultInternalAction {
 
     class ForkIntention extends Intention {
 
-		ForkData fd;
+        ForkData fd;
         int forkPoint;
 
         ForkIntention(Intention i, ForkData fd) {

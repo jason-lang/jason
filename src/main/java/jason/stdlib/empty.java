@@ -26,27 +26,27 @@ import jason.asSyntax.Term;
 
  */
 @Manual(
-		literal=".empty(argument)",
-		hint="checks whether the argument does not have any term",
-		argsHint= {
-				"the term whose length is to be determined"
-		},
-		argsType= {
-				"string or list"
-		},
-		examples= {
-				".empty([]): true",
-				".empty([a,b]): false, the list has at least one term",
-				".empty(\"a\"): false, the argument has at least one term"
-		},
-		seeAlso= {
-				""
-		}
-	)
+        literal=".empty(argument)",
+        hint="checks whether the argument does not have any term",
+        argsHint= {
+                "the term whose length is to be determined"
+        },
+        argsType= {
+                "string or list"
+        },
+        examples= {
+                ".empty([]): true",
+                ".empty([a,b]): false, the list has at least one term",
+                ".empty(\"a\"): false, the argument has at least one term"
+        },
+        seeAlso= {
+                ""
+        }
+    )
 @SuppressWarnings("serial")
 public class empty extends DefaultInternalAction {
 
-	private static InternalAction singleton = null;
+    private static InternalAction singleton = null;
     public static InternalAction create() {
         if (singleton == null)
             singleton = new empty();

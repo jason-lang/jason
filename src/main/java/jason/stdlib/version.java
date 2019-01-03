@@ -23,22 +23,22 @@ import jason.util.Config;
 
 */
 @Manual(
-		literal=".version(version)",
-		hint="gets the Jason version",
-		argsHint= {
-				"the variable to receive the version"
-		},
-		argsType= {
-				"string"
-		},
-		examples= {
-				".version(V): unifies V with, i.e., \"2.4-SNAPSHOT\""
-		}
-	)
+        literal=".version(version)",
+        hint="gets the Jason version",
+        argsHint= {
+                "the variable to receive the version"
+        },
+        argsType= {
+                "string"
+        },
+        examples= {
+                ".version(V): unifies V with, i.e., \"2.4-SNAPSHOT\""
+        }
+    )
 @SuppressWarnings("serial")
 public class version extends DefaultInternalAction {
 
-	private static InternalAction singleton = null;
+    private static InternalAction singleton = null;
     public static InternalAction create() {
         if (singleton == null)
             singleton = new version();

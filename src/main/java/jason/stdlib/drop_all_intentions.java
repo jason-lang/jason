@@ -43,37 +43,37 @@ import jason.asSyntax.Term;
 
  */
 @Manual(
-		literal=".drop_all_intentions",
-		hint="removes all intentions from the agent's set of intentions",
-		argsHint= {
-				""
-		},
-		argsType= {
-				""
-		},
-		examples= {
-				".drop_all_events: all intentions except the one where .drop_all_ intentions appears are dropped"
-		},
-		seeAlso= {
-				"jason.stdlib.intend",
-				"jason.stdlib.desire",
-				"jason.stdlib.drop_all_desires",
-				"jason.stdlib.drop_all_events",
-				"jason.stdlib.drop_event",
-				"jason.stdlib.drop_intention",
-				"jason.stdlib.drop_desire",
-				"jason.stdlib.succeed_goal",
-				"jason.stdlib.fail_goal",
-				"jason.stdlib.current_intention",
-				"jason.stdlib.resume",
-				"jason.stdlib.suspend",
-				"jason.stdlib.suspended"
-		}
-	)
+        literal=".drop_all_intentions",
+        hint="removes all intentions from the agent's set of intentions",
+        argsHint= {
+                ""
+        },
+        argsType= {
+                ""
+        },
+        examples= {
+                ".drop_all_events: all intentions except the one where .drop_all_ intentions appears are dropped"
+        },
+        seeAlso= {
+                "jason.stdlib.intend",
+                "jason.stdlib.desire",
+                "jason.stdlib.drop_all_desires",
+                "jason.stdlib.drop_all_events",
+                "jason.stdlib.drop_event",
+                "jason.stdlib.drop_intention",
+                "jason.stdlib.drop_desire",
+                "jason.stdlib.succeed_goal",
+                "jason.stdlib.fail_goal",
+                "jason.stdlib.current_intention",
+                "jason.stdlib.resume",
+                "jason.stdlib.suspend",
+                "jason.stdlib.suspended"
+        }
+    )
 @SuppressWarnings("serial")
 public class drop_all_intentions extends DefaultInternalAction {
 
-	@Override public int getMinArgs() {
+    @Override public int getMinArgs() {
         return 0;
     }
     @Override public int getMaxArgs() {

@@ -50,38 +50,38 @@ import jason.asSyntax.Trigger.TEType;
 
  */
 @Manual(
-		literal=".drop_desire(desire)",
-		hint="removes referred desire from the agent circumstance",
-		argsHint= {
-				"the desire to be dropped"
-		},
-		argsType= {
-				"literal"
-		},
-		examples= {
-				".drop_desire(go(X,3)): remove desires such as &lt;+!go(1,3),_&gt; from the set of events and intentions having plans with triggering events such as +!go(1,3)"
-		},
-		seeAlso= {
-				"jason.stdlib.intend",
-				"jason.stdlib.desire",
-				"jason.stdlib.drop_all_desires",
-				"jason.stdlib.drop_all_events",
-				"jason.stdlib.drop_all_intentions",
-				"jason.stdlib.drop_event",
-				"jason.stdlib.drop_intention",
-				"jason.stdlib.drop_desire",
-				"jason.stdlib.succeed_goal",
-				"jason.stdlib.fail_goal",
-				"jason.stdlib.current_intention",
-				"jason.stdlib.resume",
-				"jason.stdlib.suspend",
-				"jason.stdlib.suspended"
-		}
-	)
+        literal=".drop_desire(desire)",
+        hint="removes referred desire from the agent circumstance",
+        argsHint= {
+                "the desire to be dropped"
+        },
+        argsType= {
+                "literal"
+        },
+        examples= {
+                ".drop_desire(go(X,3)): remove desires such as &lt;+!go(1,3),_&gt; from the set of events and intentions having plans with triggering events such as +!go(1,3)"
+        },
+        seeAlso= {
+                "jason.stdlib.intend",
+                "jason.stdlib.desire",
+                "jason.stdlib.drop_all_desires",
+                "jason.stdlib.drop_all_events",
+                "jason.stdlib.drop_all_intentions",
+                "jason.stdlib.drop_event",
+                "jason.stdlib.drop_intention",
+                "jason.stdlib.drop_desire",
+                "jason.stdlib.succeed_goal",
+                "jason.stdlib.fail_goal",
+                "jason.stdlib.current_intention",
+                "jason.stdlib.resume",
+                "jason.stdlib.suspend",
+                "jason.stdlib.suspended"
+        }
+    )
 @SuppressWarnings("serial")
 public class drop_desire extends drop_intention {
 
-	@Override
+    @Override
     public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {
         super.execute(ts, un, args);
         dropEvt(ts.getC(), (Literal)args[0], un);

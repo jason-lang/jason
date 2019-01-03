@@ -45,39 +45,39 @@ import jason.asSyntax.Term;
 
  */
 @Manual(
-		literal=".length(argument,length)",
-		hint="gets the length of strings or lists",
-		argsHint= {
-				"the term whose length is to be determined",
-				"the resulting length"
-		},
-		argsType= {
-				"string or list",
-				"number"
-		},
-		examples= {
-				".length(\"abc\",X): X unifies with 3",
-				".length([a,b],X): X unifies with 2",
-				".length(\"a\",2): false"
-		},
-		seeAlso= {
-				"jason.stdlib.concat", 
-				"jason.stdlib.delete", 
-				"jason.stdlib.member", 
-				"jason.stdlib.sort", 
-				"jason.stdlib.nth", 
-				"jason.stdlib.max", 
-				"jason.stdlib.min", 
-				"jason.stdlib.reverse", 
-				"jason.stdlib.difference", 
-				"jason.stdlib.intersection",
-				"jason.stdlib.union"
-		}
-	)
+        literal=".length(argument,length)",
+        hint="gets the length of strings or lists",
+        argsHint= {
+                "the term whose length is to be determined",
+                "the resulting length"
+        },
+        argsType= {
+                "string or list",
+                "number"
+        },
+        examples= {
+                ".length(\"abc\",X): X unifies with 3",
+                ".length([a,b],X): X unifies with 2",
+                ".length(\"a\",2): false"
+        },
+        seeAlso= {
+                "jason.stdlib.concat", 
+                "jason.stdlib.delete", 
+                "jason.stdlib.member", 
+                "jason.stdlib.sort", 
+                "jason.stdlib.nth", 
+                "jason.stdlib.max", 
+                "jason.stdlib.min", 
+                "jason.stdlib.reverse", 
+                "jason.stdlib.difference", 
+                "jason.stdlib.intersection",
+                "jason.stdlib.union"
+        }
+    )
 @SuppressWarnings("serial")
 public class length extends DefaultInternalAction {
 
-	private static InternalAction singleton = null;
+    private static InternalAction singleton = null;
     public static InternalAction create() {
         if (singleton == null)
             singleton = new length();

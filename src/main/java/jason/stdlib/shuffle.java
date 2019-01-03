@@ -27,39 +27,39 @@ import java.util.List;
 
 */
 @Manual(
-		literal=".shuffle(list,result)",
-		hint="shuffle the elements of the given list",
-		argsHint= {
-				"the list to be shuffled",
-				"the resulting list with the elements shuffled" 
-		},
-		argsType= {
-				"list",
-				"list"
-		},
-		examples= {
-				".shuffle([a,b,c],L): unify in L some random order from input list, e.g., [b,c,a] and [a,b,c]"
-		},
-		seeAlso= {
-				"jason.stdlib.concat", 
-				"jason.stdlib.delete", 
-				"jason.stdlib.length", 
-				"jason.stdlib.member", 
-				"jason.stdlib.sort", 
-				"jason.stdlib.substring", 
-				"jason.stdlib.nth", 
-				"jason.stdlib.max", 
-				"jason.stdlib.min", 
-				"jason.stdlib.reverse", 
-				"jason.stdlib.difference", 
-				"jason.stdlib.intersection",
-				"jason.stdlib.union"
-		}
-	)
+        literal=".shuffle(list,result)",
+        hint="shuffle the elements of the given list",
+        argsHint= {
+                "the list to be shuffled",
+                "the resulting list with the elements shuffled" 
+        },
+        argsType= {
+                "list",
+                "list"
+        },
+        examples= {
+                ".shuffle([a,b,c],L): unify in L some random order from input list, e.g., [b,c,a] and [a,b,c]"
+        },
+        seeAlso= {
+                "jason.stdlib.concat", 
+                "jason.stdlib.delete", 
+                "jason.stdlib.length", 
+                "jason.stdlib.member", 
+                "jason.stdlib.sort", 
+                "jason.stdlib.substring", 
+                "jason.stdlib.nth", 
+                "jason.stdlib.max", 
+                "jason.stdlib.min", 
+                "jason.stdlib.reverse", 
+                "jason.stdlib.difference", 
+                "jason.stdlib.intersection",
+                "jason.stdlib.union"
+        }
+    )
 @SuppressWarnings("serial")
 public class shuffle extends DefaultInternalAction {
 
-	@Override public int getMinArgs() {
+    @Override public int getMinArgs() {
         return 2;
     }
     @Override public int getMaxArgs() {

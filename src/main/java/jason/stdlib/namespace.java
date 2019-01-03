@@ -12,7 +12,7 @@ import java.util.Iterator;
 @SuppressWarnings("serial")
 public class namespace extends DefaultInternalAction {
 
-	@Override public int getMinArgs() {
+    @Override public int getMinArgs() {
         return 1;
     }
     @Override public int getMaxArgs() {

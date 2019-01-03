@@ -40,35 +40,35 @@ import java.util.Iterator;
   @see jason.stdlib.foreach for
 */
 @Manual(
-		literal=".range(variable,start,end,step)",
-		hint="backtrack all values for given variable starting, finishing and increments according to given parameters",
-		argsHint= {
-				"the variable that unifies with all values",
-				"initial value",
-				"last value",
-				"step (default value is 1) [optional]"
-		},
-		argsType= {
-				"variable",
-				"number",
-				"number",
-				"number"
-		},
-		examples= {
-				".range(3,1,5): true",
-				".range(6,1,5): false",
-				".range(X,1,5): unifies X with 1, 2, 3, 4, and 5",
-				".range(X,1,11,2): unifies X with 2, 4, 6, 8, and 10",
-				".range(X,5,1,-1): unifies X with 5, 4, 3, 2, and 1"
-		},
-		seeAlso= {
-				"jason.stdlib.foreach"
-		}
-	)
+        literal=".range(variable,start,end,step)",
+        hint="backtrack all values for given variable starting, finishing and increments according to given parameters",
+        argsHint= {
+                "the variable that unifies with all values",
+                "initial value",
+                "last value",
+                "step (default value is 1) [optional]"
+        },
+        argsType= {
+                "variable",
+                "number",
+                "number",
+                "number"
+        },
+        examples= {
+                ".range(3,1,5): true",
+                ".range(6,1,5): false",
+                ".range(X,1,5): unifies X with 1, 2, 3, 4, and 5",
+                ".range(X,1,11,2): unifies X with 2, 4, 6, 8, and 10",
+                ".range(X,5,1,-1): unifies X with 5, 4, 3, 2, and 1"
+        },
+        seeAlso= {
+                "jason.stdlib.foreach"
+        }
+    )
 @SuppressWarnings("serial")
 public class range extends DefaultInternalAction {
 
-	private static InternalAction singleton = null;
+    private static InternalAction singleton = null;
     public static InternalAction create() {
         if (singleton == null)
             singleton = new range();

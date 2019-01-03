@@ -31,31 +31,31 @@ import jason.asSyntax.Term;
 
  */
 @Manual(
-		literal=".df_register(service[,type])",
-		hint="register the agent in the Directory Facilitator as a provider of the service and, optionally, the type",
-		argsHint= {
-				"the service the agent is to be registered",
-				"the type of the service [optional]"
-		},
-		argsType= {
-				"literal",
-				"string"
-		},
-		examples= {
-				".df_register(\"sell(book)\"): register the agent as a book seller",
-				".df_register(\"sell(book)\",\"book-trading\"): register the agent as a book seller of type \"book-trading\"",
-				".df_register(\"expert(stocks)\",\"finantial-consultant\"): register the agent as an expert in stocks of type \"finantial-consultant\""
-		},
-		seeAlso= {
-				"jason.stdlib.df_search",
-				"jason.stdlib.df_deregister",
-				"jason.stdlib.df_subscribe"
-		}
-	)
+        literal=".df_register(service[,type])",
+        hint="register the agent in the Directory Facilitator as a provider of the service and, optionally, the type",
+        argsHint= {
+                "the service the agent is to be registered",
+                "the type of the service [optional]"
+        },
+        argsType= {
+                "literal",
+                "string"
+        },
+        examples= {
+                ".df_register(\"sell(book)\"): register the agent as a book seller",
+                ".df_register(\"sell(book)\",\"book-trading\"): register the agent as a book seller of type \"book-trading\"",
+                ".df_register(\"expert(stocks)\",\"finantial-consultant\"): register the agent as an expert in stocks of type \"finantial-consultant\""
+        },
+        seeAlso= {
+                "jason.stdlib.df_search",
+                "jason.stdlib.df_deregister",
+                "jason.stdlib.df_subscribe"
+        }
+    )
 @SuppressWarnings("serial")
 public class df_register extends DefaultInternalAction {
 
-	private static InternalAction singleton = null;
+    private static InternalAction singleton = null;
     public static InternalAction create() {
         if (singleton == null)
             singleton = new df_register();

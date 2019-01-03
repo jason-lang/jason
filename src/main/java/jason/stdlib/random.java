@@ -36,27 +36,27 @@ import java.util.Random;
 
 */
 @Manual(
-		literal=".random(value)",
-		hint="generates a random number between 0 and 1",
-		argsHint= {
-				"the variable to receive the random value"
-		},
-		argsType= {
-				"number"
-		},
-		examples= {
-				".random(X): unifies X with one random number between 0 and 1",
-				".random(X, 5): unifies X with a random number between 0 and 1, and backtracks 5 times. For example: .findall(X, .random(X,5), L) will produce a list of 5 random numbers",
-				".random(X, 0): unifies X with a random number between 0 and 1, and backtracks infinitely"
-		},
-		seeAlso= {
-				"jason.functions.Random"
-		}
-	)
+        literal=".random(value)",
+        hint="generates a random number between 0 and 1",
+        argsHint= {
+                "the variable to receive the random value"
+        },
+        argsType= {
+                "number"
+        },
+        examples= {
+                ".random(X): unifies X with one random number between 0 and 1",
+                ".random(X, 5): unifies X with a random number between 0 and 1, and backtracks 5 times. For example: .findall(X, .random(X,5), L) will produce a list of 5 random numbers",
+                ".random(X, 0): unifies X with a random number between 0 and 1, and backtracks infinitely"
+        },
+        seeAlso= {
+                "jason.functions.Random"
+        }
+    )
 @SuppressWarnings("serial")
 public class random extends DefaultInternalAction {
 
-	private static InternalAction singleton = null;
+    private static InternalAction singleton = null;
     public static InternalAction create() {
         if (singleton == null)
             singleton = new random();

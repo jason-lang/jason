@@ -37,30 +37,30 @@ import java.util.GregorianCalendar;
   @see jason.stdlib.time
  */
 @Manual(
-		literal=".date(year,month,day)",
-		hint="gets the current date (year, month, and day of the month)",
-		argsHint= {
-				"the 4-digit year",
-				"the month (from 1 to 12)",
-				"the day (from 1 to 31)"
-		},
-		argsType= {
-				"number",
-				"number",
-				"number"
-		},
-		examples= {
-				".date(Y,M,D): unifies Y with the current year, M with the current month, and D with the current day",
-				".date(2006,12,30): succeeds if the action is run on 30/Dec/2006 and fails otherwise"
-		},
-		seeAlso= {
-				"jason.stdlib.time"
-		}
-	)
+        literal=".date(year,month,day)",
+        hint="gets the current date (year, month, and day of the month)",
+        argsHint= {
+                "the 4-digit year",
+                "the month (from 1 to 12)",
+                "the day (from 1 to 31)"
+        },
+        argsType= {
+                "number",
+                "number",
+                "number"
+        },
+        examples= {
+                ".date(Y,M,D): unifies Y with the current year, M with the current month, and D with the current day",
+                ".date(2006,12,30): succeeds if the action is run on 30/Dec/2006 and fails otherwise"
+        },
+        seeAlso= {
+                "jason.stdlib.time"
+        }
+    )
 @SuppressWarnings("serial")
 public class date extends DefaultInternalAction {
 
-	private static InternalAction singleton = null;
+    private static InternalAction singleton = null;
     public static InternalAction create() {
         if (singleton == null)
             singleton = new date();

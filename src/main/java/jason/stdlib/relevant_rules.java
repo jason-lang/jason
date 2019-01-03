@@ -36,27 +36,27 @@ all rules with head p/1.</li>
 
 */
 @Manual(
-		literal=".relevant_rules(argument,rules)",
-		hint="gets all rules that can be used to prove some literal",
-		argsHint= {
-				"the argument to proof",
-				"the rules that prove it"
-		},
-		argsType= {
-				"literal",
-				"list of plan rules"
-		},
-		examples= {
-				".relevant_rules(p(_),LP): unifies LP with a list of all rules with head p/1."
-		},
-		seeAlso= {
-				""
-		}
-	)
+        literal=".relevant_rules(argument,rules)",
+        hint="gets all rules that can be used to prove some literal",
+        argsHint= {
+                "the argument to proof",
+                "the rules that prove it"
+        },
+        argsType= {
+                "literal",
+                "list of plan rules"
+        },
+        examples= {
+                ".relevant_rules(p(_),LP): unifies LP with a list of all rules with head p/1."
+        },
+        seeAlso= {
+                ""
+        }
+    )
 @SuppressWarnings("serial")
 public class relevant_rules extends DefaultInternalAction {
 
-	@Override public int getMinArgs() {
+    @Override public int getMinArgs() {
         return 2;
     }
     @Override public int getMaxArgs() {

@@ -28,26 +28,26 @@ import java.util.List;
 
  */
 @Manual(
-		literal=".asserta(belief)",
-		hint="adds a new belief using prolog like rules",
-		argsHint= {
-				"the belief that will be added at the beginning of the base"
-		},
-		argsType= {
-				"literal"
-		},
-		examples= {
-				".asserta(p): adds p at the beginning of the belief base"
-		},
-		seeAlso= {
-				"jason.stdlib.assertz",
-				"jason.stdlib.abolish"
-		}
-	)
+        literal=".asserta(belief)",
+        hint="adds a new belief using prolog like rules",
+        argsHint= {
+                "the belief that will be added at the beginning of the base"
+        },
+        argsType= {
+                "literal"
+        },
+        examples= {
+                ".asserta(p): adds p at the beginning of the belief base"
+        },
+        seeAlso= {
+                "jason.stdlib.assertz",
+                "jason.stdlib.abolish"
+        }
+    )
 @SuppressWarnings("serial")
 public class asserta extends DefaultInternalAction {
 
-	@Override public int getMinArgs() {
+    @Override public int getMinArgs() {
         return 1;
     }
     @Override public int getMaxArgs() {

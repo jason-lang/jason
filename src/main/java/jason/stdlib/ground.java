@@ -34,36 +34,36 @@ variables. Numbers, Strings, and Atoms are always ground.
 
 */
 @Manual(
-		literal=".ground(term)",
-		hint="checks whether the argument is ground, i.e., it has no free variables",
-		argsHint= {
-				"the term to be checked"
-		},
-		argsType= {
-				"term"
-		},
-		examples= {
-				".ground(b(10)): true", 
-				".ground(10): true", 
-				".ground(X): false if X is free or bound to a term with free variables", 
-				".ground(a(X)): false if X is free or bound to a term with free variables", 
-				".ground([a,b,c]): true", 
-				".ground([a,b,c(X)]): false if X is free or bound to a term with free variables"
-		},
-		seeAlso= {
-				"jason.stdlib.atom", 
-				"jason.stdlib.list", 
-				"jason.stdlib.literal", 
-				"jason.stdlib.number", 
-				"jason.stdlib.string", 
-				"jason.stdlib.structure", 
-				"jason.stdlib.ground"
-		}
-	)
+        literal=".ground(term)",
+        hint="checks whether the argument is ground, i.e., it has no free variables",
+        argsHint= {
+                "the term to be checked"
+        },
+        argsType= {
+                "term"
+        },
+        examples= {
+                ".ground(b(10)): true", 
+                ".ground(10): true", 
+                ".ground(X): false if X is free or bound to a term with free variables", 
+                ".ground(a(X)): false if X is free or bound to a term with free variables", 
+                ".ground([a,b,c]): true", 
+                ".ground([a,b,c(X)]): false if X is free or bound to a term with free variables"
+        },
+        seeAlso= {
+                "jason.stdlib.atom", 
+                "jason.stdlib.list", 
+                "jason.stdlib.literal", 
+                "jason.stdlib.number", 
+                "jason.stdlib.string", 
+                "jason.stdlib.structure", 
+                "jason.stdlib.ground"
+        }
+    )
 @SuppressWarnings("serial")
 public class ground extends DefaultInternalAction {
 
-	private static InternalAction singleton = null;
+    private static InternalAction singleton = null;
     public static InternalAction create() {
         if (singleton == null)
             singleton = new ground();

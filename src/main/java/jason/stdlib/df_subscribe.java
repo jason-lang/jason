@@ -29,29 +29,29 @@ import jason.asSyntax.Term;
 
  */
 @Manual(
-		literal=".df_subscribe(service[,type])",
-		hint="subscribes the agent as interested in providers of referred service and, optionally, a type",
-		argsHint= {
-				"the service the agents is interested in",
-				"the type of the service [optional]"
-		},
-		argsType= {
-				"literal",
-				"string"
-		},
-		examples= {
-				".df_subscribe(\"sell(book)\"): subscribe the agent for providers of agents that sell books"
-		},
-		seeAlso= {
-				"jason.stdlib.df_register",
-				"jason.stdlib.df_deregister",
-				"jason.stdlib.df_search"
-		}
-	)
+        literal=".df_subscribe(service[,type])",
+        hint="subscribes the agent as interested in providers of referred service and, optionally, a type",
+        argsHint= {
+                "the service the agents is interested in",
+                "the type of the service [optional]"
+        },
+        argsType= {
+                "literal",
+                "string"
+        },
+        examples= {
+                ".df_subscribe(\"sell(book)\"): subscribe the agent for providers of agents that sell books"
+        },
+        seeAlso= {
+                "jason.stdlib.df_register",
+                "jason.stdlib.df_deregister",
+                "jason.stdlib.df_search"
+        }
+    )
 @SuppressWarnings("serial")
 public class df_subscribe extends df_register {
 
-	private static InternalAction singleton = null;
+    private static InternalAction singleton = null;
     public static InternalAction create() {
         if (singleton == null)
             singleton = new df_subscribe();

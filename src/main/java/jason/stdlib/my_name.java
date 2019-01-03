@@ -37,28 +37,28 @@ import jason.asSyntax.Term;
 
  */
 @Manual(
-		literal=".my_name(result)",
-		hint="gets the agent's unique identification in the multi-agent system",
-		argsHint= {
-				"unifies the agent name"
-		},
-		argsType= {
-				"atom or variable"
-		},
-		examples= {
-				".my_name(N): unifies N with the agent's name",
-				".my_name(bob): true if the agent's name is \"bob\""
-		},
-		seeAlso= {
-				"jason.stdlib.broadcast", 
-				"jason.stdlib.send", 
-				"jason.stdlib.all_names"
-		}
-	)
+        literal=".my_name(result)",
+        hint="gets the agent's unique identification in the multi-agent system",
+        argsHint= {
+                "unifies the agent name"
+        },
+        argsType= {
+                "atom or variable"
+        },
+        examples= {
+                ".my_name(N): unifies N with the agent's name",
+                ".my_name(bob): true if the agent's name is \"bob\""
+        },
+        seeAlso= {
+                "jason.stdlib.broadcast", 
+                "jason.stdlib.send", 
+                "jason.stdlib.all_names"
+        }
+    )
 @SuppressWarnings("serial")
 public class my_name extends DefaultInternalAction {
 
-	private static InternalAction singleton = null;
+    private static InternalAction singleton = null;
     public static InternalAction create() {
         if (singleton == null)
             singleton = new my_name();

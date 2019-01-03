@@ -27,26 +27,26 @@ import java.util.List;
 
  */
 @Manual(
-		literal=".assertz(belief)",
-		hint="adds a new belief using prolog like rules",
-		argsHint= {
-				"the belief that will be added in the end the base"
-		},
-		argsType= {
-				"literal"
-		},
-		examples= {
-				".assertz(q): adds q at the end of the belief base"
-		},
-		seeAlso= {
-				"jason.stdlib.asserta",
-				"jason.stdlib.abolish"
-		}
-	)
+        literal=".assertz(belief)",
+        hint="adds a new belief using prolog like rules",
+        argsHint= {
+                "the belief that will be added in the end the base"
+        },
+        argsType= {
+                "literal"
+        },
+        examples= {
+                ".assertz(q): adds q at the end of the belief base"
+        },
+        seeAlso= {
+                "jason.stdlib.asserta",
+                "jason.stdlib.abolish"
+        }
+    )
 @SuppressWarnings("serial")
 public class assertz extends DefaultInternalAction {
 
-	@Override public int getMinArgs() {
+    @Override public int getMinArgs() {
         return 1;
     }
     @Override public int getMaxArgs() {

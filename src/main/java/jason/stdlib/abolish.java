@@ -39,20 +39,20 @@ import jason.asSyntax.Term;
                 "literal or variable"
         },
         examples= {
-        		".abolish(b(_)): remove all b/1 beliefs, regardless of the argument value and the source of the belief",
-        		".abolish(c(_,t)): remove all c/2 beliefs where the second argument is t",
-        		".abolish(c(_,_)[source(ag1)]): remove all c/2 beliefs that have ag1 as source",
-        		".abolish(_[source(ag1)]): remove any beliefs that have ag1 as source"
+                ".abolish(b(_)): remove all b/1 beliefs, regardless of the argument value and the source of the belief",
+                ".abolish(c(_,t)): remove all c/2 beliefs where the second argument is t",
+                ".abolish(c(_,_)[source(ag1)]): remove all c/2 beliefs that have ag1 as source",
+                ".abolish(_[source(ag1)]): remove any beliefs that have ag1 as source"
         },
-		seeAlso= {
-				"jason.stdlib.asserta",
-				"jason.stdlib.assertz"
-		}
+        seeAlso= {
+                "jason.stdlib.asserta",
+                "jason.stdlib.assertz"
+        }
     )
 @SuppressWarnings("serial")
 public class abolish extends DefaultInternalAction {
 
-	@Override public int getMinArgs() {
+    @Override public int getMinArgs() {
         return 1;
     }
     @Override public int getMaxArgs() {

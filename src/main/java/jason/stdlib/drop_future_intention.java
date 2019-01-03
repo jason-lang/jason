@@ -52,37 +52,37 @@ import jason.asSyntax.Term;
   
  */
 @Manual(
-		literal=".drop_future_intention(goal)",
-		hint="removes intentions that will try to achieve goal the referred goal",
-		argsHint= {
-				"the goal the intentions achieve"
-		},
-		argsType= {
-				"literal"
-		},
-		examples= {
-				"drop_future_intention(go(1,3)): removes an intention having a plan that will execute +!go(1,3)"
-		},
-		seeAlso= {
-				"jason.stdlib.intend",
-				"jason.stdlib.desire",
-				"jason.stdlib.drop_all_desires",
-				"jason.stdlib.drop_all_events",
-				"jason.stdlib.drop_all_intentions",
-				"jason.stdlib.drop_intention",
-				"jason.stdlib.drop_desire",
-				"jason.stdlib.succeed_goal",
-				"jason.stdlib.fail_goal",
-				"jason.stdlib.current_intention",
-				"jason.stdlib.resume",
-				"jason.stdlib.suspend",
-				"jason.stdlib.suspended"
-		}
-	)
+        literal=".drop_future_intention(goal)",
+        hint="removes intentions that will try to achieve goal the referred goal",
+        argsHint= {
+                "the goal the intentions achieve"
+        },
+        argsType= {
+                "literal"
+        },
+        examples= {
+                "drop_future_intention(go(1,3)): removes an intention having a plan that will execute +!go(1,3)"
+        },
+        seeAlso= {
+                "jason.stdlib.intend",
+                "jason.stdlib.desire",
+                "jason.stdlib.drop_all_desires",
+                "jason.stdlib.drop_all_events",
+                "jason.stdlib.drop_all_intentions",
+                "jason.stdlib.drop_intention",
+                "jason.stdlib.drop_desire",
+                "jason.stdlib.succeed_goal",
+                "jason.stdlib.fail_goal",
+                "jason.stdlib.current_intention",
+                "jason.stdlib.resume",
+                "jason.stdlib.suspend",
+                "jason.stdlib.suspended"
+        }
+    )
 @SuppressWarnings("serial")
 public class drop_future_intention extends drop_desire {
 
-	@Override
+    @Override
     public int getMinArgs() {
         return 1;
     }

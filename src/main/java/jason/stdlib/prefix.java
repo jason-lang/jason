@@ -54,38 +54,38 @@ import java.util.List;
 
 */
 @Manual(
-		literal=".prefix(prefix,list)",
-		hint="checks if some list is a prefix of other list, backtracking all free variables",
-		argsHint= {
-				"the prefix to be checked",
-				"the list where the prefix is from"
-		},
-		argsType= {
-				"list",
-				"list"
-		},
-		examples= {
-				".prefix([a],[a,b,c]): true",
-				".prefix([a,b],[a,b,c]): true",
-				".prefix([b,c],[a,b,c]): false",
-				".prefix(X,[a,b,c]): unifies X with any prefix of the list, i.e., [a,b,c], [a,b], [a], and [] in this order"
-		},
-		seeAlso= {
-				"jason.stdlib.concat", 
-				"jason.stdlib.length", 
-				"jason.stdlib.sublist", 
-				"jason.stdlib.sort", 
-				"jason.stdlib.shuffle", 
-				"jason.stdlib.suffix", 
-				"jason.stdlib.nth", 
-				"jason.stdlib.max", 
-				"jason.stdlib.min", 
-				"jason.stdlib.reverse", 
-				"jason.stdlib.difference", 
-				"jason.stdlib.intersection",
-				"jason.stdlib.union"
-		}
-	)
+        literal=".prefix(prefix,list)",
+        hint="checks if some list is a prefix of other list, backtracking all free variables",
+        argsHint= {
+                "the prefix to be checked",
+                "the list where the prefix is from"
+        },
+        argsType= {
+                "list",
+                "list"
+        },
+        examples= {
+                ".prefix([a],[a,b,c]): true",
+                ".prefix([a,b],[a,b,c]): true",
+                ".prefix([b,c],[a,b,c]): false",
+                ".prefix(X,[a,b,c]): unifies X with any prefix of the list, i.e., [a,b,c], [a,b], [a], and [] in this order"
+        },
+        seeAlso= {
+                "jason.stdlib.concat", 
+                "jason.stdlib.length", 
+                "jason.stdlib.sublist", 
+                "jason.stdlib.sort", 
+                "jason.stdlib.shuffle", 
+                "jason.stdlib.suffix", 
+                "jason.stdlib.nth", 
+                "jason.stdlib.max", 
+                "jason.stdlib.min", 
+                "jason.stdlib.reverse", 
+                "jason.stdlib.difference", 
+                "jason.stdlib.intersection",
+                "jason.stdlib.union"
+        }
+    )
 @SuppressWarnings("serial")
 public class prefix extends DefaultInternalAction {
 

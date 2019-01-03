@@ -36,38 +36,38 @@ import jason.asSyntax.Term;
 
 */
 @Manual(
-		literal=".structure(argument)",
-		hint="checks whether the argument is a structure",
-		argsHint= {
-				"the term to be checked"
-		},
-		argsType= {
-				"term"
-		},
-		examples= {
-				".structure(b(10)): true", 
-				".structure(b): true", 
-				".structure(10): false", 
-				".structure(\"home page\"): false", 
-				".structure(X): false if X is free, true if X is bound to a structure", 
-				".structure(a(X)): true",
-				".structure(~c(f)): true",
-				".structure([a,b,c]): true", 
-				".structure([a,b,c(X)]): true"
-		},
-		seeAlso= {
-				"jason.stdlib.atom", 
-				"jason.stdlib.list", 
-				"jason.stdlib.literal", 
-				"jason.stdlib.number", 
-				"jason.stdlib.string", 
-				"jason.stdlib.ground"
-		}
-	)
+        literal=".structure(argument)",
+        hint="checks whether the argument is a structure",
+        argsHint= {
+                "the term to be checked"
+        },
+        argsType= {
+                "term"
+        },
+        examples= {
+                ".structure(b(10)): true", 
+                ".structure(b): true", 
+                ".structure(10): false", 
+                ".structure(\"home page\"): false", 
+                ".structure(X): false if X is free, true if X is bound to a structure", 
+                ".structure(a(X)): true",
+                ".structure(~c(f)): true",
+                ".structure([a,b,c]): true", 
+                ".structure([a,b,c(X)]): true"
+        },
+        seeAlso= {
+                "jason.stdlib.atom", 
+                "jason.stdlib.list", 
+                "jason.stdlib.literal", 
+                "jason.stdlib.number", 
+                "jason.stdlib.string", 
+                "jason.stdlib.ground"
+        }
+    )
 @SuppressWarnings("serial")
 public class structure extends DefaultInternalAction {
 
-	private static InternalAction singleton = null;
+    private static InternalAction singleton = null;
     public static InternalAction create() {
         if (singleton == null)
             singleton = new structure();

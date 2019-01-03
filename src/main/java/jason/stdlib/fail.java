@@ -24,25 +24,25 @@ import jason.asSyntax.Term;
 
  */
 @Manual(
-		literal=".fail(goal)",
-		hint="fails the intention where it is run (always returns false)",
-		argsHint= {
-				""
-		},
-		argsType= {
-				""
-		},
-		examples= {
-				".fail: returns false"
-		},
-		seeAlso= {
-				""
-		}
-	)
+        literal=".fail(goal)",
+        hint="fails the intention where it is run (always returns false)",
+        argsHint= {
+                ""
+        },
+        argsType= {
+                ""
+        },
+        examples= {
+                ".fail: returns false"
+        },
+        seeAlso= {
+                ""
+        }
+    )
 @SuppressWarnings("serial")
 public class fail extends DefaultInternalAction {
 
-	private static InternalAction singleton = null;
+    private static InternalAction singleton = null;
     public static InternalAction create() {
         if (singleton == null)
             singleton = new fail();

@@ -32,34 +32,34 @@ import jason.asSyntax.Term;
 
 */
 @Manual(
-		literal=".number(argument)",
-		hint="checks whether the argument is a number",
-		argsHint= {
-				"the term to be checked"
-		},
-		argsType= {
-				"term"
-		},
-		examples= {
-				".number(10): true" + 
-				".number(10.34): true" + 
-				".number(b(10)): false" + 
-				".number(\"home page\"): false" + 
-				".number(X): false if X is free, true if X is bound to a number"
-		},
-		seeAlso= {
-				"jason.stdlib.atom", 
-				"jason.stdlib.list", 
-				"jason.stdlib.literal", 
-				"jason.stdlib.string", 
-				"jason.stdlib.structure", 
-				"jason.stdlib.ground"
-		}
-	)
+        literal=".number(argument)",
+        hint="checks whether the argument is a number",
+        argsHint= {
+                "the term to be checked"
+        },
+        argsType= {
+                "term"
+        },
+        examples= {
+                ".number(10): true" + 
+                ".number(10.34): true" + 
+                ".number(b(10)): false" + 
+                ".number(\"home page\"): false" + 
+                ".number(X): false if X is free, true if X is bound to a number"
+        },
+        seeAlso= {
+                "jason.stdlib.atom", 
+                "jason.stdlib.list", 
+                "jason.stdlib.literal", 
+                "jason.stdlib.string", 
+                "jason.stdlib.structure", 
+                "jason.stdlib.ground"
+        }
+    )
 @SuppressWarnings("serial")
 public class number extends DefaultInternalAction {
 
-	private static InternalAction singleton = null;
+    private static InternalAction singleton = null;
     public static InternalAction create() {
         if (singleton == null)
             singleton = new number();

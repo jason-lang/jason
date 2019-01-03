@@ -51,31 +51,31 @@ import jason.asSyntax.Term;
 
  */
 @Manual(
-		literal=".add_annot(belief,annotation,result)",
-		hint="adds an annotation to a literal",
-		argsHint= {
-				"the literal where the annotation is to be added",
-				"the annotation",
-				"the resulting unification of the annotation addition"		
-		},
-		argsType= {
-				"literal or list",
-				"atom",
-				"literal or list"
-		},
-		examples= {
-				".add_annot(a,source(jomi),B): B unifies with a[source(jomi)]",
-				".add_annot(a,source(jomi),b[jomi]): fails because the result of the addition does not unify with the third argument",
-				".add_annot([a1,a2], source(jomi), B): B unifies with [a1[source(jomi)], a2[source(jomi)]]"
-		},
-		seeAlso= {
-				"jason.stdlib.add_nested_source"
-		}
-	)
+        literal=".add_annot(belief,annotation,result)",
+        hint="adds an annotation to a literal",
+        argsHint= {
+                "the literal where the annotation is to be added",
+                "the annotation",
+                "the resulting unification of the annotation addition"      
+        },
+        argsType= {
+                "literal or list",
+                "atom",
+                "literal or list"
+        },
+        examples= {
+                ".add_annot(a,source(jomi),B): B unifies with a[source(jomi)]",
+                ".add_annot(a,source(jomi),b[jomi]): fails because the result of the addition does not unify with the third argument",
+                ".add_annot([a1,a2], source(jomi), B): B unifies with [a1[source(jomi)], a2[source(jomi)]]"
+        },
+        seeAlso= {
+                "jason.stdlib.add_nested_source"
+        }
+    )
 @SuppressWarnings("serial")
 public class add_annot extends DefaultInternalAction {
 
-	private static InternalAction singleton = null;
+    private static InternalAction singleton = null;
     public static InternalAction create() {
         if (singleton == null)
             singleton = new add_annot();

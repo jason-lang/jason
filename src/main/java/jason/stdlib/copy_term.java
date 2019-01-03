@@ -11,21 +11,21 @@ import jason.asSyntax.Term;
 literal=".copy_term(literal,Result)",
 hint="clone an agent including with belief base and plans library",
 argsHint= {
-		"the literal to be copied",
-		"the resulting unification of the copy"
+        "the literal to be copied",
+        "the resulting unification of the copy"
 },
 argsType= {
-		"literal",
-		"term"
+        "literal",
+        "term"
 },
 examples= {
-		""
+        ""
 }
 )*/
 @SuppressWarnings("serial")
 public class copy_term extends DefaultInternalAction {
 
-	@Override public int getMinArgs() {
+    @Override public int getMinArgs() {
         return 2;
     }
     @Override public int getMaxArgs() {

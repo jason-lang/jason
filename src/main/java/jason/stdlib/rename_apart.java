@@ -20,25 +20,25 @@ import jason.asSyntax.VarTerm;
   @author Jomi
  */
 @Manual(
-		literal=".rename_apart(labels[,source])",
-		hint="replace the variable by unused named, to avoid clash",
-		argsHint= {
-				""
-		},
-		argsType= {
-				""
-		},
-		examples= {
-				".rename_apart(b(X,Y,a), R): R will unifies with b(_33_X,_34_Y,a)"
-		},
-		seeAlso= {
-				""
-		}
-	)
+        literal=".rename_apart(labels[,source])",
+        hint="replace the variable by unused named, to avoid clash",
+        argsHint= {
+                ""
+        },
+        argsType= {
+                ""
+        },
+        examples= {
+                ".rename_apart(b(X,Y,a), R): R will unifies with b(_33_X,_34_Y,a)"
+        },
+        seeAlso= {
+                ""
+        }
+    )
 @SuppressWarnings("serial")
 public class rename_apart extends DefaultInternalAction {
 
-	@Override public int getMinArgs() {
+    @Override public int getMinArgs() {
         return 2;
     }
     @Override public int getMaxArgs() {

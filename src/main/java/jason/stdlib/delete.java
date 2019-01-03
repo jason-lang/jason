@@ -56,47 +56,47 @@ import jason.asSyntax.Term;
   @see jason.stdlib.union
 */
 @Manual(
-		literal=".delete(arg0,arg1,arg2[,arg3])",
-		hint="delete elements of strings or lists",
-		argsHint= {
-				"if term, this is the element to be removed in the list; if string, this is the substring to be removed; if number, where to start to delete",
-				"if arg0 is list/string, the list/string where to delete; if arg0 is number, where to stop to delete",
-				"if arg0 is list/string, the list/string with the result of the deletion, if arg0 is number, the list/string where to delete.",
-				"if arg0 is number, the list/string with the result of the deletion [present when arg0 is a number]"
-		},
-		argsType= {
-				"term, string, or number",
-				"number, list or string",
-				"number, list or string",
-				"list or string"
-		},
-		examples= {
-				".delete(a,[a,b,c,a],L): L unifies with [b,c]",
-				".delete(a,[a,b,c,a],[c]): false",
-				".delete(0,[a,b,c,a],L): L unifies with [b,c,a]", 
-				".delete(1,3,[a,b,c,a],L): L unifies with [a,a]", 
-				".delete(\"a\",\"banana\",S): S unifies with \"bnn\"", 
-				".delete(0,\"banana\",S): S unifies with \"anana\""
-		},
-		seeAlso= {
-				"jason.stdlib.concat", 
-				"jason.stdlib.length", 
-				"jason.stdlib.member", 
-				"jason.stdlib.sort", 
-				"jason.stdlib.substring", 
-				"jason.stdlib.nth", 
-				"jason.stdlib.max", 
-				"jason.stdlib.min", 
-				"jason.stdlib.reverse", 
-				"jason.stdlib.difference", 
-				"jason.stdlib.intersection",
-				"jason.stdlib.union"
-		}
-	)
+        literal=".delete(arg0,arg1,arg2[,arg3])",
+        hint="delete elements of strings or lists",
+        argsHint= {
+                "if term, this is the element to be removed in the list; if string, this is the substring to be removed; if number, where to start to delete",
+                "if arg0 is list/string, the list/string where to delete; if arg0 is number, where to stop to delete",
+                "if arg0 is list/string, the list/string with the result of the deletion, if arg0 is number, the list/string where to delete.",
+                "if arg0 is number, the list/string with the result of the deletion [present when arg0 is a number]"
+        },
+        argsType= {
+                "term, string, or number",
+                "number, list or string",
+                "number, list or string",
+                "list or string"
+        },
+        examples= {
+                ".delete(a,[a,b,c,a],L): L unifies with [b,c]",
+                ".delete(a,[a,b,c,a],[c]): false",
+                ".delete(0,[a,b,c,a],L): L unifies with [b,c,a]", 
+                ".delete(1,3,[a,b,c,a],L): L unifies with [a,a]", 
+                ".delete(\"a\",\"banana\",S): S unifies with \"bnn\"", 
+                ".delete(0,\"banana\",S): S unifies with \"anana\""
+        },
+        seeAlso= {
+                "jason.stdlib.concat", 
+                "jason.stdlib.length", 
+                "jason.stdlib.member", 
+                "jason.stdlib.sort", 
+                "jason.stdlib.substring", 
+                "jason.stdlib.nth", 
+                "jason.stdlib.max", 
+                "jason.stdlib.min", 
+                "jason.stdlib.reverse", 
+                "jason.stdlib.difference", 
+                "jason.stdlib.intersection",
+                "jason.stdlib.union"
+        }
+    )
 @SuppressWarnings("serial")
 public class delete extends DefaultInternalAction {
 
-	private static InternalAction singleton = null;
+    private static InternalAction singleton = null;
     public static InternalAction create() {
         if (singleton == null)
             singleton = new delete();

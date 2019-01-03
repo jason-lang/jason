@@ -35,33 +35,33 @@ import jason.asSyntax.Term;
 
 */
 @Manual(
-		literal=".term2string(term,string)",
-		hint="converts the term into a string and vice-versa",
-		argsHint= {
-				"the term",
-				"the string"
-		},
-		argsType= {
-				"term",
-				"string"
-		},
-		examples= {
-				".term2string(b,\"b\"): true",
-				".term2string(b,X): unifies X with \"b\"", 
-				".term2string(X,\"b\"): unifies X with b", 
-				".term2string(X,\"10\"): unifies X with 10 (a number term)"
-		},
-		seeAlso= {
-				"jason.stdlib.concat", 
-				"jason.stdlib.delete", 
-				"jason.stdlib.length", 
-				"jason.stdlib.reverse"
-		}
-	)
+        literal=".term2string(term,string)",
+        hint="converts the term into a string and vice-versa",
+        argsHint= {
+                "the term",
+                "the string"
+        },
+        argsType= {
+                "term",
+                "string"
+        },
+        examples= {
+                ".term2string(b,\"b\"): true",
+                ".term2string(b,X): unifies X with \"b\"", 
+                ".term2string(X,\"b\"): unifies X with b", 
+                ".term2string(X,\"10\"): unifies X with 10 (a number term)"
+        },
+        seeAlso= {
+                "jason.stdlib.concat", 
+                "jason.stdlib.delete", 
+                "jason.stdlib.length", 
+                "jason.stdlib.reverse"
+        }
+    )
 @SuppressWarnings("serial")
 public class term2string extends DefaultInternalAction {
 
-	private static InternalAction singleton = null;
+    private static InternalAction singleton = null;
     public static InternalAction create() {
         if (singleton == null)
             singleton = new term2string();

@@ -57,42 +57,42 @@ import java.util.List;
 
 */
 @Manual(
-		literal=".sublist(sublist,list)",
-		hint="checks if a list is a subset of a given list, backtracking all free variables",
-		argsHint= {
-				"the sublist to be checked",
-				"the list where the sublist may be to be a subset" 
-		},
-		argsType= {
-				"list",
-				"list"
-		},
-		examples= {
-				".sublist([a],[a,b,c]): true",
-				".sublist([b],[a,b,c]): true",
-				".sublist([c],[a,b,c]): true",
-				".sublist([a,b],[a,b,c]): true",
-				".sublist([b,c],[a,b,c]): true",
-				".sublist([d],[a,b,c]): false",
-				".sublist(X,[a,b,c]): unifies X with any sublist of the list, i.e., [a,b,c], [a,b], [a], [b,c], [b], [c], and [] in this order"
-		},
-		seeAlso= {
-				"jason.stdlib.concat", 
-				"jason.stdlib.delete", 
-				"jason.stdlib.length", 
-				"jason.stdlib.member", 
-				"jason.stdlib.sort", 
-				"jason.stdlib.shuffle", 
-				"jason.stdlib.substring", 
-				"jason.stdlib.nth", 
-				"jason.stdlib.max", 
-				"jason.stdlib.min", 
-				"jason.stdlib.reverse", 
-				"jason.stdlib.difference", 
-				"jason.stdlib.intersection",
-				"jason.stdlib.union"
-		}
-	)
+        literal=".sublist(sublist,list)",
+        hint="checks if a list is a subset of a given list, backtracking all free variables",
+        argsHint= {
+                "the sublist to be checked",
+                "the list where the sublist may be to be a subset" 
+        },
+        argsType= {
+                "list",
+                "list"
+        },
+        examples= {
+                ".sublist([a],[a,b,c]): true",
+                ".sublist([b],[a,b,c]): true",
+                ".sublist([c],[a,b,c]): true",
+                ".sublist([a,b],[a,b,c]): true",
+                ".sublist([b,c],[a,b,c]): true",
+                ".sublist([d],[a,b,c]): false",
+                ".sublist(X,[a,b,c]): unifies X with any sublist of the list, i.e., [a,b,c], [a,b], [a], [b,c], [b], [c], and [] in this order"
+        },
+        seeAlso= {
+                "jason.stdlib.concat", 
+                "jason.stdlib.delete", 
+                "jason.stdlib.length", 
+                "jason.stdlib.member", 
+                "jason.stdlib.sort", 
+                "jason.stdlib.shuffle", 
+                "jason.stdlib.substring", 
+                "jason.stdlib.nth", 
+                "jason.stdlib.max", 
+                "jason.stdlib.min", 
+                "jason.stdlib.reverse", 
+                "jason.stdlib.difference", 
+                "jason.stdlib.intersection",
+                "jason.stdlib.union"
+        }
+    )
 @SuppressWarnings("serial")
 public class sublist extends DefaultInternalAction {
 

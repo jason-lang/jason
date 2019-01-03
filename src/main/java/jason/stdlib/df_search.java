@@ -33,31 +33,31 @@ import jason.asSyntax.Term;
 
  */
 @Manual(
-		literal=".df_search(service[,type],result)",
-		hint="list of all agents providing the service and, optionally, the type",
-		argsHint= {
-				"the service the agents are registered",
-				"the type of the service [optional]",
-				"the resulting list of agents providing the service"
-		},
-		argsType= {
-				"literal",
-				"string",
-				"list"
-		},
-		examples= {
-				".df_search(\"sell(book)\",L): unifies L with [bob,alice] in case these two agents have registered as book sellers"
-		},
-		seeAlso= {
-				"jason.stdlib.df_register",
-				"jason.stdlib.df_deregister",
-				"jason.stdlib.df_subscribe"
-		}
-	)
+        literal=".df_search(service[,type],result)",
+        hint="list of all agents providing the service and, optionally, the type",
+        argsHint= {
+                "the service the agents are registered",
+                "the type of the service [optional]",
+                "the resulting list of agents providing the service"
+        },
+        argsType= {
+                "literal",
+                "string",
+                "list"
+        },
+        examples= {
+                ".df_search(\"sell(book)\",L): unifies L with [bob,alice] in case these two agents have registered as book sellers"
+        },
+        seeAlso= {
+                "jason.stdlib.df_register",
+                "jason.stdlib.df_deregister",
+                "jason.stdlib.df_subscribe"
+        }
+    )
 @SuppressWarnings("serial")
 public class df_search extends df_register {
 
-	private static InternalAction singleton = null;
+    private static InternalAction singleton = null;
     public static InternalAction create() {
         if (singleton == null)
             singleton = new df_search();
