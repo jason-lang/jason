@@ -182,7 +182,7 @@ loop
     sense();
   do <NUMBER-CYCLES-DELIBERATE> times:
     deliberate();
-  do min( <NUMBER-CYCLES-ACT>, numberOfIntention()) times:
+  do min( <NUMBER-CYCLES-ACT>, numberOfIntentions()) times:
     act();
 ----
 
@@ -221,7 +221,7 @@ do <NUMBER-REASONING-CYCLES> times:
     sense();
   do <NUMBER-CYCLES-DELIBERATE> times:
     deliberate();
-  do min( <NUMBER-CYCLES-ACT>, numberOfIntention()) times:
+  do min( <NUMBER-CYCLES-ACT>, numberOfIntentions()) times:
     act();
 ----
 
@@ -265,7 +265,7 @@ switch (stage)
       deliberate();
     stage = ACT;
   case ACT:
-    loop do min( <NUMBER-CYCLES-ACT>, numberOfIntention()) times:
+    loop do min( <NUMBER-CYCLES-ACT>, numberOfIntentions()) times:
       act();
     stage = SENSE;
 ----
@@ -311,7 +311,7 @@ switch (task.stage)
     loop do <NUMBER-CYCLES-DELIBERATE> times:
       deliberate();
   case ACT:
-    loop do min( <NUMBER-CYCLES-ACT>, numberOfIntention()) times:
+    loop do min( <NUMBER-CYCLES-ACT>, numberOfIntentions()) times:
       act();
 ----
 

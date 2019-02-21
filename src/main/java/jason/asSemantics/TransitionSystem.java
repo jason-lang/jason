@@ -78,7 +78,7 @@ public class TransitionSystem {
     private TransitionSystem      confP;
     private TransitionSystem      conf;
 
-    private Queue<Runnable> taskForBeginOfCycle = new ConcurrentLinkedQueue<Runnable>();
+    private Queue<Runnable> taskForBeginOfCycle = new ConcurrentLinkedQueue<>();
 
     public TransitionSystem(Agent a, Circumstance c, Settings s, AgArch ar) {
         ag     = a;
@@ -129,8 +129,8 @@ public class TransitionSystem {
     /** adds an object that will be notified about events on goals (creation, suspension, ...) */
     public void addGoalListener(final GoalListener gl) {
         if (goalListeners == null) {
-            goalListeners = new ArrayList<GoalListener>();
-            listenersMap  = new HashMap<GoalListener, CircumstanceListener>();
+            goalListeners = new ArrayList<>();
+            listenersMap  = new HashMap<>();
         } else {
             // do not install two MetaEventGoalListener
             for (GoalListener g: goalListeners)
@@ -949,7 +949,7 @@ public class TransitionSystem {
                     if (t != null && t.isVar()) {
                         //getLogger().info("adding "+t+"="+v+"="+renamedVars.function.get(v)+" u="+u);
                         if (adds == null)
-                            adds = new HashMap<VarTerm, Term>();
+                            adds = new HashMap<>();
                         try {
                             adds.put((VarTerm)t,renamedVars.function.get(v));
                         } catch (Exception e) {
@@ -1076,7 +1076,7 @@ public class TransitionSystem {
             for (Plan pl : candidateRPs) {
                 Unifier relUn = pl.isRelevant(te);
                 if (relUn != null) {
-                    if (rp == null) rp = new LinkedList<Option>();
+                    if (rp == null) rp = new LinkedList<>();
                     rp.add(new Option(pl, relUn));
                 }
             }
@@ -1093,7 +1093,7 @@ public class TransitionSystem {
                 for (Option opt: rp) {
                     LogicalFormula context = opt.getPlan().getContext();
                     if (context == null) { // context is true
-                        if (ap == null) ap = new LinkedList<Option>();
+                        if (ap == null) ap = new LinkedList<>();
                         ap.add(opt);
                     } else {
                         boolean allUnifs = opt.getPlan().isAllUnifs();
@@ -1102,7 +1102,7 @@ public class TransitionSystem {
                             while (r.hasNext()) {
                                 opt.setUnifier(r.next());
 
-                                if (ap == null) ap = new LinkedList<Option>();
+                                if (ap == null) ap = new LinkedList<>();
                                 ap.add(opt);
 
                                 if (!allUnifs) break; // returns only the first unification

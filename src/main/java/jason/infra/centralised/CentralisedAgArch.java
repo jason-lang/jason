@@ -195,8 +195,12 @@ public class CentralisedAgArch extends AgArch implements Runnable {
         TransitionSystem ts = getTS();
 
         int i = 0;
-        int ca = Math.min(cyclesAct, ts.getC().getNbRunningIntentionsPlusAtomic());
-
+        int ca = cyclesAct;
+        if (ca != 1) { // not the default value, limit the value to the number of intentions
+            ca = Math.min(cyclesAct, ts.getC().getNbRunningIntentions());
+            if (ca == 0) 
+                ca = 1;
+        }
         while (running && i++ < ca && !ts.canSleepAct()) {
             ts.act();
         }
