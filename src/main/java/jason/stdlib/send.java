@@ -94,14 +94,14 @@ import java.util.concurrent.TimeUnit;
 */
 @Manual(
 			literal=".send(receiver,performative,content)",
-			hint="used to send messages to other agents",
+			hint="sends a message to an agent",
 			argsHint= {
-					"the name of the agent that will receive the message",
+					"the name of the agent(s) that will receive the message",
 					"the performative (tell, achieve, askOne,...)",
 					"the message content"
 			},
 			argsType= {
-					"atom or string",
+					"atom or string or list of atoms",
 					"atom",
 					"literal"
 			}
