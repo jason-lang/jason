@@ -16,7 +16,7 @@ import jason.asSyntax.Term;
   <p>Description: concatenates strings or lists.
 
   <p>Parameters:<ul>
-  <li>+ arg[0] ... + arg[n-1] (any term): the terms to be concatenated.<br/>
+  <li>+ arg[0] ... + arg[n-1] (any term or list): the terms to be concatenated.<br/>
   <li>+/- arg[n]: the result of the concatenation.
   </ul>
   Parameters that are not string are concatenated using the toString method of
@@ -52,6 +52,47 @@ import jason.asSyntax.Term;
   @see jason.stdlib.union
 
 */
+@Manual(
+        literal=".concat(arg0,arg1[,...],result)",
+        hint="concatenates strings or lists",
+        argsHint= {
+                "the first term",
+                "the term to be concatenated with prior",
+                "the term to be concatenated with prior ones [optional]",
+                "the result of the concatenation"
+        },
+        argsType= {
+                "term or list",
+                "term or list",
+                "term or list",
+                "string"
+        },
+        examples= {
+                ".concat(\"a\",\"b\",X): X unifies with \"ab\"",
+                ".concat(\"a\",\"b\",\"a\"): false",
+                ".concat(\"a b\",1,a,X): X unifies with \"a b1a\"",
+                ".concat(\"a\", \"b\", \"c\", \"d\", X): X unifies with \"abcd\"",
+                ".concat([a,b,c],[d,e],[f,g],X): X unifies with [a,b,c,d,e,f,g]"
+        },
+        seeAlso= {
+                "jason.stdlib.delete", 
+                "jason.stdlib.length", 
+                "jason.stdlib.member", 
+                "jason.stdlib.sort", 
+                "jason.stdlib.shuffle", 
+                "jason.stdlib.substring", 
+                "jason.stdlib.prefix", 
+                "jason.stdlib.suffix", 
+                "jason.stdlib.nth", 
+                "jason.stdlib.max", 
+                "jason.stdlib.min", 
+                "jason.stdlib.reverse", 
+                "jason.stdlib.difference", 
+                "jason.stdlib.intersection",
+                "jason.stdlib.union"
+        }
+    )
+@SuppressWarnings("serial")
 public class concat extends DefaultInternalAction {
 
     private static InternalAction singleton = null;

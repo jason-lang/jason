@@ -53,6 +53,34 @@ import java.util.Iterator;
   @see jason.stdlib.resume
 
  */
+@Manual(
+        literal=".succeed_goal(goal)",
+        hint="remove goals from the agent circumstance as if a plan for such goal had successfully finished",
+        argsHint= {
+                "the goals to be removed"
+        },
+        argsType= {
+                "literal"
+        },
+        examples= {
+                ".succeed_goal(go(X,3)): stops any attempt to achieve goals such as !go(1,3) as if it had already been achieved"
+        },
+        seeAlso= {
+                "jason.stdlib.intend", 
+                "jason.stdlib.desire", 
+                "jason.stdlib.drop_all_desires", 
+                "jason.stdlib.drop_all_events", 
+                "jason.stdlib.drop_all_intentions", 
+                "jason.stdlib.drop_intention", 
+                "jason.stdlib.drop_desire", 
+                "jason.stdlib.fail_goal", 
+                "jason.stdlib.current_intention", 
+                "jason.stdlib.suspend", 
+                "jason.stdlib.suspended", 
+                "jason.stdlib.resume"
+        }
+    )
+@SuppressWarnings("serial")
 public class succeed_goal extends DefaultInternalAction {
 
     @Override public int getMinArgs() {

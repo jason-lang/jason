@@ -292,7 +292,14 @@ public class Circumstance implements Serializable {
         }
     }
     
-
+    public int getNbRunningIntentionsPlusAtomic() {
+        if (AI == null) {
+            return I.size();
+        } else {
+            return I.size()+1;
+        }
+    }
+    
     public boolean hasRunningIntention() {
         return (I != null && !I.isEmpty()) || AI != null;
     }

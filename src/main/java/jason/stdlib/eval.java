@@ -36,6 +36,26 @@ import java.util.Iterator;
   <li> <code>.eval(X, 3<5 & not 4+2<3)</code>: <code>X</code> unifies
   with <code>true</code>.</li>
 */
+@Manual(
+        literal=".eval(term,query)",
+        hint="evaluates the logical expression (which computes to true or false), the result is unified with term",
+        argsHint= {
+                "the variable that unifies with the result of evaluation",
+                "the formula that is evaluated"
+        },
+        argsType= {
+                "variable, atoms true or false",
+                "logical formula"
+        },
+        examples= {
+                ".eval(X, true | false): X unifies with true",
+                ".eval(X, 3<5 & not 4+2<3): X unifies with true"
+        },
+        seeAlso= {
+                ""
+        }
+    )
+@SuppressWarnings("serial")
 public class eval extends DefaultInternalAction {
 
     @Override public int getMinArgs() {

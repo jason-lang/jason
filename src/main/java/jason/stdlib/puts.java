@@ -65,10 +65,29 @@ import java.util.regex.Pattern;
  * @author Felipe Meneguzzi (http://www.meneguzzi.eu/felipe)
  *
  */
-
+@Manual(
+        literal=".puts(prefix,list)",
+        hint="prints messages to the console where the system is running, or unifying the message to a variable parameter",
+        argsHint= {
+                "the prefix to be checked",
+                "the list where the prefix is from"
+        },
+        argsType= {
+                "list",
+                "list"
+        },
+        examples= {
+                ".puts(\"Test #{A}\"): prints out to the console the supplied string replacing #{A} with the value of variable A",
+                ".puts(\"Test #{A}, into B\", B): tries to unify B with the supplied string replacing #{A} with the value of variable A",
+                ".puts(\"The expression is #{X+2}\"): prints out the result of the X+2 expression"
+        },
+        seeAlso= {
+                ""
+        }
+    )
+@SuppressWarnings("serial")
 public class puts extends DefaultInternalAction {
 
-    private static final long serialVersionUID = 1L;
     private static InternalAction singleton = null;
 
     public static InternalAction create() {

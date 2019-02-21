@@ -23,6 +23,23 @@ import jason.asSyntax.Term;
   </ul>
 
  */
+@Manual(
+        literal=".fail(goal)",
+        hint="fails the intention where it is run (always returns false)",
+        argsHint= {
+                ""
+        },
+        argsType= {
+                ""
+        },
+        examples= {
+                ".fail: returns false"
+        },
+        seeAlso= {
+                ""
+        }
+    )
+@SuppressWarnings("serial")
 public class fail extends DefaultInternalAction {
 
     private static InternalAction singleton = null;

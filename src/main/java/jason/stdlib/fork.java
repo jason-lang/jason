@@ -26,7 +26,7 @@ import jason.asSyntax.Trigger;
 import jason.util.Pair;
 
 /**
-Implementation of <b>.fort</b> (used for |& and || operators).
+Implementation of <b>.fork</b> (used for |& and || operators).
 
 <p>Syntax:
 <pre>
@@ -44,6 +44,23 @@ Implementation of <b>.fort</b> (used for |& and || operators).
 </p>
 
 */
+@Manual(
+        literal=".fork",
+        hint="Implementation of .fork (occurring when |& and || operators are used)",
+        argsHint= {
+                ""
+        },
+        argsType= {
+                ""
+        },
+        examples= {
+                ""
+        },
+        seeAlso= {
+                ""
+        }
+    )
+@SuppressWarnings("serial")
 public class fork extends DefaultInternalAction {
 
     private static InternalAction singleton = null;
@@ -145,6 +162,7 @@ public class fork extends DefaultInternalAction {
     }
 
     class ForkIntention extends Intention {
+
         ForkData fd;
         int forkPoint;
 

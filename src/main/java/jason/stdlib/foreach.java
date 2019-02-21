@@ -21,41 +21,67 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
-Implementation of <b>for</b>.
+  <p>Internal action: <b><code>.for(formula) { plan_body }</code></b>.
 
-<p>Syntax:
-<pre>
-  for ( <i>logical formula</i> ) {
-     <i>plan_body</i>
-  }
-</pre>
-</p>
+  <p>Description: Implementation of <b>for</b>. For all unifications of <i>logical formula</i>, 
+  the <i>plan_body</i> is executed.
 
-<p>for all unifications of <i>logical formula</i>, the <i>plan_body</i> is executed.</p>
+  <p>Syntax:
+  <pre>
+    for ( <i>logical formula</i> ) {
+       <i>plan_body</i>
+    }
+  </pre>
+  </p>
 
-<p>Example:
-<pre>
-+event : context
-  <- ....
-     for ( vl(X) ) {
-        .print(X);     // print all values of X
-     }
-     for ( .member(X,[a,b,c]) ) {
-        .print(X);    // print all members of the list
-     }
-     for ( .range(I,1,10) ) {
-        .print(I);    // print all values from 1 to 10
-     }
-     ....
-</pre>
-The unification resulted from the evaluation of the logical formula is used only inside the loop,
-i.e., the unification after the for is the same as before.
-</p>
+  <p>Parameters:<ul>
+
+  <li>+ formula (logical formula): the formula that when true makes the plan_body be executed.
+  <br/>
+
+  </ul>
+
+  <p>Example:
+  <pre>
+  +event : context
+    <- ....
+       for ( vl(X) ) {
+          .print(X);     // print all values of X
+       }
+       for ( .member(X,[a,b,c]) ) {
+          .print(X);    // print all members of the list
+       }
+       for ( .range(I,1,10) ) {
+          .print(I);    // print all values from 1 to 10
+       }
+       ....
+  </pre>
+  The unification resulted from the evaluation of the logical formula is used only inside the loop,
+  i.e., the unification after the for is the same as before.
+  </p>
 
 @see jason.stdlib.loop while
 
 */
-
+@Manual(
+        literal="for (formula) { plan_body }",
+        hint="for all unifications of logical formula, the plan_body is executed",
+        argsHint= {
+                "the formula that when true makes the plan_body be executed"
+        },
+        argsType= {
+                "logical formula"
+        },
+        examples= {
+                "for ( vl(X) ) { .print(X); }: print all values of X",
+                "for ( .member(X,[a,b,c]) ) { .print(X); }: print all members of the list",
+                "for ( .range(I,1,10) ) { .print(I); }: print all values from 1 to 10"
+        },
+        seeAlso= {
+                ""
+        }
+    )
+@SuppressWarnings("serial")
 public class foreach extends DefaultInternalAction {
 
     private static InternalAction singleton = null;

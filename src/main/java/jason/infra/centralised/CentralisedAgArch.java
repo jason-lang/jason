@@ -195,9 +195,7 @@ public class CentralisedAgArch extends AgArch implements Runnable {
         TransitionSystem ts = getTS();
 
         int i = 0;
-        int ca = cyclesAct;
-        if (cyclesAct == 9999)
-            ca = ts.getC().getRunningIntentions().size();
+        int ca = Math.min(cyclesAct, ts.getC().getNbRunningIntentionsPlusAtomic());
 
         while (running && i++ < ca && !ts.canSleepAct()) {
             ts.act();
@@ -420,7 +418,7 @@ public class CentralisedAgArch extends AgArch implements Runnable {
 
     private int cyclesSense      = 1;
     private int cyclesDeliberate = 1;
-    private int cyclesAct        = 5;
+    private int cyclesAct        = 1;
 
     public void setConf(RConf conf) {
         this.conf = conf;

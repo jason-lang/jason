@@ -7,6 +7,22 @@ import jason.asSemantics.Unifier;
 import jason.asSyntax.Literal;
 import jason.asSyntax.Term;
 
+/*@Manual(
+literal=".copy_term(literal,Result)",
+hint="clone an agent including with belief base and plans library",
+argsHint= {
+        "the literal to be copied",
+        "the resulting unification of the copy"
+},
+argsType= {
+        "literal",
+        "term"
+},
+examples= {
+        ""
+}
+)*/
+@SuppressWarnings("serial")
 public class copy_term extends DefaultInternalAction {
 
     @Override public int getMinArgs() {

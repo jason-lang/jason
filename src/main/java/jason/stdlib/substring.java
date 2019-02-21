@@ -49,6 +49,40 @@ import jason.asSyntax.Term;
   @see jason.stdlib.reverse
 
 */
+@Manual(
+        literal=".substring(substring,string[,begin,end])",
+        hint="checks if a string is sub-string of another",
+        argsHint= {
+                "the substring to be checked",
+                "the string where the substring may occurs",
+                "the initial position of the string where the sub-string occurs [optional]",
+                "the last position of the string where the sub-string occurs [optional]"
+        },
+        argsType= {
+                "term",
+                "term",
+                "integer",
+                "integer"
+        },
+        examples= {
+                ".substring(\"b\",\"aaa\"): false",
+                ".substring(\"b\",\"aaa\",X): false", 
+                ".substring(\"a\",\"bbacc\"): true",
+                ".substring(\"a\",\"abbacca\",X): true and X unifies with 0, 3, and 6", 
+                ".substring(\"a\",\"bbacc\",0): false",
+                ".substring(a(10),b(t1,a(10)),X): true and X unifies with 5",
+                ".substring(a(10),b(\"t1,a(10),kk\"),X): true and X unifies with 6", 
+                ".substring(a(10,20),R,5): true and R unifies with \"20)\"", 
+                ".substring(a(10,20),R,5,7): true and R unifies with \"20\""
+        },
+        seeAlso= {
+                "jason.stdlib.concat", 
+                "jason.stdlib.delete", 
+                "jason.stdlib.length", 
+                "jason.stdlib.reverse"
+        }
+    )
+@SuppressWarnings("serial")
 public class substring extends DefaultInternalAction {
 
     private static InternalAction singleton = null;

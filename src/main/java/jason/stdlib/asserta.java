@@ -16,17 +16,35 @@ import java.util.List;
   <p>Description: adds a new belief as the "+" (or "+<") operator. However, it can be used in prolog like rules.
 
   <p>Parameters:<ul>
-  <li>+ belief (literal): the belief that will be added in the being of the belief base.<br/>
+  <li>+ belief (literal): the belief that will be added at the beginning of the belief base.<br/>
   </ul>
 
   <p>Examples:<ul>
-  <li> <code>.asserta(p)</code>: adds <code>p</code> in the belief base.</li>
+  <li> <code>.asserta(p)</code>: adds <code>p</code> at the beggining of the belief base.</li>
   </ul>
 
   @see jason.stdlib.assertz
   @see jason.stdlib.abolish
 
  */
+@Manual(
+        literal=".asserta(belief)",
+        hint="adds a new belief using prolog like rules",
+        argsHint= {
+                "the belief that will be added at the beginning of the base"
+        },
+        argsType= {
+                "literal"
+        },
+        examples= {
+                ".asserta(p): adds p at the beginning of the belief base"
+        },
+        seeAlso= {
+                "jason.stdlib.assertz",
+                "jason.stdlib.abolish"
+        }
+    )
+@SuppressWarnings("serial")
 public class asserta extends DefaultInternalAction {
 
     @Override public int getMinArgs() {

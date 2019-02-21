@@ -19,7 +19,25 @@ import jason.asSyntax.Term;
 
   </ul>
 */
+@Manual(
+        literal=".perceive",
+        hint="forces the agent architecture to do perception of the environment immediately",
+        argsHint= {
+                ""
+        },
+        argsType= {
+                ""
+        },
+        examples= {
+                ".perceive: agent do perception immediately"
+        },
+        seeAlso= {
+                ""
+        }
+    )
+@SuppressWarnings("serial")
 public class perceive extends DefaultInternalAction {
+
     @Override public int getMinArgs() {
         return 0;
     }
