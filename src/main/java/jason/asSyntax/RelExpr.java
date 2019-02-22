@@ -29,6 +29,8 @@ import org.w3c.dom.Element;
  *      X is [~p, [t1, t2], [a1,a2]]
  * </ul>
  *
+ * in case the list has fourth terms, the first term is the namespace.
+ * 
  * @navassoc - op - RelationalOp
  *
  * @author Jomi
@@ -133,11 +135,15 @@ public class RelExpr extends BinaryStructure implements LogicalFormula {
 
                     // first is var, second is list, var is assigned to l transformed in literal
                     if (p.isVar() && l.isList()) {
-                        if (un.unifies(p, Literal.newFromListOfTerms(l)))
+                        Term t = null;
+                        if (l.size() == 4 && l.get(3).isPlanBody()) // the case where the list is for a plan
+                            t = Plan.newFromListOfTerms(l);
+                        else
+                            t = Literal.newFromListOfTerms(l);
+                        if (un.unifies(p, t))
                             return LogExpr.createUnifIterator(un);
                         else
                             LogExpr.EMPTY_UNIF_LIST.iterator();
-
                     }
 
                     // first is literal, second is var, var is assigned to l transformed in list

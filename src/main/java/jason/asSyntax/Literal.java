@@ -553,7 +553,7 @@ public abstract class Literal extends DefaultTerm implements LogicalFormula {
         }
     }
 
-    /** returns this literal as a list with three elements: [functor, list of terms, list of annots] */
+    /** returns this literal as a list with three elements: [namespace, functor, list of terms, list of annots] */
     public ListTerm getAsListOfTerms() {
         ListTerm l = new ListTermImpl();
         l.add(getNS());

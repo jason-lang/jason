@@ -1,8 +1,5 @@
 package jason.asSyntax;
 
-import jason.asSemantics.Unifier;
-import jason.asSyntax.parser.as2j;
-
 import java.io.Serializable;
 import java.io.StringReader;
 import java.util.logging.Level;
@@ -10,6 +7,10 @@ import java.util.logging.Logger;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+
+import jason.JasonException;
+import jason.asSemantics.Unifier;
+import jason.asSyntax.parser.as2j;
 
 /** Represents an AgentSpack plan
     (it extends structure to be used as a term)
@@ -147,6 +148,29 @@ public class Plan extends Structure implements Cloneable, Serializable {
     public boolean isPlanTerm() {
         return isTerm;
     }
+    
+    @Override
+    public ListTerm getAsListOfTerms() {
+        ListTerm l = new ListTermImpl();
+        l.add(getLabel());
+        l.add(getTrigger());
+        l.add(getContext());
+        l.add(getBody());
+        return l;
+    }
+    
+    /** creates a plan from a list with four elements: [L, T, C, B] */
+    public static Plan newFromListOfTerms(ListTerm lt) throws JasonException {
+        Term c = lt.get(2);
+        if (c.isPlanBody()) {
+            c = ((PlanBody)c).getBodyTerm();
+        }
+        return new Plan( new Pred((Literal)(lt.get(0))), 
+                (Trigger)lt.get(1), 
+                (LogicalFormula)c, 
+                (PlanBody)lt.get(3));
+    }
+    
 
     /** prefer using ASSyntax.parsePlan */
     public static Plan parse(String sPlan) {
