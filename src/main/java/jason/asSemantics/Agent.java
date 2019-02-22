@@ -29,8 +29,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-
+import org.w3c.dom.Node;
 import jason.JasonException;
 import jason.RevisionFailedException;
 import jason.architecture.AgArch;
@@ -1058,7 +1057,6 @@ public class Agent {
 
     static DocumentBuilder builder = null;
 
-    private Document docDOM = null; // to reuse docDOM
     
     /** Gets the agent "mind" (beliefs, plans, and circumstance) as XML */
     public synchronized Document getAgState() {
@@ -1070,13 +1068,8 @@ public class Agent {
                 return null;
             }
         }
-        if (docDOM == null) {
-            docDOM = builder.newDocument();
-            docDOM.appendChild(docDOM.createProcessingInstruction("xml-stylesheet", "href='http://jason.sf.net/xml/agInspection.xsl' type='text/xsl' "));
-        } else {
-            NodeList nds = docDOM.getChildNodes();
-            docDOM.removeChild(nds.item(1));
-        }
+        Document docDOM = builder.newDocument();
+        docDOM.appendChild(docDOM.createProcessingInstruction("xml-stylesheet", "href='http://jason.sf.net/xml/agInspection.xsl' type='text/xsl' "));
 
         Element ag = getAsDOM(docDOM);
         docDOM.appendChild(ag);
@@ -1096,8 +1089,12 @@ public class Agent {
         ag.setAttribute("name", ts.getUserAgArch().getAgName());
         ag.setAttribute("cycle", ""+ts.getUserAgArch().getCycleNumber());
 
-        ag.appendChild(bb.getAsDOM(document));
-        ag.appendChild(getPL().getAsDOM(document));
+        Node importedNodeBB = document.importNode(bb.getAsDOM(document), true);
+        ag.appendChild(importedNodeBB);
+        Node importedNodePL = document.importNode(getPL().getAsDOM(document), true);
+        ag.appendChild(importedNodePL);
+        Node importedNodeC = document.importNode(ts.getC().getAsDOM(document), true);
+        ag.appendChild(importedNodeC);
         return ag;
     }
 
