@@ -625,7 +625,7 @@ Term rule_plan_term():       { Trigger T = null; Object C = null; PlanBody B = n
 {
   "{"
   [ LOOKAHEAD(4)
-    [<TK_LABEL_AT> L=pred() { pb = false; } ]
+    [<TK_LABEL_AT> (L=pred() | L=var(Literal.DefaultNS)) { pb = false; } ]
     T = trigger()           { if (T.getType() != TEType.belief) pb = false; }
     [ ":" C = log_expr()    { pb = false; } ]
     [( "<-"                 { pb = false; }

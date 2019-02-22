@@ -83,6 +83,8 @@ public class Plan extends Structure implements Cloneable, Serializable {
         case 2:
             return (context == null) ? Literal.LTrue : context;
         case 3:
+            if (body.getBodyNext() == null && body.getBodyTerm().isVar()) // the case of body as a single var
+                return body.getBodyTerm();
             return body;
         default:
             return null;

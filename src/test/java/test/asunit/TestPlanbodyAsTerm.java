@@ -34,7 +34,10 @@ public class TestPlanbodyAsTerm {
             "+!g2(A)     <- jason.asunit.print(A)."+
 
             "+!trl <- !myadd( { jason.asunit.print(a); jason.asunit.print(b) } ); !grl. "+
-            "+!myadd(Action) <- +>{+!grl : c <- Action}; +>{+!grl <- jason.asunit.print(ops) }."
+            "+!myadd(Action) <- +>{+!grl : c <- Action}; +>{+!grl <- jason.asunit.print(ops) }. \n" +
+            
+            "@mylabel +!plan1(X) : X > 10 <- .print(a); c(X); !g(X). \n"+
+            "+!testPTUn <- .relevant_plans({+!plan1(_)}, [Plan|_]); Plan = {@L +!T : C <- B}; B={BH;BT}; jason.asunit.print(ok). "
 
         );
     }
@@ -98,5 +101,11 @@ public class TestPlanbodyAsTerm {
         ag.addGoal("trl");
         ag.assertPrint("a", 5);
         ag.assertPrint("b", 5);
+    }
+
+    @Test(timeout=2000)
+    public void testPlanUnif() {
+        ag.addGoal("testPTUn");
+        ag.assertPrint("ok", 5);
     }
 }
