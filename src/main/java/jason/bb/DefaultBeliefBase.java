@@ -90,6 +90,7 @@ public class DefaultBeliefBase extends BeliefBase {
                 }
                 // remove from percepts
                 i.remove();
+                eDOMbels = null;
 
                 // remove the percept annot
                 current.delAnnot(BeliefBase.TPercept);
