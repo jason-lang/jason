@@ -15,6 +15,8 @@ import jason.asSyntax.ListTerm;
 import jason.asSyntax.ListTermImpl;
 import jason.asSyntax.Literal;
 import jason.asSyntax.LiteralImpl;
+import jason.asSyntax.PlanBody;
+import jason.asSyntax.PlanBodyImpl;
 import jason.asSyntax.Pred;
 import jason.asSyntax.Structure;
 import jason.asSyntax.Term;
@@ -87,7 +89,7 @@ public class Unifier implements Cloneable, Iterable<VarTerm> {
     public boolean unifiesNoUndo(Trigger te1, Trigger te2) {
         return te1.sameType(te2) && unifiesNoUndo(te1.getLiteral(), te2.getLiteral());
     }
-
+    
     // ----- Unify for Predicates/Literals
 
     /** this version of unifies undo the variables' mapping
@@ -122,9 +124,13 @@ public class Unifier implements Cloneable, Iterable<VarTerm> {
     */
     public boolean unifiesNoUndo(Term t1g, Term t2g) {
 
+        if (t1g == null && t2g == null) return true;
+        if (t1g == null && t2g != null) return false;
+        if (t1g != null && t2g == null) return false;
+        
         Pred np1 = null;
         Pred np2 = null;
-
+        
         if (t1g instanceof Pred && t2g instanceof Pred) {
             np1 = (Pred)t1g;
             np2 = (Pred)t2g;
@@ -239,6 +245,45 @@ public class Unifier implements Cloneable, Iterable<VarTerm> {
         if (!t1g.isLiteral() && !t1g.isList() || !t2g.isLiteral() && !t2g.isList())
             return t1g.equals(t2g);
 
+        // case of plan body
+        if (t1g.isPlanBody() && t2g.isPlanBody()) {
+            PlanBody pb1 = (PlanBody)t1g;
+            PlanBody pb2 = (PlanBody)t2g;
+
+            if (pb1.getBodyTerm() == null && pb2.getBodyTerm() == null) return true;
+            if (pb1.getBodyTerm() == null && pb2.getBodyTerm() != null) return false;
+            if (pb2.getBodyTerm() == null && pb1.getBodyTerm() != null) return false;
+                
+            if (pb1.getBodyTerm().isVar() && pb2.getBodyTerm().isVar()) {
+                if (unifiesNoUndo(pb1.getBodyTerm(), pb2.getBodyTerm())) {                    
+                    return unifiesNoUndo(pb1.getBodyNext(), pb2.getBodyNext());
+                } else
+                    return false;
+            }
+            
+            if (pb1.getBodyTerm().isVar()) {
+                if (pb1.getBodyNext() == null) { // last var (unifies the remaining plan body)
+                    return unifiesNoUndo(pb1.getBodyTerm(), pb2);
+                } else {
+                    if (pb2.getBodyTerm() == null)
+                        return false;
+                    if (unifiesNoUndo(pb1.getBodyTerm(), pb2.getHead())) {
+                        if (pb2.getBodyNext() == null) {
+                            // case of {A;T} = {a}, A => a T => {}
+                            if (pb1.getBodyNext() != null && pb1.getBodyNext().getBodyTerm().isVar() && pb1.getBodyNext().getBodyNext() == null) {
+                                return unifiesNoUndo(pb1.getBodyNext().getBodyTerm(), new PlanBodyImpl());
+                            }
+                            return false;
+                        } else {                                    
+                            return unifiesNoUndo(pb1.getBodyNext(), pb2.getBodyNext());
+                        }
+                    }
+                }
+            } else if (pb2.getBodyTerm().isVar()) {
+                return unifies(pb2, pb1);
+            }
+        }
+
         // both terms are literal
 
         Literal t1s = (Literal)t1g;
@@ -263,9 +308,10 @@ public class Unifier implements Cloneable, Iterable<VarTerm> {
 
         // unify inner terms
         // do not use iterator! (see ListTermImpl class)
-        for (int i = 0; i < ts; i++)
+        for (int i = 0; i < ts; i++) {
             if (!unifiesNoUndo(t1s.getTerm(i), t2s.getTerm(i)))
                 return false;
+        }
 
         // the first's annots must be subset of the second's annots
         if ( ! t1s.hasSubsetAnnot(t2s, this))

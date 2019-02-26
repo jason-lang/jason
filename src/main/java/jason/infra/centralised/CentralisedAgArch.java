@@ -229,7 +229,7 @@ public class CentralisedAgArch extends AgArch implements Runnable {
                 }
                 informCycleFinished(isBreakPoint, getCycleNumber());
             } else {
-            	getUserAgArch().incCycleNumber();
+                getUserAgArch().incCycleNumber();
                 reasoningCycle();
                 if (ts.canSleep())
                     sleep();

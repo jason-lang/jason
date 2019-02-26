@@ -70,6 +70,7 @@ public interface PlanBody extends Term {
     public BodyType    getBodyType();
     public Term        getBodyTerm();
     public PlanBody    getBodyNext();
+    public PlanBody    getHead();
 
     public boolean     isEmptyBody();
     public int         getPlanSize();

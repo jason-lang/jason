@@ -14,7 +14,7 @@ import org.w3c.dom.Element;
  *  Represents a plan body item (achieve, test, action, ...) and its successors.
  *
  *  A plan body like <code>a1; ?t; !g</code> is represented by the following structure
- *  <code>(a1, (?t, (!g)))</code>.
+ *  <code>(a1, (?t, (!g, ())))</code>.
  *
  *
  *  @navassoc - next - PlanBody
@@ -27,7 +27,7 @@ public class PlanBodyImpl extends Structure implements PlanBody, Iterable<PlanBo
     private static final long serialVersionUID = 1L;
     private static final Logger logger = Logger.getLogger(PlanBodyImpl.class.getName());
 
-    public static final String BODY_PLAN_FUNCTOR = ";";
+    //public static final String BODY_PLAN_FUNCTOR = ";";
 
     private Term        term     = null;
     private PlanBody    next     = null;
@@ -37,11 +37,16 @@ public class PlanBodyImpl extends Structure implements PlanBody, Iterable<PlanBo
 
     /** constructor for empty plan body */
     public PlanBodyImpl() {
-        super(BODY_PLAN_FUNCTOR, 0);
+        this(BodyType.none);
     }
 
-    public PlanBodyImpl(boolean planTerm) {
-        this();
+    public PlanBodyImpl(BodyType t) {
+        super(t.name(), 0);
+        formType = t;
+    }
+
+    public PlanBodyImpl(BodyType t, boolean planTerm) {
+        this(t);
         setAsBodyTerm(planTerm);
     }
 
@@ -50,7 +55,7 @@ public class PlanBodyImpl extends Structure implements PlanBody, Iterable<PlanBo
     }
 
     public PlanBodyImpl(BodyType t, Term b, boolean planTerm) {
-        this(planTerm);
+        this(t,planTerm);
         formType = t;
         if (b != null) {
             srcInfo = b.getSrcInfo();
@@ -106,6 +111,10 @@ public class PlanBodyImpl extends Structure implements PlanBody, Iterable<PlanBo
     public Term getBodyTerm() {
         return term;
     }
+    
+    public PlanBody getHead() {
+        return new PlanBodyImpl(getBodyType(), getBodyTerm());
+    }
 
     public void setBodyTerm(Term t) {
         term = t;
@@ -160,16 +169,20 @@ public class PlanBodyImpl extends Structure implements PlanBody, Iterable<PlanBo
             return 2;
     }
 
+    //private static PlanBodyImpl emptyBody = new PlanBodyImpl();
+    
     @Override
     public Term getTerm(int i) {
         if (i == 0)
             return term;
         if (i == 1) {
-            if (next != null && next.getBodyTerm().isVar() && next.getBodyNext() == null)
+            //if (next != null && next.getBodyTerm().isVar() && next.getBodyNext() == null)
                 // if next is the last VAR, return that var
-                return next.getBodyTerm();
-            else
-                return next;
+            //    return next.getBodyTerm();
+            //else if (next == null)
+            //  return emptyBody;
+            //else
+            return next;
         }
         return null;
     }

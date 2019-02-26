@@ -31,7 +31,7 @@ public class TestPlanbodyAsTerm {
 
             "+!g({A; R}) <- A; !g(R). "+
             "+!g(A)    <- A." +
-            "+!g2(A)     <- jason.asunit.print(A)."+
+            "+!g2(A)     <- jason.asunit.print(p,A,p)."+
 
             "+!trl <- !myadd( { jason.asunit.print(a); jason.asunit.print(b) } ); !grl. "+
             "+!myadd(Action) <- +>{+!grl : c <- Action}; +>{+!grl <- jason.asunit.print(ops) }. \n" +
@@ -39,12 +39,12 @@ public class TestPlanbodyAsTerm {
             "+!trl2 <- !myadd2( { jason.asunit.print(c2); jason.asunit.print(d2) } ); !grl2(20). "+
             "+!myadd2(Action) <- Plan =.. [ mynewlabel2, {+!grl2(C)}, {C > 10}, Action]; .add_plan(Plan). \n" +
             
-            "@mylabel +!plan1(1) : 1 > 10 <- .print(a); c(1); !g(2). \n"+
+            "@mylabel +!plan1(1) : 1 > 10 <- .print(a); c(1); !g2(bob). \n"+
             "+!testPTUn <- .relevant_plans({+!plan1(_)}, [Plan|_]); Plan = {@L +!T : C <- B}; B={BH;BT}; jason.asunit.print(L,T,C,BH,BT). \n"+
 
             "+!testPTUnLitBuild <- .relevant_plans({+!plan1(_)}, [Plan|_]); Plan =.. [L,T,C,B]; jason.asunit.print(L,T,C,B); !show_body(B). " +
-            "+!show_body({H;T}) <-  jason.asunit.print(H); !show_body(T). "+
-            "+!show_body({H})   <-  jason.asunit.print(H,\".\"). "
+            "+!show_body({})    <-  jason.asunit.print(\".\"). " +
+            "+!show_body({H;T}) <-  jason.asunit.print(H); !show_body(T). "
             
         );
     }
@@ -120,16 +120,18 @@ public class TestPlanbodyAsTerm {
     @Test(timeout=2000)
     public void testPlanUnif1() {
         ag.addGoal("testPTUn");
-        ag.assertPrint("mylabelplan1(1)(1 > 10).print(a)c(1); !g(2)", 5);
+        ag.assertPrint("mylabelplan1(1)(1 > 10).print(a)c(1); !g2(bob)", 5);
     }
 
     @Test(timeout=2000)
     public void testPlanUnif2() {
         ag.addGoal("testPTUnLitBuild");
-        ag.assertPrint("mylabel+!plan1(1)(1 > 10).print(a); c(1); !g(2)", 5);
+        ag.assertPrint("mylabel+!plan1(1)(1 > 10).print(a); c(1); !g2(bob)", 5);
         ag.clearExecutionTrace();
         ag.assertPrint(".print(a)", 15);
         ag.assertPrint("c(1)", 15);
-        //ag.assertPrint("!g(2)", 15);
+        ag.assertPrint("!g2(bob)", 15);
+        ag.clearExecutionTrace();
+        ag.assertPrint(".", 15);
     }
 }

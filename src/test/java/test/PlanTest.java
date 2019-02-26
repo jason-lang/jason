@@ -100,17 +100,61 @@ public class PlanTest extends TestCase {
         assertEquals(p.getBody(),vb);
     }
 
-    public void testUnifyBody() {
-        Plan p1 = Plan.parse("+te : a & b <- !a1; ?a2; .print(a); !g1.");
-        PlanBody bl = new PlanBodyImpl(BodyType.action, new VarTerm("A1"));
-        bl.add(new PlanBodyImpl(BodyType.action, new VarTerm("A2")));
-        bl.add(new PlanBodyImpl(BodyType.action, new VarTerm("A3")));
-        //assertEquals(p1.getBody().getArity(), bl.getArity());
+    public void testUnifyBody() throws ParseException {
+
         Unifier u = new Unifier();
-        assertTrue(u.unifies(p1.getBody(), bl));
-        assertEquals("a1", u.get("A1").toString());
-        assertEquals("a2", u.get("A2").toString());
+
+        assertTrue(u.unifies( ASSyntax.parseTerm("{!a1; ?a2; .print(a); !g1}"), ASSyntax.parseTerm("{!a1; ?a2; .print(a); !g1}")));
+        assertFalse(u.unifies( ASSyntax.parseTerm("{!a1; ?a2; .print(a); !g1}"), ASSyntax.parseTerm("{!a1; ?a2; .print(a)}")));
+        assertFalse(u.unifies( ASSyntax.parseTerm("{}"), ASSyntax.parseTerm("{!a1; ?a2; .print(a)}")));
+        assertTrue(u.unifies( ASSyntax.parseTerm("{}"), ASSyntax.parseTerm("{}")));
+
+        Plan p1 = Plan.parse("+te : a & b <- !a1; ?a2; .print(a); !g1.");
+        assertTrue(u.unifies(p1.getBody(),  ASSyntax.parseTerm("{!a1; ?a2; .print(a); !g1}")));
+        assertFalse(u.unifies(p1.getBody(), ASSyntax.parseTerm("{?a1; ?a2; .print(a); !g1}")));
+        
+        Term bl = ASSyntax.parseTerm("{A1; A2; A3}");
+                /*new PlanBodyImpl(BodyType.action, new VarTerm("A1"));
+        bl.add(new PlanBodyImpl(BodyType.action, new VarTerm("A2")));
+        bl.add(new PlanBodyImpl(BodyType.action, new VarTerm("A3")));*/
+        //assertEquals(p1.getBody().getArity(), bl.getArity());
+        u = new Unifier();
+        assertTrue(u.unifies(p1.getBody(), (PlanBody)bl));
+
+        u = new Unifier();
+        assertTrue(u.unifies((PlanBody)bl, p1.getBody()));
+        
+        assertEquals("!a1", u.get("A1").toString());
+        assertEquals("?a2", u.get("A2").toString());
         assertEquals(".print(a); !g1", u.get("A3").toString());
+        
+        u = new Unifier();
+        u.unifies(bl, ASSyntax.parseTerm("{!g; A; .print}"));
+        assertEquals("{A1=!g, A=A2, A3={ .print }}", u.toString());
+        
+        u = new Unifier();
+        assertTrue(u.unifies(p1.getBody(), ASSyntax.parseTerm("{A; ?a2; R}")));
+        assertEquals(".print(a); !g1", u.get("R").toString());
+        
+        u = new Unifier();
+        assertFalse(u.unifies(p1.getBody(), ASSyntax.parseTerm("{A; !a2; R}")));
+
+        u = new Unifier();
+        assertTrue(u.unifies(ASSyntax.parseTerm("X"), ASSyntax.parseTerm("{A; !a2; R}")));
+        assertEquals("{ A; !a2; R }", u.get("X").toString());
+    
+        u = new Unifier();
+        assertTrue(u.unifies(ASSyntax.parseTerm("X"), ASSyntax.parseTerm("{}")));
+        assertEquals("{ }", u.get("X").toString());
+
+        u = new Unifier();
+        assertFalse(u.unifies(ASSyntax.parseTerm("{}"), ASSyntax.parseTerm("{A}")));
+
+        u = new Unifier();
+        assertTrue(u.unifies(ASSyntax.parseTerm("{a}"), ASSyntax.parseTerm("{A}")));
+
+        u = new Unifier();
+        assertTrue(u.unifies(ASSyntax.parseTerm("{B}"), ASSyntax.parseTerm("{A}")));        
     }
 
     public void testPlanTermWithVarBody() throws ParseException {
