@@ -127,10 +127,39 @@ public class Agent {
 
 
 
-    /** Initialises the TS and other components of the agent */
+    /** 
+     * Initialises the TS and other components of the agent 
+     * For the first time empty lists for BB, IA and PL will be created. Otherwise, existing are kept 
+     */
     public void initAg() {
+        initAg(false, false);
+    }
+
+
+    /** parse and load the agent code, asSrc may be null */
+    public void initAg(String asSrc) throws JasonException {
+        initAg();
+        load(asSrc);
+    }
+
+    /** 
+     * parse and load the agent code, asSrc may be null 
+     * resetPL and resetBB clean Plan Library and Belief Base respectively
+     */
+    public void initAg(String asSrc, boolean resetPL, boolean resetBB, boolean restartAg) throws JasonException {
+        initAg(resetPL,resetBB);
+        load(asSrc,restartAg);
+    }
+        
+    /** 
+     * parse and load the agent code, asSrc may be null 
+     * resetPL and resetBB clean Plan Library and Belief Base respectively
+     */
+    public void initAg(boolean resetPL, boolean resetBB) {
         if (bb == null) bb = new DefaultBeliefBase();
+        if (resetBB) bb.clear();
         if (pl == null) pl = new PlanLibrary();
+        if (resetPL) pl.clear();
 
         if (initialGoals == null) initialGoals = new ArrayList<>();
         if (initialBels  == null) initialBels  = new ArrayList<>();
@@ -147,15 +176,13 @@ public class Agent {
         if (! "false".equals(Config.get().getProperty(Config.START_WEB_MI))) MindInspectorWeb.get().registerAg(this);
     }
 
-
-    /** parse and load the agent code, asSrc may be null */
-    public void initAg(String asSrc) throws JasonException {
-        initAg();
-        load(asSrc);
-    }
-
     /** parse and load the initial agent code, asSrc may be null */
     public void load(String asSrc) throws JasonException {
+        load(asSrc, true);
+    }    
+    
+    /** parse and load the initial agent code, asSrc may be null */
+    public void load(String asSrc, boolean restartAg) throws JasonException {
         // set the agent
         try {
             boolean parsingOk = true;
@@ -180,11 +207,13 @@ public class Agent {
                 if (getPL().hasMetaEventPlans())
                     getTS().addGoalListener(new GoalListenerForMetaEvents(getTS()));
 
-                addInitialBelsFromProjectInBB();
-                addInitialBelsInBB();
-                addInitialGoalsFromProjectInBB();
-                addInitialGoalsInTS();
-                fixAgInIAandFunctions(this); // used to fix agent reference in functions used inside includes
+                if (restartAg) {
+                    addInitialBelsFromProjectInBB();
+                    addInitialBelsInBB();
+                    addInitialGoalsFromProjectInBB();
+                    addInitialGoalsInTS();
+                    fixAgInIAandFunctions(this); // used to fix agent reference in functions used inside includes
+                }
             }
 
             loadKqmlPlans();
