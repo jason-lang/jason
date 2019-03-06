@@ -125,41 +125,10 @@ public class Agent {
         }
     }
 
-
-
-    /** 
-     * Initialises the TS and other components of the agent 
-     * For the first time empty lists for BB, IA and PL will be created. Otherwise, existing are kept 
-     */
+    /** Initialises the TS and other components of the agent */
     public void initAg() {
-        initAg(false, false);
-    }
-
-
-    /** parse and load the agent code, asSrc may be null */
-    public void initAg(String asSrc) throws JasonException {
-        initAg();
-        load(asSrc);
-    }
-
-    /** 
-     * parse and load the agent code, asSrc may be null 
-     * resetPL and resetBB clean Plan Library and Belief Base respectively
-     */
-    public void initAg(String asSrc, boolean resetPL, boolean resetBB, boolean restartAg) throws JasonException {
-        initAg(resetPL,resetBB);
-        load(asSrc,restartAg);
-    }
-        
-    /** 
-     * parse and load the agent code, asSrc may be null 
-     * resetPL and resetBB clean Plan Library and Belief Base respectively
-     */
-    public void initAg(boolean resetPL, boolean resetBB) {
         if (bb == null) bb = new DefaultBeliefBase();
-        if (resetBB) bb.clear();
         if (pl == null) pl = new PlanLibrary();
-        if (resetPL) pl.clear();
 
         if (initialGoals == null) initialGoals = new ArrayList<>();
         if (initialBels  == null) initialBels  = new ArrayList<>();
@@ -176,13 +145,14 @@ public class Agent {
         if (! "false".equals(Config.get().getProperty(Config.START_WEB_MI))) MindInspectorWeb.get().registerAg(this);
     }
 
+    /** parse and load the agent code, asSrc may be null */
+    public void initAg(String asSrc) throws JasonException {
+        initAg();
+        load(asSrc);
+    }
+
     /** parse and load the initial agent code, asSrc may be null */
     public void load(String asSrc) throws JasonException {
-        load(asSrc, true);
-    }    
-    
-    /** parse and load the initial agent code, asSrc may be null */
-    public void load(String asSrc, boolean restartAg) throws JasonException {
         // set the agent
         try {
             boolean parsingOk = true;
@@ -207,13 +177,11 @@ public class Agent {
                 if (getPL().hasMetaEventPlans())
                     getTS().addGoalListener(new GoalListenerForMetaEvents(getTS()));
 
-                if (restartAg) {
-                    addInitialBelsFromProjectInBB();
-                    addInitialBelsInBB();
-                    addInitialGoalsFromProjectInBB();
-                    addInitialGoalsInTS();
-                    fixAgInIAandFunctions(this); // used to fix agent reference in functions used inside includes
-                }
+                addInitialBelsFromProjectInBB();
+                addInitialBelsInBB();
+                addInitialGoalsFromProjectInBB();
+                addInitialGoalsInTS();
+                fixAgInIAandFunctions(this); // used to fix agent reference in functions used inside includes
             }
 
             loadKqmlPlans();
@@ -243,7 +211,49 @@ public class Agent {
         }
     }
 
+    /** 
+     * Clear Agent's Beliefs and Plan Library 
+     */
+    public void clearAg() {
+        if (bb != null) bb.clear();
+        if (pl != null) pl.clear();
+    }
 
+    /** 
+     * only parse and load the initial agent code, asSrc may be null 
+     * it does not load kqml default plans and do not trigger initial beliefs and goals 
+     */
+    public void loadAgSrc(String asSrc) throws JasonException {
+        // set the agent
+        try {
+            boolean parsingOk = true;
+            if (asSrc != null && !asSrc.isEmpty()) {
+                asSrc = asSrc.replaceAll("\\\\", "/");
+
+                if (asSrc.startsWith(SourcePath.CRPrefix)) {
+                    // loads the class from a jar file (for example)
+                    parseAS(Agent.class.getResource(asSrc.substring(SourcePath.CRPrefix.length())).openStream() , asSrc);
+                } else {
+                    // check whether source is an URL string
+                    try {
+                        parsingOk = parseAS(new URL(asSrc));
+                    } catch (MalformedURLException e) {
+                        parsingOk = parseAS(new File(asSrc));
+                    }
+                }
+            }
+
+            if (parsingOk) {
+                if (getPL().hasMetaEventPlans())
+                    getTS().addGoalListener(new GoalListenerForMetaEvents(getTS()));
+            }
+
+            setASLSrc(asSrc);
+        } catch (Exception e) {
+            logger.log(Level.SEVERE, "Error loading code from "+asSrc, e);
+            throw new JasonException("Error loading code from "+asSrc + " ---- " + e);
+        }
+    }
 
     public void loadKqmlPlans() {
         // load kqml plans at the end of the ag PL
