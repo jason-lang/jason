@@ -1,9 +1,12 @@
 package test;
 
+import java.util.List;
+import java.util.PriorityQueue;
+import java.util.Queue;
+
 import jason.JasonException;
 import jason.architecture.AgArch;
 import jason.asSemantics.Agent;
-import jason.asSemantics.Circumstance;
 import jason.asSemantics.Intention;
 import jason.asSemantics.InternalAction;
 import jason.asSemantics.Option;
@@ -16,12 +19,6 @@ import jason.asSyntax.Plan;
 import jason.asSyntax.Structure;
 import jason.asSyntax.Trigger;
 import jason.asSyntax.parser.ParseException;
-import jason.runtime.Settings;
-
-import java.util.List;
-import java.util.PriorityQueue;
-import java.util.Queue;
-
 import junit.framework.TestCase;
 
 /** JUnit test case for syntax package */
@@ -88,7 +85,7 @@ public class TSTest extends TestCase {
 
         Intention i4 = new Intention();
 
-        Queue<Intention> q1 = new PriorityQueue<Intention>();
+        Queue<Intention> q1 = new PriorityQueue<>();
         q1.offer(i1);
         q1.offer(i2);
         q1.offer(i3);
@@ -128,7 +125,8 @@ public class TSTest extends TestCase {
     public void testAgentClone() throws Exception {
         Agent a = new Agent();
 
-        a.initAg("examples/auction/ag3.asl");
+        a.initAg();
+        a.load("examples/auction/ag3.asl");
         String p1 = a.getPL().toString();
         String b1 = a.getBB().toString();
         InternalAction ia1 = ((InternalActionLiteral)a.getPL().get("prop_alliance").getBody().getBodyTerm()).getIA(a);

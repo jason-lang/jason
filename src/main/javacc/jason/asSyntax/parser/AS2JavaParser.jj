@@ -225,7 +225,7 @@ boolean agent(Agent a) throws jason.JasonException :
 
   // plans and rules
   ( p = plan()                { if (a != null) {
-                                   p.setFile(asSource);
+                                   p.setSource(asSource);
                                    a.getPL().add(p);
                                    // warning only not parsed files
                                    if (config.getBoolean(Config.WARN_SING_VAR) && !parsedFiles.contains(asSource)) {

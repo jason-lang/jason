@@ -11,7 +11,7 @@ b(10).
    Plan =.. [L,T,C,B];
    if (C) {
        .print("Start running plan ",L);
-	   !show_run(B);
+       !show_run(B);
    } else {
        .print("Context ",C," not satisfied!");
    }.

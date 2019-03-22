@@ -42,7 +42,7 @@ public class Plan extends Structure implements Cloneable, Serializable {
 
     private boolean     isTerm = false; // it is true when the plan body is used as a term instead of an element of a plan
 
-    private String file = ""; // the file where this plan was inside
+    private String source = ""; // the source of this plan (file, url, ....)
     
     // used by clone
     public Plan() {
@@ -69,8 +69,8 @@ public class Plan extends Structure implements Cloneable, Serializable {
         return 4;
     }
 
-    public void setFile(String f) { if (f!=null) this.file = f; }
-    public String getFile()       { return this.file; }
+    public void setSource(String f) { if (f!=null) this.source = f; }
+    public String getSource()       { return this.source; }
     
     private static final Term noLabelAtom = new Atom("nolabel");
 
@@ -326,8 +326,8 @@ public class Plan extends Structure implements Cloneable, Serializable {
             l.appendChild(new LiteralImpl(label).getAsDOM(document));
             u.appendChild(l);
         }
-        if (file != null && !file.isEmpty()) {
-            u.setAttribute("file", file);
+        if (source != null && !source.isEmpty()) {
+            u.setAttribute("file", source);
         }
         
         u.appendChild(tevent.getAsDOM(document));

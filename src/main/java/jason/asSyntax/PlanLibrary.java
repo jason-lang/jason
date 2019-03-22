@@ -411,15 +411,15 @@ public class PlanLibrary implements Iterable<Plan> {
         Map<String, StringBuilder> splans = new HashMap<>();
         StringBuilder r;
         for (Plan p: plans) {
-            r = splans.get(p.getFile());
+            r = splans.get(p.getSource());
             if (r == null) {
                 r = new StringBuilder();
-                if (p.getFile().isEmpty()) {
+                if (p.getSource().isEmpty()) {
                     r.append("\n\n// plans without file\n\n");
                 } else {
-                    r.append("\n\n// plans from "+p.getFile()+"\n\n");
+                    r.append("\n\n// plans from "+p.getSource()+"\n\n");
                 }
-                splans.put(p.getFile(), r);
+                splans.put(p.getSource(), r);
             }
             r.append(p.toString()+"\n");            
         }

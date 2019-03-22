@@ -149,6 +149,7 @@ public class Agent {
 
 
     /** parse and load the agent code, asSrc may be null */
+    @Deprecated
     public void initAg(String asSrc) throws JasonException {
         initAg();
         load(asSrc);
@@ -199,7 +200,7 @@ public class Agent {
 
     /** parse and load asl code */
     public void load(InputStream in, String sourceId) throws JasonException {
-        try {
+        try {           
             parseAS(in, sourceId);
 
             if (getPL().hasMetaEventPlans())
