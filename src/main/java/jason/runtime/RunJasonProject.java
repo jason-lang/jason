@@ -43,6 +43,25 @@ public class RunJasonProject {
             }
         }
 
+        String additionalClasspath = "";
+
+        // parse additional arguments
+        for(int i = 1; i < args.length; i++)
+        {
+          if(args[i].equals("--additional-classpath"))
+          {
+            if(i+1 < args.length)
+            {
+              additionalClasspath = args[i+1];
+              i++;
+            }
+            else
+            {
+              System.err.println("Missing classpath parameter after --additional-classpath argument");
+            }
+          }
+        }
+
         // parsing
         try {
             File file = new File(name);
@@ -54,6 +73,8 @@ public class RunJasonProject {
             }
             project.setProjectFile(file);
             project.setDirectory(file.getAbsoluteFile().getParentFile().getAbsolutePath());
+
+            addClasspaths(project, additionalClasspath);
             //System.out.println("file "+name+" parsed successfully!\n");
 
             launcher = project.getInfrastructureFactory().createMASLauncher();
@@ -70,4 +91,33 @@ public class RunJasonProject {
         return launcher;
     }
 
+    protected static void addClasspaths(MAS2JProject project, String classpathStr)
+    {
+      int start = 0;
+      int end = 0;
+
+      for(; end < classpathStr.length(); end++)
+      {
+        if(classpathStr.charAt(end) == File.pathSeparatorChar)
+        {
+          if(start != end)
+          {
+            project.addClassPath(classpathStr.substring(start, end));
+          }
+          start = end+1;
+        }
+      }
+
+      if(start != end)
+      {
+        if(start == 0)
+        {
+          project.addClassPath(classpathStr);
+        }
+        else
+        {
+          project.addClassPath(classpathStr.substring(start, end));
+        }
+      }
+    }
 }
