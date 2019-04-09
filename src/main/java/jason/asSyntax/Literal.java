@@ -370,9 +370,13 @@ public abstract class Literal extends DefaultTerm implements LogicalFormula {
         }
         */
 
+    	final boolean isInDebug = ag.getLogger().isLoggable(Level.FINE); 
+    			
         final Iterator<Literal> il   = ag.getBB().getCandidateBeliefs(this, un);
-        if (il == null) // no relevant bels
+        if (il == null) { // no relevant bels
+        	if (isInDebug) ag.getLogger().log(Level.FINE, "     | no candidate belief for "+this+" with "+un);
             return LogExpr.EMPTY_UNIF_LIST.iterator();
+        }
 
         final AgArch            arch     = (ag != null && ag.getTS() != null ? ag.getTS().getUserAgArch() : null);
         final int               nbAnnots = (hasAnnot() && getAnnots().getTail() == null ? getAnnots().size() : 0); // if annots contains a tail (as in p[A|R]), do not backtrack on annots
@@ -445,7 +449,10 @@ public abstract class Literal extends DefaultTerm implements LogicalFormula {
                         Unifier u = un.clone();
                         if (u.unifiesNoUndo(Literal.this, belToTry)) {
                             current = u;
+                        	if (isInDebug) ag.getLogger().log(Level.FINE, "     | belief annotation "+belToTry+" is an option for "+ Literal.this+ " -- "+u);
                             return;
+                        } else {
+                        	if (isInDebug) ag.getLogger().log(Level.FINE, "     | belief annotation "+belToTry+" is NOT an option for "+ Literal.this+ " -- "+u);                        	
                         }
                     }
                     annotsOptions = null;
@@ -465,9 +472,12 @@ public abstract class Literal extends DefaultTerm implements LogicalFormula {
                         Unifier unC = un.clone();
                         if (unC.unifiesNoUndo(Literal.this, rhead)) {
                             current = unC;
+                        	if (isInDebug) ag.getLogger().log(Level.FINE, "     | rule "+rhead+" is an option for "+ Literal.this+ " -- "+unC);
                             //if (cacheResults != null)
                             //    cacheResults.add(unC);
                             return;
+                        } else {
+                        	if (isInDebug) ag.getLogger().log(Level.FINE, "     | rule "+rhead+" is NOT an option for "+ Literal.this+ " -- "+unC);                        	
                         }
                     }
                     ruleIt = null;
@@ -525,8 +535,11 @@ public abstract class Literal extends DefaultTerm implements LogicalFormula {
                         } else { // it is an ordinary query on a belief
                             Unifier u = un.clone();
                             if (u.unifiesNoUndo(Literal.this, belInBB)) {
+                            	if (isInDebug) ag.getLogger().log(Level.FINE, "     | belief "+belInBB+" is an option for "+ Literal.this+ " -- "+u);
                                 current = u;
                                 return;
+                            } else {
+                            	if (isInDebug) ag.getLogger().log(Level.FINE, "     | belief "+belInBB+" is NOT an option for "+ Literal.this+ " -- "+u);
                             }
                         }
                     }

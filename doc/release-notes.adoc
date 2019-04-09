@@ -3,6 +3,14 @@
 
 ifdef::env-github[:outfilesuffix: .adoc]
 
+== version 2.4 (2019-MM-DD)
+
+- New internal action to change verbosity:
+    * `.verbose(2)`: start showing debug messages
+    * `.verbose(1)`: goes back to normal message / logging level
+
+- Improved support for meta-programming. See demos/meta-programming.
+
 == version 2.3 (2018-10-01)
 
 (a built package is available at https://sourceforge.net/projects/jason/files/jason/version%202.3/[here])

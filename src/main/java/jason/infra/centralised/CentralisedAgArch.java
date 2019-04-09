@@ -190,6 +190,7 @@ public class CentralisedAgArch extends AgArch implements Runnable {
         //System.out.println("running del "+(sumDel/nbDel)+"/"+cyclesDeliberate);
     }
 
+    /** the act as step of reasoning cycle */
     //int sumAct = 0; int nbAct = 0;
     protected void act() {
         TransitionSystem ts = getTS();
@@ -284,7 +285,7 @@ public class CentralisedAgArch extends AgArch implements Runnable {
 
     // Default perception assumes Complete and Accurate sensing.
     @Override
-    public Collection<Literal> perceive() {
+    public Collection<Literal> perceive() {     
         super.perceive();
         if (infraEnv == null) return null;
         Collection<Literal> percepts = infraEnv.getUserEnvironment().getPercepts(getAgName());

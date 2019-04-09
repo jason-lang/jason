@@ -454,7 +454,7 @@ public class TransitionSystem {
                 if (conf.C.SE.getIntention() != null && conf.C.SE.getIntention().size() > 3000) {
                     logger.warning("we are likely in a problem with event "+conf.C.SE.getTrigger()+" the intention stack has already "+conf.C.SE.getIntention().size()+" intended means!");
                 }
-                String msg = "Found a goal for which there is no "+m+" plan:" + conf.C.SE.getTrigger();
+                String msg = "Found a goal for which there is no "+m+" plan: " + conf.C.SE.getTrigger();
                 if (!generateGoalDeletionFromEvent(JasonException.createBasicErrorAnnots("no_"+m, msg))) {
                     logger.warning(msg);
                 }
@@ -1092,18 +1092,28 @@ public class TransitionSystem {
 
                 for (Option opt: rp) {
                     LogicalFormula context = opt.getPlan().getContext();
+                    if (getLogger().isLoggable(Level.FINE))
+                        getLogger().log(Level.FINE, "option for "+C.SE.getTrigger()+" is plan "+opt.getPlan().getLabel() + " " + opt.getPlan().getTrigger() + " : " + context + " -- with unification "+opt.getUnifier());
+
                     if (context == null) { // context is true
                         if (ap == null) ap = new LinkedList<>();
                         ap.add(opt);
+                        if (getLogger().isLoggable(Level.FINE))
+                            getLogger().log(Level.FINE, "     "+opt.getPlan().getLabel() + " is applicable with unification "+opt.getUnifier());
                     } else {
                         boolean allUnifs = opt.getPlan().isAllUnifs();
                         Iterator<Unifier> r = context.logicalConsequence(ag, opt.getUnifier());
+                        boolean isApplicable = false;
                         if (r != null) {
                             while (r.hasNext()) {
+                                isApplicable = true;
                                 opt.setUnifier(r.next());
 
                                 if (ap == null) ap = new LinkedList<>();
                                 ap.add(opt);
+
+                                if (getLogger().isLoggable(Level.FINE))
+                                    getLogger().log(Level.FINE, "     "+opt.getPlan().getLabel() + " is applicable with unification "+opt.getUnifier());
 
                                 if (!allUnifs) break; // returns only the first unification
                                 if (r.hasNext()) {
@@ -1112,6 +1122,9 @@ public class TransitionSystem {
                                 }
                             }
                         }
+
+                        if (!isApplicable && getLogger().isLoggable(Level.FINE))
+                            getLogger().log(Level.FINE, "     "+opt.getPlan().getLabel() + " is not applicable");
                     }
                 }
             }
