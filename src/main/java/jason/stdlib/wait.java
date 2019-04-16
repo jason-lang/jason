@@ -197,7 +197,7 @@ public class wait extends DefaultInternalAction {
                     try {
                         // add SI again in C.I if (1) it was not removed (2) is is not running (by some other reason) -- but this test does not apply to atomic intentions --, and (3) this wait was not dropped
                         if (c.removePendingIntention(sEvt) == si && (si.isAtomic() || !c.hasRunningIntention(si)) && !dropped) {
-                            if (stopByTimeout && te != null && elapsedTimeTerm == null) {
+                            if (stopByTimeout && (te != null || formula != null) && elapsedTimeTerm == null) {
                                 // fail the .wait by timeout
                                 if (si.isSuspended()) { // if the intention was suspended by .suspend
                                     PlanBody body = si.peek().getPlan().getBody();

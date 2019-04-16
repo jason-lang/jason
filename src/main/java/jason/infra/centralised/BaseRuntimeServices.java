@@ -14,6 +14,7 @@ public abstract class BaseRuntimeServices implements RuntimeServices {
         this.masRunner = masRunner;
     }
 
+    /** Every agent that will be create use registered archs */
     @Override
     public void registerDefaultAgArch(String agArch) {
         defaultAgArchs.add(agArch);
