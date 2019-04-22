@@ -725,7 +725,12 @@ public class Config extends Properties {
     }
     private static boolean digitAfterMinus(String s) {
         int pos = s.indexOf("-");
-        return pos > 0 && Character.isDigit(s.substring(pos+1, pos+2).charAt(0));
+        while (pos > 0) {
+        	if (Character.isDigit(s.substring(pos+1, pos+2).charAt(0)))
+        		return true;
+        	pos = s.indexOf("-", pos+1);
+        }
+        return false;
     }
 
     protected String getEclipseInstallationDirectory() {
