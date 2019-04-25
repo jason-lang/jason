@@ -717,21 +717,24 @@ public class Config extends Properties {
         while (st.hasMoreTokens()) {
             String token = st.nextToken();
             File f = new File(token);
-            if (f.getName().startsWith(file) && digitAfterMinus(f.getName()) && f.getName().endsWith(".jar") && !f.getName().endsWith("-sources.jar") && !f.getName().endsWith("-javadoc.jar")) {
+            if (f.getName().startsWith(file) && //digitAfterMinus(f.getName()) && 
+                    f.getName().endsWith(".jar") && 
+                    !f.getName().endsWith("-sources.jar") && 
+                    !f.getName().endsWith("-javadoc.jar")) {
                 return f.getAbsolutePath();
             }
         }
         return null;
     }
-    private static boolean digitAfterMinus(String s) {
+    /*private static boolean digitAfterMinus(String s) {
         int pos = s.indexOf("-");
         while (pos > 0) {
-        	if (Character.isDigit(s.substring(pos+1, pos+2).charAt(0)))
-        		return true;
-        	pos = s.indexOf("-", pos+1);
+            if (Character.isDigit(s.substring(pos+1, pos+2).charAt(0)))
+                return true;
+            pos = s.indexOf("-", pos+1);
         }
         return false;
-    }
+    }*/
 
     protected String getEclipseInstallationDirectory() {
         return "jason";

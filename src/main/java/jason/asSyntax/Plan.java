@@ -71,6 +71,7 @@ public class Plan extends Structure implements Cloneable, Serializable {
 
     public void setSource(String f) { if (f!=null) this.source = f; }
     public String getSource()       { return this.source; }
+    @Deprecated public String getFile()       { return this.source; }
     
     private static final Term noLabelAtom = new Atom("nolabel");
 
