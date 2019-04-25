@@ -1094,8 +1094,6 @@ public class Agent {
         ag.appendChild(importedNodeBB);
         Node importedNodePL = document.importNode(getPL().getAsDOM(document), true);
         ag.appendChild(importedNodePL);
-        Node importedNodeC = document.importNode(ts.getC().getAsDOM(document), true);
-        ag.appendChild(importedNodeC);
         return ag;
     }
 
