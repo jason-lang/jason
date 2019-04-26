@@ -196,6 +196,16 @@ public class Pred extends Structure {
     public ListTerm getAnnots() {
         return annots;
     }
+    
+    public ListTerm capplyAnnots(Unifier u) {
+        if (hasAnnot()) {
+            Pred o = new Pred("t"); // use this simple literal so that we do not need to clone all "this" to get capply annots
+            o.setAnnots( (ListTerm)getAnnots().capply(u) );
+            return o.getAnnots();
+        } else {
+            return new ListTermImpl();
+        }
+    }
 
     @Override
     public boolean hasAnnot(Term t) {
@@ -342,7 +352,7 @@ public class Pred extends Structure {
         Term thisTail    = null;
 
         // since p's annots will be changed, clone the list (but not the terms)
-        ListTerm pAnnots     = p.getAnnots().cloneLTShallow();
+        ListTerm pAnnots     = p.getAnnots().cloneLTShallow();         
         VarTerm  pTail       = pAnnots.getTail();
         Term pAnnot          = null;
         ListTerm pAnnotsTail = null;
@@ -350,7 +360,7 @@ public class Pred extends Structure {
         Iterator<Term> i2 = pAnnots.iterator();
         boolean i2Reset   = false;
 
-        Iterator<ListTerm> i1 = annots.listTermIterator(); // use this iterator to get the tail of the list
+        Iterator<ListTerm> i1 = capplyAnnots(u).listTermIterator(); // use this iterator to get the tail of the list
         while (i1.hasNext()) {
             ListTerm lt = i1.next();
             Term annot = lt.getTerm();
@@ -358,7 +368,7 @@ public class Pred extends Structure {
                 break;
             if (lt.isTail())
                 thisTail = lt.getTail();
-            if (annot.isVar() && !i2Reset) { // when we arrive to the vars in the annots of this, we need to start searching from the begin again
+            if (annot.isVar() && !i2Reset) { // when we arrive to the vars in the annots of "this", we need to start searching from the begin again
                 i2Reset = true;
                 i2 = pAnnots.iterator();
                 pAnnot = null;

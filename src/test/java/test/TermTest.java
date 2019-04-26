@@ -4,6 +4,8 @@ import static jason.asSyntax.ASSyntax.createNumber;
 import static jason.asSyntax.ASSyntax.createStructure;
 import static jason.asSyntax.ASSyntax.parseLiteral;
 import static jason.asSyntax.ASSyntax.parseTerm;
+
+import jason.asSemantics.Agent;
 import jason.asSemantics.Unifier;
 import jason.asSyntax.ASSyntax;
 import jason.asSyntax.Atom;
@@ -119,12 +121,12 @@ public class TermTest extends TestCase {
         Term other = ASSyntax.parseTerm("back_pos(9,7)");
         assertFalse(bp.equals(other));
 
-        Set<Term> c1 = new HashSet<Term>();
+        Set<Term> c1 = new HashSet<>();
         c1.add(bp);
         c1.add(ASSyntax.parseTerm("back_pos(9,7)"));
         c1.add(ASSyntax.parseTerm("x"));
 
-        Set<Term> c2 = new HashSet<Term>();
+        Set<Term> c2 = new HashSet<>();
         c2.add(ASSyntax.parseTerm("back_pos(9,7)"));
         c2.add(ASSyntax.parseTerm("x"));
 
@@ -574,6 +576,24 @@ public class TermTest extends TestCase {
         assertTrue(u2.equals(u));
     }
 
+    public void testSubsetAnnotBugAmandine() throws Exception {
+        Literal l1 = ASSyntax.parseLiteral("b(a)[annot1,annot2,source(self)]");
+        Literal l2 = ASSyntax.parseLiteral("_[Z,Y]");
+        Unifier u = new Unifier();
+        assertTrue(u.unifies(l2, l1));
+        u = new Unifier();
+        assertFalse(u.unifies(l1, l2));
+        
+        Agent ag = new Agent();
+        ag.initAg();
+        ag.addBel(ASSyntax.parseLiteral("b(a)[annot1,annot2]"));
+        ag.addBel(ASSyntax.parseLiteral("c(d)[annot1]"));
+        u = new Unifier();
+        u.unifies(new VarTerm("Z"), ASSyntax.parseTerm("annot1"));
+        ag.abolish(l2, u);
+        assertEquals(0, ag.getBB().size());
+    }
+    
     public void testAnnotUnifAsList() {
         Pred p1 = Pred.parsePred("p[b(2),x]");
         Pred p2 = Pred.parsePred("p[a,b(2),c]");
@@ -660,7 +680,7 @@ public class TermTest extends TestCase {
     }
 
     public void testComparePI() {
-        List<PredicateIndicator> l = new ArrayList<PredicateIndicator>();
+        List<PredicateIndicator> l = new ArrayList<>();
         l.add(new PredicateIndicator("b", 2));
         l.add(new PredicateIndicator("b", 7));
         l.add(new PredicateIndicator("a", 2));
@@ -741,7 +761,7 @@ public class TermTest extends TestCase {
     public void testMakeVarAnnon3() {
         Literal l1 = Literal.parseLiteral("calc(AgY,X)[vl(X),source(AgY),bla(Y),X]");
         l1.makeVarsAnnon();
-        Map<VarTerm, Integer> v = new HashMap<VarTerm, Integer>();
+        Map<VarTerm, Integer> v = new HashMap<>();
         l1.countVars(v);
         assertEquals(3, v.size());
         assertEquals("vl("+l1.getTerm(1)+")",l1.getAnnots("vl").get(0).toString());
@@ -807,7 +827,7 @@ public class TermTest extends TestCase {
         // if we make a literal anonymous multiple times, the instances should not
         // be equal but should eb unifiable.
         Literal literal = Literal.parseLiteral("literal(Variable, _)");
-        List<Literal> literals = new ArrayList<Literal>();
+        List<Literal> literals = new ArrayList<>();
         literals.add(literal);
         // create a list of anonymized l1s
         for (int i = 0; i < 5; i++) {

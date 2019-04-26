@@ -294,14 +294,14 @@ public class MindInspectorAgArch extends AgArch {
             if (mindInspectorPanel != null) { // output on GUI
                 if (mindInspectorFreeze == null || !mindInspectorFreeze.isSelected()) {
                     showAgState(state);
-	
-	                if (mindInspectorHistory != null) {
-	                    mindInspectorHistory.add(state);
-	                    setupSlider();
-	                    mindInspectorHistorySlider.setValue(mindInspectorHistory.size()-1);
-	                }
+    
+                    if (mindInspectorHistory != null) {
+                        mindInspectorHistory.add(state);
+                        setupSlider();
+                        mindInspectorHistorySlider.setValue(mindInspectorHistory.size()-1);
+                    }
                 }else if(mindInspectorFreeze.isSelected()) {
-                	mindInspectorHistory.add(state);
+                    mindInspectorHistory.add(state);
                     setupSlider();
                 }
             } else if (mindInspectorDirectory != null) { // output on file

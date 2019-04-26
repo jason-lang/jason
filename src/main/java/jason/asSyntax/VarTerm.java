@@ -109,6 +109,9 @@ public class VarTerm extends LiteralImpl implements NumberTerm, ListTerm { //, S
                     vl = ((Literal)vl).forceFullLiteralImpl().addAnnots((ListTerm)this.getAnnots().capply(u));
                 }
                 return vl;
+            } else if (hasAnnot()) {
+                // no value for the var, consider the annots
+                return ((VarTerm)clone()).setAnnots((ListTerm)getAnnots().capply(u) );
             }
         }
         return clone();
