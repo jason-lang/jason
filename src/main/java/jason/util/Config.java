@@ -501,11 +501,30 @@ public class Config extends Properties {
         }*/
     }
 
+    @SuppressWarnings("rawtypes")
+    public Class getClassForClassLoaderTest(String jarEntry) {
+        return this.getClass();
+    }
+  
+    
     public boolean tryToFixJarFileConf(String jarEntry, String jarFilePrefix, int minSize) {
         String jarFile = getProperty(jarEntry);
         if (jarFile == null || !checkJar(jarFile, minSize)) {
             if (showFixMsgs)
                 System.out.println("Wrong configuration for " + jarFilePrefix + ", current is " + jarFile);
+
+            // try to get by class loader
+            try {
+                String fromLoader = getClassForClassLoaderTest(jarEntry).getProtectionDomain().getCodeSource().getLocation().toString();
+                if (fromLoader.startsWith("file:")) 
+                    fromLoader = fromLoader.substring(5);
+                if (new File(fromLoader).getName().startsWith(jarFilePrefix) && checkJar(fromLoader, minSize)) {
+                    if (showFixMsgs)
+                        System.out.println("found at " + jarFile+" by class loader");
+                    put(jarEntry, fromLoader);
+                    return true;
+                }
+            } catch (Exception e) {}
 
             // try to get from classpath (the most common case)
             jarFile = getJarFromClassPath(jarFilePrefix);
