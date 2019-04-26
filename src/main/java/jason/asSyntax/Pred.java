@@ -1,9 +1,7 @@
 package jason.asSyntax;
 
-import jason.asSemantics.Unifier;
-import jason.asSyntax.parser.as2j;
-
 import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +10,9 @@ import java.util.logging.Logger;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+
+import jason.asSemantics.Unifier;
+import jason.asSyntax.parser.as2j;
 
 /**
  * A Pred extends a Structure with annotations, e.g.: a(1)[an1,an2].
@@ -352,7 +353,15 @@ public class Pred extends Structure {
         Term thisTail    = null;
 
         // since p's annots will be changed, clone the list (but not the terms)
-        ListTerm pAnnots     = p.getAnnots().cloneLTShallow();         
+        ListTerm pAnnots     = p.getAnnots().cloneLTShallow();
+
+        // creates an iterator for the vars in p annots
+        List<Term> varsInPAnnots = new ArrayList<>();
+        for (Term ta: pAnnots)
+            if (ta.isVar())
+                varsInPAnnots.add(ta);
+        Iterator<Term> iVarsInPAnnots = varsInPAnnots.iterator();
+        
         VarTerm  pTail       = pAnnots.getTail();
         Term pAnnot          = null;
         ListTerm pAnnotsTail = null;
@@ -384,6 +393,14 @@ public class Pred extends Structure {
                     pAnnot = i2.next();
                     break;
                 } else if (pAnnot != null && pAnnot.compareTo(annot) > 0) {
+                    // consider to consume a var from p annots
+                    if (iVarsInPAnnots.hasNext()) {
+                        Term v = iVarsInPAnnots.next();
+                        if (u.unifiesNoUndo(annot, v)) { 
+                            ok = true;
+                            pAnnots.remove(v);
+                        }
+                    }
                     break; // quite the loop, the current p annot is greater than this annot, so annot is not in p's annots
                 } else if (i2.hasNext()) {
                     pAnnot = i2.next();

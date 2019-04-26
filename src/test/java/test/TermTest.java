@@ -5,7 +5,15 @@ import static jason.asSyntax.ASSyntax.createStructure;
 import static jason.asSyntax.ASSyntax.parseLiteral;
 import static jason.asSyntax.ASSyntax.parseTerm;
 
-import jason.asSemantics.Agent;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import jason.asSemantics.Unifier;
 import jason.asSyntax.ASSyntax;
 import jason.asSyntax.Atom;
@@ -30,16 +38,6 @@ import jason.asSyntax.VarTerm;
 import jason.asSyntax.parser.ParseException;
 import jason.bb.BeliefBase;
 import jason.bb.DefaultBeliefBase;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import junit.framework.TestCase;
 
 /** JUnit test case for syntax package */
@@ -579,19 +577,22 @@ public class TermTest extends TestCase {
     public void testSubsetAnnotBugAmandine() throws Exception {
         Literal l1 = ASSyntax.parseLiteral("b(a)[annot1,annot2,source(self)]");
         Literal l2 = ASSyntax.parseLiteral("_[Z,Y]");
+        Literal l3 = ASSyntax.parseLiteral("_[annot2,Y,source(self)]");
+        Literal l4 = ASSyntax.parseLiteral("b(a)[annot1,annot2,Z,source(self)]");
         Unifier u = new Unifier();
         assertTrue(u.unifies(l2, l1));
         u = new Unifier();
         assertFalse(u.unifies(l1, l2));
-        
-        Agent ag = new Agent();
-        ag.initAg();
-        ag.addBel(ASSyntax.parseLiteral("b(a)[annot1,annot2]"));
-        ag.addBel(ASSyntax.parseLiteral("c(d)[annot1]"));
+
         u = new Unifier();
         u.unifies(new VarTerm("Z"), ASSyntax.parseTerm("annot1"));
-        ag.abolish(l2, u);
-        assertEquals(0, ag.getBB().size());
+        assertTrue(l2.hasSubsetAnnot(l1, u));
+        
+        u = new Unifier();
+        assertTrue(l1.hasSubsetAnnot(l3, u));
+        u = new Unifier();
+        assertFalse(l4.hasSubsetAnnot(l3, u));
+        assertTrue(l3.hasSubsetAnnot(l1, u));        
     }
     
     public void testAnnotUnifAsList() {
