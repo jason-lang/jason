@@ -654,7 +654,7 @@ public class TermTest extends TestCase {
 
         ListTerm l = ListTermImpl.parseList("[C,b(4),A,4,b(1,1),\"x\",[],[c],[a],[b,c],[a,b],~a(3),a(e,f),b,a(3),b(3),a(10)[30],a(10)[5],a,a(d,e)]");
         Collections.sort(l);
-        assertEquals("[4,\"x\",[],[a],[a,b],[b,c],[c],a,a(3),a(10)[5],a(10)[30],a(d,e),a(e,f),b,b(1,1),b(3),b(4),~a(3),A,C]", l.toString());
+        assertEquals("[4,\"x\",[],[a],[a,b],[b,c],[c],a,a(3),a(10)[5],a(10)[30],a(d,e),a(e,f),~a(3),b,b(1,1),b(3),b(4),A,C]", l.toString());
 
         l = ListTermImpl.parseList("[b,[1,1,1],c,10,g,casa,f(10),5,[3,10],f(4),[3,4]]");
         Collections.sort(l);

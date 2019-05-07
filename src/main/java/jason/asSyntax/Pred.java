@@ -225,7 +225,7 @@ public class Pred extends Structure {
         return false; //annots.contains(t);
     }
 
-    /** find an annotation with a given functor (only literal annots are considered) */
+    /** find the first annotation with a given functor (only literal annots are considered) */
     @Override
     public Literal getAnnot(String functor) {
         if (annots == null)

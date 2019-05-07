@@ -118,15 +118,15 @@ public class Atom extends Literal {
             if (!getNS().equals(tAsLit.getNS())) // different ns
                 return getNS().compareTo(tAsLit.getNS());
 
-            if (!negated() && tAsLit.negated())
-                return -1;
-            else if (negated() && !tAsLit.negated())
-                return 1;
-
             // Functor
             int c = getFunctor().compareTo(tAsLit.getFunctor());
             if (c != 0)
                 return c;
+
+            if (!negated() && tAsLit.negated())
+                return -1;
+            else if (negated() && !tAsLit.negated())
+                return 1;
 
             // Terms
             final int ma = getArity(); // my arity
