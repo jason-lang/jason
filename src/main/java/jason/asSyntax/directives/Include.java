@@ -101,6 +101,7 @@ public class Include extends DefaultDirective implements Directive {
             ag.initAg();
             as2j sparser = new as2j(in);
             sparser.setASLSource(file);
+            ag.setASLSrc(file);
             sparser.setNS(ns);
             sparser.agent(ag);
             logger.fine("as2j: AgentSpeak program '"+file+"' parsed successfully!");
