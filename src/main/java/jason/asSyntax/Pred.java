@@ -217,27 +217,26 @@ public class Pred extends Structure {
         while (i.hasNext()) {
             ListTerm lt = i.next();
             int c = t.compareTo(lt.getTerm());
-            if (c == 0) { // equals
-                return true;
-            } else if (c < 0) {
+            if (c < 0)
                 return false;
-            }
+            if (t.equals(lt.getTerm()))
+                return true;
         }
         return false; //annots.contains(t);
     }
 
+    /** find an annotation with a given functor (only literal annots are considered) */
     @Override
     public Literal getAnnot(String functor) {
         if (annots == null)
             return null;
-        // annots are ordered
         for (Term t: annots) {
             if (t.isLiteral()) {
                 Literal l = (Literal)t;
                 int c = functor.compareTo(l.getFunctor());
                 if (c == 0) { // equals
                     return l;
-                } else if (c < 0) {
+                } else if (c < 0) { 
                     return null;
                 }
             }
@@ -398,7 +397,7 @@ public class Pred extends Structure {
                         Term v = iVarsInPAnnots.next();
                         if (u.unifiesNoUndo(annot, v)) { 
                             ok = true;
-                            pAnnots.remove(v);
+                            //pAnnots.remove(v); // se TermTest testSubsetAnnotBugAmandine case assertTrue(l4.hasSubsetAnnot(l3, u)); // true if {Y=annot1, Z=annot1}
                         }
                     }
                     break; // quite the loop, the current p annot is greater than this annot, so annot is not in p's annots
@@ -573,7 +572,7 @@ public class Pred extends Structure {
         return super.equals((Term) p);
     }
 
-    @Override
+    /*@Override
     public int compareTo(Term t) {
         int c = super.compareTo(t);
         if (c != 0)
@@ -598,7 +597,7 @@ public class Pred extends Structure {
             if (ats > ots) return 1;
         }
         return 0;
-    }
+    }*/
 
     @Override
     public Term capply(Unifier u) {

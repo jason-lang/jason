@@ -342,8 +342,7 @@ public class VarTermTest extends TestCase {
         assertEquals("b2[d]",v1.capply(u).toString());
     }
 
-    @SuppressWarnings("unchecked")
-    private int iteratorSize(Iterator i) {
+    private int iteratorSize(@SuppressWarnings("rawtypes") Iterator i) {
         int c = 0;
         while (i.hasNext()) {
             i.next();
@@ -449,7 +448,7 @@ public class VarTermTest extends TestCase {
 
     public void testUnamedVarAnnots() throws ParseException {
         Term t = ASSyntax.parseTerm("_[scheme(Id)]");
-        Map<VarTerm,Integer> c = new HashMap<VarTerm, Integer>();
+        Map<VarTerm,Integer> c = new HashMap<>();
         t.countVars(c);
         assertEquals(1,c.get(new VarTerm("Id")).intValue());
     }
@@ -490,7 +489,7 @@ public class VarTermTest extends TestCase {
     public void testUnnamedvarsorder() {
         // the order is important for the "return" of plans/rules (where makeVarAnnon is used)
         // the most recently created unnamed vars should come last
-        List<VarTerm> l = new ArrayList<VarTerm>();
+        List<VarTerm> l = new ArrayList<>();
         l.add(new UnnamedVar(5));
         l.add(new VarTerm("F"));
         l.add(new UnnamedVar(6));
@@ -541,7 +540,7 @@ public class VarTermTest extends TestCase {
         ListTerm l = ASSyntax.createList(new Atom("a"), new Atom("c"));
         assertTrue(l.compareTo(new VarTerm("X")) < 0);
         assertTrue(new VarTerm("X").compareTo(l) > 0);
-        VarTerm L = new VarTerm("L");
+        //VarTerm L = new VarTerm("L");
         /*L.setValue(ASSyntax.createList(new Atom("a"), new Atom("b")));
         assertTrue(L.compareTo(l) < 0);
         assertTrue(l.compareTo(L) > 0);
