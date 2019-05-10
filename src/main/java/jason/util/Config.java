@@ -503,6 +503,8 @@ public class Config extends Properties {
 
     @SuppressWarnings("rawtypes")
     public Class getClassForClassLoaderTest(String jarEntry) {
+        if (jarEntry == JASON_JAR)
+            return TransitionSystem.class;
         return this.getClass();
     }
   
@@ -520,7 +522,7 @@ public class Config extends Properties {
                     fromLoader = fromLoader.substring(5);
                 if (new File(fromLoader).getName().startsWith(jarFilePrefix) && checkJar(fromLoader, minSize)) {
                     if (showFixMsgs)
-                        System.out.println("found at " + jarFile+" by class loader");
+                        System.out.println("found at " + fromLoader+" by class loader");
                     put(jarEntry, fromLoader);
                     return true;
                 }
@@ -632,8 +634,8 @@ public class Config extends Properties {
                     put(jarEntry, File.separator);
                 }
             }
-            if (showFixMsgs)
-                System.out.println(jarFilePrefix+" not found");
+            //if (showFixMsgs)
+            //    System.out.println(jarFilePrefix+" not found");
             return false;
         }
         return true;
