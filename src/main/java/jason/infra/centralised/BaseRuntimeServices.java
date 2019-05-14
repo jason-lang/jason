@@ -8,7 +8,7 @@ import jason.runtime.RuntimeServices;
 public abstract class BaseRuntimeServices implements RuntimeServices {
 
     protected BaseCentralisedMAS masRunner;
-    protected Collection<String> defaultAgArchs = new ArrayList<>();
+    private Collection<String> defaultAgArchs = new ArrayList<>();
     
     public BaseRuntimeServices(BaseCentralisedMAS masRunner) {
         this.masRunner = masRunner;
