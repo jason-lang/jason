@@ -891,10 +891,10 @@ Object rel_expr() :
          | op2 = rule_plan_term()
        )
 
-                                           { if ( ((Term)op1).isInternalAction() && operator != RelationalOp.literalBuilder)
-                                                throw new ParseException(getSourceRef(op1)+" RelExpr: operand '"+op1+"' can not be an internal action.");
-                                             if ( ((Term)op2).isInternalAction() && operator != RelationalOp.literalBuilder)
-                                                throw new ParseException(getSourceRef(op2)+" RelExpr: operand '"+op2+"' can not be an internal action.");
+                                           { //if ( ((Term)op1).isInternalAction() && operator != RelationalOp.literalBuilder)
+                                             //   throw new ParseException(getSourceRef(op1)+" RelExpr: operand '"+op1+"' can not be an internal action.");
+                                             //if ( ((Term)op2).isInternalAction() && operator != RelationalOp.literalBuilder)
+                                             //   throw new ParseException(getSourceRef(op2)+" RelExpr: operand '"+op2+"' can not be an internal action.");
                                              return new RelExpr((Term)op1, operator, (Term)op2);
                                            }
     ]

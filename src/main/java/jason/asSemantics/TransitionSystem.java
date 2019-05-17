@@ -32,6 +32,7 @@ import jason.asSyntax.ObjectTermImpl;
 import jason.asSyntax.Plan;
 import jason.asSyntax.PlanBody;
 import jason.asSyntax.PlanBody.BodyType;
+import jason.asSyntax.PlanBodyImpl;
 import jason.asSyntax.PlanLibrary;
 import jason.asSyntax.StringTermImpl;
 import jason.asSyntax.Structure;
@@ -701,6 +702,9 @@ public class TransitionSystem {
                     return;
                 }
             }
+            // translate var into appropriate body
+            if (bTerm.isInternalAction())
+                h = new PlanBodyImpl(BodyType.internalAction, bTerm);
         }
 
         if (bTerm.isPlanBody()) {
