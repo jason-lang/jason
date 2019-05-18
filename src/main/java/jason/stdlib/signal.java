@@ -1,38 +1,31 @@
 package jason.stdlib;
 
 import jason.asSemantics.DefaultInternalAction;
+import jason.asSemantics.Event;
+import jason.asSemantics.Intention;
 import jason.asSemantics.InternalAction;
 import jason.asSemantics.TransitionSystem;
 import jason.asSemantics.Unifier;
 import jason.asSyntax.Term;
+import jason.asSyntax.Trigger;
 
 /**
-  <p>Internal action: <b><code>.internal_action</code></b>.
+  <p>Internal action: <b><code>.signal</code></b>.
 
-  <p>Description: checks whether the argument is an internal actions,
-  e.g.: ".print(a)", "kk.tt(1)".
+  <p>Description: adds an event into the event queue,
+  e.g.: ".signal({+t})", ".signal({+!t})".
 
   <p>Parameter:<ul>
-  <li>+ argument (any term): the term to be checked.<br/>
+  <li>+ argument (an event)<br/>
   </ul>
 
-  <p>Examples:<ul>
-  <li> <code>.internal_action( .print )</code>: true.
-  </ul>
-
-  @see jason.stdlib.atom
-  @see jason.stdlib.list
-  @see jason.stdlib.number
-  @see jason.stdlib.string
-  @see jason.stdlib.structure
-  @see jason.stdlib.ground
 */
-public class internal_action extends DefaultInternalAction {
+public class signal extends DefaultInternalAction {
 
     private static InternalAction singleton = null;
     public static InternalAction create() {
         if (singleton == null)
-            singleton = new internal_action();
+            singleton = new signal();
         return singleton;
     }
 
@@ -46,6 +39,10 @@ public class internal_action extends DefaultInternalAction {
     @Override
     public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {
         checkArguments(args);
-        return args[0].isInternalAction();
+        ts.updateEvents(
+                new Event(
+                        Trigger.tryToGetTrigger(args[0]), 
+                        Intention.EmptyInt));        
+        return true;
     }
 }
