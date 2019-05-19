@@ -126,6 +126,14 @@
    <- .relevant_plans(Content, ListOfPlans);
       .send(Sender, tellHow, ListOfPlans, MsgId).
 
+
+/* ---- signal performatives ---- */
+
+@kqmlReceivedSignal
++!kqml_received(Sender, signal, NS::Content, _)
+    : not .list(Content) & .add_nested_source(Content, Sender, CA)
+   <- .signal( { +NS::CA }).
+
 /* general communication error handler */
 
 @kqmlError

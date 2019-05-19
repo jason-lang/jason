@@ -20,6 +20,12 @@ import java.util.Iterator;
   either if there is an event with <code>+!D</code> as triggering
   event or it is a goal in one of the agent's intentions.
 
+  <p>Parameters:<ul>
+
+  <li>- desire (literal): the desire to be checked if it is present.</li>
+
+  </ul>
+
   <p>Example:<ul>
 
   <li> <code>.desire(go(1,3))</code>: true if <code>go(1,3)</code>
@@ -41,9 +47,38 @@ import java.util.Iterator;
   @see jason.stdlib.resume
 
 */
+@Manual(
+		literal=".desire(desire)",
+		hint="checks whether the argument is a desire",
+		argsHint= {
+				"the desire to be checked if it is present"
+		},
+		argsType= {
+				"literal"
+		},
+		examples= {
+				".desire(go(1,3)): true if go(1,3) is a desire of the agent"
+		},
+		seeAlso= {
+				"jason.stdlib.intend",
+				"jason.stdlib.drop_all_desires",
+				"jason.stdlib.drop_all_events",
+				"jason.stdlib.drop_all_intentions",
+				"jason.stdlib.drop_event",
+				"jason.stdlib.drop_intention",
+				"jason.stdlib.drop_desire",
+				"jason.stdlib.succeed_goal",
+				"jason.stdlib.fail_goal",
+				"jason.stdlib.current_intention",
+				"jason.stdlib.resume",
+				"jason.stdlib.suspend",
+				"jason.stdlib.suspended"
+		}
+	)
+@SuppressWarnings("serial")
 public class desire extends intend {
 
-    @Override
+	@Override
     public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {
         checkArguments(args);
         return allDesires(ts.getC(),(Literal)args[0],args.length == 2 ? args[1] : null, un);

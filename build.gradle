@@ -47,7 +47,7 @@ dependencies {
     // from jEdit
     compile fileTree(dir: 'jedit', include: '*.jar') // using fileTree, jedit jars are not included as a dependency in the pom file
 
-    runtime group: 'org.apache.ant',  name: 'ant',  version: '1.10.+'
+    runtime group: 'org.apache.ant',  name: 'ant',  version: '1.10.5'
 
     testCompile group: 'junit', name: 'junit', version: '4.12'
     testCompile name: 'hsqldb'
@@ -433,7 +433,7 @@ task plugin(type: Jar, dependsOn: 'jar') {
 task publishMavenSF(dependsOn: [ 'build', 'publishToMavenLocal']) {
   doLast {
     def wdir = System.getProperty("user.home")+'/.m2/repository/org/jason-lang/jason'
-    def tdir = 'jomifred,jacamo@web.sf.net:/home/project-web/jacamo/htdocs/maven2/org/jason-lang/jason'
+    def tdir = System.getenv('USERSF')+',jacamo@web.sf.net:/home/project-web/jacamo/htdocs/maven2/org/jason-lang/jason'
     exec {
         commandLine 'scp', '-r', project.version, tdir
         workingDir wdir

@@ -292,12 +292,17 @@ public class MindInspectorAgArch extends AgArch {
             lastHistoryText = sMind;
 
             if (mindInspectorPanel != null) { // output on GUI
-                if (mindInspectorFreeze == null || !mindInspectorFreeze.isSelected())
+                if (mindInspectorFreeze == null || !mindInspectorFreeze.isSelected()) {
                     showAgState(state);
-                if (mindInspectorHistory != null) {
+    
+                    if (mindInspectorHistory != null) {
+                        mindInspectorHistory.add(state);
+                        setupSlider();
+                        mindInspectorHistorySlider.setValue(mindInspectorHistory.size()-1);
+                    }
+                }else if(mindInspectorFreeze.isSelected()) {
                     mindInspectorHistory.add(state);
                     setupSlider();
-                    mindInspectorHistorySlider.setValue(mindInspectorHistory.size()-1);
                 }
             } else if (mindInspectorDirectory != null) { // output on file
                 String filename = String.format("%6d.xml",fileCounter++).replaceAll(" ","0");

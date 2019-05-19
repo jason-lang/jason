@@ -29,6 +29,28 @@ import jason.asSyntax.Term;
   @see jason.stdlib.reverse
 
 */
+@Manual(
+        literal=".lower_case(argument,result)",
+        hint="converts given string into lower case",
+        argsHint= {
+                "the term representation as a string will be used",
+                "the resulting string"
+        },
+        argsType= {
+                "term",
+                "string"
+        },
+        examples= {
+                ".lower_case(\"CArtAgO\",X): unifies X with \"cartago\""
+        },
+        seeAlso= {
+                "jason.stdlib.concat", 
+                "jason.stdlib.delete", 
+                "jason.stdlib.length", 
+                "jason.stdlib.reverse"
+        }
+    )
+@SuppressWarnings("serial")
 public class lower_case extends DefaultInternalAction {
 
     private static InternalAction singleton = null;

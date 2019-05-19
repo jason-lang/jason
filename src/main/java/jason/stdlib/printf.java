@@ -21,14 +21,37 @@ import jason.asSyntax.Term;
   NB.: do not use "%d" since all numbers used by this internal action are translated from Jason to a Java double.
     
   <p>Examples:<ul>
-  <li> <code>.printf("Value %08.0f%n",N)</code>: prints <code>Value 00461012</code>.</li>
-  <li> <code>.printf("Value "%10.3f"",N)</code>: prints <code>Value      3.142</code>.</li>
+  <li> <code>.printf("Value %08.0f%n",N)</code>: prints <code>Value 00461012</code>, when N is 461012.</li>
+  <li> <code>.printf("Value %10.3f",N)</code>: prints <code>Value      3.142</code>, when N is 3.14159.</li>
   </ul>
 
   @see https://docs.oracle.com/javase/tutorial/java/data/numberformat.html
   @see jason.stdlib.print
 
 */
+@Manual(
+        literal=".printf(format,arg0[,arg1,...])",
+        hint="used for printing messages to the console inspired by Java printf/format",
+        argsHint= {
+                "the format of the output (not use \"%d\", Jason numbers are Java Double)",
+                "the terms to be printed out",
+                "the term to be concatenated with prior one and printed out [optional]",
+        },
+        argsType= {
+                "string",
+                "term",
+                "term"
+        },
+        examples= {
+                ".printf(\"Value %08.0f%n\",N): prints Value 00461012, when N is 461012",
+                ".printf(\"Value \"%10.3f\"\",N): prints Value 3.142, when N is 3.14159"
+        },
+        seeAlso= {
+                "jason.stdlib.print",
+                "jason.stdlib.println"
+        }
+    )
+@SuppressWarnings("serial")
 public class printf extends println {
 
     private static InternalAction singleton = null;

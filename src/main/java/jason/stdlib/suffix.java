@@ -49,9 +49,40 @@ import java.util.Iterator;
   @see jason.stdlib.union
 
 */
+@Manual(
+        literal=".suffix(suffix,list)",
+        hint="checks if some list is a suffix of other list, backtracking all free variables",
+        argsHint= {
+                "the suffix to be checked",
+                "the list where the suffix is from"
+        },
+        argsType= {
+                "list",
+                "list"
+        },
+        examples= {
+                ".suffix([c],[a,b,c]): true" + 
+                ".suffix([a,b],[a,b,c]): false" + 
+                ".suffix(X,[a,b,c]): unifies X with any suffix of the list, i.e., [a,b,c], [b,c], [c], and [] in this order"
+        },
+        seeAlso= {
+                "jason.stdlib.concat", 
+                "jason.stdlib.length", 
+                "jason.stdlib.sort", 
+                "jason.stdlib.nth", 
+                "jason.stdlib.max", 
+                "jason.stdlib.min", 
+                "jason.stdlib.reverse", 
+                "jason.stdlib.prefix", 
+                "jason.stdlib.sublist", 
+                "jason.stdlib.difference", 
+                "jason.stdlib.intersection", 
+                "jason.stdlib.union"
+        }
+    )
+@SuppressWarnings("serial")
 public class suffix extends DefaultInternalAction {
 
-    private static final long serialVersionUID = 2463927564326061873L;
     private static InternalAction singleton = null;
     public static InternalAction create() {
         if (singleton == null)

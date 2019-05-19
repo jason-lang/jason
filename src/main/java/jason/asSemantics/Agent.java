@@ -29,7 +29,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-
+import org.w3c.dom.Node;
 import jason.JasonException;
 import jason.RevisionFailedException;
 import jason.architecture.AgArch;
@@ -149,6 +149,7 @@ public class Agent {
 
 
     /** parse and load the agent code, asSrc may be null */
+    @Deprecated
     public void initAg(String asSrc) throws JasonException {
         initAg();
         load(asSrc);
@@ -161,6 +162,7 @@ public class Agent {
             boolean parsingOk = true;
             if (asSrc != null && !asSrc.isEmpty()) {
                 asSrc = asSrc.replaceAll("\\\\", "/");
+                setASLSrc(asSrc);
 
                 if (asSrc.startsWith(SourcePath.CRPrefix)) {
                     // loads the class from a jar file (for example)
@@ -190,7 +192,6 @@ public class Agent {
             loadKqmlPlans();
             addInitialBelsInBB(); // in case kqml plan file has some belief 
 
-            setASLSrc(asSrc);
         } catch (Exception e) {
             logger.log(Level.SEVERE, "Error loading code from "+asSrc, e);
             throw new JasonException("Error loading code from "+asSrc + " ---- " + e);
@@ -199,7 +200,7 @@ public class Agent {
 
     /** parse and load asl code */
     public void load(InputStream in, String sourceId) throws JasonException {
-        try {
+        try {           
             parseAS(in, sourceId);
 
             if (getPL().hasMetaEventPlans())
@@ -953,7 +954,7 @@ public class Agent {
                     if (!removed && !beliefToDel.isGround()) { // then try to unify the parameter with a belief in BB
                         Iterator<Literal> il = getBB().getCandidateBeliefs(beliefToDel.getPredicateIndicator());
                         if (il != null) {
-                                while (il.hasNext()) {
+                            while (il.hasNext()) {
                                 Literal linBB = il.next();
                                 if (u.unifies(linBB, beliefToDel)) {
                                     il.remove();
@@ -961,7 +962,7 @@ public class Agent {
                                     removed = true;
                                     break;
                                 }
-                                }
+                            }
                         }
                     }
 
@@ -1057,8 +1058,9 @@ public class Agent {
 
     static DocumentBuilder builder = null;
 
+    
     /** Gets the agent "mind" (beliefs, plans, and circumstance) as XML */
-    public Document getAgState() {
+    public synchronized Document getAgState() {
         if (builder == null) {
             try {
                 builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
@@ -1067,14 +1069,14 @@ public class Agent {
                 return null;
             }
         }
-        Document document = builder.newDocument();
-        document.appendChild(document.createProcessingInstruction("xml-stylesheet", "href='http://jason.sf.net/xml/agInspection.xsl' type='text/xsl' "));
+        Document docDOM = builder.newDocument();
+        docDOM.appendChild(docDOM.createProcessingInstruction("xml-stylesheet", "href='http://jason.sf.net/xml/agInspection.xsl' type='text/xsl' "));
 
-        Element ag = getAsDOM(document);
-        document.appendChild(ag);
+        Element ag = getAsDOM(docDOM);
+        docDOM.appendChild(ag);
 
-        ag.appendChild(ts.getC().getAsDOM(document));
-        return document;
+        ag.appendChild(ts.getC().getAsDOM(docDOM));
+        return docDOM;
     }
 
     @Override
@@ -1088,8 +1090,10 @@ public class Agent {
         ag.setAttribute("name", ts.getUserAgArch().getAgName());
         ag.setAttribute("cycle", ""+ts.getUserAgArch().getCycleNumber());
 
-        ag.appendChild(bb.getAsDOM(document));
-        //ag.appendChild(getPL().getAsDOM(document));
+        Node importedNodeBB = document.importNode(bb.getAsDOM(document), true);
+        ag.appendChild(importedNodeBB);
+        Node importedNodePL = document.importNode(getPL().getAsDOM(document), true);
+        ag.appendChild(importedNodePL);
         return ag;
     }
 

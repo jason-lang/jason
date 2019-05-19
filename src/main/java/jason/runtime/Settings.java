@@ -30,7 +30,7 @@ public class Settings {
     private boolean qProfiling = false; // whether has query profiling
     private boolean troON      = true;  // tail recursion optimisation is on by default
 
-    private Map<String,Object> userParameters = new HashMap<String,Object>();
+    private Map<String,Object> userParameters = new HashMap<>();
 
     public static final String PROJECT_PARAMETER = "project-parameter";
     public static final String INIT_BELS  = "beliefs";

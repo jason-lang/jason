@@ -1,0 +1,56 @@
+/*
+   Project meta_programming
+
+   Gradle build file for Jason Application
+   February 26, 2019 - 17:13:32
+*/
+
+defaultTasks 'run'
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+
+version '1.0'
+group   'org.jason'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+
+    maven { url "http://jacamo.sourceforge.net/maven2" }
+    maven { url "http://jade.tilab.com/maven/" }
+    
+    flatDir {
+       dirs 'lib'
+    }
+}
+
+dependencies {
+    compile group: 'org.jason-lang',     name: 'jason' ,   version: '2.4-SNAPSHOT'
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir 'src/java'
+        }
+        resources {
+            srcDir 'src/resources'
+        }
+    }
+}
+
+task run (type: JavaExec, dependsOn: 'classes') {
+    description 'runs the application'
+    main = 'jason.infra.centralised.RunCentralisedMAS'
+    args 'meta_programming.mas2j'
+    classpath sourceSets.main.runtimeClasspath
+}
+
+clean {
+    delete 'bin'
+    delete 'build'
+}
+

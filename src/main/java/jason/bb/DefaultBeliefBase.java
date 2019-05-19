@@ -42,9 +42,6 @@ public class DefaultBeliefBase extends BeliefBase {
     /** set of beliefs with percept annot, used to improve performance of buf */
     protected Set<Literal> percepts = new HashSet<>();
 
-    // for caching
-    protected Element eDOMbels = null;
-
     public DefaultBeliefBase() {
         nameSpaces.put(Literal.DefaultNS, belsMapDefaultNS);
     }
@@ -93,6 +90,7 @@ public class DefaultBeliefBase extends BeliefBase {
                 }
                 // remove from percepts
                 i.remove();
+                eDOMbels = null;
 
                 // remove the percept annot
                 current.delAnnot(BeliefBase.TPercept);
@@ -173,11 +171,11 @@ public class DefaultBeliefBase extends BeliefBase {
 
     @Override
     public boolean remove(Literal l) {
-        eDOMbels = null;
-        
         Literal bl = contains(l);
         if (bl != null) {
             if (l.hasSubsetAnnot(bl)) { // e.g. removing b[a] or b[a,d] from BB b[a,b,c]
+                eDOMbels = null;
+                
                 // second case fails
                 if (l.hasAnnot(TPercept)) {
                     percepts.remove(bl);
@@ -253,10 +251,10 @@ public class DefaultBeliefBase extends BeliefBase {
 
     @Override
     public boolean abolish(Atom namespace, PredicateIndicator pi) {
-        eDOMbels = null;
-
         BelEntry entry = nameSpaces.get(namespace).remove(pi);
         if (entry != null) {
+            eDOMbels = null;
+            
             size -= entry.size();
 
             // remove also in percepts list!
@@ -370,6 +368,9 @@ public class DefaultBeliefBase extends BeliefBase {
         return bb;
     }
 
+    // for cache
+    protected Element eDOMbels = null;
+    
     @Override
     public Element getAsDOM(Document document) {
         if (eDOMbels != null)

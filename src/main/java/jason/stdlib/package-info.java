@@ -95,6 +95,7 @@ Internal actions of Jason.
   <li>{@link jason.stdlib.concat concat}: append strings. </li>
   <li>{@link jason.stdlib.delete delete}: delete characters of a string. </li>
   <li>{@link jason.stdlib.reverse reverse}: reverse strings. </li>
+  <li>{@link jason.stdlib.nth nth}: nth element of a string. </li>
   <li>{@link jason.stdlib.substring substring}: test substrings of strings. </li>
   <li>{@link jason.stdlib.string string}: check whether an argument is a string.</li>
   <li>{@link jason.stdlib.term2string term2string}: convert terms to strings and vice-versa.</li>

@@ -49,6 +49,36 @@ import java.util.Map;
   @see jason.stdlib.resume
 
 */
+@Manual(
+        literal=".suspended(goal,reason)",
+        hint="checks whether given goal belongs to a suspended intention. Unifies with the reason for the suspend (waiting action to be performed, .wait, ....)",
+        argsHint= {
+                "the goals to check if are suspended",
+                "the reason for being suspended"
+        },
+        argsType= {
+                "literal",
+                "string"
+        },
+        examples= {
+                ".suspended(go(1,3),R): true if go(1,3) is a suspended goal. R unifies with \"act\" if the reason is an action waiting feedback from environment"
+        },
+        seeAlso= {
+                "jason.stdlib.intend", 
+                "jason.stdlib.desire", 
+                "jason.stdlib.drop_all_desires", 
+                "jason.stdlib.drop_all_events", 
+                "jason.stdlib.drop_all_intentions", 
+                "jason.stdlib.drop_intention", 
+                "jason.stdlib.drop_desire", 
+                "jason.stdlib.succeed_goal", 
+                "jason.stdlib.fail_goal", 
+                "jason.stdlib.current_intention", 
+                "jason.stdlib.suspend", 
+                "jason.stdlib.resume"
+        }
+    )
+@SuppressWarnings("serial")
 public class suspended extends DefaultInternalAction {
 
     @Override public int getMinArgs() {

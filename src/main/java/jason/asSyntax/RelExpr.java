@@ -29,6 +29,8 @@ import org.w3c.dom.Element;
  *      X is [~p, [t1, t2], [a1,a2]]
  * </ul>
  *
+ * in case the list has fourth terms, the first term is the namespace.
+ * 
  * @navassoc - op - RelationalOp
  *
  * @author Jomi
@@ -88,31 +90,33 @@ public class RelExpr extends BinaryStructure implements LogicalFormula {
         Term xp = getTerm(0).capply(un);
         Term yp = getTerm(1).capply(un);
 
+        Iterator<Unifier> answer = null;
+        
         switch (op) {
 
         case none:
             break;
 
         case gt :
-            if (xp.compareTo(yp)  >  0) return LogExpr.createUnifIterator(un);
+            if (xp.compareTo(yp)  >  0) answer = LogExpr.createUnifIterator(un);
             break;
         case gte:
-            if (xp.compareTo(yp)  >= 0) return LogExpr.createUnifIterator(un);
+            if (xp.compareTo(yp)  >= 0) answer = LogExpr.createUnifIterator(un);
             break;
         case lt :
-            if (xp.compareTo(yp)  <  0) return LogExpr.createUnifIterator(un);
+            if (xp.compareTo(yp)  <  0) answer = LogExpr.createUnifIterator(un);
             break;
         case lte:
-            if (xp.compareTo(yp)  <= 0) return LogExpr.createUnifIterator(un);
+            if (xp.compareTo(yp)  <= 0) answer = LogExpr.createUnifIterator(un);
             break;
         case eq :
-            if (xp.equals(yp))          return LogExpr.createUnifIterator(un);
+            if (xp.equals(yp))          answer = LogExpr.createUnifIterator(un);
             break;
         case dif:
-            if (!xp.equals(yp))         return LogExpr.createUnifIterator(un);
+            if (!xp.equals(yp))         answer = LogExpr.createUnifIterator(un);
             break;
         case unify:
-            if (un.unifies(xp,yp))    return LogExpr.createUnifIterator(un);
+            if (un.unifies(xp,yp))      answer = LogExpr.createUnifIterator(un);
             break;
 
         case literalBuilder:
@@ -127,29 +131,29 @@ public class RelExpr extends BinaryStructure implements LogicalFormula {
                     if (l.size() == 3) // list without name space
                         palt = palt.getNext();
                     if (un.unifies(palt, l)) {
-                        return LogExpr.createUnifIterator(un);
+                        answer = LogExpr.createUnifIterator(un);
                     }
                 } else {
 
                     // first is var, second is list, var is assigned to l transformed in literal
                     if (p.isVar() && l.isList()) {
-                        if (un.unifies(p, Literal.newFromListOfTerms(l)))
-                            return LogExpr.createUnifIterator(un);
+                        Term t = null;
+                        if (l.size() == 4 && l.get(3).isPlanBody()) // the case where the list is for a plan
+                            t = Plan.newFromListOfTerms(l);
                         else
-                            LogExpr.EMPTY_UNIF_LIST.iterator();
-
+                            t = Literal.newFromListOfTerms(l);
+                        if (un.unifies(p, t))
+                            answer = LogExpr.createUnifIterator(un);
+                    } else {
+                        // first is literal, second is var, var is assigned to l transformed in list
+                        if (p.isLiteral() && l.isVar()) {
+                            if (un.unifies(p.getAsListOfTerms(), l))
+                                answer = LogExpr.createUnifIterator(un);
+                        } else {
+                            // both are vars, error
+                            logger.log(Level.SEVERE, "Both arguments of "+getTerm(0)+" =.. "+getTerm(1)+" are variables!");
+                        }
                     }
-
-                    // first is literal, second is var, var is assigned to l transformed in list
-                    if (p.isLiteral() && l.isVar()) {
-                        if (un.unifies(p.getAsListOfTerms(), l))
-                            return LogExpr.createUnifIterator(un);
-                        else
-                            LogExpr.EMPTY_UNIF_LIST.iterator();
-                    }
-
-                    // both are vars, error
-                    logger.log(Level.SEVERE, "Both arguments of "+getTerm(0)+" =.. "+getTerm(1)+" are variables!");
                 }
 
             } catch (Exception e) {
@@ -157,8 +161,14 @@ public class RelExpr extends BinaryStructure implements LogicalFormula {
             }
             break;
         }
-
-        return LogExpr.EMPTY_UNIF_LIST.iterator();  // empty iterator for unifier
+                
+        if (answer == null) {
+            if (ag != null && ag.getLogger().isLoggable(Level.FINE)) ag.getLogger().log(Level.FINE, "     | "+this+" failed "+ " -- "+un);
+            return LogExpr.EMPTY_UNIF_LIST.iterator();  // empty iterator for unifier
+        } else {
+            if (ag != null && ag.getLogger().isLoggable(Level.FINE)) ag.getLogger().log(Level.FINE, "     | "+this+" succeeded "+ " -- "+un);
+            return answer;
+        }
     }
 
     /** returns some LogicalFormula that can be evaluated */

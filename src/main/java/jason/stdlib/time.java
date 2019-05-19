@@ -38,6 +38,29 @@ import java.util.GregorianCalendar;
   @see jason.functions.time function time
 
  */
+@Manual(
+        literal=".time(hour,minute,second)",
+        hint="gets the current time (hour, minute, and seconds)",
+        argsHint= {
+                "the hours (from 0 to 23)",
+                "the minutes (from 0 to 59)",
+                "the seconds (from 0 to 59)"
+        },
+        argsType= {
+                "number",
+                "number",
+                "number"
+        },
+        examples= {
+                ".time(H,M,S): unifies H with the current hour, M with the current minutes, and S with the current seconds",
+                ".time(15,_,_): succeeds if it is now 3pm or a bit later but not yet 4pm"
+        },
+        seeAlso= {
+                "jason.stdlib.date", 
+                "jason.functions.time"
+        }
+    )
+@SuppressWarnings("serial")
 public class time extends DefaultInternalAction {
 
     private static InternalAction singleton = null;

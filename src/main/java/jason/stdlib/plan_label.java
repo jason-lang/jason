@@ -37,9 +37,31 @@ import jason.asSyntax.Term;
   @see jason.stdlib.remove_plan
 
  */
+@Manual(
+		literal=".plan_label(plan,label)",
+		hint="unifies with a plan term representing the plan labeled with the given term within the agent's plan library",
+		argsHint= {
+				"the term representing the plan enclosed by { and }",
+				"the label of that plan"
+		},
+		argsType= {
+				"plan term",
+				"structure"
+		},
+		examples= {
+				".plan_label(P,p1): unifies P with the term representation of the plan labeled p1"
+		},
+		seeAlso= {
+				"jason.stdlib.add_plan",
+				"jason.stdlib.plan_label",
+				"jason.stdlib.relevant_plans",
+				"jason.stdlib.remove_plan"
+		}
+	)
+@SuppressWarnings("serial")
 public class plan_label extends DefaultInternalAction {
 
-    private static InternalAction singleton = null;
+	private static InternalAction singleton = null;
     public static InternalAction create() {
         if (singleton == null)
             singleton = new plan_label();

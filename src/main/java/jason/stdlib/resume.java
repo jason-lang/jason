@@ -44,6 +44,35 @@ import java.util.Iterator;
   @see jason.stdlib.suspended
 
  */
+@Manual(
+        literal=".resume(goals)",
+        hint="resume goals that were suspended by .suspend (produces the meta-event ^!goals[state(resumed)])",
+        argsHint= {
+                "the goal to be resume"
+        },
+        argsType= {
+                "literal"
+        },
+        examples= {
+                ".resume(go(1,3)): resume the goal of going to location 1,3"
+        },
+        seeAlso= {
+                "jason.stdlib.intend",
+                "jason.stdlib.desire",
+                "jason.stdlib.drop_all_desires",
+                "jason.stdlib.drop_all_events",
+                "jason.stdlib.drop_all_intentions",
+                "jason.stdlib.drop_intention",
+                "jason.stdlib.drop_desire",
+                "jason.stdlib.succeed_goal",
+                "jason.stdlib.fail_goal",
+                "jason.stdlib.current_intention",
+                "jason.stdlib.resume",
+                "jason.stdlib.suspend",
+                "jason.stdlib.suspended"
+        }
+    )
+@SuppressWarnings("serial")
 public class resume extends DefaultInternalAction {
 
     @Override public int getMinArgs() {

@@ -182,23 +182,17 @@ loop
     sense();
   do <NUMBER-CYCLES-DELIBERATE> times:
     deliberate();
-  do <NUMBER-CYCLES-ACT> times:
+  do min( <NUMBER-CYCLES-ACT>, numberOfIntentions()) times:
     act();
 ----
 
 
-`<NUMBER-CYCLES-SENSE>` is the maximum number of times that the sense stage is executed before the deliberate stage starts its execution. `<NUMBER-CYCLES-DELIBERATE>` is the maximum number of times that the deliberate stage is executed before the act stage starts its execution. `<NUMBER-CYCLES-ACT>` is the maximum number of times that the act stage is executed before the sense stage starts its execution.
+`<NUMBER-CYCLES-SENSE>` is the maximum number of times that the sense stage is executed before the deliberate stage starts its execution. `<NUMBER-CYCLES-DELIBERATE>` is the maximum number of times that the deliberate stage is executed before the act stage starts its execution. `<NUMBER-CYCLES-ACT>` is the maximum number of times that the act stage is executed before the sense stage starts its execution. The `<NUMBER-CYCLES-ACT>` is limited to the number of intentions so that no more and one deed of each intentions are executed each reasoning cycle.
 
 In the example below, the sense and deliberate stages will be executed only `once`, while the act stage will be executed at most `5` times.
 
 ----
 infrastructure: Centralised(threaded, 1, 1, 5)
-----
-
-If `9999` is informed for the act stage, then, at least one action of each intention will be executed in the act stage.
-
-----
-infrastructure: Centralised(threaded, 1, 1, 9999)
 ----
 
 ==== Thread pool
@@ -227,7 +221,7 @@ do <NUMBER-REASONING-CYCLES> times:
     sense();
   do <NUMBER-CYCLES-DELIBERATE> times:
     deliberate();
-  do <NUMBER-CYCLES-ACT> times:
+  do min( <NUMBER-CYCLES-ACT>, numberOfIntentions()) times:
     act();
 ----
 
@@ -247,12 +241,6 @@ In the example below, a thread pool with `4` threads is created, and the sense a
 
 ----
 infrastructure: Centralised(pool,4,1,1,5)
-----
-
-If `9999` is informed for the act stage, then, at least one action of each intention will be executed.
-
-----
-infrastructure: Centralised(pool,4,1,1,9999)
 ----
 
 Finally, in the example below, the parameter `[NUMBER-REASONING-CYCLES]` is used. A thread pool with `4` threads is created, the sense and deliberate stages are configured to execute just `once`, while in the first case, the act stage executes at most `5` times, and in the second case, at least one action of each intention will be executed. In both cases, the sense-deliberate-act sequence will be repeated `10` times.
@@ -277,7 +265,7 @@ switch (stage)
       deliberate();
     stage = ACT;
   case ACT:
-    loop do <NUMBER-CYCLES-ACT> times:
+    loop do min( <NUMBER-CYCLES-ACT>, numberOfIntentions()) times:
       act();
     stage = SENSE;
 ----
@@ -323,7 +311,7 @@ switch (task.stage)
     loop do <NUMBER-CYCLES-DELIBERATE> times:
       deliberate();
   case ACT:
-    loop do <NUMBER-CYCLES-ACT> times:
+    loop do min( <NUMBER-CYCLES-ACT>, numberOfIntentions()) times:
       act();
 ----
 

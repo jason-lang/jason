@@ -190,15 +190,18 @@ public class CentralisedAgArch extends AgArch implements Runnable {
         //System.out.println("running del "+(sumDel/nbDel)+"/"+cyclesDeliberate);
     }
 
+    /** the act as step of reasoning cycle */
     //int sumAct = 0; int nbAct = 0;
     protected void act() {
         TransitionSystem ts = getTS();
 
         int i = 0;
         int ca = cyclesAct;
-        if (cyclesAct == 9999)
-            ca = ts.getC().getRunningIntentions().size();
-
+        if (ca != 1) { // not the default value, limit the value to the number of intentions
+            ca = Math.min(cyclesAct, ts.getC().getNbRunningIntentions());
+            if (ca == 0) 
+                ca = 1;
+        }
         while (running && i++ < ca && !ts.canSleepAct()) {
             ts.act();
         }
@@ -227,7 +230,7 @@ public class CentralisedAgArch extends AgArch implements Runnable {
                 }
                 informCycleFinished(isBreakPoint, getCycleNumber());
             } else {
-                incCycleNumber();
+                getUserAgArch().incCycleNumber();
                 reasoningCycle();
                 if (ts.canSleep())
                     sleep();
@@ -282,7 +285,7 @@ public class CentralisedAgArch extends AgArch implements Runnable {
 
     // Default perception assumes Complete and Accurate sensing.
     @Override
-    public Collection<Literal> perceive() {
+    public Collection<Literal> perceive() {     
         super.perceive();
         if (infraEnv == null) return null;
         Collection<Literal> percepts = infraEnv.getUserEnvironment().getPercepts(getAgName());
@@ -420,7 +423,7 @@ public class CentralisedAgArch extends AgArch implements Runnable {
 
     private int cyclesSense      = 1;
     private int cyclesDeliberate = 1;
-    private int cyclesAct        = 5;
+    private int cyclesAct        = 1;
 
     public void setConf(RConf conf) {
         this.conf = conf;

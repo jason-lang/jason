@@ -41,7 +41,7 @@ public class CentralisedRuntimeServices extends BaseRuntimeServices {
                 ap.addArchClass(father.getTS().getUserAgArch().getAgArchClassesChain());
             } else {
                 // use default agArch
-                ap.addArchClass(defaultAgArchs);
+                ap.addArchClass(masRunner.getRuntimeServices().getDefaultAgArchs());
             }
         } 
 

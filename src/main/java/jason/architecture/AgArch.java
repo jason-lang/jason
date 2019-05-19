@@ -156,7 +156,7 @@ public class AgArch implements Comparable<AgArch> {
     }
 
     /**
-     * Executes the action <i>action</i> and, when finished, add it back in
+     * Executes the action <i>action</i> and, when finished, adds it back in
      * <i>feedback</i> actions.
      *
      * @return true if the action was handled (not necessarily executed, just started)

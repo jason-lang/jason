@@ -33,6 +33,34 @@ import jason.asSyntax.Term;
   @see jason.stdlib.ground
 
 */
+@Manual(
+        literal=".list(argument)",
+        hint="checks whether the argument is a list",
+        argsHint= {
+                "the term to be checked"
+        },
+        argsType= {
+                "term"
+        },
+        examples= {
+                ".list([a,b,c]): true", 
+                ".list([a,b,c(X)]): true", 
+                ".list(b(10)): false", 
+                ".list(10): false", 
+                ".list(\"home page\"): false", 
+                ".list(X): false if X is free, true if X is bound to a list", 
+                ".list(a(X)): false"
+        },
+        seeAlso= {
+                "jason.stdlib.atom", 
+                "jason.stdlib.literal", 
+                "jason.stdlib.number", 
+                "jason.stdlib.string", 
+                "jason.stdlib.structure", 
+                "jason.stdlib.ground"
+        }
+    )
+@SuppressWarnings("serial")
 public class list extends DefaultInternalAction {
 
     private static InternalAction singleton = null;

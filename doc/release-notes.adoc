@@ -3,6 +3,23 @@
 
 ifdef::env-github[:outfilesuffix: .adoc]
 
+== version 2.4 (2019-MM-DD)
+
+- New performative `signal`. The semantics is that the receiver will have the event added in its event queue. For example, if Alice executes
++
+----
+.send(bob,signal,hello);
+.send(bob,signal,hello);
+----
++
+it produces in Bob *two* events `+hello[source(alice)]`. Different than `tell`, no belief is added.
+
+- New internal action to change verbosity:
+    * `.verbose(2)`: start showing debug messages
+    * `.verbose(1)`: goes back to normal message / logging level
+
+- Improved support for meta-programming. See demos/meta-programming.
+
 == version 2.3 (2018-10-01)
 
 (a built package is available at https://sourceforge.net/projects/jason/files/jason/version%202.3/[here])

@@ -47,6 +47,24 @@ The unification is changed by the evaluation of the logical formula, i.e., X mig
 </p>
 
 */
+@Manual(
+        literal="if (formula) { plan_body1 } else { plan_body2 }",
+        hint="implementation of \"if then, elif then, and else\"",
+        argsHint= {
+                "the formula that when true makes the plan_body1 be executed, otherwise plan_body2 will be executed"
+        },
+        argsType= {
+                "logical formula"
+        },
+        examples= {
+                "if (vl(X) & X > 10) { .print(\"value > 10\"); }: where vl(X) is a belief",
+                "if (e(1)) { .print(a); } elif (e(2)) { .print(b); } elif (e(3)) { .print(c); } else { .print(d); }"
+        },
+        seeAlso= {
+                ""
+        }
+    )
+@SuppressWarnings("serial")
 public class if_then_else extends DefaultInternalAction {
 
     private static InternalAction singleton = null;

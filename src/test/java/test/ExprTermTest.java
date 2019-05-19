@@ -152,7 +152,6 @@ public class ExprTermTest extends TestCase {
         assertTrue(new RelExpr(l, RelExpr.RelationalOp.literalBuilder, v).logicalConsequence(null, u).hasNext());
 
         ListTerm lt4 = ListTermImpl.parseList("[default,~p,[t1,t2],[a1,a2]]");
-        System.out.println(u);
         assertEquals(u.get("X").toString(), lt4.toString());
         assertEquals(u.get("X"), lt4);
         assertEquals(lt4, u.get("X"));
@@ -236,7 +235,6 @@ public class ExprTermTest extends TestCase {
         Iterator<Unifier> i = l.logicalConsequence(ag, new Unifier());
         assertTrue(i.hasNext());
         l = (Literal)l.capply(i.next());
-        System.out.println(l);
         assertEquals("b(10,(vl(X) & not ((X > 10))))", l.toString());
     }
 }

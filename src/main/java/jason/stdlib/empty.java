@@ -12,7 +12,7 @@ import jason.asSyntax.Term;
 
   <p>Internal action: <b><code>.empty</code></b>.
 
-  <p>Description: checks whether a list has at least one term.
+  <p>Description: checks whether the argument does not have any term.
 
   <p>Parameters:<ul>
   <li>+ argument (string or list): the term whose length is to be determined.<br/>
@@ -20,11 +20,30 @@ import jason.asSyntax.Term;
 
   <p>Examples:<ul>
   <li> <code>.empty([])</code>: true.
-  <li> <code>.empty([a,b])</code>: false.
-  <li> <code>.empty("a")</code>: false.
+  <li> <code>.empty([a,b])</code>: false, the list has at least one term.
+  <li> <code>.empty("a")</code>: false, the argument has at least one term.
   </ul>
 
  */
+@Manual(
+        literal=".empty(argument)",
+        hint="checks whether the argument does not have any term",
+        argsHint= {
+                "the term whose length is to be determined"
+        },
+        argsType= {
+                "string or list"
+        },
+        examples= {
+                ".empty([]): true",
+                ".empty([a,b]): false, the list has at least one term",
+                ".empty(\"a\"): false, the argument has at least one term"
+        },
+        seeAlso= {
+                ""
+        }
+    )
+@SuppressWarnings("serial")
 public class empty extends DefaultInternalAction {
 
     private static InternalAction singleton = null;

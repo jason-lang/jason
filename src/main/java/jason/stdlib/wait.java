@@ -33,7 +33,7 @@ import jason.asSyntax.Trigger;
   <p>Parameters:<ul>
   <li><i>+ event</i> (trigger term [optional]): the event to wait for.<br/>
   <li><i>+ logical expression</i> ([optional]): the expression (as used on plans context) to wait to holds.<br/>
-  <li>+ timeout (number [optional]): how many miliseconds should be waited.<br/>
+  <li>+ timeout (number [optional]): how many milliseconds should be waited.<br/>
   <li>- elapse time (var [optional]): the amount of time the intention was suspended waiting.<br/>
   </ul>
 
@@ -58,11 +58,38 @@ import jason.asSyntax.Trigger;
   As this use of .wait has three arguments, in case the event does not happen in
   two seconds, the internal action does not fail (as in the previous example).
   The third argument will be unified to the
-  elapsed time (in miliseconds) from the start of .wait until the event or timeout. </ul>
+  elapsed time (in milliseconds) from the start of .wait until the event or timeout. </ul>
 
   @see jason.stdlib.at
 
  */
+@Manual(
+        literal=".wait([event,expression,timeout][,elapsed_time])",
+        hint="suspend the intention for the time specified, until some event happens or some condition is true",
+        argsHint= {
+                "the event to wait for enclosed by { and } [optional]",
+                "the expression (as used on plans context) to wait [optional]",
+                "how many miliseconds should be waited [optional]",
+                "the amount of time the intention was suspended waiting [optional]"
+        },
+        argsType= {
+                "trigger term",
+                "logical expression",
+                "number",
+                "variable"
+        },
+        examples= {
+                ".wait(1000)</code>: suspend the intention for 1 second",
+                ".wait({+b(1)})</code>: suspend the intention until the belief b(1) is added in the belief base",
+                ".wait(b(X) & X > 10): suspend the intention until the agent believes b(X) with X greater than 10", 
+                ".wait({+!g}, 2000): suspend the intention until the goal g is triggered or 2 seconds have passed, whatever happens first. In case the event does not happens in two seconds, the internal action fails" + 
+                ".wait({+!g}, 2000, EventTime): suspend the intention until the goal g is triggered or 2 seconds have passed, whatever happens first. In case the event does not happen in two seconds, the internal action does not fail. The third argument will be unified to the elapsed time (in milliseconds) from the start of .wait until the event or timeout."
+        },
+        seeAlso= {
+            "jason.stdlib.at"
+        }
+    )
+@SuppressWarnings("serial")
 public class wait extends DefaultInternalAction {
 
     public static final String waitAtom = ".wait";
@@ -170,7 +197,7 @@ public class wait extends DefaultInternalAction {
                     try {
                         // add SI again in C.I if (1) it was not removed (2) is is not running (by some other reason) -- but this test does not apply to atomic intentions --, and (3) this wait was not dropped
                         if (c.removePendingIntention(sEvt) == si && (si.isAtomic() || !c.hasRunningIntention(si)) && !dropped) {
-                            if (stopByTimeout && te != null && elapsedTimeTerm == null) {
+                            if (stopByTimeout && (te != null || formula != null) && elapsedTimeTerm == null) {
                                 // fail the .wait by timeout
                                 if (si.isSuspended()) { // if the intention was suspended by .suspend
                                     PlanBody body = si.peek().getPlan().getBody();

@@ -10,6 +10,7 @@ import java.io.FileInputStream;
 import java.io.StringReader;
 import java.util.Iterator;
 
+import jason.JasonException;
 import jason.asSemantics.Agent;
 import jason.asSemantics.Unifier;
 import jason.asSyntax.ASSyntax;
@@ -411,5 +412,29 @@ public class ASParserTest extends TestCase {
         Agent a = new Agent();
         a.initAg();
         parser.agent(a);
+    }
+    
+    public void testElIf() throws ParseException, JasonException {
+        String source = 
+        "+!g(Mode,Team) <- \n" + 
+        "    if (Mode<=2) { \n"+
+        "          .println(\"I found some object.\"); \n" + 
+        "    } else {\n" + 
+        "            .nth(1, ObjectFound, Team);\n" + 
+        "            if (Team == 200) {\n" + 
+        "                .println( \"if\" );\n" + 
+        "            }\n" + 
+        "            elif (Team == 100) { \n" + 
+        "                .println( \"elif\" );\n" + 
+        "            }\n" + 
+        "            else {\n" + 
+        "                .println( \"else\" );\n" + 
+        "            }\n" + 
+        "    }.  // End of else";
+        as2j parser = new as2j(new StringReader(source));
+        Agent a = new Agent();
+        a.initAg();
+        parser.agent(a);
+        
     }
 }

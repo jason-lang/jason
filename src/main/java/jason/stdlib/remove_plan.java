@@ -55,9 +55,34 @@ import jason.bb.BeliefBase;
   @see jason.stdlib.relevant_plans
 
  */
+@Manual(
+		literal=".remove_plan(labels[,source])",
+		hint="removes plans from the agent's plan library",
+		argsHint= {
+				"the label of the plan to be removed",
+				"the source of the plan to be removed (default value is self) [optional]"
+		},
+		argsType= {
+				"structure or list of structures",
+				"atom"
+		},
+		examples= {
+				".remove_plan(l1): removes the plan identified by label l1[source(self)]",
+				".remove_plan(l1,bob): removes the plan identified by label l1[source(bob)]. Note this plan was probably added by a tellHow message", 
+				".remove_plan([l1,l2,l3]): removes the plans identified by labels l1[source(self)], l2[source(self)], and l3[source(self)]", 
+				".remove_plan([l1,l2,l3],bob): removes the plans identified by labels l1[source(bob)], l2[source(bob)], and l3[source(bob)]", 
+				".relevant_plans({ +!g }, _, L); .remove_plan(LL): removes all plans with trigger event +!g"
+		},
+		seeAlso= {
+				"jason.stdlib.add_plan",
+				"jason.stdlib.plan_label",
+				"jason.stdlib.relevant_plans"
+		}
+	)
+@SuppressWarnings("serial")
 public class remove_plan extends DefaultInternalAction {
 
-    @Override public int getMinArgs() {
+	@Override public int getMinArgs() {
         return 1;
     }
     @Override public int getMaxArgs() {

@@ -19,4 +19,3 @@ x(V) :- V < 30.
       .relevant_rules(x(_),L);   // get all rules with head x(_)
       .print("Sending rules ", L);
       .send(receiver,tellRule, L).
-

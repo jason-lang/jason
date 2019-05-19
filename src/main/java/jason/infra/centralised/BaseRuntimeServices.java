@@ -8,12 +8,13 @@ import jason.runtime.RuntimeServices;
 public abstract class BaseRuntimeServices implements RuntimeServices {
 
     protected BaseCentralisedMAS masRunner;
-    protected Collection<String> defaultAgArchs = new ArrayList<>();
+    private Collection<String> defaultAgArchs = new ArrayList<>();
     
     public BaseRuntimeServices(BaseCentralisedMAS masRunner) {
         this.masRunner = masRunner;
     }
 
+    /** Every agent that will be create use registered archs */
     @Override
     public void registerDefaultAgArch(String agArch) {
         defaultAgArchs.add(agArch);

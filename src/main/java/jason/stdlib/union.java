@@ -36,6 +36,39 @@ import jason.asSyntax.Term;
   @see jason.stdlib.difference
   @see jason.stdlib.intersection
 */
+@Manual(
+        literal=".union(arg0,arg1,result)",
+        hint="the sorted set that represents the union of two sets",
+        argsHint= {
+                "the first set",
+                "the set to be joined with the first",
+                "the result of the union"
+        },
+        argsType= {
+                "list",
+                "list",
+                "list"
+        },
+        examples= {
+                ".union(\"[a,b,c]\",\"[b,e]\",X): X unifies with \"[a,b,c,e]\"",
+                ".union(\"[a,b,a,c]\",\"[f,e]\",X): X unifies with \"[a,b,c,e,f]\""
+        },
+        seeAlso= {
+                "jason.stdlib.concat", 
+                "jason.stdlib.delete", 
+                "jason.stdlib.length", 
+                "jason.stdlib.member", 
+                "jason.stdlib.sort", 
+                "jason.stdlib.substring", 
+                "jason.stdlib.nth", 
+                "jason.stdlib.max", 
+                "jason.stdlib.min", 
+                "jason.stdlib.reverse", 
+                "jason.stdlib.difference", 
+                "jason.stdlib.intersection"
+        }
+    )
+@SuppressWarnings("serial")
 public class union extends difference { // to inherit checkArguments
 
     private static InternalAction singleton = null;

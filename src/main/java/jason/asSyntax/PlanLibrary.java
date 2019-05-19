@@ -246,6 +246,7 @@ public class PlanLibrary implements Iterable<Plan> {
                 add(p, false);
             }
         }
+        eDOMPlans = null;
     }
 
     public void addAll(List<Plan> plans) throws JasonException {
@@ -322,7 +323,9 @@ public class PlanLibrary implements Iterable<Plan> {
         // find the plan
         Plan p = get(pLabel);
         if (p != null) {
-            boolean hasSource = p.getLabel().delSource(source);
+        	eDOMPlans = null;
+        	
+        	boolean hasSource = p.getLabel().delSource(source);
 
             // if no source anymore, remove the plan
             if (hasSource && !p.getLabel().hasSource()) {
@@ -335,7 +338,8 @@ public class PlanLibrary implements Iterable<Plan> {
 
     /** remove the plan with label <i>pLabel</i> */
     public Plan remove(Literal pLabel) {
-        synchronized (lockPL) {
+    	eDOMPlans = null;
+    	synchronized (lockPL) {
             Plan p = planLabels.remove( getStringForLabel(pLabel) );
 
             // remove it from plans' list
@@ -444,15 +448,15 @@ public class PlanLibrary implements Iterable<Plan> {
         Map<String, StringBuilder> splans = new HashMap<>();
         StringBuilder r;
         for (Plan p: plans) {
-            r = splans.get(p.getFile());
+            r = splans.get(p.getSource());
             if (r == null) {
                 r = new StringBuilder();
-                if (p.getFile().isEmpty()) {
+                if (p.getSource().isEmpty()) {
                     r.append("\n\n// plans without file\n\n");
                 } else {
-                    r.append("\n\n// plans from "+p.getFile()+"\n\n");
+                    r.append("\n\n// plans from "+p.getSource()+"\n\n");
                 }
-                splans.put(p.getFile(), r);
+                splans.put(p.getSource(), r);
             }
             r.append(p.toString()+"\n");            
         }
@@ -475,12 +479,12 @@ public class PlanLibrary implements Iterable<Plan> {
     
     // for cache
     protected Element eDOMPlans = null;
-
+    
     /** get as XML */
     public Element getAsDOM(Document document) {
         if (eDOMPlans != null)
             return eDOMPlans;
-        
+
         eDOMPlans = (Element) document.createElement("plans");
         String lastFunctor = null;
         synchronized (lockPL) {

@@ -170,8 +170,10 @@ public abstract class Literal extends DefaultTerm implements LogicalFormula {
         return true;
     }
 
-    /** removes all annotations */
-    public void    clearAnnots()    { }
+    /** removes all annotations and returns itself */
+    public Literal clearAnnots()    { 
+        return this;
+    }
 
     /**
      * returns all annots with the specified functor e.g.: from annots
@@ -293,6 +295,11 @@ public abstract class Literal extends DefaultTerm implements LogicalFormula {
         return false;
     }
 
+    public boolean delAnnots()   {
+        logger.log(Level.SEVERE, "delAnnots is not implemented in the class "+this.getClass().getSimpleName(), new Exception());
+        return false;
+    }
+    
     /**
      * "import" annots from another predicate <i>p</i>. p will be changed
      * to contain only the annots actually imported (for Event),
@@ -322,6 +329,11 @@ public abstract class Literal extends DefaultTerm implements LogicalFormula {
     /** deletes all source annotations */
     public void delSources()                 {
         logger.log(Level.SEVERE, "delSources is not implemented in the class "+this.getClass().getSimpleName(), new Exception());
+    }
+    
+    public Literal noSource() {
+    	delSources();
+    	return this;
     }
 
     // literal
@@ -358,9 +370,13 @@ public abstract class Literal extends DefaultTerm implements LogicalFormula {
         }
         */
 
+    	final boolean isInDebug = ag.getLogger().isLoggable(Level.FINE); 
+    			
         final Iterator<Literal> il   = ag.getBB().getCandidateBeliefs(this, un);
-        if (il == null) // no relevant bels
+        if (il == null) { // no relevant bels
+        	if (isInDebug) ag.getLogger().log(Level.FINE, "     | no candidate belief for "+this+" with "+un);
             return LogExpr.EMPTY_UNIF_LIST.iterator();
+        }
 
         final AgArch            arch     = (ag != null && ag.getTS() != null ? ag.getTS().getUserAgArch() : null);
         final int               nbAnnots = (hasAnnot() && getAnnots().getTail() == null ? getAnnots().size() : 0); // if annots contains a tail (as in p[A|R]), do not backtrack on annots
@@ -433,7 +449,10 @@ public abstract class Literal extends DefaultTerm implements LogicalFormula {
                         Unifier u = un.clone();
                         if (u.unifiesNoUndo(Literal.this, belToTry)) {
                             current = u;
+                        	if (isInDebug) ag.getLogger().log(Level.FINE, "     | belief annotation "+belToTry+" is an option for "+ Literal.this+ " -- "+u);
                             return;
+                        } else {
+                        	if (isInDebug) ag.getLogger().log(Level.FINE, "     | belief annotation "+belToTry+" is NOT an option for "+ Literal.this+ " -- "+u);                        	
                         }
                     }
                     annotsOptions = null;
@@ -453,9 +472,12 @@ public abstract class Literal extends DefaultTerm implements LogicalFormula {
                         Unifier unC = un.clone();
                         if (unC.unifiesNoUndo(Literal.this, rhead)) {
                             current = unC;
+                        	if (isInDebug) ag.getLogger().log(Level.FINE, "     | rule "+rhead+" is an option for "+ Literal.this+ " -- "+unC);
                             //if (cacheResults != null)
                             //    cacheResults.add(unC);
                             return;
+                        } else {
+                        	if (isInDebug) ag.getLogger().log(Level.FINE, "     | rule "+rhead+" is NOT an option for "+ Literal.this+ " -- "+unC);                        	
                         }
                     }
                     ruleIt = null;
@@ -513,8 +535,11 @@ public abstract class Literal extends DefaultTerm implements LogicalFormula {
                         } else { // it is an ordinary query on a belief
                             Unifier u = un.clone();
                             if (u.unifiesNoUndo(Literal.this, belInBB)) {
+                            	if (isInDebug) ag.getLogger().log(Level.FINE, "     | belief "+belInBB+" is an option for "+ Literal.this+ " -- "+u);
                                 current = u;
                                 return;
+                            } else {
+                            	if (isInDebug) ag.getLogger().log(Level.FINE, "     | belief "+belInBB+" is NOT an option for "+ Literal.this+ " -- "+u);
                             }
                         }
                     }
@@ -541,7 +566,7 @@ public abstract class Literal extends DefaultTerm implements LogicalFormula {
         }
     }
 
-    /** returns this literal as a list with three elements: [functor, list of terms, list of annots] */
+    /** returns this literal as a list with three elements: [namespace, functor, list of terms, list of annots] */
     public ListTerm getAsListOfTerms() {
         ListTerm l = new ListTermImpl();
         l.add(getNS());
@@ -604,7 +629,6 @@ public abstract class Literal extends DefaultTerm implements LogicalFormula {
     }
 
 
-    @SuppressWarnings("serial")
     static final class TrueLiteral extends Atom {
         public TrueLiteral() {
             super("true");
@@ -630,7 +654,6 @@ public abstract class Literal extends DefaultTerm implements LogicalFormula {
         }
     }
 
-    @SuppressWarnings("serial")
     static final class FalseLiteral extends Atom {
         public FalseLiteral() {
             super("false");

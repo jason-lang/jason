@@ -1,5 +1,8 @@
 package test;
 
+import java.io.StringReader;
+import java.util.Iterator;
+
 import jason.JasonException;
 import jason.asSemantics.Agent;
 import jason.asSemantics.Unifier;
@@ -7,16 +10,11 @@ import jason.asSyntax.ASSyntax;
 import jason.asSyntax.Atom;
 import jason.asSyntax.Literal;
 import jason.asSyntax.LiteralImpl;
-import jason.asSyntax.Plan;
 import jason.asSyntax.Term;
 import jason.asSyntax.VarTerm;
 import jason.asSyntax.directives.NameSpace;
 import jason.asSyntax.parser.ParseException;
 import jason.asSyntax.parser.as2j;
-
-import java.io.StringReader;
-import java.util.Iterator;
-
 import junit.framework.TestCase;
 
 /** JUnit test case for syntax package */
@@ -335,8 +333,7 @@ public class NSTest extends TestCase {
         Agent a = new Agent();
         a.initAg();
         parser.agent(a);
-        //System.out.println(a.getPL());
-        assertTrue(a.getPL().toString().contains("-!NoPlan[b,k,error(no_relevant),source(AgenteAdversario)] <- .print(NS)"));
+        assertTrue(a.getPL().toString().contains("-!NoPlan[b,error(no_relevant),k,source(AgenteAdversario)] <- .print(NS)"));
     }
 
     public void testDirective() throws ParseException, JasonException {

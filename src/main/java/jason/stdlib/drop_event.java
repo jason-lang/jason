@@ -16,6 +16,12 @@ import jason.asSyntax.Term;
   in case a goal is to be removed only from the set of events and <i>not</i> from the set of intentions.
   No event is produced as a consequence of dropping desires from the set of events.
 
+  <p>Parameters:<ul>
+
+  <li>- event (literal): the event to be dropped.</li>
+
+  </ul>
+
   <p>Example:<ul>
 
   <li> <code>.drop_event(go(X,Y))</code>: removes events such as
@@ -37,6 +43,35 @@ import jason.asSyntax.Term;
 
 
  */
+@Manual(
+        literal=".drop_event(event)",
+        hint="removes referred event from the agent circumstance",
+        argsHint= {
+                "the event to be dropped"
+        },
+        argsType= {
+                "literal"
+        },
+        examples= {
+                ".drop_event(go(X,Y)): removes events such as &lt;+!go(1,3),_&gt; from the set of events"
+        },
+        seeAlso= {
+                "jason.stdlib.intend",
+                "jason.stdlib.desire",
+                "jason.stdlib.drop_all_desires",
+                "jason.stdlib.drop_all_events",
+                "jason.stdlib.drop_all_intentions",
+                "jason.stdlib.drop_intention",
+                "jason.stdlib.drop_desire",
+                "jason.stdlib.succeed_goal",
+                "jason.stdlib.fail_goal",
+                "jason.stdlib.current_intention",
+                "jason.stdlib.resume",
+                "jason.stdlib.suspend",
+                "jason.stdlib.suspended"
+        }
+    )
+@SuppressWarnings("serial")
 public class drop_event extends drop_desire {
 
     @Override

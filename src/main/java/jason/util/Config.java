@@ -501,11 +501,32 @@ public class Config extends Properties {
         }*/
     }
 
+    @SuppressWarnings("rawtypes")
+    public Class getClassForClassLoaderTest(String jarEntry) {
+        if (jarEntry == JASON_JAR)
+            return TransitionSystem.class;
+        return this.getClass();
+    }
+  
+    
     public boolean tryToFixJarFileConf(String jarEntry, String jarFilePrefix, int minSize) {
         String jarFile = getProperty(jarEntry);
         if (jarFile == null || !checkJar(jarFile, minSize)) {
             if (showFixMsgs)
                 System.out.println("Wrong configuration for " + jarFilePrefix + ", current is " + jarFile);
+
+            // try to get by class loader
+            try {
+                String fromLoader = getClassForClassLoaderTest(jarEntry).getProtectionDomain().getCodeSource().getLocation().toString();
+                if (fromLoader.startsWith("file:")) 
+                    fromLoader = fromLoader.substring(5);
+                if (new File(fromLoader).getName().startsWith(jarFilePrefix) && checkJar(fromLoader, minSize)) {
+                    if (showFixMsgs)
+                        System.out.println("found at " + fromLoader+" by class loader");
+                    put(jarEntry, fromLoader);
+                    return true;
+                }
+            } catch (Exception e) {}
 
             // try to get from classpath (the most common case)
             jarFile = getJarFromClassPath(jarFilePrefix);
@@ -613,8 +634,8 @@ public class Config extends Properties {
                     put(jarEntry, File.separator);
                 }
             }
-            if (showFixMsgs)
-                System.out.println(jarFilePrefix+" not found");
+            //if (showFixMsgs)
+            //    System.out.println(jarFilePrefix+" not found");
             return false;
         }
         return true;
@@ -717,12 +738,24 @@ public class Config extends Properties {
         while (st.hasMoreTokens()) {
             String token = st.nextToken();
             File f = new File(token);
-            if (f.getName().startsWith(file)  && f.getName().endsWith(".jar") && !f.getName().endsWith("-sources.jar") && !f.getName().endsWith("-javadoc.jar")) {
+            if (f.getName().startsWith(file) && //digitAfterMinus(f.getName()) && 
+                    f.getName().endsWith(".jar") && 
+                    !f.getName().endsWith("-sources.jar") && 
+                    !f.getName().endsWith("-javadoc.jar")) {
                 return f.getAbsolutePath();
             }
         }
         return null;
     }
+    /*private static boolean digitAfterMinus(String s) {
+        int pos = s.indexOf("-");
+        while (pos > 0) {
+            if (Character.isDigit(s.substring(pos+1, pos+2).charAt(0)))
+                return true;
+            pos = s.indexOf("-", pos+1);
+        }
+        return false;
+    }*/
 
     protected String getEclipseInstallationDirectory() {
         return "jason";

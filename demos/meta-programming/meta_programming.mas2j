@@ -1,0 +1,18 @@
+/*
+    meta_programming
+    ---------------------------
+
+    Jason Project File
+
+    This file defines the initial state of the MAS
+
+    Jason 2.4-SNAPSHOT
+    February 26, 2019 - 17:13:32
+*/
+
+MAS meta_programming {
+
+    infrastructure: Centralised
+
+    agents: sample_agent;
+}

@@ -519,7 +519,7 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
 
         int cyclesSense      = 1;
         int cyclesDeliberate = 1;
-        int cyclesAct        = 5;
+        int cyclesAct        = 1;
 
         if (project.getInfrastructure().hasParameters()) {
             if (project.getInfrastructure().getParametersArray().length > 2) {
@@ -574,7 +574,7 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
         int cycles           = 1;
         int cyclesSense      = 1;
         int cyclesDeliberate = 1;
-        int cyclesAct        = 5;
+        int cyclesAct        = 1;
 
         try {
             ClassParameters infra = project.getInfrastructure();

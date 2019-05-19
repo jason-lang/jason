@@ -21,6 +21,26 @@ import java.util.logging.Level;
   @see jason.stdlib.printf
 
 */
+@Manual(
+        literal=".println(arg0[,arg1,...])",
+        hint="used for printing messages to the console such as .print except that a new line is printed after the parameters",
+        argsHint= {
+                "the term to be printed out",
+                "the term to be concatenated with prior ones and printed out [optional]",
+        },
+        argsType= {
+                "term",
+                "term"
+        },
+        examples= {
+                ".println(1,X,\"bla\"): prints out the concatenation of the string representations of the number 1, content of variable X, and the string \"bla\""
+        },
+        seeAlso= {
+                "jason.stdlib.print",
+                "jason.stdlib.printf"
+        }
+    )
+@SuppressWarnings("serial")
 public class println extends DefaultInternalAction {
 
     private static InternalAction singleton = null;

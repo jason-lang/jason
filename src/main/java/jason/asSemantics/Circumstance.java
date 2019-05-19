@@ -303,7 +303,13 @@ public class Circumstance implements Serializable {
         }
     }
     
-
+    public int getNbRunningIntentions() {
+        int n = I.size();
+        if (AI != null) n++;
+        if (SI != null && SI != AI) n++;
+        return n;
+    }
+    
     public boolean hasRunningIntention() {
         return (I != null && !I.isEmpty()) || AI != null;
     }

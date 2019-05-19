@@ -32,6 +32,7 @@ import jason.asSyntax.ObjectTermImpl;
 import jason.asSyntax.Plan;
 import jason.asSyntax.PlanBody;
 import jason.asSyntax.PlanBody.BodyType;
+import jason.asSyntax.PlanBodyImpl;
 import jason.asSyntax.PlanLibrary;
 import jason.asSyntax.StringTermImpl;
 import jason.asSyntax.Structure;
@@ -122,8 +123,8 @@ public class TransitionSystem {
     /** adds an object that will be notified about events on goals (creation, suspension, ...) */
     public void addGoalListener(final GoalListener gl) {
         if (goalListeners == null) {
-            goalListeners = new ArrayList<GoalListener>();
-            listenersMap  = new HashMap<GoalListener, CircumstanceListener>();
+            goalListeners = new ArrayList<>();
+            listenersMap  = new HashMap<>();
         } else {
             // do not install two MetaEventGoalListener
             for (GoalListener g: goalListeners)
@@ -229,9 +230,9 @@ public class TransitionSystem {
         case ExecInt:
             applyExecInt();
             break;
-        case ClrInt:        
-            stepAct = State.StartRC;        
-            applyClrInt(C.SI);      
+        case ClrInt:
+            stepAct = State.StartRC;
+            applyClrInt(C.SI);
             break;
         default:
             break;
@@ -402,7 +403,7 @@ public class TransitionSystem {
             if (logger.isLoggable(Level.FINE))
                 logger.fine("Selected event "+C.SE);
             if (C.SE != null) {
-                
+
                 // external events are copied for all intentions (new JasonER)
                 if (C.SE.isExternal() && !C.SE.getTrigger().isGoal() && C.SE.getTrigger().isAddition()) {
                     Iterator<Intention> ii = C.getRunningIntentions().iterator();
@@ -428,9 +429,9 @@ public class TransitionSystem {
                                 }
                             }
                         }
-                    } 
+                    }
                 }
-                                
+
                 if (ag.hasCustomSelectOption() || setts.verbose() == 2) // verbose == 2 means debug mode
                     stepDeliberate = State.RelPl;
                 else
@@ -440,7 +441,7 @@ public class TransitionSystem {
             // Rule SelEv2
             // directly to ProcAct if no event to handle
             stepDeliberate = State.ProcAct;
-        }        
+        }
     }
 
     // used to handle goal condition (new in JasonER)
@@ -462,7 +463,7 @@ public class TransitionSystem {
         }
     };
 
-    private void applyClrSatInt() {        
+    private void applyClrSatInt() {
         // remove all intentions with GoalCondition satisfied (new JasonER)
         if (C.hasIntentionWithGoalCondition()) {
             nbOfGoalConditions = 0;
@@ -473,9 +474,9 @@ public class TransitionSystem {
             }
             if (nbOfGoalConditions == 0) // if no intention with GC, stop checking
                 C.resetIntentionsWithGoalCondition();
-        }       
+        }
     }
-    
+
     private void applyRelPl() throws JasonException {
         // get all relevant plans for the selected event
         C.RP = relevantPlans(C.SE.trigger);
@@ -565,7 +566,7 @@ public class TransitionSystem {
         // consider scope (new in JasonER)
         // TODO: implement Scope for RelPl ApplPl SelAppl
         List<Plan> candidateRPs = C.SE.getRelPlans(); // in case the rel plans are already computed before
-        if (candidateRPs == null) {        
+        if (candidateRPs == null) {
             PlanLibrary plib = ag.getPL();
             if (C.SE.isInternal()) {
                 Plan p = C.SE.getIntention().peek().getPlan();
@@ -575,7 +576,7 @@ public class TransitionSystem {
                     plib = p.getScope();
                 }
             }
-    
+
             // get all relevant plans for the selected event
             candidateRPs = plib.getCandidatePlans(C.SE.getTrigger());
         }
@@ -592,7 +593,7 @@ public class TransitionSystem {
                         }
                     }
                 }
-                
+
                 relUn = p.isRelevant(C.SE.trigger, relUn);
                 if (relUn != null) { // is relevant
                     LogicalFormula context = p.getContext();
@@ -641,7 +642,7 @@ public class TransitionSystem {
                     IntendedMeans imBase = C.SE.intention.peek(); // base = where the new IM will be place on top of
                     if (imBase != null && imBase.renamedVars != null) {
                         // move top relevant values into the base (relevant = renamed vars in base)
-                        
+
                         for (VarTerm v: imBase.renamedVars) {
                             VarTerm vvl = (VarTerm)imBase.renamedVars.function.get(v);
                             Term t = top.unif.get(vvl);
@@ -777,6 +778,9 @@ public class TransitionSystem {
                     return;
                 }
             }
+            // translate var into appropriate body
+            if (bTerm.isInternalAction())
+                h = new PlanBodyImpl(BodyType.internalAction, bTerm);
         }
 
         if (bTerm.isPlanBody()) {
@@ -1025,7 +1029,7 @@ public class TransitionSystem {
                     if (t != null && t.isVar()) {
                         //getLogger().info("adding "+t+"="+v+"="+renamedVars.function.get(v)+" u="+u);
                         if (adds == null)
-                            adds = new HashMap<VarTerm, Term>();
+                            adds = new HashMap<>();
                         try {
                             adds.put((VarTerm)t,renamedVars.function.get(v));
                         } catch (Exception e) {
@@ -1045,7 +1049,7 @@ public class TransitionSystem {
         }
         return body;
     }
-    
+
     public void applyClrInt(Intention i) throws JasonException {
         while (true) { // quit the method by return
             // Rule ClrInt
@@ -1057,13 +1061,13 @@ public class TransitionSystem {
                 C.dropIntention(i);
                 return;
             }
-            
+
             IntendedMeans im = i.peek();
             if (!im.isSatisfied(getAg())) {
                 // nothing to do
                 return;
             }
-            
+
             // remove the finished IM from the top of the intention
             IntendedMeans topIM = i.pop();
             Trigger topTrigger = topIM.getTrigger();
@@ -1152,7 +1156,7 @@ public class TransitionSystem {
                 Unifier relUn = null;
                 relUn = pl.isRelevant(te, relUn);
                 if (relUn != null) {
-                    if (rp == null) rp = new LinkedList<Option>();
+                    if (rp == null) rp = new LinkedList<>();
                     rp.add(new Option(pl, relUn));
                 }
             }
@@ -1168,18 +1172,28 @@ public class TransitionSystem {
 
                 for (Option opt: rp) {
                     LogicalFormula context = opt.getPlan().getContext();
+                    if (getLogger().isLoggable(Level.FINE))
+                        getLogger().log(Level.FINE, "option for "+C.SE.getTrigger()+" is plan "+opt.getPlan().getLabel() + " " + opt.getPlan().getTrigger() + " : " + context + " -- with unification "+opt.getUnifier());
+
                     if (context == null) { // context is true
-                        if (ap == null) ap = new LinkedList<Option>();
+                        if (ap == null) ap = new LinkedList<>();
                         ap.add(opt);
+                        if (getLogger().isLoggable(Level.FINE))
+                            getLogger().log(Level.FINE, "     "+opt.getPlan().getLabel() + " is applicable with unification "+opt.getUnifier());
                     } else {
                         boolean allUnifs = opt.getPlan().isAllUnifs();
                         Iterator<Unifier> r = context.logicalConsequence(ag, opt.getUnifier());
+                        boolean isApplicable = false;
                         if (r != null) {
                             while (r.hasNext()) {
+                                isApplicable = true;
                                 opt.setUnifier(r.next());
 
-                                if (ap == null) ap = new LinkedList<Option>();
+                                if (ap == null) ap = new LinkedList<>();
                                 ap.add(opt);
+
+                                if (getLogger().isLoggable(Level.FINE))
+                                    getLogger().log(Level.FINE, "     "+opt.getPlan().getLabel() + " is applicable with unification "+opt.getUnifier());
 
                                 if (!allUnifs) break; // returns only the first unification
                                 if (r.hasNext()) {
@@ -1188,6 +1202,9 @@ public class TransitionSystem {
                                 }
                             }
                         }
+
+                        if (!isApplicable && getLogger().isLoggable(Level.FINE))
+                            getLogger().log(Level.FINE, "     "+opt.getPlan().getLabel() + " is not applicable");
                     }
                 }
             }
@@ -1443,7 +1460,7 @@ public class TransitionSystem {
                     return 0;
                 }
 
-                IntendedMeans im = i.dropGoal(c, un); 
+                IntendedMeans im = i.dropGoal(c, un);
                 if (im != null) {
                     // notify listener
                     if (ts.hasGoalListener())

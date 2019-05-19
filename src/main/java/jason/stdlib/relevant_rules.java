@@ -20,21 +20,40 @@ import java.util.Iterator;
 
 <p>Parameters:<ul>
 
-<li>+ literal.</li>
+<li>+ argument (literal): the argument to proof.</li>
 
-<li>- rules (list of rule terms)</li>
+<li>- rules (list of rule terms): the list of rules that prove the argument</li>
 
 </ul>
 
 <p>Example:<ul>
 
-<li> <code>.relevant_rules( p(_),LP)</code>: unifies LP with a list of
+<li> <code>.relevant_rules(p(_),LP)</code>: unifies LP with a list of
 all rules with head p/1.</li>
 
 
 </ul>
 
 */
+@Manual(
+        literal=".relevant_rules(argument,rules)",
+        hint="gets all rules that can be used to prove some literal",
+        argsHint= {
+                "the argument to proof",
+                "the rules that prove it"
+        },
+        argsType= {
+                "literal",
+                "list of plan rules"
+        },
+        examples= {
+                ".relevant_rules(p(_),LP): unifies LP with a list of all rules with head p/1."
+        },
+        seeAlso= {
+                ""
+        }
+    )
+@SuppressWarnings("serial")
 public class relevant_rules extends DefaultInternalAction {
 
     @Override public int getMinArgs() {

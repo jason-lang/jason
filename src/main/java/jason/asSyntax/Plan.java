@@ -39,15 +39,15 @@ public class Plan extends Structure implements Cloneable, Serializable {
     private LogicalFormula    goalCondition;
     private PlanLibrary       subplans;
     private PlanLibrary       scope;
-    
+
     private boolean isAtomic      = false;
     private boolean isAllUnifs    = false;
     private boolean hasBreakpoint = false;
 
     private boolean     isTerm = false; // it is true when the plan body is used as a term instead of an element of a plan
 
-    private String file = ""; // the file where this plan was inside
-    
+    private String source = ""; // the source of this plan (file, url, ....)
+
     // used by clone
     public Plan() {
         super("plan", 0);
@@ -73,9 +73,10 @@ public class Plan extends Structure implements Cloneable, Serializable {
         return 4;
     }
 
-    public void setFile(String f) { if (f!=null) this.file = f; }       
-    public String getFile()       { return this.file; }
-    
+    public void setSource(String f) { if (f!=null) this.source = f; }
+    public String getSource()       { return this.source; }
+    @Deprecated public String getFile()       { return this.source; }
+
     private static final Term noLabelAtom = new Atom("nolabel");
 
     @Override
@@ -88,6 +89,8 @@ public class Plan extends Structure implements Cloneable, Serializable {
         case 2:
             return (context == null) ? Literal.LTrue : context;
         case 3:
+            if (body.getBodyNext() == null && body.getBodyTerm().isVar()) // the case of body as a single var
+                return body.getBodyTerm();
             return body;
         default:
             return null;
@@ -114,8 +117,8 @@ public class Plan extends Structure implements Cloneable, Serializable {
 
     public void setLabel(Pred p) {
         label = p;
-        isAtomic      = false;      
-        hasBreakpoint = false;      
+        isAtomic      = false;
+        hasBreakpoint = false;
         isAllUnifs    = false;
         if (p != null && p.hasAnnot()) {
             for (Term t: label.getAnnots()) {
@@ -133,8 +136,8 @@ public class Plan extends Structure implements Cloneable, Serializable {
     public Pred getLabel() {
         return label;
     }
-    public void delLabel() {        
-        setLabel(null);     
+    public void delLabel() {
+        setLabel(null);
     }
 
     public void setContext(LogicalFormula le) {
@@ -146,10 +149,33 @@ public class Plan extends Structure implements Cloneable, Serializable {
     public void setAsPlanTerm(boolean b) {
         isTerm = b;
     }
-    
+
     public boolean isPlanTerm() {
         return isTerm;
     }
+
+    @Override
+    public ListTerm getAsListOfTerms() {
+        ListTerm l = new ListTermImpl();
+        l.add(getLabel());
+        l.add(getTrigger());
+        l.add(getContext());
+        l.add(getBody());
+        return l;
+    }
+
+    /** creates a plan from a list with four elements: [L, T, C, B] */
+    public static Plan newFromListOfTerms(ListTerm lt) throws JasonException {
+        Term c = lt.get(2);
+        if (c.isPlanBody()) {
+            c = ((PlanBody)c).getBodyTerm();
+        }
+        return new Plan( new Pred((Literal)(lt.get(0))),
+                (Trigger)lt.get(1),
+                (LogicalFormula)c,
+                (PlanBody)lt.get(3));
+    }
+
 
     /** prefer using ASSyntax.parsePlan */
     public static Plan parse(String sPlan) {
@@ -239,8 +265,8 @@ public class Plan extends Structure implements Cloneable, Serializable {
 
     public Term clone() {
         Plan p = new Plan();
-        
-        if (label != null) 
+
+        if (label != null)
             p.setLabel((Pred) label.clone());
 
         p.tevent = tevent.clone();
@@ -258,7 +284,7 @@ public class Plan extends Structure implements Cloneable, Serializable {
         // TODO: should we change the namespace of all elements of the plan?
         return (Plan)clone();
     }
-    
+
     /** used to create a plan clone in a new IM */
     public Plan cloneOnlyBody() {
         Plan p = new Plan();
@@ -293,15 +319,15 @@ public class Plan extends Structure implements Cloneable, Serializable {
         out.append(((context == null) ? "" : " : " + context));
         out.append(((goalCondition == null) ? "" : " <: " + goalCondition));
         if (subplans == null) {
-            if (!body.isEmptyBody()) 
+            if (!body.isEmptyBody())
                 out.append(" <- " + body);
             if (isTerm)
                 out.append(" }");
-            else 
+            else
                 out.append(".");
         } else {
             out.append(" {");
-            if (!body.isEmptyBody()) 
+            if (!body.isEmptyBody())
                 out.append("\n   <- " + body + ".");
             for (Plan p: subplans)
                 out.append("\n   "+p.toASString());
@@ -320,6 +346,10 @@ public class Plan extends Structure implements Cloneable, Serializable {
             l.appendChild(new LiteralImpl(label).getAsDOM(document));
             u.appendChild(l);
         }
+        if (source != null && !source.isEmpty()) {
+            u.setAttribute("file", source);
+        }
+
         u.appendChild(tevent.getAsDOM(document));
 
         if (context != null) {
@@ -334,7 +364,7 @@ public class Plan extends Structure implements Cloneable, Serializable {
 
         return u;
     }
-    
+
     public void addSubPlan(Plan p) throws JasonException {
         if (subplans == null)
             subplans = new PlanLibrary(scope);
@@ -357,11 +387,11 @@ public class Plan extends Structure implements Cloneable, Serializable {
     public PlanLibrary getScope() {
         return scope;
     }
-    
+
     public void setGoalCondition(LogicalFormula f) {
         goalCondition = f;
     }
-    
+
     public LogicalFormula getGoalCondition() {
         return goalCondition;
     }
