@@ -4,6 +4,7 @@ import jason.asSemantics.DefaultInternalAction;
 import jason.asSemantics.TransitionSystem;
 import jason.asSemantics.Unifier;
 import jason.asSyntax.Term;
+import jason.asSyntax.NumberTerm;
 import jason.asSyntax.StringTerm;
 
 /**
@@ -20,6 +21,7 @@ import jason.asSyntax.StringTerm;
   <p>Parameters:<ul>
 
   <li>+ name (atom or string): the name of the agent to be killed.<br/>
+  <li>+ deadline (number): the given time for the agent finish some intentions before being killed. The signal +jag_shutting_down(T) will be produced so that the agent can prepare itself for the shutdown.<br/>
 
   </ul>
 
@@ -61,7 +63,7 @@ public class kill_agent extends DefaultInternalAction {
         return 1;
     }
     @Override public int getMaxArgs() {
-        return 1;
+        return 2;
     }
 
     @Override
@@ -72,6 +74,9 @@ public class kill_agent extends DefaultInternalAction {
             name = ((StringTerm)args[0]).getString();
         else
             name = args[0].toString();
-        return ts.getUserAgArch().getRuntimeServices().killAgent(name, ts.getUserAgArch().getAgName());
+        int deadline = 0;
+        if (args.length == 2)
+        	deadline = (int)((NumberTerm)args[1]).solve();
+        return ts.getUserAgArch().getRuntimeServices().killAgent(name, ts.getUserAgArch().getAgName(), deadline);
     }
 }

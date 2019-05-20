@@ -385,8 +385,9 @@ public class PlanLibrary implements Iterable<Plan> {
         }
     }
 
-    public static final Trigger TE_JAG_SLEEPING  = new Trigger(TEOperator.add, TEType.achieve, new Atom("jag_sleeping"));
-    public static final Trigger TE_JAG_AWAKING   = new Trigger(TEOperator.add, TEType.achieve, new Atom("jag_awaking"));
+    public static final Trigger TE_JAG_SLEEPING      = new Trigger(TEOperator.add, TEType.belief, new Atom("jag_sleeping"));
+    public static final Trigger TE_JAG_AWAKING       = new Trigger(TEOperator.add, TEType.belief, new Atom("jag_awaking"));
+    public static final Trigger TE_JAG_SHUTTING_DOWN = new Trigger(TEOperator.add, TEType.belief, new LiteralImpl("jag_shutting_down"));
 
     public PlanLibrary clone() {
         PlanLibrary pl = new PlanLibrary();
