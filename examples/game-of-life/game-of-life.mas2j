@@ -13,10 +13,10 @@ MAS game_of_life {
     // the pool has only four threads
     infrastructure: Centralised(pool,8)
 
-    environment: LifeEnvironment(100,10) // grid size = 60, initial density = 10%
+    environment: LifeEnvironment(100,10) // grid size = 100, initial density = 10%
 
     agents:
         cell [verbose=0]
-             #10000; // a 60x60 grid has 3600 agents
+             #10000; // a 100x100 grid has 10,000 agents
 
 }
