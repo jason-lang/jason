@@ -25,6 +25,8 @@ import jason.util.Config;
 */
 public class PlanLibrary implements Iterable<Plan> {
 
+    public static String KQML_PLANS_FILE = "kqmlPlans.asl";
+    
     /** a MAP from TE to a list of relevant plans */
     private Map<PredicateIndicator,List<Plan>> relPlans = new ConcurrentHashMap<>();
 
@@ -163,7 +165,9 @@ public class PlanLibrary implements Iterable<Plan> {
                 p.getLabel().addAnnot(BeliefBase.TSelf);
 
             if (p.getTrigger().getLiteral().getFunctor().equals(kqmlReceivedFunctor)) {
-                if (! (p.getSrcInfo() != null && "kqmlPlans.asl".equals(p.getSrcInfo().getSrcFile()))) {
+                // is it a KQML plan from a file different than the one provided by Jason?
+                if (! (p.getSrcInfo() != null && KQML_PLANS_FILE.equals(p.getSrcInfo().getSrcFile()))) {
+//                if (! (p.getSrcInfo() != null && p.getSrcInfo().getSrcFile().endsWith(".jar!/asl/kqmlPlans.asl"))) {
                     hasUserKqmlReceived = true;
                 }
             }

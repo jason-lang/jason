@@ -226,7 +226,7 @@ public class Agent {
             if (c.getKqmlFunctor().equals(Message.kqmlReceivedFunctor)) {
                 String file = Message.kqmlDefaultPlans.substring(Message.kqmlDefaultPlans.indexOf("/"));
                 if (JasonException.class.getResource(file) != null) {
-                    parseAS(JasonException.class.getResource(file)); //, "kqmlPlans.asl");
+                    parseAS(JasonException.class.getResource(file), PlanLibrary.KQML_PLANS_FILE); // the kqmlPlans.asl argument should be used here (see hasUserKqmlReceived in PlanLibrary)
                 } else {
                     logger.warning("The kqmlPlans.asl was not found!");
                 }
@@ -401,8 +401,11 @@ public class Agent {
 
     /** Adds beliefs and plans form an URL */
     public boolean parseAS(URL asURL) {
+        return parseAS(asURL, asURL.toString());    
+    }
+    public boolean parseAS(URL asURL, String sourceId) {
         try {
-            parseAS(asURL.openStream(), asURL.toString());
+            parseAS(asURL.openStream(), sourceId);
             logger.fine("as2j: AgentSpeak program '" + asURL + "' parsed successfully!");
             return true;
         } catch (IOException e) {

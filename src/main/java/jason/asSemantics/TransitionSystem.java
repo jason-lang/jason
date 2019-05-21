@@ -352,6 +352,10 @@ public class TransitionSystem {
                             content = add_nested_source.addAnnotToList(content, new Atom(sender));
                             getAg().addBel((Literal)content);
                             added = true;
+                        } else if (m.getIlForce().equals("signal") ) {
+                            content = add_nested_source.addAnnotToList(content, new Atom(sender));
+                            C.addEvent(new Event(new Trigger(TEOperator.add, TEType.belief, (Literal)content), Intention.EmptyInt));
+                            added = true;
                         }
                     }
 
