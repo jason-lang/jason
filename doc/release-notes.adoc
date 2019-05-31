@@ -3,7 +3,7 @@
 
 ifdef::env-github[:outfilesuffix: .adoc]
 
-== version 2.4 (2019-MM-DD)
+== version 2.4 (2019-05-24)
 
 - `.stopMAS` accepts an optional parameter with an amount of time before shutdown. Agents thus can prepare themselves reacting to the signal `+jag_shutting_down(T)`. E.g.
 +
