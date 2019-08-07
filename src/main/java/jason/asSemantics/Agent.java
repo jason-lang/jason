@@ -959,10 +959,13 @@ public class Agent {
                         if (il != null) {
                             while (il.hasNext()) {
                                 Literal linBB = il.next();
-                                if (u.unifies(linBB, beliefToDel)) {
-                                    il.remove();
+                                if (u.unifies(beliefToDel, linBB)) {
                                     beliefToDel = (Literal)beliefToDel.capply(u);
-                                    removed = true;
+                                    linBB.delAnnots(beliefToDel.getAnnots());
+                                    if (!linBB.hasSource()) {
+                                        il.remove();
+                                        removed = true;
+                                    }
                                     break;
                                 }
                             }
