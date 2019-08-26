@@ -100,7 +100,7 @@
       !clear_source(self,List,L2);
       .send(Sender, tell, L2, MsgId).
 
-+!clear_source(S,[],[]).
++!clear_source(_,[],[]).
 +!clear_source(S,[B[source(self)]|R], [B           |RC]) <- !clear_source(S,R,RC).
 +!clear_source(S,[B[source(O)]   |R], [B[source(O)]|RC]) <- !clear_source(S,R,RC).
 
