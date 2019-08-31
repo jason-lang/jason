@@ -159,7 +159,7 @@ public class wait extends DefaultInternalAction {
             this.formula = f;
             this.un = un;
             this.ts = ts;
-            c = ts.getC();
+            c  = ts.getC();
             si = c.getSelectedIntention();
             this.elapsedTimeTerm = elapsedTimeTerm;
 

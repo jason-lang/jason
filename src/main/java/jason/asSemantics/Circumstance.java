@@ -526,8 +526,20 @@ public class Circumstance implements Serializable {
 
     /** feedback action */
 
+    // returns true if the agent has a FA to process 
+    // (actions from a suspended intention are not considered) 
     public boolean hasFeedbackAction() {
-        return !FA.isEmpty();
+        //return !FA.isEmpty(); // old code that didn't consider suspended intentions
+        if (FA.isEmpty()) // "fast track" to avoid sync and loop
+            return false;
+        synchronized (FA) {
+            for (ActionExec a : FA) {
+                if (!a.getIntention().isSuspended()) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public List<ActionExec> getFeedbackActions() {

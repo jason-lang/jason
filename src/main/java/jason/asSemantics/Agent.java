@@ -683,7 +683,9 @@ public class Agent {
     public ActionExec selectAction(List<ActionExec> actList) {
         // make sure the selected Action is removed from actList
         // (do not return suspended intentions)
-        synchronized (actList) {
+        
+        /* // old code, suspended is now considered in hasFA, no need to sync, it is done in TS
+         * synchronized (actList) {
             Iterator<ActionExec> i = actList.iterator();
             while (i.hasNext()) {
                 ActionExec a = i.next();
@@ -692,8 +694,11 @@ public class Agent {
                     return a;
                 }
             }
-        }
-        return null;
+        }*/
+        if (actList.isEmpty())
+            return null;
+        else
+            return actList.remove(0);
     }
 
     /** TS Initialisation (called by the AgArch) */

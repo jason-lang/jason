@@ -35,7 +35,7 @@ public class Intention implements Serializable, Comparable<Intention>, Iterable<
 
     private int     id;
     private int     atomicCount    = 0; // number of atomic intended means in the intention
-    private boolean isSuspended = false;
+    private boolean isSuspended = false; // suspended by the internal action .suspend
     private String  suspendedReason = null;
 
     private Deque<IntendedMeans> intendedMeans = new ArrayDeque<>();
