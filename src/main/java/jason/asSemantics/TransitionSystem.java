@@ -596,11 +596,8 @@ public class TransitionSystem {
 
     private void applyProcAct() throws JasonException {
         stepAct = State.SelInt; // default next step
-        if (C.hasFeedbackAction()) {
-            ActionExec a = null;
-            synchronized (C.getFeedbackActions()) {
-                a = ag.selectAction(C.getFeedbackActions());
-            }
+        if (C.hasFeedbackAction()) { // suspended intentions are not considered 
+            ActionExec a = ag.selectAction(C.getFeedbackActions());
             if (a != null) {
                 final Intention curInt = a.getIntention();
 
