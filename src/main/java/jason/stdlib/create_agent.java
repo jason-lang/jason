@@ -49,14 +49,17 @@ import jason.runtime.Settings;
   creates the agent with customised agent class
   <code>myp.MyAgent</code>.</li>
 
+  <li>
   <code>.create_agent(bob,"x.asl", [agentArchClass("myp.MyArch")])</code>:
   creates the agent with customised architecture class
   <code>myp.MyArch</code>.</li>
 
+  <li>
   <code>.create_agent(bob,"x.asl", [beliefBaseClass("jason.bb.TextPersistentBB")])</code>:
   creates the agent with customised belief base
   <code>jason.bb.TextPersistentBB</code>.</li>
 
+  <li>
   <code>.create_agent(bob,"x.asl", [agentClass("myp.MyAgent"),
   agentArchClass("myp.MyArch"),
   beliefBaseClass("jason.bb.TextPersistentBB")])</code>: creates the
