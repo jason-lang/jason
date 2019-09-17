@@ -11,8 +11,8 @@ priv::all_proposals_received
 // starts a CNP
 @p1
 +!startCNP(Task)
-    <-  .wait(1000); // wait participants register
-        .print("Waiting participants for task ",Task," in ",this_ns ," ... ");
+    <-  .print("Waiting participants for task ",Task," in ",this_ns ," ... ");
+        .wait(1000); // wait participants register
         .df_search("participant",LP);
         +nb_participants(.length(LP));
         .send(LP, tell, ::cnp_started); // tell participants that a CNP has started
@@ -55,7 +55,7 @@ priv::all_proposals_received
     // award contract to the winner
     +!announce_result (Ns,[offer(_,Ag)|T]) : Ns::winner(Ag)
        <- .send(Ag,tell,Ns::accept_proposal); // notify the winner
-    !announce_result(Ns,T).
+          !announce_result(Ns,T).
     // announce to others
     +!announce_result(Ns,[offer(_,Ag)|T])
        <- .send(Ag,tell,Ns::reject_proposal);

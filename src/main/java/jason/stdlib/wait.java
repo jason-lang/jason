@@ -245,9 +245,6 @@ public class wait extends DefaultInternalAction {
             }
         }
 
-        public void intentionAdded(Intention i) { }
-        public void intentionResumed(Intention i) { }
-        public void intentionSuspended(Intention i, String reason) { }
         public String toString() {
             return sEvt;
         }

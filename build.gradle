@@ -455,6 +455,7 @@ task doc(dependsOn: [ 'jjdoc', 'javadoc', 'renderAsciiDocs']) {
 
 task renderAsciiDocs(type: Exec) {
     commandLine 'find', '.', '-name', '*.adoc', '-exec', 'asciidoctor', '-r', project.buildDir.absolutePath+'/../src/main/resources/pygments_init.rb', '{}', ';'
+    //commandLine 'find', '.', '-name', '*.adoc', '-exec', 'asciidoctor', '{}', ';'
 }
 
 task fixTab {

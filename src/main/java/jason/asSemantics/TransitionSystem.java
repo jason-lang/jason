@@ -156,8 +156,6 @@ public class TransitionSystem {
                 if (e.getTrigger().isAddition() && e.getTrigger().isGoal())
                     gl.goalStarted(e);
             }
-
-            public void intentionAdded(Intention i) {  }
         };
         C.addEventListener(cl);
         listenersMap.put(gl,cl);

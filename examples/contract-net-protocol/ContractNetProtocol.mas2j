@@ -11,8 +11,9 @@ The agents register their services/role in the DF (Directory Facilitator)
 For more information about the CNP see
 http://www.fipa.org/specs/fipa00029/
 
-This example also ilustrates the use of the mind
-inspector.
+This example also illustrates the use of the
+- mind inspector and
+- directory facilitator.
 
 */
 
