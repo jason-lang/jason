@@ -12,15 +12,16 @@ import java.util.GregorianCalendar;
 
 /**
 
-  <p>Internal action: <b><code>.time(HH,MM,SS)</code></b>.
+  <p>Internal action: <b><code>.time(HH,MM,SS,MS)</code></b>.
 
-  <p>Description: gets the current time (hour, minute, and seconds).
+  <p>Description: gets the current time (hour, minute, seconds, and milliseconds).
 
   <p>Parameters:<ul>
 
   <li>+/- hours (number): the hours (0--23).</li>
   <li>+/- minutes (number): the minutes (0--59).</li>
   <li>+/- seconds (number): the seconds (0--59).</li>
+  <li>+/- milliseconds (number): the milliseconds (0--999).</li>
 
   </ul>
 
@@ -28,6 +29,10 @@ import java.util.GregorianCalendar;
 
   <li> <code>.time(H,M,S)</code>: unifies H with the current hour, M
   with the current minutes, and S with the current seconds.</li>
+
+  <li> <code>.time(H,M,S,MS)</code>: unifies H with the current hour, M
+  with the current minutes, S with the current seconds, and MS with the current
+  milliseconds.</li>
 
   <li> <code>.time(15,_,_)</code>: succeeds if it is now 3pm or a bit later
   but not yet 4pm.</li>
@@ -39,24 +44,27 @@ import java.util.GregorianCalendar;
 
  */
 @Manual(
-        literal=".time(hour,minute,second)",
-        hint="gets the current time (hour, minute, and seconds)",
+        literal=".time(hour,minute,second,milliseconds)",
+        hint="gets the current time (hour, minute, seconds, and milliseconds).",
         argsHint= {
                 "the hours (from 0 to 23)",
                 "the minutes (from 0 to 59)",
-                "the seconds (from 0 to 59)"
+                "the seconds (from 0 to 59)",
+                "the milliseconds (from 0 to 999)",
         },
         argsType= {
+                "number",
                 "number",
                 "number",
                 "number"
         },
         examples= {
                 ".time(H,M,S): unifies H with the current hour, M with the current minutes, and S with the current seconds",
+                ".time(H,M,S,MS): unifies H with the current hour, M with the current minutes, S with the current seconds, and MS with the current milliseconds",
                 ".time(15,_,_): succeeds if it is now 3pm or a bit later but not yet 4pm"
         },
         seeAlso= {
-                "jason.stdlib.date", 
+                "jason.stdlib.date",
                 "jason.functions.time"
         }
     )
@@ -74,7 +82,7 @@ public class time extends DefaultInternalAction {
         return 3;
     }
     @Override public int getMaxArgs() {
-        return 3;
+        return 4;
     }
 
     @Override
@@ -82,8 +90,14 @@ public class time extends DefaultInternalAction {
         checkArguments(args);
 
         Calendar now = new GregorianCalendar();
-        return un.unifies(args[0], new NumberTermImpl(now.get(Calendar.HOUR_OF_DAY))) &&
+        boolean un_bool = un.unifies(args[0], new NumberTermImpl(now.get(Calendar.HOUR_OF_DAY))) &&
                un.unifies(args[1], new NumberTermImpl(now.get(Calendar.MINUTE))) &&
                un.unifies(args[2], new NumberTermImpl(now.get(Calendar.SECOND)));
+
+        if(args.length == 4){
+            un_bool = un_bool && un.unifies(args[3], new NumberTermImpl(now.get(Calendar.MILLISECOND)));
+        }
+        return  un_bool;
+
     }
 }
