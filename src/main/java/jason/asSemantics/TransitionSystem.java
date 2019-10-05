@@ -323,7 +323,7 @@ public class TransitionSystem {
                         un.unifies(answers, listOfAnswers);
                     }
                     listOfAnswers.append(content);
-                    int nbReceivers = ((ListTerm)send.getTerm(0)).size();
+                    int nbReceivers = ((ListTerm)rec).size();
                     if (listOfAnswers.size() == nbReceivers) { // all agents have answered
                         resumeSyncAskIntention(m.getInReplyTo(), send.getTerm(3), listOfAnswers);
                     }
