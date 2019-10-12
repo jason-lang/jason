@@ -908,7 +908,7 @@ chosen for that goal finishes successfully. It is also simple to specify
 a plan which, under specific conditions, chooses to drop the intention
 altogether (by means of a standard internal action mentioned below).
 
-NB: In the current semantics, writing a contingency plan `-!g` means
+NOTE: In the current semantics, writing a contingency plan `-!g` means
 the programmer knows how to control a goal failure. It may include
 having other goals which might themselves fail, but a contingency plan
 should not itself be allowed to fail; a failure in the contingency
