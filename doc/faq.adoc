@@ -905,8 +905,20 @@ example, for an agent that persist on a goal `!g` for as long as there
 are applicable plans for `+!g`, suffices it to include a plan `-g! : true <- true.` in the plan library. Note that the body can be empty as
 a goal is only removed from the body of a plan when the intended means
 chosen for that goal finishes successfully. It is also simple to specify
-a plan which, under specific condition, chooses to drop the intention
+a plan which, under specific conditions, chooses to drop the intention
 altogether (by means of a standard internal action mentioned below).
+
+NB: In the current semantics, writing a contingency plan `-!g` means
+the programmer knows how to control a goal failure. It may include
+having other goals which might themselves fail, but a contingency plan
+should not itself be allowed to fail; a failure in the contingency
+plan will delete the whole intention stack. However, if a plan for
++!g2 fails and there are no -!g2 plans given, if achieving that
+instance of g2 was needed as part of a plan to achieve g1, g1 will in
+turn fail as well (possibly triggering -!g1 plans, if there are
+any). We are considering moving to a semantics in which a failure in a
+contingency plan is seen as a failure in the original goal. Thanks to
+Michael Vezina for suggesting this FAQ addition.
 
 === Does `+p` (or `-p`) in a plan body cause two effects, i.e. updating the belief base and generating the events `+p` (or `-p`)?
 
