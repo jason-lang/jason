@@ -1177,7 +1177,7 @@ public class TransitionSystem {
         Term bodyPart = im.getCurrentStep().getBodyTerm().capply(im.unif);
         setDefaultFailureAnnots(failEvent, bodyPart, failAnnots);
 
-        if (im.isGoalAdd()) {
+        if (im.getTrigger().isGoal()) { // isGoalAdd()) {
             // notify listener
             if (hasGoalListener())
                 for (GoalListener gl: goalListeners) {
