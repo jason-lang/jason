@@ -913,9 +913,9 @@ the programmer knows how to control a goal failure. It may include
 having other goals which might themselves fail, but a contingency plan
 should not itself be allowed to fail; a failure in the contingency
 plan will delete the whole intention stack. However, if a plan for
-+!g2 fails and there are no -!g2 plans given, if achieving that
-instance of g2 was needed as part of a plan to achieve g1, g1 will in
-turn fail as well (possibly triggering -!g1 plans, if there are
+`+!g2` fails and there are no `-!g2` plans given, if achieving that
+instance of `g2` was needed as part of a plan to achieve `g1`, `g1` will in
+turn fail as well (possibly triggering `-!g1` plans, if there are
 any). We are considering moving to a semantics in which a failure in a
 contingency plan is seen as a failure in the original goal. Thanks to
 Michael Vezina for suggesting this FAQ addition.
