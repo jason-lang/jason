@@ -1,8 +1,9 @@
 = Jason FAQ
 (for Jason 2.0)
 :toc:
-:source-highlighter: coderay
-:coderay-linenums-mode: inline
+:source-highlighter: pygments
+:pygments-style: jacamo
+:pygments-linenums-mode: inline
 :icons: font
 :prewrap!:
 
@@ -79,6 +80,7 @@ javac -classpath ...../Jason/lib/jason.jar:. myLib/myIA.java
 ------------------------------------------------------------
 7.  Use the new IA in AgentSpeak sources, for example:
 +
+[source,jasonagent]
 ----------------------
 +a(X) : true
    <- ... ;
@@ -107,6 +109,7 @@ agents can be obtained from that file.
 For instance, a project file called `ag-names.mas2j` can be passed as
 parameter to the environment as in the following example:
 
+[source,jasonproject]
 -------------------------------------------
 MAS ag_names {
      environment: TestEnv("ag-names.mas2j")
@@ -185,6 +188,7 @@ public class MyExecutionControl extends ExecutionControl {
 
 To use this controller, the project file must be
 
+[source,jasonproject]
 ----------------------------------------------
 MAS test {
     ...
@@ -201,6 +205,7 @@ Is it possible to add/remove an agent to/from a running MAS?
 The internal action `.createagent` can be used to dynamically add a new
 agent into the running MAS. For example, when the plan:
 
+[source,jasonagent]
 ----------------------------------------
 +a : true
    <- ... ;
@@ -258,6 +263,7 @@ examples/gold-miners.
 2.  In case you do not want to copy files into the project, the
 `classpath` entry in the .mas2j file can be used:
 +
+[source,jasonproject]
 ---------------------------------------------------------------
 MAS masid {
    agents: .......
@@ -308,6 +314,7 @@ cycles and then sends the _carry on_ signal to them.
 To use this execution mode, you have to set up a controller class in the
 .mas2j configuration, for example:
 +
+[source,jasonproject]
 ----------------------------------------------------
 MAS test {
     infrastructure: Centralised
@@ -329,6 +336,7 @@ To use this execution mode you can just press the debug button
 rather than the run button of the IDE, or you can set up a debug
 controller class in the .mas2j configuration, for example:
 +
+[source,jasonproject]
 -------------------------------------------------------
 MAS test {
     infrastructure: Centralised
@@ -386,6 +394,7 @@ have to implement an `ExecutionControl` sub-class and specify it in the
 
 You will most likely have to override the following methods:
 
+[source,java]
 ---------------------------------------------------------------------
 public void receiveFinishedCycle(String agName, boolean breakpoint) {
    super.receiveFinishedCycle(agName, breakpoint);
@@ -403,6 +412,7 @@ step.
 To signal the agents to _carry on_, your class can use the following
 code:
 
+[source,java]
 ----------------------------------------------
    fJasonControl.informAllAgsToPerformCycle();
 ----------------------------------------------
@@ -423,6 +433,7 @@ the AgentSpeak _reasoning cycles_).
 Suppose you need a simple agent that interprets and reasons according to
 the following AgentSpeak source:
 
+[source,jasonagent]
 -------------------------
 +x(N) : N < 3  <- do(0).
 
@@ -657,6 +668,7 @@ You can find more information about this infrastructure in the http://jason.sour
 In the `.mas2j` project file, use the `infrastructure` entry to select
 an infrastructure, for example to use Centralised:
 
+[source,jasonproject]
 -------------------------------
 MAS auction {
     infrastructure: Centralised
@@ -666,6 +678,7 @@ MAS auction {
 
 and to use Jade:
 
+[source,jasonproject]
 ---------------------------
 MAS auction {
     infrastructure: Jade
@@ -775,6 +788,7 @@ In the project file, you have to setup the host’s name where the main
 container will run and the container where agents will run, as in the
 following example (this example is available in the demos directory):
 
+[source,jasonproject]
 ----------------------------------------------------------------------------------------
 MAS demo_distributed_jade {
 
@@ -830,6 +844,7 @@ be created and how agents are distributed on to them. The project
 definition is thus like the following (`myAllocator` is the name of the
 Java class and `[c1,c2]` is the list of containers).
 
+[source,jasonproject]
 ----
 MAS demo_distributed_jade {
 
@@ -978,6 +993,7 @@ You may have noticed !! is often used at the end of recursive plans
 (when the recursive call does not have free variables to be
 instantiated) as in the following code:
 
+[source,jasonagent]
 ----------------------------
 +!g : end_recursion_context.
 +!g : true <- action1; !!g.
@@ -991,6 +1007,7 @@ Jason 1.4.0 implements *tail recursion optimisation* and thus we don’t
 need to worry about the stack size anymore. The above code should be
 written as:
 
+[source,jasonagent]
 ----------------------------
 +!g : end_recursion_context.
 +!g : true <- action1; !g.
@@ -1115,6 +1132,7 @@ Annotations:::
 +
 An example of failure event and its annotations:
 +
+[source,jasonagent]
 --------------------------------------------------
 -!g[error(ia_failed),
     error_msg("internal action .my_name failed"),
@@ -1127,6 +1145,7 @@ Note that the plan that handles this event is not obliged to use any
   these annotations, or it could make use of a subset of them, for
   example:
 +
+[source,jasonagent]
 --------------------------------------------------------------------------------
 -!g[error(ia_failed)]       <- ... plan to handle error of type 'ia_failed'
 -!g[error(no_applicable)]   <- ... plan to handle error of type 'no_applicable'
