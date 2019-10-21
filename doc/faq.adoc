@@ -923,6 +923,7 @@ chosen for that goal finishes successfully. It is also simple to specify
 a plan which, under specific conditions, chooses to drop the intention
 altogether (by means of a standard internal action mentioned below).
 
+////
 NOTE: In the current semantics, writing a contingency plan `-!g` means
 the programmer knows how to control a goal failure. It may include
 having other goals which might themselves fail, but a contingency plan
@@ -934,6 +935,32 @@ turn fail as well (possibly triggering `-!g1` plans, if there are
 any). We are considering moving to a semantics in which a failure in a
 contingency plan is seen as a failure in the original goal. Thanks to
 Michael Vezina for suggesting this FAQ addition.
+////
+
+As from version 2.5, Jason uses a different semantics for failures in
+contingency plans. Previously, writing a contingency plan (i.e., a
+plan of the form `-!g : ...`) meant the programmer knew how to control
+a goal failure. It might include having other goals which might
+themselves fail, but a contingency plan should not itself be allowed
+to fail; a failure in the contingency plan would delete the whole
+intention stack. However, if a plan for `+!g2` failed and there were
+no `-!g2` plans given, if achieving that instance of `g2` was needed
+as part of a plan to achieve `g1`, `g1` would in turn fail as well
+(possibly triggering `-!g1` plans, if there were any).
+
+The new semantics also allows failures in contingency plans to fail
+other goals appearing below it in the intention stack. Note that the
+fact that there was a failure in the contingency plans remains
+explicitly represented in the intention stack, so that the an agent
+could, in principle, reason about those failures in deciding on how to
+act further. When a contingency plan `-!g2` fails, the failure
+cascades down the intention stack until a plan for a achieving a goal
+`!g1` which *does* have contingency plans `-!g1` is found; in that
+case, the event `-!g1` is posted, so an applicable plan for that event
+will be at the top of the intention stack and the failed `-!g2 : ...`
+plan will be right below it within the stack. Only in case no such
+plan is found the whole intention is removed from the intention set
+(and a message to say so is printed in the console, as usual).
 
 === Does `+p` (or `-p`) in a plan body cause two effects, i.e. updating the belief base and generating the events `+p` (or `-p`)?
 
