@@ -24,7 +24,7 @@ public class IntendedMeans implements Serializable {
     private   Trigger  trigger; // the trigger which created this IM
 
     protected Unifier  renamedVars = null;
-    
+
     protected Unifier  triggerUnif   = null; // unif when the IM was created (used to check goal condition and g-plan scope vars)
 
     public IntendedMeans(Option opt, Trigger te) {
@@ -37,7 +37,7 @@ public class IntendedMeans implements Serializable {
         } else {
             trigger = te.capply(unif);
         }
-        
+
         triggerUnif = unif.clone();
     }
 
@@ -93,7 +93,7 @@ public class IntendedMeans implements Serializable {
     public boolean isFinished() {
         return planBody == null || planBody.isEmptyBody();
     }
-    
+
     public boolean isSatisfied(Agent ag) {
         LogicalFormula goalCondition = getPlan().getGoalCondition();
         if (goalCondition == null) {

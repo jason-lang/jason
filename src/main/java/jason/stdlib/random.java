@@ -83,8 +83,8 @@ public class random extends DefaultInternalAction {
                 throw JasonException.createWrongArgument(this,"second argument must be a variable.");
             if (args.length == 3 && !args[2].isNumeric())
                 throw JasonException.createWrongArgument(this,"third argument must be a number.");
-            
-        } else {        
+
+        } else {
             if (!args[0].isVar())
                 throw JasonException.createWrongArgument(this,"first argument must be a variable.");
             if (args.length == 2 && !args[1].isNumeric())
@@ -106,7 +106,7 @@ public class random extends DefaultInternalAction {
                     return false;
                 if (args.length == 2) {
                     max = 1;
-                } else {                    
+                } else {
                     max = (int)((NumberTerm)args[2]).solve();
                 }
             } else {

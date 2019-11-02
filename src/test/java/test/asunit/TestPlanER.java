@@ -112,8 +112,8 @@ public class TestPlanER {
         ag.assertAct("aroot(6)", 10);
         ag.assertAct("binsg2(11)", 10);
         ag.assertAct("croot(33)", 10); // +c/1 in scope of !g2 is not applicable, use +c/1 from root
-        ag.assertAct("cing2(0)", 10); 
-        //System.out.println(ag.getArch().getActions());        
+        ag.assertAct("cing2(0)", 10);
+        //System.out.println(ag.getArch().getActions());
         assertEquals("[aroot(1), aroot(6), binsg2(11), croot(33), cing2(0)]",ag.getArch().getActions().toString());
     }
 }

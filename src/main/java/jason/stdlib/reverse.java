@@ -54,21 +54,21 @@ import jason.asSyntax.Term;
         },
         examples= {
                 ".reverse(\"abc\",X): X unifies with \"cba\"",
-                ".reverse(\"[a,b,c]\",X): X unifies with \"[c,b,a]\"", 
+                ".reverse(\"[a,b,c]\",X): X unifies with \"[c,b,a]\"",
                 ".reverse(\"[a,b,c|T]\",X): X unifies with \"[c,b,a|T]\""
         },
         seeAlso= {
-                "jason.stdlib.concat", 
-                "jason.stdlib.delete", 
-                "jason.stdlib.length", 
-                "jason.stdlib.member", 
-                "jason.stdlib.sort", 
-                "jason.stdlib.shuffle", 
-                "jason.stdlib.substring", 
-                "jason.stdlib.nth", 
-                "jason.stdlib.max", 
-                "jason.stdlib.min", 
-                "jason.stdlib.difference", 
+                "jason.stdlib.concat",
+                "jason.stdlib.delete",
+                "jason.stdlib.length",
+                "jason.stdlib.member",
+                "jason.stdlib.sort",
+                "jason.stdlib.shuffle",
+                "jason.stdlib.substring",
+                "jason.stdlib.nth",
+                "jason.stdlib.max",
+                "jason.stdlib.min",
+                "jason.stdlib.difference",
                 "jason.stdlib.intersection",
                 "jason.stdlib.union"
         }

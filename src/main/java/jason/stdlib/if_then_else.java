@@ -41,7 +41,7 @@ otherwise, <i>plan_body2/3</i> is executed.</p>
      elif (e(2)) { .print(b); }
      elif (e(3)) { .print(c); }
      else        { .print(d); }
-     ...      
+     ...
 </pre>
 The unification is changed by the evaluation of the logical formula, i.e., X might have a value after if.
 </p>

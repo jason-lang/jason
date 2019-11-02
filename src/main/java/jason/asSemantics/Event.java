@@ -16,7 +16,7 @@ public class Event implements Serializable {
     Trigger   trigger   = null;
     Intention intention = Intention.EmptyInt;
     List<Plan> relPlans = null; // rel plans computed for this event
-    
+
     public Event(Trigger t, Intention i) {
         trigger   = t;
         intention = i;
@@ -39,7 +39,7 @@ public class Event implements Serializable {
     public List<Plan> getRelPlans() {
         return relPlans;
     }
-    
+
     public boolean sameTE(Object t) {
         return trigger.equals(t);
     }
@@ -56,7 +56,7 @@ public class Event implements Serializable {
 
     @Override
     public int hashCode() {
-        int r = trigger.hashCode();  
+        int r = trigger.hashCode();
         if (intention != null)
             r = r + intention.hashCode();
         return r;

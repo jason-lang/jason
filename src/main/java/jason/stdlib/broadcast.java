@@ -36,7 +36,7 @@ import jason.asSyntax.Term;
         literal=".broadcast(performative,content)",
         hint="broadcasts a message to all known agents",
         argsHint= {
-                "the performative (tell, achieve, askOne,...)", 
+                "the performative (tell, achieve, askOne,...)",
                 "the message content"
         },
         argsType= {
@@ -47,7 +47,7 @@ import jason.asSyntax.Term;
                 ".broadcast(tell,value(10)): sends value(10) as a \"tell\" message to all known agents in the society"
         },
         seeAlso= {
-                "jason.stdlib.send", 
+                "jason.stdlib.send",
                 "jason.stdlib.my_name",
                 "jason.stdlib.all_names"
         }

@@ -64,7 +64,7 @@ import java.util.List;
         hint="sorts a list of terms using the \"natural\" order. For different types, the order is: numbers &lt; atoms &lt; structures &lt; lists",
         argsHint= {
                 "the list the be sorted",
-                "the resulting sorted list" 
+                "the resulting sorted list"
         },
         argsType= {
                 "list",
@@ -78,16 +78,16 @@ import java.util.List;
                 ".sort([3,2,5],[a,b,c]): false"
         },
         seeAlso= {
-                "jason.stdlib.concat", 
-                "jason.stdlib.delete", 
-                "jason.stdlib.length", 
-                "jason.stdlib.member", 
-                "jason.stdlib.shuffle", 
-                "jason.stdlib.nth", 
-                "jason.stdlib.max", 
-                "jason.stdlib.min", 
-                "jason.stdlib.reverse", 
-                "jason.stdlib.difference", 
+                "jason.stdlib.concat",
+                "jason.stdlib.delete",
+                "jason.stdlib.length",
+                "jason.stdlib.member",
+                "jason.stdlib.shuffle",
+                "jason.stdlib.nth",
+                "jason.stdlib.max",
+                "jason.stdlib.min",
+                "jason.stdlib.reverse",
+                "jason.stdlib.difference",
                 "jason.stdlib.intersection",
                 "jason.stdlib.union"
         }

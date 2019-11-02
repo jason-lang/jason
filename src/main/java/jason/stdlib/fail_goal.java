@@ -18,7 +18,7 @@ import jason.asSyntax.Trigger.TEOperator;
   <b><code>.fail_goal(<i>G</i>)</code></b>.
 
   <p>Description: aborts goals <i>G</i> in the agent circumstance as if a plan
-  for such goal had failed. An event <code>-!G</code> is generated.  
+  for such goal had failed. An event <code>-!G</code> is generated.
   A literal <i>G</i>
   is a goal if there is a triggering event <code>+!G</code> in any plan within
   any intention; also note that intentions can be suspended hence appearing

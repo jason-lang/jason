@@ -44,9 +44,9 @@ import jason.asSyntax.Term;
                 ".lower_case(\"CArtAgO\",X): unifies X with \"cartago\""
         },
         seeAlso= {
-                "jason.stdlib.concat", 
-                "jason.stdlib.delete", 
-                "jason.stdlib.length", 
+                "jason.stdlib.concat",
+                "jason.stdlib.delete",
+                "jason.stdlib.length",
                 "jason.stdlib.reverse"
         }
     )

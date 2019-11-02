@@ -71,17 +71,17 @@ import java.util.List;
                 ".prefix(X,[a,b,c]): unifies X with any prefix of the list, i.e., [a,b,c], [a,b], [a], and [] in this order"
         },
         seeAlso= {
-                "jason.stdlib.concat", 
-                "jason.stdlib.length", 
-                "jason.stdlib.sublist", 
-                "jason.stdlib.sort", 
-                "jason.stdlib.shuffle", 
-                "jason.stdlib.suffix", 
-                "jason.stdlib.nth", 
-                "jason.stdlib.max", 
-                "jason.stdlib.min", 
-                "jason.stdlib.reverse", 
-                "jason.stdlib.difference", 
+                "jason.stdlib.concat",
+                "jason.stdlib.length",
+                "jason.stdlib.sublist",
+                "jason.stdlib.sort",
+                "jason.stdlib.shuffle",
+                "jason.stdlib.suffix",
+                "jason.stdlib.nth",
+                "jason.stdlib.max",
+                "jason.stdlib.min",
+                "jason.stdlib.reverse",
+                "jason.stdlib.difference",
                 "jason.stdlib.intersection",
                 "jason.stdlib.union"
         }

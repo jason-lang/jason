@@ -37,10 +37,10 @@ public class Intention implements Serializable, Comparable<Intention>, Iterable<
     private int     atomicCount    = 0; // number of atomic intended means in the intention
     private boolean isSuspended = false; // suspended by the internal action .suspend
     private String  suspendedReason = null;
-    
+
     // new in JasonER
     private int     intestedInUpdateEvents = 0;
-    private int     imWithGoalCondition      = 0; 
+    private int     imWithGoalCondition      = 0;
 
     private Deque<IntendedMeans> intendedMeans = new ArrayDeque<>();
 
@@ -76,7 +76,7 @@ public class Intention implements Serializable, Comparable<Intention>, Iterable<
         if (isAtomic() && top.isAtomic())
             atomicCount--;
 
-        if (hasIntestedInUpdateEvents() && top.getPlan().hasInterestInUpdateEvents()) 
+        if (hasIntestedInUpdateEvents() && top.getPlan().hasInterestInUpdateEvents())
             intestedInUpdateEvents--;
         if (hasGoalCondition() && top.getPlan().hasGoalCondition())
             imWithGoalCondition--;
@@ -98,7 +98,7 @@ public class Intention implements Serializable, Comparable<Intention>, Iterable<
     public boolean hasGoalCondition() {
         return imWithGoalCondition > 0;
     }
-    
+
     public Iterator<IntendedMeans> iterator() {
         return intendedMeans.iterator();
     }
@@ -125,14 +125,14 @@ public class Intention implements Serializable, Comparable<Intention>, Iterable<
         return isSuspended;
     }
 
-    public void setSuspendedReason(String r) {      
-        suspendedReason = r;        
-    }       
-    public String getSuspendedReason() {        
-        if (suspendedReason == null)        
-            return "";      
-        else        
-            return suspendedReason;     
+    public void setSuspendedReason(String r) {
+        suspendedReason = r;
+    }
+    public String getSuspendedReason() {
+        if (suspendedReason == null)
+            return "";
+        else
+            return suspendedReason;
     }
 
     /** returns the IntendedMeans that succeeds in test c, returns null if there isn't one */
@@ -206,7 +206,7 @@ public class Intention implements Serializable, Comparable<Intention>, Iterable<
                 failTrigger = new Trigger(TEOperator.del, tevent.getType(), tevent.getLiteral());
                 posInStak--;
             }
-            if (tevent.isGoal() && //tevent.isAddition() && 
+            if (tevent.isGoal() && //tevent.isAddition() &&
                     pl.hasCandidatePlan(failTrigger))
                 return new Pair<>(new Event(failTrigger.clone(), this), posInStak);
             else

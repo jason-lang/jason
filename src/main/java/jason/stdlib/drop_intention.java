@@ -94,12 +94,12 @@ public class drop_intention extends DefaultInternalAction {
     }
 
     private boolean resultSuspend = false;
-    
+
     @Override
     public boolean suspendIntention() {
 		return resultSuspend;
     }
-    
+
     @Override
     public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {
         checkArguments(args);
@@ -107,14 +107,14 @@ public class drop_intention extends DefaultInternalAction {
         if (args.length == 0) {
     		resultSuspend = true; // to drop the current intention
         } else {
-        	resultSuspend = dropInt(ts.getC(),(Literal)args[0],un); // to drop the current intention        			
+        	resultSuspend = dropInt(ts.getC(),(Literal)args[0],un); // to drop the current intention
         }
         return true;
     }
 
     /**
      * Drops an intention based on a goal argument
-     * 
+     *
      * returns true if the current intention is dropped
      */
     public boolean dropInt(Circumstance C, Literal goal, Unifier un) {
@@ -130,7 +130,7 @@ public class drop_intention extends DefaultInternalAction {
                 un = bak.clone();
             }
         }
-        
+
         return isCurrentInt;
         /*
 

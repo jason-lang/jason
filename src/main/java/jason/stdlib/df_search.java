@@ -77,7 +77,7 @@ public class df_search extends df_register {
         ListTerm lt = new ListTermImpl();
         for (String a: ts.getUserAgArch().getRuntimeServices().dfSearch(getService(args), getType(args))) {
             lt.add(new Atom(a));
-        }       
+        }
         return un.unifies(args[args.length-1], lt);
     }
 }

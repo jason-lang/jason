@@ -507,8 +507,8 @@ public class Config extends Properties {
             return TransitionSystem.class;
         return this.getClass();
     }
-  
-    
+
+
     public boolean tryToFixJarFileConf(String jarEntry, String jarFilePrefix, int minSize) {
         String jarFile = getProperty(jarEntry);
         if (jarFile == null || !checkJar(jarFile, minSize)) {
@@ -518,7 +518,7 @@ public class Config extends Properties {
             // try to get by class loader
             try {
                 String fromLoader = getClassForClassLoaderTest(jarEntry).getProtectionDomain().getCodeSource().getLocation().toString();
-                if (fromLoader.startsWith("file:")) 
+                if (fromLoader.startsWith("file:"))
                     fromLoader = fromLoader.substring(5);
                 if (new File(fromLoader).getName().startsWith(jarFilePrefix) && checkJar(fromLoader, minSize)) {
                     if (showFixMsgs)
@@ -738,9 +738,9 @@ public class Config extends Properties {
         while (st.hasMoreTokens()) {
             String token = st.nextToken();
             File f = new File(token);
-            if (f.getName().startsWith(file) && //digitAfterMinus(f.getName()) && 
-                    f.getName().endsWith(".jar") && 
-                    !f.getName().endsWith("-sources.jar") && 
+            if (f.getName().startsWith(file) && //digitAfterMinus(f.getName()) &&
+                    f.getName().endsWith(".jar") &&
+                    !f.getName().endsWith("-sources.jar") &&
                     !f.getName().endsWith("-javadoc.jar")) {
                 return f.getAbsolutePath();
             }

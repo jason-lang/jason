@@ -40,17 +40,17 @@ import jason.asSyntax.Term;
                 "term"
         },
         examples= {
-                ".string(\"home page\"): true", 
+                ".string(\"home page\"): true",
                 ".string(b(10)): false",
                 ".string(b): false",
                 ".string(X): false if X is free, true if X is bound to a string"
         },
         seeAlso= {
-                "jason.stdlib.atom", 
-                "jason.stdlib.list", 
-                "jason.stdlib.literal", 
-                "jason.stdlib.number", 
-                "jason.stdlib.structure", 
+                "jason.stdlib.atom",
+                "jason.stdlib.list",
+                "jason.stdlib.literal",
+                "jason.stdlib.number",
+                "jason.stdlib.structure",
                 "jason.stdlib.ground"
         }
     )

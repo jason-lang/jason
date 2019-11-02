@@ -566,15 +566,15 @@ public class TermTest extends TestCase {
         u = new Unifier();
         u.unifies(new VarTerm("Z"), ASSyntax.parseTerm("annot1"));
         assertTrue(l2.hasSubsetAnnot(l1, u));
-        
+
         u = new Unifier();
         assertTrue(l1.hasSubsetAnnot(l3, u));
         u = new Unifier();
         assertTrue(l4.hasSubsetAnnot(l3, u)); // true if {Y=annot1, Z=annot1}
         u = new Unifier();
-        assertTrue(l3.hasSubsetAnnot(l1, u));        
+        assertTrue(l3.hasSubsetAnnot(l1, u));
     }
-    
+
     public void testAnnotUnifAsList() {
         Pred p1 = Pred.parsePred("p[b(2),x]");
         Pred p2 = Pred.parsePred("p[a,b(2),c]");
@@ -877,7 +877,7 @@ public class TermTest extends TestCase {
         p1.addAnnots(p3.getAnnots());
         assertEquals(8,p1.getAnnots().size());
     }
-    
+
     public void testGetAnnot() {
         Literal p3 = Literal.parseLiteral("b(a)[annot2,annot1(x),annot3,source(self)]");
         assertNotNull(p3.getAnnot("annot1"));

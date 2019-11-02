@@ -294,7 +294,7 @@ public class MindInspectorAgArch extends AgArch {
             if (mindInspectorPanel != null) { // output on GUI
                 if (mindInspectorFreeze == null || !mindInspectorFreeze.isSelected()) {
                     showAgState(state);
-    
+
                     if (mindInspectorHistory != null) {
                         mindInspectorHistory.add(state);
                         setupSlider();

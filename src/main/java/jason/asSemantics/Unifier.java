@@ -89,7 +89,7 @@ public class Unifier implements Cloneable, Iterable<VarTerm> {
     public boolean unifiesNoUndo(Trigger te1, Trigger te2) {
         return te1.sameType(te2) && unifiesNoUndo(te1.getLiteral(), te2.getLiteral());
     }
-    
+
     // ----- Unify for Predicates/Literals
 
     /** this version of unifies undo the variables' mapping
@@ -127,10 +127,10 @@ public class Unifier implements Cloneable, Iterable<VarTerm> {
         if (t1g == null && t2g == null) return true;
         if (t1g == null && t2g != null) return false;
         if (t1g != null && t2g == null) return false;
-        
+
         Pred np1 = null;
         Pred np2 = null;
-        
+
         if (t1g instanceof Pred && t2g instanceof Pred) {
             np1 = (Pred)t1g;
             np2 = (Pred)t2g;
@@ -253,14 +253,14 @@ public class Unifier implements Cloneable, Iterable<VarTerm> {
             if (pb1.getBodyTerm() == null && pb2.getBodyTerm() == null) return true;
             if (pb1.getBodyTerm() == null && pb2.getBodyTerm() != null) return false;
             if (pb2.getBodyTerm() == null && pb1.getBodyTerm() != null) return false;
-                
+
             if (pb1.getBodyTerm().isVar() && pb2.getBodyTerm().isVar()) {
-                if (unifiesNoUndo(pb1.getBodyTerm(), pb2.getBodyTerm())) {                    
+                if (unifiesNoUndo(pb1.getBodyTerm(), pb2.getBodyTerm())) {
                     return unifiesNoUndo(pb1.getBodyNext(), pb2.getBodyNext());
                 } else
                     return false;
             }
-            
+
             if (pb1.getBodyTerm().isVar()) {
                 if (pb1.getBodyNext() == null) { // last var (unifies the remaining plan body)
                     return unifiesNoUndo(pb1.getBodyTerm(), pb2);
@@ -274,7 +274,7 @@ public class Unifier implements Cloneable, Iterable<VarTerm> {
                                 return unifiesNoUndo(pb1.getBodyNext().getBodyTerm(), new PlanBodyImpl());
                             }
                             return false;
-                        } else {                                    
+                        } else {
                             return unifiesNoUndo(pb1.getBodyNext(), pb2.getBodyNext());
                         }
                     }
@@ -477,7 +477,7 @@ public class Unifier implements Cloneable, Iterable<VarTerm> {
         return u;
     }
 
-    /** changes the implementation of Var/Value mapping  -- should be used carefully */  
+    /** changes the implementation of Var/Value mapping  -- should be used carefully */
     public void setMap(Map<VarTerm, Term> newFunc) {
         function = newFunc;
     }

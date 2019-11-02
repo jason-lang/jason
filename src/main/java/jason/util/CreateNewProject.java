@@ -35,7 +35,7 @@ public class CreateNewProject {
     public static void main(String[] args) throws Exception {
         boolean consoleApp = false;
         for (int i=0; i<args.length; i++)
-            if ("--console".equals(args[i])) 
+            if ("--console".equals(args[i]))
                 consoleApp = true;
 
         String pId = null;

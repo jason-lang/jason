@@ -68,9 +68,9 @@ import jason.bb.BeliefBase;
 		},
 		examples= {
 				".remove_plan(l1): removes the plan identified by label l1[source(self)]",
-				".remove_plan(l1,bob): removes the plan identified by label l1[source(bob)]. Note this plan was probably added by a tellHow message", 
-				".remove_plan([l1,l2,l3]): removes the plans identified by labels l1[source(self)], l2[source(self)], and l3[source(self)]", 
-				".remove_plan([l1,l2,l3],bob): removes the plans identified by labels l1[source(bob)], l2[source(bob)], and l3[source(bob)]", 
+				".remove_plan(l1,bob): removes the plan identified by label l1[source(bob)]. Note this plan was probably added by a tellHow message",
+				".remove_plan([l1,l2,l3]): removes the plans identified by labels l1[source(self)], l2[source(self)], and l3[source(self)]",
+				".remove_plan([l1,l2,l3],bob): removes the plans identified by labels l1[source(bob)], l2[source(bob)], and l3[source(bob)]",
 				".relevant_plans({ +!g }, _, L); .remove_plan(LL): removes all plans with trigger event +!g"
 		},
 		seeAlso= {
@@ -108,12 +108,12 @@ public class remove_plan extends DefaultInternalAction {
         }
         return true;
     }
-    
+
     protected Literal fixLabel(Term label) throws ParseException {
     	if (label.isString() && ((StringTerm)label).getString().startsWith("@")) {
     		// as used in the book
     		label = ASSyntax.parseTerm(((StringTerm)label).getString().substring(1));
-    	}    	
+    	}
     	return (Literal)label;
     }
 }

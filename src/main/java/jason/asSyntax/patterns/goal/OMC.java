@@ -38,7 +38,7 @@ public class OMC extends DefaultDirective implements Directive {
                 Plan pf = ASSyntax.parsePlan("+"+fail+" : .intend("+goal+",intention(_,[_,im(_,{+!G},_,_)|_])) <- .fail_goal(G).");
                 pf.setSrcInfo(new SourceInfo(outerContent+"/"+directive, 0));
                 newAg.getPL().add(pf);
-                
+
                 pf = ASSyntax.parsePlan("+"+fail+" <- .drop_intention("+goal+")."); // no super goal, simply drop
                 pf.setSrcInfo(new SourceInfo(outerContent+"/"+directive, 0));
                 newAg.getPL().add(pf);

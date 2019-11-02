@@ -19,7 +19,7 @@ import jason.asSyntax.Term;
   <p>Description: used for printing messages to the console inspired by Java printf/format.
 
   NB.: do not use "%d" since all numbers used by this internal action are translated from Jason to a Java double.
-    
+
   <p>Examples:<ul>
   <li> <code>.printf("Value %08.0f%n",N)</code>: prints <code>Value 00461012</code>, when N is 461012.</li>
   <li> <code>.printf("Value %10.3f",N)</code>: prints <code>Value      3.142</code>, when N is 3.14159.</li>
@@ -55,13 +55,13 @@ import jason.asSyntax.Term;
 public class printf extends println {
 
     private static InternalAction singleton = null;
-    
+
     public static InternalAction create() {
         if (singleton == null)
             singleton = new printf();
         return singleton;
     }
-    
+
     @Override protected void checkArguments(Term[] args) throws JasonException {
         super.checkArguments(args); // check number of arguments
         if (!args[0].isString())
@@ -79,7 +79,7 @@ public class printf extends println {
                     javaArgs[i-1] = ((NumberTerm)args[i]).solve();
                 } catch (NoValueException e) {
                     e.printStackTrace();
-                }               
+                }
             }
         }
         String sout = String.format( ((StringTerm)args[0]).getString(), javaArgs);

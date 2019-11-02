@@ -410,7 +410,7 @@ public class TransitionSystem {
                 if (C.SE.isExternal() && C.SE.getTrigger().isUpdate()) { //  C.SE.getTrigger().isAddition()) {
                     //logger.info("Selected event "+C.SE.getTrigger()+  C.SE.isExternal());
                     // TODO: consider PI (see notes, not easy!)
-                    Iterator<Intention> ii = C.getRunningIntentions().iterator(); //C.getAllIntentions(); //C.getRunningIntentions().iterator(); 
+                    Iterator<Intention> ii = C.getRunningIntentions().iterator(); //C.getAllIntentions(); //C.getRunningIntentions().iterator();
                     while (ii.hasNext()) {
                         Intention i = ii.next();
                         // if i has sub plans (so potentially interested in external events)
@@ -420,7 +420,7 @@ public class TransitionSystem {
                             if (relPlans != null) {
                                 relPlans = new ArrayList<>(relPlans); // clone
                                 // do not consider plans at root level
-                                Iterator<Plan> ip = relPlans.iterator(); 
+                                Iterator<Plan> ip = relPlans.iterator();
                                 while (ip.hasNext())
                                     if (ip.next().getScope().isRoot())
                                         ip.remove();
@@ -469,7 +469,7 @@ public class TransitionSystem {
         }
     };
 
-    private void applyClrSatInt() { 
+    private void applyClrSatInt() {
         // remove all intentions with GoalCondition satisfied (new JasonER)
         if (C.hasIntentionWithGoalCondition()) {
             nbOfGoalConditions = 0;
@@ -661,7 +661,7 @@ public class TransitionSystem {
                                     im.unif.function.put(vvl, t);
                                 }
                             } else {
-                                // the vvl was renamed again in top, just replace the new value in base 
+                                // the vvl was renamed again in top, just replace the new value in base
                                 VarTerm v0 = (VarTerm)top.renamedVars.function.get(vvl);
                                 if (v0 != null) {
                                     imBase.renamedVars.function.put(v, v0);
@@ -683,7 +683,7 @@ public class TransitionSystem {
         applyClrSatInt(); // TODO: create a proper step for ClrSatInt in the enumerations
 
         stepAct = State.SelInt; // default next step
-        if (C.hasFeedbackAction()) { // suspended intentions are not considered 
+        if (C.hasFeedbackAction()) { // suspended intentions are not considered
             ActionExec a = null;
             synchronized (C.getFeedbackActions()) {
                 a = ag.selectAction(C.getFeedbackActions());
@@ -1064,7 +1064,7 @@ public class TransitionSystem {
 
             if (i.hasGoalCondition())
                 return; // they are cleared by applyClrSatInt
-            
+
             if (i.isFinished()) {
                 // intention finished, remove it
                 C.dropRunningIntention(i);

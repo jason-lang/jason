@@ -197,7 +197,7 @@ public class Pred extends Structure {
     public ListTerm getAnnots() {
         return annots;
     }
-    
+
     public ListTerm capplyAnnots(Unifier u) {
         if (hasAnnot()) {
             Pred o = new Pred("t"); // use this simple literal so that we do not need to clone all "this" to get capply annots
@@ -236,7 +236,7 @@ public class Pred extends Structure {
                 int c = functor.compareTo(l.getFunctor());
                 if (c == 0) { // equals
                     return l;
-                } else if (c < 0) { 
+                } else if (c < 0) {
                     return null;
                 }
             }
@@ -360,7 +360,7 @@ public class Pred extends Structure {
             if (ta.isVar())
                 varsInPAnnots.add(ta);
         Iterator<Term> iVarsInPAnnots = varsInPAnnots.iterator();
-        
+
         VarTerm  pTail       = pAnnots.getTail();
         Term pAnnot          = null;
         ListTerm pAnnotsTail = null;
@@ -395,7 +395,7 @@ public class Pred extends Structure {
                     // consider to consume a var from p annots
                     if (iVarsInPAnnots.hasNext()) {
                         Term v = iVarsInPAnnots.next();
-                        if (u.unifiesNoUndo(annot, v)) { 
+                        if (u.unifiesNoUndo(annot, v)) {
                             ok = true;
                             //pAnnots.remove(v); // se TermTest testSubsetAnnotBugAmandine case assertTrue(l4.hasSubsetAnnot(l3, u)); // true if {Y=annot1, Z=annot1}
                         }

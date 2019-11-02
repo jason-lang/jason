@@ -51,30 +51,30 @@ import jason.asSyntax.Term;
                 "list"
         },
         examples= {
-                ".intersection(\"[a,b,c]\",\"[b,e]\",X): X unifies with \"[b]\"", 
+                ".intersection(\"[a,b,c]\",\"[b,e]\",X): X unifies with \"[b]\"",
                 ".intersection(\"[a,b,a,c]\",\"[f,e,a,c]\",X): X unifies with \"[a,c]\""
         },
         seeAlso= {
-                "jason.stdlib.concat", 
-                "jason.stdlib.delete", 
-                "jason.stdlib.length", 
-                "jason.stdlib.member", 
-                "jason.stdlib.sort", 
-                "jason.stdlib.shuffle", 
-                "jason.stdlib.substring", 
-                "jason.stdlib.prefix", 
-                "jason.stdlib.suffix", 
-                "jason.stdlib.nth", 
-                "jason.stdlib.max", 
-                "jason.stdlib.min", 
-                "jason.stdlib.reverse", 
-                "jason.stdlib.difference", 
+                "jason.stdlib.concat",
+                "jason.stdlib.delete",
+                "jason.stdlib.length",
+                "jason.stdlib.member",
+                "jason.stdlib.sort",
+                "jason.stdlib.shuffle",
+                "jason.stdlib.substring",
+                "jason.stdlib.prefix",
+                "jason.stdlib.suffix",
+                "jason.stdlib.nth",
+                "jason.stdlib.max",
+                "jason.stdlib.min",
+                "jason.stdlib.reverse",
+                "jason.stdlib.difference",
                 "jason.stdlib.intersection",
                 "jason.stdlib.union"
         }
     )
 @SuppressWarnings("serial")
-public class intersection extends difference { 
+public class intersection extends difference {
 
     // to inherit checkArgs
 

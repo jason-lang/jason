@@ -151,7 +151,7 @@ public abstract class JadeAg extends Agent {
         } else if (p.toLowerCase().equals("query_if")) {
             return new ACLMessage(ACLMessage.QUERY_IF);
         } else if (p.toLowerCase().equals("inform_if")) {
-            return new ACLMessage(ACLMessage.INFORM_IF);            
+            return new ACLMessage(ACLMessage.INFORM_IF);
         }
         int perf = ACLMessage.getInteger(p);
         if (perf == -1 || perf == ACLMessage.NOT_UNDERSTOOD) {

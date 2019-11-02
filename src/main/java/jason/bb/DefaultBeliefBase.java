@@ -120,7 +120,7 @@ public class DefaultBeliefBase extends BeliefBase {
             logger.log(Level.SEVERE, "Error: '"+l+"' can not be added in the belief base.");
             return false;
         }
-        
+
         Literal bl = contains(l);
         if (bl != null && !bl.isRule()) {
             // add only annots
@@ -292,12 +292,12 @@ public class DefaultBeliefBase extends BeliefBase {
             return null;
         }
     }
-    
+
     class EntryIteratorWrapper implements Iterator<Literal> {
         Literal last = null;
         Iterator<Literal> il = null;
         BelEntry entry = null;
-        
+
         public EntryIteratorWrapper(BelEntry e) {
                 entry = e;
             il = entry.list.iterator();
@@ -316,7 +316,7 @@ public class DefaultBeliefBase extends BeliefBase {
                 percepts.remove(last);
             }
             size--;
-        }       
+        }
     }
 
     @Override

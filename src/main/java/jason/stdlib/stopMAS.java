@@ -16,7 +16,7 @@ import jason.runtime.RuntimeServices;
   <p>Example:<ul>
 
   <li> <code>.stopMAS</code>.</li>
-  <li> <code>.stopMAS(2000)</code> shuts down the system in 2 seconds. 
+  <li> <code>.stopMAS(2000)</code> shuts down the system in 2 seconds.
   The signal +jag_shutting_down(T) will be produced so that agents can prepare themselves for the shutdown.<br/>
 
   </ul>
@@ -29,7 +29,7 @@ import jason.runtime.RuntimeServices;
         literal=".stopMAS",
         hint="aborts the execution of all agents in the multi-agent system (and any simulated environment too)",
         argsHint= {
-                "" 
+                ""
         },
         argsType= {
                 ""

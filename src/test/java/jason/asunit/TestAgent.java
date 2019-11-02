@@ -83,7 +83,7 @@ public class TestAgent extends Agent {
         } else
             getTS().getLogger().setLevel(Level.INFO);
     }
-    
+
     public void clearExecutionTrace() {
         getArch().clearDoneActions();
         getArch().clearPrintOutput();
@@ -183,7 +183,7 @@ public class TestAgent extends Agent {
         };
         if (!assertMaxCyclesAndAnotherCondition(c, maxCycles))
             fail("failed assertAct("+act+")");
-        
+
         // run one extra cycle to place the intention back
         assertMaxCyclesAndAnotherCondition(new Condition() {
             public boolean test(TestArch arch) {

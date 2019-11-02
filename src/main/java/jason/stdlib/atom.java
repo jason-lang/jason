@@ -48,24 +48,24 @@ import jason.asSyntax.Term;
                 "term"
         },
         examples= {
-                ".atom(b(10)): false", 
-                ".atom(b): true", 
-                ".atom(~b): false", 
-                ".atom(10): false", 
-                ".atom(\"home page\"): false", 
-                ".atom(X): only true if X is bound to an atom", 
-                ".atom(a(X)): false", 
-                ".atom(a[X]): false", 
-                ".atom([a,b,c]): false", 
+                ".atom(b(10)): false",
+                ".atom(b): true",
+                ".atom(~b): false",
+                ".atom(10): false",
+                ".atom(\"home page\"): false",
+                ".atom(X): only true if X is bound to an atom",
+                ".atom(a(X)): false",
+                ".atom(a[X]): false",
+                ".atom([a,b,c]): false",
                 ".atom([a,b,c(X)]): false"
         },
         seeAlso= {
-                "jason.stdlib.atom", 
-                "jason.stdlib.list", 
-                "jason.stdlib.literal", 
-                "jason.stdlib.number", 
-                "jason.stdlib.string", 
-                "jason.stdlib.structure", 
+                "jason.stdlib.atom",
+                "jason.stdlib.list",
+                "jason.stdlib.literal",
+                "jason.stdlib.number",
+                "jason.stdlib.string",
+                "jason.stdlib.structure",
                 "jason.stdlib.ground"
         }
     )

@@ -23,7 +23,7 @@ import java.util.List;
 /**
   <p>Internal action: <b><code>.for(formula) { plan_body }</code></b>.
 
-  <p>Description: Implementation of <b>for</b>. For all unifications of <i>logical formula</i>, 
+  <p>Description: Implementation of <b>for</b>. For all unifications of <i>logical formula</i>,
   the <i>plan_body</i> is executed.
 
   <p>Syntax:

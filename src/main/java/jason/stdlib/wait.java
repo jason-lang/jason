@@ -81,8 +81,8 @@ import jason.asSyntax.Trigger;
         examples= {
                 ".wait(1000)</code>: suspend the intention for 1 second",
                 ".wait({+b(1)})</code>: suspend the intention until the belief b(1) is added in the belief base",
-                ".wait(b(X) & X > 10): suspend the intention until the agent believes b(X) with X greater than 10", 
-                ".wait({+!g}, 2000): suspend the intention until the goal g is triggered or 2 seconds have passed, whatever happens first. In case the event does not happens in two seconds, the internal action fails" + 
+                ".wait(b(X) & X > 10): suspend the intention until the agent believes b(X) with X greater than 10",
+                ".wait({+!g}, 2000): suspend the intention until the goal g is triggered or 2 seconds have passed, whatever happens first. In case the event does not happens in two seconds, the internal action fails" +
                 ".wait({+!g}, 2000, EventTime): suspend the intention until the goal g is triggered or 2 seconds have passed, whatever happens first. In case the event does not happen in two seconds, the internal action does not fail. The third argument will be unified to the elapsed time (in milliseconds) from the start of .wait until the event or timeout."
         },
         seeAlso= {

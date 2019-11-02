@@ -109,7 +109,7 @@ public class Atom extends Literal {
             if (l2s > l1s) return -1;
             return 0; // need to check elements (in Structure class)
         }*/
-        
+
         if (t.isVar())
             return -1;
 
@@ -142,11 +142,11 @@ public class Atom extends Literal {
                 return 1;
 
             // annots
-            if (getAnnots() == null && tAsLit.getAnnots() == null) 
+            if (getAnnots() == null && tAsLit.getAnnots() == null)
                 return 0;
-            if (getAnnots() == null) 
+            if (getAnnots() == null)
                 return -1;
-            if (tAsLit.getAnnots() == null) 
+            if (tAsLit.getAnnots() == null)
                 return 1;
 
             Iterator<Term> pai = tAsLit.getAnnots().iterator();
@@ -160,12 +160,12 @@ public class Atom extends Literal {
 
             final int ats = getAnnots().size();
             final int ots = tAsLit.getAnnots().size();
-            if (ats < ots) 
+            if (ats < ots)
                 return -1;
-            if (ats > ots) 
+            if (ats > ots)
                 return 1;
 
-            return 0;               
+            return 0;
         }
 
         return super.compareTo(t);

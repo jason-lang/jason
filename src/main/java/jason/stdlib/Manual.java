@@ -8,13 +8,13 @@ import java.lang.annotation.Documented;
 
 /** Manual for internal actions */
 @Target(ElementType.TYPE) //on class level
-@Retention(RetentionPolicy.RUNTIME) 
+@Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface Manual {
-    String    hint()     default "no hint"; 
-    String    literal()  default "noliteral(a,b,c)"; 
-    String[]  argsHint() default ""; 
-    String[]  argsType() default ""; 
-    String[]  examples() default ""; 
+    String    hint()     default "no hint";
+    String    literal()  default "noliteral(a,b,c)";
+    String[]  argsHint() default "";
+    String[]  argsType() default "";
+    String[]  examples() default "";
     String[]  seeAlso()  default "";
 }

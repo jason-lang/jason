@@ -38,14 +38,14 @@ public class TestPlanbodyAsTerm {
 
             "+!trl2 <- !myadd2( { jason.asunit.print(c2); jason.asunit.print(d2) } ); !grl2(20). "+
             "+!myadd2(Action) <- Plan =.. [ mynewlabel2, {+!grl2(C)}, {C > 10}, Action]; .add_plan(Plan). \n" +
-            
+
             "@mylabel +!plan1(1) : 1 > 10 <- .print(a); c(1); !g2(bob). \n"+
             "+!testPTUn <- .relevant_plans({+!plan1(_)}, [Plan|_]); Plan = {@L +!T : C <- B}; B={BH;BT}; jason.asunit.print(L,T,C,BH,BT). \n"+
 
             "+!testPTUnLitBuild <- .relevant_plans({+!plan1(_)}, [Plan|_]); Plan =.. [L,T,C,B]; jason.asunit.print(L,T,C,B); !show_body(B). " +
             "+!show_body({})    <-  jason.asunit.print(\".\"). " +
             "+!show_body({H;T}) <-  jason.asunit.print(H); !show_body(T). "
-            
+
         );
     }
 

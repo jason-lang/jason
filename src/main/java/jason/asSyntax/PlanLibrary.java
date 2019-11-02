@@ -26,7 +26,7 @@ import jason.util.Config;
 public class PlanLibrary implements Iterable<Plan> {
 
     public static String KQML_PLANS_FILE = "kqmlPlans.asl";
-    
+
     /** a MAP from TE to a list of relevant plans */
     private Map<PredicateIndicator,List<Plan>> relPlans = new ConcurrentHashMap<>();
 
@@ -52,12 +52,12 @@ public class PlanLibrary implements Iterable<Plan> {
     private final Object lockPL = new Object();
 
     private PlanLibrary father = null;
-    
+
     private boolean hasPlansForUpdateEvents = false;
-    
+
     public PlanLibrary() {
     }
-    
+
     public PlanLibrary(PlanLibrary father) {
         this.father = father;
     }
@@ -68,15 +68,15 @@ public class PlanLibrary implements Iterable<Plan> {
     public PlanLibrary getFather() {
         return father;
     }
-    
+
     public void setFather(PlanLibrary pl) {
         father = pl;
     }
-    
+
     public boolean hasPlansForUpdateEvents() {
         return hasPlansForUpdateEvents;
     }
-    
+
     public Object getLock() {
         return lockPL;
     }
@@ -216,9 +216,9 @@ public class PlanLibrary implements Iterable<Plan> {
                         else
                             lp.add(p);
             } else {
-                if (pte.isUpdate()) 
+                if (pte.isUpdate())
                     hasPlansForUpdateEvents = true;
-                
+
                 List<Plan> codesList = relPlans.get(pte.getPredicateIndicator());
                 if (codesList == null) {
                     codesList = new ArrayList<>();
@@ -328,7 +328,7 @@ public class PlanLibrary implements Iterable<Plan> {
         Plan p = get(pLabel);
         if (p != null) {
         	eDOMPlans = null;
-        	
+
         	boolean hasSource = p.getLabel().delSource(source);
 
             // if no source anymore, remove the plan
@@ -413,7 +413,7 @@ public class PlanLibrary implements Iterable<Plan> {
                         }
                 }
             }
-            
+
             if (father != null) {
                 List<Plan> lf = father.getCandidatePlans(te);
                 if (lf != null && !lf.isEmpty()) {
@@ -463,9 +463,9 @@ public class PlanLibrary implements Iterable<Plan> {
                 }
                 splans.put(p.getSource(), r);
             }
-            r.append(p.toString()+"\n");            
+            r.append(p.toString()+"\n");
         }
-        
+
         r = new StringBuilder();
         StringBuilder end = new StringBuilder("\n");
         for (String f: splans.keySet()) {
@@ -481,10 +481,10 @@ public class PlanLibrary implements Iterable<Plan> {
         }
         return r.toString()+end.toString();
     }
-    
+
     // for cache
     protected Element eDOMPlans = null;
-    
+
     /** get as XML */
     public Element getAsDOM(Document document) {
         if (eDOMPlans != null)

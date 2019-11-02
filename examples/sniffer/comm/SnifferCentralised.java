@@ -25,7 +25,7 @@ public class SnifferCentralised extends AgArch implements MsgListener {
 
     @Override
     public void init() {
-        if (RunCentralisedMAS.getRunner() != null) // is it the case of centralised platform being used 
+        if (RunCentralisedMAS.getRunner() != null) // is it the case of centralised platform being used
             CentralisedAgArch.addMsgListener(this);
     }
 

@@ -117,7 +117,7 @@ import java.util.concurrent.TimeUnit;
 					".send(rafael,askOne,value(beer,X),A,2000)</code>: as in the previous example, but agent jomi waits for 2 seconds. If no message is received by then, A unifies with timeout"
 			},
 			seeAlso= {
-					"jason.stdlib.broadcast", 
+					"jason.stdlib.broadcast",
 					"jason.stdlib.my_name"
 			}
 		)
@@ -233,7 +233,7 @@ public class send extends DefaultInternalAction {
         if (to.isString())
             rec = ((StringTerm)to).getString();
         else if (to.isAtom())
-        	rec = ((Atom)to).getFunctor(); // remove annotations 
+        	rec = ((Atom)to).getFunctor(); // remove annotations
     	else
             rec = to.toString();
         if (rec.equals("self"))
