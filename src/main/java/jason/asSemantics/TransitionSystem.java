@@ -1339,7 +1339,7 @@ public class TransitionSystem {
                         if (drop) {
                             try {
                                 FailWithDeadline ia = new FailWithDeadline(intention, evt.getTrigger());
-                                ia.findGoalAndDrop(TransitionSystem.this, body, new Unifier());
+                                ia.drop(TransitionSystem.this, body, new Unifier());
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
@@ -1366,7 +1366,7 @@ public class TransitionSystem {
          *           3 = simply removed without event
          */
         @Override
-        public int dropGoal(Intention i, Trigger g, TransitionSystem ts, Unifier un) throws JasonException {
+        public int dropIntention(Intention i, IMCondition c, TransitionSystem ts, Unifier un) throws JasonException {
             if (i != null) {
                 // only consider dropping if the intention is the one that created the deadline goal
                 if (intToDrop == null) {
@@ -1377,21 +1377,22 @@ public class TransitionSystem {
                     return 0;
                 }
 
-                if (i.dropGoal(g, un)) {
+                IntendedMeans im = i.dropGoal(c, un);
+                if (im != null) {
                     // notify listener
                     if (ts.hasGoalListener())
                         for (GoalListener gl: ts.getGoalListeners())
-                            gl.goalFailed(g);
+                            gl.goalFailed(im.getTrigger());
 
                     // generate failure event
-                    Event failEvent = ts.findEventForFailure(i, g); // find fail event for the goal just dropped
+                    Event failEvent = ts.findEventForFailure(i, im.getTrigger()); // find fail event for the goal just dropped
                     if (failEvent != null) {
                         failEvent.getTrigger().getLiteral().addAnnots(JasonException.createBasicErrorAnnots("deadline_reached", ""));
                         ts.getC().addEvent(failEvent);
-                        ts.getLogger().fine("'hard_deadline("+g+")' is generating a goal deletion event: " + failEvent.getTrigger());
+                        ts.getLogger().fine("'hard_deadline("+im.getTrigger()+")' is generating a goal deletion event: " + failEvent.getTrigger());
                         return 2;
                     } else { // i is finished or without failure plan
-                        ts.getLogger().fine("'hard_deadline("+g+")' is removing the intention without event:\n" + i);
+                        ts.getLogger().fine("'hard_deadline("+im.getTrigger()+")' is removing the intention without event:\n" + i);
                         return 3;
                     }
                 }

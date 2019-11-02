@@ -117,11 +117,11 @@ public class Intention implements Serializable, Comparable<Intention>, Iterable<
             return suspendedReason;
     }
 
-    /** returns the IntendedMeans with TE = g, returns null if there isn't one */
-    public IntendedMeans getIM(Trigger g, Unifier u) {
+    /** returns the IntendedMeans that succeeds in test c, returns null if there isn't one */
+    public IntendedMeans getIM(IMCondition c, Unifier u) { //Trigger g, Unifier u) {
         for (IntendedMeans im : intendedMeans)
             //System.out.println(g + " = "+ im.getTrigger()+" = "+u.unifies(g, im.getTrigger()));
-            if (u.unifies(g, im.getTrigger()))
+            if (c.test(im,u)) //u.unifies(g, im.getTrigger()))
                 return im;
         return null;
     }
@@ -139,18 +139,18 @@ public class Intention implements Serializable, Comparable<Intention>, Iterable<
         return false;
     }
 
-    /** remove all IMs until the lowest IM with trigger te */
-    public boolean dropGoal(Trigger te, Unifier un) {
-        boolean r = false;
-        IntendedMeans im = getIM(te, un);
+    /** remove all IMs until the lowest IM that succeeds in test c */
+    public IntendedMeans dropGoal(IMCondition c, Unifier u) {
+        IntendedMeans r = null;
+        IntendedMeans im = getIM(c,u);
         while (im != null) {
-            r = true;
+            r = im;
             // remove the IMs until im-1
             while (peek() != im) {
                 pop();
             }
             pop(); // remove im
-            im = getIM(te, un); // keep removing other occurrences of te
+            im = getIM(c,u); // keep removing other occurrences of te
         }
         return r;
     }

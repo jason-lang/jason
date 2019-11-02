@@ -4,6 +4,7 @@ import java.util.Iterator;
 
 import jason.RevisionFailedException;
 import jason.asSemantics.Agent;
+import jason.asSemantics.IMCondition;
 import jason.asSemantics.IntendedMeans;
 import jason.asSemantics.Intention;
 import jason.asSemantics.Option;
@@ -262,7 +263,16 @@ public class StdLibTest extends TestCase {
     public void testDropGoal1() throws ParseException {
         assertEquals(intention1.size(), 4);
         Trigger g = ASSyntax.parseTrigger("+!g1");
-        assertTrue(intention1.dropGoal(g, new Unifier()));
+        assertTrue(intention1.dropGoal(new IMCondition() {
+            @Override
+            public boolean test(Trigger t, Unifier u) {
+                return u.unifies(t, g);
+            }
+            @Override
+            public Trigger getTrigger() {
+                return g;
+            }
+        }, new Unifier()) != null);
         assertEquals(intention1.size(), 1);
     }
 
@@ -272,10 +282,10 @@ public class StdLibTest extends TestCase {
         TransitionSystem ts = new TransitionSystem(ag, null, null, null);
         ts.getC().addRunningIntention(intention1);
         assertFalse(ts.hasGoalListener());
-        new succeed_goal().findGoalAndDrop(ts, Literal.parseLiteral("g2"), new Unifier());
+        new succeed_goal().drop(ts, Literal.parseLiteral("g2"), new Unifier());
         assertEquals(intention1.size(), 1);
         intention1.push(new IntendedMeans(new Option(p4,new Unifier()), null));
-        new succeed_goal().findGoalAndDrop(ts, Literal.parseLiteral("g4"), new Unifier());
+        new succeed_goal().drop(ts, Literal.parseLiteral("g4"), new Unifier());
         assertTrue(intention1.isFinished());
     }
 
@@ -283,9 +293,9 @@ public class StdLibTest extends TestCase {
         //Circumstance c = new Circumstance();
         TransitionSystem ts = new TransitionSystem(ag, null, null, null);
         ts.getC().addRunningIntention(intention1);
-        new fail_goal().findGoalAndDrop(ts, Literal.parseLiteral("g2"), new Unifier());
+        new fail_goal().drop(ts, Literal.parseLiteral("g2"), new Unifier());
         assertEquals(intention1.size(),2);
-        assertEquals(ts.getC().getEvents().size(),1);
+        assertEquals(1,ts.getC().getEvents().size());
     }
 
     @SuppressWarnings("unchecked")

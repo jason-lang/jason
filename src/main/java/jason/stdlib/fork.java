@@ -7,6 +7,7 @@ import jason.JasonException;
 import jason.asSemantics.Circumstance;
 import jason.asSemantics.DefaultInternalAction;
 import jason.asSemantics.Event;
+import jason.asSemantics.IMCondition;
 import jason.asSemantics.IntendedMeans;
 import jason.asSemantics.Intention;
 import jason.asSemantics.InternalAction;
@@ -173,21 +174,21 @@ public class fork extends DefaultInternalAction {
         }
 
         @Override
-        public boolean dropGoal(Trigger te, Unifier un) {
-            boolean r = super.dropGoal(te, un);
-            if (r && size() < forkPoint) {
+        public IntendedMeans dropGoal(IMCondition c, Unifier un) {
+            IntendedMeans im = super.dropGoal(c, un);
+            if (im != null && size() < forkPoint) {
                 //System.out.println("drop "+te+" i.size = "+size()+" fork point "+forkPoint+" to f "+fd+"\n"+this);
                 if (fd.toFinish > 0) { // the first intentions of the fork being dropped, keep it and ignore the rest
                     fd.toFinish = 0;
                     //System.out.println("put it back");
-                    return true;
+                    return im;
                 } else {
                     clearIM();
                     //System.out.println("ignore intention");
-                    return false;
+                    return null;
                 }
             }
-            return r;
+            return im;
         }
 
         @Override
