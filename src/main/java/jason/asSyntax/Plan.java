@@ -137,6 +137,7 @@ public class Plan extends Structure implements Cloneable, Serializable {
     public Pred getLabel() {
         return label;
     }
+
     public void delLabel() {
         setLabel(null);
     }
