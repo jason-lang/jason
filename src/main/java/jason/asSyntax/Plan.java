@@ -36,8 +36,9 @@ public class Plan extends Structure implements Cloneable, Serializable {
     private LogicalFormula    context;
     private PlanBody          body;
 
+    // new in JasonER
     private LogicalFormula    goalCondition;
-    private PlanLibrary       subplans;
+    private PlanLibrary       subplans; 
     private PlanLibrary       scope;
 
     private boolean isAtomic      = false;
@@ -276,6 +277,10 @@ public class Plan extends Structure implements Cloneable, Serializable {
         p.setSrcInfo(srcInfo);
         p.isTerm = isTerm;
 
+        p.goalCondition = (LogicalFormula)this.goalCondition.clone();
+        p.subplans      = this.subplans;
+        p.scope         = this.scope;
+        
         return p;
     }
 

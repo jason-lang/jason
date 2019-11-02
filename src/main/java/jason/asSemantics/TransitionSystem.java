@@ -407,7 +407,7 @@ public class TransitionSystem {
             if (C.SE != null) {
 
                 // external events are copied for all intentions (new JasonER)
-                if (C.SE.isExternal() && !C.SE.getTrigger().isGoal() && C.SE.getTrigger().isAddition()) {
+                if (C.SE.isExternal() && !C.SE.getTrigger().isGoal()) { // && C.SE.getTrigger().isAddition()) {
                     Iterator<Intention> ii = C.getRunningIntentions().iterator();
                     while (ii.hasNext()) {
                         Intention i = ii.next();

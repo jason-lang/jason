@@ -1,9 +1,8 @@
 /* Initial beliefs and rules */
 
-all_proposals_received(CNPId)
-  :- .count(introduction(participant,_),NP) &    // number of participants
-     .count(propose(CNPId,_)[source(_)], NO) &   // number of proposes received
-     .count(refuse(CNPId)[source(_)], NR) &      // number of refusals received
+all_proposals_received(CNPId, NP)                // NP: number of participants
+  :- .count(propose(CNPId,_)[source(_)], NO) &   // NO: number of proposes received
+     .count(refuse(CNPId)[source(_)], NR) &      // NR: number of refusals received
      NP = NO + NR.
 
 /* Initial goals */
@@ -11,48 +10,39 @@ all_proposals_received(CNPId)
 !cnp(1,fix(computer)).
 !cnp(2,banana).
 
+!register.
++!register <- .df_register(initiator).
+
 /* Plans */
 
 +!cnp(Id,Task) {
-    <- !start; !bids(O); !contract(O,W); !announce(O,W).
+    <- !start(LP); !bids(LP,LO); !winner(LO,W); !announce(LO,W).
 
-    +!start
+    +!start(LP)
        <- .print("Waiting participants for task ",Task,"...");
           .wait(2000);  // wait participants introduction
-          +cnp_state(Id,propose);   // remember the state of the CNP
-          .findall(Name,introduction(participant,Name),LP);
+          .df_search("participant",LP);
           .print("Sending CFP to ",LP);
           .send(LP,tell,cfp(Id,Task)).
 
-    +!bids(L)
+    +!bids(LP,LO)
        <- // the deadline of the CNP is now + 4 seconds (or all proposals were received)
-          .wait(all_proposals_received(Id), 4000, _);
-          .findall(offer(O,A),propose(Id,O)[source(A)],L);
-          .print("Offers are for ",Task," are ",L).
+          .wait(all_proposals_received(Id,.length(LP)), 4000, _);
+          .findall(offer(O,A),propose(Id,O)[source(A)],LO);
+          .print("Offers are for ",Task," are ",LO).
 
-    +!contract([],nowinner)
-       <- .print("CNP ",Id," with no offers!").
-
-    // this plan needs to be atomic so as not to accept
-    // proposals or refusals while contracting
-    @lc1[atomic]
-    +!contract(O,WAg)
-       :  cnp_state(Id,propose)
-       <- -cnp_state(Id,_);
-          +cnp_state(Id,contract);
-          .min(O,offer(WOf,WAg)); // sort offers, the first is the best
+    +!winner([],nowinner)
+       <- .print("CNP ",Id," with no offer!").
+    +!winner(O,WAg)
+       <- .min(O,offer(WOf,WAg)); // sort offers, the first is the best
           .print("Winner for ",Task," is ",WAg," with ",WOf).
-    // nothing todo, the current phase is not 'propose'
-    +!contract(_,_).
 
-    +!announce([],_)
-       <- -+cnp_state(Id,finished).
-    // announce to the winner
-    +!announce([offer(_,WAg)|T],WAg)
-       <- .send(WAg,tell,accept_proposal(Id));
-          !announce(T,WAg).
-    // announce to others
-    +!announce([offer(_,LAg)|T],WAg)
-       <- .send(LAg,tell,reject_proposal(Id));
-          !announce(T,WAg).
+    +!announce(LO,WAg)
+       <- for( .member( offer(_,Ag), LO) ) {
+             if (Ag == WAg) {
+               .send(Ag,tell,accept_proposal(Id));
+             } else {
+               .send(Ag,tell,reject_proposal(Id));
+             }
+          }.
 }
