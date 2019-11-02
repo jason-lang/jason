@@ -90,7 +90,6 @@ public class DefaultBeliefBase extends BeliefBase {
                 }
                 // remove from percepts
                 i.remove();
-                eDOMbels = null;
 
                 // remove the percept annot
                 current.delAnnot(BeliefBase.TPercept);
@@ -121,7 +120,6 @@ public class DefaultBeliefBase extends BeliefBase {
             logger.log(Level.SEVERE, "Error: '"+l+"' can not be added in the belief base.");
             return false;
         }
-        eDOMbels = null;
         
         Literal bl = contains(l);
         if (bl != null && !bl.isRule()) {
@@ -174,8 +172,6 @@ public class DefaultBeliefBase extends BeliefBase {
         Literal bl = contains(l);
         if (bl != null) {
             if (l.hasSubsetAnnot(bl)) { // e.g. removing b[a] or b[a,d] from BB b[a,b,c]
-                eDOMbels = null;
-                
                 // second case fails
                 if (l.hasAnnot(TPercept)) {
                     percepts.remove(bl);
@@ -253,8 +249,6 @@ public class DefaultBeliefBase extends BeliefBase {
     public boolean abolish(Atom namespace, PredicateIndicator pi) {
         BelEntry entry = nameSpaces.get(namespace).remove(pi);
         if (entry != null) {
-            eDOMbels = null;
-            
             size -= entry.size();
 
             // remove also in percepts list!
@@ -368,20 +362,14 @@ public class DefaultBeliefBase extends BeliefBase {
         return bb;
     }
 
-    // for cache
-    protected Element eDOMbels = null;
-    
     @Override
     public Element getAsDOM(Document document) {
-        if (eDOMbels != null)
-            return eDOMbels;
-        
+        Element eDOMbels = (Element) document.createElement("beliefs");
         int tries = 0;
         List<Literal> allBels;
         while (tries < 10) { // max 10 tries
             try {
                 synchronized (getLock()) {
-                    eDOMbels = (Element) document.createElement("beliefs");
                     Element enss = (Element) document.createElement("namespaces");
                     Element ens = (Element) document.createElement("namespace");
                     ens.setAttribute("id", Literal.DefaultNS.toString()); // to ensure default is the first

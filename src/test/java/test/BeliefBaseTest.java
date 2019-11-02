@@ -655,22 +655,22 @@ public class BeliefBaseTest extends TestCase {
         ag.initAg();
 
         ag.getBB().add(Literal.parseLiteral("a(10)[source(bob)]"));
-        List<Literal> percepts = new ArrayList<Literal>();
+        List<Literal> percepts = new ArrayList<>();
         percepts.add(Literal.parseLiteral("a(10)"));
         percepts.add(Literal.parseLiteral("a(20)"));
 
         assertEquals(2,ag.buf(percepts));
         assertEquals(2,ag.getBB().size());
 
-        assertEquals(0,ag.buf(new ArrayList<Literal>(percepts)));
+        assertEquals(0,ag.buf(new ArrayList<>(percepts)));
         assertEquals(2,ag.getBB().size());
 
         percepts.remove(1); // remove a(20)
-        assertEquals(1,ag.buf(new ArrayList<Literal>(percepts)));
+        assertEquals(1,ag.buf(new ArrayList<>(percepts)));
         assertEquals(1,ag.getBB().size());
 
         percepts.clear();
-        assertEquals(1,ag.buf(new ArrayList<Literal>(percepts)));
+        assertEquals(1,ag.buf(new ArrayList<>(percepts)));
         assertEquals(1,ag.getBB().size());
     }
 

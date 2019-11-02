@@ -120,7 +120,8 @@ public class JadeRuntimeServices implements RuntimeServices {
         }
     }
 
-    public boolean killAgent(String agName, String byAg) {
+    public boolean killAgent(String agName, String byAg, int deadline) {
+        // TODO: implement deadline for JADE
         try {
             AgentController ac = cc.getAgent(agName);
             if (ac == null) {
@@ -137,7 +138,7 @@ public class JadeRuntimeServices implements RuntimeServices {
     }
 
 
-    public void stopMAS() throws Exception {
+    public void stopMAS(int deadline) throws Exception {
         if (cc != null) {
             new Thread() { // this command should not block the agent!
                 public void run() {

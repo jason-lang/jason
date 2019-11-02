@@ -3,7 +3,19 @@
 
 ifdef::env-github[:outfilesuffix: .adoc]
 
-== version 2.4 (2019-MM-DD)
+== version 2.4 (2019-05-24)
+
+(a built package is available at https://sourceforge.net/projects/jason/files/jason/version%202.4/[here])
+
+- `.stopMAS` accepts an optional parameter with an amount of time before shutdown. Agents thus can prepare themselves reacting to the signal `+jag_shutting_down(T)`. E.g.
++
+----
+...  .stopMAS(2000); // shutdown the system in 2 seconds
+...
++jag_shutting_down(T) <- .print("I have ",T/1000," seconds to pack my stuff").
+----
+
+- similarly, `.kill_agent` has an optional parameter to inform the amount of time before the agent will be killed.
 
 - New performative `signal`. The semantics is that the receiver will have the event added in its event queue. For example, if Alice executes
 +
@@ -19,6 +31,9 @@ it produces in Bob *two* events `+hello[source(alice)]`. Different than `tell`, 
     * `.verbose(1)`: goes back to normal message / logging level
 
 - Improved support for meta-programming. See demos/meta-programming.
+
+- event `+!jag_sleeping` was replaced by (a signal) `+jag_sleeping`
+- event `+!jag_awaking`  was replaced by (a signal) `+jag_awaking`
 
 == version 2.3 (2018-10-01)
 

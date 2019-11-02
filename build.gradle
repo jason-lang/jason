@@ -16,7 +16,7 @@ apply plugin: 'maven'
 apply plugin: 'maven-publish'
 apply plugin: 'signing'
 
-version '2.4-SNAPSHOT'
+version '2.5-SNAPSHOT'
 group   'org.jason-lang'
 
 sourceCompatibility = 1.8
@@ -454,7 +454,8 @@ task doc(dependsOn: [ 'jjdoc', 'javadoc', 'renderAsciiDocs']) {
 }
 
 task renderAsciiDocs(type: Exec) {
-    commandLine 'find', '.', '-name', '*.adoc', '-exec', 'asciidoctor', '-r', project.buildDir.absolutePath+'/../src/main/resources/pygments_init.rb', '{}', ';'
+    commandLine 'find', '.', '-name', '*.adoc', '-exec', 'scripts/asciidoc-docker', '{}', ';'
+    //commandLine 'find', '.', '-name', '*.adoc', '-exec', 'asciidoctor', '{}', ';'
 }
 
 task fixTab {

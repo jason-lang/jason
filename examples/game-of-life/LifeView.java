@@ -13,7 +13,7 @@ public class LifeView extends GridWorldView {
     LifeModel hmodel;
 
     public LifeView(LifeModel model, final LifeEnvironment env) {
-        super(model, "Game of Life", 500);
+        super(model, "Game of Life", 700);
         hmodel = model;
         setVisible(true);
         repaint();

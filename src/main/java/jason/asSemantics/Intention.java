@@ -35,7 +35,7 @@ public class Intention implements Serializable, Comparable<Intention>, Iterable<
 
     private int     id;
     private int     atomicCount    = 0; // number of atomic intended means in the intention
-    private boolean isSuspended = false;
+    private boolean isSuspended = false; // suspended by the internal action .suspend
     private String  suspendedReason = null;
     
     // new in JasonER
@@ -175,20 +175,37 @@ public class Intention implements Serializable, Comparable<Intention>, Iterable<
     }
 
     public Pair<Event, Integer> findEventForFailure(Trigger tevent, PlanLibrary pl, Circumstance c) {
-        Trigger failTrigger = new Trigger(TEOperator.del, tevent.getType(), tevent.getLiteral());
         Iterator<IntendedMeans> ii = iterator();
+        IntendedMeans im;
         int posInStak = size();
+        if (tevent.isGoal() && !tevent.isAddition()) { // case of failure in a fail plan
+            im = ii.next();
+            // find its goal in the stack
+            boolean found = false;
+            while (ii.hasNext() && !found) {
+                im = ii.next();
+                posInStak--;
+                while (ii.hasNext() && im.unif.unifies(im.getTrigger().getLiteral(),tevent.getLiteral())) {
+                    im = ii.next();
+                    posInStak--;
+                    found = true;
+                }
+            }
+            tevent = im.getTrigger();
+        }
+        Trigger failTrigger = new Trigger(TEOperator.del, tevent.getType(), tevent.getLiteral());
         synchronized (pl.getLock()) {
             while (!pl.hasCandidatePlan(failTrigger) && ii.hasNext()) {
                 // TODO: pop IM until +!g or *!g (this TODO is valid only if meta events are pushed on top of the intention)
                 // If *!g is found first, no failure event
                 // - while popping, if some meta event (* > !) is in the stack, stop and simple pop instead of producing an failure event
-                IntendedMeans im = ii.next();
+                im = ii.next();
                 tevent = im.getTrigger();
                 failTrigger = new Trigger(TEOperator.del, tevent.getType(), tevent.getLiteral());
                 posInStak--;
             }
-            if (tevent.isGoal() && tevent.isAddition() && pl.hasCandidatePlan(failTrigger))
+            if (tevent.isGoal() && //tevent.isAddition() && 
+                    pl.hasCandidatePlan(failTrigger))
                 return new Pair<>(new Event(failTrigger.clone(), this), posInStak);
             else
                 return new Pair<>(null, 0);

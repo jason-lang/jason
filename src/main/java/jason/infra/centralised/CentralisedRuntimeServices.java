@@ -7,6 +7,9 @@ import java.util.logging.Logger;
 import jason.JasonException;
 import jason.architecture.AgArch;
 import jason.asSemantics.Agent;
+import jason.asSyntax.NumberTermImpl;
+import jason.asSyntax.PlanLibrary;
+import jason.asSyntax.Trigger;
 import jason.mas2j.AgentParameters;
 import jason.mas2j.ClassParameters;
 import jason.runtime.Settings;
@@ -103,12 +106,26 @@ public class CentralisedRuntimeServices extends BaseRuntimeServices {
     }
 
     @Override
-    public boolean killAgent(String agName, String byAg) {
+    public boolean killAgent(String agName, String byAg, int deadline) {
         logger.fine("Killing centralised agent " + agName);
         CentralisedAgArch ag = masRunner.getAg(agName);
         if (ag != null && ag.getTS().getAg().killAcc(byAg)) {
-            ag.stopAg();
-            masRunner.delAg(agName);
+            new Thread() {
+                public void run() {
+                    if (deadline != 0) {
+                        // gives some time for the agent
+                        Trigger te = PlanLibrary.TE_JAG_SHUTTING_DOWN.clone();
+                        te.getLiteral().addTerm(new NumberTermImpl(deadline));
+                        ag.getTS().getC().addExternalEv(te);
+
+                        try {
+                            sleep(deadline);
+                        } catch (InterruptedException e) {                      }
+                    }
+                    ag.stopAg();
+                    masRunner.delAg(agName);                    
+                }; 
+            }.start();
             return true;
         }
         return false;

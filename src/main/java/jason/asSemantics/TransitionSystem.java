@@ -75,7 +75,7 @@ public class TransitionSystem {
 
     private List<GoalListener>  goalListeners = null;
 
-    private Queue<Runnable> taskForBeginOfCycle = new ConcurrentLinkedQueue<Runnable>();
+    private Queue<Runnable> taskForBeginOfCycle = new ConcurrentLinkedQueue<>();
 
     public TransitionSystem(Agent a, Circumstance c, Settings s, AgArch ar) {
         ag     = a;
@@ -157,8 +157,6 @@ public class TransitionSystem {
                 if (e.getTrigger().isAddition() && e.getTrigger().isGoal())
                     gl.goalStarted(e);
             }
-
-            public void intentionAdded(Intention i) {  }
         };
         C.addEventListener(cl);
         listenersMap.put(gl,cl);
@@ -326,7 +324,7 @@ public class TransitionSystem {
                         un.unifies(answers, listOfAnswers);
                     }
                     listOfAnswers.append(content);
-                    int nbReceivers = ((ListTerm)send.getTerm(0)).size();
+                    int nbReceivers = ((ListTerm)rec).size();
                     if (listOfAnswers.size() == nbReceivers) { // all agents have answered
                         resumeSyncAskIntention(m.getInReplyTo(), send.getTerm(3), listOfAnswers);
                     }
@@ -352,6 +350,10 @@ public class TransitionSystem {
                         } else if (m.getIlForce().equals("tell") ) {
                             content = add_nested_source.addAnnotToList(content, new Atom(sender));
                             getAg().addBel((Literal)content);
+                            added = true;
+                        } else if (m.getIlForce().equals("signal") ) {
+                            content = add_nested_source.addAnnotToList(content, new Atom(sender));
+                            C.addEvent(new Event(new Trigger(TEOperator.add, TEType.belief, (Literal)content), Intention.EmptyInt));
                             added = true;
                         }
                     }
@@ -475,6 +477,9 @@ public class TransitionSystem {
             if (nbOfGoalConditions == 0) // if no intention with GC, stop checking
                 C.resetIntentionsWithGoalCondition();
         }
+        // Rule SelEv2
+        // directly to ProcAct if no event to handle
+        stepDeliberate = State.ProcAct;
     }
 
     private void applyRelPl() throws JasonException {
@@ -509,7 +514,7 @@ public class TransitionSystem {
                 if (C.SE.getIntention() != null && C.SE.getIntention().size() > 3000) {
                     logger.warning("we are likely in a problem with event "+C.SE.getTrigger()+" the intention stack has already "+C.SE.getIntention().size()+" intended means!");
                 }
-                String msg = "Found a goal for which there is no "+m+" plan:" + C.SE.getTrigger();
+                String msg = "Found a goal for which there is no "+m+" plan: " + C.SE.getTrigger();
                 if (!generateGoalDeletionFromEvent(JasonException.createBasicErrorAnnots("no_"+m, msg))) {
                     logger.warning(msg);
                 }
@@ -582,28 +587,28 @@ public class TransitionSystem {
         }
 
         if (candidateRPs != null) {
-            for (Plan p : candidateRPs) {
+            for (Plan pl : candidateRPs) {
                 Unifier relUn = null;
                 if (C.SE.isInternal()) {
                     // use IM vars in the context for sub-plans (new in JasonER)
                     for (IntendedMeans im: C.SE.getIntention()) {
-                        if (im.getPlan().hasSubPlans() && im.getPlan().getSubPlans().get(p.getLabel()) != null) {
+                        if (im.getPlan().hasSubPlans() && im.getPlan().getSubPlans().get(pl.getLabel()) != null) {
                             relUn = im.triggerUnif.clone();
                             break;
                         }
                     }
                 }
 
-                relUn = p.isRelevant(C.SE.trigger, relUn);
+                relUn = pl.isRelevant(C.SE.trigger, relUn);
                 if (relUn != null) { // is relevant
-                    LogicalFormula context = p.getContext();
+                    LogicalFormula context = pl.getContext();
                     if (context == null) { // context is true
-                        C.SO = new Option(p, relUn);
+                        C.SO = new Option(pl, relUn);
                         return;
                     } else {
                         Iterator<Unifier> r = context.logicalConsequence(ag, relUn);
                         if (r != null && r.hasNext()) {
-                            C.SO = new Option(p, r.next());
+                            C.SO = new Option(pl, r.next());
                             return;
                         }
                     }
@@ -1058,7 +1063,8 @@ public class TransitionSystem {
 
             if (i.isFinished()) {
                 // intention finished, remove it
-                C.dropIntention(i);
+                C.dropRunningIntention(i);
+                //C.SI = null;
                 return;
             }
 
@@ -1263,7 +1269,7 @@ public class TransitionSystem {
         Term bodyPart = im.getCurrentStep().getBodyTerm().capply(im.unif);
         setDefaultFailureAnnots(failEvent, bodyPart, failAnnots);
 
-        if (im.isGoalAdd()) {
+        if (im.getTrigger().isGoal()) { // isGoalAdd()) {
             // notify listener
             if (hasGoalListener())
                 for (GoalListener gl: goalListeners) {
@@ -1722,7 +1728,7 @@ public class TransitionSystem {
              }
 
          } catch (Exception e) {
-             logger.log(Level.SEVERE, "*** ERROR in the transition system. "+conf.C+"\nCreating a new C!", e);
+             logger.log(Level.SEVERE, "*** ERROR in the transition system. "+C+"\nCreating a new C!", e);
              C.create();
          }
 

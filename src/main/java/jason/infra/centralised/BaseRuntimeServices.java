@@ -41,8 +41,8 @@ public abstract class BaseRuntimeServices implements RuntimeServices {
         return masRunner.getAgs().keySet().size();
     }
 
-    public void stopMAS() throws Exception {
-        masRunner.finish();
+    public void stopMAS(int deadline) throws Exception {
+        masRunner.finish(deadline);
     }
 
     @Override    

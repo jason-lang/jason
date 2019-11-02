@@ -159,7 +159,7 @@ public class wait extends DefaultInternalAction {
             this.formula = f;
             this.un = un;
             this.ts = ts;
-            c = ts.getC();
+            c  = ts.getC();
             si = c.getSelectedIntention();
             this.elapsedTimeTerm = elapsedTimeTerm;
 
@@ -245,9 +245,6 @@ public class wait extends DefaultInternalAction {
             }
         }
 
-        public void intentionAdded(Intention i) { }
-        public void intentionResumed(Intention i) { }
-        public void intentionSuspended(Intention i, String reason) { }
         public String toString() {
             return sEvt;
         }

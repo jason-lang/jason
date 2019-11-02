@@ -38,7 +38,7 @@ public class Circumstance implements Serializable {
     //private   boolean                  hasAtomicEvent = false;
 
     private Map<Integer, ActionExec>   PA; // Pending actions, waiting action execution (key is the intention id)
-    private List<ActionExec>           FA; // Feedback actions, those that are already executed
+    private Queue<ActionExec>          FA; // Feedback actions, those that are already executed
 
     private Map<String, Intention>     PI; // pending intentions, intentions suspended by any other reason
     private Map<String, Event>         PE; // pending events, events suspended by .suspend
@@ -78,7 +78,7 @@ public class Circumstance implements Serializable {
         PA = new ConcurrentHashMap<>();
         PI = new ConcurrentHashMap<>();
         PE = new ConcurrentHashMap<>();
-        FA = new ArrayList<>();
+        FA = new ConcurrentLinkedQueue<>();
     }
 
     /** set null for A, RP, AP, SE, SO, and SI */
@@ -541,11 +541,24 @@ public class Circumstance implements Serializable {
 
     /** feedback action */
 
+    /** returns true if the agent has a FA to process 
+     *  (actions from a suspended intention are not considered)
+     */ 
     public boolean hasFeedbackAction() {
-        return !FA.isEmpty();
+        //return !FA.isEmpty(); // old code that didn't consider suspended intentions
+        if (FA.isEmpty()) // "fast track" to avoid sync and loop
+            return false;
+        //synchronized (FA) {
+            for (ActionExec a : FA) {
+                if (!a.getIntention().isSuspended()) {
+                    return true;
+                }
+            }
+        //}
+        return false;
     }
 
-    public List<ActionExec> getFeedbackActions() {
+    public Queue<ActionExec> getFeedbackActions() {
         return FA;
     }
     /*
@@ -563,13 +576,13 @@ public class Circumstance implements Serializable {
 
     public void addFeedbackAction(ActionExec act) {
         if (act.getIntention() != null) {
-            synchronized (FA) {
-                FA.add(act);
+            //synchronized (FA) {
+                FA.offer(act);
                 /*if (act.getIntention().isAtomic()) {
                     ts.getLogger().info("feedback atomic "+act.getIntention().getId());
                     //atomicIntSuspended = false; // TODO: here is the bug (reported by Olivier @ ALTISSIMO)
                 }*/
-            }
+            //}
         }
     }
 

@@ -25,6 +25,8 @@ import jason.util.Config;
 */
 public class PlanLibrary implements Iterable<Plan> {
 
+    public static String KQML_PLANS_FILE = "kqmlPlans.asl";
+    
     /** a MAP from TE to a list of relevant plans */
     private Map<PredicateIndicator,List<Plan>> relPlans = new ConcurrentHashMap<>();
 
@@ -189,7 +191,9 @@ public class PlanLibrary implements Iterable<Plan> {
                 p.getLabel().addAnnot(BeliefBase.TSelf);
 
             if (p.getTrigger().getLiteral().getFunctor().equals(kqmlReceivedFunctor)) {
-                if (! (p.getSrcInfo() != null && "kqmlPlans.asl".equals(p.getSrcInfo().getSrcFile()))) {
+                // is it a KQML plan from a file different than the one provided by Jason?
+                if (! (p.getSrcInfo() != null && KQML_PLANS_FILE.equals(p.getSrcInfo().getSrcFile()))) {
+//                if (! (p.getSrcInfo() != null && p.getSrcInfo().getSrcFile().endsWith(".jar!/asl/kqmlPlans.asl"))) {
                     hasUserKqmlReceived = true;
                 }
             }
@@ -422,8 +426,9 @@ public class PlanLibrary implements Iterable<Plan> {
         }
     }
 
-    public static final Trigger TE_JAG_SLEEPING  = new Trigger(TEOperator.add, TEType.achieve, new Atom("jag_sleeping"));
-    public static final Trigger TE_JAG_AWAKING   = new Trigger(TEOperator.add, TEType.achieve, new Atom("jag_awaking"));
+    public static final Trigger TE_JAG_SLEEPING      = new Trigger(TEOperator.add, TEType.belief, new Atom("jag_sleeping"));
+    public static final Trigger TE_JAG_AWAKING       = new Trigger(TEOperator.add, TEType.belief, new Atom("jag_awaking"));
+    public static final Trigger TE_JAG_SHUTTING_DOWN = new Trigger(TEOperator.add, TEType.belief, new LiteralImpl("jag_shutting_down"));
 
     public PlanLibrary clone() {
         PlanLibrary pl = new PlanLibrary();

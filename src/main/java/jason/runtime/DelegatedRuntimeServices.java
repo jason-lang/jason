@@ -46,12 +46,12 @@ public class DelegatedRuntimeServices implements RuntimeServices {
         return delegate.getAgentsQty();
     }
 
-    public boolean killAgent(String agName, String byAg) {
-        return delegate.killAgent(agName, byAg);
+    public boolean killAgent(String agName, String byAg, int deadline) {
+        return delegate.killAgent(agName, byAg, deadline);
     }
 
-    public void stopMAS() throws Exception {
-        delegate.stopMAS();
+    public void stopMAS(int deadline) throws Exception {
+        delegate.stopMAS(deadline);
     }
 
     @Override    

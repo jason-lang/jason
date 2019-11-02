@@ -226,7 +226,7 @@ public class Agent {
             if (c.getKqmlFunctor().equals(Message.kqmlReceivedFunctor)) {
                 String file = Message.kqmlDefaultPlans.substring(Message.kqmlDefaultPlans.indexOf("/"));
                 if (JasonException.class.getResource(file) != null) {
-                    parseAS(JasonException.class.getResource(file)); //, "kqmlPlans.asl");
+                    parseAS(JasonException.class.getResource(file), PlanLibrary.KQML_PLANS_FILE); // the kqmlPlans.asl argument should be used here (see hasUserKqmlReceived in PlanLibrary)
                 } else {
                     logger.warning("The kqmlPlans.asl was not found!");
                 }
@@ -401,8 +401,11 @@ public class Agent {
 
     /** Adds beliefs and plans form an URL */
     public boolean parseAS(URL asURL) {
+        return parseAS(asURL, asURL.toString());    
+    }
+    public boolean parseAS(URL asURL, String sourceId) {
         try {
-            parseAS(asURL.openStream(), asURL.toString());
+            parseAS(asURL.openStream(), sourceId);
             logger.fine("as2j: AgentSpeak program '" + asURL + "' parsed successfully!");
             return true;
         } catch (IOException e) {
@@ -677,10 +680,12 @@ public class Agent {
         return messages.poll();
     }
 
-    public ActionExec selectAction(List<ActionExec> actList) {
+    public ActionExec selectAction(Queue<ActionExec> actions) {
         // make sure the selected Action is removed from actList
         // (do not return suspended intentions)
-        synchronized (actList) {
+        
+        /* // old code, suspended is now considered in hasFA; no need to sync, it is done in TS
+         * synchronized (actList) {
             Iterator<ActionExec> i = actList.iterator();
             while (i.hasNext()) {
                 ActionExec a = i.next();
@@ -689,8 +694,12 @@ public class Agent {
                     return a;
                 }
             }
-        }
-        return null;
+        }*/
+        
+        if (actions.isEmpty())
+            return null;
+        else
+            return actions.poll();
     }
 
     /** TS Initialisation (called by the AgArch) */
@@ -956,10 +965,13 @@ public class Agent {
                         if (il != null) {
                             while (il.hasNext()) {
                                 Literal linBB = il.next();
-                                if (u.unifies(linBB, beliefToDel)) {
-                                    il.remove();
+                                if (u.unifies(beliefToDel, linBB)) {
                                     beliefToDel = (Literal)beliefToDel.capply(u);
-                                    removed = true;
+                                    linBB.delAnnots(beliefToDel.getAnnots());
+                                    if (!linBB.hasSource()) {
+                                        il.remove();
+                                        removed = true;
+                                    }
                                     break;
                                 }
                             }

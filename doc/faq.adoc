@@ -1,8 +1,9 @@
 = Jason FAQ
 (for Jason 2.0)
 :toc:
-:source-highlighter: coderay
-:coderay-linenums-mode: inline
+:source-highlighter: pygments
+:pygments-style: jacamo
+:pygments-linenums-mode: inline
 :icons: font
 :prewrap!:
 
@@ -79,6 +80,7 @@ javac -classpath ...../Jason/lib/jason.jar:. myLib/myIA.java
 ------------------------------------------------------------
 7.  Use the new IA in AgentSpeak sources, for example:
 +
+[source,jasonagent]
 ----------------------
 +a(X) : true
    <- ... ;
@@ -107,6 +109,7 @@ agents can be obtained from that file.
 For instance, a project file called `ag-names.mas2j` can be passed as
 parameter to the environment as in the following example:
 
+[source,jasonproject]
 -------------------------------------------
 MAS ag_names {
      environment: TestEnv("ag-names.mas2j")
@@ -185,6 +188,7 @@ public class MyExecutionControl extends ExecutionControl {
 
 To use this controller, the project file must be
 
+[source,jasonproject]
 ----------------------------------------------
 MAS test {
     ...
@@ -201,6 +205,7 @@ Is it possible to add/remove an agent to/from a running MAS?
 The internal action `.createagent` can be used to dynamically add a new
 agent into the running MAS. For example, when the plan:
 
+[source,jasonagent]
 ----------------------------------------
 +a : true
    <- ... ;
@@ -258,6 +263,7 @@ examples/gold-miners.
 2.  In case you do not want to copy files into the project, the
 `classpath` entry in the .mas2j file can be used:
 +
+[source,jasonproject]
 ---------------------------------------------------------------
 MAS masid {
    agents: .......
@@ -308,6 +314,7 @@ cycles and then sends the _carry on_ signal to them.
 To use this execution mode, you have to set up a controller class in the
 .mas2j configuration, for example:
 +
+[source,jasonproject]
 ----------------------------------------------------
 MAS test {
     infrastructure: Centralised
@@ -329,6 +336,7 @@ To use this execution mode you can just press the debug button
 rather than the run button of the IDE, or you can set up a debug
 controller class in the .mas2j configuration, for example:
 +
+[source,jasonproject]
 -------------------------------------------------------
 MAS test {
     infrastructure: Centralised
@@ -386,6 +394,7 @@ have to implement an `ExecutionControl` sub-class and specify it in the
 
 You will most likely have to override the following methods:
 
+[source,java]
 ---------------------------------------------------------------------
 public void receiveFinishedCycle(String agName, boolean breakpoint) {
    super.receiveFinishedCycle(agName, breakpoint);
@@ -403,6 +412,7 @@ step.
 To signal the agents to _carry on_, your class can use the following
 code:
 
+[source,java]
 ----------------------------------------------
    fJasonControl.informAllAgsToPerformCycle();
 ----------------------------------------------
@@ -423,6 +433,7 @@ the AgentSpeak _reasoning cycles_).
 Suppose you need a simple agent that interprets and reasons according to
 the following AgentSpeak source:
 
+[source,jasonagent]
 -------------------------
 +x(N) : N < 3  <- do(0).
 
@@ -657,6 +668,7 @@ You can find more information about this infrastructure in the http://jason.sour
 In the `.mas2j` project file, use the `infrastructure` entry to select
 an infrastructure, for example to use Centralised:
 
+[source,jasonproject]
 -------------------------------
 MAS auction {
     infrastructure: Centralised
@@ -666,6 +678,7 @@ MAS auction {
 
 and to use Jade:
 
+[source,jasonproject]
 ---------------------------
 MAS auction {
     infrastructure: Jade
@@ -775,6 +788,7 @@ In the project file, you have to setup the host’s name where the main
 container will run and the container where agents will run, as in the
 following example (this example is available in the demos directory):
 
+[source,jasonproject]
 ----------------------------------------------------------------------------------------
 MAS demo_distributed_jade {
 
@@ -830,6 +844,7 @@ be created and how agents are distributed on to them. The project
 definition is thus like the following (`myAllocator` is the name of the
 Java class and `[c1,c2]` is the list of containers).
 
+[source,jasonproject]
 ----
 MAS demo_distributed_jade {
 
@@ -905,8 +920,47 @@ example, for an agent that persist on a goal `!g` for as long as there
 are applicable plans for `+!g`, suffices it to include a plan `-g! : true <- true.` in the plan library. Note that the body can be empty as
 a goal is only removed from the body of a plan when the intended means
 chosen for that goal finishes successfully. It is also simple to specify
-a plan which, under specific condition, chooses to drop the intention
+a plan which, under specific conditions, chooses to drop the intention
 altogether (by means of a standard internal action mentioned below).
+
+////
+NOTE: In the current semantics, writing a contingency plan `-!g` means
+the programmer knows how to control a goal failure. It may include
+having other goals which might themselves fail, but a contingency plan
+should not itself be allowed to fail; a failure in the contingency
+plan will delete the whole intention stack. However, if a plan for
+`+!g2` fails and there are no `-!g2` plans given, if achieving that
+instance of `g2` was needed as part of a plan to achieve `g1`, `g1` will in
+turn fail as well (possibly triggering `-!g1` plans, if there are
+any). We are considering moving to a semantics in which a failure in a
+contingency plan is seen as a failure in the original goal. Thanks to
+Michael Vezina for suggesting this FAQ addition.
+////
+
+As from version 2.5, Jason uses a different semantics for failures in
+contingency plans. Previously, writing a contingency plan (i.e., a
+plan of the form `-!g : ...`) meant the programmer knew how to control
+a goal failure. It might include having other goals which might
+themselves fail, but a contingency plan should not itself be allowed
+to fail; a failure in the contingency plan would delete the whole
+intention stack. However, if a plan for `+!g2` failed and there were
+no `-!g2` plans given, if achieving that instance of `g2` was needed
+as part of a plan to achieve `g1`, `g1` would in turn fail as well
+(possibly triggering `-!g1` plans, if there were any).
+
+The new semantics also allows failures in contingency plans to fail
+other goals appearing below it in the intention stack. Note that the
+fact that there was a failure in the contingency plans remains
+explicitly represented in the intention stack, so that the an agent
+could, in principle, reason about those failures in deciding on how to
+act further. When a contingency plan `-!g2` fails, the failure
+cascades down the intention stack until a plan for a achieving a goal
+`!g1` which *does* have contingency plans `-!g1` is found; in that
+case, the event `-!g1` is posted, so an applicable plan for that event
+will be at the top of the intention stack and the failed `-!g2 : ...`
+plan will be right below it within the stack. Only in case no such
+plan is found the whole intention is removed from the intention set
+(and a message to say so is printed in the console, as usual).
 
 === Does `+p` (or `-p`) in a plan body cause two effects, i.e. updating the belief base and generating the events `+p` (or `-p`)?
 
@@ -966,6 +1020,7 @@ You may have noticed !! is often used at the end of recursive plans
 (when the recursive call does not have free variables to be
 instantiated) as in the following code:
 
+[source,jasonagent]
 ----------------------------
 +!g : end_recursion_context.
 +!g : true <- action1; !!g.
@@ -979,6 +1034,7 @@ Jason 1.4.0 implements *tail recursion optimisation* and thus we don’t
 need to worry about the stack size anymore. The above code should be
 written as:
 
+[source,jasonagent]
 ----------------------------
 +!g : end_recursion_context.
 +!g : true <- action1; !g.
@@ -1103,6 +1159,7 @@ Annotations:::
 +
 An example of failure event and its annotations:
 +
+[source,jasonagent]
 --------------------------------------------------
 -!g[error(ia_failed),
     error_msg("internal action .my_name failed"),
@@ -1115,6 +1172,7 @@ Note that the plan that handles this event is not obliged to use any
   these annotations, or it could make use of a subset of them, for
   example:
 +
+[source,jasonagent]
 --------------------------------------------------------------------------------
 -!g[error(ia_failed)]       <- ... plan to handle error of type 'ia_failed'
 -!g[error(no_applicable)]   <- ... plan to handle error of type 'no_applicable'

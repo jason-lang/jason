@@ -33,7 +33,11 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 import jason.JasonException;
+import jason.architecture.AgArch;
 import jason.asSemantics.Agent;
+import jason.asSyntax.NumberTermImpl;
+import jason.asSyntax.PlanLibrary;
+import jason.asSyntax.Trigger;
 import jason.asSyntax.directives.DirectiveProcessor;
 import jason.asSyntax.directives.Include;
 import jason.bb.DefaultBeliefBase;
@@ -80,7 +84,7 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
         r.create();
         r.start();
         r.waitEnd();
-        r.finish();
+        r.finish(0);
     }
 
     protected void registerMBean() {
@@ -341,7 +345,7 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
         btStop.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 MASConsoleGUI.get().setPause(false);
-                runner.finish();
+                runner.finish(0);
             }
         });
         MASConsoleGUI.get().addButton(btStop);
@@ -744,7 +748,7 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
     }
     
     public boolean killAg(String agName) {
-        return getRuntimeServices().killAgent(agName, "??");
+        return getRuntimeServices().killAgent(agName, "??", 0);
     }
 
     /** change the current running MAS to debug mode */
@@ -806,7 +810,7 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
 
     private Boolean runningFinish = false;
 
-    public void finish() {
+    public void finish(int deadline) {
         // avoid two threads running finish!
         synchronized (runningFinish) {
             if (runningFinish)
@@ -814,47 +818,68 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
             runningFinish = true;
         }
         try {
-            // creates a thread that guarantees system.exit(0) in 5 seconds
-            // (the stop of agents can  block)
+            // creates a thread that guarantees system.exit(0) in deadline seconds
+            // (the stop of agents can block, for instance)
             new Thread() {
                 public void run() {
                     try {
-                        sleep(5000);
+                        if (deadline == 0)
+                            sleep(5000);
+                        else
+                            sleep(deadline);
                     } catch (InterruptedException e) {}
                     System.exit(0);
                 }
             } .start();
 
-            System.out.flush();
-            System.err.flush();
+            // use a thread to not block the caller
+            new Thread() {
+                public void run() {
+                    // if deadline is not 0, give agents some time
+                    if (deadline != 0) {
+                        for (AgArch ag: ags.values()) {
+                            Trigger te = PlanLibrary.TE_JAG_SHUTTING_DOWN.clone();
+                            te.getLiteral().addTerm(new NumberTermImpl(deadline));
+                            ag.getTS().getC().addExternalEv(te);
+                        }
+                        try {
+                            Thread.sleep(deadline);                 
+                        } catch (InterruptedException e) {}
+                    }
+                    
+                    System.out.flush();
+                    System.err.flush();
 
-            if (MASConsoleGUI.hasConsole()) { // should close first! (case where console is in pause)
-                MASConsoleGUI.get().close();
-            }
+                    if (MASConsoleGUI.hasConsole()) { // should close first! (case where console is in pause)
+                        MASConsoleGUI.get().close();
+                    }
 
-            if (control != null) {
-                control.stop();
-                control = null;
-            }
-            if (env != null) {
-                env.stop();
-                env = null;
-            }
+                    if (control != null) {
+                        control.stop();
+                        control = null;
+                    }
+                    if (env != null) {
+                        env.stop();
+                        env = null;
+                    }
 
-            stopAgs();
+                    stopAgs();
 
-            runner = null;
+                    runner = null;
 
-            // remove the .stop___MAS file  (note that GUI console.close(), above, creates this file)
-            File stop = new File(stopMASFileName);
-            if (stop.exists()) {
-                stop.delete();
-            }
+                    // remove the .stop___MAS file  (note that GUI console.close(), above, creates this file)
+                    File stop = new File(stopMASFileName);
+                    if (stop.exists()) {
+                        stop.delete();
+                    }
+                    
+                    System.exit(0);
+                }; 
+            }.start();
+            
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        System.exit(0);
     }
 
     /** show the sources of the project */
