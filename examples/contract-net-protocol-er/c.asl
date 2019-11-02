@@ -16,18 +16,17 @@ all_proposals_received(CNPId, NP)                // NP: number of participants
 /* Plans */
 
 +!cnp(Id,Task) {
-    <- !start(LP); !bids(LP); !winner(LO,W); !announce(LO,W).
+    <- !call(LP); !bids(LP); !winner(LO,W); !result(LO,W).
 
-    +!start(LP)
+    +!call(LP)
        <- .print("Waiting participants for task ",Task,"...");
           .wait(2000);  // wait participants introduction
           .df_search("participant",LP);
           .print("Sending CFP to ",LP);
           .send(LP,tell,cfp(Id,Task)).
 
-    +!bids(LP)
-       <- // the deadline of the CNP is now + 4 seconds (or all proposals were received)
-          .wait(all_proposals_received(Id,.length(LP)), 4000, _).
+    +!bids(LP) // the deadline of the CNP is now + 4 seconds (or all proposals received)
+       <- .wait(all_proposals_received(Id,.length(LP)), 4000, _).
 
     +!winner(LO,WAg)
         : .findall(offer(O,A),propose(Id,O)[source(A)],LO) & LO \== []
@@ -37,7 +36,7 @@ all_proposals_received(CNPId, NP)                // NP: number of participants
     +!winner([],nowinner)
        <- .print("CNP ",Id," with no offer!").
 
-    +!announce(LO,WAg)
+    +!result(LO,WAg)
        <- for( .member( offer(_,Ag), LO) ) {
              if (Ag == WAg) {
                .send(Ag,tell,accept_proposal(Id));

@@ -18,9 +18,9 @@ all_proposals_received(CNPId, NP)                // NP: number of participants
 /* Plans */
 
 +!cnp(Id,Task) {
-    <- !start(LP); !bids(LP); .print(a); .print("****",endbids); !winner(LO,W); !announce(LO,W).
+    <- !call(LP); !bids(LP); .print(a); .print("****",endbids);  !winner(LO,W); .print(donotremove); !result(LO,W).
 
-    +!start(LP)
+    +!call(LP)
        <- .print("Waiting participants for task ",Task,"...");
           .wait(2000);  // wait participants introduction
           .df_search("participant",LP);
@@ -41,7 +41,7 @@ all_proposals_received(CNPId, NP)                // NP: number of participants
     +!winner([],nowinner)
        <- .print("CNP ",Id," with no offer!").
 
-    +!announce(LO,WAg)
+    +!result(LO,WAg)
        <- for( .member( offer(_,Ag), LO) ) {
              if (Ag == WAg) {
                .send(Ag,tell,accept_proposal(Id));

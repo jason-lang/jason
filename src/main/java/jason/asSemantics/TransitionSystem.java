@@ -407,13 +407,14 @@ public class TransitionSystem {
             if (C.SE != null) {
 
                 // update events (+ and -) are copied for all intentions (new JasonER)
-                if (!C.SE.getTrigger().isGoal()) { // C.SE.isExternal() && C.SE.getTrigger().isAddition()) {
-                    logger.info("Selected event "+C.SE.getTrigger()+  C.SE.isExternal());
-                    Iterator<Intention> ii = C.getAllIntentions(); //C.getRunningIntentions().iterator(); // TODO: consider PI
+                if (C.SE.isExternal() && C.SE.getTrigger().isUpdate()) { //  C.SE.getTrigger().isAddition()) {
+                    //logger.info("Selected event "+C.SE.getTrigger()+  C.SE.isExternal());
+                    // TODO: consider PI (see notes, not easy!)
+                    Iterator<Intention> ii = C.getRunningIntentions().iterator(); //C.getAllIntentions(); //C.getRunningIntentions().iterator(); 
                     while (ii.hasNext()) {
                         Intention i = ii.next();
                         // if i has sub plans (so potentially interested in external events)
-                        System.out.println("-- "+i.getId()+" "+i.hasIntestedInUpdateEvents());
+                        //System.out.println("-- "+i.getId()+" "+i.hasIntestedInUpdateEvents()+" "+ (C.SE.getIntention() != null ? C.SE.getIntention().getId() : " no int "));
                         if (i.hasIntestedInUpdateEvents() && i.peek().getPlan().hasSubPlans()) {
                             List<Plan> relPlans = i.peek().getPlan().getSubPlans().getCandidatePlans(C.SE.getTrigger());
                             if (relPlans != null) {
@@ -427,9 +428,10 @@ public class TransitionSystem {
                                 // and move intention i from I to E
                                 if (!relPlans.isEmpty()) {
                                     Event e = new Event(C.SE.getTrigger(), i);
+                                    logger.info("     ** add extra evt for "+i.getId());
                                     e.setRelPlans(relPlans);
                                     C.addEvent(e);
-                                    ii.remove();
+                                    ii.remove(); // TODO: should not remove fom PI? see notes
                                 }
                             }
                         }
@@ -467,7 +469,7 @@ public class TransitionSystem {
         }
     };
 
-    private void applyClrSatInt() {
+    private void applyClrSatInt() { 
         // remove all intentions with GoalCondition satisfied (new JasonER)
         if (C.hasIntentionWithGoalCondition()) {
             nbOfGoalConditions = 0;
@@ -659,7 +661,7 @@ public class TransitionSystem {
                                     im.unif.function.put(vvl, t);
                                 }
                             } else {
-                                // the vvl was renamed again in top, just replace in base the new value
+                            	// the vvl was renamed again in top, just replace the new value in base 
                                 VarTerm v0 = (VarTerm)top.renamedVars.function.get(vvl);
                                 if (v0 != null) {
                                     imBase.renamedVars.function.put(v, v0);
@@ -1238,7 +1240,7 @@ public class TransitionSystem {
         // a) allow the user to override selectOption and then provide an "unknown" plan; or then
         // b) create the failure event (it is done by SelRelPlan)
         //if (e.isInternal() || C.hasListener() || ag.getPL().hasCandidatePlan(e.trigger)) {
-        // complex to optimise (the above if) in JasonER
+        // complex to optimise (the above if) in JasonER. removed until we have a good implementation
             C.addEvent(e);
             if (logger.isLoggable(Level.FINE)) logger.fine("Added event " + e+ ", events = "+C.getEvents());
         //}

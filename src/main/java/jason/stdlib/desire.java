@@ -84,10 +84,7 @@ public class desire extends intend {
         return allDesires(ts.getC(),(Literal)args[0],args.length == 2 ? args[1] : null, un);
     }
 
-
     enum Step { selEvt, evt, useIntends, end }
-
-    //private static Logger logger = Logger.getLogger(desire.class.getName());
 
     public static Iterator<Unifier> allDesires(final Circumstance C, final Literal l, final Term intAsTerm, final Unifier un) {
         final Trigger teFromL = new Trigger(TEOperator.add, TEType.achieve, l);
@@ -97,13 +94,10 @@ public class desire extends intend {
             Unifier solution = null; // the current response (which is an unifier)
             Iterator<Event>      evtIterator     = null;
             Iterator<Unifier>    intendInterator = null;
-            {
-                find();
-            }
+
+            { find(); }
 
             public boolean hasNext() {
-                //if (solution == null)
-                //    logger.info("* no more solution for "+teFromL+C);
                 return solution != null;
             }
 

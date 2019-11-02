@@ -15,8 +15,8 @@ http://www.fipa.org/specs/fipa00029/
 MAS cnp {
 
     agents:
-        c_alt;     // the CNP initiator
+        c;     // the CNP initiator
         p #3;  // the participants (3) that offer a service
         pr;    // a participant that always refuses
-        //pn;    // a participant that does not answer
+        pn;    // a participant that does not answer
 }

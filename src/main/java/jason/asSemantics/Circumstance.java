@@ -666,6 +666,7 @@ public class Circumstance implements Serializable {
         return new Iterator<Intention>() {
             Step curStep = Step.selEvt;
             Intention curInt = null; // the intention of solution
+            Intention lastReturned = null;
             Iterator<Event>      evtIterator     = null;
             Iterator<Event>      pendEvtIterator = null;
             Iterator<ActionExec> pendActIterator = null;
@@ -680,9 +681,9 @@ public class Circumstance implements Serializable {
 
             public Intention next() {
                 if (curInt == null) find();
-                Intention b = curInt;
+                lastReturned = curInt;
                 find(); // find next response
-                return b;
+                return lastReturned;
             }
 
             void find() {
@@ -787,17 +788,13 @@ public class Circumstance implements Serializable {
             }
             
             public void remove() {
-                switch (curStep) {
-                case selEvt:     break;
-                case selInt:     break;
-                case evt:        break;
-                case pendAct:    break;
-                case pendEvt:    break;
-                case pendInt:    break;
-                case intentions: break;
-                case end:
+                if (lastReturned != null) {
+                    // try to find the intention lastReturned                   
+                    if (I.remove(lastReturned)) return;
+                    if (removePendingIntention(lastReturned.getId()) != null) return;
+                    if (removePendingAction(lastReturned.getId()) != null) return;
                 }
-                System.out.println("******** remove() is not implemented for C.getAllIntentions ******");
+                System.out.println("******** remove() intention "+lastReturned.getId()+" is not implemented for C.getAllIntentions --- "+curStep+" ******");
             }
         };
     }

@@ -3,7 +3,6 @@
 price(_Service,X) :- .random(R) & X = (10*R)+100.
 
 !register.
-
 +!register <- .df_register("participant");
               .df_subscribe("initiator").
 
