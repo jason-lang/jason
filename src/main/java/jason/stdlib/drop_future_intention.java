@@ -99,8 +99,8 @@ public class drop_future_intention extends drop_desire {
             throw JasonException.createWrongArgument(this, "first argument '" + args[0] + "' must be a literal");
     }
 
-    //@Override // TODO: revise when merge with Jason
-    public boolean dropIntKKKKK(Circumstance C, Literal goal, Unifier un) {
+    @Override
+    public boolean dropInt(Circumstance C, Literal goal, Unifier un) {
         Unifier bak = un.clone();
         boolean isCurrentInt = false;
         Iterator<Intention> iint = C.getAllIntentions();

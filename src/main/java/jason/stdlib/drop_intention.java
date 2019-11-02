@@ -3,10 +3,8 @@ package jason.stdlib;
 import java.util.Iterator;
 
 import jason.JasonException;
-import jason.asSemantics.ActionExec;
 import jason.asSemantics.Circumstance;
 import jason.asSemantics.DefaultInternalAction;
-import jason.asSemantics.Event;
 import jason.asSemantics.Intention;
 import jason.asSemantics.TransitionSystem;
 import jason.asSemantics.Unifier;
@@ -19,7 +17,7 @@ import jason.asSyntax.Trigger.TEType;
 /**
   <p>Internal action: <b><code>.drop_intention(<i>I</i>)</code></b>.
 
-  <p>Description: removes intentions <i>I</i> from the set of
+  <p>Description: removes intentions to achieve goal <i>I</i> from the set of
   intentions of the agent (suspended intentions are also considered).
   No event is produced.
 
@@ -99,7 +97,7 @@ public class drop_intention extends DefaultInternalAction {
     
     @Override
     public boolean suspendIntention() {
-    	return resultSuspend;
+		return resultSuspend;
     }
     
     @Override
@@ -107,17 +105,34 @@ public class drop_intention extends DefaultInternalAction {
         checkArguments(args);
         resultSuspend = false;
         if (args.length == 0) {
-        	resultSuspend = true; // to drop the current intention
+    		resultSuspend = true; // to drop the current intention
         } else {
-        	dropInt(ts.getC(),(Literal)args[0],un);
+        	resultSuspend = dropInt(ts.getC(),(Literal)args[0],un); // to drop the current intention        			
         }
         return true;
     }
 
-    public static void dropInt(Circumstance C, Literal l, Unifier un) {
+    /**
+     * Drops an intention based on a goal argument
+     * 
+     * returns true if the current intention is dropped
+     */
+    public boolean dropInt(Circumstance C, Literal goal, Unifier un) {
         Unifier bak = un.clone();
-
-        Trigger g = new Trigger(TEOperator.add, TEType.achieve, l);
+        Trigger g = new Trigger(TEOperator.add, TEType.achieve, goal);
+        boolean isCurrentInt = false;
+        Iterator<Intention> iint = C.getAllIntentions();
+        while (iint.hasNext()) { // for all intentions
+    		Intention i = iint.next();
+            if (i.hasTrigger(g, un)) { // if the intention i has goal g
+                C.dropIntention(i);
+                isCurrentInt = isCurrentInt || i.equals(C.getSelectedIntention());
+                un = bak.clone();
+            }
+        }
+        
+        return isCurrentInt;
+        /*
 
         // intention may be suspended in E or PE
         Iterator<Event> ie = C.getEventsPlusAtomic();
@@ -150,7 +165,7 @@ public class drop_intention extends DefaultInternalAction {
         while (itint.hasNext()) {
             Intention i = itint.next();
             if (i.hasTrigger(g, un)) {
-                C.dropIntention(i);
+                C.dropRunningIntention(i);
                 un = bak.clone();
             }
         }
@@ -162,32 +177,7 @@ public class drop_intention extends DefaultInternalAction {
                 un = bak.clone();
             }
         }
-    }
-
-    public static void dropInt(Circumstance C, Intention del) {
-
-        // intention may be suspended in E or PE
-        Iterator<Event> ie = C.getEventsPlusAtomic();
-        while (ie.hasNext()) {
-            Event e = ie.next();
-            Intention i = e.getIntention();
-            if (i != null && i.equals(del)) {
-                C.removeEvent(e);
-            }
-        }
-        for (String k: C.getPendingEvents().keySet()) {
-            Intention i = C.getPendingEvents().get(k).getIntention();
-            if (i != null && i.equals(del)) {
-                C.removePendingEvent(k);
-            }
-        }
-
-        // intention may be suspended in PA! (in the new semantics)
-        C.dropPendingAction(del);
-        C.dropIntention(del);
-
-        // intention may be suspended in PI! (in the new semantics)
-        C.dropPendingIntention(del);
+        */
     }
 
 }

@@ -195,7 +195,7 @@ public class fork extends DefaultInternalAction {
         public void fail(Circumstance c) {
             if (size() >= forkPoint && fd.isAnd) { // the fail is above fork, is an fork and, remove the others
                 for (Intention ifo: fd.intentions) {
-                    drop_intention.dropInt(c, ifo);
+                    c.dropIntention(ifo);
                 }
             }
         }
@@ -208,7 +208,7 @@ public class fork extends DefaultInternalAction {
                     //System.out.println("*** remove other forks");
                     fd.intentions.remove(this);
                     for (Intention ifo: fd.intentions) {
-                        drop_intention.dropInt(c, ifo);
+                        c.dropIntention(ifo);
                     }
                 } else {
                     //System.out.println("*** case or, do not search for fail plan below fork point");
