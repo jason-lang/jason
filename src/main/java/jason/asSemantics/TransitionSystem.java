@@ -681,7 +681,7 @@ public class TransitionSystem {
         applyClrSatInt(); // TODO: create a proper step for ClrSatInt in the enumerations
 
         stepAct = State.SelInt; // default next step
-        if (C.hasFeedbackAction()) {
+        if (C.hasFeedbackAction()) { // suspended intentions are not considered 
             ActionExec a = null;
             synchronized (C.getFeedbackActions()) {
                 a = ag.selectAction(C.getFeedbackActions());

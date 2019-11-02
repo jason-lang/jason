@@ -44,8 +44,8 @@ public class PlanERTest extends TestCase {
     }
     
     public void testProperties() {
-    	setup();
-    	Plan p = Plan.parse(code);
+        setup();
+        Plan p = Plan.parse(code);
         assertTrue(p.hasInterestInUpdateEvents());
         assertEquals(3, p.getSubPlans().size());
         //True(p.toString().startsWith("+!p(X) : (X > 0) <: ((X > 100) | .done) {\n   <- .print(a).\n   +e <- x.\n   +!sg : a <: false <- k."));

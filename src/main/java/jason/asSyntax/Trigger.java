@@ -144,6 +144,11 @@ public class Trigger extends Structure implements Cloneable {
     public boolean isGoal() {
         return type == TEType.achieve || type == TEType.test;
     }
+    
+    /** returns true if the trigger is an add (+bel) or del (-bel) */ 
+    public boolean isUpdate() {
+        return type == TEType.belief; 
+    }
 
     public boolean isMetaEvent() {
         return operator == TEOperator.goalState;

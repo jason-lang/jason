@@ -216,7 +216,7 @@ public class PlanLibrary implements Iterable<Plan> {
                         else
                             lp.add(p);
             } else {
-                if (!pte.isGoal()) // pte.isAddition() && 
+                if (pte.isUpdate()) 
                     hasPlansForUpdateEvents = true;
                 
                 List<Plan> codesList = relPlans.get(pte.getPredicateIndicator());
