@@ -75,10 +75,12 @@ public class Intention implements Serializable, Comparable<Intention>, Iterable<
 
         if (isAtomic() && top.isAtomic())
             atomicCount--;
+
         if (hasIntestedInUpdateEvents() && top.getPlan().hasInterestInUpdateEvents()) 
             intestedInUpdateEvents--;
         if (hasGoalCondition() && top.getPlan().hasGoalCondition())
             imWithGoalCondition--;
+
         return top;
     }
 
@@ -132,7 +134,7 @@ public class Intention implements Serializable, Comparable<Intention>, Iterable<
         else        
             return suspendedReason;     
     }
-    
+
     /** returns the IntendedMeans that succeeds in test c, returns null if there isn't one */
     public IntendedMeans getIM(IMCondition c, Unifier u) { //Trigger g, Unifier u) {
         for (IntendedMeans im : intendedMeans)

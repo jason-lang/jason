@@ -8,8 +8,8 @@ all_proposals_received(CNPId,NP) :-              // NP = number of participants
 
 /* Initial goals */
 
-!startCNP(1,fix(computer)).
-//!startCNP(2,banana).
+!cnp(1,fix(computer)).
+!cnp(2,banana).
 
 !register.
 +!register <- .df_register(initiator).
@@ -17,30 +17,30 @@ all_proposals_received(CNPId,NP) :-              // NP = number of participants
 /* Plans */
 
 // start the CNP
-+!startCNP(Id,Task)
++!cnp(Id,Task)
+   <- !call(Id,Task,LP);
+      !bid(Id,LP);
+      !winner(Id,LO,WAg);
+      !result(Id,LO,WAg).
++!call(Id,Task,LP)
    <- .print("Waiting participants for task ",Task,"...");
       .wait(2000);  // wait participants introduction
       .df_search("participant",LP);
       .print("Sending CFP to ",LP);
-      .send(LP,tell,cfp(Id,Task));
-      // the deadline of the CNP is now + 4 seconds (or all proposals were received)
-      .wait(all_proposals_received(Id,.length(LP)), 4000, _);
-      !contract(Id).
+      .send(LP,tell,cfp(Id,Task)).
++!bid(Id,LP) // the deadline of the CNP is now + 4 seconds (or all proposals received)
+   <- .wait(all_proposals_received(Id,.length(LP)), 4000, _).
++!winner(Id,LO,WAg)
+   :  .findall(offer(O,A),propose(CNPId,O)[source(A)],LO) & LO \== [] // there is a offer
+   <- .print("Offers are ",LO);
+      .min(LO,offer(WOf,WAg)); // the first offer is the best
+      .print("Winner is ",WAg," with ",WOf).
++!winner(_,_,nowinner). // no offer case
 
-+!contract(CNPId)
-   :  .findall(offer(O,A),propose(CNPId,O)[source(A)],L) & L \== [] // there is a offer
-   <- .print("Offers are ",L);
-      .min(L,offer(WOf,WAg)); // the first offer is the best
-      .print("Winner is ",WAg," with ",WOf);
-      !announce_result(CNPId,L,WAg).
-+!contract(_). // no offer case
-
-+!announce_result(_,[],_).
-// announce to the winner
-+!announce_result(CNPId,[offer(_,WAg)|T],WAg)
++!result(_,[],_).
++!result(CNPId,[offer(_,WAg)|T],WAg) // announce result to the winner
    <- .send(WAg,tell,accept_proposal(CNPId));
-      !announce_result(CNPId,T,WAg).
-// announce to others
-+!announce_result(CNPId,[offer(_,LAg)|T],WAg)
+      !result(CNPId,T,WAg).
++!result(CNPId,[offer(_,LAg)|T],WAg) // announce to others
    <- .send(LAg,tell,reject_proposal(CNPId));
-      !announce_result(CNPId,T,WAg).
+      !result(CNPId,T,WAg).

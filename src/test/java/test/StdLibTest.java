@@ -260,18 +260,19 @@ public class StdLibTest extends TestCase {
 
     }
 
-    public void testDropGoal1() throws Exception {
+    public void testDropGoal1() throws ParseException {
         assertEquals(intention1.size(), 4);
-        final Trigger g = ASSyntax.parseTrigger("+!g1");
-        assertNotNull(intention1.dropGoal(new IMCondition() {
+        Trigger g = ASSyntax.parseTrigger("+!g1");
+        assertTrue(intention1.dropGoal(new IMCondition() {
+            @Override
             public boolean test(Trigger t, Unifier u) {
-                return u.unifies(g, t);
+                return u.unifies(t, g);
             }
             @Override
             public Trigger getTrigger() {
                 return g;
             }
-        }, new Unifier()));
+        }, new Unifier()) != null);
         assertEquals(intention1.size(), 1);
     }
 
@@ -294,7 +295,7 @@ public class StdLibTest extends TestCase {
         ts.getC().addRunningIntention(intention1);
         new fail_goal().drop(ts, Literal.parseLiteral("g2"), new Unifier());
         assertEquals(intention1.size(),2);
-        assertEquals(ts.getC().getEvents().size(),1);
+        assertEquals(1,ts.getC().getEvents().size());
     }
 
     @SuppressWarnings("unchecked")

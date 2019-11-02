@@ -123,19 +123,8 @@ public class succeed_goal extends DefaultInternalAction {
         Circumstance C = ts.getC();
         Unifier bak = un.clone();
 
-        Iterator<Intention> itint = C.getRunningIntentionsPlusAtomic();
-        while (itint.hasNext()) {
-            Intention i = itint.next();
-            if (dropIntention(i, c, ts, un) > 1) {
-                C.dropIntention(i);
-                un = bak.clone();
-            }
-        }
-
-        // dropping the current intention?
-        dropIntention(C.getSelectedIntention(), c, ts, un);
-        un = bak.clone();
-
+        // remove goal before in events, since the deletion from I can produce events for the goal
+        
         // dropping G in Events
         Iterator<Event> ie = C.getEventsPlusAtomic();
         while (ie.hasNext()) {
@@ -161,7 +150,7 @@ public class succeed_goal extends DefaultInternalAction {
                 }
             }
         }
-
+        
         // dropping G in Pending Events
         for (String ek: C.getPendingEvents().keySet()) {
             // test in the intention
@@ -186,6 +175,19 @@ public class succeed_goal extends DefaultInternalAction {
                 }
             }
         }
+
+        Iterator<Intention> itint = C.getRunningIntentionsPlusAtomic();
+        while (itint.hasNext()) {
+            Intention i = itint.next();
+            if (dropIntention(i, c, ts, un) > 1) {
+                C.dropRunningIntention(i);
+                un = bak.clone();
+            }
+        }
+
+        // dropping the current intention?
+        dropIntention(C.getSelectedIntention(), c, ts, un);
+        un = bak.clone();
 
         // dropping from Pending Actions
         for (ActionExec a: C.getPendingActions().values()) {
