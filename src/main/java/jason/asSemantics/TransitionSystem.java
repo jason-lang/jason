@@ -661,7 +661,7 @@ public class TransitionSystem {
                                     im.unif.function.put(vvl, t);
                                 }
                             } else {
-                            	// the vvl was renamed again in top, just replace the new value in base 
+                                // the vvl was renamed again in top, just replace the new value in base 
                                 VarTerm v0 = (VarTerm)top.renamedVars.function.get(vvl);
                                 if (v0 != null) {
                                     imBase.renamedVars.function.put(v, v0);
@@ -1062,6 +1062,9 @@ public class TransitionSystem {
             if (i == null)
                 return;
 
+            if (i.hasGoalCondition())
+                return; // they are cleared by applyClrSatInt
+            
             if (i.isFinished()) {
                 // intention finished, remove it
                 C.dropRunningIntention(i);
@@ -1070,7 +1073,7 @@ public class TransitionSystem {
             }
 
             IntendedMeans im = i.peek();
-            if (!im.isSatisfied(getAg())) {
+            if (!im.isFinished()) {
                 // nothing to do
                 return;
             }
