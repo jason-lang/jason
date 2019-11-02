@@ -50,8 +50,8 @@ import jason.asSyntax.Term;
                 ".my_name(bob): true if the agent's name is \"bob\""
         },
         seeAlso= {
-                "jason.stdlib.broadcast", 
-                "jason.stdlib.send", 
+                "jason.stdlib.broadcast",
+                "jason.stdlib.send",
                 "jason.stdlib.all_names"
         }
     )

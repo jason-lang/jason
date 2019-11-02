@@ -321,10 +321,10 @@ public class ASSyntax {
             throw new ParseException("Expected <EOF> after "+r+" for parameter '"+sRule+"'");
         return r;
     }
-    
+
     /**
      * Convert a Jason term into a Java Object
-     * 
+     *
      * @param t Jason term
      */
     public static Object termToObject(Term t){
@@ -346,7 +346,7 @@ public class ASSyntax {
                 e.printStackTrace();
             }
             if (((byte)d)==d){
-                return (byte)d; 
+                return (byte)d;
             } else if (((int)d)==d){
                 return (int)d;
             } else if (((float)d)==d){
@@ -370,5 +370,5 @@ public class ASSyntax {
             return t.toString();
         }
     }
-    
+
 }

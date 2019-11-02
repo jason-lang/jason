@@ -44,23 +44,23 @@ import jason.asSyntax.Term;
                 "term"
         },
         examples= {
-                ".literal(b(10)): true", 
-                ".literal(b(10)[a,b]): true", 
-                ".literal(~b(20)[a,b]): true", 
+                ".literal(b(10)): true",
+                ".literal(b(10)[a,b]): true",
+                ".literal(~b(20)[a,b]): true",
                 ".literal(b): true",
-                ".literal(10): false", 
-                ".literal(\"Jason\"): false", 
-                ".literal(X): false if X is free, true if X is bound to a literal", 
+                ".literal(10): false",
+                ".literal(\"Jason\"): false",
+                ".literal(X): false if X is free, true if X is bound to a literal",
                 ".literal(a(X)): true",
-                ".literal([a,b,c]): false", 
+                ".literal([a,b,c]): false",
                 ".literal([a,b,c(X)]): false"
         },
         seeAlso= {
-                "jason.stdlib.atom", 
-                "jason.stdlib.list", 
-                "jason.stdlib.number", 
-                "jason.stdlib.string", 
-                "jason.stdlib.structure", 
+                "jason.stdlib.atom",
+                "jason.stdlib.list",
+                "jason.stdlib.number",
+                "jason.stdlib.string",
+                "jason.stdlib.structure",
                 "jason.stdlib.ground"
         }
     )

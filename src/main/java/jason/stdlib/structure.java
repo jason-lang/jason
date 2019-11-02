@@ -45,22 +45,22 @@ import jason.asSyntax.Term;
                 "term"
         },
         examples= {
-                ".structure(b(10)): true", 
-                ".structure(b): true", 
-                ".structure(10): false", 
-                ".structure(\"home page\"): false", 
-                ".structure(X): false if X is free, true if X is bound to a structure", 
+                ".structure(b(10)): true",
+                ".structure(b): true",
+                ".structure(10): false",
+                ".structure(\"home page\"): false",
+                ".structure(X): false if X is free, true if X is bound to a structure",
                 ".structure(a(X)): true",
                 ".structure(~c(f)): true",
-                ".structure([a,b,c]): true", 
+                ".structure([a,b,c]): true",
                 ".structure([a,b,c(X)]): true"
         },
         seeAlso= {
-                "jason.stdlib.atom", 
-                "jason.stdlib.list", 
-                "jason.stdlib.literal", 
-                "jason.stdlib.number", 
-                "jason.stdlib.string", 
+                "jason.stdlib.atom",
+                "jason.stdlib.list",
+                "jason.stdlib.literal",
+                "jason.stdlib.number",
+                "jason.stdlib.string",
                 "jason.stdlib.ground"
         }
     )

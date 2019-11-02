@@ -78,7 +78,7 @@ import jason.runtime.Settings;
 		argsHint= {
 				"the name for the new agent",
 				"path to the AgentSpeak code file [optional]",
-				"list of optional parameters [optional]"		
+				"list of optional parameters [optional]"
 		},
 		argsType= {
 				"atom, string, or variable",

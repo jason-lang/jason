@@ -190,7 +190,7 @@ public class Agent {
             }
 
             loadKqmlPlans();
-            addInitialBelsInBB(); // in case kqml plan file has some belief 
+            addInitialBelsInBB(); // in case kqml plan file has some belief
 
         } catch (Exception e) {
             logger.log(Level.SEVERE, "Error loading code from "+asSrc, e);
@@ -200,7 +200,7 @@ public class Agent {
 
     /** parse and load asl code */
     public void load(InputStream in, String sourceId) throws JasonException {
-        try {           
+        try {
             parseAS(in, sourceId);
 
             if (getPL().hasMetaEventPlans())
@@ -401,7 +401,7 @@ public class Agent {
 
     /** Adds beliefs and plans form an URL */
     public boolean parseAS(URL asURL) {
-        return parseAS(asURL, asURL.toString());    
+        return parseAS(asURL, asURL.toString());
     }
     public boolean parseAS(URL asURL, String sourceId) {
         try {
@@ -683,7 +683,7 @@ public class Agent {
     public ActionExec selectAction(Queue<ActionExec> actions) {
         // make sure the selected Action is removed from actList
         // (do not return suspended intentions)
-        
+
         /* // old code, suspended is now considered in hasFA; no need to sync, it is done in TS
          * synchronized (actList) {
             Iterator<ActionExec> i = actList.iterator();
@@ -695,7 +695,7 @@ public class Agent {
                 }
             }
         }*/
-        
+
         if (actions.isEmpty())
             return null;
         else
@@ -1070,7 +1070,7 @@ public class Agent {
 
     static DocumentBuilder builder = null;
 
-    
+
     /** Gets the agent "mind" (beliefs, plans, and circumstance) as XML */
     public synchronized Document getAgState() {
         if (builder == null) {

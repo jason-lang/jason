@@ -23,12 +23,12 @@ public interface RuntimeServices {
      * class (default value is "DefaultBeliefBase"), <i>stts</i> as
      * Settings (default value is new Settings()), and
      * <i>father</i> is the agent creating this agent (null is none).
-     * 
-     * if no archClasses is informed (null value), 
+     *
+     * if no archClasses is informed (null value),
      *    if fathers is informed
      *        use father's ag archs
      *    else
-     *        use default ag archs (see registerDefaultAgArch) 
+     *        use default ag archs (see registerDefaultAgArch)
      *
      * <p> Example: createAgent("bob", "bob.asl", "mypkg.MyAgent", null, null, null);
      *
@@ -42,7 +42,7 @@ public interface RuntimeServices {
     default public void registerDefaultAgArch(String agArch) {}
 
     default public Collection<String> getDefaultAgArchs() { return new ArrayList<>(); }
-    
+
     /** starts an agent (e.g. create thread for it) */
     public void startAgent(String agName);
 
@@ -72,7 +72,7 @@ public interface RuntimeServices {
     /** Stops all MAS (the agents, the environment, the controller, ...) */
     public void stopMAS(int deadline) throws Exception;
     default public void stopMAS() throws Exception { stopMAS(0); }
-    
+
     default public void dfRegister(String agName, String service, String type) {}
     default public void dfDeRegister(String agName, String service, String type) {}
     default public Collection<String> dfSearch(String service, String type) { return new ArrayList<>(); }

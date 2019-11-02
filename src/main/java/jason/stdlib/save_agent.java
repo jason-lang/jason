@@ -43,14 +43,14 @@ import jason.bb.BeliefBase;
         hint="stores the beliefs, rules, and plans of the agent into a file",
         argsHint= {
                 "the name of the file",
-                "the list of initial goals that will be included in the file [optional]" 
+                "the list of initial goals that will be included in the file [optional]"
         },
         argsType= {
                 "string",
                 "list"
         },
         examples= {
-                ".save_agent(\"/tmp/x.asl\"): save the agent at file \"/tmp/x.asl\"", 
+                ".save_agent(\"/tmp/x.asl\"): save the agent at file \"/tmp/x.asl\"",
                 ".save_agent(\"/tmp/x.asl\", [start, say(hello)]): includes start and say(hello) as initial goals"
         },
         seeAlso= {

@@ -148,7 +148,7 @@ public class JasonBridgeArch extends AgArch {
 
                     Object propCont = translateDFSubscribeToJason(m);
 
-                    if (propCont == null) // not a DF subscribe answer 
+                    if (propCont == null) // not a DF subscribe answer
                             propCont = translateContentToJason(m);
 
                     if (propCont != null) {

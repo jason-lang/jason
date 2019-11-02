@@ -33,7 +33,7 @@ public class TestKQML {
             "                 jason.asunit.print(t1,\" \",A). "+
             "+!send_ask4   <- .send(maria, askOne, fullname, A); "+
             "                 jason.asunit.print(A). "+
-            
+
             "+!send_ask5   <- .send(maria, tell, myv(10)); .send(maria, askOne, myv(_)). "+
             "+!send_ask6   <- .send(maria, tell, myv(10)); .send(maria, askOne, myv(_), A); jason.asunit.print(A). "+
 

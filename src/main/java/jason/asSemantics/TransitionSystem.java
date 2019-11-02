@@ -549,7 +549,7 @@ public class TransitionSystem {
                 //System.out.println(top.getTrigger().getLiteral().getPredicateIndicator()+"=2="+im.getTrigger().getLiteral().getPredicateIndicator());
                 //System.out.println(top.getTrigger()+"=3="+im.getTrigger());
 
-                // next test if the condition for TOR (comparing top and the IM being added) 
+                // next test if the condition for TOR (comparing top and the IM being added)
                 if (top != null &&
                         top.getTrigger().isAddition() && im.getTrigger().isAddition() && // failure plans should not be subject of TRO (see BugFail)
                         top.getTrigger().isGoal() && im.getTrigger().isGoal() && // are both goal
@@ -561,7 +561,7 @@ public class TransitionSystem {
                     IntendedMeans imBase = C.SE.intention.peek(); // base = where the new IM will be place on top of
                     if (imBase != null && imBase.renamedVars != null) {
                         // move top relevant values into the base (relevant = renamed vars in base)
-                        
+
                         for (VarTerm v: imBase.renamedVars) {
                             VarTerm vvl = (VarTerm)imBase.renamedVars.function.get(v);
                             Term t = top.unif.get(vvl);
@@ -574,7 +574,7 @@ public class TransitionSystem {
                                     im.unif.function.put(vvl, t);
                                 }
                             } else {
-                                // the vvl was renamed again in top, just replace the new value in base 
+                                // the vvl was renamed again in top, just replace the new value in base
                                 VarTerm v0 = (VarTerm)top.renamedVars.function.get(vvl);
                                 if (v0 != null) {
                                     imBase.renamedVars.function.put(v, v0);
@@ -594,7 +594,7 @@ public class TransitionSystem {
 
     private void applyProcAct() throws JasonException {
         stepAct = State.SelInt; // default next step
-        if (C.hasFeedbackAction()) { // suspended intentions are not considered 
+        if (C.hasFeedbackAction()) { // suspended intentions are not considered
             ActionExec a = null;
             synchronized (C.getFeedbackActions()) {
                 a = ag.selectAction(C.getFeedbackActions());
@@ -633,7 +633,7 @@ public class TransitionSystem {
 
     private void applySelInt() throws JasonException {
         stepAct = State.ExecInt; // default next step
-        
+
         // Rule for Atomic Intentions
         C.SI = C.removeAtomicIntention();
         if (C.SI != null) {
@@ -986,7 +986,7 @@ public class TransitionSystem {
                 // nothing to do
                 return;
             }
-            
+
             // remove the finished IM from the top of the intention
             IntendedMeans topIM = i.pop();
             Trigger topTrigger = topIM.getTrigger();

@@ -89,13 +89,13 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
 
     protected void registerMBean() {
         try {
-            MBeanServer mbs = ManagementFactory.getPlatformMBeanServer(); 
+            MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
             mbs.registerMBean(this, new ObjectName("jason.sf.net:type=runner"));
         } catch (Exception e) {
             e.printStackTrace();
-        }       
+        }
     }
-    
+
     protected int init(String[] args) {
         String projectFileName = null;
         if (args.length < 1) {
@@ -409,7 +409,7 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
         Agent pag = null;
 
         RuntimeServices rs = getRuntimeServices();
-        
+
         // create agents
         for (AgentParameters ap : project.getAgents()) {
             try {
@@ -427,7 +427,7 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
                     }
 
                     numberedAg = rs.getNewAgentName(numberedAg);
-                    
+
                     ap.addArchClass(rs.getDefaultAgArchs());
                     logger.fine("Creating agent " + numberedAg + " (" + (cAg + 1) + "/" + ap.getNbInstances() + ")");
 
@@ -746,7 +746,7 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
             ag.stopAg();
         }
     }
-    
+
     public boolean killAg(String agName) {
         return getRuntimeServices().killAgent(agName, "??", 0);
     }
@@ -843,10 +843,10 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
                             ag.getTS().getC().addExternalEv(te);
                         }
                         try {
-                            Thread.sleep(deadline);                 
+                            Thread.sleep(deadline);
                         } catch (InterruptedException e) {}
                     }
-                    
+
                     System.out.flush();
                     System.err.flush();
 
@@ -872,11 +872,11 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
                     if (stop.exists()) {
                         stop.delete();
                     }
-                    
+
                     System.exit(0);
-                }; 
+                };
             }.start();
-            
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -926,5 +926,5 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
         frame.setVisible(true);
     }
 
-    
+
 }

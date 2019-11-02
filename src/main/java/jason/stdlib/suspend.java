@@ -63,17 +63,17 @@ import jason.asSyntax.Trigger.TEType;
                 ".suspend: suspends the current intention"
         },
         seeAlso= {
-                "jason.stdlib.suspended", 
-                "jason.stdlib.intend", 
-                "jason.stdlib.desire", 
-                "jason.stdlib.drop_all_desires", 
-                "jason.stdlib.drop_all_events", 
-                "jason.stdlib.drop_all_intentions", 
-                "jason.stdlib.drop_intention", 
-                "jason.stdlib.drop_desire", 
-                "jason.stdlib.succeed_goal", 
-                "jason.stdlib.fail_goal", 
-                "jason.stdlib.current_intention", 
+                "jason.stdlib.suspended",
+                "jason.stdlib.intend",
+                "jason.stdlib.desire",
+                "jason.stdlib.drop_all_desires",
+                "jason.stdlib.drop_all_events",
+                "jason.stdlib.drop_all_intentions",
+                "jason.stdlib.drop_intention",
+                "jason.stdlib.drop_desire",
+                "jason.stdlib.succeed_goal",
+                "jason.stdlib.fail_goal",
+                "jason.stdlib.current_intention",
                 "jason.stdlib.resume"
         }
     )

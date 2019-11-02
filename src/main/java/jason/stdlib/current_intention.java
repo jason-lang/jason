@@ -72,7 +72,7 @@ import jason.asSyntax.Term;
         literal=".current_intention(description)",
         hint="returns a description of the current intention",
         argsHint= {
-                "the variable that unifies with the intention description"      
+                "the variable that unifies with the intention description"
         },
         argsType= {
                 "structure"

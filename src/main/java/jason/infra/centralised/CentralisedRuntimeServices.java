@@ -27,7 +27,7 @@ public class CentralisedRuntimeServices extends BaseRuntimeServices {
     protected CentralisedAgArch newAgInstance() {
         return new CentralisedAgArch();
     }
-    
+
     @Override
     public String createAgent(String agName, String agSource, String agClass, Collection<String> archClasses, ClassParameters bbPars, Settings stts, Agent father) throws Exception {
         if (logger.isLoggable(Level.FINE))
@@ -37,7 +37,7 @@ public class CentralisedRuntimeServices extends BaseRuntimeServices {
         ap.setAgClass(agClass);
         ap.setBB(bbPars);
         if (archClasses != null && !archClasses.isEmpty()) {
-            ap.addArchClass(archClasses);           
+            ap.addArchClass(archClasses);
         } else {
             if (father != null) {
                 // use father agArchs
@@ -46,7 +46,7 @@ public class CentralisedRuntimeServices extends BaseRuntimeServices {
                 // use default agArch
                 ap.addArchClass(masRunner.getRuntimeServices().getDefaultAgArchs());
             }
-        } 
+        }
 
         if (stts == null)
             stts = new Settings();
@@ -64,7 +64,7 @@ public class CentralisedRuntimeServices extends BaseRuntimeServices {
             agArch.createArchs(ap.getAgArchClasses(), ap.agClass.getClassName(), ap.getBBClass(), agSource, stts, masRunner);
             agArch.setEnvInfraTier(masRunner.getEnvironmentInfraTier());
             agArch.setControlInfraTier(masRunner.getControllerInfraTier());
-            
+
             // if debug mode is active, set up new agent to be synchronous and visible for ExecutionControlGUI
             if (masRunner.isDebug()) {
                 stts.setVerbose(2);
@@ -123,8 +123,8 @@ public class CentralisedRuntimeServices extends BaseRuntimeServices {
                         } catch (InterruptedException e) {                      }
                     }
                     ag.stopAg();
-                    masRunner.delAg(agName);                    
-                }; 
+                    masRunner.delAg(agName);
+                };
             }.start();
             return true;
         }

@@ -76,7 +76,7 @@ import jason.bb.BeliefBase;
 		argsHint= {
 				"the plan term enclosed by { and }",
 				"the source of the plan(s) [optional]",
-				"the position (begin/end) the plan will be added [optional]"	
+				"the position (begin/end) the plan will be added [optional]"
 		},
 		argsType= {
 				"plan term, string, or list",
@@ -154,7 +154,7 @@ public class add_plan extends DefaultInternalAction {
         }
         if (p.getLabel() != null && p.getLabel().getFunctor().startsWith("l__")) {
         	// if the label is automatic label, remove it
-        	p.delLabel();        	
+        	p.delLabel();
         }
         return p;
     }

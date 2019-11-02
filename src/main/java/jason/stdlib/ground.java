@@ -43,20 +43,20 @@ variables. Numbers, Strings, and Atoms are always ground.
                 "term"
         },
         examples= {
-                ".ground(b(10)): true", 
-                ".ground(10): true", 
-                ".ground(X): false if X is free or bound to a term with free variables", 
-                ".ground(a(X)): false if X is free or bound to a term with free variables", 
-                ".ground([a,b,c]): true", 
+                ".ground(b(10)): true",
+                ".ground(10): true",
+                ".ground(X): false if X is free or bound to a term with free variables",
+                ".ground(a(X)): false if X is free or bound to a term with free variables",
+                ".ground([a,b,c]): true",
                 ".ground([a,b,c(X)]): false if X is free or bound to a term with free variables"
         },
         seeAlso= {
-                "jason.stdlib.atom", 
-                "jason.stdlib.list", 
-                "jason.stdlib.literal", 
-                "jason.stdlib.number", 
-                "jason.stdlib.string", 
-                "jason.stdlib.structure", 
+                "jason.stdlib.atom",
+                "jason.stdlib.list",
+                "jason.stdlib.literal",
+                "jason.stdlib.number",
+                "jason.stdlib.string",
+                "jason.stdlib.structure",
                 "jason.stdlib.ground"
         }
     )

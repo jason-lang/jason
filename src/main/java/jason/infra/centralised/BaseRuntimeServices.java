@@ -9,7 +9,7 @@ public abstract class BaseRuntimeServices implements RuntimeServices {
 
     protected BaseCentralisedMAS masRunner;
     private Collection<String> defaultAgArchs = new ArrayList<>();
-    
+
     public BaseRuntimeServices(BaseCentralisedMAS masRunner) {
         this.masRunner = masRunner;
     }
@@ -29,9 +29,9 @@ public abstract class BaseRuntimeServices implements RuntimeServices {
         String nb = "";
         while (masRunner.getAg(baseName+nb) != null)
             nb = "_" + (n++);
-        return baseName + nb;       
+        return baseName + nb;
     }
-    
+
 
     public Collection<String> getAgentsNames() {
         return masRunner.getAgs().keySet();
@@ -45,25 +45,25 @@ public abstract class BaseRuntimeServices implements RuntimeServices {
         masRunner.finish(deadline);
     }
 
-    @Override    
+    @Override
     public void dfRegister(String agName, String service, String type) {
         masRunner.dfRegister(agName, service);
     }
 
-    @Override    
+    @Override
     public void dfDeRegister(String agName, String service, String type) {
         masRunner.dfDeRegister(agName, service);
     }
-    
-    @Override    
+
+    @Override
     public Collection<String> dfSearch(String service, String type) {
         return masRunner.dfSearch(service);
     }
-    
-    @Override    
+
+    @Override
     public void dfSubscribe(String agName, String service, String type) {
         masRunner.dfSubscribe(agName, service);
     }
-    
+
 }
 

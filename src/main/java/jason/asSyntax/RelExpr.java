@@ -30,7 +30,7 @@ import org.w3c.dom.Element;
  * </ul>
  *
  * in case the list has fourth terms, the first term is the namespace.
- * 
+ *
  * @navassoc - op - RelationalOp
  *
  * @author Jomi
@@ -91,7 +91,7 @@ public class RelExpr extends BinaryStructure implements LogicalFormula {
         Term yp = getTerm(1).capply(un);
 
         Iterator<Unifier> answer = null;
-        
+
         switch (op) {
 
         case none:
@@ -161,7 +161,7 @@ public class RelExpr extends BinaryStructure implements LogicalFormula {
             }
             break;
         }
-                
+
         if (answer == null) {
             if (ag != null && ag.getLogger().isLoggable(Level.FINE)) ag.getLogger().log(Level.FINE, "     | "+this+" failed "+ " -- "+un);
             return LogExpr.EMPTY_UNIF_LIST.iterator();  // empty iterator for unifier

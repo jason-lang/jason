@@ -56,7 +56,7 @@ import jason.asSyntax.Term;
         argsHint= {
                 "the literal where the annotation is to be added",
                 "the annotation",
-                "the resulting unification of the annotation addition"      
+                "the resulting unification of the annotation addition"
         },
         argsType= {
                 "literal or list",

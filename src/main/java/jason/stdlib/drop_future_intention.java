@@ -14,29 +14,29 @@ import jason.asSyntax.Term;
 /**
   <p>
   Internal action: <b><code>.drop_future_intention(<i>I</i>)</code></b>.
-  
+
   <p>
   Description: removes intentions that will try to achieve goal <i>I</i> from
   the set of intentions of the agent (suspended intentions are also
   considered). No event is produced.
-  
+
   The current implementation consider only intended means (already instantiated
   plans), in the future we can consider to look ahead for possible selected
   plans.
-  
+
   <p>Parameters:<ul>
   <li>- goal (literal): the goal the intentions achieve.</li>
   </ul>
- 
+
   <p>
   Example:
   <ul>
-  
+
   <li><code>.drop_future_intention(go(1,3))</code>: removes an intention having
   a plan that will execute <code>+!go(1,3)</code>.
-  
+
   </ul>
-  
+
   @see jason.stdlib.intend
   @see jason.stdlib.desire
   @see jason.stdlib.drop_all_desires
@@ -49,7 +49,7 @@ import jason.asSyntax.Term;
   @see jason.stdlib.suspend
   @see jason.stdlib.suspended
   @see jason.stdlib.resume
-  
+
  */
 @Manual(
         literal=".drop_future_intention(goal)",

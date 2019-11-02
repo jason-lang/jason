@@ -19,7 +19,7 @@ import jason.asSyntax.UnnamedVar;
 
 <p>Examples:<ul>
 <li> <code>.list_plans</code>: list all agent's plans
-<li> <code>.list_plans({ +g(_) })</code>: list agent's plans that unifies with +g(_) 
+<li> <code>.list_plans({ +g(_) })</code>: list agent's plans that unifies with +g(_)
 </ul>
 
 */

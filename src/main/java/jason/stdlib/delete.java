@@ -30,8 +30,8 @@ import jason.asSyntax.Term;
   <li>+ arg[2] (list or string): the list/string where to delete.
   <li>+/- arg[3] (list or string): the list/string with the result of the deletion.
   </ul>
-  
-  
+
+
   <p>Examples:<ul>
   <li> <code>.delete(a,[a,b,c,a],L)</code>: <code>L</code> unifies with [b,c].
   <li> <code>.delete(a,[a,b,c,a],[c])</code>: false.
@@ -73,22 +73,22 @@ import jason.asSyntax.Term;
         examples= {
                 ".delete(a,[a,b,c,a],L): L unifies with [b,c]",
                 ".delete(a,[a,b,c,a],[c]): false",
-                ".delete(0,[a,b,c,a],L): L unifies with [b,c,a]", 
-                ".delete(1,3,[a,b,c,a],L): L unifies with [a,a]", 
-                ".delete(\"a\",\"banana\",S): S unifies with \"bnn\"", 
+                ".delete(0,[a,b,c,a],L): L unifies with [b,c,a]",
+                ".delete(1,3,[a,b,c,a],L): L unifies with [a,a]",
+                ".delete(\"a\",\"banana\",S): S unifies with \"bnn\"",
                 ".delete(0,\"banana\",S): S unifies with \"anana\""
         },
         seeAlso= {
-                "jason.stdlib.concat", 
-                "jason.stdlib.length", 
-                "jason.stdlib.member", 
-                "jason.stdlib.sort", 
-                "jason.stdlib.substring", 
-                "jason.stdlib.nth", 
-                "jason.stdlib.max", 
-                "jason.stdlib.min", 
-                "jason.stdlib.reverse", 
-                "jason.stdlib.difference", 
+                "jason.stdlib.concat",
+                "jason.stdlib.length",
+                "jason.stdlib.member",
+                "jason.stdlib.sort",
+                "jason.stdlib.substring",
+                "jason.stdlib.nth",
+                "jason.stdlib.max",
+                "jason.stdlib.min",
+                "jason.stdlib.reverse",
+                "jason.stdlib.difference",
                 "jason.stdlib.intersection",
                 "jason.stdlib.union"
         }

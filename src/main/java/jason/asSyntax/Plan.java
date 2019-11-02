@@ -43,7 +43,7 @@ public class Plan extends Structure implements Cloneable, Serializable {
     private boolean     isTerm = false; // it is true when the plan body is used as a term instead of an element of a plan
 
     private String source = ""; // the source of this plan (file, url, ....)
-    
+
     // used by clone
     public Plan() {
         super("plan", 0);
@@ -72,7 +72,7 @@ public class Plan extends Structure implements Cloneable, Serializable {
     public void setSource(String f) { if (f!=null) this.source = f; }
     public String getSource()       { return this.source; }
     @Deprecated public String getFile()       { return this.source; }
-    
+
     private static final Term noLabelAtom = new Atom("nolabel");
 
     @Override
@@ -131,7 +131,7 @@ public class Plan extends Structure implements Cloneable, Serializable {
     public Pred getLabel() {
         return label;
     }
-    
+
     public void delLabel() {
         setLabel(null);
     }
@@ -145,11 +145,11 @@ public class Plan extends Structure implements Cloneable, Serializable {
     public void setAsPlanTerm(boolean b) {
         isTerm = b;
     }
-    
+
     public boolean isPlanTerm() {
         return isTerm;
     }
-    
+
     @Override
     public ListTerm getAsListOfTerms() {
         ListTerm l = new ListTermImpl();
@@ -159,19 +159,19 @@ public class Plan extends Structure implements Cloneable, Serializable {
         l.add(getBody());
         return l;
     }
-    
+
     /** creates a plan from a list with four elements: [L, T, C, B] */
     public static Plan newFromListOfTerms(ListTerm lt) throws JasonException {
         Term c = lt.get(2);
         if (c.isPlanBody()) {
             c = ((PlanBody)c).getBodyTerm();
         }
-        return new Plan( new Pred((Literal)(lt.get(0))), 
-                (Trigger)lt.get(1), 
-                (LogicalFormula)c, 
+        return new Plan( new Pred((Literal)(lt.get(0))),
+                (Trigger)lt.get(1),
+                (LogicalFormula)c,
                 (PlanBody)lt.get(3));
     }
-    
+
 
     /** prefer using ASSyntax.parsePlan */
     public static Plan parse(String sPlan) {
@@ -278,7 +278,7 @@ public class Plan extends Structure implements Cloneable, Serializable {
         // TODO: should we change the namespace of all elements of the plan?
         return (Plan)clone();
     }
-    
+
     /** used to create a plan clone in a new IM */
     public Plan cloneOnlyBody() {
         Plan p = new Plan();
@@ -330,7 +330,7 @@ public class Plan extends Structure implements Cloneable, Serializable {
         if (source != null && !source.isEmpty()) {
             u.setAttribute("file", source);
         }
-        
+
         u.appendChild(tevent.getAsDOM(document));
 
         if (context != null) {

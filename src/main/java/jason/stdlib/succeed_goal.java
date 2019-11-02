@@ -68,17 +68,17 @@ import java.util.Iterator;
                 ".succeed_goal(go(X,3)): stops any attempt to achieve goals such as !go(1,3) as if it had already been achieved"
         },
         seeAlso= {
-                "jason.stdlib.intend", 
-                "jason.stdlib.desire", 
-                "jason.stdlib.drop_all_desires", 
-                "jason.stdlib.drop_all_events", 
-                "jason.stdlib.drop_all_intentions", 
-                "jason.stdlib.drop_intention", 
-                "jason.stdlib.drop_desire", 
-                "jason.stdlib.fail_goal", 
-                "jason.stdlib.current_intention", 
-                "jason.stdlib.suspend", 
-                "jason.stdlib.suspended", 
+                "jason.stdlib.intend",
+                "jason.stdlib.desire",
+                "jason.stdlib.drop_all_desires",
+                "jason.stdlib.drop_all_events",
+                "jason.stdlib.drop_all_intentions",
+                "jason.stdlib.drop_intention",
+                "jason.stdlib.drop_desire",
+                "jason.stdlib.fail_goal",
+                "jason.stdlib.current_intention",
+                "jason.stdlib.suspend",
+                "jason.stdlib.suspended",
                 "jason.stdlib.resume"
         }
     )
@@ -105,7 +105,7 @@ public class succeed_goal extends DefaultInternalAction {
         drop(ts, (Literal)args[0], un);
         return true;
     }
-    
+
     public void drop(TransitionSystem ts, Literal l, Unifier un) throws Exception {
         final Trigger g = new Trigger(TEOperator.add, TEType.achieve, l);
         drop(ts, new IMCondition() {
@@ -124,7 +124,7 @@ public class succeed_goal extends DefaultInternalAction {
         Unifier bak = un.clone();
 
         // remove goal before in events, since the deletion from I can produce events for the goal
-        
+
         // dropping G in Events
         Iterator<Event> ie = C.getEventsPlusAtomic();
         while (ie.hasNext()) {
@@ -150,7 +150,7 @@ public class succeed_goal extends DefaultInternalAction {
                 }
             }
         }
-        
+
         // dropping G in Pending Events
         for (String ek: C.getPendingEvents().keySet()) {
             // test in the intention
@@ -228,7 +228,7 @@ public class succeed_goal extends DefaultInternalAction {
                 if (ts.hasGoalListener())
                     for (GoalListener gl: ts.getGoalListeners())
                         gl.goalFinished(im.getTrigger(), FinishStates.achieved);
-    
+
                 // continue the intention
                 if (!i.isFinished()) { // could be finished after i.dropGoal() !!
                     if (ts.getC().getSelectedIntention() != i) // if i is not the current intention, remove

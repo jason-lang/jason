@@ -33,5 +33,5 @@ public class TestFailFail {
         ag.assertPrint("solved", 30);
         ag.assertPrint("goodend", 30);
     }
-    
+
 }

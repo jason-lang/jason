@@ -157,15 +157,15 @@ public class NSTest extends TestCase {
         Unifier u = new Unifier();
         assertTrue(u.unifies(p1, p2));
 
-        // ns::bob = _::bob 
+        // ns::bob = _::bob
         u = new Unifier();
         assertTrue(u.unifies(p2, p3));
 
-        // ns::bob = _::_ 
+        // ns::bob = _::_
         u = new Unifier();
         assertTrue(u.unifies(p2, p5));
 
-        // bob = _::_ 
+        // bob = _::_
         u = new Unifier();
         assertTrue(u.unifies(p4, p5));
 
@@ -196,7 +196,7 @@ public class NSTest extends TestCase {
         p = (Literal)p.capply(u);
         assertTrue(p.getTerm(0) == Literal.DefaultNS);
     }
-    
+
     public void testApply2() throws ParseException {
         Term t = ASSyntax.parseTerm("A::B");
         Unifier u = new Unifier();
@@ -224,7 +224,7 @@ public class NSTest extends TestCase {
         t = t.capply(u);
         assertEquals(sa.getClass().getName(), t.getClass().getName());
         assertEquals("ns::.include(kk)", t.toString());
-    
+
         t = ASSyntax.parseTerm("A::B");
         u = new Unifier();
         u.unifies(new VarTerm("A"), new Atom("ns"));
@@ -243,7 +243,7 @@ public class NSTest extends TestCase {
         assertEquals(sa.getClass().getName(), t.getClass().getName());
         assertEquals("{ +!g : b <- act; +kk::b(10) }", t.toString());
     }
-    
+
     public void testConstants() throws ParseException {
         Unifier u = new Unifier();
 
@@ -382,5 +382,5 @@ public class NSTest extends TestCase {
         a.abolish(ASSyntax.parseLiteral("ns3::_"), null);
         assertEquals(2, a.getBB().size());
     }
-    
+
 }

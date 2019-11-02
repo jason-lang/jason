@@ -26,7 +26,7 @@ public abstract class MindInspectorWeb {
         }
         return singleton;
     }
-    
+
     public static synchronized void stop() {
         if (singleton != null) {
             singleton.stoptHttpServer();

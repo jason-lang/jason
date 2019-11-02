@@ -42,7 +42,7 @@ public class InternalActionLiteral extends Structure implements LogicalFormula {
         super((Structure) l, u);
         this.ia = l.ia;
     }
-    
+
     // used by cloneNS
     private InternalActionLiteral(Atom ns, InternalActionLiteral l) {
         super(ns, (Structure)l);
@@ -125,7 +125,7 @@ public class InternalActionLiteral extends Structure implements LogicalFormula {
                                 return ((Iterator<Unifier>) oresult).hasNext();
                             }
                             @Override public Unifier next() {
-                                Unifier r = ((Iterator<Unifier>) oresult).next(); 
+                                Unifier r = ((Iterator<Unifier>) oresult).next();
                                 ag.getLogger().log(Level.FINE, "     | internal action "+InternalActionLiteral.this+" option "+ " -- "+r);
                                 return r;
                             }

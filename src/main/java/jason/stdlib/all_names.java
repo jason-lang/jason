@@ -33,7 +33,7 @@ import jason.runtime.RuntimeServices;
         literal=".all_names(result)",
         hint="get the names of all agents in the system",
         argsHint= {
-                "the resulting unification with all agent's names"      
+                "the resulting unification with all agent's names"
         },
         argsType= {
                 "list"
@@ -42,8 +42,8 @@ import jason.runtime.RuntimeServices;
                 ".all_names(L): unifies with L a list of all agents in the system"
         },
         seeAlso= {
-                "jason.stdlib.broadcast", 
-                "jason.stdlib.send", 
+                "jason.stdlib.broadcast",
+                "jason.stdlib.send",
                 "jason.stdlib.all_names",
                 "jason.runtime.RuntimeServices"
         }

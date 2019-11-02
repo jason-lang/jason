@@ -41,18 +41,18 @@ import jason.asSyntax.Term;
                 "term"
         },
         examples= {
-                ".number(10): true" + 
-                ".number(10.34): true" + 
-                ".number(b(10)): false" + 
-                ".number(\"home page\"): false" + 
+                ".number(10): true" +
+                ".number(10.34): true" +
+                ".number(b(10)): false" +
+                ".number(\"home page\"): false" +
                 ".number(X): false if X is free, true if X is bound to a number"
         },
         seeAlso= {
-                "jason.stdlib.atom", 
-                "jason.stdlib.list", 
-                "jason.stdlib.literal", 
-                "jason.stdlib.string", 
-                "jason.stdlib.structure", 
+                "jason.stdlib.atom",
+                "jason.stdlib.list",
+                "jason.stdlib.literal",
+                "jason.stdlib.string",
+                "jason.stdlib.structure",
                 "jason.stdlib.ground"
         }
     )

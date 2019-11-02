@@ -50,7 +50,7 @@ import java.util.Iterator;
 		hint="counts the number of occurrences of a belief the belief base",
 		argsHint= {
 				"the formula used to count literals in the belief base",
-				"the resulting unification of the number of occurrences of the belief"		
+				"the resulting unification of the number of occurrences of the belief"
 		},
 		argsType= {
 				"logical formula",

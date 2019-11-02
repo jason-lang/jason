@@ -161,7 +161,7 @@ public class ClassParameters {
     public int hashCode() {
     	return className.hashCode();
     }
-    
+
     @Override
     public boolean equals(Object obj) {
     	if (obj == null) return false;

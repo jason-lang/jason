@@ -319,8 +319,8 @@ public class ASParserTest extends TestCase {
         UnnamedVar v2 = new UnnamedVar(-34);
         assertFalse( ((Literal)t.getBody().getBodyNext().getBodyTerm()).getTerm(0).equals(v1) );
         assertTrue(  ((Literal)t.getBody().getBodyNext().getBodyTerm()).getTerm(0).equals(v2) );
-    }    
-    
+    }
+
     public void testParsingAllSources() {
         parseDir(new File("./examples"));
         parseDir(new File("./demos"));
@@ -403,7 +403,7 @@ public class ASParserTest extends TestCase {
         t = ASSyntax.parseFormula("(X>1) & (X<3) | (Y>5) & (X<7)");
         assertEquals("(((X > 1) & (X < 3)) | ((Y > 5) & (X < 7)))", t.toString());
     }
-    
+
     public void testBugSC() throws Exception {
         String source = "@foo(1) +!g <- .print(foo(1)).\n" +
                         "@foo(2) +!g <- .print(foo(2)).\n";
@@ -413,28 +413,28 @@ public class ASParserTest extends TestCase {
         a.initAg();
         parser.agent(a);
     }
-    
+
     public void testElIf() throws ParseException, JasonException {
-        String source = 
-        "+!g(Mode,Team) <- \n" + 
+        String source =
+        "+!g(Mode,Team) <- \n" +
         "    if (Mode<=2) { \n"+
-        "          .println(\"I found some object.\"); \n" + 
-        "    } else {\n" + 
-        "            .nth(1, ObjectFound, Team);\n" + 
-        "            if (Team == 200) {\n" + 
-        "                .println( \"if\" );\n" + 
-        "            }\n" + 
-        "            elif (Team == 100) { \n" + 
-        "                .println( \"elif\" );\n" + 
-        "            }\n" + 
-        "            else {\n" + 
-        "                .println( \"else\" );\n" + 
-        "            }\n" + 
+        "          .println(\"I found some object.\"); \n" +
+        "    } else {\n" +
+        "            .nth(1, ObjectFound, Team);\n" +
+        "            if (Team == 200) {\n" +
+        "                .println( \"if\" );\n" +
+        "            }\n" +
+        "            elif (Team == 100) { \n" +
+        "                .println( \"elif\" );\n" +
+        "            }\n" +
+        "            else {\n" +
+        "                .println( \"else\" );\n" +
+        "            }\n" +
         "    }.  // End of else";
         as2j parser = new as2j(new StringReader(source));
         Agent a = new Agent();
         a.initAg();
         parser.agent(a);
-        
+
     }
 }

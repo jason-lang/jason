@@ -58,20 +58,20 @@ import java.util.Iterator;
                 "list"
         },
         examples= {
-                ".member(c,[a,b,c]): true", 
+                ".member(c,[a,b,c]): true",
                 ".member(3,[a,b,c]): false",
                 ".member(X,[a,b,c]): unifies X with any member of the list"
         },
         seeAlso= {
-                "jason.stdlib.concat", 
-                "jason.stdlib.delete", 
-                "jason.stdlib.length", 
-                "jason.stdlib.sort", 
-                "jason.stdlib.nth", 
-                "jason.stdlib.max", 
-                "jason.stdlib.min", 
-                "jason.stdlib.reverse", 
-                "jason.stdlib.difference", 
+                "jason.stdlib.concat",
+                "jason.stdlib.delete",
+                "jason.stdlib.length",
+                "jason.stdlib.sort",
+                "jason.stdlib.nth",
+                "jason.stdlib.max",
+                "jason.stdlib.min",
+                "jason.stdlib.reverse",
+                "jason.stdlib.difference",
                 "jason.stdlib.intersection",
                 "jason.stdlib.union"
         }

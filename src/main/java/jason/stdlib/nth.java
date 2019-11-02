@@ -64,23 +64,23 @@ import jason.asSyntax.Term;
                 "term"
         },
         examples= {
-                ".nth(0,[a,b,c],X): unifies X with a", 
-                ".nth(2,[a,b,c],X): unifies X with c", 
+                ".nth(0,[a,b,c],X): unifies X with a",
+                ".nth(2,[a,b,c],X): unifies X with c",
                 ".nth(0,[a,b,c],d): false",
-                ".nth(0,[a,b,c],a): true", 
-                ".nth(5,[a,b,c],X): error", 
+                ".nth(0,[a,b,c],a): true",
+                ".nth(5,[a,b,c],X): error",
                 ".nth(X,[a,b,c,a,e],a): unifies X with 0 (and 3 if it backtracks)"
         },
         seeAlso= {
-                "jason.stdlib.concat", 
-                "jason.stdlib.delete", 
-                "jason.stdlib.length", 
-                "jason.stdlib.member", 
-                "jason.stdlib.sort", 
-                "jason.stdlib.max", 
-                "jason.stdlib.min", 
-                "jason.stdlib.reverse", 
-                "jason.stdlib.difference", 
+                "jason.stdlib.concat",
+                "jason.stdlib.delete",
+                "jason.stdlib.length",
+                "jason.stdlib.member",
+                "jason.stdlib.sort",
+                "jason.stdlib.max",
+                "jason.stdlib.min",
+                "jason.stdlib.reverse",
+                "jason.stdlib.difference",
                 "jason.stdlib.intersection",
                 "jason.stdlib.union"
         }
@@ -116,7 +116,7 @@ public class nth extends DefaultInternalAction {
     public Object execute(TransitionSystem ts, final Unifier un, final Term[] args) throws Exception {
         checkArguments(args);
 
-        
+
         ListTerm list = null;
         if (args[1].isList())
             list = (ListTerm)args[1];

@@ -10,7 +10,7 @@ import org.junit.Test;
 /** bug reported by Amandine
  * I have in my belief base one belief that I want to remove : mybelief(abc)[annot1(d)]
 If I do -mybelief(_), the belief is not removed because  if ( ! t1s.hasSubsetAnnot(t2s, this)) of Unifier line 317 returns false with t1s=mybelief(abc)[annot1(d)] and t2s=mybelief(_) (called by line 962 in Agent)
-If I do -mybelief(abc), the belief is removed because this time the variable bl of DefaultBeliefBase line 173 is not null (which is normal) and then annots are analyzed with if (l.hasSubsetAnnot(bl)) with l=mybelief(abc) and bl=mybelief(abc)[annot1(d)]. Here we can notice that the order of evaluation of hasSubsetAnnot is in reverse order compared to the previous case. 
+If I do -mybelief(abc), the belief is removed because this time the variable bl of DefaultBeliefBase line 173 is not null (which is normal) and then annots are analyzed with if (l.hasSubsetAnnot(bl)) with l=mybelief(abc) and bl=mybelief(abc)[annot1(d)]. Here we can notice that the order of evaluation of hasSubsetAnnot is in reverse order compared to the previous case.
 
  */
 public class BugDelBel {
@@ -30,9 +30,9 @@ public class BugDelBel {
         ag2 = new TestAgent("a2");
         ag2.parseAScode(
             "mybelief(abc)[source(robot)]. "+
-            "+!start1 <- -mybelief(abc)[source(_)]." 
+            "+!start1 <- -mybelief(abc)[source(_)]."
         );
-    
+
     }
 
     @Test(timeout=2000)

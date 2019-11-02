@@ -2,9 +2,9 @@ package jason.asSemantics;
 
 import jason.asSyntax.Trigger;
 
-/** 
+/**
  * Used to generalise dropIM (in Intention)
- * 
+ *
  * @author jomi
  */
 public abstract class IMCondition {

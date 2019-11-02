@@ -106,7 +106,7 @@ public class Intention implements Serializable, Comparable<Intention>, Iterable<
     public boolean isSuspended() {
         return isSuspended;
     }
-    
+
     public void setSuspendedReason(String r) {
         suspendedReason = r;
     }
@@ -188,7 +188,7 @@ public class Intention implements Serializable, Comparable<Intention>, Iterable<
                 failTrigger = new Trigger(TEOperator.del, tevent.getType(), tevent.getLiteral());
                 posInStak--;
             }
-            if (tevent.isGoal() && //tevent.isAddition() && 
+            if (tevent.isGoal() && //tevent.isAddition() &&
                     pl.hasCandidatePlan(failTrigger))
                 return new Pair<>(new Event(failTrigger.clone(), this), posInStak);
             else

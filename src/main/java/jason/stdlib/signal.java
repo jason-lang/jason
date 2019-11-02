@@ -41,8 +41,8 @@ public class signal extends DefaultInternalAction {
         checkArguments(args);
         ts.updateEvents(
                 new Event(
-                        Trigger.tryToGetTrigger(args[0]), 
-                        Intention.EmptyInt));        
+                        Trigger.tryToGetTrigger(args[0]),
+                        Intention.EmptyInt));
         return true;
     }
 }

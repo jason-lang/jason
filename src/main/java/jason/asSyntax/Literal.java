@@ -171,7 +171,7 @@ public abstract class Literal extends DefaultTerm implements LogicalFormula {
     }
 
     /** removes all annotations and returns itself */
-    public Literal clearAnnots()    { 
+    public Literal clearAnnots()    {
         return this;
     }
 
@@ -299,7 +299,7 @@ public abstract class Literal extends DefaultTerm implements LogicalFormula {
         logger.log(Level.SEVERE, "delAnnots is not implemented in the class "+this.getClass().getSimpleName(), new Exception());
         return false;
     }
-    
+
     /**
      * "import" annots from another predicate <i>p</i>. p will be changed
      * to contain only the annots actually imported (for Event),
@@ -330,7 +330,7 @@ public abstract class Literal extends DefaultTerm implements LogicalFormula {
     public void delSources()                 {
         logger.log(Level.SEVERE, "delSources is not implemented in the class "+this.getClass().getSimpleName(), new Exception());
     }
-    
+
     public Literal noSource() {
     	delSources();
     	return this;
@@ -370,8 +370,8 @@ public abstract class Literal extends DefaultTerm implements LogicalFormula {
         }
         */
 
-    	final boolean isInDebug = ag.getLogger().isLoggable(Level.FINE); 
-    			
+    	final boolean isInDebug = ag.getLogger().isLoggable(Level.FINE);
+
         final Iterator<Literal> il   = ag.getBB().getCandidateBeliefs(this, un);
         if (il == null) { // no relevant bels
         	if (isInDebug) ag.getLogger().log(Level.FINE, "     | no candidate belief for "+this+" with "+un);
@@ -452,7 +452,7 @@ public abstract class Literal extends DefaultTerm implements LogicalFormula {
                         	if (isInDebug) ag.getLogger().log(Level.FINE, "     | belief annotation "+belToTry+" is an option for "+ Literal.this+ " -- "+u);
                             return;
                         } else {
-                        	if (isInDebug) ag.getLogger().log(Level.FINE, "     | belief annotation "+belToTry+" is NOT an option for "+ Literal.this+ " -- "+u);                        	
+                        	if (isInDebug) ag.getLogger().log(Level.FINE, "     | belief annotation "+belToTry+" is NOT an option for "+ Literal.this+ " -- "+u);
                         }
                     }
                     annotsOptions = null;
@@ -477,7 +477,7 @@ public abstract class Literal extends DefaultTerm implements LogicalFormula {
                             //    cacheResults.add(unC);
                             return;
                         } else {
-                        	if (isInDebug) ag.getLogger().log(Level.FINE, "     | rule "+rhead+" is NOT an option for "+ Literal.this+ " -- "+unC);                        	
+                        	if (isInDebug) ag.getLogger().log(Level.FINE, "     | rule "+rhead+" is NOT an option for "+ Literal.this+ " -- "+unC);
                         }
                     }
                     ruleIt = null;
@@ -638,17 +638,17 @@ public abstract class Literal extends DefaultTerm implements LogicalFormula {
         public Literal cloneNS(Atom newnamespace) {
         	return this;
         }
-        
+
         @Override
         public Term capply(Unifier u) {
         	return this;
         }
-        
+
         @Override
         public Iterator<Unifier> logicalConsequence(final Agent ag, final Unifier un) {
             return LogExpr.createUnifIterator(un);
         }
-        
+
         protected Object readResolve() {
             return Literal.LTrue;
         }
@@ -663,12 +663,12 @@ public abstract class Literal extends DefaultTerm implements LogicalFormula {
         public Literal cloneNS(Atom newnamespace) {
         	return this;
         }
-        
+
         @Override
         public Term capply(Unifier u) {
         	return this;
         }
-        
+
         @Override
         public Iterator<Unifier> logicalConsequence(final Agent ag, final Unifier un) {
             return LogExpr.EMPTY_UNIF_LIST.iterator();
@@ -715,7 +715,7 @@ public abstract class Literal extends DefaultTerm implements LogicalFormula {
         public String toString() {
             return getFunctor();
         }
-        
+
         protected Object readResolve() {
             return Literal.DefaultNS;
         }

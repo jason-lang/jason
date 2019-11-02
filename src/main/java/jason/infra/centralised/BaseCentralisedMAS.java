@@ -52,7 +52,7 @@ public abstract class BaseCentralisedMAS extends NotificationBroadcasterSupport 
     }
 
     protected RuntimeServices singRTS = null;
-    
+
     public RuntimeServices getRuntimeServices() {
         if (singRTS == null)
             singRTS = new CentralisedRuntimeServices(runner);
@@ -62,7 +62,7 @@ public abstract class BaseCentralisedMAS extends NotificationBroadcasterSupport 
     public void setRuntimeServives(RuntimeServices rts) {
         singRTS = rts;
     }
-    
+
     public CentralisedExecutionControl getControllerInfraTier() {
         return control;
     }
@@ -97,27 +97,27 @@ public abstract class BaseCentralisedMAS extends NotificationBroadcasterSupport 
     public int getNbAgents() {
         return ags.size();
     }
-    
+
     public abstract void setupLogger();
 
     public abstract void finish(int deadline);
     public void finish() { finish(0); }
-    
+
     public abstract boolean hasDebugControl();
 
     public abstract void enableDebugControl();
 
-    
+
     /** DF methods **/
-    
+
     public void dfRegister(String agName, String service) {
-        synchronized (df) {         
+        synchronized (df) {
             Set<String> s = df.get(agName);
             if (s == null)
                 s = new HashSet<>();
             s.add(service);
             df.put(agName, s);
-            
+
             // inform subscribers
             for (Pair<String,String> p: subscribers) {
                 if (p.getSecond().equals(service))
@@ -127,7 +127,7 @@ public abstract class BaseCentralisedMAS extends NotificationBroadcasterSupport 
     }
 
     public void dfDeRegister(String agName, String service) {
-        synchronized (df) {         
+        synchronized (df) {
             Set<String> s = df.get(agName);
             if (s == null)
                 return;
@@ -135,9 +135,9 @@ public abstract class BaseCentralisedMAS extends NotificationBroadcasterSupport 
                 s.remove(service);
         }
     }
-    
+
     public Collection<String> dfSearch(String service) {
-        synchronized (df) {         
+        synchronized (df) {
             Set<String> ags = new HashSet<>();
             for (String ag: df.keySet()) {
                 for (String l: df.get(ag)) {
@@ -149,22 +149,22 @@ public abstract class BaseCentralisedMAS extends NotificationBroadcasterSupport 
             return ags;
         }
     }
-    
+
     public void dfSubscribe(String agName, String service) {
-        synchronized (df) {         
+        synchronized (df) {
             // sends him all current providers
-            for (String a: dfSearch(service)) 
+            for (String a: dfSearch(service))
                 sendProvider(agName,a,service);
-            // register as interested 
+            // register as interested
             subscribers.add(new Pair<>(agName, service));
         }
     }
-    
+
     protected void sendProvider(String receiver, String provider, String service) {
         Message m = new Message("tell", "df", receiver, ASSyntax.createLiteral("provider", new Atom(provider), new StringTermImpl(service)));
         getAg(receiver).receiveMsg(m);
     }
-    
+
     public Map<String, Set<String>> getDF() {
             return df;
     }

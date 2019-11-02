@@ -19,7 +19,7 @@ import jason.asSyntax.Term;
   <li>- type (string -- optional): the type of the service.</li>
 
   </ul>
-  
+
   <p>Examples:<ul>
   <li> <code>.df_register("sell(book)")</code>: register the agent as a book seller.
   <li> <code>.df_deregister("sell(book)","book-trading")</code>: register the agent as a book seller of type "book-trading".
@@ -71,19 +71,19 @@ public class df_register extends DefaultInternalAction {
 
     @Override
     public Object execute(final TransitionSystem ts, Unifier un, Term[] args) throws Exception {
-        checkArguments(args);        
+        checkArguments(args);
 
         ts.getUserAgArch().getRuntimeServices().dfRegister(ts.getUserAgArch().getAgName(), getService(args), getType(args));
         return true;
     }
-    
+
     protected String getService(Term[] args) {
         if (args[0].isString())
             return ((StringTerm)args[0]).getString();
-        else 
-            return args[0].toString();      
+        else
+            return args[0].toString();
     }
-    
+
     protected String getType(Term[] args) {
         if (args.length>1) {
                 if (args[1].isString())

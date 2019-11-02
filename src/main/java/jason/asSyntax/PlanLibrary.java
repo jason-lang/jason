@@ -26,7 +26,7 @@ import jason.util.Config;
 public class PlanLibrary implements Iterable<Plan> {
 
     public static String KQML_PLANS_FILE = "kqmlPlans.asl";
-    
+
     /** a MAP from TE to a list of relevant plans */
     private Map<PredicateIndicator,List<Plan>> relPlans = new ConcurrentHashMap<>();
 
@@ -300,7 +300,7 @@ public class PlanLibrary implements Iterable<Plan> {
         Plan p = get(pLabel);
         if (p != null) {
         	eDOMPlans = null;
-        	
+
         	boolean hasSource = p.getLabel().delSource(source);
 
             // if no source anymore, remove the plan
@@ -426,9 +426,9 @@ public class PlanLibrary implements Iterable<Plan> {
                 }
                 splans.put(p.getSource(), r);
             }
-            r.append(p.toString()+"\n");            
+            r.append(p.toString()+"\n");
         }
-        
+
         r = new StringBuilder();
         StringBuilder end = new StringBuilder("\n");
         for (String f: splans.keySet()) {
@@ -444,10 +444,10 @@ public class PlanLibrary implements Iterable<Plan> {
         }
         return r.toString()+end.toString();
     }
-    
+
     // for cache
     protected Element eDOMPlans = null;
-    
+
     /** get as XML */
     public Element getAsDOM(Document document) {
         if (eDOMPlans != null)

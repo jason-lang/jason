@@ -143,7 +143,7 @@ Internal actions of Jason.
 
   <li>{@link jason.stdlib.date date}: get the current date.</li>
   <li>{@link jason.stdlib.time time}: get the current time.</li>
-  
+
   <li>{@link jason.stdlib.fail fail}: an action that always fails.</li>
   <li>{@link jason.stdlib.perceive perceive}: force perception.</li>
 
@@ -152,9 +152,9 @@ Internal actions of Jason.
   <li>{@link jason.stdlib.random random}: produces random numbers.</li>
 
   <li>{@link jason.stdlib.include include}: imports a source code at run time.</li>
-  
+
   <li>{@link jason.stdlib.printf printf}: formated print.</li>
-  
+
 </ul>
 */
 package jason.stdlib;

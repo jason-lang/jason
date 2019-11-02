@@ -275,7 +275,7 @@ public class BeliefBaseTest extends TestCase {
 
         assertTrue(ag.getBB().remove(l));
     }
-    
+
     public void testRemUnground1() throws RevisionFailedException {
         Agent ag = new Agent();
         ag.initAg();
