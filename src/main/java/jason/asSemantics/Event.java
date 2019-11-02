@@ -56,7 +56,7 @@ public class Event implements Serializable {
 
     @Override
     public int hashCode() {
-        int r = trigger.hashCode();
+        int r = trigger.hashCode();  
         if (intention != null)
             r = r + intention.hashCode();
         return r;
