@@ -466,7 +466,7 @@ public class TransitionSystem {
             // intention
             Intention i = C.SE.intention;
             joinRenamedVarsIntoIntentionUnifier(i.peek(), i.peek().unif);
-            updateIntention(i);
+            removeActionReQueue(i);
         } else if (setts.requeue()) {
             // if external, then needs to check settings
             C.addEvent(C.SE);
@@ -608,7 +608,7 @@ public class TransitionSystem {
                 if (C.removePendingAction(curInt.getId()) != null) {
                     if (a.getResult()) {
                         // add the intention back in I
-                        updateIntention(curInt);
+                        removeActionReQueue(curInt);
                         applyClrInt(curInt);
 
                         if (hasGoalListener())
@@ -672,7 +672,7 @@ public class TransitionSystem {
 
         if (im.isFinished()) {
             // for empty plans! may need unif, etc
-            updateIntention(curInt);
+            removeActionReQueue(curInt);
             return;
         }
         Unifier     u = im.unif;
@@ -749,7 +749,7 @@ public class TransitionSystem {
                 }
 
                 if (ok && !ia.suspendIntention())
-                    updateIntention(curInt);
+                    removeActionReQueue(curInt);
             } catch (NoValueException e) {
                 // add not ground vars in the message
                 String msg = e.getMessage() + " Ungrounded variables = [";
@@ -787,7 +787,7 @@ public class TransitionSystem {
             Iterator<Unifier> iu = ((LogicalFormula)bTerm).logicalConsequence(ag, u);
             if (iu.hasNext()) {
                 im.unif = iu.next();
-                updateIntention(curInt);
+                removeActionReQueue(curInt);
             } else {
                 String msg = "Constraint "+h+" was not satisfied ("+h.getSrcInfo()+") un="+u;
                 generateGoalDeletion(curInt, JasonException.createBasicErrorAnnots(new Atom("constraint_failed"), msg));
@@ -808,14 +808,14 @@ public class TransitionSystem {
             body = prepareBodyForEvent(body, u, null);
             evt  = C.addAchvGoal(body, Intention.EmptyInt);
             checkHardDeadline(evt);
-            updateIntention(curInt);
+            removeActionReQueue(curInt);
             break;
 
         // Rule Test
         case test:
             LogicalFormula f = (LogicalFormula)bTerm;
             if (ag.believes(f, u)) {
-                updateIntention(curInt);
+                removeActionReQueue(curInt);
             } else {
                 boolean fail = true;
                 // generate event when using literal in the test (no events for log. expr. like ?(a & b))
@@ -888,10 +888,10 @@ public class TransitionSystem {
                     // generate events
                     updateEvents(result,newfocus);
                     if (!isSameFocus) {
-                        updateIntention(curInt);
+                        removeActionReQueue(curInt);
                     }
                 } else {
-                    updateIntention(curInt);
+                    removeActionReQueue(curInt);
                 }
             } catch (RevisionFailedException re) {
                 generateGoalDeletion(curInt, null);
@@ -911,15 +911,15 @@ public class TransitionSystem {
             }
             // call BRF
             try {
-                List<Literal>[] result = ag.brf(null, body, curInt); 
+                List<Literal>[] result = ag.brf(null, body, curInt); // the intention is not the new focus
                 if (result != null) { // really change something
                     // generate events
                     updateEvents(result,newfocus);
                     if (!isSameFocus) {
-                        updateIntention(curInt);
+                        removeActionReQueue(curInt);
                     }
                 } else {
-                    updateIntention(curInt);
+                    removeActionReQueue(curInt);
                 }
             } catch (RevisionFailedException re) {
                 generateGoalDeletion(curInt, null);
@@ -1157,7 +1157,7 @@ public class TransitionSystem {
     }
 
     /** remove the top action and requeue the current intention */
-    private void updateIntention(Intention i) {
+    private void removeActionReQueue(Intention i) {
         if (!i.isFinished()) {
             i.peek().removeCurrentStep();
             C.addRunningIntention(i);

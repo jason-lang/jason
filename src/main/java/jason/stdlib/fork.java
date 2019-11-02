@@ -133,7 +133,7 @@ public class fork extends DefaultInternalAction {
 
     class ForkData {
         boolean        isAnd = true;
-        Set<Intention> intentions = new HashSet<Intention>();
+        Set<Intention> intentions = new HashSet<>();
         int            toFinish = 0;
 
         public ForkData(boolean isAnd) {
@@ -211,7 +211,7 @@ public class fork extends DefaultInternalAction {
                     }
                 } else {
                     //System.out.println("*** case or, do not search for fail plan below fork point");
-                    return new Pair<Event, Integer>(null, p.getSecond());
+                    return new Pair<>(null, p.getSecond());
                 }
             }
             return p;

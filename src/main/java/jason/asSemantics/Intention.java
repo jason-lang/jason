@@ -67,15 +67,9 @@ public class Intention implements Serializable, Comparable<Intention>, Iterable<
     public IntendedMeans pop() {
         IntendedMeans top = intendedMeans.pop();
 
-        if (isAtomic() && top.isAtomic()) {
+        if (isAtomic() && top.isAtomic())
             atomicCount--;
-            /* for (IntendedMeans im : intendedMeans) {
-                if (im.isAtomic()) {
-                    isAtomic = true;
-                    break;
-                }
-            }*/
-        }
+
         return top;
     }
 
@@ -203,7 +197,7 @@ public class Intention implements Serializable, Comparable<Intention>, Iterable<
     }
 
 
-    /** implements atomic intentions grater than not atomic intentions */
+    /** atomic intentions are grater than not atomic intentions */
     public int compareTo(Intention o) {
         if (o.atomicCount > this.atomicCount) return 1;
         if (this.atomicCount > o.atomicCount) return -1;
