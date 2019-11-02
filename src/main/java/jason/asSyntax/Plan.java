@@ -378,8 +378,8 @@ public class Plan extends Structure implements Cloneable, Serializable {
     public boolean hasSubPlans() {
         return subplans != null;
     }
-    public boolean hasInterestInExernalEvents() {
-        return subplans != null && subplans.hasPlansForExternalEvents();
+    public boolean hasInterestInUpdateEvents() {
+        return subplans != null && subplans.hasPlansForUpdateEvents();
     }
     public PlanLibrary getSubPlans() {
         return subplans;

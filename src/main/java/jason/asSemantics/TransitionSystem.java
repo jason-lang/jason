@@ -406,23 +406,25 @@ public class TransitionSystem {
                 logger.fine("Selected event "+C.SE);
             if (C.SE != null) {
 
-                // external events are copied for all intentions (new JasonER)
-                if (C.SE.isExternal() && !C.SE.getTrigger().isGoal()) { // && C.SE.getTrigger().isAddition()) {
-                    Iterator<Intention> ii = C.getRunningIntentions().iterator();
+                // update events (+ and -) are copied for all intentions (new JasonER)
+                if (!C.SE.getTrigger().isGoal()) { // C.SE.isExternal() && C.SE.getTrigger().isAddition()) {
+                    logger.info("Selected event "+C.SE.getTrigger()+  C.SE.isExternal());
+                    Iterator<Intention> ii = C.getAllIntentions(); //C.getRunningIntentions().iterator(); // TODO: consider PI
                     while (ii.hasNext()) {
                         Intention i = ii.next();
                         // if i has sub plans (so potentially interested in external events)
-                        if (i.hasIntestedInExternalEvents()) {
-                            // but, do not consider plans at root level
-                            List<Plan> relPlans = null;
-                            if (i.peek().getPlan().hasSubPlans())
-                                relPlans = i.peek().getPlan().getSubPlans().getCandidatePlans(C.SE.getTrigger());
+                        System.out.println("-- "+i.getId()+" "+i.hasIntestedInUpdateEvents());
+                        if (i.hasIntestedInUpdateEvents() && i.peek().getPlan().hasSubPlans()) {
+                            List<Plan> relPlans = i.peek().getPlan().getSubPlans().getCandidatePlans(C.SE.getTrigger());
                             if (relPlans != null) {
-                                relPlans = new ArrayList<>(relPlans);
-                                Iterator<Plan> ip = relPlans.iterator();
+                                relPlans = new ArrayList<>(relPlans); // clone
+                                // do not consider plans at root level
+                                Iterator<Plan> ip = relPlans.iterator(); 
                                 while (ip.hasNext())
                                     if (ip.next().getScope().isRoot())
                                         ip.remove();
+                                // create the extra event and place it in E
+                                // and move intention i from I to E
                                 if (!relPlans.isEmpty()) {
                                     Event e = new Event(C.SE.getTrigger(), i);
                                     e.setRelPlans(relPlans);
@@ -477,9 +479,6 @@ public class TransitionSystem {
             if (nbOfGoalConditions == 0) // if no intention with GC, stop checking
                 C.resetIntentionsWithGoalCondition();
         }
-        // Rule SelEv2
-        // directly to ProcAct if no event to handle
-        stepDeliberate = State.ProcAct;
     }
 
     private void applyRelPl() throws JasonException {
@@ -569,8 +568,8 @@ public class TransitionSystem {
         stepDeliberate = State.AddIM; // default next step
 
         // consider scope (new in JasonER)
-        // TODO: implement Scope for RelPl ApplPl SelAppl
-        List<Plan> candidateRPs = C.SE.getRelPlans(); // in case the rel plans are already computed before
+        // TODO: implement Scope for RelPl ApplPl SelAppl (that are replaced by applyFindOp if possible)
+        List<Plan> candidateRPs = C.SE.getRelPlans(); // in case the rel plans are already computed before (see selEvt)
         if (candidateRPs == null) {
             PlanLibrary plib = ag.getPL();
             if (C.SE.isInternal()) {
@@ -679,7 +678,7 @@ public class TransitionSystem {
     }
 
     private void applyProcAct() throws JasonException {
-        applyClrSatInt();
+        applyClrSatInt(); // TODO: create a proper step for ClrSatInt in the enumerations
 
         stepAct = State.SelInt; // default next step
         if (C.hasFeedbackAction()) {

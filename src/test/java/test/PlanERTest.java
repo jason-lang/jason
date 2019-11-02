@@ -41,9 +41,17 @@ public class PlanERTest extends TestCase {
         p = Plan.parse("+!p(X) : X > 0 <: X > 100 | .done { <- .print(a). } ");
         assertEquals("+!p(X) : (X > 0) <: ((X > 100) | .done) <- .print(a).", p.toString());
         
-        p = Plan.parse(code);
+    }
+    
+    public void testProperties() {
+    	setup();
+    	Plan p = Plan.parse(code);
+        assertTrue(p.hasInterestInUpdateEvents());
         assertEquals(3, p.getSubPlans().size());
         //True(p.toString().startsWith("+!p(X) : (X > 0) <: ((X > 100) | .done) {\n   <- .print(a).\n   +e <- x.\n   +!sg : a <: false <- k."));
+        
+        Plan sg2 = p.getSubPlans().getPlans().get(2);
+        assertTrue(sg2.hasInterestInUpdateEvents());
     }
     
     public void testCandidates() throws JasonException, ParseException {

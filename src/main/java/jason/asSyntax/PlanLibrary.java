@@ -53,7 +53,7 @@ public class PlanLibrary implements Iterable<Plan> {
 
     private PlanLibrary father = null;
     
-    private boolean hasPlansForExternalEvents = false;
+    private boolean hasPlansForUpdateEvents = false;
     
     public PlanLibrary() {
     }
@@ -73,8 +73,8 @@ public class PlanLibrary implements Iterable<Plan> {
         father = pl;
     }
     
-    public boolean hasPlansForExternalEvents() {
-        return hasPlansForExternalEvents;
+    public boolean hasPlansForUpdateEvents() {
+        return hasPlansForUpdateEvents;
     }
     
     public Object getLock() {
@@ -216,8 +216,8 @@ public class PlanLibrary implements Iterable<Plan> {
                         else
                             lp.add(p);
             } else {
-                if (pte.isAddition() && !pte.isGoal())
-                    hasPlansForExternalEvents = true;
+                if (!pte.isGoal()) // pte.isAddition() && 
+                    hasPlansForUpdateEvents = true;
                 
                 List<Plan> codesList = relPlans.get(pte.getPredicateIndicator());
                 if (codesList == null) {

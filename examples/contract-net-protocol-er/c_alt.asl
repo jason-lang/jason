@@ -1,14 +1,16 @@
+// alternative implementation without .wait(<condition>), see plan for !bid
+
 /* Initial beliefs and rules */
 
 all_proposals_received(CNPId, NP)                // NP: number of participants
   :- .count(propose(CNPId,_)[source(_)], NO) &   // NO: number of proposes received
      .count(refuse(CNPId)[source(_)], NR) &      // NR: number of refusals received
-     NP = NO + NR.
+     .print(NO,"  ",NR) & NP = NO + NR.
 
 /* Initial goals */
 
 !cnp(1,fix(computer)).
-!cnp(2,banana).
+//!cnp(2,banana).
 
 !register.
 +!register <- .df_register(initiator).
@@ -16,7 +18,7 @@ all_proposals_received(CNPId, NP)                // NP: number of participants
 /* Plans */
 
 +!cnp(Id,Task) {
-    <- !start(LP); !bids(LP); !winner(LO,W); !announce(LO,W).
+    <- !start(LP); !bids(LP); .print(a); .print("****",endbids); !winner(LO,W); !announce(LO,W).
 
     +!start(LP)
        <- .print("Waiting participants for task ",Task,"...");
@@ -25,9 +27,11 @@ all_proposals_received(CNPId, NP)                // NP: number of participants
           .print("Sending CFP to ",LP);
           .send(LP,tell,cfp(Id,Task)).
 
-    +!bids(LP)
-       <- // the deadline of the CNP is now + 4 seconds (or all proposals were received)
-          .wait(all_proposals_received(Id,.length(LP)), 4000, _).
+    +!bids(LP) : NP = .length(LP) <: done(Id) {
+       <- .print(waitfor,NP);.wait(400000); +done(Id).
+       +propose(Id,_) : .print("****") & all_proposals_received(Id, NP) <- +done(Id).
+       +refuse(Id)    : all_proposals_received(Id, NP) <- +done(Id).
+    }
 
     +!winner(LO,WAg)
         : .findall(offer(O,A),propose(Id,O)[source(A)],LO) & LO \== []

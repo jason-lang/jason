@@ -39,7 +39,7 @@ public class Intention implements Serializable, Comparable<Intention>, Iterable<
     private String  suspendedReason = null;
     
     // new in JasonER
-    private int     intestedInExternalEvents = 0;
+    private int     intestedInUpdateEvents = 0;
     private int     imWithGoalCondition      = 0; 
 
     private Deque<IntendedMeans> intendedMeans = new ArrayDeque<>();
@@ -60,8 +60,8 @@ public class Intention implements Serializable, Comparable<Intention>, Iterable<
         intendedMeans.push(im);
         if (im.isAtomic())
             atomicCount++;
-        if (im.getPlan().hasInterestInExernalEvents())
-            intestedInExternalEvents++;
+        if (im.getPlan().hasInterestInUpdateEvents())
+            intestedInUpdateEvents++;
         if (im.getPlan().hasGoalCondition())
             imWithGoalCondition++;
     }
@@ -75,8 +75,8 @@ public class Intention implements Serializable, Comparable<Intention>, Iterable<
 
         if (isAtomic() && top.isAtomic())
             atomicCount--;
-        if (hasIntestedInExternalEvents() && top.getPlan().hasInterestInExernalEvents()) 
-            intestedInExternalEvents--;
+        if (hasIntestedInUpdateEvents() && top.getPlan().hasInterestInUpdateEvents()) 
+            intestedInUpdateEvents--;
         if (hasGoalCondition() && top.getPlan().hasGoalCondition())
             imWithGoalCondition--;
         return top;
@@ -90,8 +90,8 @@ public class Intention implements Serializable, Comparable<Intention>, Iterable<
         atomicCount = a;
     }
 
-    public boolean hasIntestedInExternalEvents() {
-        return intestedInExternalEvents > 0;
+    public boolean hasIntestedInUpdateEvents() {
+        return intestedInUpdateEvents > 0;
     }
     public boolean hasGoalCondition() {
         return imWithGoalCondition > 0;

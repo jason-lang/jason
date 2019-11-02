@@ -684,7 +684,6 @@ public class Circumstance implements Serializable {
                 find(); // find next response
                 return b;
             }
-            public void remove() {}
 
             void find() {
                 switch (curStep) {
@@ -785,6 +784,20 @@ public class Circumstance implements Serializable {
 
                 }
                 curInt = null; // nothing found
+            }
+            
+            public void remove() {
+                switch (curStep) {
+                case selEvt:     break;
+                case selInt:     break;
+                case evt:        break;
+                case pendAct:    break;
+                case pendEvt:    break;
+                case pendInt:    break;
+                case intentions: break;
+                case end:
+                }
+                System.out.println("******** remove() is not implemented for C.getAllIntentions ******");
             }
         };
     }
