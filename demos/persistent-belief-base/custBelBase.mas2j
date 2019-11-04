@@ -28,7 +28,7 @@ MAS custom_BB {
             "jdbc:hsqldb:bookstore", // URL connection
             "sa", // user
             "",   // password
-            "[a(1,tablea,columns(runs(integer))),book(5),book_author(2),author(2,author,columns(id(integer),name(varchar(30)))),publisher(2)]");
+            "[a(1,tablea,columns(runs(integer))),book(5),book_author(2),author(2,author,columns(id(integer),name(varchar(30))))]");
             // predicate a/1 is mapped to a table called "tablea" with an integer column called runs;
             //     the name and type of the columns is used only if the table does not exits and
             //     have to be created;

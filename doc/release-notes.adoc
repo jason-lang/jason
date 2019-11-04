@@ -3,6 +3,10 @@
 
 ifdef::env-github[:outfilesuffix: .adoc]
 
+== version 2.5
+
+- cascading failures of failures (see FAQ)
+
 == version 2.4 (2019-05-24)
 
 (a built package is available at https://sourceforge.net/projects/jason/files/jason/version%202.4/[here])

@@ -56,6 +56,8 @@ gradle clean   // <3>
 gradle release // <4>
 -----
 <1> generates a new jason jar.
-<2> generates the javadoc and transforms asciidoc files into html (http://asciidoctor.org[asciidoctor] should be installed).
+<2> generates the javadoc and transforms asciidoc files into html (Docker must be running for the latter).
 <3> cleans all generated files.
 <4> produces a zip file in `build/distributions` to be distributed to users.
+
+An _eclipse_ project to change the Jason implementation can be created form menu "File/Import/Existing Gradle Project".
