@@ -40,7 +40,10 @@ public class Intention implements Serializable, Comparable<Intention>, Iterable<
 
     // new in JasonER
     private int     intestedInUpdateEvents = 0;
-    private int     imWithGoalCondition      = 0;
+    private int     imWithGoalCondition = 0;
+    private boolean isFromEPlan = false;
+    public void setHasEPlan() { isFromEPlan = true; }
+    public boolean hasEPlan() { return isFromEPlan; }
 
     private Deque<IntendedMeans> intendedMeans = new ArrayDeque<>();
 
@@ -92,6 +95,9 @@ public class Intention implements Serializable, Comparable<Intention>, Iterable<
         atomicCount = a;
     }
 
+    public void setNoInterestInUpdateEvents() {
+        intestedInUpdateEvents = 0;
+    }
     public boolean hasIntestedInUpdateEvents() {
         return intestedInUpdateEvents > 0;
     }
@@ -244,6 +250,10 @@ public class Intention implements Serializable, Comparable<Intention>, Iterable<
         for (IntendedMeans im: intendedMeans) {
             i.intendedMeans.add((IntendedMeans)im.clone());
         }
+        
+        i.intestedInUpdateEvents = intestedInUpdateEvents;
+        i.imWithGoalCondition = imWithGoalCondition;
+        
         return i;
     }
 

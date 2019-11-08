@@ -410,11 +410,12 @@ public class TransitionSystem {
                 if (C.SE.isExternal() && C.SE.getTrigger().isUpdate()) { //  C.SE.getTrigger().isAddition()) {
                     //logger.info("Selected event "+C.SE.getTrigger()+  C.SE.isExternal());
                     // TODO: consider PI (see notes, not easy!)
-                    Iterator<Intention> ii = C.getRunningIntentions().iterator(); //C.getAllIntentions(); //C.getRunningIntentions().iterator();
+                    // TODO: think on moving this code to findOp
+                    Iterator<Intention> ii = C.getAllIntentions(); //C.getAllIntentions(); //C.getRunningIntentions().iterator();
                     while (ii.hasNext()) {
                         Intention i = ii.next();
                         // if i has sub plans (so potentially interested in external events)
-                        //System.out.println("-- "+i.getId()+" "+i.hasIntestedInUpdateEvents()+" "+ (C.SE.getIntention() != null ? C.SE.getIntention().getId() : " no int "));
+                        //logger.info("-- "+i.getId()+" "+i.hasIntestedInUpdateEvents()+" "+ (C.SE.getIntention() != null ? C.SE.getIntention().getId() : " no int "));
                         if (i.hasIntestedInUpdateEvents() && i.peek().getPlan().hasSubPlans()) {
                             List<Plan> relPlans = i.peek().getPlan().getSubPlans().getCandidatePlans(C.SE.getTrigger());
                             if (relPlans != null) {
@@ -427,11 +428,32 @@ public class TransitionSystem {
                                 // create the extra event and place it in E
                                 // and move intention i from I to E
                                 if (!relPlans.isEmpty()) {
-                                    Event e = new Event(C.SE.getTrigger(), i);
-                                    logger.info("     ** add extra evt for "+i.getId());
-                                    e.setRelPlans(relPlans);
-                                    C.addEvent(e);
-                                    ii.remove(); // TODO: should not remove fom PI? see notes
+                                    // fork the event
+                                    
+                                    // adds the .join in the plan
+                                    //InternalActionLiteral joinL;
+                                    try {
+                                        //joinL = new InternalActionLiteral(new Structure(".drop_intention"), getAg()); // should be: drop only this intention not the original for g
+                                        //PlanBody joinPB = new PlanBodyImpl(BodyType.internalAction, joinL);
+                                        //Plan p = new Plan();
+                                        //p.setTerm(3, joinPB);
+                                        Plan p = ASSyntax.parsePlan("+artificial_plan <- .print(somethingtoberemovedwhenback); .drop_intention.");
+                                        Option o = new Option(p, i.peek().getUnif());                                        
+                                        IntendedMeans joinIM = new IntendedMeans(o, C.SE.getTrigger());
+                                        Intention newi = new Intention(); // use JoinIntention so that it works with .succeed_goal
+                                        newi.setHasEPlan(); // to avoid succed_goal on it // check latter 
+                                        i.copyTo(newi);
+                                        newi.setNoInterestInUpdateEvents();
+                                        newi.push(joinIM);
+                                                                                
+                                        Event e = new Event(C.SE.getTrigger(), newi);
+                                        //logger.info("     ** add extra evt for "+e);
+                                        e.setRelPlans(relPlans);
+                                        C.addEvent(e);
+                                        //ii.remove(); // TODO: should not remove fom PI? see notes
+                                    } catch (Exception e1) {
+                                        e1.printStackTrace();
+                                    }
                                 }
                             }
                         }
@@ -462,7 +484,6 @@ public class TransitionSystem {
         }
         public boolean test(IntendedMeans im, Unifier u) {
             if (im.getPlan().hasGoalCondition()) {
-                //System.out.println("test "+im.getPlan().getGoalCondition()+ "="+im.isSatisfied(getAg()));
                 nbOfGoalConditions++;
             }
             return im.isSatisfied(getAg());
@@ -478,8 +499,9 @@ public class TransitionSystem {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            if (nbOfGoalConditions == 0) // if no intention with GC, stop checking
+            if (nbOfGoalConditions == 0) { // if no intention with GC anymore, stop checking
                 C.resetIntentionsWithGoalCondition();
+            }
         }
     }
 

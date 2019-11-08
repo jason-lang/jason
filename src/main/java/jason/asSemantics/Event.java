@@ -15,7 +15,7 @@ public class Event implements Serializable {
 
     Trigger   trigger   = null;
     Intention intention = Intention.EmptyInt;
-    List<Plan> relPlans = null; // rel plans computed for this event
+    List<Plan> relPlans = null; // rel plans computed for this event (JasonER)
 
     public Event(Trigger t, Intention i) {
         trigger   = t;
