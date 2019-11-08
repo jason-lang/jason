@@ -5,14 +5,13 @@
 all_proposals_received(CNPId, NP)                // NP: number of participants
   :- .count(propose(CNPId,_)[source(_)], NO) &   // NO: number of proposes received
      .count(refuse(CNPId)[source(_)], NR) &      // NR: number of refusals received
-     .print(NO,"  ",NR) & NP = NO + NR.
+     NP = NO + NR.
 
 /* Initial goals */
 
 !run.
 !register.
 +!register <- .df_register(initiator).
-
 
 /* Plans */
 +!run
@@ -22,7 +21,7 @@ all_proposals_received(CNPId, NP)                // NP: number of participants
    .
 
 +!cnp(Id,Task) {
-    <- !call(LP); !bids(LP); !winner(LO,W); !result(LO,W).
+    <- !call(LP); !bids(LP); !winner(LO,W); !result(LO,W); -done(Id).
 
     +!call(LP)
        <- .df_search("participant",LP);

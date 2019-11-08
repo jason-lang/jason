@@ -385,6 +385,8 @@ public class TransitionSystem {
 
     }
 
+    private static Plan planBaseForEPlans = null; 
+
     private void applySelEv() throws JasonException {
         // Rule for atomic, if there is an atomic intention, do not select event
         if (C.hasAtomicIntention()) {
@@ -409,7 +411,6 @@ public class TransitionSystem {
                 // update events (+ and -) are copied for all intentions (new JasonER)
                 if (C.SE.isExternal() && C.SE.getTrigger().isUpdate()) { //  C.SE.getTrigger().isAddition()) {
                     //logger.info("Selected event "+C.SE.getTrigger()+  C.SE.isExternal());
-                    // TODO: consider PI (see notes, not easy!)
                     // TODO: think on moving this code to findOp
                     Iterator<Intention> ii = C.getAllIntentions(); //C.getAllIntentions(); //C.getRunningIntentions().iterator();
                     while (ii.hasNext()) {
@@ -417,10 +418,10 @@ public class TransitionSystem {
                         // if i has sub plans (so potentially interested in external events)
                         //logger.info("-- "+i.getId()+" "+i.hasIntestedInUpdateEvents()+" "+ (C.SE.getIntention() != null ? C.SE.getIntention().getId() : " no int "));
                         if (i.hasIntestedInUpdateEvents() && i.peek().getPlan().hasSubPlans()) {
-                            List<Plan> relPlans = i.peek().getPlan().getSubPlans().getCandidatePlans(C.SE.getTrigger());
+                            List<Plan> relPlans = i.peek().getPlan().getSubPlans().getCandidatePlans(C.SE.getTrigger()); // TODO: use intention stack (as RB proposed in the paper)
                             if (relPlans != null) {
                                 relPlans = new ArrayList<>(relPlans); // clone
-                                // do not consider plans at root level
+                                // do not consider plans at root level (they are considered in the normal cycle of Jason)
                                 Iterator<Plan> ip = relPlans.iterator();
                                 while (ip.hasNext())
                                     if (ip.next().getScope().isRoot())
@@ -430,29 +431,33 @@ public class TransitionSystem {
                                 if (!relPlans.isEmpty()) {
                                     // fork the event
                                     
-                                    // adds the .join in the plan
-                                    //InternalActionLiteral joinL;
-                                    try {
-                                        //joinL = new InternalActionLiteral(new Structure(".drop_intention"), getAg()); // should be: drop only this intention not the original for g
-                                        //PlanBody joinPB = new PlanBodyImpl(BodyType.internalAction, joinL);
-                                        //Plan p = new Plan();
-                                        //p.setTerm(3, joinPB);
-                                        Plan p = ASSyntax.parsePlan("+artificial_plan <- .print(somethingtoberemovedwhenback); .drop_intention.");
-                                        Option o = new Option(p, i.peek().getUnif());                                        
-                                        IntendedMeans joinIM = new IntendedMeans(o, C.SE.getTrigger());
-                                        Intention newi = new Intention(); // use JoinIntention so that it works with .succeed_goal
-                                        newi.setHasEPlan(); // to avoid succed_goal on it // check latter 
-                                        i.copyTo(newi);
-                                        newi.setNoInterestInUpdateEvents();
-                                        newi.push(joinIM);
-                                                                                
-                                        Event e = new Event(C.SE.getTrigger(), newi);
-                                        //logger.info("     ** add extra evt for "+e);
-                                        e.setRelPlans(relPlans);
-                                        C.addEvent(e);
-                                        //ii.remove(); // TODO: should not remove fom PI? see notes
-                                    } catch (Exception e1) {
-                                        e1.printStackTrace();
+                                    // there is an option?
+                                    for (Plan p: relPlans) {
+                                        Option o = getOption(C.SE, p, i.peek().getUnif().clone());
+                                        //logger.info("option "+o+" "+C.SE.getTrigger()+" for "+p+" with "+i.peek().getUnif());
+                                        if (o != null) {
+                                            try {
+                                                if (planBaseForEPlans == null) 
+                                                    planBaseForEPlans = ASSyntax.parsePlan("+artificial_plan <- .print(somethingtoberemovedwhenback); .drop_intention."); // TODO: do not use drop_intention, but a new internal action that drops only this intention
+                                                
+                                                IntendedMeans joinIM = new IntendedMeans(new Option(planBaseForEPlans.cloneNS(Literal.DefaultNS), i.peek().getUnif()), C.SE.getTrigger());
+                                                Intention newi = new Intention();
+                                                newi.setHasEPlan(); // to avoid succeed_goal to resume it below eplan 
+                                                i.copyTo(newi);
+                                                newi.setNoInterestInUpdateEvents();
+                                                newi.push(joinIM);
+                                                                                        
+                                                Event e = new Event(C.SE.getTrigger(), newi);
+                                                //logger.info("     ** add extra evt for "+e);
+                                                e.setOption(o);
+                                                C.addEvent(e);
+                                                //ii.remove(); // TODO: should not remove fom PI? see notes
+                                            } catch (Exception e1) {
+                                                e1.printStackTrace();
+                                            }
+                                            
+                                            break; // for 
+                                        }                                           
                                     }
                                 }
                             }
@@ -593,55 +598,61 @@ public class TransitionSystem {
 
         // consider scope (new in JasonER)
         // TODO: implement Scope for RelPl ApplPl SelAppl (that are replaced by applyFindOp if possible)
-        List<Plan> candidateRPs = C.SE.getRelPlans(); // in case the rel plans are already computed before (see selEvt)
-        if (candidateRPs == null) {
-            PlanLibrary plib = ag.getPL();
-            if (C.SE.isInternal()) {
-                Plan p = C.SE.getIntention().peek().getPlan();
-                if (p.hasSubPlans()) {
-                    plib = p.getSubPlans();
-                } else {
-                    plib = p.getScope();
-                }
-            }
-
-            // get all relevant plans for the selected event
-            candidateRPs = plib.getCandidatePlans(C.SE.getTrigger());
+        C.SO = C.SE.getOption();
+        if (C.SO != null) { // and option was previouly computed
+            return;
         }
+
+        PlanLibrary plib = ag.getPL();
+        if (C.SE.isInternal()) {
+            Plan p = C.SE.getIntention().peek().getPlan();
+            if (p.hasSubPlans()) {
+                plib = p.getSubPlans();
+            } else {
+                plib = p.getScope();
+            }
+        }
+
+        // get all relevant plans for the selected event
+        List<Plan> candidateRPs = plib.getCandidatePlans(C.SE.getTrigger());
 
         if (candidateRPs != null) {
             for (Plan pl : candidateRPs) {
-                Unifier relUn = null;
-                if (C.SE.isInternal()) {
-                    // use IM vars in the context for sub-plans (new in JasonER)
-                    for (IntendedMeans im: C.SE.getIntention()) {
-                        if (im.getPlan().hasSubPlans() && im.getPlan().getSubPlans().get(pl.getLabel()) != null) {
-                            relUn = im.triggerUnif.clone();
-                            break;
-                        }
-                    }
-                }
-
-                relUn = pl.isRelevant(C.SE.trigger, relUn);
-                if (relUn != null) { // is relevant
-                    LogicalFormula context = pl.getContext();
-                    if (context == null) { // context is true
-                        C.SO = new Option(pl, relUn);
-                        return;
-                    } else {
-                        Iterator<Unifier> r = context.logicalConsequence(ag, relUn);
-                        if (r != null && r.hasNext()) {
-                            C.SO = new Option(pl, r.next());
-                            return;
-                        }
-                    }
-                }
+                C.SO = getOption(C.SE, pl, null);
+                if (C.SO != null)
+                    return;
             }
             applyRelApplPlRule2("applicable");
         } else {
             // problem: no plan
             applyRelApplPlRule2("relevant");
         }
+    }
+    
+    private Option getOption(Event evt, Plan pl, Unifier relUn) {
+        if (evt.isInternal()) {
+            // use IM vars in the context for sub-plans (new in JasonER)
+            for (IntendedMeans im: C.SE.getIntention()) {
+                if (im.getPlan().hasSubPlans() && im.getPlan().getSubPlans().get(pl.getLabel()) != null) {
+                    relUn = im.triggerUnif.clone();
+                    break;
+                }
+            }
+        }
+
+        relUn = pl.isRelevant(evt.trigger, relUn);
+        if (relUn != null) { // is relevant
+            LogicalFormula context = pl.getContext();
+            if (context == null) { // context is true
+                return new Option(pl, relUn);
+            } else {
+                Iterator<Unifier> r = context.logicalConsequence(ag, relUn);
+                if (r != null && r.hasNext()) {
+                    return new Option(pl, r.next());
+                }
+            }
+        }
+        return null;
     }
 
     private void applyAddIM() throws JasonException {

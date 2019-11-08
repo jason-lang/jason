@@ -278,7 +278,8 @@ public class Plan extends Structure implements Cloneable, Serializable {
         p.setSrcInfo(srcInfo);
         p.isTerm = isTerm;
 
-        p.goalCondition = (LogicalFormula)this.goalCondition.clone();
+        if (this.goalCondition != null)
+            p.goalCondition = (LogicalFormula)this.goalCondition.clone();
         p.subplans      = this.subplans;
         p.scope         = this.scope;
 

@@ -18,5 +18,5 @@ MAS cnp {
         c_alt;     // the CNP initiator
         p #3;  // the participants (3) that offer a service
         pr;    // a participant that always refuses
-        //pn;    // a participant that does not answer
+        pn;    // a participant that does not answer
 }
