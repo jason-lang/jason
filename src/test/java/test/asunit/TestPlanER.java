@@ -26,7 +26,7 @@ public class TestPlanER {
             "+d(X) <- droot(X)." +
 
             "+!g1(X) <: g1(X) { <- inig1. "+
-            "    +a(X) : X > 2 <- a1ing1; +g1(X); a2ing1." +
+            "    +a(X) : X > 2 <- a1ing1; +g1(X); .print(a); a2ing1; .print(b)." +
             "} " +
 
             "+!g2(X) { <- +a(X); !sg2(X+1). "+
@@ -74,7 +74,7 @@ public class TestPlanER {
     public void testExtEvt1() {
         ag.addGoal("test");
         ag.assertAct("inig1", 10);
-        assertEquals(1, ag.getTS().getC().getRunningIntentions().size());
+        assertEquals(1, ag.getTS().getC().getPendingIntentions().size());
         ag.addBel("a(5)"); // should trigger both +a/1 in root and inside g1
         ag.assertAct("aroot(5)", 10);
         ag.assertAct("a1ing1", 10);
@@ -92,10 +92,10 @@ public class TestPlanER {
         assertEquals("[inig1, droot(5)]",ag.getArch().getActions().toString());
     }
 
-    @Test(timeout=2000)
+    @Test(timeout=4000)
     public void testSubPlan1() {
         ag.addGoal("test");
-        ag.assertNoAct("endtest", 10);
+        ag.assertNoAct("endtest", 20);
         ag.addBel("a(5)");
         ag.assertAct("aroot(5)", 10);
         ag.assertAct("a1ing1", 10);

@@ -77,6 +77,6 @@ public class PlanERTest extends TestCase {
 
         e = new Event(ASSyntax.parseTrigger("+e"), null);
         cand = p.getSubPlans().getCandidatePlans(e.getTrigger());
-        assertEquals(2, cand.size());
+        assertEquals(1, cand.size());
     }
 }
