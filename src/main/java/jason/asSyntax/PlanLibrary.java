@@ -414,6 +414,7 @@ public class PlanLibrary implements Iterable<Plan> {
                 }
             }
 
+            /* moved to TS findOP
             if (father != null) {
                 List<Plan> lf = father.getCandidatePlans(te);
                 if (lf != null && !lf.isEmpty()) {
@@ -421,7 +422,7 @@ public class PlanLibrary implements Iterable<Plan> {
                         l = new ArrayList<>();
                     l.addAll(lf);
                 }
-            }
+            }*/
             return l; // if no rel plan, have to return null instead of empty list
         }
     }

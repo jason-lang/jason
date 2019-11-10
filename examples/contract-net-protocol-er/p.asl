@@ -9,15 +9,20 @@ price(_Service,X) :- .random(R) & X = (10*R)+100.
 // answer to Call For Proposal
 +cfp(CNPId,Task)[source(A)]
     : provider(A,"initiator") & price(Task,Offer)
-   /*<: false*/ {
-
+   <: false {
    <- .send(A,tell,propose(CNPId,Offer)).
-/*
+
    +accept_proposal(CNPId)
-     <- .print("My proposal '",Offer,"' won CNP ",CNPId, " for ",Task,"!").
-        // do the task and report to initiator
+     <- .print("My proposal '",Offer,"' won CNP ",CNPId, " for ",Task,"!");
+        !do;
+        .send(A,tell,done(CNPId,Task));
+        .done.
 
    +reject_proposal(CNPId)
      <- .print("I lost CNP ",CNPId, ".");
-        .drop_intention.
-*/}
+        .done.
+
+   +!do
+       <- .print("Doing my task.....",Task);
+          .wait(5000).
+}

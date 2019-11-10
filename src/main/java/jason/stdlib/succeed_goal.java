@@ -94,7 +94,7 @@ public class succeed_goal extends DefaultInternalAction {
 
     @Override protected void checkArguments(Term[] args) throws JasonException {
         super.checkArguments(args); // check number of arguments
-        if (!args[0].isLiteral())
+        if (args.length > 0 && !args[0].isLiteral())
             throw JasonException.createWrongArgument(this,"first argument must be a literal");
     }
 
@@ -225,7 +225,7 @@ public class succeed_goal extends DefaultInternalAction {
             IntendedMeans im = i.dropGoal(c,un);
             if (im != null) {
                 //ts.getLogger().info("*** dropped "+im+"\nfrom "+i);
-                if (i.hasEPlan()) // TODO: im is below e-plan
+                if (i.getGIntention() != null) // it is a sibling intention from a g-plan, TODO: test if im is below e-plan
                     return 3;
                 if (ts.hasGoalListener())
                     for (GoalListener gl: ts.getGoalListeners())

@@ -385,7 +385,7 @@ public class TransitionSystem {
 
     }
 
-    private static Plan planBaseForEPlans = null; 
+    private static Plan planBaseForEPlans = null;
 
     private void applySelEv() throws JasonException {
         // Rule for atomic, if there is an atomic intention, do not select event
@@ -411,53 +411,48 @@ public class TransitionSystem {
                 // update events (+ and -) are copied for all intentions (new JasonER)
                 if (C.SE.isExternal() && C.SE.getTrigger().isUpdate()) { //  C.SE.getTrigger().isAddition()) {
                     //logger.info("Selected event "+C.SE.getTrigger()+  C.SE.isExternal());
-                    // TODO: think on moving this code to findOp
                     Iterator<Intention> ii = C.getAllIntentions(); //C.getAllIntentions(); //C.getRunningIntentions().iterator();
                     while (ii.hasNext()) {
                         Intention i = ii.next();
                         // if i has sub plans (so potentially interested in external events)
                         //logger.info("-- "+i.getId()+" "+i.hasIntestedInUpdateEvents()+" "+ (C.SE.getIntention() != null ? C.SE.getIntention().getId() : " no int "));
-                        if (i.hasIntestedInUpdateEvents() && i.peek().getPlan().hasSubPlans()) {
-                            List<Plan> relPlans = i.peek().getPlan().getSubPlans().getCandidatePlans(C.SE.getTrigger()); // TODO: use intention stack (as RB proposed in the paper)
-                            if (relPlans != null) {
-                                relPlans = new ArrayList<>(relPlans); // clone
-                                // do not consider plans at root level (they are considered in the normal cycle of Jason)
-                                Iterator<Plan> ip = relPlans.iterator();
-                                while (ip.hasNext())
-                                    if (ip.next().getScope().isRoot())
-                                        ip.remove();
-                                // create the extra event and place it in E
-                                // and move intention i from I to E
-                                if (!relPlans.isEmpty()) {
-                                    // fork the event
-                                    
-                                    // there is an option?
-                                    for (Plan p: relPlans) {
-                                        Option o = getOption(C.SE, p, i.peek().getUnif().clone());
-                                        //logger.info("option "+o+" "+C.SE.getTrigger()+" for "+p+" with "+i.peek().getUnif());
-                                        if (o != null) {
-                                            try {
-                                                if (planBaseForEPlans == null) 
-                                                    planBaseForEPlans = ASSyntax.parsePlan("+artificial_plan <- .print(somethingtoberemovedwhenback); .drop_intention."); // TODO: do not use drop_intention, but a new internal action that drops only this intention
-                                                
-                                                IntendedMeans joinIM = new IntendedMeans(new Option(planBaseForEPlans.cloneNS(Literal.DefaultNS), i.peek().getUnif()), C.SE.getTrigger());
-                                                Intention newi = new Intention();
-                                                newi.setHasEPlan(); // to avoid succeed_goal to resume it below eplan 
-                                                i.copyTo(newi);
-                                                newi.setNoInterestInUpdateEvents();
-                                                newi.push(joinIM);
-                                                                                        
-                                                Event e = new Event(C.SE.getTrigger(), newi);
-                                                //logger.info("     ** add extra evt for "+e);
-                                                e.setOption(o);
-                                                C.addEvent(e);
-                                                //ii.remove(); // TODO: should not remove fom PI? see notes
-                                            } catch (Exception e1) {
-                                                e1.printStackTrace();
+                        if (i.hasIntestedInUpdateEvents()) {
+                            // consider all goals in the intention stack that have sub-plans
+                            outerloop:
+                            for (IntendedMeans im: i) {
+                                if (im.getPlan().hasSubPlans()) {
+                                    List<Plan> relPlans = im.getPlan().getSubPlans().getCandidatePlans(C.SE.getTrigger());
+                                    //System.out.println("***"+C.SE.getTrigger()+" try plans in "+im.getPlan().getTrigger()+" -- "+(relPlans != null));
+                                    if (relPlans != null) {
+                                        for (Plan p: relPlans) {
+                                            // test if we have an option
+                                            Option o = getOption(C.SE, p, im.getUnif().clone());
+                                            //logger.info("option "+o+" "+C.SE.getTrigger()+" for "+p+" with "+i.peek().getUnif());
+                                            if (o != null) {
+                                                // create the extra event and place it in E
+                                                // and move intention i from I to E
+                                                try {
+                                                    if (planBaseForEPlans == null)
+                                                        planBaseForEPlans = ASSyntax.parsePlan("+artificial_plan <- .print(dropwhenreturntohere); .drop_intention."); // TODO: do not use drop_intention, but a new internal action that drops only this intention (important if the user decides to use .drop_intention to stop the g-plan)
+
+                                                    IntendedMeans joinIM = new IntendedMeans(new Option(planBaseForEPlans.cloneNS(Literal.DefaultNS), i.peek().getUnif()), C.SE.getTrigger());
+                                                    Intention newi = new Intention();
+                                                    newi.setGIntention(i); // to avoid succeed_goal to resume it
+                                                    i.copyTo(newi);
+                                                    newi.setNoInterestInUpdateEvents();
+                                                    newi.push(joinIM);
+
+                                                    Event e = new Event(C.SE.getTrigger(), newi);
+                                                    //logger.info("     ** add extra evt for "+e);
+                                                    e.setOption(o);
+                                                    C.addEvent(e);
+                                                } catch (Exception e1) {
+                                                    e1.printStackTrace();
+                                                }
+
+                                                break outerloop;
                                             }
-                                            
-                                            break; // for 
-                                        }                                           
+                                        }
                                     }
                                 }
                             }
@@ -465,10 +460,12 @@ public class TransitionSystem {
                     }
                 }
 
-                if (ag.hasCustomSelectOption() || setts.verbose() == 2) // verbose == 2 means debug mode
+                /*if (ag.hasCustomSelectOption() || setts.verbose() == 2) // verbose == 2 means debug mode
                     stepDeliberate = State.RelPl;
                 else
-                    stepDeliberate = State.FindOp;
+                    stepDeliberate = State.FindOp;*/
+
+                stepDeliberate = State.FindOp; // TODO: JasonER does not support yet relplans custom
             }
         } else {
             // Rule SelEv2
@@ -613,22 +610,24 @@ public class TransitionSystem {
             }
         }
 
-        // get all relevant plans for the selected event
-        List<Plan> candidateRPs = plib.getCandidatePlans(C.SE.getTrigger());
-
-        if (candidateRPs != null) {
-            for (Plan pl : candidateRPs) {
-                C.SO = getOption(C.SE, pl, null);
-                if (C.SO != null)
-                    return;
+        String kindOfError = "relevant";
+        while (plib != null) {
+            // get all relevant plans for the selected event
+            List<Plan> candidateRPs = plib.getCandidatePlans(C.SE.getTrigger());
+            if (candidateRPs != null) {
+                kindOfError = "applicable";
+                for (Plan pl : candidateRPs) {
+                    C.SO = getOption(C.SE, pl, null);
+                    if (C.SO != null)
+                        return;
+                }
             }
-            applyRelApplPlRule2("applicable");
-        } else {
-            // problem: no plan
-            applyRelApplPlRule2("relevant");
+            plib = plib.getFather();
         }
+
+        applyRelApplPlRule2(kindOfError);
     }
-    
+
     private Option getOption(Event evt, Plan pl, Unifier relUn) {
         if (evt.isInternal()) {
             // use IM vars in the context for sub-plans (new in JasonER)
@@ -1100,9 +1099,6 @@ public class TransitionSystem {
             if (i == null)
                 return;
 
-            if (i.hasGoalCondition())
-                return; // they are cleared by applyClrSatInt
-
             if (i.isFinished()) {
                 // intention finished, remove it
                 C.dropRunningIntention(i);
@@ -1114,6 +1110,13 @@ public class TransitionSystem {
             if (!im.isFinished()) {
                 // nothing to do
                 return;
+            }
+
+            if (i.hasGoalCondition()) {
+                // move to PI
+                C.dropIntention(i);
+                C.addPendingIntention("wait_goal_condition", i);
+                return; // they are cleared by applyClrSatInt
             }
 
             // remove the finished IM from the top of the intention

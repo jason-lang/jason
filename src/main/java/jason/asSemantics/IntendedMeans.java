@@ -1,5 +1,11 @@
 package jason.asSemantics;
 
+import java.io.Serializable;
+import java.util.Iterator;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
 import jason.asSyntax.ASSyntax;
 import jason.asSyntax.LogicalFormula;
 import jason.asSyntax.Plan;
@@ -7,12 +13,6 @@ import jason.asSyntax.PlanBody;
 import jason.asSyntax.PlanBodyImpl;
 import jason.asSyntax.Term;
 import jason.asSyntax.Trigger;
-
-import java.io.Serializable;
-import java.util.Iterator;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 public class IntendedMeans implements Serializable {
 
@@ -97,7 +97,7 @@ public class IntendedMeans implements Serializable {
     public boolean isSatisfied(Agent ag) {
         LogicalFormula goalCondition = getPlan().getGoalCondition();
         if (goalCondition == null) {
-            return isFinished();
+            return false;
         } else {
             Iterator<Unifier> iun = goalCondition.logicalConsequence(ag, triggerUnif);
             return iun != null && iun.hasNext();
