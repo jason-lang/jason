@@ -1,11 +1,15 @@
 package jason.stdlib;
 
+import java.util.Iterator;
+
 import jason.JasonException;
 import jason.asSemantics.Circumstance;
 import jason.asSemantics.IMCondition;
+import jason.asSemantics.IntendedMeans;
 import jason.asSemantics.Intention;
 import jason.asSemantics.TransitionSystem;
 import jason.asSemantics.Unifier;
+import jason.asSyntax.Atom;
 import jason.asSyntax.Literal;
 import jason.asSyntax.Term;
 import jason.asSyntax.Trigger;
@@ -35,26 +39,38 @@ public class done extends succeed_goal {
     @Override
     public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {
         checkArguments(args);
-        Trigger g;
-        if (args.length > 0) {
-            g = new Trigger(TEOperator.add, TEType.achieve, (Literal)args[0]);
-        } else {
+        Trigger g = null;
+        if (args.length == 0) {
             // get goal from the context => the near goal
             Intention i = ts.getC().getSelectedIntention();
-            if (i.getGIntention() != null)
-                i = i.getGIntention();
-            g = i.peek().getTrigger().clone();
+            if (i.getGIntention() != null) { // is a e-plan?
+                Iterator<IntendedMeans> iim = i.iterator();
+                while (iim.hasNext()) {
+                    IntendedMeans im = iim.next();
+                    if (im.getPlan().getTrigger().getLiteral().equals(new Atom("artificial_plan"))) {
+                        im = iim.next();
+                        g = im.getTrigger().clone();
+                        break;
+                    }
+                }
+            } else {
+                g = i.peek().getTrigger().clone();
+            }
+        } else {
+            g = new Trigger(TEOperator.add, TEType.achieve, (Literal)args[0]);
         }
-
-        drop(ts, new IMCondition() {
-            public boolean test(Trigger t, Unifier u) {
-                return u.unifies(g, t);
-            }
-            @Override
-            public Trigger getTrigger() {
-                return g;
-            }
-        }, un);
+        if (g != null) {
+            Trigger g2 = g;
+            drop(ts, new IMCondition() {
+                public boolean test(Trigger t, Unifier u) {
+                    return u.unifies(g2, t);
+                }
+                @Override
+                public Trigger getTrigger() {
+                    return g2;
+                }
+            }, un);
+        }
         return true;
     }
 
