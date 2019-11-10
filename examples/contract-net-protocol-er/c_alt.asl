@@ -16,7 +16,7 @@ all_proposals_received(CNPId, NP)                // NP: number of participants
 /* Plans */
 +!run
    <- .wait(1000);  // wait participants introduction
-      //!!cnp(1,fix(computer));
+      !!cnp(1,fix(computer));
       !!cnp(2,banana);
    .
 

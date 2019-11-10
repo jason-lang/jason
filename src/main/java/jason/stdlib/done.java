@@ -68,6 +68,7 @@ public class done extends succeed_goal {
         Intention i = C.getSelectedIntention();
         if (i != null) {
             int r = dropIntention(i, c, ts, un);
+            //ts.getLogger().info("** rem 1 : "+r+" for "+i);
             if (r > 0) {
                 i = i.getGIntention();
                 if (i == null) {
@@ -75,6 +76,7 @@ public class done extends succeed_goal {
                     resultSuspend = false;
                     // TODO: stop e-plan siblings, if they branch above the removed IM
                 } else {
+                    // e-plan case
                     un = bak.clone();
                     r = dropIntention(i, c, ts, un);
                     //ts.getLogger().info("** rem 2 : "+r+" for "+i);

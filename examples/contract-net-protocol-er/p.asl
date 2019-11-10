@@ -16,6 +16,7 @@ price(_Service,X) :- .random(R) & X = (10*R)+100.
      <- .print("My proposal '",Offer,"' won CNP ",CNPId, " for ",Task,"!");
         !do;
         .send(A,tell,done(CNPId,Task));
+        .print("Done!");
         .done.
 
    +reject_proposal(CNPId)
@@ -24,5 +25,5 @@ price(_Service,X) :- .random(R) & X = (10*R)+100.
 
    +!do
        <- .print("Doing my task.....",Task);
-          .wait(5000).
+          .wait(3000).
 }

@@ -1115,7 +1115,7 @@ public class TransitionSystem {
             if (i.hasGoalCondition()) {
                 // move to PI
                 C.dropIntention(i);
-                C.addPendingIntention("wait_goal_condition", i);
+                C.addPendingIntention("wait_goal_condition_"+i.getId(), i);
                 return; // they are cleared by applyClrSatInt
             }
 
