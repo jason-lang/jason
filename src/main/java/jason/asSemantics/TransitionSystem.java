@@ -485,7 +485,7 @@ public class TransitionSystem {
             return null;
         }
         public boolean test(IntendedMeans im, Unifier u) {
-            if (im.getPlan().hasGoalCondition()) {
+            if (im.getPlan().hasGoalCondition() && !im.getPlan().getGoalCondition().equals(Literal.LFalse)) { // no need to test "false"
                 nbOfGoalConditions++;
             }
             return im.isSatisfied(getAg());
