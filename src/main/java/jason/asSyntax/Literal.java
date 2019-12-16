@@ -41,6 +41,7 @@ import jason.asSyntax.parser.as2j;
  @see LiteralImpl
 
  */
+@SuppressWarnings("serial")
 public abstract class Literal extends DefaultTerm implements LogicalFormula {
 
     private static final long serialVersionUID = 1L;
@@ -332,8 +333,9 @@ public abstract class Literal extends DefaultTerm implements LogicalFormula {
     }
 
     public Literal noSource() {
-    	delSources();
-    	return this;
+    	Literal l = this.copy();
+    	l.delSources();
+    	return l;
     }
 
     // literal
@@ -629,7 +631,7 @@ public abstract class Literal extends DefaultTerm implements LogicalFormula {
     }
 
 
-    static final class TrueLiteral extends Atom {
+	static final class TrueLiteral extends Atom {
         public TrueLiteral() {
             super("true");
         }

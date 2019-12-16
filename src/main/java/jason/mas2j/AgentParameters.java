@@ -46,7 +46,8 @@ public class AgentParameters {
     }
     protected void copyTo(AgentParameters newap) {
         newap.name = this.name;
-        newap.asSource = new File(this.asSource.toString());
+        if (this.asSource != null)
+            newap.asSource = new File(this.asSource.toString());
         newap.agClass = this.agClass.copy();
         newap.bbClass = this.bbClass.copy();
         newap.nbInstances = this.nbInstances;
