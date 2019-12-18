@@ -895,6 +895,20 @@ Object rel_expr() :
                                              //   throw new ParseException(getSourceRef(op1)+" RelExpr: operand '"+op1+"' can not be an internal action.");
                                              //if ( ((Term)op2).isInternalAction() && operator != RelationalOp.literalBuilder)
                                              //   throw new ParseException(getSourceRef(op2)+" RelExpr: operand '"+op2+"' can not be an internal action.");
+                                             
+                                             // remove namespace (if not defined), args of rel ops are terms (not literals)
+                                             if (op1 instanceof Literal) {
+                                             	Literal l = (Literal)op1;
+                                             	if (!l.getNS().equals(Literal.DefaultNS) && l.getNS().equals(namespace)) {
+                                             		op1 = l.cloneNS(Literal.DefaultNS);
+                                             	}
+                                             }
+                                             if (op2 instanceof Literal) {
+                                             	Literal l = (Literal)op2;
+                                             	if (!l.getNS().equals(Literal.DefaultNS) && l.getNS().equals(namespace)) {
+                                             		op2 = l.cloneNS(Literal.DefaultNS);
+                                             	}
+                                             }
                                              return new RelExpr((Term)op1, operator, (Term)op2);
                                            }
     ]
