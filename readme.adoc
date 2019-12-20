@@ -35,11 +35,10 @@ NOTE: In Jason 2.0 the way to run the Jason IDE (based on jEdit) has changed. Ra
 ----
 git clone https://github.com/jason-lang/jason.git
 cd jason
-gradle config // <1> <2> <3>
+gradlew config // <1> <2>
 ----
-<1> gradle is available https://gradle.org/gradle-download/[here].
-<2> the config task builds the jason jar, configure jason properties file, and place all jars in `build/libs`.
-<3> this task also prints out the commands to set up the `JASON_HOME` and `PATH` variables.
+<1> the config task builds the jason jar, configure jason properties file, and place all jars in `build/libs`.
+<2> this task also prints out the commands to set up the `JASON_HOME` and `PATH` variables.
 
 Examples can be run using the `jason` shell script, for example:
 
