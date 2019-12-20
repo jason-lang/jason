@@ -218,8 +218,7 @@ public class RuleTest extends TestCase {
     }
 
 
-    @SuppressWarnings("unchecked")
-    private int iteratorSize(Iterator i) {
+    private int iteratorSize(@SuppressWarnings("rawtypes") Iterator i) {
         int c = 0;
         while (i.hasNext()) {
             i.next();

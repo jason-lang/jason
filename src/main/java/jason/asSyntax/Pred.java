@@ -318,7 +318,7 @@ public class Pred extends Structure {
 
     @Override
     public boolean hasSubsetAnnot(Literal p) {
-        if (annots == null)
+        if (!hasAnnot())
             return true;
         if (hasAnnot() && !p.hasAnnot())
             return false;
@@ -344,7 +344,7 @@ public class Pred extends Structure {
 
     @Override
     public boolean hasSubsetAnnot(Literal p, Unifier u) {
-        if (annots == null)
+        if (!hasAnnot())
             return true;
         if (!p.hasAnnot())
             return false;
@@ -447,6 +447,7 @@ public class Pred extends Structure {
             return false;
     }
 
+    @SuppressWarnings("serial")
     public static Pred createSource(Term source) {
         Pred s;
         if (source.isGround()) {
