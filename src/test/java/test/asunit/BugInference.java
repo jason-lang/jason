@@ -9,7 +9,6 @@ import jason.asSyntax.ASSyntax;
 import jason.asSyntax.Literal;
 import jason.asSyntax.parser.ParseException;
 import jason.asunit.TestAgent;
-import junit.framework.TestCase;
 
 /** based on bug found by Cranefield */
 public class BugInference {
