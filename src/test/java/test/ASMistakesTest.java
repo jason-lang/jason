@@ -1,7 +1,6 @@
 package test;
 
 import jason.asSyntax.ASSyntax;
-import jason.asSyntax.Plan;
 import jason.asSyntax.parser.ParseException;
 import junit.framework.TestCase;
 
@@ -33,18 +32,5 @@ public class ASMistakesTest extends TestCase {
         }
         assertTrue(e instanceof ParseException);
     }
-
-    public void testOpenQuotes() {
-        Throwable e = null;
-        try {
-            ASSyntax.parseTerm("{ +!p <- .print(\"Hello) }");
-            fail("An expected exception did not occurred.");
-        } catch(Throwable ex) {
-            e = ex;
-        }
-        assertTrue(e instanceof ParseException);
-    }
-   
-
 
 }
