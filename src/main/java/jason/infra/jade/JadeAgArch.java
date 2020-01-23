@@ -245,6 +245,7 @@ public class JadeAgArch extends JadeAg {
             running = false;
             if (jasonBridgeAgArch != null) {
                 jasonBridgeAgArch.getFirstAgArch().stop();
+                jasonBridgeAgArch = null;
             }
         } catch (Exception e) {
             logger.log(Level.SEVERE,"Error in doDelete.",e);

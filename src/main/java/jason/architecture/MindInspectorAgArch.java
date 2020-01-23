@@ -78,9 +78,11 @@ public class MindInspectorAgArch extends AgArch {
      */
     @Override
     public void stop() {
-        if (mindInspectorFrame != null)
+        if (mindInspectorFrame != null) {
             mindInspectorFrame.dispose();
-        super.stop();
+            mindInspectorFrame = null;
+        }
+        //super.stop();
     }
 
     @Override
