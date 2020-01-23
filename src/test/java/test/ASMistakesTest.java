@@ -33,4 +33,14 @@ public class ASMistakesTest extends TestCase {
         assertTrue(e instanceof ParseException);
     }
 
+    public void testOpenQuotes() {
+        Throwable e = null;
+        try {
+            ASSyntax.parseTerm("{ +!p <- .print(\"Hello) }");
+            fail("An expected exception did not occurred.");
+        } catch(Throwable ex) {
+            e = ex;
+        }
+        assertTrue(e instanceof jason.asSyntax.parser.TokenMgrError);
+    }
 }

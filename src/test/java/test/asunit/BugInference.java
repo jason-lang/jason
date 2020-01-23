@@ -47,10 +47,10 @@ public class BugInference {
         );
     }
 
-    @Test(timeout=2000)
+    @Test(timeout=4000)
     public void testGoal() {
         ag.addGoal("test");
-        ag.assertPrint("[{ @l__1 +!g : is_believed <- irrelevant_action }]", 50);
+        ag.assertPrint("[{ @l__1 +!g : is_believed <- irrelevant_action }]", 70);
     }
 
     @Test(timeout=2000)
