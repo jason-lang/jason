@@ -110,7 +110,13 @@ public class CentralisedAgArch extends AgArch implements Runnable {
         if (myThread != null)
             myThread.interrupt();
         getTS().getAg().stopAg();
-        getUserAgArch().stop(); // stops all archs
+
+        // stop all archs
+        AgArch f = getUserAgArch();
+        while (f != null) {
+            f.stop();
+            f = f.getNextAgArch();
+        }
     }
 
 
