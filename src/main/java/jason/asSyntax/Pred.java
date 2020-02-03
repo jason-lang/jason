@@ -320,7 +320,7 @@ public class Pred extends Structure {
     public boolean hasSubsetAnnot(Literal p) {
         if (!hasAnnot())
             return true;
-        if (hasAnnot() && !p.hasAnnot())
+        if (!p.hasAnnot())
             return false;
 
         // both has annots (annots are ordered)
