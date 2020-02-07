@@ -698,6 +698,9 @@ public class Config extends Properties {
     }
     
     public boolean checkJarHasFile(String jarFile, String file) {
+        if (file == null || jarFile == null)
+            return true;
+        
         jarFile = "jar:file:" + jarFile + "!/" + file;
         try {
             new URL(jarFile).openStream().close();
