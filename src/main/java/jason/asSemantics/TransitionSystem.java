@@ -172,8 +172,9 @@ public class TransitionSystem {
     }
 
     public boolean removeGoalListener(GoalListener gl) {
-        CircumstanceListener cl = listenersMap.get(gl);
-        if (cl != null) C.removeEventListener(cl);
+        CircumstanceListener cl = (listenersMap == null ? null : listenersMap.get(gl));
+        if (cl != null) 
+            C.removeEventListener(cl);
         return goalListeners.remove(gl);
     }
 

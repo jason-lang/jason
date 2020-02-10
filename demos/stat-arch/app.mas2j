@@ -1,0 +1,13 @@
+/*
+
+example of data collection architecture
+
+*/
+
+MAS cia {
+
+    environment: BEnv
+    agents: bob agentArchClass StatArch;
+            alice void.asl;
+            marcos void.asl;
+}
