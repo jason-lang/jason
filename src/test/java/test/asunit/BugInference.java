@@ -22,16 +22,16 @@ public class BugInference {
 
         // defines the agent's AgentSpeak code
         ag.parseAScode(
-            "applicable_plans([], []) :- .print(\"applicable_plans/2 recursion finished successfully\").\n" + 
+            "applicable_plans([], []). "+ // :- .print(\"applicable_plans/2 recursion finished successfully\").\n" + 
             "applicable_plans([Plan|Plans], [Plan|APlans]) :-\n" + 
             "    Plan = plan(_,_,Context,_) &\n" + 
             "    Context &\n" + 
-            "    .print(\"Plan\", Plan, \" with context \", Context, \" is **applicable**\") &\n" + 
+            //"    .print(\"Plan\", Plan, \" with context \", Context, \" is **applicable**\") &\n" + 
             "    applicable_plans(Plans, APlans).\n" + 
             "applicable_plans([Plan|Plans], APlans) :-\n" + 
             "    Plan = plan(_,_,Context,_) &\n" + 
             "    not Context &\n" + 
-            "    .print(\"Plan\", Plan, \" with context \", Context, \" is **NOT applicable**\") &\n" + 
+            //"    .print(\"Plan\", Plan, \" with context \", Context, \" is **NOT applicable**\") &\n" + 
             "    applicable_plans(Plans, APlans).\n" + 
             "\n" + 
             "is_believed.\n" + 
@@ -41,7 +41,7 @@ public class BugInference {
             "\n" + 
             "+!test <-\n" + 
             "    .relevant_plans({+!g}, RPlans);\n" + 
-            "    .print(\"Relevant plans for +!g are: \", RPlans);\n" + 
+            //"    .print(\"Relevant plans for +!g are: \", RPlans);\n" + 
             "    ?applicable_plans(RPlans, APlans);\n" + 
             "    jason.asunit.print(APlans)."  
         );
@@ -50,7 +50,7 @@ public class BugInference {
     @Test(timeout=4000)
     public void testGoal() {
         ag.addGoal("test");
-        ag.assertPrint("[{ @l__1 +!g : is_believed <- irrelevant_action }]", 70);
+        ag.assertPrint("+!g : is_believed <- irrelevant_action }]", 70);
     }
 
     @Test(timeout=2000)

@@ -138,7 +138,7 @@ public class ASParserTest extends TestCase {
         solve = ((LogExpr) t1).logicalConsequence(null, new Unifier());
         assertTrue(solve.hasNext());
 
-        t1 = LogExpr.parseExpr("not 3 > 5");
+        t1 = LogExpr.parseExpr("not not (not 3 > 5)");
         assertTrue(t1 != null);
         solve = ((LogExpr) t1).logicalConsequence(null, new Unifier());
         assertTrue(solve.hasNext());
