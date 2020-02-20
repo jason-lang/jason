@@ -54,6 +54,9 @@ public abstract class DefaultTerm implements Term, Serializable {
     public boolean isList()           {
         return false;
     }
+    public boolean isSet()            {
+        return false;
+    }
     public boolean isString()         {
         return false;
     }

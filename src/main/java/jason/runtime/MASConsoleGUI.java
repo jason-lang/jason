@@ -171,12 +171,16 @@ public class MASConsoleGUI {
                     ta.setEditable(false);
                     ((DefaultCaret)ta.getCaret()).setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
                     final JTextArea cta = ta;
-                    SwingUtilities.invokeAndWait(new Runnable() {
-                        public void run() {
-                            agsTextArea.put(agName, cta);
-                            tabPane.add(agName, new JScrollPane(cta));
-                        }
-                    });
+                    try {
+	                    SwingUtilities.invokeAndWait(new Runnable() {
+	                        public void run() {
+	                            agsTextArea.put(agName, cta);
+	                            tabPane.add(agName, new JScrollPane(cta));
+	                        }
+	                    });
+                    } catch (InterruptedException e) {
+                    	return; // ignore the append	
+                    }
                 }
                 if (ta != null) {
                     if (ta.getDocument().getLength() > 100000) {
