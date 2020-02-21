@@ -609,6 +609,24 @@ public class StdLibTest extends TestCase {
         assertTrue((Boolean)new jason.stdlib.puts().execute(ts, u, new Term[] { new StringTermImpl("Hello #{_26}, #{X}")}));
     }
 
+    public void testReplace() throws Exception {
+        Agent ag = new Agent();
+        ag.initAg();
+        TransitionSystem ts = new TransitionSystem(ag, null, null, null);
+
+        Unifier u = new Unifier();
+        VarTerm y = new VarTerm("Y");
+        assertTrue((Boolean)new jason.stdlib.replace().execute(ts, u, 
+            new Term[] {
+                ASSyntax.createString("hello day"),
+                ASSyntax.createString("day"),
+                ASSyntax.createString("world"),
+                y
+            }
+        ));
+        assertEquals("\"hello world\"", u.get(y).toString());
+    }
+
     @SuppressWarnings({ "rawtypes" })
     private int iteratorSize(Iterator i) {
         int c = 0;

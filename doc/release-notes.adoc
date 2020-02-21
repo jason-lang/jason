@@ -22,6 +22,9 @@ ifdef::env-github[:outfilesuffix: .adoc]
 .set.clear(S);                 // S = {}
 ----
 
+- new internal action to replace strings (see internal action .replace).
+
+
 == version 2.4 (2019-05-24)
 
 (a built package is available at https://sourceforge.net/projects/jason/files/jason/version%202.4/[here])
