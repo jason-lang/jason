@@ -109,13 +109,13 @@ public class member extends DefaultInternalAction {
         final Term member = args[0];
         final Iterator<Term> i;
         if (args[1].isList())
-        	i = ((ListTerm)args[1]).iterator();
+            i = ((ListTerm)args[1]).iterator();
         else  {
-        	if (args[0].isVar()) {
-        		i = ((SetTerm)args[1]).iterator();
-        	} else {
-        		return ((SetTerm)args[1]).contains(args[0]); // fast track for sets
-        	}
+            if (args[0].isVar()) {
+                i = ((SetTerm)args[1]).iterator();
+            } else {
+                return ((SetTerm)args[1]).contains(args[0]); // fast track for sets
+            }
         }
 
         return new Iterator<Unifier>() {

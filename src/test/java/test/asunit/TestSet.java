@@ -17,7 +17,7 @@ public class TestSet {
         // defines the agent's AgentSpeak code
         ag.parseAScode(
             "+!b(S) <- " +
-            "    .set.add(S,a);" +
+            "    .set.add(S,a);" + // S is the var representing the Java Set
             "    .set.add(S,d);" +
             "    .set.add(S,w);" +
             "    .set.add(S,10);" +
@@ -42,6 +42,11 @@ public class TestSet {
             "    !b(S);" +
             "    .findall(K, .member(K,S), L);" +
             "    jason.asunit.print(L)." +
+            
+            "+!testToList <- " +
+            "    !b(S);" +
+            "    .set.to_list(S,[H|T]);" +
+            "    jason.asunit.print(H,T)." +
             
             "+!testUn <- " +
             "    !b(S);" +
@@ -84,6 +89,12 @@ public class TestSet {
     public void test3() {
         ag.addGoal("test3");
         ag.assertPrint("[1,10,22,a,a(3),d,z(1),z(4)]", 20);
+    }
+
+    @Test(timeout=2000)
+    public void testToList() {
+        ag.addGoal("testToList");
+        ag.assertPrint("1[10,22,a,a(3),d,z(1),z(4)]", 20);
     }
 
     @Test(timeout=2000)

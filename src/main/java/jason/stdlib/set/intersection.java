@@ -20,7 +20,7 @@ public class intersection extends add {
 
     @Override
     public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {
-    	getSet(un,args).intersection((Collection)args[1]);
+        getSet(un,args).intersection((Collection)args[1]);
         return true;
     }
 }

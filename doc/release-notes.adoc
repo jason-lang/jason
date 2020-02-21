@@ -6,6 +6,21 @@ ifdef::env-github[:outfilesuffix: .adoc]
 == version 2.5
 
 - cascading failures of failures (see FAQ)
+- new internal actions to manipulate a Java Set. In Jason, it is represented by a variable. Example:
++
+----
+.set.add(S,a);                 // S = {a}
+.set.add_all(S,[5,b,p(2),a]);  // S = {5,a,b,p(2)}
+.set.remove(S,b);              // S = {5,a,p(2)}
+.set.to_list(S,L);             // L = [5,a,p(2)]
+.set.union(S,[a,1]);           // S = {1,5,a,p(2)}
+.length(S,X);                  // X = 4
+.set.difference(S,[1,a]);      // S = {5,p(2)}
+.findall(K, .member(K,S), LL)  // LL = [5,p(2)]
+.set.add(V,5);
+.set.intersection(S,V);        // S = {5}
+.set.clear(S);                 // S = {}
+----
 
 == version 2.4 (2019-05-24)
 

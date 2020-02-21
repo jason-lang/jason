@@ -19,7 +19,7 @@ public class difference extends add {
 
     @Override
     public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {
-    	getSet(un,args).difference((Collection)args[1]);
+        getSet(un,args).difference((Collection)args[1]);
         return true;
     }
 }

@@ -19,19 +19,19 @@ public class add extends DefaultInternalAction {
     }
 
     protected SetTerm getSet(Unifier un, Term[] args) {
-    	if (args[0].isSet()) {
-    		return (SetTerm)args[0];    		
-    	} else if (args[0].isVar()) {
-    		SetTerm s = new SetTermImpl();
-    		un.unifies(args[0], s);
-    		return s;
-    	}
-    	return null;
+        if (args[0].isSet()) {
+            return (SetTerm)args[0];            
+        } else if (args[0].isVar()) {
+            SetTerm s = new SetTermImpl();
+            un.unifies(args[0], s);
+            return s;
+        }
+        return null;
     }
     
     @Override
     public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {
-    	getSet(un,args).add(args[1]);
+        getSet(un,args).add(args[1]);
         return true;
     }
 }

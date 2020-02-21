@@ -20,10 +20,10 @@ public class add_all extends add {
 
     @Override
     public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {
-    	SetTerm s = getSet(un, args);
-    	for (Term t: (Collection<Term>)args[1]) {
-        	s.add(t);    		
-    	}
+        SetTerm s = getSet(un, args);
+        for (Term t: (Collection<Term>)args[1]) {
+            s.add(t);           
+        }
         return true;
     }
 }

@@ -7,6 +7,7 @@ import jason.asSemantics.Unifier;
 import jason.asSyntax.ListTerm;
 import jason.asSyntax.NumberTerm;
 import jason.asSyntax.NumberTermImpl;
+import jason.asSyntax.SetTerm;
 import jason.asSyntax.StringTerm;
 import jason.asSyntax.Term;
 
@@ -104,6 +105,9 @@ public class length extends DefaultInternalAction {
         } else if (l1.isString()) {
             StringTerm st = (StringTerm) l1;
             size = new NumberTermImpl(st.getString().length());
+        } else if (l1.isSet()) {
+            SetTerm st = (SetTerm) l1;
+            size = new NumberTermImpl(st.size());
         }
         if (size != null) {
             return un.unifies(l2, size);

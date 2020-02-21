@@ -4,13 +4,10 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import jason.asSemantics.Agent;
 import jason.asSemantics.Unifier;
 
 
@@ -20,130 +17,64 @@ import jason.asSemantics.Unifier;
  *
  * @author Jomi
  */
-public class SetTermImpl extends Structure implements SetTerm {
+public class SetTermImpl extends DefaultTerm implements SetTerm {
 
     private static final long serialVersionUID = 1L;
-    private static Logger logger = Logger.getLogger(SetTermImpl.class.getName());
+    //private static Logger logger = Logger.getLogger(SetTermImpl.class.getName());
 
-    public static final String SET_FUNCTOR = "set";
     private Set<Term> set;
 
     public SetTermImpl() {
-        super(SET_FUNCTOR, 0);
         set = new TreeSet<Term>();
     }
 
 
     /** make a hard copy of the terms */
+    @Override
     public SetTerm clone() {
         SetTermImpl t = new SetTermImpl();
         for (Term a: this.set) 
-        	t.set.add(a.clone());
+            t.set.add(a.clone());
         t.hashCodeCache = this.hashCodeCache;
         return t;
     }
-
+    
     /** make a hard copy of the terms */
     @Override
     public SetTerm capply(Unifier u) {
-        /*SetTermImpl t = new SetTermImpl();
-        for (Term a: this.set) 
-        	t.set.add(a.capply(u));
-        return t;*/
-    	return this; // TODO: think about this!
+        return this; // TODO: think about this!
     }
 
     @Override
     public boolean equals(Object t) {
         if (t == null) return false;
         if (t == this) return true;
-
-        if (t instanceof Term &&  ((Term)t).isVar() ) return false; // unground var is not equals a list
-        if (t instanceof SetTerm) {
-        	// TODO: implement
-            /*ListTerm tAsList = (ListTerm)t;
-            if (term == null && tAsList.getTerm() != null) return false;
-            if (term != null && !term.equals(tAsList.getTerm())) return false;
-            if (next == null && tAsList.getNext() != null) return false;
-            if (next != null) return next.equals(tAsList.getNext());
-            return true;*/
-        }
+        if (t instanceof SetTerm) return this.set.equals( ((SetTermImpl)t).set );
         return false;
     }
 
     @Override
     public int calcHashCode() {
-    	return set.hashCode();
+        return set.hashCode();
     }
 
     @Override
     public int compareTo(Term o) {
-        if (o instanceof VarTerm)
-            return o.compareTo(this) * -1;
-        if ((o instanceof NumberTerm))
-            return 1;
-        if (o instanceof StringTerm)
+        if (o instanceof NumberTerm || o instanceof StringTerm || o instanceof Literal)
             return 1;
         return super.compareTo(o);
     }
 
-    // for unifier compatibility
-    @Override
-    public int getArity() {
-    	return 1;
-    }
 
-    // for unifier compatibility
     @Override
-    public Term getTerm(int i) {
-        return null; // TODO: implement
-    }
-
     public int size() {
-    	return set.size();
-    }
-
-    @Override
-    public boolean isAtom() {
-        return false;
+        return set.size();
     }
 
     @Override
     public boolean isSet() {
         return true;
     }
-
-    @Override
-    public boolean isLiteral() {
-        return false;
-    }
-
-    public boolean isGround() {
-        // TODO:
-        return false;
-    }
-
-    @Override
-    public boolean hasVar(VarTerm t, Unifier u) {
-    	// TODO 
-    	return false;
-    }
-    
-    @Override
-    public Literal makeVarsAnnon() {
-    	return this;
-    }
-    @Override
-    public Literal makeVarsAnnon(Unifier un) {
-    	return this;
-    }
-    
-    @Override
-    public Iterator<Unifier> logicalConsequence(Agent ag, Unifier un) {
-        logger.log(Level.WARNING, "ListTermImpl cannot be used for logical consequence!", new Exception());
-        return LogExpr.EMPTY_UNIF_LIST.iterator();
-    }
-
 
     // copy the set to a new list
     public ListTerm getAsListTerm() {
@@ -155,20 +86,20 @@ public class SetTermImpl extends Structure implements SetTerm {
     }
 
     public Iterator<Term> iterator() {
-    	return set.iterator();
+        return set.iterator();
     }
 
 
     @Override
     public boolean add(Term t) {
-    	return set.add(t);
+        return set.add(t);
     }
 
     @Override
     public void union(Iterable<Term> lt) {
-    	for (Term t: lt) {
-    		add(t);
-    	}
+        for (Term t: lt) {
+            add(t);
+        }
     }
     
     @Override
@@ -206,61 +137,61 @@ public class SetTermImpl extends Structure implements SetTerm {
     }
 
 
-	@Override
-	public boolean isEmpty() {
-		return set.isEmpty();
-	}
+    @Override
+    public boolean isEmpty() {
+        return set.isEmpty();
+    }
 
 
-	@Override
-	public boolean contains(Object o) {
-		return set.contains(o);
-	}
+    @Override
+    public boolean contains(Object o) {
+        return set.contains(o);
+    }
 
-	@Override
-	public Object[] toArray() {
-		return set.toArray();
-	}
-
-
-	@Override
-	public <T> T[] toArray(T[] a) {
-		return set.toArray(a);
-	}
+    @Override
+    public Object[] toArray() {
+        return set.toArray();
+    }
 
 
-	@Override
-	public boolean remove(Object o) {
-		return set.remove(o);
-	}
+    @Override
+    public <T> T[] toArray(T[] a) {
+        return set.toArray(a);
+    }
 
 
-	@Override
-	public boolean containsAll(Collection<?> c) {
-		return set.containsAll(c);
-	}
+    @Override
+    public boolean remove(Object o) {
+        return set.remove(o);
+    }
 
 
-	@Override
-	public boolean addAll(Collection<? extends Term> c) {
-		return set.addAll(c);
-	}
+    @Override
+    public boolean containsAll(Collection<?> c) {
+        return set.containsAll(c);
+    }
 
 
-	@Override
-	public boolean removeAll(Collection<?> c) {
-		return set.removeAll(c);
-	}
+    @Override
+    public boolean addAll(Collection<? extends Term> c) {
+        return set.addAll(c);
+    }
 
 
-	@Override
-	public boolean retainAll(Collection<?> c) {		
-		return set.removeAll(c);
-	}
+    @Override
+    public boolean removeAll(Collection<?> c) {
+        return set.removeAll(c);
+    }
 
 
-	@Override
-	public void clear() {
-		set.clear();		
-	}
+    @Override
+    public boolean retainAll(Collection<?> c) {     
+        return set.removeAll(c);
+    }
+
+
+    @Override
+    public void clear() {
+        set.clear();        
+    }
 }
