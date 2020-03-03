@@ -131,14 +131,15 @@ public class foreach extends DefaultInternalAction {
 
                 // get all solutions for the loop
                 // Note: you should get all solutions here, otherwise a concurrent modification will occur for the iterator
+                //       it seems not necessary anymore (maybe due to the use of data structures that better support concurrency)
                 LogicalFormula logExpr = (LogicalFormula)args[0];
                 iu = logExpr.logicalConsequence(ts.getAg(), un);
-                List<Unifier> allsol = new ArrayList<Unifier>();
+                if (!iu.hasNext())
+                    return true;
+                /*List<Unifier> allsol = new ArrayList<Unifier>();
                 while (iu.hasNext())
                     allsol.add(iu.next());
-                if (allsol.isEmpty())
-                    return true;
-                iu = allsol.iterator();
+                iu = allsol.iterator();*/
                 foria = new PlanBodyImpl(BodyType.internalAction, foria.getBodyTerm().clone());
                 foria.add(im.getCurrentStep().getBodyNext());
                 Structure forstructure = (Structure)foria.getBodyTerm();
