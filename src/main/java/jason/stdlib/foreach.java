@@ -1,5 +1,7 @@
 package jason.stdlib;
 
+import java.util.Iterator;
+
 import jason.JasonException;
 import jason.asSemantics.DefaultInternalAction;
 import jason.asSemantics.IntendedMeans;
@@ -11,14 +13,10 @@ import jason.asSyntax.LogicalFormula;
 import jason.asSyntax.ObjectTerm;
 import jason.asSyntax.ObjectTermImpl;
 import jason.asSyntax.PlanBody;
+import jason.asSyntax.PlanBody.BodyType;
 import jason.asSyntax.PlanBodyImpl;
 import jason.asSyntax.Structure;
 import jason.asSyntax.Term;
-import jason.asSyntax.PlanBody.BodyType;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 /**
   <p>Internal action: <b><code>.for(formula) { plan_body }</code></b>.
@@ -130,8 +128,9 @@ public class foreach extends DefaultInternalAction {
                 checkArguments(args);
 
                 // get all solutions for the loop
-                // Note: you should get all solutions here, otherwise a concurrent modification will occur for the iterator
+                // Note: we have to get all solutions here, otherwise a concurrent modification will occur for the iterator
                 //       it seems not necessary anymore (maybe due to the use of data structures that better support concurrency)
+                //       so I commented the lines and get back to the lazy implementation 
                 LogicalFormula logExpr = (LogicalFormula)args[0];
                 iu = logExpr.logicalConsequence(ts.getAg(), un);
                 if (!iu.hasNext())

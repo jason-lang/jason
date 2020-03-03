@@ -138,6 +138,7 @@ public class LogExpr extends BinaryStructure implements LogicalFormula {
                 };
 
             case or:
+                Unifier originalUn = un.clone();
                 return new Iterator<Unifier>() {
                     Iterator<Unifier> ileft  = getLHS().logicalConsequence(ag,un);
                     Iterator<Unifier> iright = null;
@@ -167,8 +168,8 @@ public class LogExpr extends BinaryStructure implements LogicalFormula {
                         if (ileft != null && ileft.hasNext())
                             current = ileft.next();
                         else {
-                            if (iright == null)
-                                iright = getRHS().logicalConsequence(ag,un);
+                            if (iright == null) 
+                                iright = getRHS().logicalConsequence(ag,originalUn);
                             if (iright != null && iright.hasNext())
                                 current = iright.next();
                         }
