@@ -299,7 +299,7 @@ public class DefaultBeliefBase extends BeliefBase {
         BelEntry entry = null;
 
         public EntryIteratorWrapper(BelEntry e) {
-                entry = e;
+            entry = e;
             il = entry.list.iterator();
         }
         @Override public boolean hasNext() {
