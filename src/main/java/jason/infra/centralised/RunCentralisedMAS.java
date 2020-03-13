@@ -382,7 +382,7 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
         try {
             agArch.setAgName(n);
             agArch.setEnvInfraTier(env);
-            agArch.createArchs(null, ReplAgGUI.class.getName(), null, null, new Settings(), this);
+            agArch.createArchs(null, ReplAgGUI.class.getName(), null, null, new Settings());
             Thread agThread = new Thread(agArch);
             agArch.setThread(agThread);
             agThread.start();
@@ -479,10 +479,10 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
                     agArch.setEnvInfraTier(env);
                     if ((generalConf != RConf.THREADED) && cAg > 0 && ap.getAgArchClasses().isEmpty() && ap.getBBClass().getClassName().equals(DefaultBeliefBase.class.getName())) {
                         // creation by cloning previous agent (which is faster -- no parsing, for instance)
-                        agArch.createArchs(ap.getAgArchClasses(), pag, this);
+                        agArch.createArchs(ap.getAgArchClasses(), pag);
                     } else {
                         // normal creation
-                        agArch.createArchs(ap.getAgArchClasses(), ap.agClass.getClassName(), ap.getBBClass(), ap.asSource.toString(), ap.getAsSetts(debug, project.getControlClass() != null), this);
+                        agArch.createArchs(ap.getAgArchClasses(), ap.agClass.getClassName(), ap.getBBClass(), ap.asSource.toString(), ap.getAsSetts(debug, project.getControlClass() != null));
                     }
                     addAg(agArch);
 
@@ -667,7 +667,9 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
 
     /** an agent architecture for the infra based on thread pool */
     protected final class CentralisedAgArchSynchronousScheduled extends CentralisedAgArch {
-        private volatile boolean runWakeAfterTS = false;
+		private static final long serialVersionUID = 2752327732263465482L;
+		
+		private volatile boolean runWakeAfterTS = false;
         private int currentStep = 0;
 
         @Override

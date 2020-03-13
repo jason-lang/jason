@@ -61,7 +61,7 @@ public class CentralisedRuntimeServices extends BaseRuntimeServices {
 
             CentralisedAgArch agArch = newAgInstance();
             agArch.setAgName(agName);
-            agArch.createArchs(ap.getAgArchClasses(), ap.agClass.getClassName(), ap.getBBClass(), agSource, stts, masRunner);
+            agArch.createArchs(ap.getAgArchClasses(), ap.agClass.getClassName(), ap.getBBClass(), agSource, stts);
             agArch.setEnvInfraTier(masRunner.getEnvironmentInfraTier());
             agArch.setControlInfraTier(masRunner.getControllerInfraTier());
 
@@ -99,7 +99,7 @@ public class CentralisedRuntimeServices extends BaseRuntimeServices {
         agArch.setControlInfraTier(masRunner.getControllerInfraTier());
         masRunner.addAg(agArch);
 
-        agArch.createArchs(archClasses, source, masRunner);
+        agArch.createArchs(archClasses, source);
 
         startAgent(agName);
         return agArch.getUserAgArch();
