@@ -10,6 +10,8 @@ import jason.infra.components.DeliberateComponent;
 import jason.infra.components.SenseComponent;
 
 public class CentralisedAgArchAsynchronous extends CentralisedAgArch implements Runnable {
+    private static final long serialVersionUID = 4841705575938535647L;
+    
     private SenseComponent senseComponent;
     private DeliberateComponent deliberateComponent;
     private ActComponent actComponent;
@@ -18,9 +20,9 @@ public class CentralisedAgArchAsynchronous extends CentralisedAgArch implements 
     private ExecutorService executorDeliberate;
     private ExecutorService executorAct;
 
-    public Object objSense = new Object();
-    public Object objDeliberate = new Object();
-    public Object objAct = new Object();
+    public transient Object objSense = new Object();
+    public transient Object objDeliberate = new Object();
+    public transient Object objAct = new Object();
 
     public CentralisedAgArchAsynchronous() {
         super();

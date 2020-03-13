@@ -1,5 +1,6 @@
 package jason.asSemantics;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -25,7 +26,9 @@ import jason.asSyntax.UnnamedVar;
 import jason.asSyntax.VarTerm;
 import jason.asSyntax.directives.NameSpace;
 
-public class Unifier implements Cloneable, Iterable<VarTerm> {
+public class Unifier implements Cloneable, Iterable<VarTerm>, Serializable {
+
+    private static final long serialVersionUID = -4975512704582790850L;
 
     private static Logger logger = Logger.getLogger(Unifier.class.getName());
 

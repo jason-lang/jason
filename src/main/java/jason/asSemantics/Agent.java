@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
+import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -30,6 +31,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+
 import jason.JasonException;
 import jason.RevisionFailedException;
 import jason.architecture.AgArch;
@@ -66,8 +68,10 @@ import jason.util.Config;
  * AgentSpeak agent. It also implements the default selection
  * functions of the AgentSpeak semantics.
  */
-public class Agent {
+public class Agent implements Serializable {
 
+    private static final long serialVersionUID = -2628324957954474455L;
+    
     // Members
     protected BeliefBase       bb = null;
     protected PlanLibrary      pl = null;
@@ -88,7 +92,7 @@ public class Agent {
     //private QueryCacheSimple qCache = null;
     //private QueryProfiling   qProfiling = null;
 
-    protected Logger logger = Logger.getLogger(Agent.class.getName());
+    protected transient Logger logger = Logger.getLogger(Agent.class.getName());
 
     public Agent() {
         checkCustomSelectOption();

@@ -808,7 +808,7 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
         }
     }
 
-    private Boolean runningFinish = false;
+    protected Boolean runningFinish = false;
 
     public void finish(int deadline) {
         // avoid two threads running finish!

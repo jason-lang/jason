@@ -1,9 +1,13 @@
 package jason.bb;
 
+import java.io.Serializable;
+
 import jason.asSyntax.Literal;
 
 /** a literal that uses equalsAsTerm for equals */
-public final class StructureWrapperForLiteral implements Comparable<StructureWrapperForLiteral> {
+public final class StructureWrapperForLiteral implements Comparable<StructureWrapperForLiteral>, Serializable {
+    private static final long serialVersionUID = 2201448644995026018L;
+    
     final private Literal l;
     public StructureWrapperForLiteral(Literal l) {
         this.l = l;

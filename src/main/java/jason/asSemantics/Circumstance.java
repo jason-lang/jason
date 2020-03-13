@@ -1,5 +1,7 @@
 package jason.asSemantics;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -47,13 +49,19 @@ public class Circumstance implements Serializable {
 
     private TransitionSystem ts = null;
 
-    public Object syncApPlanSense = new Object();
+    public transient Object syncApPlanSense = new Object();
 
     public Circumstance() {
+        syncApPlanSense = new Object();
         create();
         reset();
     }
 
+    private void readObject(ObjectInputStream inputStream) throws IOException, ClassNotFoundException {
+        inputStream.defaultReadObject();
+        syncApPlanSense = new Object();
+    }   
+    
     public void setTS(TransitionSystem ts) {
         this.ts = ts;
     }

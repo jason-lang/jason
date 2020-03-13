@@ -80,6 +80,7 @@ public abstract class BaseCentralisedMAS extends NotificationBroadcasterSupport 
 
     public void addAg(CentralisedAgArch ag) {
         ags.put(ag.getAgName(), ag);
+        ag.setMASRunner(this);
     }
     public CentralisedAgArch delAg(String agName) {
         df.remove(agName);

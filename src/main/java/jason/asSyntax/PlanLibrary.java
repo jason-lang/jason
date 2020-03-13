@@ -1,6 +1,9 @@
 package jason.asSyntax;
 
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -23,7 +26,9 @@ import jason.util.Config;
 
     @has - plans 0..* Plan
 */
-public class PlanLibrary implements Iterable<Plan> {
+public class PlanLibrary implements Iterable<Plan>, Serializable {
+
+    private static final long serialVersionUID = 1913142118716665555L;
 
     public static String KQML_PLANS_FILE = "kqmlPlans.asl";
 
@@ -49,11 +54,17 @@ public class PlanLibrary implements Iterable<Plan> {
 
     //private Logger logger = Logger.getLogger(PlanLibrary.class.getName());
 
-    private final Object lockPL = new Object();
+    private transient Object lockPL = new Object();
 
     public Object getLock() {
         return lockPL;
     }
+
+    private void readObject(ObjectInputStream inputStream) throws IOException, ClassNotFoundException {
+        inputStream.defaultReadObject();
+        lockPL = new Object();
+    }   
+    
 
     /**
      *  Add a new plan written as a String. The source

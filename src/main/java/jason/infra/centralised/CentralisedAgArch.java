@@ -1,5 +1,8 @@
 package jason.infra.centralised;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -39,16 +42,18 @@ import jason.util.Config;
  * <li>stopAg.
  * </ul>
  */
-public class CentralisedAgArch extends AgArch implements Runnable {
+public class CentralisedAgArch extends AgArch implements Runnable, Serializable {
 
-    protected CentralisedEnvironment    infraEnv     = null;
-    private CentralisedExecutionControl infraControl = null;
-    private BaseCentralisedMAS           masRunner    = BaseCentralisedMAS.getRunner();
+    private static final long serialVersionUID = 4378889704809002271L;
 
-    private String           agName  = "";
-    private volatile boolean running = true;
-    private Queue<Message>   mbox    = new ConcurrentLinkedQueue<>();
-    protected Logger         logger  = Logger.getLogger(CentralisedAgArch.class.getName());
+    protected transient CentralisedEnvironment      infraEnv     = null;
+    private   transient CentralisedExecutionControl infraControl = null;
+    private   transient BaseCentralisedMAS          masRunner    = BaseCentralisedMAS.getRunner();
+
+    private String             agName  = "";
+    private volatile boolean   running = true;
+    private Queue<Message>     mbox    = new ConcurrentLinkedQueue<>();
+    protected transient Logger logger  = Logger.getLogger(CentralisedAgArch.class.getName());
 
     private static List<MsgListener> msgListeners = null;
     public static void addMsgListener(MsgListener l) {
@@ -61,6 +66,13 @@ public class CentralisedAgArch extends AgArch implements Runnable {
         msgListeners.remove(l);
     }
 
+    private void readObject(ObjectInputStream inputStream) throws IOException, ClassNotFoundException {
+        inputStream.defaultReadObject();
+        sleepSync = new Object();
+        syncMonitor = new Object();
+    }   
+    
+
     /**
      * Creates the user agent architecture, default architecture is
      * jason.architecture.AgArch. The arch will create the agent that creates
@@ -68,7 +80,7 @@ public class CentralisedAgArch extends AgArch implements Runnable {
      */
     public void createArchs(Collection<String> agArchClasses, String agClass, ClassParameters bbPars, String asSrc, Settings stts, BaseCentralisedMAS masRunner) throws JasonException {
         try {
-            this.masRunner = masRunner;
+            setMASRunner(masRunner); // TODO: remove
             Agent.create(this, agClass, bbPars, asSrc, stts);
             insertAgArch(this);
 
@@ -90,7 +102,7 @@ public class CentralisedAgArch extends AgArch implements Runnable {
     /** init the agent architecture based on another agent */
     public void createArchs(Collection<String> agArchClasses, Agent ag, BaseCentralisedMAS masRunner) throws JasonException {
         try {
-            this.masRunner = masRunner;
+            setMASRunner(masRunner); // TODO: remove
             setTS(ag.clone(this).getTS());
             insertAgArch(this);
 
@@ -101,6 +113,10 @@ public class CentralisedAgArch extends AgArch implements Runnable {
             running = false;
             throw new JasonException("as2j: error creating the agent class! - ", e);
         }
+    }
+    
+    public void setMASRunner(BaseCentralisedMAS masRunner) {
+        this.masRunner = masRunner;
     }
 
 
@@ -162,7 +178,7 @@ public class CentralisedAgArch extends AgArch implements Runnable {
         return infraControl;
     }
 
-    private Thread myThread = null;
+    private transient Thread myThread = null;
     public void setThread(Thread t) {
         myThread = t;
         myThread.setName(agName);
@@ -245,7 +261,7 @@ public class CentralisedAgArch extends AgArch implements Runnable {
         logger.fine("I finished!");
     }
 
-    private Object sleepSync = new Object();
+    private transient Object sleepSync = new Object();
     private int    sleepTime = 50;
 
     public static final int MAX_SLEEP = 1000;
@@ -369,7 +385,7 @@ public class CentralisedAgArch extends AgArch implements Runnable {
         return mbox.isEmpty() && isRunning();
     }
 
-    private Object  syncMonitor                = new Object();
+    private transient Object  syncMonitor = new Object();
     private volatile boolean inWaitSyncMonitor = false;
 
     /**

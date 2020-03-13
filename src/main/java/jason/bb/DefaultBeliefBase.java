@@ -1,5 +1,6 @@
 package jason.bb;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Deque;
@@ -25,7 +26,9 @@ import jason.asSyntax.PredicateIndicator;
 /**
  * Default implementation of Jason BB.
  */
-public class DefaultBeliefBase extends BeliefBase {
+public class DefaultBeliefBase extends BeliefBase implements Serializable {
+
+    private static final long serialVersionUID = 4189725430351480996L;
 
     private static Logger logger = Logger.getLogger(DefaultBeliefBase.class.getSimpleName());
 
@@ -401,8 +404,10 @@ public class DefaultBeliefBase extends BeliefBase {
     }
 
     /** each predicate indicator has one BelEntry assigned to it */
-    final class BelEntry {
+    final class BelEntry implements Serializable {
 
+        private static final long serialVersionUID = 213020035116603827L;
+        
         final private Deque<Literal> list = new LinkedBlockingDeque<>();  // maintains the order of the beliefs
         final private Map<StructureWrapperForLiteral,Literal> map = new ConcurrentHashMap<>(); // to find content faster
 

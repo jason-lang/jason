@@ -1,5 +1,6 @@
 package jason.asSemantics;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -51,11 +52,13 @@ import jason.stdlib.fail_goal;
 import jason.util.Config;
 
 
-public class TransitionSystem {
+public class TransitionSystem implements Serializable {
+
+    private static final long serialVersionUID = -5166620620196199391L;
 
     public enum State { StartRC, SelEv, RelPl, ApplPl, SelAppl, FindOp, AddIM, ProcAct, SelInt, ExecInt, ClrInt }
 
-    private Logger        logger     = null;
+    private transient Logger logger     = null;
 
     private Agent         ag         = null;
     private AgArch        agArch     = null;
