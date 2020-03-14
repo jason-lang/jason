@@ -1451,8 +1451,7 @@ public class TransitionSystem implements Serializable {
 
     public void sense() {
         try {
-            if (logger.isLoggable(Level.FINE)) logger.fine("Start new reasoning cycle");
-            getUserAgArch().reasoningCycleStarting();
+            if (logger.isLoggable(Level.FINE)) logger.fine("Start sense");
 
             C.resetSense();
 

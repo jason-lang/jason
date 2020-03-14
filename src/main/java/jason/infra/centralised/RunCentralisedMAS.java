@@ -667,9 +667,9 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
 
     /** an agent architecture for the infra based on thread pool */
     protected final class CentralisedAgArchSynchronousScheduled extends CentralisedAgArch {
-		private static final long serialVersionUID = 2752327732263465482L;
-		
-		private volatile boolean runWakeAfterTS = false;
+        private static final long serialVersionUID = 2752327732263465482L;
+        
+        private volatile boolean runWakeAfterTS = false;
         private int currentStep = 0;
 
         @Override

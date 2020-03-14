@@ -182,7 +182,9 @@ public class CentralisedAgArch extends AgArch implements Runnable, Serializable 
         myThread = t;
         myThread.setName(agName);
     }
-
+    public Thread getThread() {
+        return myThread;
+    }
     public void startThread() {
         myThread.start();
     }
@@ -231,9 +233,14 @@ public class CentralisedAgArch extends AgArch implements Runnable, Serializable 
     }
 
     protected void reasoningCycle() {
+        getUserAgArch().incCycleNumber();
+        getUserAgArch().reasoningCycleStarting();
+        
         sense();
         deliberate();
         act();
+        
+        getUserAgArch().reasoningCycleFinished();
     }
 
     public void run() {
@@ -251,7 +258,6 @@ public class CentralisedAgArch extends AgArch implements Runnable, Serializable 
                 }
                 informCycleFinished(isBreakPoint, getCycleNumber());
             } else {
-                getUserAgArch().incCycleNumber();
                 reasoningCycle();
                 if (ts.canSleep())
                     sleep();

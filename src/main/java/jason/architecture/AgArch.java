@@ -122,6 +122,15 @@ public class AgArch implements Comparable<AgArch> {
         if (successor != null)
             successor.reasoningCycleStarting();
     }
+    
+    /**
+     * A call-back method called by TS
+     * when a new reasoning cycle finished
+     */
+    public void reasoningCycleFinished() {
+        if (successor != null)
+            successor.reasoningCycleFinished();
+    }
 
 
     public TransitionSystem getTS() {
