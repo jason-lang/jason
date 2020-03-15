@@ -5,7 +5,10 @@ import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.logging.Level;
@@ -17,6 +20,7 @@ import jason.architecture.AgArch;
 import jason.asSemantics.ActionExec;
 import jason.asSemantics.Agent;
 import jason.asSemantics.Circumstance;
+import jason.asSemantics.Intention;
 import jason.asSemantics.Message;
 import jason.asSemantics.TransitionSystem;
 import jason.asSyntax.Atom;
@@ -492,4 +496,34 @@ public class CentralisedAgArch extends AgArch implements Runnable, Serializable 
         this.cyclesAct = cyclesAct;
     }
 
+    @Override
+    public Map<String, Object> getStatus() {
+        Map<String, Object> status = super.getStatus();
+        
+        status.put("cycle", getCycleNumber());
+        status.put("idle", getTS().canSleep());
+        
+        // put intentions
+        Circumstance c = getTS().getC();
+        
+        status.put("nbIntentions", c.getNbRunningIntentions() + c.getPendingIntentions().size());
+
+        List<Map<String, Object>> ints = new ArrayList<>();
+        Iterator<Intention> ii = c.getAllIntentions();
+        while (ii.hasNext()) {
+            Intention i = ii.next();
+            Map<String, Object> iprops = new HashMap<>();
+            iprops.put("id", i.getId());
+            iprops.put("finished", i.isFinished());
+            iprops.put("suspended", i.isSuspended());
+            if (i.isSuspended()) {
+                iprops.put("suspendedReason", i.getSuspendedReason());
+            }
+            iprops.put("size", i.size());
+            ints.add(iprops);
+        }
+        status.put("intentions", ints);
+        
+        return status;
+    }
 }

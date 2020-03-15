@@ -2,7 +2,9 @@ package jason.architecture;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 
 import jason.asSemantics.ActionExec;
@@ -281,5 +283,12 @@ public class AgArch implements Comparable<AgArch> {
 
     public int compareTo(AgArch o) {
         return getAgName().compareTo(o.getAgName());
+    }
+    
+    public Map<String,Object> getStatus() {
+        if (successor != null)
+            return successor.getStatus();
+        else
+            return new HashMap<String, Object>();
     }
 }
