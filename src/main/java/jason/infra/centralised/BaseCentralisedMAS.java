@@ -41,7 +41,7 @@ public abstract class BaseCentralisedMAS extends NotificationBroadcasterSupport 
     protected Map<String,CentralisedAgArch> ags         = new ConcurrentHashMap<>();
 
     protected Map<String, Set<String>>     df = new HashMap<>();
-    protected List<Pair<String, String>>    subscribers = new ArrayList<>();
+    protected List<Pair<String, String>>   subscribers = new ArrayList<>();
 
     public boolean isDebug() {
         return debug;
@@ -113,11 +113,7 @@ public abstract class BaseCentralisedMAS extends NotificationBroadcasterSupport 
 
     public void dfRegister(String agName, String service) {
         synchronized (df) {
-            Set<String> s = df.get(agName);
-            if (s == null)
-                s = new HashSet<>();
-            s.add(service);
-            df.put(agName, s);
+            df.computeIfAbsent(agName, k -> new HashSet<>()).add(service);
 
             // inform subscribers
             for (Pair<String,String> p: subscribers) {

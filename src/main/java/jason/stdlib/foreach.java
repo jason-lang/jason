@@ -132,7 +132,7 @@ public class foreach extends DefaultInternalAction {
                 //       it seems not necessary anymore (maybe due to the use of data structures that better support concurrency)
                 //       so I commented the lines and get back to the lazy implementation 
                 LogicalFormula logExpr = (LogicalFormula)args[0];
-                iu = logExpr.logicalConsequence(ts.getAg(), un);
+                iu = logExpr.logicalConsequence(ts.getAg(), un.clone());
                 if (!iu.hasNext())
                     return true;
                 /*List<Unifier> allsol = new ArrayList<Unifier>();
