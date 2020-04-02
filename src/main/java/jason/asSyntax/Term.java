@@ -19,6 +19,7 @@ public interface Term extends Cloneable, Comparable<Term>, Serializable, ToDOM {
     public boolean isRule();
     public boolean isList();
     public boolean isSet();
+    public boolean isMap();
     public boolean isString();
     public boolean isInternalAction();
     public boolean isArithExpr();
