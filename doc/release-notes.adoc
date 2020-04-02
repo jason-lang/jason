@@ -22,6 +22,23 @@ ifdef::env-github[:outfilesuffix: .adoc]
 .set.clear(S);                 // S = {}
 ----
 
+- new internal actions to manipulate a Java Map. In Jason, it is represented by a variable. Example:
++
+----
+.map.put(M,a,10);                // M = {a->10}
+.map.put(M,b,ok);                // M = {a->10, b->ok}
+.map.put(M,a,20);                // M = {a->20, b->ok}
+.length(M,X);                    // X = 2
+.findall(K, .map.key(M,K), LL)   // LL = [a,b]
+.findall(V, .map.value(M,V), LL) // LL = [20,ok]
+.map.get(M,a,V);                 // V = 20
+.map.get(M,c,V);                 // fail
+.map.get(M,c,V,0);               // V = 0
+.map.remove(M,a,V);              // M = {b->ok} V = 20
+.map.clear(M);                   // M = {}
+----
+
+
 - new internal action to replace strings (see internal action .replace).
 
 
