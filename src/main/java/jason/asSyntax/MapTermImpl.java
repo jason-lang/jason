@@ -77,7 +77,7 @@ public class MapTermImpl extends DefaultTerm implements MapTerm {
     }
 
     @Override
-    public Term get(	Term k) {
+    public Term get(Term k) {
         return map.get(k);
     }
     
@@ -88,17 +88,17 @@ public class MapTermImpl extends DefaultTerm implements MapTerm {
 
     @Override
     public Term remove(Term k) {
-    	return map.remove(k);
+        return map.remove(k);
     }
     
     @Override
     public Set<Term> keys() {
-    	return map.keySet(); 
+        return map.keySet(); 
     }
     
     @Override
     public Collection<Term> values() {
-    	return map.values();
+        return map.values();
     }
     
     @Override

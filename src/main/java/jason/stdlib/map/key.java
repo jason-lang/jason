@@ -19,7 +19,7 @@ public class key extends put {
 
     @Override
     public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {
-    	return getIterator(args[1], getMap(un,args).keys().iterator(), un);
+        return getIterator(args[1], getMap(un,args).keys().iterator(), un);
     }
 
     protected Iterator<Unifier> getIterator(Term arg, final Iterator<Term> i, Unifier un) throws Exception {

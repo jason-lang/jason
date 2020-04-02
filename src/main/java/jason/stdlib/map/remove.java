@@ -17,10 +17,10 @@ public class remove extends put {
 
     @Override
     public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {
-    	Term v = getMap(un,args).remove(args[1]);
-    	if (v == null)
-    		return false;
-    	else
-    		return un.unifies(args[2], v);
+        Term v = getMap(un,args).remove(args[1]);
+        if (v == null)
+            return false;
+        else
+            return un.unifies(args[2], v);
     }
 }

@@ -17,6 +17,6 @@ public class value extends key {
 
     @Override
     public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {
-    	return getIterator(args[1], getMap(un,args).values().iterator(), un);
+        return getIterator(args[1], getMap(un,args).values().iterator(), un);
     }
 }
