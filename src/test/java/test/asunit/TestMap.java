@@ -40,10 +40,18 @@ public class TestMap {
             "    .findall(V, .map.value(S,V), L);" +
             "    jason.asunit.print(L)."+
             
+            "+!test_loop <- " +
+            "    !b(S);" +
+            "    for ( .map.key(S,K) & .map.get(S,K,V) ) {" +
+            "       jason.asunit.print(K,V);"+
+            "    }."+
+
             "+!test3 <- " +
             "    !b(S);" +
             "    .findall(K, .map.key(S,K), L);" +
-            "    jason.asunit.print(L)."
+            "    jason.asunit.print(L);" +
+            "    .findall([K,V], .map.key(S,K) & .map.get(S,K,V), L2);" +
+            "    jason.asunit.print(L2)."
             
         );
     }
@@ -52,6 +60,13 @@ public class TestMap {
     public void test1() {
         ag.addGoal("test1(_)");
         ag.assertPrint("{a->30,d->ok(3)}", 20);
+    }
+
+    @Test(timeout=2000)
+    public void testLoop() {
+        ag.addGoal("test_loop");
+        ag.assertPrint("a30", 20);
+        ag.assertPrint("dok(3)", 20);
     }
 
     @Test(timeout=2000)
@@ -73,6 +88,7 @@ public class TestMap {
     public void test3() {
         ag.addGoal("test3");
         ag.assertPrint("[a,d]", 20);
+        ag.assertPrint("[[a,30],[d,ok(3)]]", 20);
     }
     
     @Test(timeout=2000)

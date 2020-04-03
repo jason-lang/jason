@@ -124,8 +124,12 @@ public class MapTermImpl extends DefaultTerm implements MapTerm {
         String c = "";
         for (Term k: map.keySet()) {
             Element me = (Element) document.createElement("map");
-            me.appendChild( k.getAsDOM(document));
-            me.appendChild( map.get(k).getAsDOM(document));
+            Element ke = (Element) document.createElement("key");
+            Element ve = (Element) document.createElement("value");
+            ke.appendChild( k.getAsDOM(document));
+            ve.appendChild( map.get(k).getAsDOM(document));
+            me.appendChild(ke);
+            me.appendChild(ve);
             me.setAttribute("sep", c);
             c = ",";
             u.appendChild(me);

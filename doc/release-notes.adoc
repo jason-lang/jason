@@ -12,7 +12,6 @@ ifdef::env-github[:outfilesuffix: .adoc]
 .set.add(S,a);                 // S = {a}
 .set.add_all(S,[5,b,p(2),a]);  // S = {5,a,b,p(2)}
 .set.remove(S,b);              // S = {5,a,p(2)}
-.set.to_list(S,L);             // L = [5,a,p(2)]
 .set.union(S,[a,1]);           // S = {1,5,a,p(2)}
 .length(S,X);                  // X = 4
 .set.difference(S,[1,a]);      // S = {5,p(2)}
@@ -20,6 +19,10 @@ ifdef::env-github[:outfilesuffix: .adoc]
 .set.add(V,5);
 .set.intersection(S,V);        // S = {5}
 .set.clear(S);                 // S = {}
+// iteration
+for ( .member(V,S) ) {
+   .print(K,V);
+}.
 ----
 
 - new internal actions to manipulate a Java Map. In Jason, it is represented by a variable. Example:
@@ -29,13 +32,23 @@ ifdef::env-github[:outfilesuffix: .adoc]
 .map.put(M,b,ok);                // M = {a->10, b->ok}
 .map.put(M,a,20);                // M = {a->20, b->ok}
 .length(M,X);                    // X = 2
+.map.key(M,a)                    // true
+.map.key(M,V)                    // unifies V with all keys of M
+.map.value(M,10)                 // true
+.map.value(M,V)                  // unifies V with all values of M
 .findall(K, .map.key(M,K), LL)   // LL = [a,b]
 .findall(V, .map.value(M,V), LL) // LL = [20,ok]
+.findall([K,V], .map.key(M,K) & .map.get(M,K,V), LL)
+                                 // LL = [[a,30],[d,ok(3)]]
 .map.get(M,a,V);                 // V = 20
 .map.get(M,c,V);                 // fail
 .map.get(M,c,V,0);               // V = 0
 .map.remove(M,a,V);              // M = {b->ok} V = 20
 .map.clear(M);                   // M = {}
+// iteration
+for ( .map.key(M,K) & .map.get(M,K,V) ) {
+   .print(K,V);
+}.
 ----
 
 
