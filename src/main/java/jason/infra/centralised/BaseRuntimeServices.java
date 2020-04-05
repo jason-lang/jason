@@ -38,7 +38,7 @@ public abstract class BaseRuntimeServices implements RuntimeServices {
     }
 
     public int getAgentsQty() {
-        return masRunner.getAgs().keySet().size();
+        return getAgentsNames().size();
     }
 
     public void stopMAS(int deadline) throws Exception {
