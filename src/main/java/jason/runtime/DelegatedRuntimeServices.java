@@ -1,6 +1,8 @@
 package jason.runtime;
 
 import java.util.Collection;
+import java.util.Map;
+import java.util.Set;
 
 import jason.JasonException;
 import jason.architecture.AgArch;
@@ -74,5 +76,9 @@ public class DelegatedRuntimeServices implements RuntimeServices {
         delegate.dfSubscribe(agName, service, type);
     }
 
+    @Override
+    public Map<String, Set<String>> getDF() {
+        return delegate.getDF();
+    }
 }
 

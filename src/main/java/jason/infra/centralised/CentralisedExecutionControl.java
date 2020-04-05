@@ -31,7 +31,7 @@ public class CentralisedExecutionControl implements ExecutionControlInfraTier {
     public CentralisedExecutionControl(ClassParameters userControlClass, BaseCentralisedMAS masRunner) throws JasonException {
         this.masRunner = masRunner;
         try {
-            userController = (ExecutionControl) Class.forName(userControlClass.getClassName()).newInstance();
+            userController = (ExecutionControl) Class.forName(userControlClass.getClassName()).getConstructor().newInstance();
             userController.setExecutionControlInfraTier(this);
             userController.init(userControlClass.getParametersArray());
         } catch (Exception e) {

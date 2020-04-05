@@ -52,6 +52,7 @@ import jason.runtime.MASConsoleGUI;
 import jason.runtime.MASConsoleLogFormatter;
 import jason.runtime.MASConsoleLogHandler;
 import jason.runtime.RuntimeServices;
+import jason.runtime.RuntimeServicesFactory;
 import jason.runtime.Settings;
 import jason.runtime.SourcePath;
 import jason.util.Config;
@@ -65,6 +66,7 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
 
     public RunCentralisedMAS() {
         super();
+        RuntimeServicesFactory.set( new CentralisedRuntimeServices(this) );
         runner = this;
     }
 
@@ -408,7 +410,7 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
         int nbAg = 0;
         Agent pag = null;
 
-        RuntimeServices rs = getRuntimeServices();
+        RuntimeServices rs = RuntimeServicesFactory.get();
 
         // create agents
         for (AgentParameters ap : project.getAgents()) {
@@ -750,7 +752,7 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
     }
 
     public boolean killAg(String agName) {
-        return getRuntimeServices().killAgent(agName, "??", 0);
+        return RuntimeServicesFactory.get().killAgent(agName, "??", 0);
     }
 
     /** change the current running MAS to debug mode */

@@ -2,6 +2,8 @@ package jason.runtime;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Map;
+import java.util.Set;
 
 import jason.JasonException;
 import jason.architecture.AgArch;
@@ -73,8 +75,11 @@ public interface RuntimeServices {
     public void stopMAS(int deadline) throws Exception;
     default public void stopMAS() throws Exception { stopMAS(0); }
 
-    default public void dfRegister(String agName, String service, String type) {}
-    default public void dfDeRegister(String agName, String service, String type) {}
+    default public void               dfRegister(String agName, String service, String type) {}
+    default public void               dfDeRegister(String agName, String service, String type) {}
     default public Collection<String> dfSearch(String service, String type) { return new ArrayList<>(); }
-    default public void dfSubscribe(String agName, String service, String type) {}
+    default public void               dfSubscribe(String agName, String service, String type) {}
+    
+    default public Map<String, Set<String>> getDF() { return null; }
+
 }

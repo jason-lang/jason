@@ -90,9 +90,9 @@ public class Config extends Properties {
             if (configFactory == null)
                 configFactory = Config.class.getName();
             try {
-                singleton = (Config)Class.forName(configFactory).newInstance();
+                singleton = (Config)Class.forName(configFactory).getConstructor().newInstance();
             } catch (Exception e) {
-                System.err.println("Error creating config from "+configFactory+"("+e+"), using default.");
+                System.err.println("Error creating config from "+configFactory+" ("+e+"), using default.");
                 singleton = new Config();
             }
             if (!singleton.load()) {
@@ -105,7 +105,7 @@ public class Config extends Properties {
         return singleton;
     }
 
-    protected Config() {
+    public Config() {
     }
 
     public void setShowFixMsgs(boolean b) {
@@ -455,6 +455,7 @@ public class Config extends Properties {
         return "/dist.properties";
     }*/
 
+    @SuppressWarnings("deprecation")
     public String getJasonVersion() {
         Package j = Package.getPackage("jason.util");
         if (j != null && j.getSpecificationVersion() != null) {
@@ -486,6 +487,7 @@ public class Config extends Properties {
 
     }
 
+    @SuppressWarnings("deprecation")
     public String getJasonBuiltDate() {
         Package j = Package.getPackage("jason.util");
         if (j != null) {

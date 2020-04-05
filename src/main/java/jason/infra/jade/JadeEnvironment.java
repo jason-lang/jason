@@ -50,7 +50,7 @@ public class JadeEnvironment extends JadeAg implements EnvironmentInfraTier {
             if (args != null && args.length > 0) {
                 if (args[0] instanceof ClassParameters) { // it is an mas2j parameter
                     ClassParameters ep = (ClassParameters)args[0];
-                    userEnv = (Environment) Class.forName(ep.getClassName()).newInstance();
+                    userEnv = (Environment) Class.forName(ep.getClassName()).getConstructor().newInstance();
                     userEnv.setEnvironmentInfraTier(this);
                     userEnv.init(ep.getParametersArray());
 
@@ -67,13 +67,13 @@ public class JadeEnvironment extends JadeAg implements EnvironmentInfraTier {
                         project.setupDefault();
 
                         ClassParameters ep = project.getEnvClass();
-                        userEnv = (Environment) Class.forName(ep.getClassName()).newInstance();
+                        userEnv = (Environment) Class.forName(ep.getClassName()).getConstructor().newInstance();
                         userEnv.setEnvironmentInfraTier(this);
                         userEnv.init(ep.getParametersArray());
                         logger.fine("Init of environmend, via j-project, done.");
 
                     } else { // assume first parameter as class name, remaining environment args
-                        userEnv = (Environment) Class.forName(args[0].toString()).newInstance();
+                        userEnv = (Environment) Class.forName(args[0].toString()).getConstructor().newInstance();
                         userEnv.setEnvironmentInfraTier(this);
 
                         String[] envArgs = new String[args.length-1];

@@ -22,7 +22,7 @@ import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 
 import jason.asSemantics.Agent;
-import jason.infra.centralised.BaseCentralisedMAS;
+import jason.runtime.RuntimeServices;
 import jason.runtime.Settings;
 import jason.util.Config;
 import jason.util.asl2html;
@@ -36,7 +36,7 @@ public class MindInspectorWebImpl extends MindInspectorWeb {
     private Map<String,Integer>        lastStepSeenByUser = new HashMap<>();
     private Map<String,Agent>          registeredAgents = new HashMap<>();
 
-    private BaseCentralisedMAS         runner = null;
+    private RuntimeServices            runner = null;
 
     public MindInspectorWebImpl() {
     }
@@ -256,7 +256,7 @@ public class MindInspectorWebImpl extends MindInspectorWeb {
                                         try {
                                             int pos = path.lastIndexOf("/");
                                             String n = path.substring(pos+1).trim();
-                                            i = new Integer(n);
+                                            i = Integer.valueOf(n);
                                         } catch (Exception e) {}
                                     }
                                     if (i == -1) {
@@ -355,7 +355,7 @@ public class MindInspectorWebImpl extends MindInspectorWeb {
         }
     }
 
-    public synchronized void registerCentRunner(BaseCentralisedMAS rs) {
+    public synchronized void registerCentRunner(RuntimeServices rs) {
         if (rs == null) return;
 
         this.runner = rs;

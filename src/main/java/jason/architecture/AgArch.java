@@ -100,7 +100,7 @@ public class AgArch implements Comparable<AgArch> {
             // user custom arch
             if (!agArchClass.equals(AgArch.class.getName()) && !agArchClass.equals(CentralisedAgArch.class.getName())) {
                 try {
-                    AgArch a = (AgArch) Class.forName(agArchClass).newInstance();
+                    AgArch a = (AgArch) Class.forName(agArchClass).getConstructor().newInstance();
                     a.setTS(ts); // so a.init() can use TS
                     insertAgArch(a);
                     a.init();

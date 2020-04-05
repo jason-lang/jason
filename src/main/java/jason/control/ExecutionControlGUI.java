@@ -51,6 +51,7 @@ import jason.util.asl2html;
 import jason.util.asl2tex;
 import jason.util.asl2xml;
 
+@SuppressWarnings("rawtypes")
 public class ExecutionControlGUI extends ExecutionControl {
 
     String currentAgState = "";
@@ -104,6 +105,7 @@ public class ExecutionControlGUI extends ExecutionControl {
 
     public static String title = "..:: Mind Inspector ::..";
 
+    @SuppressWarnings("unchecked")
     void initComponents() {
         frame = new JFrame(title);
 
@@ -286,6 +288,7 @@ public class ExecutionControlGUI extends ExecutionControl {
         show.put("annots", Config.get().getBoolean(Config.SHOW_ANNOTS));
     }
 
+    @SuppressWarnings("unchecked")
     void setListOfAgsFromInfra() {
         try {
             Set<String> ags = new TreeSet<String>(getExecutionControlInfraTier().getRuntimeServices().getAgentsNames());
@@ -444,6 +447,7 @@ public class ExecutionControlGUI extends ExecutionControl {
      * <i>breakpoint</i> is true in case the agent selected one plan with "breakpoint"
      * annotation.
       */
+    @SuppressWarnings("unchecked")
     public void receiveFinishedCycle(final String agName, boolean breakpoint, final int cycle) {
         if (!listModel.contains(agName)) {
             logger.fine("New agent "+agName);

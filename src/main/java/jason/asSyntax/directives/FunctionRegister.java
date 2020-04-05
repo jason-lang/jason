@@ -59,7 +59,7 @@ public class FunctionRegister extends DefaultDirective implements Directive {
 
     private static void addJasonFunction(Class<? extends ArithFunction> c) {
         try {
-            ArithFunction af = c.newInstance();
+            ArithFunction af = c.getConstructor().newInstance();
             functions.put(af.getName(), af);
         } catch (Exception e) {
             logger.log(Level.SEVERE, "Error registering function "+c.getName(),e);
@@ -69,7 +69,7 @@ public class FunctionRegister extends DefaultDirective implements Directive {
     /** add new global function (shared among all agents in the JVM) */
     public static void addFunction(Class<? extends ArithFunction> c) {
         try {
-            ArithFunction af = c.newInstance();
+            ArithFunction af = c.getConstructor().newInstance();
             String error = FunctionRegister.checkFunctionName(af.getName());
             if (error != null)
                 logger.warning(error);

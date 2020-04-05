@@ -35,6 +35,7 @@ public class JasonProjectSideKickParser extends sidekick.SideKickParser {
         jasonPluginInstance.add(p);
     }
 
+    @SuppressWarnings("unchecked")
     public SideKickParsedData parse(Buffer buf, DefaultErrorSource errorSource) {
         String text;
         try {

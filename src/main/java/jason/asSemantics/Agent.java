@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -107,7 +108,7 @@ public class Agent implements Serializable {
      */
     public static Agent create(AgArch arch, String agClass, ClassParameters bbPars, String asSrc, Settings stts) throws JasonException {
         try {
-            Agent ag = (Agent) Class.forName(agClass).newInstance();
+            Agent ag = (Agent) Class.forName(agClass).getConstructor().newInstance();
 
             new TransitionSystem(ag, null, stts, arch);
 
@@ -115,7 +116,7 @@ public class Agent implements Serializable {
             if (bbPars == null)
                 bb = new DefaultBeliefBase();
             else
-                bb = (BeliefBase) Class.forName(bbPars.getClassName()).newInstance();
+                bb = (BeliefBase) Class.forName(bbPars.getClassName()).getConstructor().newInstance();
 
             ag.setBB(bb);     // the agent's BB have to be already set for the BB initialisation
             ag.initAg();
@@ -302,11 +303,11 @@ public class Agent implements Serializable {
     public Agent clone(AgArch arch) {
         Agent a = null;
         try {
-            a = this.getClass().newInstance();
+            a = this.getClass().getConstructor().newInstance();
         } catch (InstantiationException e1) {
             logger.severe(" cannot create derived class" +e1);
             return null;
-        } catch (IllegalAccessException e2) {
+        } catch (Exception e2) {
             logger.severe(" cannot create derived class" +e2);
             return null;
         }
@@ -382,7 +383,7 @@ public class Agent implements Serializable {
         if (scheduler == null) {
             int n;
             try {
-                n = new Integer( Config.get().get(Config.NB_TH_SCH).toString() );
+                n = Integer.valueOf( Config.get().get(Config.NB_TH_SCH).toString() );
             } catch (Exception e) {
                 n = 2;
             }
@@ -450,7 +451,7 @@ public class Agent implements Serializable {
     }
 
     @SuppressWarnings("unchecked")
-    public InternalAction getIA(String iaName) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+    public InternalAction getIA(String iaName) throws ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
         if (iaName.charAt(0) == '.')
             iaName = "jason.stdlib" + iaName;
         InternalAction objIA = internalActions.get(iaName);
@@ -462,7 +463,7 @@ public class Agent implements Serializable {
                 Method create = iaclass.getMethod("create", (Class[])null);
                 objIA = (InternalAction)create.invoke(null, (Object[])null);
             } catch (Exception e) {
-                objIA = (InternalAction)iaclass.newInstance();
+                objIA = (InternalAction)iaclass.getConstructor().newInstance();
             }
             internalActions.put(iaName, objIA);
         }
@@ -486,7 +487,7 @@ public class Agent implements Serializable {
     /** register an arithmetic function implemented in Java */
     private void addFunction(Class<? extends ArithFunction> c, boolean user) {
         try {
-            ArithFunction af = c.newInstance();
+            ArithFunction af = c.getConstructor().newInstance();
             String error = null;
             if (user)
                 error = FunctionRegister.checkFunctionName(af.getName());

@@ -91,7 +91,7 @@ public class CentralisedAgArch extends AgArch implements Runnable, Serializable 
 
             // mind inspector arch
             if (stts.getUserParameter(Settings.MIND_INSPECTOR) != null) {
-                insertAgArch( (AgArch)Class.forName( Config.get().getMindInspectorArchClassName()).newInstance() );
+                insertAgArch( (AgArch)Class.forName( Config.get().getMindInspectorArchClassName()).getConstructor().newInstance() );
                 getFirstAgArch().init();
             }
 
@@ -354,7 +354,7 @@ public class CentralisedAgArch extends AgArch implements Runnable, Serializable 
         for (String agName: getFirstAgArch().getRuntimeServices().getAgentsNames()) {
             if (!agName.equals(this.getAgName())) {
                 m.setReceiver(agName);
-                sendMsg(m);
+                getFirstAgArch().sendMsg(m);
             }
         }
     }
@@ -444,6 +444,9 @@ public class CentralisedAgArch extends AgArch implements Runnable, Serializable 
         infraControl.receiveFinishedCycle(getAgName(), breakpoint, cycle);
     }
 
+    /**
+     * @deprecated use RuntimeServiceFactory.get() instead
+     */
     public RuntimeServices getRuntimeServices() {
         return masRunner.getRuntimeServices();
     }

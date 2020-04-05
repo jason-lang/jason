@@ -12,6 +12,7 @@ import jason.asSyntax.PlanLibrary;
 import jason.asSyntax.Trigger;
 import jason.mas2j.AgentParameters;
 import jason.mas2j.ClassParameters;
+import jason.runtime.RuntimeServicesFactory;
 import jason.runtime.Settings;
 import jason.runtime.SourcePath;
 
@@ -44,7 +45,7 @@ public class CentralisedRuntimeServices extends BaseRuntimeServices {
                 ap.addArchClass(father.getTS().getUserAgArch().getAgArchClassesChain());
             } else {
                 // use default agArch
-                ap.addArchClass(masRunner.getRuntimeServices().getDefaultAgArchs());
+                ap.addArchClass(RuntimeServicesFactory.get().getDefaultAgArchs());
             }
         }
 

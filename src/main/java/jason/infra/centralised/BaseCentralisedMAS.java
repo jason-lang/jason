@@ -53,12 +53,18 @@ public abstract class BaseCentralisedMAS extends NotificationBroadcasterSupport 
 
     protected RuntimeServices singRTS = null;
 
+    /**
+     * @deprecated use RuntimeServicesFactory.get() instead.  
+     */
     public RuntimeServices getRuntimeServices() {
         if (singRTS == null)
             singRTS = new CentralisedRuntimeServices(runner);
         return singRTS;
     }
 
+    /**
+     * @deprecated use RuntimeServicesFactory.set() instead.  
+     */
     public void setRuntimeServives(RuntimeServices rts) {
         singRTS = rts;
     }

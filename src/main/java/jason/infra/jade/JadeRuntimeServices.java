@@ -161,6 +161,7 @@ public class JadeRuntimeServices implements RuntimeServices {
             DFAgentDescription[] result = DFService.search(jadeAgent, dfd);
             if (result.length>0) {
                 // copy current services
+                @SuppressWarnings("unchecked")
                 Iterator<ServiceDescription> i = result[0].getAllServices();
                 while (i.hasNext()) {
                     dfd.addServices(i.next());
@@ -191,6 +192,7 @@ public class JadeRuntimeServices implements RuntimeServices {
             DFAgentDescription[] result = DFService.search(jadeAgent, dfd);
             if (result.length>0) {
                 // copy current services
+                @SuppressWarnings("unchecked")
                 Iterator<ServiceDescription> i = result[0].getAllServices();
                 while (i.hasNext()) {
                     if (!i.next().toString().contains(service))
