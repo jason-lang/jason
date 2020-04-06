@@ -27,6 +27,7 @@ import jason.asSyntax.Atom;
 import jason.asSyntax.Literal;
 import jason.mas2j.ClassParameters;
 import jason.runtime.RuntimeServices;
+import jason.runtime.RuntimeServicesFactory;
 import jason.runtime.Settings;
 import jason.util.Config;
 
@@ -444,11 +445,8 @@ public class CentralisedAgArch extends AgArch implements Runnable, Serializable 
         infraControl.receiveFinishedCycle(getAgName(), breakpoint, cycle);
     }
 
-    /**
-     * @deprecated use RuntimeServiceFactory.get() instead
-     */
     public RuntimeServices getRuntimeServices() {
-        return masRunner.getRuntimeServices();
+        return RuntimeServicesFactory.get();
     }
 
     private RConf conf;
