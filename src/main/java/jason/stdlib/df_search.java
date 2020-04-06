@@ -7,6 +7,7 @@ import jason.asSyntax.Atom;
 import jason.asSyntax.ListTerm;
 import jason.asSyntax.ListTermImpl;
 import jason.asSyntax.Term;
+import jason.runtime.RuntimeServicesFactory;
 
 /**
   <p>Internal action: <b><code>.df_search(S [,T] , L)</code></b>.
@@ -75,7 +76,7 @@ public class df_search extends df_register {
     public Object execute(final TransitionSystem ts, Unifier un, Term[] args) throws Exception {
         checkArguments(args);
         ListTerm lt = new ListTermImpl();
-        for (String a: ts.getUserAgArch().getRuntimeServices().dfSearch(getService(args), getType(args))) {
+        for (String a: RuntimeServicesFactory.get().dfSearch(getService(args), getType(args))) {
             lt.add(new Atom(a));
         }
         return un.unifies(args[args.length-1], lt);

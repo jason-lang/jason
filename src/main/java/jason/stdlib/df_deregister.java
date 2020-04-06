@@ -4,6 +4,7 @@ import jason.asSemantics.InternalAction;
 import jason.asSemantics.TransitionSystem;
 import jason.asSemantics.Unifier;
 import jason.asSyntax.Term;
+import jason.runtime.RuntimeServicesFactory;
 
 /**
   <p>Internal action: <b><code>.df_deregister(S [,T])</code></b>.
@@ -68,7 +69,7 @@ public class df_deregister extends df_register {
     @Override
     public Object execute(final TransitionSystem ts, Unifier un, Term[] args) throws Exception {
         checkArguments(args);
-        ts.getUserAgArch().getRuntimeServices().dfDeRegister(ts.getUserAgArch().getAgName(), getService(args), getType(args));
+        RuntimeServicesFactory.get().dfDeRegister(ts.getUserAgArch().getAgName(), getService(args), getType(args));
         return true;
     }
 }

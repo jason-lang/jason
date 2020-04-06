@@ -5,7 +5,7 @@ import jason.asSemantics.TransitionSystem;
 import jason.asSemantics.Unifier;
 import jason.asSyntax.NumberTerm;
 import jason.asSyntax.Term;
-import jason.runtime.RuntimeServices;
+import jason.runtime.RuntimeServicesFactory;
 
 /**
   <p>Internal action: <b><code>.stopMAS</code></b>.
@@ -60,12 +60,11 @@ public class stopMAS extends DefaultInternalAction {
     @Override
     public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {
         checkArguments(args);
-        RuntimeServices rs = ts.getUserAgArch().getRuntimeServices();
         int deadline = 0;
         if (args.length == 1 && args[0].isNumeric()) {
             deadline = (int)((NumberTerm)args[0]).solve();
         }
-        rs.stopMAS(deadline);
+        RuntimeServicesFactory.get().stopMAS(deadline);
         return true;
     }
 }
