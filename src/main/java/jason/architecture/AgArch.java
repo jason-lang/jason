@@ -214,7 +214,9 @@ public class AgArch implements Comparable<AgArch> {
             successor.wakeUpAct();
     }
 
-
+    /**
+     * @deprecated use RuntimeServicesFactory.get instead
+     */
     public RuntimeServices getRuntimeServices() {
         if (successor == null)
             return null;

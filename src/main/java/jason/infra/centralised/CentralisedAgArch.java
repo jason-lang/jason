@@ -352,7 +352,7 @@ public class CentralisedAgArch extends AgArch implements Runnable, Serializable 
     }
 
     public void broadcast(jason.asSemantics.Message m) throws Exception {
-        for (String agName: getFirstAgArch().getRuntimeServices().getAgentsNames()) {
+        for (String agName: RuntimeServicesFactory.get().getAgentsNames()) {
             if (!agName.equals(this.getAgName())) {
                 m.setReceiver(agName);
                 getFirstAgArch().sendMsg(m);
