@@ -91,9 +91,10 @@
       //CA2 =.. [_,F,Ts,[]];
       .send(Sender, tell, NS::CA2, MsgId).
 
-@kqmlReceivedAskOne2 // error in askOne, send untell
--!kqml_received(Sender, askOne, NS::Content, MsgId)
-   <- .send(Sender, untell, NS::Content, MsgId).
+//@kqmlReceivedAskOne2 // error in askOne, send untell
+// produces a loop
+//-!kqml_received(Sender, askOne, NS::Content, MsgId)
+//   <- .send(Sender, untell, NS::Content, MsgId).
 
 @kqmlReceivedAskAll2
 +!kqml_received(Sender, askAll, NS::Content, MsgId)
