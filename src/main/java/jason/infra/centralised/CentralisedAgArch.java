@@ -334,7 +334,7 @@ public class CentralisedAgArch extends AgArch implements Runnable, Serializable 
 
         if (rec == null) {
             if (isRunning())
-                throw new ReceiverNotFoundException("Receiver '" + m.getReceiver() + "' does not exist! Could not send " + m);
+                throw new ReceiverNotFoundException("Receiver '" + m.getReceiver() + "' does not exist! Could not send " + m, m.getReceiver());
             else
                 return;
         }
