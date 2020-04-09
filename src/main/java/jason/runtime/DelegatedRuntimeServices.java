@@ -52,8 +52,8 @@ public class DelegatedRuntimeServices implements RuntimeServices {
         return delegate.killAgent(agName, byAg, deadline);
     }
 
-    public void stopMAS(int deadline) throws Exception {
-        delegate.stopMAS(deadline);
+    public void stopMAS(int deadline, boolean stopJVM) throws Exception {
+        delegate.stopMAS(deadline, stopJVM);
     }
 
     @Override

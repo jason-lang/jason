@@ -86,7 +86,7 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
         r.create();
         r.start();
         r.waitEnd();
-        r.finish(0);
+        r.finish(0, true);
     }
 
     protected void registerMBean() {
@@ -347,7 +347,7 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
         btStop.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 MASConsoleGUI.get().setPause(false);
-                runner.finish(0);
+                runner.finish(0, true);
             }
         });
         MASConsoleGUI.get().addButton(btStop);
@@ -814,7 +814,7 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
 
     protected Boolean runningFinish = false;
 
-    public void finish(int deadline) {
+    public void finish(int deadline, boolean stopJVM) {
         // avoid two threads running finish!
         synchronized (runningFinish) {
             if (runningFinish)
@@ -824,17 +824,19 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
         try {
             // creates a thread that guarantees system.exit(0) in deadline seconds
             // (the stop of agents can block, for instance)
-            new Thread() {
-                public void run() {
-                    try {
-                        if (deadline == 0)
-                            sleep(5000);
-                        else
-                            sleep(deadline);
-                    } catch (InterruptedException e) {}
-                    System.exit(0);
-                }
-            } .start();
+            if (stopJVM) {
+                new Thread() {
+                    public void run() {
+                        try {
+                            if (deadline == 0)
+                                sleep(5000);
+                            else
+                                sleep(deadline);
+                        } catch (InterruptedException e) {}
+                        System.exit(0);
+                    }
+                } .start();
+            }
 
             // use a thread to not block the caller
             new Thread() {
@@ -877,7 +879,8 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
                         stop.delete();
                     }
 
-                    System.exit(0);
+                    if (stopJVM)
+                        System.exit(0);
                 };
             }.start();
 

@@ -72,8 +72,8 @@ public interface RuntimeServices {
     public int getAgentsQty();
 
     /** Stops all MAS (the agents, the environment, the controller, ...) */
-    public void stopMAS(int deadline) throws Exception;
-    default public void stopMAS() throws Exception { stopMAS(0); }
+    public void stopMAS(int deadline, boolean stopJVM) throws Exception;
+    default public void stopMAS() throws Exception { stopMAS(0, true); }
 
     default public void               dfRegister(String agName, String service, String type) {}
     default public void               dfDeRegister(String agName, String service, String type) {}

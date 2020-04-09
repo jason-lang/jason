@@ -110,8 +110,8 @@ public abstract class BaseCentralisedMAS extends NotificationBroadcasterSupport 
 
     public abstract void setupLogger();
 
-    public abstract void finish(int deadline);
-    public void finish() { finish(0); }
+    public abstract void finish(int deadline, boolean stopJVM);
+    public void finish() { finish(0, true); }
 
     public abstract boolean hasDebugControl();
 
