@@ -1,5 +1,6 @@
 package jason.architecture;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -30,7 +31,9 @@ import jason.runtime.RuntimeServices;
  *
  * Users can customise the architecture by overriding some methods of this class.
  */
-public class AgArch implements Comparable<AgArch> {
+public class AgArch implements Comparable<AgArch>, Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private TransitionSystem ts = null;
 

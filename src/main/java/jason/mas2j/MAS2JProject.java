@@ -2,6 +2,7 @@ package jason.mas2j;
 
 import java.io.File;
 import java.io.FileReader;
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -23,8 +24,10 @@ import jason.util.Config;
 /**
  * Represents a MAS2J project (usually created from a .mas2j file)
  */
-public class MAS2JProject {
+public class MAS2JProject implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+    
     public static final String EXT       = "mas2j";
     public static final String AS_EXT    = "asl";
 
