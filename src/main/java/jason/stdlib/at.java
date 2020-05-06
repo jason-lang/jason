@@ -1,5 +1,6 @@
 package jason.stdlib;
 
+import java.io.Serializable;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
@@ -139,7 +140,7 @@ public class at extends DefaultInternalAction {
             t.cancel();
     }
 
-    class CheckDeadline implements Runnable {
+    class CheckDeadline implements Runnable, Serializable {
         private int     id = 0;
         private Event   event;
         private TransitionSystem ts;
