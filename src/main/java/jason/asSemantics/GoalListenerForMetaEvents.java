@@ -10,6 +10,8 @@ import jason.asSyntax.Trigger.TEType;
 
 public class GoalListenerForMetaEvents implements GoalListener {
 
+    private static final long serialVersionUID = 1L;
+    
     private TransitionSystem ts;
 
     public GoalListenerForMetaEvents(final TransitionSystem ts) {

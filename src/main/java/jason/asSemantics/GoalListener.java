@@ -1,9 +1,11 @@
 package jason.asSemantics;
 
+import java.io.Serializable;
+
 import jason.asSyntax.Trigger;
 
 /** call-back interface to be notified about events on goals */
-public interface GoalListener {
+public interface GoalListener extends Serializable {
 
     public enum GoalStates { started, suspended, resumed, finished, failed } ;
     public enum FinishStates { achieved, unachieved, dropped } ;

@@ -136,6 +136,7 @@ public class TransitionSystem implements Serializable {
 
         // we need to add a listener in C to map intention events to goal events
         CircumstanceListener cl = new CircumstanceListener() {
+            private static final long serialVersionUID = 1L;
 
             public void intentionDropped(Intention i) {
                 for (IntendedMeans im: i) //.getIMs())
@@ -1356,6 +1357,8 @@ public class TransitionSystem implements Serializable {
     }
 
     class FailWithDeadline extends fail_goal {
+        private static final long serialVersionUID = 1L;
+        
         Intention intToDrop;
         Trigger   te;
 

@@ -45,6 +45,8 @@ import jason.util.asl2xml;
  */
 public class MindInspectorAgArch extends AgArch {
 
+    private static final long serialVersionUID = 1L;
+    
     // variables for mind inspector
     protected boolean hasMindInspectorByCycle = false;
     protected int     updateInterval = 0;
