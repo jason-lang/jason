@@ -84,7 +84,7 @@ public class ReplAgGUI extends ReplAg {
         output.append("\n");
 
 
-        frame = new JFrame(".::  REPL Interface for "+getTS().getUserAgArch().getAgName()+"  ::.");
+        frame = new JFrame(".::  REPL Interface for "+getTS().getAgArch().getAgName()+"  ::.");
         frame.getContentPane().setLayout(new BorderLayout());
         frame.getContentPane().add(BorderLayout.NORTH,command);
         //f.getContentPane().add(BorderLayout.CENTER, new JScrollPane(mindPanel));

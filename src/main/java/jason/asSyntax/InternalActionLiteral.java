@@ -81,7 +81,7 @@ public class InternalActionLiteral extends Structure implements LogicalFormula {
 
     @SuppressWarnings("unchecked")
     public Iterator<Unifier> logicalConsequence(Agent ag, Unifier un) {
-        if (ag == null || ag.getTS().getUserAgArch().isRunning()) {
+        if (ag == null || ag.getTS().getAgArch().isRunning()) {
             try {
                 /*final QueryCache qCache;
                 final CacheKey kForChache;

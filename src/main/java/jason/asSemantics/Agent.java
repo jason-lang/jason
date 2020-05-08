@@ -710,7 +710,7 @@ public class Agent implements Serializable {
     /** TS Initialisation (called by the AgArch) */
     public void setTS(TransitionSystem ts) {
         this.ts = ts;
-        setLogger(ts.getUserAgArch());
+        setLogger(ts.getAgArch());
         if (ts.getSettings().verbose() >= 0)
             logger.setLevel(ts.getSettings().logLevel());
     }
@@ -1104,8 +1104,8 @@ public class Agent implements Serializable {
     /** Gets the agent "mind" as XML */
     public Element getAsDOM(Document document) {
         Element ag = (Element) document.createElement("agent");
-        ag.setAttribute("name", ts.getUserAgArch().getAgName());
-        ag.setAttribute("cycle", ""+ts.getUserAgArch().getCycleNumber());
+        ag.setAttribute("name", ts.getAgArch().getAgName());
+        ag.setAttribute("cycle", ""+ts.getAgArch().getCycleNumber());
 
         Node importedNodeBB = document.importNode(bb.getAsDOM(document), true);
         ag.appendChild(importedNodeBB);

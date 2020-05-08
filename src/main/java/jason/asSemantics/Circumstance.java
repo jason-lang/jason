@@ -881,7 +881,7 @@ public class Circumstance implements Serializable {
         }
         if (ts != null) {
             try {
-                for (Message m: ((CentralisedAgArch)ts.getUserAgArch()).getMBox()) {
+                for (Message m: ((CentralisedAgArch)ts.getAgArch()).getMBox()) {
                     add = true;
                     e = (Element) document.createElement("message");
                     e.appendChild(document.createTextNode(m.toString() + " in arch inbox."));

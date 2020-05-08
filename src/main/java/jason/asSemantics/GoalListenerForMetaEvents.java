@@ -52,6 +52,6 @@ public class GoalListenerForMetaEvents implements GoalListener {
 
             }
         });
-        ts.getUserAgArch().wakeUpDeliberate();
+        ts.getAgArch().wakeUpDeliberate();
     }
 }

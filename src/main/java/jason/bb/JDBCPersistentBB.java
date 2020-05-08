@@ -116,7 +116,7 @@ public class JDBCPersistentBB extends ChainBBAdapter {
     @Override
     public void init(Agent ag, String[] args) {
         try {
-            agentName = ag.getTS().getUserAgArch().getAgName();
+            agentName = ag.getTS().getAgArch().getAgName();
         } catch (Exception e) {
             logger.warning("Can not get the agent name!");
             agentName = "none";

@@ -161,7 +161,7 @@ public class at extends DefaultInternalAction {
             try {
                 if (!cancelled) {
                     ts.getC().addEvent(event);
-                    ts.getUserAgArch().wake();
+                    ts.getAgArch().wake();
                 }
             } finally {
                 ats.remove(id);

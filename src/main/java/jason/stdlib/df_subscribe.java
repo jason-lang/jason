@@ -69,7 +69,7 @@ public class df_subscribe extends df_register {
     @Override
     public Object execute(final TransitionSystem ts, Unifier un, Term[] args) throws Exception {
         checkArguments(args);
-        RuntimeServicesFactory.get().dfSubscribe(ts.getUserAgArch().getAgName(), getService(args), getType(args));
+        RuntimeServicesFactory.get().dfSubscribe(ts.getAgArch().getAgName(), getService(args), getType(args));
         return true;
     }
 }

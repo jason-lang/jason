@@ -342,7 +342,7 @@ public class TransitionSystem implements Serializable {
                 if (! m.isReplyToSyncAsk()) { // ignore answer after the timeout
                     // generate an event
                     String sender = m.getSender();
-                    if (sender.equals(getUserAgArch().getAgName()))
+                    if (sender.equals(getAgArch().getAgName()))
                         sender = "self";
 
                     boolean added = false;
@@ -1351,7 +1351,7 @@ public class TransitionSystem implements Serializable {
                         }
                     }
                 });
-                getUserAgArch().wakeUpSense();
+                getAgArch().wakeUpSense();
             }
         }, deadline, TimeUnit.MILLISECONDS);
     }
@@ -1414,20 +1414,20 @@ public class TransitionSystem implements Serializable {
                       !C.hasRunningIntention() && !C.hasFeedbackAction() && // (action)
                       !C.hasMsg() &&  // (sense)
                       taskForBeginOfCycle.isEmpty() &&
-                      getUserAgArch().canSleep());
+                      getAgArch().canSleep());
     }
 
     public boolean canSleepSense() {
-        return !C.hasMsg() && getUserAgArch().canSleep();
+        return !C.hasMsg() && getAgArch().canSleep();
     }
 
     public boolean canSleepDeliberate() {
-        return !C.hasEvent() && taskForBeginOfCycle.isEmpty() && C.getSelectedEvent() == null && getUserAgArch().canSleep();
+        return !C.hasEvent() && taskForBeginOfCycle.isEmpty() && C.getSelectedEvent() == null && getAgArch().canSleep();
     }
 
     public boolean canSleepAct() {
         //&& !C.hasPendingAction()
-        return !C.hasRunningIntention() && !C.hasFeedbackAction() && C.getSelectedIntention() == null && getUserAgArch().canSleep();
+        return !C.hasRunningIntention() && !C.hasFeedbackAction() && C.getSelectedIntention() == null && getAgArch().canSleep();
     }
 
     /**
@@ -1461,9 +1461,9 @@ public class TransitionSystem implements Serializable {
             if (nrcslbr >= setts.nrcbp()) {
                 nrcslbr = 0;
                 synchronized (C.syncApPlanSense) {
-                    ag.buf(getUserAgArch().perceive());
+                    ag.buf(getAgArch().perceive());
                 }
-                getUserAgArch().checkMail();
+                getAgArch().checkMail();
             }
             nrcslbr++; // counting number of cycles since last belief revision
 
@@ -1500,7 +1500,7 @@ public class TransitionSystem implements Serializable {
             stepSense = State.StartRC;
             do {
                 applySemanticRuleSense();
-            } while (stepSense != State.SelEv && getUserAgArch().isRunning());
+            } while (stepSense != State.SelEv && getAgArch().isRunning());
 
         } catch (Exception e) {
             logger.log(Level.SEVERE, "*** ERROR in the transition system (sense). "+C+"\nCreating a new C!", e);
@@ -1522,7 +1522,7 @@ public class TransitionSystem implements Serializable {
             stepDeliberate = State.SelEv;
             do {
                 applySemanticRuleDeliberate();
-            } while (stepDeliberate != State.ProcAct && getUserAgArch().isRunning());
+            } while (stepDeliberate != State.ProcAct && getAgArch().isRunning());
 
         } catch (Exception e) {
             logger.log(Level.SEVERE, "*** ERROR in the transition system (deliberate). "+C+"\nCreating a new C!", e);
@@ -1537,14 +1537,14 @@ public class TransitionSystem implements Serializable {
             stepAct = State.ProcAct;
             do {
                 applySemanticRuleAct();
-            } while (stepAct != State.StartRC && getUserAgArch().isRunning());
+            } while (stepAct != State.StartRC && getAgArch().isRunning());
 
 
             ActionExec action = C.getAction();
             if (action != null) {
                 C.addPendingAction(action);
                 // We need to send a wrapper for FA to the user so that add method then calls C.addFA (which control atomic things)
-                getUserAgArch().act(action); //, C.getFeedbackActionsWrapper());
+                getAgArch().act(action); //, C.getFeedbackActionsWrapper());
             }
         } catch (Exception e) {
             logger.log(Level.SEVERE, "*** ERROR in the transition system (act). "+C+"\nCreating a new C!", e);
@@ -1673,6 +1673,14 @@ public class TransitionSystem implements Serializable {
     public void setAgArch(AgArch arch) {
         agArch = arch;
     }
+    public AgArch getAgArch() {
+        return agArch;
+    }
+    
+    /**
+     * 
+     * @deprecated use getAgArch
+     */
     public AgArch getUserAgArch() {
         return agArch;
     }
@@ -1683,6 +1691,6 @@ public class TransitionSystem implements Serializable {
 
     @Override
     public String toString() {
-        return "TS of agent "+getUserAgArch().getAgName();
+        return "TS of agent "+getAgArch().getAgName();
     }
 }

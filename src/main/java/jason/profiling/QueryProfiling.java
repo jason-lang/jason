@@ -32,7 +32,7 @@ public class QueryProfiling {
 
     public QueryProfiling(Agent ag) {
         //this.ag = ag;
-        logger  = Logger.getLogger(QueryProfiling.class.getName()+"-"+ag.getTS().getUserAgArch().getAgName());
+        logger  = Logger.getLogger(QueryProfiling.class.getName()+"-"+ag.getTS().getAgArch().getAgName());
     }
 
     public void incHits() {

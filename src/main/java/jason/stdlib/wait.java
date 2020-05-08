@@ -226,7 +226,7 @@ public class wait extends DefaultInternalAction {
                     }
                 }
             });
-            ts.getUserAgArch().wakeUpDeliberate();
+            ts.getAgArch().wakeUpDeliberate();
         }
 
         public void eventAdded(Event e) {

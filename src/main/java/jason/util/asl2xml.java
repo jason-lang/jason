@@ -3,6 +3,7 @@ package jason.util;
 import jason.asSemantics.Agent;
 
 import java.io.File;
+import java.io.Serializable;
 import java.io.StringReader;
 import java.io.StringWriter;
 
@@ -25,7 +26,7 @@ import org.w3c.dom.Document;
  *
  * @author Jomi
  */
-public class asl2xml  {
+public class asl2xml implements Serializable {
 
     public static void main(String[] args) throws Exception {
         if (args.length != 1) {

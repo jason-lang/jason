@@ -27,7 +27,7 @@ public class clone extends DefaultInternalAction {
     public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {
 
         String agName = ((StringTerm)args[0]).getString();
-        RuntimeServicesFactory.get().clone(ts.getAg(), ts.getUserAgArch().getAgArchClassesChain(), agName);
+        RuntimeServicesFactory.get().clone(ts.getAg(), ts.getAgArch().getAgArchClassesChain(), agName);
 
         return true;
     }

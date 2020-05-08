@@ -72,7 +72,7 @@ public class TestAgent extends Agent {
     }
 
     public TestArch getArch() {
-        return (TestArch)getTS().getUserAgArch();
+        return (TestArch)getTS().getAgArch();
     }
 
     public void setDebugMode(boolean on) {

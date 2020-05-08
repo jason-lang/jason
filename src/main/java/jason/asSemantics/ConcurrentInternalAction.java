@@ -147,7 +147,7 @@ public abstract class ConcurrentInternalAction implements InternalAction {
                 }
             }
         });
-        ts.getUserAgArch().wakeUpDeliberate();
+        ts.getAgArch().wakeUpDeliberate();
     }
 
     public void destroy() throws Exception {

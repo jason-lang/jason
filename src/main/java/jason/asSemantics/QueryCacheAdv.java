@@ -28,7 +28,7 @@ public class QueryCacheAdv {
     public QueryCacheAdv(Agent ag, QueryProfiling p) {
         this.ag = ag;
         this.prof = p;
-        logger  = Logger.getLogger(QueryCacheAdv.class.getName()+"-"+ag.getTS().getUserAgArch().getAgName());
+        logger  = Logger.getLogger(QueryCacheAdv.class.getName()+"-"+ag.getTS().getAgArch().getAgName());
         cache   = new HashMap<PredicateIndicator, List<Pair<Literal,List<Unifier>>>>();
         tmp     = new HashMap<PredicateIndicator, List<Pair<Literal,List<Unifier>>>>();
         noCache = new HashSet<QueryCacheKey>();

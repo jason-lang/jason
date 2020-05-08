@@ -75,14 +75,14 @@ public class CentralisedEnvironment implements EnvironmentInfraTier {
     public void informAgsEnvironmentChanged(String... agents) {
         if (agents.length == 0) {
             for (CentralisedAgArch ag: masRunner.getAgs().values()) {
-                ag.getTS().getUserAgArch().wakeUpSense();
+                ag.getTS().getAgArch().wakeUpSense();
             }
         } else {
             for (String agName: agents) {
                 CentralisedAgArch ag = masRunner.getAg(agName);
                 if (ag != null) {
                     if (ag instanceof CentralisedAgArchAsynchronous) {
-                        ((CentralisedAgArchAsynchronous) ag.getTS().getUserAgArch()).wakeUpSense();
+                        ((CentralisedAgArchAsynchronous) ag.getTS().getAgArch()).wakeUpSense();
                     } else {
                         ag.wakeUpSense();
                     }
@@ -101,7 +101,7 @@ public class CentralisedEnvironment implements EnvironmentInfraTier {
             for (String agName: agentsToNotify) {
                 CentralisedAgArch ag = masRunner.getAg(agName);
                 if (ag != null) {
-                    ag.getTS().getUserAgArch().wakeUpSense();
+                    ag.getTS().getAgArch().wakeUpSense();
                 } else {
                     logger.log(Level.SEVERE, "Error sending message notification: agent " + agName + " does not exist!");
                 }

@@ -75,6 +75,6 @@ public class my_name extends DefaultInternalAction {
     @Override
     public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {
         checkArguments(args);
-        return un.unifies(args[0], new Atom(ts.getUserAgArch().getAgName()));
+        return un.unifies(args[0], new Atom(ts.getAgArch().getAgName()));
     }
 }

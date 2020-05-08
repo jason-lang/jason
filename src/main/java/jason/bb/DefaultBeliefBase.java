@@ -52,7 +52,7 @@ public class DefaultBeliefBase extends BeliefBase implements Serializable {
     @Override
     public void init(Agent ag, String[] args) {
         if (ag != null) {
-            logger = Logger.getLogger(ag.getTS().getUserAgArch().getAgName() + "-"+DefaultBeliefBase.class.getSimpleName());
+            logger = Logger.getLogger(ag.getTS().getAgArch().getAgName() + "-"+DefaultBeliefBase.class.getSimpleName());
         }
     }
 

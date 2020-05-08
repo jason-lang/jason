@@ -78,6 +78,6 @@ public class kill_agent extends DefaultInternalAction {
         int deadline = 0;
         if (args.length == 2)
         	deadline = (int)((NumberTerm)args[1]).solve();
-        return RuntimeServicesFactory.get().killAgent(name, ts.getUserAgArch().getAgName(), deadline);
+        return RuntimeServicesFactory.get().killAgent(name, ts.getAgArch().getAgName(), deadline);
     }
 }
