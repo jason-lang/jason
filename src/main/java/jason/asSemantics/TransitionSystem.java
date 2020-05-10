@@ -414,9 +414,10 @@ public class TransitionSystem implements Serializable {
             if (C.SE != null) {
 
                 // update events (+ and -) are copied for all intentions (new JasonER)
-                if (C.SE.isExternal() && C.SE.getTrigger().isUpdate()) { //  C.SE.getTrigger().isAddition()) {
+            	// possibly creating branches for these intentions
+                if (C.SE.isExternal() && C.SE.getTrigger().isUpdate()) {
                     //logger.info("Selected event "+C.SE.getTrigger()+  C.SE.isExternal());
-                    Iterator<Intention> ii = C.getAllIntentions(); //C.getAllIntentions(); //C.getRunningIntentions().iterator();
+                    Iterator<Intention> ii = C.getAllIntentions();
                     while (ii.hasNext()) {
                         Intention i = ii.next();
                         // if i has sub plans (so potentially interested in external events)
@@ -434,7 +435,7 @@ public class TransitionSystem implements Serializable {
                                             Option o = getOption(C.SE, p, im.getUnif().clone());
                                             //logger.info("option "+o+" "+C.SE.getTrigger()+" for "+p+" with "+i.peek().getUnif());
                                             if (o != null) {
-                                                // create the extra event and place it in E
+                                                // create the extra event based on intention i (to mimic the branching)
                                                 // and move intention i from I to E
                                                 try {
                                                     if (planBaseForEPlans == null)
@@ -599,9 +600,9 @@ public class TransitionSystem implements Serializable {
         stepDeliberate = State.AddIM; // default next step
 
         // consider scope (new in JasonER)
-        // TODO: implement Scope for RelPl ApplPl SelAppl (that are replaced by applyFindOp if possible)
+        // TODO: implement Scope for RelPl ApplPl SelAppl (besides the fast track of applyFindOp)
         C.SO = C.SE.getOption();
-        if (C.SO != null) { // and option was previouly computed
+        if (C.SO != null) { // an option was previously computed
             return;
         }
 
