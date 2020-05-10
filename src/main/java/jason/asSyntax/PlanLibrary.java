@@ -328,6 +328,7 @@ public class PlanLibrary implements Iterable<Plan>, Serializable {
         plans.clear();
         varPlans.clear();
         relPlans.clear();
+        eDOMPlans = null;
     }
 
     /**
@@ -424,16 +425,6 @@ public class PlanLibrary implements Iterable<Plan>, Serializable {
                         }
                 }
             }
-
-            /* moved to TS findOP
-            if (father != null) {
-                List<Plan> lf = father.getCandidatePlans(te);
-                if (lf != null && !lf.isEmpty()) {
-                    if (l == null)
-                        l = new ArrayList<>();
-                    l.addAll(lf);
-                }
-            }*/
             return l; // if no rel plan, have to return null instead of empty list
         }
     }
