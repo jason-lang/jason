@@ -1,11 +1,11 @@
 package jason.asSemantics;
 
-import jason.asSyntax.Trigger;
-
 import java.io.Serializable;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+
+import jason.asSyntax.Trigger;
 
 public class Event implements Serializable {
 

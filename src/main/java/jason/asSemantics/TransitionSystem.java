@@ -513,7 +513,7 @@ public class TransitionSystem implements Serializable {
         List<Plan> candidateRPs = ag.pl.getCandidatePlans(C.SE.trigger);
         if (candidateRPs != null) {
             for (Plan pl : candidateRPs) {
-                Unifier relUn = pl.isRelevant(C.SE.trigger);
+                Unifier relUn = pl.isRelevant(C.SE.trigger, null);
                 if (relUn != null) { // is relevant
                     LogicalFormula context = pl.getContext();
                     if (context == null) { // context is true
@@ -666,9 +666,8 @@ public class TransitionSystem implements Serializable {
         if (curInt == null)
             return;
 
-        if (curInt.isFinished()) {
+        if (curInt.isFinished())
             return;
-        }
 
         // get next formula in the body of the intended means
         // on the top of the selected intention
@@ -1077,7 +1076,7 @@ public class TransitionSystem implements Serializable {
         List<Plan> candidateRPs = ag.pl.getCandidatePlans(te);
         if (candidateRPs != null) {
             for (Plan pl : candidateRPs) {
-                Unifier relUn = pl.isRelevant(te);
+                Unifier relUn = pl.isRelevant(te, null);
                 if (relUn != null) {
                     if (rp == null) rp = new LinkedList<>();
                     rp.add(new Option(pl, relUn));
