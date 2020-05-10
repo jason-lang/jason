@@ -178,7 +178,7 @@ public class TransitionSystem implements Serializable {
 
     public boolean removeGoalListener(GoalListener gl) {
         CircumstanceListener cl = (listenersMap == null ? null : listenersMap.get(gl));
-        if (cl != null) 
+        if (cl != null)
             C.removeEventListener(cl);
         return goalListeners.remove(gl);
     }
@@ -1491,7 +1491,7 @@ public class TransitionSystem implements Serializable {
 
     class FailWithDeadline extends fail_goal {
         private static final long serialVersionUID = 1L;
-        
+
         Intention intToDrop;
         Trigger   te;
 
@@ -1809,9 +1809,9 @@ public class TransitionSystem implements Serializable {
     public AgArch getAgArch() {
         return agArch;
     }
-    
+
     /**
-     * 
+     *
      * @deprecated use getAgArch
      */
     public AgArch getUserAgArch() {
