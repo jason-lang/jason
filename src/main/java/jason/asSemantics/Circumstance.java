@@ -779,7 +779,7 @@ public class Circumstance implements Serializable {
                 }
                 curInt = null; // nothing found
             }
-            
+
             public void remove() {
                 if (lastReturned != null) {
                     // try to find the intention lastReturned
@@ -788,7 +788,7 @@ public class Circumstance implements Serializable {
                     if (removePendingAction(lastReturned.getId()) != null) return;
                 }
                 System.out.println("******** remove() intention "+lastReturned.getId()+" is not implemented for C.getAllIntentions --- "+curStep+" ******");
-            }            
+            }
         };
     }
 
