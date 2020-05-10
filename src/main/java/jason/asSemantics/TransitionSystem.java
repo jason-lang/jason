@@ -187,7 +187,7 @@ public class TransitionSystem implements Serializable {
     /* SEMANTIC RULES */
     /** ******************************************************************* */
 
-    private void applySemanticRuleSense() throws Exception {
+    private void applySemanticRuleSense() throws JasonException {
         switch (stepSense) {
         case StartRC:
             applyProcMsg();
@@ -1209,8 +1209,7 @@ public class TransitionSystem implements Serializable {
         List<Plan> candidateRPs = ag.pl.getCandidatePlans(te);
         if (candidateRPs != null) {
             for (Plan pl : candidateRPs) {
-                Unifier relUn = null;
-                relUn = pl.isRelevant(te, relUn);
+                Unifier relUn = pl.isRelevant(te, null);
                 if (relUn != null) {
                     if (rp == null) rp = new LinkedList<>();
                     rp.add(new Option(pl, relUn));
