@@ -612,5 +612,24 @@
         </xsl:for-each>
         <xsl:text>]</xsl:text>
     </xsl:template>
+    <xsl:template match="set-term">
+        <xsl:text>{</xsl:text>
+        <xsl:for-each select="*">
+            <xsl:value-of select="@sep"/>
+            <xsl:apply-templates select="." />
+        </xsl:for-each>
+        <xsl:text>}</xsl:text>
+    </xsl:template>
+
+    <xsl:template match="map-term">
+        <xsl:text>{</xsl:text>
+        <xsl:for-each select="*">
+            <xsl:value-of select="@sep"/>
+            <xsl:apply-templates select="key" />
+            <xsl:text>-></xsl:text>
+            <xsl:apply-templates select="value" />
+        </xsl:for-each>
+        <xsl:text>}</xsl:text>
+    </xsl:template>
 
 </xsl:stylesheet>

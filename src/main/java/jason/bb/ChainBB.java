@@ -41,7 +41,7 @@ public class ChainBB extends ChainBBAdapter {
             // create all chain BBs
             for (String s: args) {
                 Structure bbs = Structure.parse(s);
-                BeliefBase bb = (ChainBBAdapter) Class.forName(bbs.getFunctor()).newInstance();
+                BeliefBase bb = (ChainBBAdapter) Class.forName(bbs.getFunctor()).getConstructor().newInstance();
                 addInChain(bb);
             }
 

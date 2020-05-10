@@ -1,5 +1,6 @@
 package jason.runtime;
 
+import java.io.Serializable;
 import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;
@@ -8,8 +9,10 @@ import java.util.logging.Logger;
 
 
 /** MAS Runtime Settings for an Agent (from mas2j file, agent declaration) */
-public class Settings {
+public class Settings implements Serializable {
 
+    private static final long serialVersionUID = -1428556037435207789L;
+    
     public static final byte      ODiscard        = 1;
     public static final byte      ORequeue        = 2;
     public static final byte      ORetrieve       = 3;

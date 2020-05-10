@@ -18,6 +18,7 @@ import jason.asSyntax.Atom;
 import jason.asSyntax.StringTermImpl;
 import jason.mas2j.MAS2JProject;
 import jason.runtime.RuntimeServices;
+import jason.runtime.RuntimeServicesFactory;
 import jason.util.Pair;
 
 /**
@@ -41,7 +42,7 @@ public abstract class BaseCentralisedMAS extends NotificationBroadcasterSupport 
     protected Map<String,CentralisedAgArch> ags         = new ConcurrentHashMap<>();
 
     protected Map<String, Set<String>>     df = new HashMap<>();
-    protected List<Pair<String, String>>    subscribers = new ArrayList<>();
+    protected List<Pair<String, String>>   subscribers = new ArrayList<>();
 
     public boolean isDebug() {
         return debug;
@@ -51,16 +52,24 @@ public abstract class BaseCentralisedMAS extends NotificationBroadcasterSupport 
         return runner;
     }
 
-    protected RuntimeServices singRTS = null;
+    //protected RuntimeServices singRTS = null;
 
+    /**
+     * @deprecated use RuntimeServicesFactory.get() instead.  
+     */
     public RuntimeServices getRuntimeServices() {
-        if (singRTS == null)
+        return RuntimeServicesFactory.get();
+        /*if (singRTS == null)
             singRTS = new CentralisedRuntimeServices(runner);
-        return singRTS;
+        return singRTS;*/
     }
 
+    /**
+     * @deprecated use RuntimeServicesFactory.set() instead.  
+     */
     public void setRuntimeServives(RuntimeServices rts) {
-        singRTS = rts;
+        //singRTS = rts;
+        RuntimeServicesFactory.set(rts);
     }
 
     public CentralisedExecutionControl getControllerInfraTier() {
@@ -80,6 +89,7 @@ public abstract class BaseCentralisedMAS extends NotificationBroadcasterSupport 
 
     public void addAg(CentralisedAgArch ag) {
         ags.put(ag.getAgName(), ag);
+        ag.setMASRunner(this);
     }
     public CentralisedAgArch delAg(String agName) {
         df.remove(agName);
@@ -100,8 +110,8 @@ public abstract class BaseCentralisedMAS extends NotificationBroadcasterSupport 
 
     public abstract void setupLogger();
 
-    public abstract void finish(int deadline);
-    public void finish() { finish(0); }
+    public abstract void finish(int deadline, boolean stopJVM);
+    public void finish() { finish(0, true); }
 
     public abstract boolean hasDebugControl();
 
@@ -112,11 +122,7 @@ public abstract class BaseCentralisedMAS extends NotificationBroadcasterSupport 
 
     public void dfRegister(String agName, String service) {
         synchronized (df) {
-            Set<String> s = df.get(agName);
-            if (s == null)
-                s = new HashSet<>();
-            s.add(service);
-            df.put(agName, s);
+            df.computeIfAbsent(agName, k -> new HashSet<>()).add(service);
 
             // inform subscribers
             for (Pair<String,String> p: subscribers) {

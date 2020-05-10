@@ -118,7 +118,7 @@ public class random extends DefaultInternalAction {
                 List<Term> j = (l == null ? null : l.getAsList());
 
                 public boolean hasNext() {
-                    return (n < max || max == 0) && ts.getUserAgArch().isRunning();
+                    return (n < max || max == 0) && ts.getAgArch().isRunning();
                 }
 
                 public Unifier next() {

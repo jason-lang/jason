@@ -26,6 +26,7 @@ import org.gjt.sp.jedit.View;
 import jason.mas2j.MAS2JProject;
 import jason.util.Config;
 
+@SuppressWarnings("rawtypes")
 public class NewProjectGUI extends NewAgentGUI {
 
     private static final long serialVersionUID = 1L;
@@ -46,6 +47,7 @@ public class NewProjectGUI extends NewAgentGUI {
         this.jasonID = jasonID;
     }
 
+    @SuppressWarnings("unchecked")
     protected void initComponents() {
         getContentPane().setLayout(new BorderLayout());
 

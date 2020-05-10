@@ -14,7 +14,7 @@ public class print extends println {
 
     @Override
     public Object execute(TransitionSystem ts, Unifier un, Term[] args)  throws Exception {
-        TestArch arch = (TestArch)ts.getUserAgArch();
+        TestArch arch = (TestArch)ts.getAgArch();
         arch.print(argsToString(args));
         return true;
     }

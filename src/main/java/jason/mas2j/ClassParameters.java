@@ -1,5 +1,6 @@
 package jason.mas2j;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -17,7 +18,9 @@ import jason.asSyntax.Term;
  *
  * @author jomi
  */
-public class ClassParameters {
+public class ClassParameters implements Serializable {
+    private static final long serialVersionUID = -2202523371417849466L;
+    
     private String className;
     private List<String> parameters = new ArrayList<>();
     private String host;

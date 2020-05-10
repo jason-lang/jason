@@ -63,7 +63,7 @@ public class JasonBridgeArch extends AgArch {
     @Override
     public void stop() {
         getTS().getAg().stopAg();
-        super.stop();
+        //super.stop();
     }
 
     @Override

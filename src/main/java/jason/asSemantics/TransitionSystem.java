@@ -1,5 +1,6 @@
 package jason.asSemantics;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -52,11 +53,13 @@ import jason.stdlib.succeed_goal;
 import jason.util.Config;
 
 
-public class TransitionSystem {
+public class TransitionSystem implements Serializable {
+
+    private static final long serialVersionUID = -5166620620196199391L;
 
     public enum State { StartRC, SelEv, RelPl, ApplPl, SelAppl, FindOp, AddIM, ProcAct, SelInt, ExecInt, ClrInt }
 
-    private Logger        logger     = null;
+    private transient Logger logger     = null;
 
     private Agent         ag         = null;
     private AgArch        agArch     = null;
@@ -134,6 +137,7 @@ public class TransitionSystem {
 
         // we need to add a listener in C to map intention events to goal events
         CircumstanceListener cl = new CircumstanceListener() {
+            private static final long serialVersionUID = 1L;
 
             public void intentionDropped(Intention i) {
                 for (IntendedMeans im: i) //.getIMs())
@@ -173,8 +177,9 @@ public class TransitionSystem {
     }
 
     public boolean removeGoalListener(GoalListener gl) {
-        CircumstanceListener cl = listenersMap.get(gl);
-        if (cl != null) C.removeEventListener(cl);
+        CircumstanceListener cl = (listenersMap == null ? null : listenersMap.get(gl));
+        if (cl != null) 
+            C.removeEventListener(cl);
         return goalListeners.remove(gl);
     }
 
@@ -338,7 +343,7 @@ public class TransitionSystem {
                 if (! m.isReplyToSyncAsk()) { // ignore answer after the timeout
                     // generate an event
                     String sender = m.getSender();
-                    if (sender.equals(getUserAgArch().getAgName()))
+                    if (sender.equals(getAgArch().getAgName()))
                         sender = "self";
 
                     boolean added = false;
@@ -1480,12 +1485,14 @@ public class TransitionSystem {
                         }
                     }
                 });
-                getUserAgArch().wakeUpSense();
+                getAgArch().wakeUpSense();
             }
         }, deadline, TimeUnit.MILLISECONDS);
     }
 
     class FailWithDeadline extends fail_goal {
+        private static final long serialVersionUID = 1L;
+        
         Intention intToDrop;
         Trigger   te;
 
@@ -1541,20 +1548,20 @@ public class TransitionSystem {
                       !C.hasRunningIntention() && !C.hasFeedbackAction() && // (action)
                       !C.hasMsg() &&  // (sense)
                       taskForBeginOfCycle.isEmpty() &&
-                      getUserAgArch().canSleep());
+                      getAgArch().canSleep());
     }
 
     public boolean canSleepSense() {
-        return !C.hasMsg() && getUserAgArch().canSleep();
+        return !C.hasMsg() && getAgArch().canSleep();
     }
 
     public boolean canSleepDeliberate() {
-        return !C.hasEvent() && taskForBeginOfCycle.isEmpty() && C.getSelectedEvent() == null && getUserAgArch().canSleep();
+        return !C.hasEvent() && taskForBeginOfCycle.isEmpty() && C.getSelectedEvent() == null && getAgArch().canSleep();
     }
 
     public boolean canSleepAct() {
         //&& !C.hasPendingAction()
-        return !C.hasRunningIntention() && !C.hasFeedbackAction() && C.getSelectedIntention() == null && getUserAgArch().canSleep();
+        return !C.hasRunningIntention() && !C.hasFeedbackAction() && C.getSelectedIntention() == null && getAgArch().canSleep();
     }
 
     /**
@@ -1581,17 +1588,16 @@ public class TransitionSystem {
 
     public void sense() {
         try {
-            if (logger.isLoggable(Level.FINE)) logger.fine("Start new reasoning cycle");
-            getUserAgArch().reasoningCycleStarting();
+            if (logger.isLoggable(Level.FINE)) logger.fine("Start sense");
 
             C.resetSense();
 
             if (nrcslbr >= setts.nrcbp()) {
                 nrcslbr = 0;
                 synchronized (C.syncApPlanSense) {
-                    ag.buf(getUserAgArch().perceive());
+                    ag.buf(getAgArch().perceive());
                 }
-                getUserAgArch().checkMail();
+                getAgArch().checkMail();
             }
             nrcslbr++; // counting number of cycles since last belief revision
 
@@ -1628,7 +1634,7 @@ public class TransitionSystem {
             stepSense = State.StartRC;
             do {
                 applySemanticRuleSense();
-            } while (stepSense != State.SelEv && getUserAgArch().isRunning());
+            } while (stepSense != State.SelEv && getAgArch().isRunning());
 
         } catch (Exception e) {
             logger.log(Level.SEVERE, "*** ERROR in the transition system (sense). "+C+"\nCreating a new C!", e);
@@ -1650,7 +1656,7 @@ public class TransitionSystem {
             stepDeliberate = State.SelEv;
             do {
                 applySemanticRuleDeliberate();
-            } while (stepDeliberate != State.ProcAct && getUserAgArch().isRunning());
+            } while (stepDeliberate != State.ProcAct && getAgArch().isRunning());
 
         } catch (Exception e) {
             logger.log(Level.SEVERE, "*** ERROR in the transition system (deliberate). "+C+"\nCreating a new C!", e);
@@ -1665,14 +1671,14 @@ public class TransitionSystem {
             stepAct = State.ProcAct;
             do {
                 applySemanticRuleAct();
-            } while (stepAct != State.StartRC && getUserAgArch().isRunning());
+            } while (stepAct != State.StartRC && getAgArch().isRunning());
 
 
             ActionExec action = C.getAction();
             if (action != null) {
                 C.addPendingAction(action);
                 // We need to send a wrapper for FA to the user so that add method then calls C.addFA (which control atomic things)
-                getUserAgArch().act(action); //, C.getFeedbackActionsWrapper());
+                getAgArch().act(action); //, C.getFeedbackActionsWrapper());
             }
         } catch (Exception e) {
             logger.log(Level.SEVERE, "*** ERROR in the transition system (act). "+C+"\nCreating a new C!", e);
@@ -1801,6 +1807,14 @@ public class TransitionSystem {
     public void setAgArch(AgArch arch) {
         agArch = arch;
     }
+    public AgArch getAgArch() {
+        return agArch;
+    }
+    
+    /**
+     * 
+     * @deprecated use getAgArch
+     */
     public AgArch getUserAgArch() {
         return agArch;
     }
@@ -1811,6 +1825,6 @@ public class TransitionSystem {
 
     @Override
     public String toString() {
-        return "TS of agent "+getUserAgArch().getAgName();
+        return "TS of agent "+getAgArch().getAgName();
     }
 }

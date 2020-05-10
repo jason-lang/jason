@@ -1,5 +1,6 @@
 package jason.stdlib;
 
+import java.io.Serializable;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
@@ -142,7 +143,7 @@ public class wait extends DefaultInternalAction {
         return true;
     }
 
-    class WaitEvent implements CircumstanceListener {
+    class WaitEvent implements CircumstanceListener, Serializable {
         private Trigger          te;
         private LogicalFormula   formula;
         private String           sEvt; // a string version of what is being waited
@@ -225,7 +226,7 @@ public class wait extends DefaultInternalAction {
                     }
                 }
             });
-            ts.getUserAgArch().wakeUpDeliberate();
+            ts.getAgArch().wakeUpDeliberate();
         }
 
         public void eventAdded(Event e) {

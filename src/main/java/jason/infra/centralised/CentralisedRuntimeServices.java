@@ -12,6 +12,7 @@ import jason.asSyntax.PlanLibrary;
 import jason.asSyntax.Trigger;
 import jason.mas2j.AgentParameters;
 import jason.mas2j.ClassParameters;
+import jason.runtime.RuntimeServicesFactory;
 import jason.runtime.Settings;
 import jason.runtime.SourcePath;
 
@@ -41,10 +42,10 @@ public class CentralisedRuntimeServices extends BaseRuntimeServices {
         } else {
             if (father != null) {
                 // use father agArchs
-                ap.addArchClass(father.getTS().getUserAgArch().getAgArchClassesChain());
+                ap.addArchClass(father.getTS().getAgArch().getAgArchClassesChain());
             } else {
                 // use default agArch
-                ap.addArchClass(masRunner.getRuntimeServices().getDefaultAgArchs());
+                ap.addArchClass(RuntimeServicesFactory.get().getDefaultAgArchs());
             }
         }
 
@@ -61,7 +62,7 @@ public class CentralisedRuntimeServices extends BaseRuntimeServices {
 
             CentralisedAgArch agArch = newAgInstance();
             agArch.setAgName(agName);
-            agArch.createArchs(ap.getAgArchClasses(), ap.agClass.getClassName(), ap.getBBClass(), agSource, stts, masRunner);
+            agArch.createArchs(ap.getAgArchClasses(), ap.agClass.getClassName(), ap.getBBClass(), agSource, stts);
             agArch.setEnvInfraTier(masRunner.getEnvironmentInfraTier());
             agArch.setControlInfraTier(masRunner.getControllerInfraTier());
 
@@ -99,7 +100,7 @@ public class CentralisedRuntimeServices extends BaseRuntimeServices {
         agArch.setControlInfraTier(masRunner.getControllerInfraTier());
         masRunner.addAg(agArch);
 
-        agArch.createArchs(archClasses, source, masRunner);
+        agArch.createArchs(archClasses, source);
 
         startAgent(agName);
         return agArch.getUserAgArch();

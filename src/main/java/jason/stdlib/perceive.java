@@ -48,7 +48,7 @@ public class perceive extends DefaultInternalAction {
     @Override
     public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {
         checkArguments(args);
-        ts.getAg().buf(ts.getUserAgArch().perceive());
+        ts.getAg().buf(ts.getAgArch().perceive());
         return true;
     }
 }

@@ -14,6 +14,7 @@ import jason.asSyntax.Structure;
 import jason.asSyntax.Term;
 import jason.mas2j.ClassParameters;
 import jason.runtime.RuntimeServices;
+import jason.runtime.RuntimeServicesFactory;
 import jason.runtime.Settings;
 
 /**
@@ -142,7 +143,7 @@ public class create_agent extends DefaultInternalAction {
                 }
             }
         }
-        RuntimeServices rs = ts.getUserAgArch().getRuntimeServices();
+        RuntimeServices rs = RuntimeServicesFactory.get();
         name = rs.createAgent(name, source, agClass, agArchClasses, bbPars, getSettings(ts), ts.getAg());
         rs.startAgent(name);
 

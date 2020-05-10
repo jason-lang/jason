@@ -9,6 +9,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class Message implements Serializable {
 
+    private static final long serialVersionUID = 7914409028691033870L;
+    
     private String ilForce  = null;
     private String sender   = null;
     private String receiver = null;

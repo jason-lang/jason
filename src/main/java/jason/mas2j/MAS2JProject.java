@@ -2,6 +2,7 @@ package jason.mas2j;
 
 import java.io.File;
 import java.io.FileReader;
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -23,8 +24,10 @@ import jason.util.Config;
 /**
  * Represents a MAS2J project (usually created from a .mas2j file)
  */
-public class MAS2JProject {
+public class MAS2JProject implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+    
     public static final String EXT       = "mas2j";
     public static final String AS_EXT    = "asl";
 
@@ -261,7 +264,7 @@ public class MAS2JProject {
         if (infraFac == null) {
             try {
                 String facClass = Config.get().getInfrastructureFactoryClass(infrastructure.getClassName());
-                infraFac = (InfrastructureFactory)Class.forName(facClass).newInstance();
+                infraFac = (InfrastructureFactory)Class.forName(facClass).getConstructor().newInstance();
             } catch (Exception e) {
                 throw new JasonException("The project's infrastructure ('"+infrastructure.getClassName()+"') is not well configured! \n"+e);
             }

@@ -1,0 +1,7 @@
+MAS snapshot {
+
+    infrastructure: Centralised
+
+    agents: bob;
+            supervisor;
+}

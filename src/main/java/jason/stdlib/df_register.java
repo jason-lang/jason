@@ -6,6 +6,7 @@ import jason.asSemantics.TransitionSystem;
 import jason.asSemantics.Unifier;
 import jason.asSyntax.StringTerm;
 import jason.asSyntax.Term;
+import jason.runtime.RuntimeServicesFactory;
 
 /**
   <p>Internal action: <b><code>.df_register(S [,T])</code></b>.
@@ -73,7 +74,7 @@ public class df_register extends DefaultInternalAction {
     public Object execute(final TransitionSystem ts, Unifier un, Term[] args) throws Exception {
         checkArguments(args);
 
-        ts.getUserAgArch().getRuntimeServices().dfRegister(ts.getUserAgArch().getAgName(), getService(args), getType(args));
+        RuntimeServicesFactory.get().dfRegister(ts.getAgArch().getAgName(), getService(args), getType(args));
         return true;
     }
 

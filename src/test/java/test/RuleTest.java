@@ -19,6 +19,7 @@ import jason.asSyntax.Structure;
 import jason.asSyntax.Term;
 import jason.asSyntax.VarTerm;
 import jason.asSyntax.parser.ParseException;
+import jason.asSyntax.parser.TokenMgrError;
 import junit.framework.TestCase;
 
 /** JUnit test case for syntax package */
@@ -216,10 +217,18 @@ public class RuleTest extends TestCase {
         }
         */
     }
+    
+    public void testOr() throws RevisionFailedException, ParseException, TokenMgrError {
+        Agent ag = new Agent();
+        ag.initAg();
+        //first rule: rule1(X):-teste(X)&not(prop(X))&X
+        ag.addBel(createRule(parseLiteral("var(X)"), parseFormula("X = 4 | X = 5")));
+        Iterator<Unifier> iu = parseLiteral("var(Y)").logicalConsequence(ag, new Unifier());
+        assertEquals(2, iteratorSize(iu));
+    }
 
 
-    @SuppressWarnings("unchecked")
-    private int iteratorSize(Iterator i) {
+    private int iteratorSize(@SuppressWarnings("rawtypes") Iterator i) {
         int c = 0;
         while (i.hasNext()) {
             i.next();

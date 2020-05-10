@@ -1,6 +1,7 @@
 package jason.mas2j;
 
 import java.io.File;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -19,7 +20,9 @@ import jason.runtime.Settings;
  *
  * @author jomi
  */
-public class AgentParameters {
+public class AgentParameters implements Serializable {
+    private static final long serialVersionUID = -5418598943239425602L;
+    
     public String                name      = null;
     public File                  asSource  = null;
     public ClassParameters       agClass   = null;
@@ -46,7 +49,8 @@ public class AgentParameters {
     }
     protected void copyTo(AgentParameters newap) {
         newap.name = this.name;
-        newap.asSource = new File(this.asSource.toString());
+        if (this.asSource != null)
+            newap.asSource = new File(this.asSource.toString());
         newap.agClass = this.agClass.copy();
         newap.bbClass = this.bbClass.copy();
         newap.nbInstances = this.nbInstances;

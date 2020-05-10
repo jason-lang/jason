@@ -20,6 +20,7 @@ import jason.mas2j.AgentParameters;
 import jason.mas2j.ClassParameters;
 import jason.mas2j.MAS2JProject;
 import jason.runtime.RuntimeServices;
+import jason.runtime.RuntimeServicesFactory;
 
 public class StartNewAgentGUI extends BaseDialogGUI {
 
@@ -31,6 +32,7 @@ public class StartNewAgentGUI extends BaseDialogGUI {
     protected JTextField agClass;
     protected JTextField nbAgs;
     protected JTextField agHost;
+    @SuppressWarnings("rawtypes")
     protected JComboBox  verbose;
     String               openDir;
 
@@ -39,6 +41,7 @@ public class StartNewAgentGUI extends BaseDialogGUI {
         this.openDir = openDir;
     }
 
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     protected void initComponents() {
         getContentPane().setLayout(new BorderLayout());
 
@@ -110,7 +113,7 @@ public class StartNewAgentGUI extends BaseDialogGUI {
             public void run() {
                 boolean debug = BaseCentralisedMAS.getRunner().isDebug();
                 boolean fs = BaseCentralisedMAS.getRunner().getControllerInfraTier() != null;
-                RuntimeServices services = BaseCentralisedMAS.getRunner().getRuntimeServices();
+                RuntimeServices services = RuntimeServicesFactory.get(); 
                 try {
                     String agClass = null;
                     if (ap.agClass != null) {

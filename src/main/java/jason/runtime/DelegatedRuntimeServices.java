@@ -1,6 +1,8 @@
 package jason.runtime;
 
 import java.util.Collection;
+import java.util.Map;
+import java.util.Set;
 
 import jason.JasonException;
 import jason.architecture.AgArch;
@@ -50,8 +52,8 @@ public class DelegatedRuntimeServices implements RuntimeServices {
         return delegate.killAgent(agName, byAg, deadline);
     }
 
-    public void stopMAS(int deadline) throws Exception {
-        delegate.stopMAS(deadline);
+    public void stopMAS(int deadline, boolean stopJVM) throws Exception {
+        delegate.stopMAS(deadline, stopJVM);
     }
 
     @Override
@@ -74,5 +76,9 @@ public class DelegatedRuntimeServices implements RuntimeServices {
         delegate.dfSubscribe(agName, service, type);
     }
 
+    @Override
+    public Map<String, Set<String>> getDF() {
+        return delegate.getDF();
+    }
 }
 

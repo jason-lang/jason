@@ -41,6 +41,7 @@ import jason.asSyntax.parser.as2j;
  @see LiteralImpl
 
  */
+@SuppressWarnings("serial")
 public abstract class Literal extends DefaultTerm implements LogicalFormula {
 
     private static final long serialVersionUID = 1L;
@@ -332,8 +333,9 @@ public abstract class Literal extends DefaultTerm implements LogicalFormula {
     }
 
     public Literal noSource() {
-    	delSources();
-    	return this;
+    	Literal l = this.copy();
+    	l.delSources();
+    	return l;
     }
 
     // literal
@@ -378,7 +380,7 @@ public abstract class Literal extends DefaultTerm implements LogicalFormula {
             return LogExpr.EMPTY_UNIF_LIST.iterator();
         }
 
-        final AgArch            arch     = (ag != null && ag.getTS() != null ? ag.getTS().getUserAgArch() : null);
+        final AgArch            arch     = (ag != null && ag.getTS() != null ? ag.getTS().getAgArch() : null);
         final int               nbAnnots = (hasAnnot() && getAnnots().getTail() == null ? getAnnots().size() : 0); // if annots contains a tail (as in p[A|R]), do not backtrack on annots
 
         return new Iterator<Unifier>() {
@@ -629,7 +631,7 @@ public abstract class Literal extends DefaultTerm implements LogicalFormula {
     }
 
 
-    static final class TrueLiteral extends Atom {
+	static final class TrueLiteral extends Atom {
         public TrueLiteral() {
             super("true");
         }

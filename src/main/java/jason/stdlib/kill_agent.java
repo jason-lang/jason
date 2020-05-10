@@ -4,6 +4,7 @@ import jason.asSemantics.DefaultInternalAction;
 import jason.asSemantics.TransitionSystem;
 import jason.asSemantics.Unifier;
 import jason.asSyntax.Term;
+import jason.runtime.RuntimeServicesFactory;
 import jason.asSyntax.NumberTerm;
 import jason.asSyntax.StringTerm;
 
@@ -77,6 +78,6 @@ public class kill_agent extends DefaultInternalAction {
         int deadline = 0;
         if (args.length == 2)
         	deadline = (int)((NumberTerm)args[1]).solve();
-        return ts.getUserAgArch().getRuntimeServices().killAgent(name, ts.getUserAgArch().getAgName(), deadline);
+        return RuntimeServicesFactory.get().killAgent(name, ts.getAgArch().getAgName(), deadline);
     }
 }

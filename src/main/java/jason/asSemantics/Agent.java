@@ -6,6 +6,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
+import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -30,6 +32,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+
 import jason.JasonException;
 import jason.RevisionFailedException;
 import jason.architecture.AgArch;
@@ -66,8 +69,10 @@ import jason.util.Config;
  * AgentSpeak agent. It also implements the default selection
  * functions of the AgentSpeak semantics.
  */
-public class Agent {
+public class Agent implements Serializable {
 
+    private static final long serialVersionUID = -2628324957954474455L;
+    
     // Members
     protected BeliefBase       bb = null;
     protected PlanLibrary      pl = null;
@@ -88,7 +93,7 @@ public class Agent {
     //private QueryCacheSimple qCache = null;
     //private QueryProfiling   qProfiling = null;
 
-    protected Logger logger = Logger.getLogger(Agent.class.getName());
+    protected transient Logger logger = Logger.getLogger(Agent.class.getName());
 
     public Agent() {
         checkCustomSelectOption();
@@ -103,7 +108,7 @@ public class Agent {
      */
     public static Agent create(AgArch arch, String agClass, ClassParameters bbPars, String asSrc, Settings stts) throws JasonException {
         try {
-            Agent ag = (Agent) Class.forName(agClass).newInstance();
+            Agent ag = (Agent) Class.forName(agClass).getConstructor().newInstance();
 
             new TransitionSystem(ag, null, stts, arch);
 
@@ -111,7 +116,7 @@ public class Agent {
             if (bbPars == null)
                 bb = new DefaultBeliefBase();
             else
-                bb = (BeliefBase) Class.forName(bbPars.getClassName()).newInstance();
+                bb = (BeliefBase) Class.forName(bbPars.getClassName()).getConstructor().newInstance();
 
             ag.setBB(bb);     // the agent's BB have to be already set for the BB initialisation
             ag.initAg();
@@ -298,11 +303,11 @@ public class Agent {
     public Agent clone(AgArch arch) {
         Agent a = null;
         try {
-            a = this.getClass().newInstance();
+            a = this.getClass().getConstructor().newInstance();
         } catch (InstantiationException e1) {
             logger.severe(" cannot create derived class" +e1);
             return null;
-        } catch (IllegalAccessException e2) {
+        } catch (Exception e2) {
             logger.severe(" cannot create derived class" +e2);
             return null;
         }
@@ -378,7 +383,7 @@ public class Agent {
         if (scheduler == null) {
             int n;
             try {
-                n = new Integer( Config.get().get(Config.NB_TH_SCH).toString() );
+                n = Integer.valueOf( Config.get().get(Config.NB_TH_SCH).toString() );
             } catch (Exception e) {
                 n = 2;
             }
@@ -446,7 +451,7 @@ public class Agent {
     }
 
     @SuppressWarnings("unchecked")
-    public InternalAction getIA(String iaName) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+    public InternalAction getIA(String iaName) throws ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
         if (iaName.charAt(0) == '.')
             iaName = "jason.stdlib" + iaName;
         InternalAction objIA = internalActions.get(iaName);
@@ -458,7 +463,7 @@ public class Agent {
                 Method create = iaclass.getMethod("create", (Class[])null);
                 objIA = (InternalAction)create.invoke(null, (Object[])null);
             } catch (Exception e) {
-                objIA = (InternalAction)iaclass.newInstance();
+                objIA = (InternalAction)iaclass.getConstructor().newInstance();
             }
             internalActions.put(iaName, objIA);
         }
@@ -482,7 +487,7 @@ public class Agent {
     /** register an arithmetic function implemented in Java */
     private void addFunction(Class<? extends ArithFunction> c, boolean user) {
         try {
-            ArithFunction af = c.newInstance();
+            ArithFunction af = c.getConstructor().newInstance();
             String error = null;
             if (user)
                 error = FunctionRegister.checkFunctionName(af.getName());
@@ -705,7 +710,7 @@ public class Agent {
     /** TS Initialisation (called by the AgArch) */
     public void setTS(TransitionSystem ts) {
         this.ts = ts;
-        setLogger(ts.getUserAgArch());
+        setLogger(ts.getAgArch());
         if (ts.getSettings().verbose() >= 0)
             logger.setLevel(ts.getSettings().logLevel());
     }
@@ -1099,8 +1104,8 @@ public class Agent {
     /** Gets the agent "mind" as XML */
     public Element getAsDOM(Document document) {
         Element ag = (Element) document.createElement("agent");
-        ag.setAttribute("name", ts.getUserAgArch().getAgName());
-        ag.setAttribute("cycle", ""+ts.getUserAgArch().getCycleNumber());
+        ag.setAttribute("name", ts.getAgArch().getAgName());
+        ag.setAttribute("cycle", ""+ts.getAgArch().getCycleNumber());
 
         Node importedNodeBB = document.importNode(bb.getAsDOM(document), true);
         ag.appendChild(importedNodeBB);

@@ -18,6 +18,10 @@ public class TestLoop {
         ag.parseAScode(
             "b(1). "+
             "p(1,a). p(2,a). p(3,b). p(4,b). p(6,a).\n "+
+                    
+            "nat(z).\n" + 
+            "nat(s(X)) :- nat(X).\n" +
+            
             "+!test1 <- \n" +
             "    while( .count(b(_),N) & N < 4) {" +
             "        +b(N+1);" +
@@ -41,8 +45,16 @@ public class TestLoop {
             "           for( .member(I, [a,b,c]) ) { " +
             "                jason.asunit.print(I);" +
             "           } " +
-            "           jason.asunit.print(end). "
+            "           jason.asunit.print(end). "+
+            
+            "+!lazy <- for(nat(X)) {jason.asunit.print(X)}. \n"  
         );
+    }
+
+    @Test(timeout=2000)
+    public void testLazy() {
+        ag.addGoal("lazy");
+        ag.assertPrint("s(s(s(s(s(s(s(s(s(z)))))))))", 60);
     }
 
     @Test(timeout=2000)

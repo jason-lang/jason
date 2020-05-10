@@ -2,6 +2,8 @@ package jason.infra.centralised;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Map;
+import java.util.Set;
 
 import jason.runtime.RuntimeServices;
 /** implement services that are based on BaseCentralisedMAS */
@@ -38,11 +40,11 @@ public abstract class BaseRuntimeServices implements RuntimeServices {
     }
 
     public int getAgentsQty() {
-        return masRunner.getAgs().keySet().size();
+        return getAgentsNames().size();
     }
 
-    public void stopMAS(int deadline) throws Exception {
-        masRunner.finish(deadline);
+    public void stopMAS(int deadline, boolean stopJVM) throws Exception {
+        masRunner.finish(deadline, stopJVM);
     }
 
     @Override
@@ -65,5 +67,9 @@ public abstract class BaseRuntimeServices implements RuntimeServices {
         masRunner.dfSubscribe(agName, service);
     }
 
+    @Override
+    public Map<String, Set<String>> getDF() {
+        return masRunner.getDF();
+    }
 }
 

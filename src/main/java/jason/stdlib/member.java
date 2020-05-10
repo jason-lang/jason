@@ -1,14 +1,15 @@
 package jason.stdlib;
 
+import java.util.Iterator;
+
 import jason.JasonException;
 import jason.asSemantics.DefaultInternalAction;
 import jason.asSemantics.InternalAction;
 import jason.asSemantics.TransitionSystem;
 import jason.asSemantics.Unifier;
 import jason.asSyntax.ListTerm;
+import jason.asSyntax.SetTerm;
 import jason.asSyntax.Term;
-
-import java.util.Iterator;
 
 /**
 
@@ -95,8 +96,8 @@ public class member extends DefaultInternalAction {
 
     @Override protected void checkArguments(Term[] args) throws JasonException {
         super.checkArguments(args); // check number of arguments
-        if (!args[1].isList())
-            throw JasonException.createWrongArgument(this,"second argument must be a list");
+        if (!args[1].isList() && !args[1].isSet())
+            throw JasonException.createWrongArgument(this,"second argument must be a list or a set");
     }
 
 
@@ -106,7 +107,16 @@ public class member extends DefaultInternalAction {
         checkArguments(args);
 
         final Term member = args[0];
-        final Iterator<Term> i = ((ListTerm)args[1]).iterator();
+        final Iterator<Term> i;
+        if (args[1].isList())
+            i = ((ListTerm)args[1]).iterator();
+        else  {
+            if (args[0].isVar()) {
+                i = ((SetTerm)args[1]).iterator();
+            } else {
+                return ((SetTerm)args[1]).contains(args[0]); // fast track for sets
+            }
+        }
 
         return new Iterator<Unifier>() {
             Unifier c = null; // the current response (which is an unifier)

@@ -14,12 +14,13 @@
 
 +!show_book(X)
   :  Id = (X mod 3)+1 &
-     book(Id, Title, PubId, Year, ISBN) & publisher(PubId, Publisher)
+     book(Id, Title, Publisher, Year, ISBN)
      // book and publisher are tables in a DB
   <- .print(Title, ". ", Publisher, ", ",Year, ". ",ISBN);
      .findall(Author, book_author(Id,Author), LA);
      .print("Authors: ");
      !show_authors(LA).
++!show_book(_).
 
 +!show_authors([]).
 +!show_authors([A|T])
@@ -32,4 +33,3 @@
 // Rules used to show all books
 show_all_titles :- book(_, Title, _, _Year, _ISBN) & .println("-- ", Title) & false.
 show_all_titles :- true.
-

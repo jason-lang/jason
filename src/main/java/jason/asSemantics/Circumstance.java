@@ -1,5 +1,7 @@
 package jason.asSemantics;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -47,9 +49,10 @@ public class Circumstance implements Serializable {
 
     private TransitionSystem ts = null;
 
-    public Object syncApPlanSense = new Object();
+    public transient Object syncApPlanSense = new Object();
 
     public Circumstance() {
+        syncApPlanSense = new Object();
         create();
         reset();
     }
@@ -64,6 +67,11 @@ public class Circumstance implements Serializable {
         intentionsWithGoalCondition = 0;
     }
 
+
+    private void readObject(ObjectInputStream inputStream) throws IOException, ClassNotFoundException {
+        inputStream.defaultReadObject();
+        syncApPlanSense = new Object();
+    }
 
     public void setTS(TransitionSystem ts) {
         this.ts = ts;
@@ -898,7 +906,7 @@ public class Circumstance implements Serializable {
         }
         if (ts != null) {
             try {
-                for (Message m: ((CentralisedAgArch)ts.getUserAgArch()).getMBox()) {
+                for (Message m: ((CentralisedAgArch)ts.getAgArch()).getMBox()) {
                     add = true;
                     e = (Element) document.createElement("message");
                     e.appendChild(document.createTextNode(m.toString() + " in arch inbox."));

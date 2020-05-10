@@ -27,6 +27,8 @@ import jason.asSyntax.ObjectTermImpl;
 import jason.asSyntax.Plan;
 import jason.asSyntax.Pred;
 import jason.asSyntax.PredicateIndicator;
+import jason.asSyntax.SetTerm;
+import jason.asSyntax.SetTermImpl;
 import jason.asSyntax.StringTermImpl;
 import jason.asSyntax.Structure;
 import jason.asSyntax.Term;
@@ -36,6 +38,7 @@ import jason.asSyntax.Trigger.TEType;
 import jason.asSyntax.UnnamedVar;
 import jason.asSyntax.VarTerm;
 import jason.asSyntax.parser.ParseException;
+import jason.asSyntax.parser.TokenMgrError;
 import jason.bb.BeliefBase;
 import jason.bb.DefaultBeliefBase;
 import junit.framework.TestCase;
@@ -1159,5 +1162,23 @@ public class TermTest extends TestCase {
         assertTrue(u.unifies(t2, v2));
         assertTrue(new Unifier().unifies(t1, t2));
         assertTrue(u.unifies(v1, v2));
+    }
+    
+    public void testSetTerm() throws ParseException, TokenMgrError {
+        SetTerm t1 = new SetTermImpl();
+        t1.addAll( ASSyntax.parseList("[a,5,p(3),a]"));
+        assertEquals(3, t1.size());
+        
+        SetTerm t2 = new SetTermImpl();
+        t2.addAll( ASSyntax.parseList("[p(3),a,5]"));
+        
+        assertTrue(t1.equals(t2));
+        
+        Unifier u = new Unifier();
+        assertTrue(u.unifies(t1, t2));
+
+        t1.add(new Atom("r"));
+        assertFalse(u.unifies(t1, t2));
+
     }
 }

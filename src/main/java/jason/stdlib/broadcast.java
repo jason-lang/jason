@@ -82,8 +82,8 @@ public class broadcast extends DefaultInternalAction {
         Term ilf = args[0];
         Term pcnt = args[1];
 
-        Message m = new Message(ilf.toString(), ts.getUserAgArch().getAgName(), null, pcnt);
-        ts.getUserAgArch().broadcast(m);
+        Message m = new Message(ilf.toString(), ts.getAgArch().getAgName(), null, pcnt);
+        ts.getAgArch().broadcast(m);
         return true;
     }
 

@@ -1,5 +1,10 @@
 package jason.asSyntax.directives;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import jason.asSyntax.Pred;
 import jason.asSyntax.patterns.goal.BC;
 import jason.asSyntax.patterns.goal.BDG;
@@ -10,11 +15,6 @@ import jason.asSyntax.patterns.goal.OMC;
 import jason.asSyntax.patterns.goal.RC;
 import jason.asSyntax.patterns.goal.SGA;
 import jason.asSyntax.patterns.goal.SMC;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * This class maintains the set of directives and is used by the
@@ -38,6 +38,7 @@ public class DirectiveProcessor {
         directives.put(id,d);
     }
 
+    @SuppressWarnings("unchecked")
     public static Directive getDirective(String id) {
         Directive d = singletons.get(id);
         if (d != null)
@@ -51,7 +52,7 @@ public class DirectiveProcessor {
         }
 
         try {
-            d = (Directive)c.newInstance();
+            d = (Directive)c.getConstructor().newInstance();
             if (d.isSingleton())
                 singletons.put(id, d);
             return d;
@@ -86,6 +87,7 @@ public class DirectiveProcessor {
         return getInstance(directive.getFunctor());
     }
 
+    @SuppressWarnings("unchecked")
     public Directive getInstance(String id) {
         Directive d = instances.get(id);
         if (d != null)
@@ -103,7 +105,7 @@ public class DirectiveProcessor {
         }
 
         try {
-            d = (Directive)c.newInstance();
+            d = (Directive)c.getConstructor().newInstance();
             if (d.isSingleton())
                 singletons.put(id, d);
             else

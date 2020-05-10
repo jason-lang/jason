@@ -12,7 +12,9 @@ import javax.swing.ListSelectionModel;
 import javax.swing.border.TitledBorder;
 
 import jason.runtime.RuntimeServices;
+import jason.runtime.RuntimeServicesFactory;
 
+@SuppressWarnings("rawtypes")
 public class KillAgentGUI extends BaseDialogGUI {
 
     private static final long serialVersionUID = 1L;
@@ -24,8 +26,9 @@ public class KillAgentGUI extends BaseDialogGUI {
         super(f, title);
     }
 
+    @SuppressWarnings("unchecked")
     protected void initComponents() {
-        services = BaseCentralisedMAS.getRunner().getRuntimeServices();
+        services = RuntimeServicesFactory.get();
         getContentPane().setLayout(new BorderLayout());
 
         // Fields
@@ -44,6 +47,7 @@ public class KillAgentGUI extends BaseDialogGUI {
 
     protected boolean ok() {
         new Thread() {
+            @SuppressWarnings("deprecation")
             public void run() {
                 Object[] sls = lAgs.getSelectedValues();
                 for (int i = 0; i < sls.length; i++) {

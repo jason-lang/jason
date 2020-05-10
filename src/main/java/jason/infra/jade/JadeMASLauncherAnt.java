@@ -113,7 +113,7 @@ public class JadeMASLauncherAnt extends CentralisedMASLauncherAnt implements MAS
         int pos = mainHost.indexOf(":");
         if (pos > 0) {
             try {
-                mainHostPort = new Integer(mainHost.substring(pos+1));
+                mainHostPort = Integer.valueOf(mainHost.substring(pos+1));
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -132,7 +132,7 @@ public class JadeMASLauncherAnt extends CentralisedMASLauncherAnt implements MAS
                 //URLClassLoader loader = new URLClassLoader(new URL[] {
                 //        new File(".").toURI().toURL(),
                 //        new File("./bin/classes").toURI().toURL() });
-                allocator = (ContainerAllocation)Class.forName(className).newInstance();
+                allocator = (ContainerAllocation)Class.forName(className).getConstructor().newInstance();
                 allocator.init(new String[] { ((StringTerm)literalArgs.getTerm(1)).getString() }, project);
             } catch (Exception e) {
                 e.printStackTrace();

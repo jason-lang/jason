@@ -28,7 +28,7 @@ public class TextPersistentBB extends ChainBBAdapter {
     public void init(Agent ag, String[] args) {
         if (ag != null) {
             try {
-                file = new File(ag.getTS().getUserAgArch().getAgName() + ".bb");
+                file = new File(ag.getTS().getAgArch().getAgName() + ".bb");
                 logger.fine("reading from file " + file);
                 if (file.exists()) {
                     ag.parseAS(file.getAbsoluteFile());

@@ -7,6 +7,7 @@ import java.awt.FlowLayout;
 import java.awt.Toolkit;
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -45,6 +46,8 @@ import jason.util.asl2xml;
  */
 public class MindInspectorAgArch extends AgArch {
 
+    private static final long serialVersionUID = 1L;
+    
     // variables for mind inspector
     protected boolean hasMindInspectorByCycle = false;
     protected int     updateInterval = 0;
@@ -78,9 +81,11 @@ public class MindInspectorAgArch extends AgArch {
      */
     @Override
     public void stop() {
-        if (mindInspectorFrame != null)
+        if (mindInspectorFrame != null) {
             mindInspectorFrame.dispose();
-        super.stop();
+            mindInspectorFrame = null;
+        }
+        //super.stop();
     }
 
     @Override
@@ -99,7 +104,7 @@ public class MindInspectorAgArch extends AgArch {
      *    General syntax of the parameter:
      *    [gui|file|web] ( [ cycle|number ] , [xml,html] [, history | directory] )
      */
-    protected void setupMindInspector(String configuration) {
+    public void setupMindInspector(String configuration) {
         Structure sConf = null;
         try {
             sConf = ASSyntax.parseStructure(configuration);
@@ -317,7 +322,7 @@ public class MindInspectorAgArch extends AgArch {
         }
     }
 
-    private String previousShownText = "";
+    private transient String previousShownText = "";
     /** show current agent state */
     void showAgState(Document state) { // in GUI
         if (state != null) {
@@ -333,6 +338,11 @@ public class MindInspectorAgArch extends AgArch {
                 e.printStackTrace();
             }
         }
+    }
+
+    private void readObject(java.io.ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+        previousShownText = "";
     }
 
     String getAgStateAsString(Document ag, boolean full) { // full means with show all
