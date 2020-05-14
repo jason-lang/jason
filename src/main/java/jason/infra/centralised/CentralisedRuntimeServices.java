@@ -25,12 +25,19 @@ public class CentralisedRuntimeServices extends BaseRuntimeServices {
         super(masRunner);
     }
 
+    @Override public boolean isRunning() {
+        return masRunner.isRunning();
+    }
+    
     protected CentralisedAgArch newAgInstance() {
         return new CentralisedAgArch();
     }
 
     @Override
     public String createAgent(String agName, String agSource, String agClass, Collection<String> archClasses, ClassParameters bbPars, Settings stts, Agent father) throws Exception {
+        if (!isRunning())
+            return "system.not.running";
+        
         if (logger.isLoggable(Level.FINE))
             logger.fine("Creating centralised agent " + agName + " from source " + agSource + " (agClass=" + agClass + ", archClass=" + archClasses + ", settings=" + stts);
 

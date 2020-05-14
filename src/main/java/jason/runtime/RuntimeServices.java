@@ -70,6 +70,8 @@ public interface RuntimeServices {
 
     /** Gets the number of agents in the MAS. */
     public int getAgentsQty();
+    
+    public boolean isRunning();
 
     /** Stops all MAS (the agents, the environment, the controller, ...) */
     public void stopMAS(int deadline, boolean stopJVM) throws Exception;

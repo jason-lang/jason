@@ -16,13 +16,13 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
-import javax.management.MBeanServer;
 import javax.management.ObjectName;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -62,7 +62,8 @@ import jason.util.Config;
  */
 public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentralisedMASMBean {
 
-    private JButton                   btDebug;
+    private JButton  btDebug;
+    protected boolean  isRunning = false;
 
     public RunCentralisedMAS() {
         super();
@@ -91,8 +92,7 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
 
     protected void registerMBean() {
         try {
-            MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
-            mbs.registerMBean(this, new ObjectName("jason.sf.net:type=runner"));
+            ManagementFactory.getPlatformMBeanServer().registerMBean(this, new ObjectName("jason.sf.net:type=runner"));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -214,8 +214,13 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
     protected void start() {
         startAgs();
         startSyncMode();
+        isRunning = true;
     }
 
+    public boolean isRunning() {
+        return isRunning;
+    }
+    
     public synchronized void setupLogger() {
         if (readFromJAR) {
             try {
@@ -812,15 +817,14 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
         }
     }
 
-    protected Boolean runningFinish = false;
+    protected AtomicBoolean isRunningFinish = new AtomicBoolean(false);
 
     public void finish(int deadline, boolean stopJVM) {
         // avoid two threads running finish!
-        synchronized (runningFinish) {
-            if (runningFinish)
-                return;
-            runningFinish = true;
-        }
+        if (isRunningFinish.getAndSet(true))
+            return;
+
+        isRunning = false;
         try {
             // creates a thread that guarantees system.exit(0) in deadline seconds
             // (the stop of agents can block, for instance)
@@ -871,13 +875,19 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
 
                     stopAgs();
 
-                    runner = null;
-
                     // remove the .stop___MAS file  (note that GUI console.close(), above, creates this file)
                     File stop = new File(stopMASFileName);
                     if (stop.exists()) {
                         stop.delete();
                     }
+                    
+                    try {
+                        ManagementFactory.getPlatformMBeanServer().unregisterMBean(new ObjectName("jason.sf.net:type=runner"));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                    runner = null;
 
                     if (stopJVM)
                         System.exit(0);

@@ -117,6 +117,7 @@ public abstract class BaseCentralisedMAS extends NotificationBroadcasterSupport 
 
     public abstract void enableDebugControl();
 
+    public abstract boolean isRunning();
 
     /** DF methods **/
 
