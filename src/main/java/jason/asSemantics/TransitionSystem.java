@@ -1673,7 +1673,10 @@ public class TransitionSystem implements Serializable {
         agArch = arch;
     }
     public AgArch getAgArch() {
-        return agArch.getFirstAgArch();
+        if (agArch == null)
+            return null;
+        else
+            return agArch.getFirstAgArch();
     }
     
     /**
