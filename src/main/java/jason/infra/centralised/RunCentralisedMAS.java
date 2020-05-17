@@ -750,7 +750,19 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
         }
     }
 
-    protected void stopAgs() {
+    protected void stopAgs(int deadline) {
+        // if deadline is not 0, give agents some time
+        if (deadline != 0) {
+            for (AgArch ag: ags.values()) {
+                Trigger te = PlanLibrary.TE_JAG_SHUTTING_DOWN.clone();
+                te.getLiteral().addTerm(new NumberTermImpl(deadline));
+                ag.getTS().getC().addExternalEv(te);
+            }
+            try {
+                Thread.sleep(deadline);
+            } catch (InterruptedException e) {}
+        }
+
         // stop the agents
         for (CentralisedAgArch ag : new ArrayList<>(ags.values())) {
             ag.stopAg();
@@ -847,24 +859,14 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
             // use a thread to not block the caller
             new Thread() {
                 public void run() {
-                    // if deadline is not 0, give agents some time
-                    if (deadline != 0) {
-                        for (AgArch ag: ags.values()) {
-                            Trigger te = PlanLibrary.TE_JAG_SHUTTING_DOWN.clone();
-                            te.getLiteral().addTerm(new NumberTermImpl(deadline));
-                            ag.getTS().getC().addExternalEv(te);
-                        }
-                        try {
-                            Thread.sleep(deadline);
-                        } catch (InterruptedException e) {}
-                    }
-
                     System.out.flush();
                     System.err.flush();
 
                     if (MASConsoleGUI.hasConsole()) { // should close first! (case where console is in pause)
                         MASConsoleGUI.get().close();
                     }
+
+                    stopAgs(deadline);
 
                     if (control != null) {
                         control.stop();
@@ -874,8 +876,6 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
                         env.stop();
                         env = null;
                     }
-
-                    stopAgs();
 
                     // remove the .stop___MAS file  (note that GUI console.close(), above, creates this file)
                     File stop = new File(stopMASFileName);
@@ -889,10 +889,12 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
                         e.printStackTrace();
                     }
 
-                    runner = null;
+                    //runner = null;
 
-                    if (stopJVM)
+                    if (stopJVM) {
                         System.exit(0);
+                    }
+                    isRunningFinish.set(false);
                 };
             }.start();
 
