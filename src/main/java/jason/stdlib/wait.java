@@ -1,5 +1,8 @@
 package jason.stdlib;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
@@ -154,12 +157,14 @@ public class wait extends DefaultInternalAction {
         private boolean          dropped = false;
         private Term             elapsedTimeTerm;
         private long             startTime;
+        private long             timeout;
 
         WaitEvent(Trigger te, LogicalFormula f, Unifier un, TransitionSystem ts, long timeout, Term elapsedTimeTerm) {
             this.te = te;
             this.formula = f;
             this.un = un;
             this.ts = ts;
+            this.timeout = timeout;
             c  = ts.getC();
             si = c.getSelectedIntention();
             this.elapsedTimeTerm = elapsedTimeTerm;
@@ -180,21 +185,35 @@ public class wait extends DefaultInternalAction {
             startTime = System.currentTimeMillis();
 
             if (timeout >= 0) {
-                Agent.getScheduler().schedule(new Runnable() {
-                    public void run() {
-                        resume(true);
-                    }
+                Agent.getScheduler().schedule(() -> {
+                    resume(true);
                 }, timeout, TimeUnit.MILLISECONDS);
             }
         }
+        
+        private void writeObject(ObjectOutputStream outputStream) throws IOException, ClassNotFoundException {
+            timeout = timeout - (System.currentTimeMillis() - startTime);
+            //System.out.println("new timeout = "+timeout);
+            outputStream.defaultWriteObject();          
+        }
+        private void readObject(ObjectInputStream inputStream) throws IOException, ClassNotFoundException {
+            inputStream.defaultReadObject();
+            
+            // add timeout again
+            if (timeout >= 0) {
+                Agent.getScheduler().schedule(() -> {
+                    resume(true);
+                }, timeout, TimeUnit.MILLISECONDS);
+            }
+        }   
+
 
         void resume(final boolean stopByTimeout) {
             // unregister (to not receive intentionAdded again)
             c.removeEventListener(this);
 
             // invoke changes in C latter, so to avoid concurrent changes in C
-            ts.runAtBeginOfNextCycle(new Runnable() {
-                public void run() {
+            ts.runAtBeginOfNextCycle((Runnable & Serializable) () -> {
                     try {
                         // add SI again in C.I if (1) it was not removed (2) is is not running (by some other reason) -- but this test does not apply to atomic intentions --, and (3) this wait was not dropped
                         if (c.removePendingIntention(sEvt) == si && (si.isAtomic() || !c.hasRunningIntention(si)) && !dropped) {
@@ -224,7 +243,6 @@ public class wait extends DefaultInternalAction {
                     } catch (Exception e) {
                         ts.getLogger().log(Level.SEVERE, "Error at .wait thread", e);
                     }
-                }
             });
             ts.getAgArch().wakeUpDeliberate();
         }
