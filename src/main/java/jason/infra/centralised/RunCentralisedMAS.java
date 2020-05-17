@@ -11,6 +11,7 @@ import java.io.InputStream;
 import java.lang.management.ManagementFactory;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -751,8 +752,9 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
 
     protected void stopAgs() {
         // stop the agents
-        for (CentralisedAgArch ag : ags.values()) {
+        for (CentralisedAgArch ag : new ArrayList<>(ags.values())) {
             ag.stopAg();
+            delAg(ag.getAgName());
         }
     }
 
