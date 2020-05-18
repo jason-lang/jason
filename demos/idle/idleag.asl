@@ -7,4 +7,4 @@
 +jag_awaking  <- .println("i am back").
 
 //^!jag_sleeping[state(S)] <- .print("sleep goal state is ",S).
-+jag_shutting_down(_) <- .println("I'm gonna die").
++jag_shutting_down(T) <- .println("I'm gonna die in ",T," ms.").
