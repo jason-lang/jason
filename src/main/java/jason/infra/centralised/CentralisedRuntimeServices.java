@@ -110,7 +110,7 @@ public class CentralisedRuntimeServices extends BaseRuntimeServices {
         agArch.createArchs(archClasses, source);
 
         startAgent(agName);
-        return agArch.getUserAgArch();
+        return agArch.getFirstAgArch();
     }
 
     @Override

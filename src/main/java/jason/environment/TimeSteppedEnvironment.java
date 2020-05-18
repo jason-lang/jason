@@ -273,6 +273,8 @@ public class TimeSteppedEnvironment extends Environment {
                 if (nbAgs > 0 && testEndCycle(requests.keySet())) {
                     startNewStep();
                 }
+                
+                getEnvironmentInfraTier().informAgsEnvironmentChanged();
 
                 stepStarted(step);
             } catch (Exception ie) {

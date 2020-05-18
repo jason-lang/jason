@@ -3,8 +3,6 @@ package jason.environment;
 import jason.asSyntax.Structure;
 import jason.runtime.RuntimeServices;
 
-import java.util.Collection;
-
 /**
  * This interface is implemented by the infrastructure tier (Saci/Centralised/...) to provide concrete implementation of the environment.
  */
@@ -24,7 +22,7 @@ public interface EnvironmentInfraTier {
      *
      * @deprecated use the informAgsEnvironmentChanged with String... parameter
      */
-    public void informAgsEnvironmentChanged(Collection<String> agents);
+    //public void informAgsEnvironmentChanged(Collection<String> agents);
 
     /** Gets an object with infrastructure runtime services */
     public RuntimeServices getRuntimeServices();
