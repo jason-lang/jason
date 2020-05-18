@@ -29,24 +29,35 @@ public class SGA extends DefaultDirective implements Directive {
             Trigger trigger = ASSyntax.parseTrigger(((StringTerm)directive.getTerm(0)).getString());
             LogicalFormula context = LogExpr.parseExpr(((StringTerm)directive.getTerm(1)).getString());
             Term goal = directive.getTerm(2);
+            String sourceNewPlans = outerContent.getASLSrc();
 
             Agent newAg = new Agent();
             newAg.initAg();
 
             // add t : not f__l(_) & c <- !f__g(g).
-            newAg.getPL().add(ASSyntax.parsePlan(trigger+" : not f__l(_) & " +context +" <- !f__g("+goal+")."));
+            newAg.getPL()
+                .add(ASSyntax.parsePlan(trigger+" : not f__l(_) & " +context +" <- !f__g("+goal+")."))
+                .setSource(sourceNewPlans);
 
             // add t : f__l(_) & c <- +f__l(g).
-            newAg.getPL().add(ASSyntax.parsePlan(trigger+" : f__l(_) & (" +context +") <- +f__l("+goal+")."));
+            newAg.getPL()
+                .add(ASSyntax.parsePlan(trigger+" : f__l(_) & (" +context +") <- +f__l("+goal+")."))
+                .setSource(sourceNewPlans);
 
             // add +!fg(g) : true <- +fl(g); !g; -fl(g)
-            newAg.getPL().add(ASSyntax.parsePlan("+!f__g("+goal+") <- +f__l("+goal+"); !"+goal+"; -f__l("+goal+")."));
+            newAg.getPL()
+                .add(ASSyntax.parsePlan("+!f__g("+goal+") <- +f__l("+goal+"); !"+goal+"; -f__l("+goal+")."))
+                .setSource(sourceNewPlans);
 
             // add -!fg(g) : true <- -fl(g)
-            newAg.getPL().add(ASSyntax.parsePlan("-!f__g("+goal+") <- -f__l("+goal+")."));
+            newAg.getPL()
+                .add(ASSyntax.parsePlan("-!f__g("+goal+") <- -f__l("+goal+")."))
+                .setSource(sourceNewPlans);
 
             // add -fl(_) : fg(g) <- !fg(g)
-            newAg.getPL().add(ASSyntax.parsePlan("-f__l("+goal+") : f__l("+goal+") <- !f__g("+goal+")."));
+            newAg.getPL()
+                .add(ASSyntax.parsePlan("-f__l("+goal+") : f__l("+goal+") <- !f__g("+goal+")."))
+                .setSource(sourceNewPlans);
 
             return newAg;
         } catch (Exception e) {
