@@ -1330,10 +1330,8 @@ public class TransitionSystem implements Serializable {
             e1.printStackTrace();
         }
 
-        Agent.getScheduler().schedule(new Runnable() {
-            public void run() {
-                runAtBeginOfNextCycle(new Runnable() {
-                    public void run() {
+        Agent.getScheduler().schedule(() -> {
+                runAtBeginOfNextCycle(() -> {
                         boolean drop = false;
                         if (intention == null) { // deadline in !!g, test if the agent still desires it
                             drop = desire.allDesires(C, body, null, new Unifier()).hasNext();
@@ -1342,69 +1340,18 @@ public class TransitionSystem implements Serializable {
                         }
                         if (drop) {
                             try {
-                                FailWithDeadline ia = new FailWithDeadline(intention, evt.getTrigger());
-                                ia.drop(TransitionSystem.this, body, new Unifier());
+                                new fail_goal() {
+                                    protected void addAnnotsToFailEvent(Event failEvent) {
+                                        failEvent.getTrigger().getLiteral().addAnnots(JasonException.createBasicErrorAnnots("deadline_reached", ""));
+                                    }                                   
+                                }.drop(TransitionSystem.this, body, new Unifier());
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
                         }
-                    }
                 });
                 getAgArch().wakeUpSense();
-            }
         }, deadline, TimeUnit.MILLISECONDS);
-    }
-
-    class FailWithDeadline extends fail_goal {
-        private static final long serialVersionUID = 1L;
-        
-        Intention intToDrop;
-        Trigger   te;
-
-        public FailWithDeadline(Intention i, Trigger t) {
-            intToDrop = i;
-            te        = t;
-        }
-
-        /* returns: >0 the intention was changed
-         *           1 = intention must continue running
-         *           2 = fail event was generated and added in C.E
-         *           3 = simply removed without event
-         */
-        @Override
-        public int dropIntention(Intention i, IMCondition c, TransitionSystem ts, Unifier un) throws JasonException {
-            if (i != null) {
-                // only consider dropping if the intention is the one that created the deadline goal
-                if (intToDrop == null) {
-                    if (te != i.getBottom().getTrigger()) { // no intention, then consider the bottom trigger
-                        return 0;
-                    }
-                } else if (!intToDrop.equals(i)) {
-                    return 0;
-                }
-
-                IntendedMeans im = i.dropGoal(c, un);
-                if (im != null) {
-                    // notify listener
-                    if (ts.hasGoalListener())
-                        for (GoalListener gl: ts.getGoalListeners())
-                            gl.goalFailed(im.getTrigger());
-
-                    // generate failure event
-                    Event failEvent = ts.findEventForFailure(i, im.getTrigger()); // find fail event for the goal just dropped
-                    if (failEvent != null) {
-                        failEvent.getTrigger().getLiteral().addAnnots(JasonException.createBasicErrorAnnots("deadline_reached", ""));
-                        ts.getC().addEvent(failEvent);
-                        ts.getLogger().fine("'hard_deadline("+im.getTrigger()+")' is generating a goal deletion event: " + failEvent.getTrigger());
-                        return 2;
-                    } else { // i is finished or without failure plan
-                        ts.getLogger().fine("'hard_deadline("+im.getTrigger()+")' is removing the intention without event:\n" + i);
-                        return 3;
-                    }
-                }
-            }
-            return 0;
-        }
     }
 
     public boolean canSleep() {
