@@ -137,7 +137,6 @@ clean {
     delete fileTree('.')  { include '**/APDescription.txt'  }
     delete fileTree('.')  { include '**/MTPs-Main-Container.txt'  }
 
-    //delete fileTree('.')  { include '**/bookstore.*'  }
     delete fileTree('examples')  { include '**/bin/**'  }
     delete fileTree('examples')  { include '**/*.log'  }
     delete fileTree('demos')  { include '**/bin/**'  }

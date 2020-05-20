@@ -1,0 +1,17 @@
+/*
+    goal_listener
+    ---------------------------
+
+    Jason Project File
+
+    This file defines the initial state of the MAS
+
+    Jason 2.5
+    May 19, 2020 - 21:53:19
+*/
+
+MAS goal_listener {
+
+    agents: karlos agentArchClass MyArch;
+    
+}
