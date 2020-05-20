@@ -4,6 +4,7 @@ import jason.asSemantics.GoalListener;
 import jason.asSemantics.Intention;
 import jason.asSyntax.Trigger;
 
+@SuppressWarnings("serial")
 public class MyArch extends AgArch {
 
 	int nbGoal = 0;

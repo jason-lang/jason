@@ -49,26 +49,27 @@ public class MindInspectorAgArch extends AgArch {
     private static final long serialVersionUID = 1L;
     
     // variables for mind inspector
-    protected boolean hasMindInspectorByCycle = false;
-    protected int     updateInterval = 0;
-    protected static JFrame         mindInspectorFrame = null;
-    protected static JTabbedPane    mindInspectorTab = null;
-    protected        JTextPane      mindInspectorPanel = null;
-    protected        JSlider        mindInspectorHistorySlider = null;
-    protected        JCheckBox      mindInspectorFreeze = null;
-    protected        List<Document> mindInspectorHistory = null;
-    protected        asl2xml        mindInspectorTransformer = null;
+    protected transient boolean hasMindInspectorByCycle = false;
+    protected transient int     updateInterval = 0;
+    
+    protected transient static JFrame         mindInspectorFrame = null;
+    protected transient static JTabbedPane    mindInspectorTab = null;
+    protected transient        JTextPane      mindInspectorPanel = null;
+    protected transient        JSlider        mindInspectorHistorySlider = null;
+    protected transient        JCheckBox      mindInspectorFreeze = null;
+    protected transient        List<Document> mindInspectorHistory = null;
+    protected transient        asl2xml        mindInspectorTransformer = null;
 
-    protected        String         mindInspectorDirectory;
+    protected transient        String         mindInspectorDirectory;
 
     // Which item is to be shown in HTML interface
-    Map<String,Boolean> show = new HashMap<>();
+    protected transient Map<String,Boolean> show = new HashMap<>();
 
     // what is currently shown
-    Document agState = null;
+    protected transient Document agState = null;
 
-    MindInspectorWeb webServer = null;
-    boolean hasHistory = false;
+    protected transient MindInspectorWeb webServer = null;
+    protected transient boolean hasHistory = false;
 
     @Override
     public void init() {
@@ -85,7 +86,6 @@ public class MindInspectorAgArch extends AgArch {
             mindInspectorFrame.dispose();
             mindInspectorFrame = null;
         }
-        //super.stop();
     }
 
     @Override
@@ -343,6 +343,7 @@ public class MindInspectorAgArch extends AgArch {
     private void readObject(java.io.ObjectInputStream in) throws IOException, ClassNotFoundException {
         in.defaultReadObject();
         previousShownText = "";
+        init();
     }
 
     String getAgStateAsString(Document ag, boolean full) { // full means with show all
