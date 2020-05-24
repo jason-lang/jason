@@ -1181,4 +1181,11 @@ public class TermTest extends TestCase {
         assertFalse(u.unifies(t1, t2));
 
     }
+
+    public void testHash() throws ParseException, TokenMgrError {
+        Term t1 = ASSyntax.parseLiteral("~alice(person(female))");
+        Term t2 = ASSyntax.parseLiteral("alice(~person(female))");
+        assertTrue(t1.hashCode() != t2.hashCode());
+    }
+
 }

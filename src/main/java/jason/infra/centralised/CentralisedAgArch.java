@@ -73,8 +73,9 @@ public class CentralisedAgArch extends AgArch implements Runnable, Serializable 
 
     private void readObject(ObjectInputStream inputStream) throws IOException, ClassNotFoundException {
         inputStream.defaultReadObject();
-        sleepSync = new Object();
+        sleepSync   = new Object();
         syncMonitor = new Object();
+        masRunner   = BaseCentralisedMAS.getRunner();
     }   
     
 
