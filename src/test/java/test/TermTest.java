@@ -1182,9 +1182,16 @@ public class TermTest extends TestCase {
 
     }
 
+    /*
+     * bugs reported by Michael at https://github.com/jason-lang/jason/issues/40
+     */
     public void testHash() throws ParseException, TokenMgrError {
         Term t1 = ASSyntax.parseLiteral("~alice(person(female))");
         Term t2 = ASSyntax.parseLiteral("alice(~person(female))");
+        assertTrue(t1.hashCode() != t2.hashCode());
+        
+        t1 = ASSyntax.createLiteral("test", ASSyntax.createString("TermOne"), ASSyntax.createString("TermTwo"));
+        t2 = ASSyntax.createLiteral("test", ASSyntax.createString("TermTwo"), ASSyntax.createString("TermOne"));        
         assertTrue(t1.hashCode() != t2.hashCode());
     }
 

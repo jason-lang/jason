@@ -103,7 +103,7 @@ public class Structure extends Atom {
         int result = super.calcHashCode();
         final int ts = getArity();
         for (int i=0; i<ts; i++)
-            result += 7 * getTerm(i).hashCode();
+            result += (i+7) * getTerm(i).hashCode();
         return result;
     }
 
