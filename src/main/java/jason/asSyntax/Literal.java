@@ -630,6 +630,33 @@ public abstract class Literal extends DefaultTerm implements LogicalFormula {
             return this;
     }
 
+    public String getAsJSON(String identation) {
+    	StringBuilder json = new StringBuilder(identation+"{\n");
+    	json.append(identation+"   \"functor\" : \""+ getFunctor() + "\"");
+    	if (negated()) {
+        	json.append(identation+",\n   \"negated\" : true");    		
+    	}
+    	if (hasTerm()) {
+	    	json.append(",\n"+identation+"   \"terms\"   : [\n");
+	    	String v = "";
+	    	for (Term t: getTerms()) {
+	    		json.append(v+t.getAsJSON(identation+"      "));
+	    		v = ",\n";
+	    	}
+	    	json.append("\n"+identation+"   ]");
+    	}
+    	if (hasAnnot()) {
+	    	json.append(",\n"+identation+"   \"annotations\"   : [\n");
+	    	String v = "";
+	    	for (Term t: getAnnots()) {
+	    		json.append(v+t.getAsJSON(identation+"      "));
+	    		v = ",\n";
+	    	}
+	    	json.append("\n"+identation+"   ]");
+    	}
+    	json.append("\n"+identation+"}");
+    	return json.toString();
+    }
 
 	static final class TrueLiteral extends Atom {
         public TrueLiteral() {

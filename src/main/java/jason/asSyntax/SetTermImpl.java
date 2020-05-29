@@ -135,6 +135,18 @@ public class SetTermImpl extends DefaultTerm implements SetTerm {
         }
         return u;
     }
+    
+    @Override
+    public String getAsJSON(String identation) {
+        StringBuilder json = new StringBuilder("[\n");
+        String c = "";
+        for (Term t: this) {
+            json.append(c+"  "+ t.getAsJSON(identation+"   ") );
+            c = ",\n";
+        }
+        json.append("\n]");
+        return json.toString();
+    }
 
 
     @Override

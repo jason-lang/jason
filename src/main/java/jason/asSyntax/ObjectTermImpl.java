@@ -71,4 +71,10 @@ public class ObjectTermImpl extends DefaultTerm implements ObjectTerm {
         u.appendChild(document.createTextNode(o.toString()));
         return u;
     }
+    
+    @Override
+    public String getAsJSON(String identation) {
+        return "\""+o.toString()+"\"";
+    }
+
 }
