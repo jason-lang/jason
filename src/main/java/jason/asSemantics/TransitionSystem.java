@@ -561,9 +561,14 @@ public class TransitionSystem implements Serializable {
                         top.getCurrentStep().getBodyNext() == null && // the plan below is finished
                         top.getTrigger().getLiteral().getPredicateIndicator().equals( im.getTrigger().getLiteral().getPredicateIndicator()) // goals are equals (do not consider - or + from the trigger -- required in the case of goal patterns where -!g <- !g is used)
                    ) {
+
+                    if (hasGoalListener())
+                        for (GoalListener gl: getGoalListeners())
+                            gl.goalFinished(top.getTrigger(), FinishStates.achieved);
+                    
                     C.SE.intention.pop(); // remove the top IM
 
-                    IntendedMeans imBase = C.SE.intention.peek(); // base = where the new IM will be place on top of
+                    IntendedMeans imBase = C.SE.intention.peek(); // base = where the new IM will be placed on top of
                     if (imBase != null && imBase.renamedVars != null) {
                         // move top relevant values into the base (relevant = renamed vars in base)
 
