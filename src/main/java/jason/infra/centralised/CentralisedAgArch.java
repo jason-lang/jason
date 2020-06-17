@@ -356,11 +356,12 @@ public class CentralisedAgArch extends AgArch implements Runnable, Serializable 
         wakeUpSense();
     }
 
-    public void broadcast(jason.asSemantics.Message m) throws Exception {
+    public void broadcast(Message m) throws Exception {
         for (String agName: RuntimeServicesFactory.get().getAgentsNames()) {
             if (!agName.equals(this.getAgName())) {
-                m.setReceiver(agName);
-                getFirstAgArch().sendMsg(m);
+                Message newm = m.clone();
+                newm.setReceiver(agName);
+                getFirstAgArch().sendMsg(newm);
             }
         }
     }
