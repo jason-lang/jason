@@ -118,6 +118,8 @@ public class MASConsoleColorGUI extends MASConsoleGUI {
                     } catch (Throwable e2) { }
                 }
             }
+        } catch (InterruptedException e) {
+            // ignore, system going down
         } catch (Exception e) {
             try {
                 PrintWriter out = new PrintWriter(new FileWriter("e_r_r_o_r.txt"));
