@@ -37,7 +37,7 @@ public class Circumstance implements Serializable {
     private   Intention                AI; // Atomic Intention
     private   Event                    AE; // Atomic Event
     private   boolean                  atomicIntSuspended = false; // whether the current atomic intention is suspended in PA or PI
-    //private   boolean                  hasAtomicEvent = false;
+    //private   boolean                hasAtomicEvent = false;
 
     private Map<Integer, ActionExec>   PA; // Pending actions, waiting action execution (key is the intention id)
     private Queue<ActionExec>          FA; // Feedback actions, those that are already executed
@@ -60,8 +60,8 @@ public class Circumstance implements Serializable {
     private void readObject(ObjectInputStream inputStream) throws IOException, ClassNotFoundException {
         inputStream.defaultReadObject();
         syncApPlanSense = new Object();
-    }   
-    
+    }
+
     public void setTS(TransitionSystem ts) {
         this.ts = ts;
     }
