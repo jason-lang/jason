@@ -16,7 +16,7 @@ apply plugin: 'maven'
 apply plugin: 'maven-publish'
 apply plugin: 'signing'
 
-version '2.5-SNAPSHOT'
+version '2.5'
 group   'org.jason-lang'
 
 sourceCompatibility = 1.8
@@ -39,8 +39,9 @@ repositories {
 
 
 dependencies {
-	compile group: 'net.sf.ingenias', name: 'jade', version: '4.3'
+	  compile group: 'net.sf.ingenias', name: 'jade', version: '4.3'
     //compile group: 'com.tilab.jade', name: 'jade', version: '4.4.0'
+
     compile group: 'org.jacamo',     name: 'cartago', version: '2.3'
     compile group: 'org.jacamo',     name: 'jaca',    version: '2.3'
 
