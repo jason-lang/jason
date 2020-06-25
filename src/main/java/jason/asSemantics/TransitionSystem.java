@@ -414,7 +414,7 @@ public class TransitionSystem implements Serializable {
             if (C.SE != null) {
 
                 // update events (+ and -) are copied for all intentions (new JasonER)
-            	// possibly creating branches for these intentions
+                // possibly creating branches for these intentions
                 if (C.SE.isExternal() && C.SE.getTrigger().isUpdate()) {
                     //logger.info("Selected event "+C.SE.getTrigger()+  C.SE.isExternal());
                     Iterator<Intention> ii = C.getAllIntentions();
