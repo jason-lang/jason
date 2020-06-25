@@ -164,8 +164,8 @@ public class PlanLibrary implements Iterable<Plan>, Serializable {
         }
     }
 
-    public void add(Plan p) throws JasonException {
-        add(p,false);
+    public Plan add(Plan p) throws JasonException {
+        return add(p,false);
     }
 
     private final String kqmlReceivedFunctor = Config.get().getKqmlFunctor();
@@ -178,7 +178,7 @@ public class PlanLibrary implements Iterable<Plan>, Serializable {
      * @param before Whether or not to place the new plan before others
      * @throws JasonException
      */
-    public void add(Plan p, boolean before) throws JasonException {
+    public Plan add(Plan p, boolean before) throws JasonException {
         p.setScope(this);
         synchronized (lockPL) {
             // test p.label
@@ -187,7 +187,7 @@ public class PlanLibrary implements Iterable<Plan>, Serializable {
                 Plan planInPL = get(p.getLabel());
                 if (p.equals(planInPL)) {
                     planInPL.getLabel().addSource(p.getLabel().getSources().get(0));
-                    return;
+                    return planInPL;
                 } else {
                     throw new JasonException("There already is a plan with label " + p.getLabel());
                 }
@@ -252,6 +252,8 @@ public class PlanLibrary implements Iterable<Plan>, Serializable {
                 plans.add(0,p);
             else
                 plans.add(p);
+            
+            return p;
         }
     }
 
