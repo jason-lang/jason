@@ -33,7 +33,8 @@ public class RoomEnv extends Environment {
             addPercept(ld);
         else
             addPercept(nld);
+            
+        informAgsEnvironmentChanged();
         return true;
     }
 }
-

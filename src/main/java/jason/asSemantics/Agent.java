@@ -765,8 +765,11 @@ public class Agent implements Serializable {
         // to copy percepts allows the use of contains below
         Set<StructureWrapperForLiteral> perW = new HashSet<>();
         Iterator<Literal> iper = percepts.iterator();
-        while (iper.hasNext())
-            perW.add(new StructureWrapperForLiteral(iper.next()));
+        while (iper.hasNext()) {
+            Literal l = iper.next();
+            if (l != null)
+                perW.add(new StructureWrapperForLiteral(l));
+        }
 
 
         // deleting percepts in the BB that are not perceived anymore

@@ -27,7 +27,9 @@ public class BDG extends DG {
                 Term goal = directive.getTerm(0);
 
                 // add -!g : true <- !g.
-                newAg.getPL().add(ASSyntax.parsePlan("-!"+goal+" <- !"+goal+"."));
+                newAg.getPL()
+                    .add(ASSyntax.parsePlan("-!"+goal+" <- !"+goal+"."))
+                    .setSource(outerContent.getASLSrc());
 
                 return newAg;
             }

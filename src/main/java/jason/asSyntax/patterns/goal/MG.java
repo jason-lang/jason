@@ -42,7 +42,9 @@ public class MG extends DefaultDirective  implements Directive {
                 newAg.addInitialBel(goal);
 
                 // add -g : true <- !g.
-                newAg.getPL().add(ASSyntax.parsePlan("-"+goal+" <- !"+goal+"."));
+                newAg.getPL()
+                    .add(ASSyntax.parsePlan("-"+goal+" <- !"+goal+"."))
+                    .setSource(outerContent.getASLSrc());
 
                 return newAg;
             }

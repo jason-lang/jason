@@ -99,4 +99,9 @@ public final class NumberTermImpl extends DefaultTerm implements NumberTerm {
         u.appendChild(document.createTextNode(toString()));
         return u;
     }
+    
+    @Override
+    public String getAsJSON(String identation) {
+        return identation+toString();
+    }
 }

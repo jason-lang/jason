@@ -1,9 +1,9 @@
-// CArtAgO artifact code for project cArtAgOandJasonEnv
+package cenv;
 
 import cartago.*;
 
 public class SomeArt extends Artifact {
-    void init(int initialValue) {
+    public void init(int initialValue) {
         defineObsProperty("count", initialValue);
     }
 
@@ -14,4 +14,3 @@ public class SomeArt extends Artifact {
         signal("tick");
     }
 }
-

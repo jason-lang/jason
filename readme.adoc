@@ -35,7 +35,7 @@ NOTE: In Jason 2.0 the way to run the Jason IDE (based on jEdit) has changed. Ra
 ----
 git clone https://github.com/jason-lang/jason.git
 cd jason
-gradlew config // <1> <2>
+./gradlew config // <1> <2>
 ----
 <1> the config task builds the jason jar, configure jason properties file, and place all jars in `build/libs`.
 <2> this task also prints out the commands to set up the `JASON_HOME` and `PATH` variables.
@@ -49,10 +49,10 @@ The Jason IDE based on jEdit can be launched by the `jason-ide` script or `java 
 Other useful gradle tasks:
 
 -----
-gradle jar     // <1>
-gradle doc     // <2>
-gradle clean   // <3>
-gradle release // <4>
+./gradlew jar     // <1>
+./gradlew doc     // <2>
+./gradlew clean   // <3>
+./gradlew release // <4>
 -----
 <1> generates a new jason jar.
 <2> generates the javadoc and transforms asciidoc files into html (Docker must be running for the latter).

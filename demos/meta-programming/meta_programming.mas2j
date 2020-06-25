@@ -6,13 +6,22 @@
 
     This file defines the initial state of the MAS
 
-    Jason 2.4-SNAPSHOT
+    Jason 2.5
     February 26, 2019 - 17:13:32
+
+    expected output
+
+[sample_agent] Start running plan test
+[sample_agent] command ?b(_22)
+[sample_agent] command .print(10)
+[sample_agent] 10
+[sample_agent] command !g(10)
+[sample_agent] ok10
+[sample_agent] end of execution!
+
 */
 
 MAS meta_programming {
-
-    infrastructure: Centralised
 
     agents: sample_agent;
 }

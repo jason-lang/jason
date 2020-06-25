@@ -22,6 +22,8 @@ Jason Http Server running on http://10.0.1.2:3272
 [a] I received a hello from c3
 ----------------------------------------------
 
+To run the MAS in more containers, follows stesp 2-3.
+
 2. Run the Jade Main Container
 
     ant -f bin/demo_distributed_jade.xml Main-Container

@@ -42,6 +42,11 @@ public class JadeRuntimeServices implements RuntimeServices {
     public String getNewAgentName(String baseName) {
         return baseName;
     }
+    
+    @Override
+    public boolean isRunning() {
+        return cc != null;
+    }
 
     public String createAgent(String agName, String agSource, String agClass, Collection<String> archClasses, ClassParameters bbPars, Settings stts, jason.asSemantics.Agent father) throws Exception {
         try {
@@ -151,6 +156,7 @@ public class JadeRuntimeServices implements RuntimeServices {
                     }
                 }
             } .start();
+            cc = null;
         }
     }
 

@@ -10,17 +10,12 @@
 
 MAS cArtAgOandJasonEnv {
 
-    infrastructure: Centralised
-
     environment: MixedEnvironment // this class uses normal Jason environment and also CArtAgO environment
 
     agents:
         agent1 sample_agent
-          agentArchClass MixedAgentArch       // architecture that deal with Jason vs CArtAgO environment
-          agentArchClass c4jason.CAgentArch;  // usual architecture of CArtAgO
-
-    classpath: "/Users/jomi/Jason/svn-jason/lib/cartago.jar";
-               "/Users/jomi/Jason/svn-jason/lib/c4jason.jar";
+           agentArchClass MixedAgentArch       // architecture that deal with Jason vs CArtAgO environment
+           agentArchClass jaca.CAgentArch;     // usual architecture of CArtAgO
 
     aslSourcePath:
         "src/asl";

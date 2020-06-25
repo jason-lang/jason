@@ -112,7 +112,8 @@ public class fail_goal extends succeed_goal {
                 // generate failure event
                 Event failEvent = ts.findEventForFailure(i, c.getTrigger()); // find fail event for the goal just dropped
                 if (failEvent != null) {
-                	failEvent = new Event(failEvent.getTrigger().capply(un),failEvent.getIntention());
+                	failEvent = new Event(failEvent.getTrigger().capply(un), failEvent.getIntention());
+                	addAnnotsToFailEvent(failEvent);
                     ts.getC().addEvent(failEvent);
                     ts.getLogger().fine("'.fail_goal("+im.getTrigger()+")' is generating a goal deletion event: " + failEvent.getTrigger());
                     return 2;
@@ -128,6 +129,9 @@ public class fail_goal extends succeed_goal {
             }
         }
         return 0;
+    }
+    
+    protected void addAnnotsToFailEvent(Event failEvent) {
     }
 
     @Override

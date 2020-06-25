@@ -2,12 +2,9 @@
 
 MAS meta_events {
 
-    infrastructure: Centralised
-
     environment: World
 
     agents:
         robot; // [mindinspector="gui(cycle,html,history)"];
 
 }
-

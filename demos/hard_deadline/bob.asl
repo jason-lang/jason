@@ -1,3 +1,16 @@
+/*
+expected output
+
+[bob] init
+[bob] failed, deadline_reached for g(4)
+[bob] g1
+[bob] end1
+[bob] g1
+[bob] end2
+[bob] failed, deadline_reached for g(9)
+
+*/
+
 !start.
 
 +!start
@@ -7,13 +20,8 @@
       !g(1)[hard_deadline(2000)];
       .print(end1);
       !g(1);
-      !g(1);
-      !g(1);
-      !g(1);
-      !g(1);
       .print(end2).
 
-+!g(V) <- .wait(V*1000); .print(g);.
++!g(V) <- .wait(V*1000); .print(g,V);.
 
 -!g(V)[error(ErrorId)] <- .print("failed, ",ErrorId," for g(",V,")").
-

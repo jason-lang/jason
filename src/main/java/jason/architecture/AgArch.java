@@ -110,7 +110,7 @@ public class AgArch implements Comparable<AgArch>, Serializable {
                 } catch (Exception e) {
                     System.out.println("Error creating custom agent aarchitecture."+e);
                     e.printStackTrace();
-                    ts.getLogger().log(Level.SEVERE,"Error creating custom agent aarchitecture.",e);
+                    ts.getLogger().log(Level.SEVERE,"Error creating custom agent architecture.", e);
                 }
             }
         }

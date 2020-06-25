@@ -32,6 +32,9 @@ public class DelegatedRuntimeServices implements RuntimeServices {
         return delegate.createAgent(agName, agSource, agClass, archClasses, bbPars, stts, father);
     }
 
+    public boolean isRunning() {
+        return delegate.isRunning();
+    }
     public void startAgent(String agName) {
         delegate.startAgent(agName);
     }

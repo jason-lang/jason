@@ -73,8 +73,9 @@ public class CentralisedAgArch extends AgArch implements Runnable, Serializable 
 
     private void readObject(ObjectInputStream inputStream) throws IOException, ClassNotFoundException {
         inputStream.defaultReadObject();
-        sleepSync = new Object();
+        sleepSync   = new Object();
         syncMonitor = new Object();
+        masRunner   = BaseCentralisedMAS.getRunner();
     }   
     
 
@@ -162,6 +163,10 @@ public class CentralisedAgArch extends AgArch implements Runnable, Serializable 
         return agName;
     }
 
+    /**
+     * 
+     * @deprecated use getFirstAgArch instead
+     */
     public AgArch getUserAgArch() {
         return getFirstAgArch();
     }
@@ -238,14 +243,13 @@ public class CentralisedAgArch extends AgArch implements Runnable, Serializable 
     }
 
     protected void reasoningCycle() {
-        getUserAgArch().incCycleNumber();
-        getUserAgArch().reasoningCycleStarting();
+        getFirstAgArch().reasoningCycleStarting();
         
         sense();
         deliberate();
         act();
         
-        getUserAgArch().reasoningCycleFinished();
+        getFirstAgArch().reasoningCycleFinished();
     }
 
     public void run() {
@@ -263,6 +267,7 @@ public class CentralisedAgArch extends AgArch implements Runnable, Serializable 
                 }
                 informCycleFinished(isBreakPoint, getCycleNumber());
             } else {
+                getFirstAgArch().incCycleNumber(); // should not increment in case of sync execution
                 reasoningCycle();
                 if (ts.canSleep())
                     sleep();
@@ -351,11 +356,12 @@ public class CentralisedAgArch extends AgArch implements Runnable, Serializable 
         wakeUpSense();
     }
 
-    public void broadcast(jason.asSemantics.Message m) throws Exception {
+    public void broadcast(Message m) throws Exception {
         for (String agName: RuntimeServicesFactory.get().getAgentsNames()) {
             if (!agName.equals(this.getAgName())) {
-                m.setReceiver(agName);
-                getFirstAgArch().sendMsg(m);
+                Message newm = m.clone();
+                newm.setReceiver(agName);
+                getFirstAgArch().sendMsg(newm);
             }
         }
     }
@@ -408,7 +414,7 @@ public class CentralisedAgArch extends AgArch implements Runnable, Serializable 
                 inWaitSyncMonitor = true;
                 syncMonitor.wait();
                 inWaitSyncMonitor = false;
-            }
+            }            
         } catch (InterruptedException e) {
         } catch (Exception e) {
             logger.log(Level.WARNING,"Error waiting sync (1)", e);

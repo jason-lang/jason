@@ -1181,4 +1181,77 @@ public class TermTest extends TestCase {
         assertFalse(u.unifies(t1, t2));
 
     }
+
+    /*
+     * bugs reported by Michael at https://github.com/jason-lang/jason/issues/40
+     */
+    public void testHash() throws ParseException, TokenMgrError {
+        Term t1 = ASSyntax.parseLiteral("~alice(person(female))");
+        Term t2 = ASSyntax.parseLiteral("alice(~person(female))");
+        assertTrue(t1.hashCode() != t2.hashCode());
+        
+        t1 = ASSyntax.createLiteral("test", ASSyntax.createString("TermOne"), ASSyntax.createString("TermTwo"));
+        t2 = ASSyntax.createLiteral("test", ASSyntax.createString("TermTwo"), ASSyntax.createString("TermOne"));        
+        assertTrue(t1.hashCode() != t2.hashCode());
+    }
+
+    public void testJSON() throws ParseException, TokenMgrError {
+        Term t1 = ASSyntax.parseLiteral("alice");
+
+        assertEquals("{\n" + 
+                "   \"functor\" : \"alice\"\n" + 
+                "}", t1.getAsJSON(""));
+
+        t1 = ASSyntax.parseLiteral("~alice(female,10)");
+        assertEquals("{\n" + 
+                "   \"functor\" : \"alice\",\n" + 
+                "   \"negated\" : true,\n" + 
+                "   \"terms\"   : [\n" + 
+                "      {\n" + 
+                "         \"functor\" : \"female\"\n" + 
+                "      },\n" + 
+                "      10\n" + 
+                "   ]\n" + 
+                "}", t1.getAsJSON(""));
+
+        t1 = ASSyntax.parseLiteral("~alice(person(female),10,[a,\"10\",p(10)])[source(bob),43]");
+        assertEquals("{\n" + 
+                "   \"functor\" : \"alice\",\n" + 
+                "   \"negated\" : true,\n" + 
+                "   \"terms\"   : [\n" + 
+                "      {\n" + 
+                "         \"functor\" : \"person\",\n" + 
+                "         \"terms\"   : [\n" + 
+                "            {\n" + 
+                "               \"functor\" : \"female\"\n" + 
+                "            }\n" + 
+                "         ]\n" + 
+                "      },\n" + 
+                "      10,\n" + 
+                "      [\n" + 
+                "         {\n" + 
+                "            \"functor\" : \"a\"\n" + 
+                "         },\n" + 
+                "         \"10\",\n" + 
+                "         {\n" + 
+                "            \"functor\" : \"p\",\n" + 
+                "            \"terms\"   : [\n" + 
+                "               10\n" + 
+                "            ]\n" + 
+                "         }\n" + 
+                "      ]\n" + 
+                "   ],\n" + 
+                "   \"annotations\"   : [\n" + 
+                "      43,\n" + 
+                "      {\n" + 
+                "         \"functor\" : \"source\",\n" + 
+                "         \"terms\"   : [\n" + 
+                "            {\n" + 
+                "               \"functor\" : \"bob\"\n" + 
+                "            }\n" + 
+                "         ]\n" + 
+                "      }\n" + 
+                "   ]\n" + 
+                "}", t1.getAsJSON(""));
+    }
 }

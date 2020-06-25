@@ -4,7 +4,7 @@ import jason.util.asl2html;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Toolkit;
-import java.util.Set;
+import java.util.*;
 
 import javax.swing.JFrame;
 import javax.swing.JTextPane;
@@ -15,7 +15,7 @@ import org.w3c.dom.Document;
 public class MyController extends ExecutionControl {
 
     // GUI components
-    asl2html agTransformer = new asl2html("/xml/agInspection.xsl");
+    asl2html agTransformer = new asl2html("/xml/agInspection-nd.xsl");
     static int NBAG = 4;
     JFrame frame;
     JTextPane[] panels = new JTextPane[NBAG];
@@ -28,7 +28,7 @@ public class MyController extends ExecutionControl {
     protected void allAgsFinished() { // this method is called when all agents have finished one reasoning cycle
         super.allAgsFinished();
         try {
-            Set<String> ags = getExecutionControlInfraTier().getRuntimeServices().getAgentsNames(); // get the name of all agents
+            Collection<String> ags = getExecutionControlInfraTier().getRuntimeServices().getAgentsNames(); // get the name of all agents
             int i = 0;
             for (String ag: ags) {
                 Document agState = getExecutionControlInfraTier().getAgState(ag); // the XML representation of the agent's mind

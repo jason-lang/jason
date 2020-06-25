@@ -4,9 +4,29 @@ Jason Project
 
 This example simply shows how failure handling works.
 
+Expected output
+
+[a] start
+[a] inig1
+[a] inig2
+[a] inig3
+[a] inig4
+[a] Error ia_failed '' by .fail in a.asl:8
+[a] current intention is: ....
+[a]
+[a] *  Intention #1, IM stack:
+[a] *        { .fail }                            * unifier: [map(_47,_46)]
+[a] *        { !g5(_61); .print(endg4) }          * unifier: [map(_62,_60)]
+[a] *        { !g4(_72); .print(endg3) }          * unifier: [map(_73,failure)]
+[a] *        { !g3(_82); .print(endg2) }          * unifier: [map(_83,_81)]
+[a] *        { !g2(_89); .print(endg1) }          * unifier: [map(_90,_88)]
+[a] *        { !g1(_92); .print("End, X=",_92) }  * unifier: []
+[a] endg2
+[a] endg1
+[a] End, X=failure
+
 */
 
 MAS demo_fail {
     agents: a;
 }
-

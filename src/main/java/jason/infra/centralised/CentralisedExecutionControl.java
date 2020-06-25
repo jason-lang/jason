@@ -56,26 +56,24 @@ public class CentralisedExecutionControl implements ExecutionControlInfraTier {
     public void informAgToPerformCycle(String agName, int cycle) {
         // call the agent method to "go on"
         CentralisedAgArch infraArch = masRunner.getAg(agName);
-        AgArch arch = infraArch.getUserAgArch();
+        AgArch arch = infraArch.getFirstAgArch();
         arch.setCycleNumber(cycle);
         infraArch.receiveSyncSignal();
     }
 
     public void informAllAgsToPerformCycle(final int cycle) {
-        executor.execute(new Runnable() {
-            public void run() {
+        executor.execute(() -> {
                 synchronized (masRunner.getAgs()) {
                     for (CentralisedAgArch ag: masRunner.getAgs().values()) {
-                        ag.getUserAgArch().setCycleNumber(cycle);
+                        ag.getFirstAgArch().setCycleNumber(cycle);
                         ag.receiveSyncSignal();
                     }
                 }
-            }
         });
     }
 
     public Document getAgState(String agName) {
-        AgArch arch = masRunner.getAg(agName).getUserAgArch();
+        AgArch arch = masRunner.getAg(agName).getFirstAgArch();
         if (arch != null) { // the agent exists ?
             return arch.getTS().getAg().getAgState();
         } else {
