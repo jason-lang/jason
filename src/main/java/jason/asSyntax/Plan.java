@@ -10,6 +10,7 @@ import org.w3c.dom.Element;
 
 import jason.JasonException;
 import jason.asSemantics.Unifier;
+import jason.asSyntax.PlanBody.BodyType;
 import jason.asSyntax.parser.as2j;
 
 /** Represents an AgentSpack plan
@@ -85,7 +86,7 @@ public class Plan extends Structure implements Cloneable, Serializable {
         case 2:
             return (context == null) ? Literal.LTrue : context;
         case 3:
-            if (body.getBodyNext() == null && body.getBodyTerm() != null && body.getBodyTerm().isVar()) // the case of body as a single var
+            if (body.getBodyNext() == null && body.getBodyTerm() != null && body.getBodyType() == BodyType.none && body.getBodyTerm().isVar()) // the case of body as a single var
                 return body.getBodyTerm();
             return body;
         default:
@@ -106,6 +107,7 @@ public class Plan extends Structure implements Cloneable, Serializable {
             context = (LogicalFormula)t;
             break;
         case 3:
+            System.out.println("*1"+t+" "+this);
             body    = (PlanBody)t;
             break;
         }
