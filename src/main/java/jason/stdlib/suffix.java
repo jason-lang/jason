@@ -1,5 +1,7 @@
 package jason.stdlib;
 
+import java.util.Iterator;
+
 import jason.JasonException;
 import jason.asSemantics.DefaultInternalAction;
 import jason.asSemantics.InternalAction;
@@ -7,22 +9,21 @@ import jason.asSemantics.TransitionSystem;
 import jason.asSemantics.Unifier;
 import jason.asSyntax.ASSyntax;
 import jason.asSyntax.ListTerm;
+import jason.asSyntax.StringTerm;
 import jason.asSyntax.Term;
-
-import java.util.Iterator;
 
 /**
 
   <p>Internal action: <b><code>.suffix(<i>S</i>,<i>L</i>)</code></b>.
 
-  <p>Description: checks if some list <i>S</i> is a suffix of list <i>L</i>. If
+  <p>Description: checks if some list or string <i>S</i> is a suffix of list/string <i>L</i>. If
   <i>S</i> has free variables, this internal action backtracks all
   possible values for <i>S</i>.
 
   <p>Parameters:<ul>
 
-  <li>+/- suffix (list): the suffix to be checked.</li>
-  <li>+ list (list): the list where the suffix is from.</li>
+  <li>+/- suffix (list or string): the suffix to be checked.</li>
+  <li>+ list (list or string): the list where the suffix is from.</li>
 
   </ul>
 
@@ -31,6 +32,10 @@ import java.util.Iterator;
   <li> <code>.suffix([c],[a,b,c])</code>: true.</li>
   <li> <code>.suffix([a,b],[a,b,c])</code>: false.</li>
   <li> <code>.suffix(X,[a,b,c])</code>: unifies X with any suffix of the list, i.e., [a,b,c], [b,c], [c], and [] in this order.</li>
+
+  <li> <code>.suffix("c","abc")</code>: true.</li>
+  <li> <code>.suffix("ab","abc")</code>: false.</li>
+  <li> <code>.suffix(X,"abc")</code>: unifies X with any suffix of the string, i.e., "abc", "bc", "c", and "" in this order.</li>
 
   </ul>
 
@@ -101,10 +106,10 @@ public class suffix extends DefaultInternalAction {
     // improve the check of the arguments to also check the type of the arguments
     @Override protected void checkArguments(Term[] args) throws JasonException {
         super.checkArguments(args); // check number of arguments
-        if (!args[0].isList() && !args[0].isVar())
-            throw JasonException.createWrongArgument(this,"first argument must be a list or a variable");
-        if (!args[1].isList())
-            throw JasonException.createWrongArgument(this,"second argument must be a list");
+        if (!args[0].isList() && !args[0].isVar() && !args[0].isString())
+            throw JasonException.createWrongArgument(this,"first argument must be a list, string, or a variable");
+        if (!args[1].isList() && !args[1].isString())
+            throw JasonException.createWrongArgument(this,"second argument must be either a list or a string");
     }
 
     @Override
@@ -115,10 +120,22 @@ public class suffix extends DefaultInternalAction {
         // execute the internal action
 
         final Term sublist = args[0];
-        final Iterator<ListTerm> list = ((ListTerm)args[1]).listTermIterator();
+
+        boolean isListCase = args[1].isList();
+        final Iterator<ListTerm> list;
+        final StringBuilder string;
+        if (isListCase) {
+            list = ((ListTerm)args[1]).listTermIterator();
+            string = null;
+        } else {
+            list = null;
+            string = new StringBuilder(((StringTerm)args[1]).getString());
+        }
 
         return new Iterator<Unifier>() {
             Unifier c = null; // the current response (which is an unifier)
+            boolean triedEmpty = false;
+
             public boolean hasNext() {
                 if (c == null) // the first call of hasNext should find the first response
                     find();
@@ -134,13 +151,32 @@ public class suffix extends DefaultInternalAction {
             }
 
             void find() {
-                while (list.hasNext()) {
-                    ListTerm l = list.next();
-                    if (l.isVar()) // the case of the tail of the list
-                        break;
-                    c = un.clone();
-                    if (c.unifiesNoUndo(sublist, ASSyntax.createList(l))) {
-                        return; // found another sublist, c is the current response
+                if (isListCase) {
+                    while (list.hasNext()) {
+                        ListTerm l = list.next();
+                        if (l.isVar()) // the case of the tail of the list
+                            break;
+                        c = un.clone();
+                        if (c.unifiesNoUndo(sublist, ASSyntax.createList(l))) {
+                            return; // found another sublist, c is the current response
+                        }
+                    }
+                } else {
+                    while (string.length() > 0) {
+                        Term candidate = ASSyntax.createString(string.toString());
+                        string.deleteCharAt(0);
+                        c = un.clone();
+                        if (c.unifiesNoUndo(sublist, candidate)) {
+                            return; // found another sublist, c is the current response
+                        }
+                    }
+                    if (!triedEmpty) {
+                        triedEmpty = true;
+
+                        c = un.clone();
+                        if (c.unifiesNoUndo(sublist, ASSyntax.createString(""))) {
+                            return; // found another sublist, c is the current response
+                        }
                     }
                 }
                 c = null; // no more sublists found

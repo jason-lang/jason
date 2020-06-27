@@ -398,8 +398,45 @@ public class StdLibTest extends TestCase {
         assertEquals(i.next().get("X").toString(),"[a]");
         assertEquals(i.next().get("X").toString(),"[]");
         assertFalse(i.hasNext());
-
     }
+
+    @SuppressWarnings("unchecked")
+    public void testPrefixString() throws Exception {
+        Term l1 = ASSyntax.createString("abc");
+        Term l2 = ASSyntax.createString("ab");
+        Term l3 = ASSyntax.createString("bc");
+
+        Unifier u = new Unifier();
+        Iterator<Unifier> i = (Iterator<Unifier>)new jason.stdlib.prefix().execute(null, u, new Term[] { l1, l1 });
+        assertTrue(i != null);
+        assertTrue(i.hasNext());
+        assertTrue(i.next().size() == 0);
+
+        // test prefix([a,b],[a,b,c])
+        u = new Unifier();
+        i = (Iterator<Unifier>)new jason.stdlib.prefix().execute(null, u, new Term[] { l2, l1 });
+        assertTrue(i != null);
+        //assertTrue(i.hasNext());
+        //assertTrue(i.next().size() == 0);
+
+        // test prefix([b,c],[a,b,c])
+        u = new Unifier();
+        i = (Iterator<Unifier>)new jason.stdlib.prefix().execute(null, u, new Term[] { l3, l1 });
+        assertFalse(i.hasNext());
+
+        // test prefix(X,[a,b,c])
+        Term tx = ASSyntax.parseTerm("X");
+        u = new Unifier();
+        i = (Iterator<Unifier>)new jason.stdlib.prefix().execute(null, u, new Term[] { tx, l1 });
+        assertTrue(iteratorSize(i) == 4);
+        i = (Iterator<Unifier>)new jason.stdlib.prefix().execute(null, u, new Term[] { tx, l1 });
+        assertEquals("\"abc\"", i.next().get("X").toString());
+        assertEquals("\"ab\"",  i.next().get("X").toString());
+        assertEquals("\"a\"",   i.next().get("X").toString());
+        assertEquals("\"\"",    i.next().get("X").toString());
+        assertFalse(i.hasNext());
+    }
+
 
     @SuppressWarnings("unchecked")
     public void testSuffix() throws Exception {
@@ -449,8 +486,48 @@ public class StdLibTest extends TestCase {
         assertEquals(i.next().get("X").toString(),"[c]");
         assertEquals(i.next().get("X").toString(),"[]");
         assertFalse(i.hasNext());
-
     }
+
+    @SuppressWarnings("unchecked")
+    public void testSuffixString() throws Exception {
+        Term l1 = ASSyntax.createString("abc");
+        Term l2 = ASSyntax.createString("bc");
+        Term l3 = ASSyntax.createString("ab");
+
+        // test suffix([a,b,c],[a,b,c])
+        Unifier u = new Unifier();
+        Iterator<Unifier> i = (Iterator<Unifier>)new jason.stdlib.suffix().execute(null, u, new Term[] { l1, l1 });
+        assertTrue(i != null);
+        assertTrue(i.hasNext());
+        assertTrue(i.next().size() == 0);
+
+        // test suffix([b,c],[a,b,c])
+        u = new Unifier();
+        i = (Iterator<Unifier>)new jason.stdlib.suffix().execute(null, u, new Term[] { l2, l1 });
+        assertTrue(i != null);
+        //assertTrue(i.hasNext());
+        //assertTrue(i.next().size() == 0);
+
+        // test suffix([a,b],[a,b,c])
+        u = new Unifier();
+        i = (Iterator<Unifier>)new jason.stdlib.suffix().execute(null, u, new Term[] { l3, l1 });
+        assertFalse(i.hasNext());
+
+
+        // test suffix(X,[a,b,c])
+        Term tx = ASSyntax.parseTerm("X");
+        u = new Unifier();
+        i = (Iterator<Unifier>)new jason.stdlib.suffix().execute(null, u, new Term[] { tx, l1 });
+        assertTrue(iteratorSize(i) == 4);
+        i = (Iterator<Unifier>)new jason.stdlib.suffix().execute(null, u, new Term[] { tx, l1 });
+        assertEquals("\"abc\"", i.next().get("X").toString());
+        assertEquals("\"bc\"",  i.next().get("X").toString());
+        assertEquals("\"c\"",   i.next().get("X").toString());
+        assertEquals("\"\"",    i.next().get("X").toString());
+
+        assertFalse(i.hasNext());
+    }
+
 
     @SuppressWarnings("unchecked")
     public void testSublist() throws Exception {
@@ -616,7 +693,7 @@ public class StdLibTest extends TestCase {
 
         Unifier u = new Unifier();
         VarTerm y = new VarTerm("Y");
-        assertTrue((Boolean)new jason.stdlib.replace().execute(ts, u, 
+        assertTrue((Boolean)new jason.stdlib.replace().execute(ts, u,
             new Term[] {
                 ASSyntax.createString("hello day"),
                 ASSyntax.createString("day"),
