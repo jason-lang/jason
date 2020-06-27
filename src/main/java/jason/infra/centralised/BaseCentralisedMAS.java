@@ -92,8 +92,13 @@ public abstract class BaseCentralisedMAS extends NotificationBroadcasterSupport 
     public CentralisedAgArch delAg(String agName) {
         //df.remove(agName);
         try {
-            getDFAg().abolish(ASSyntax.createLiteral("provider",  new Atom(agName), new UnnamedVar()), null);
-            getDFAg().abolish(ASSyntax.createLiteral("subscribe", new Atom(agName), new UnnamedVar()), null);
+            if (RunCentralisedMAS.getRunner().getAg("df") != null) { // if DF is running
+                Agent df = getDFAg();
+                if (df != null) {
+                    getDFAg().abolish(ASSyntax.createLiteral("provider",  new Atom(agName), new UnnamedVar()), null);
+                    getDFAg().abolish(ASSyntax.createLiteral("subscribe", new Atom(agName), new UnnamedVar()), null);
+                }
+            }
         } catch (RevisionFailedException e) {
             e.printStackTrace();
         }
