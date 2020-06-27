@@ -36,7 +36,7 @@ import jason.asSyntax.Term;
   <li> <code>.substring("b","aaa",X)</code>: false.
   <li> <code>.substring("a","bbacc")</code>: true.
   <li> <code>.substring("a","abbacca",X)</code>: true and <code>X</code> unifies with 0, 3, and 6.
-  <li> <code>.substring("a","bbacc",0)</code>: false.
+  <li> <code>.substring("a","bbacc",0)</code>: false. When the third argument is 0, .substring works like a java <b>startsWith</b> method.
   <li> <code>.substring(a(10),b(t1,a(10)),X)</code>: true and <code>X</code> unifies with 5.
   <li> <code>.substring(a(10),b("t1,a(10),kk"),X)</code>: true and <code>X</code> unifies with 6.
   <li> <code>.substring(a(10,20),R,5)</code>: true and <code>R</code> unifies with "20)".

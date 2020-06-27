@@ -98,6 +98,8 @@ Internal actions of Jason.
   <li>{@link jason.stdlib.nth nth}: nth element of a string. </li>
   <li>{@link jason.stdlib.substring substring}: test substrings of strings. </li>
   <li>{@link jason.stdlib.string string}: check whether an argument is a string.</li>
+  <li>{@link jason.stdlib.suffix suffix}: suffixes of a string. </li>
+  <li>{@link jason.stdlib.prefix prefix}: prefixes of a string. </li>
   <li>{@link jason.stdlib.term2string term2string}: convert terms to strings and vice-versa.</li>
   <li>{@link jason.stdlib.lower_case lower_case}: lower case strings.</li>
   <li>{@link jason.stdlib.upper_case upper_case}: upper case strings.</li>
