@@ -128,8 +128,8 @@ public class suffix extends DefaultInternalAction {
             list = ((ListTerm)args[1]).listTermIterator();
             string = null;
         } else {
-        	list = null;
-        	string = new StringBuilder(((StringTerm)args[1]).getString());
+            list = null;
+            string = new StringBuilder(((StringTerm)args[1]).getString());
         }
 
         return new Iterator<Unifier>() {
@@ -151,34 +151,34 @@ public class suffix extends DefaultInternalAction {
             }
 
             void find() {
-            	if (isListCase) {
-	                while (list.hasNext()) {
-	                    ListTerm l = list.next();
-	                    if (l.isVar()) // the case of the tail of the list
-	                        break;
-	                    c = un.clone();
-	                    if (c.unifiesNoUndo(sublist, ASSyntax.createList(l))) {
-	                        return; // found another sublist, c is the current response
-	                    }
-	                }
-            	} else {
-	                while (string.length() > 0) {
-	                	Term candidate = ASSyntax.createString(string.toString());
-	                    string.deleteCharAt(0);
-	                    c = un.clone();
-	                    if (c.unifiesNoUndo(sublist, candidate)) {
-	                        return; // found another sublist, c is the current response
-	                    }
-	                }
-	                if (!triedEmpty) {
-	                    triedEmpty = true;
+                if (isListCase) {
+                    while (list.hasNext()) {
+                        ListTerm l = list.next();
+                        if (l.isVar()) // the case of the tail of the list
+                            break;
+                        c = un.clone();
+                        if (c.unifiesNoUndo(sublist, ASSyntax.createList(l))) {
+                            return; // found another sublist, c is the current response
+                        }
+                    }
+                } else {
+                    while (string.length() > 0) {
+                        Term candidate = ASSyntax.createString(string.toString());
+                        string.deleteCharAt(0);
+                        c = un.clone();
+                        if (c.unifiesNoUndo(sublist, candidate)) {
+                            return; // found another sublist, c is the current response
+                        }
+                    }
+                    if (!triedEmpty) {
+                        triedEmpty = true;
 
-	                    c = un.clone();
-	                    if (c.unifiesNoUndo(sublist, ASSyntax.createString(""))) {
-	                        return; // found another sublist, c is the current response
-	                    }
-	                }
-            	}
+                        c = un.clone();
+                        if (c.unifiesNoUndo(sublist, ASSyntax.createString(""))) {
+                            return; // found another sublist, c is the current response
+                        }
+                    }
+                }
                 c = null; // no more sublists found
             }
 

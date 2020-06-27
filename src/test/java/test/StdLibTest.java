@@ -401,7 +401,7 @@ public class StdLibTest extends TestCase {
     }
 
     @SuppressWarnings("unchecked")
-	public void testPrefixString() throws Exception {
+    public void testPrefixString() throws Exception {
         Term l1 = ASSyntax.createString("abc");
         Term l2 = ASSyntax.createString("ab");
         Term l3 = ASSyntax.createString("bc");

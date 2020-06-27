@@ -17,7 +17,7 @@ apply plugin: 'maven-publish'
 apply plugin: 'signing'
 
 version '2.6-SNAPSHOT'
-group   'org.jason-lang'
+group   'org.jason'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -432,8 +432,8 @@ task plugin(type: Jar, dependsOn: 'jar') {
 // transfer local maven artifact to our maven2 repository at sourceforge
 task publishMavenSF(dependsOn: [ 'build', 'publishToMavenLocal']) {
   doLast {
-    def wdir = System.getProperty("user.home")+'/.m2/repository/org/jason-lang/jason'
-    def tdir = System.getenv('USERSF')+',jacamo@web.sf.net:/home/project-web/jacamo/htdocs/maven2/org/jason-lang/jason'
+    def wdir = System.getProperty("user.home")+'/.m2/repository/org/jason/jason'
+    def tdir = System.getenv('USERSF')+',jacamo@web.sf.net:/home/project-web/jacamo/htdocs/maven2/org/jason/jason'
     exec {
         commandLine 'scp', '-r', project.version, tdir
         workingDir wdir
@@ -448,6 +448,34 @@ task publishMavenSF(dependsOn: [ 'build', 'publishToMavenLocal']) {
     }
   }
 }
+
+task publishMavenGitHub(dependsOn: [ 'build', 'publishToMavenLocal']) {
+  doLast {
+    def wdir = System.getProperty("user.home")+'/.m2/repository/org/jason/jason'
+    def rdir = '../jacamo-mvn-repo'
+    exec {
+        commandLine 'git', 'pull'
+        workingDir rdir
+    }
+    copy {
+        from wdir
+        into rdir + '/org/jason/jason'
+    }
+    exec {
+        commandLine 'git', 'add', '*'
+        workingDir rdir
+    }
+    exec {
+        commandLine 'git', 'commit', '-a', '-m', 'new version of jason '+project.version
+        workingDir rdir
+    }
+    exec {
+        commandLine 'git', 'push'
+        workingDir rdir
+    }
+  }
+}
+
 
 // Builds the distribution, documentation and a new release
 task doc(dependsOn: [ 'jjdoc', 'javadoc', 'renderAsciiDocs']) {
