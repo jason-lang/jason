@@ -7,6 +7,7 @@ import java.awt.FlowLayout;
 import java.awt.Toolkit;
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -45,27 +46,30 @@ import jason.util.asl2xml;
  */
 public class MindInspectorAgArch extends AgArch {
 
+    private static final long serialVersionUID = 1L;
+    
     // variables for mind inspector
-    protected boolean hasMindInspectorByCycle = false;
-    protected int     updateInterval = 0;
-    protected static JFrame         mindInspectorFrame = null;
-    protected static JTabbedPane    mindInspectorTab = null;
-    protected        JTextPane      mindInspectorPanel = null;
-    protected        JSlider        mindInspectorHistorySlider = null;
-    protected        JCheckBox      mindInspectorFreeze = null;
-    protected        List<Document> mindInspectorHistory = null;
-    protected        asl2xml        mindInspectorTransformer = null;
+    protected transient boolean hasMindInspectorByCycle = false;
+    protected transient int     updateInterval = 0;
+    
+    protected transient static JFrame         mindInspectorFrame = null;
+    protected transient static JTabbedPane    mindInspectorTab = null;
+    protected transient        JTextPane      mindInspectorPanel = null;
+    protected transient        JSlider        mindInspectorHistorySlider = null;
+    protected transient        JCheckBox      mindInspectorFreeze = null;
+    protected transient        List<Document> mindInspectorHistory = null;
+    protected transient        asl2xml        mindInspectorTransformer = null;
 
-    protected        String         mindInspectorDirectory;
+    protected transient        String         mindInspectorDirectory;
 
     // Which item is to be shown in HTML interface
-    Map<String,Boolean> show = new HashMap<>();
+    protected transient Map<String,Boolean> show = new HashMap<>();
 
     // what is currently shown
-    Document agState = null;
+    protected transient Document agState = null;
 
-    MindInspectorWeb webServer = null;
-    boolean hasHistory = false;
+    protected transient MindInspectorWeb webServer = null;
+    protected transient boolean hasHistory = false;
 
     @Override
     public void init() {
@@ -78,9 +82,10 @@ public class MindInspectorAgArch extends AgArch {
      */
     @Override
     public void stop() {
-        if (mindInspectorFrame != null)
+        if (mindInspectorFrame != null) {
             mindInspectorFrame.dispose();
-        super.stop();
+            mindInspectorFrame = null;
+        }
     }
 
     @Override
@@ -99,7 +104,7 @@ public class MindInspectorAgArch extends AgArch {
      *    General syntax of the parameter:
      *    [gui|file|web] ( [ cycle|number ] , [xml,html] [, history | directory] )
      */
-    protected void setupMindInspector(String configuration) {
+    public void setupMindInspector(String configuration) {
         Structure sConf = null;
         try {
             sConf = ASSyntax.parseStructure(configuration);
@@ -292,12 +297,17 @@ public class MindInspectorAgArch extends AgArch {
             lastHistoryText = sMind;
 
             if (mindInspectorPanel != null) { // output on GUI
-                if (mindInspectorFreeze == null || !mindInspectorFreeze.isSelected())
+                if (mindInspectorFreeze == null || !mindInspectorFreeze.isSelected()) {
                     showAgState(state);
-                if (mindInspectorHistory != null) {
+
+                    if (mindInspectorHistory != null) {
+                        mindInspectorHistory.add(state);
+                        setupSlider();
+                        mindInspectorHistorySlider.setValue(mindInspectorHistory.size()-1);
+                    }
+                }else if(mindInspectorFreeze.isSelected()) {
                     mindInspectorHistory.add(state);
                     setupSlider();
-                    mindInspectorHistorySlider.setValue(mindInspectorHistory.size()-1);
                 }
             } else if (mindInspectorDirectory != null) { // output on file
                 String filename = String.format("%6d.xml",fileCounter++).replaceAll(" ","0");
@@ -312,7 +322,7 @@ public class MindInspectorAgArch extends AgArch {
         }
     }
 
-    private String previousShownText = "";
+    private transient String previousShownText = "";
     /** show current agent state */
     void showAgState(Document state) { // in GUI
         if (state != null) {
@@ -328,6 +338,12 @@ public class MindInspectorAgArch extends AgArch {
                 e.printStackTrace();
             }
         }
+    }
+
+    private void readObject(java.io.ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+        previousShownText = "";
+        init();
     }
 
     String getAgStateAsString(Document ag, boolean full) { // full means with show all

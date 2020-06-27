@@ -6,6 +6,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
+import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -30,6 +32,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+
 import jason.JasonException;
 import jason.RevisionFailedException;
 import jason.architecture.AgArch;
@@ -66,8 +69,10 @@ import jason.util.Config;
  * AgentSpeak agent. It also implements the default selection
  * functions of the AgentSpeak semantics.
  */
-public class Agent {
+public class Agent implements Serializable {
 
+    private static final long serialVersionUID = -2628324957954474455L;
+    
     // Members
     protected BeliefBase       bb = null;
     protected PlanLibrary      pl = null;
@@ -88,7 +93,7 @@ public class Agent {
     //private QueryCacheSimple qCache = null;
     //private QueryProfiling   qProfiling = null;
 
-    protected Logger logger = Logger.getLogger(Agent.class.getName());
+    protected transient Logger logger = Logger.getLogger(Agent.class.getName());
 
     public Agent() {
         checkCustomSelectOption();
@@ -103,7 +108,7 @@ public class Agent {
      */
     public static Agent create(AgArch arch, String agClass, ClassParameters bbPars, String asSrc, Settings stts) throws JasonException {
         try {
-            Agent ag = (Agent) Class.forName(agClass).newInstance();
+            Agent ag = (Agent) Class.forName(agClass).getConstructor().newInstance();
 
             new TransitionSystem(ag, null, stts, arch);
 
@@ -111,7 +116,7 @@ public class Agent {
             if (bbPars == null)
                 bb = new DefaultBeliefBase();
             else
-                bb = (BeliefBase) Class.forName(bbPars.getClassName()).newInstance();
+                bb = (BeliefBase) Class.forName(bbPars.getClassName()).getConstructor().newInstance();
 
             ag.setBB(bb);     // the agent's BB have to be already set for the BB initialisation
             ag.initAg();
@@ -146,6 +151,7 @@ public class Agent {
     }
 
     /** parse and load the agent code, asSrc may be null */
+    @Deprecated
     public void initAg(String asSrc) throws JasonException {
         initAg();
         load(asSrc);
@@ -158,6 +164,7 @@ public class Agent {
             boolean parsingOk = true;
             if (asSrc != null && !asSrc.isEmpty()) {
                 asSrc = asSrc.replaceAll("\\\\", "/");
+                setASLSrc(asSrc);
 
                 if (asSrc.startsWith(SourcePath.CRPrefix)) {
                     // loads the class from a jar file (for example)
@@ -185,9 +192,8 @@ public class Agent {
             }
 
             loadKqmlPlans();
-            addInitialBelsInBB(); // in case kqml plan file has some belief 
+            addInitialBelsInBB(); // in case kqml plan file has some belief
 
-            setASLSrc(asSrc);
         } catch (Exception e) {
             logger.log(Level.SEVERE, "Error loading code from "+asSrc, e);
             throw new JasonException("Error loading code from "+asSrc + " ---- " + e);
@@ -264,7 +270,7 @@ public class Agent {
             if (c.getKqmlFunctor().equals(Message.kqmlReceivedFunctor)) {
                 String file = Message.kqmlDefaultPlans.substring(Message.kqmlDefaultPlans.indexOf("/"));
                 if (JasonException.class.getResource(file) != null) {
-                    parseAS(JasonException.class.getResource(file)); //, "kqmlPlans.asl");
+                    parseAS(JasonException.class.getResource(file), PlanLibrary.KQML_PLANS_FILE); // the kqmlPlans.asl argument should be used here (see hasUserKqmlReceived in PlanLibrary)
                 } else {
                     logger.warning("The kqmlPlans.asl was not found!");
                 }
@@ -336,11 +342,11 @@ public class Agent {
     public Agent clone(AgArch arch) {
         Agent a = null;
         try {
-            a = this.getClass().newInstance();
+            a = this.getClass().getConstructor().newInstance();
         } catch (InstantiationException e1) {
             logger.severe(" cannot create derived class" +e1);
             return null;
-        } catch (IllegalAccessException e2) {
+        } catch (Exception e2) {
             logger.severe(" cannot create derived class" +e2);
             return null;
         }
@@ -416,7 +422,7 @@ public class Agent {
         if (scheduler == null) {
             int n;
             try {
-                n = new Integer( Config.get().get(Config.NB_TH_SCH).toString() );
+                n = Integer.valueOf( Config.get().get(Config.NB_TH_SCH).toString() );
             } catch (Exception e) {
                 n = 2;
             }
@@ -439,8 +445,11 @@ public class Agent {
 
     /** Adds beliefs and plans form an URL */
     public boolean parseAS(URL asURL) {
+        return parseAS(asURL, asURL.toString());
+    }
+    public boolean parseAS(URL asURL, String sourceId) {
         try {
-            parseAS(asURL.openStream(), asURL.toString());
+            parseAS(asURL.openStream(), sourceId);
             logger.fine("as2j: AgentSpeak program '" + asURL + "' parsed successfully!");
             return true;
         } catch (IOException e) {
@@ -481,7 +490,7 @@ public class Agent {
     }
 
     @SuppressWarnings("unchecked")
-    public InternalAction getIA(String iaName) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+    public InternalAction getIA(String iaName) throws ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
         if (iaName.charAt(0) == '.')
             iaName = "jason.stdlib" + iaName;
         InternalAction objIA = internalActions.get(iaName);
@@ -493,7 +502,7 @@ public class Agent {
                 Method create = iaclass.getMethod("create", (Class[])null);
                 objIA = (InternalAction)create.invoke(null, (Object[])null);
             } catch (Exception e) {
-                objIA = (InternalAction)iaclass.newInstance();
+                objIA = (InternalAction)iaclass.getConstructor().newInstance();
             }
             internalActions.put(iaName, objIA);
         }
@@ -517,7 +526,7 @@ public class Agent {
     /** register an arithmetic function implemented in Java */
     private void addFunction(Class<? extends ArithFunction> c, boolean user) {
         try {
-            ArithFunction af = c.newInstance();
+            ArithFunction af = c.getConstructor().newInstance();
             String error = null;
             if (user)
                 error = FunctionRegister.checkFunctionName(af.getName());
@@ -715,10 +724,12 @@ public class Agent {
         return messages.poll();
     }
 
-    public ActionExec selectAction(List<ActionExec> actList) {
+    public ActionExec selectAction(Queue<ActionExec> actions) {
         // make sure the selected Action is removed from actList
         // (do not return suspended intentions)
-        synchronized (actList) {
+
+        /* // old code, suspended is now considered in hasFA; no need to sync, it is done in TS
+         * synchronized (actList) {
             Iterator<ActionExec> i = actList.iterator();
             while (i.hasNext()) {
                 ActionExec a = i.next();
@@ -727,14 +738,18 @@ public class Agent {
                     return a;
                 }
             }
-        }
-        return null;
+        }*/
+
+        if (actions.isEmpty())
+            return null;
+        else
+            return actions.poll();
     }
 
     /** TS Initialisation (called by the AgArch) */
     public void setTS(TransitionSystem ts) {
         this.ts = ts;
-        setLogger(ts.getUserAgArch());
+        setLogger(ts.getAgArch());
         if (ts.getSettings().verbose() >= 0)
             logger.setLevel(ts.getSettings().logLevel());
     }
@@ -789,8 +804,11 @@ public class Agent {
         // to copy percepts allows the use of contains below
         Set<StructureWrapperForLiteral> perW = new HashSet<>();
         Iterator<Literal> iper = percepts.iterator();
-        while (iper.hasNext())
-            perW.add(new StructureWrapperForLiteral(iper.next()));
+        while (iper.hasNext()) {
+            Literal l = iper.next();
+            if (l != null)
+                perW.add(new StructureWrapperForLiteral(l));
+        }
 
 
         // deleting percepts in the BB that are not perceived anymore
@@ -992,15 +1010,18 @@ public class Agent {
                     if (!removed && !beliefToDel.isGround()) { // then try to unify the parameter with a belief in BB
                         Iterator<Literal> il = getBB().getCandidateBeliefs(beliefToDel.getPredicateIndicator());
                         if (il != null) {
-                                while (il.hasNext()) {
+                            while (il.hasNext()) {
                                 Literal linBB = il.next();
-                                if (u.unifies(linBB, beliefToDel)) {
-                                    il.remove();
+                                if (u.unifies(beliefToDel, linBB)) {
                                     beliefToDel = (Literal)beliefToDel.capply(u);
-                                    removed = true;
+                                    linBB.delAnnots(beliefToDel.getAnnots());
+                                    if (!linBB.hasSource()) {
+                                        il.remove();
+                                        removed = true;
+                                    }
                                     break;
                                 }
-                                }
+                            }
                         }
                     }
 
@@ -1096,7 +1117,7 @@ public class Agent {
 
     static DocumentBuilder builder = null;
 
-    
+
     /** Gets the agent "mind" (beliefs, plans, and circumstance) as XML */
     public synchronized Document getAgState() {
         if (builder == null) {
@@ -1125,15 +1146,13 @@ public class Agent {
     /** Gets the agent "mind" as XML */
     public Element getAsDOM(Document document) {
         Element ag = (Element) document.createElement("agent");
-        ag.setAttribute("name", ts.getUserAgArch().getAgName());
-        ag.setAttribute("cycle", ""+ts.getUserAgArch().getCycleNumber());
+        ag.setAttribute("name", ts.getAgArch().getAgName());
+        ag.setAttribute("cycle", ""+ts.getAgArch().getCycleNumber());
 
         Node importedNodeBB = document.importNode(bb.getAsDOM(document), true);
         ag.appendChild(importedNodeBB);
         Node importedNodePL = document.importNode(getPL().getAsDOM(document), true);
         ag.appendChild(importedNodePL);
-        Node importedNodeC = document.importNode(ts.getC().getAsDOM(document), true);
-        ag.appendChild(importedNodeC);
         return ag;
     }
 

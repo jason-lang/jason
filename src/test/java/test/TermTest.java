@@ -4,6 +4,16 @@ import static jason.asSyntax.ASSyntax.createNumber;
 import static jason.asSyntax.ASSyntax.createStructure;
 import static jason.asSyntax.ASSyntax.parseLiteral;
 import static jason.asSyntax.ASSyntax.parseTerm;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import jason.asSemantics.Unifier;
 import jason.asSyntax.ASSyntax;
 import jason.asSyntax.Atom;
@@ -17,6 +27,8 @@ import jason.asSyntax.ObjectTermImpl;
 import jason.asSyntax.Plan;
 import jason.asSyntax.Pred;
 import jason.asSyntax.PredicateIndicator;
+import jason.asSyntax.SetTerm;
+import jason.asSyntax.SetTermImpl;
 import jason.asSyntax.StringTermImpl;
 import jason.asSyntax.Structure;
 import jason.asSyntax.Term;
@@ -26,18 +38,9 @@ import jason.asSyntax.Trigger.TEType;
 import jason.asSyntax.UnnamedVar;
 import jason.asSyntax.VarTerm;
 import jason.asSyntax.parser.ParseException;
+import jason.asSyntax.parser.TokenMgrError;
 import jason.bb.BeliefBase;
 import jason.bb.DefaultBeliefBase;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import junit.framework.TestCase;
 
 /** JUnit test case for syntax package */
@@ -119,12 +122,12 @@ public class TermTest extends TestCase {
         Term other = ASSyntax.parseTerm("back_pos(9,7)");
         assertFalse(bp.equals(other));
 
-        Set<Term> c1 = new HashSet<Term>();
+        Set<Term> c1 = new HashSet<>();
         c1.add(bp);
         c1.add(ASSyntax.parseTerm("back_pos(9,7)"));
         c1.add(ASSyntax.parseTerm("x"));
 
-        Set<Term> c2 = new HashSet<Term>();
+        Set<Term> c2 = new HashSet<>();
         c2.add(ASSyntax.parseTerm("back_pos(9,7)"));
         c2.add(ASSyntax.parseTerm("x"));
 
@@ -142,12 +145,9 @@ public class TermTest extends TestCase {
         VarTerm x = new VarTerm("X");
         assertTrue(u.unifies(b, x));
         assertTrue(u.unifies(new Structure("a"), x));
-        //System.out.println("u="+u);
         assertEquals(u.get(b).toString(), "a");
         assertEquals(u.get(x).toString(), "a");
         Term tb = b.capply(u);
-        //System.out.println("x="+x);
-        //System.out.println("b="+b);
         assertEquals(tb.toString(), "a");
         assertEquals(x.toString(), "X");
 
@@ -168,9 +168,7 @@ public class TermTest extends TestCase {
         u = new Unifier();
         t3.addTerm(new VarTerm("X"));
         t3.addTerm(new VarTerm("Y"));
-        //System.out.println(t1+"="+t3);
         assertTrue( u.unifies(t1,t3));
-        //System.out.println("u="+u);
 
         // Test var unified with var
         u = new Unifier();
@@ -187,7 +185,6 @@ public class TermTest extends TestCase {
         assertTrue(z2.isVar()); // z2 is still a var
 
         assertTrue(u.unifies(z2,new Structure("a")));
-        //System.out.println("u="+u);
         assertEquals(u.get("Z1").toString(), "a");
         assertEquals(u.get("Z2").toString(), "a");
         assertEquals(u.get("Z3").toString(), "a");
@@ -205,7 +202,6 @@ public class TermTest extends TestCase {
         p2.addTerm(new Structure("1"));
 
         p2.addAnnot(new Structure("percept"));
-        //System.out.println("p1="+p1+"; p2="+p2);
         assertTrue(u.unifies(p1, p2));
     }
 
@@ -232,23 +228,18 @@ public class TermTest extends TestCase {
         u = new Unifier();
         // pos(1)[X,ag2] = pos(1)[ag1,Y]
         //assertTrue(u.unifies(p1, p2));
-        //System.out.println("u="+u);
 
         p1.addAnnot(new VarTerm("Z"));
         p2.addAnnot(new Structure("ag2"));
         p2.addAnnot(new Structure("ag4"));
-        //System.out.println("p1="+p1+"; p2="+p2);
         u = new Unifier();
         assertTrue(u.unifies(p1, p2));
-        //System.out.println("u="+u);
 
         p1.addAnnot(new VarTerm("X1"));
         p1.addAnnot(new VarTerm("X2"));
         p1.addAnnot(new VarTerm("X3"));
-        //System.out.println("p1="+p1+"; p2="+p2);
         u = new Unifier();
         assertFalse(u.unifies(p1, p2));
-        //System.out.println("u="+u);
 
         p1.clearAnnots();
         p1.addAnnot(new Structure("ag2"));
@@ -256,10 +247,8 @@ public class TermTest extends TestCase {
         p2.addAnnot(new Structure("ag1"));
         p2.addAnnot(new Structure("ag2"));
         p2.addAnnot(new Structure("ag3"));
-        //System.out.println("p1="+p1+"; p2="+p2);
         u = new Unifier();
         assertTrue(u.unifies(p1, p2));
-        //System.out.println("u="+u);
     }
 
     public void testAnnotsUnify3() {
@@ -407,13 +396,9 @@ public class TermTest extends TestCase {
 
         Trigger t2 = new Trigger(TEOperator.add, TEType.belief, received2);
 
-        //System.out.println("t1 = "+t1);
-        //System.out.println("t2 = "+t2);
         Unifier u = new Unifier();
         assertTrue(u.unifies(t1,t2));
-        //System.out.println(u);
         t2 = t2.capply(u);
-        //System.out.println("t2 with apply = "+t2);
 
         assertEquals(t1.toString(), t2.toString());
 
@@ -421,7 +406,6 @@ public class TermTest extends TestCase {
         Trigger t4 = ASSyntax.parseTrigger("+!bid_normally(N)");
         u = new Unifier();
         u.unifies(t3,t4);
-        //System.out.println("u="+u);
         assertEquals(u.get("N").toString(), "1");
 
     }
@@ -439,9 +423,7 @@ public class TermTest extends TestCase {
         Literal l2 = Literal.parseLiteral("received(S,tell,C,M)");
         Unifier u = new Unifier();
         assertTrue(u.unifies(l1,l2));
-        //System.out.println(u);
         l2 = (Literal)l2.capply(u);
-        //System.out.println("l2 with apply = "+l2);
         assertEquals(l1.toString(), l2.toString());
 
         assertFalse(new Unifier().unifies(Literal.parseLiteral("c(x)"), Literal.parseLiteral("c(20)")));
@@ -500,7 +482,7 @@ public class TermTest extends TestCase {
 
         u = new Unifier();
         assertTrue(p1.hasSubsetAnnot(p4, u));
-        assertEquals(u.get("T").toString(), "[a(3),a(2,3)]");
+        assertEquals(u.get("T").toString(), "[a(2,3),a(3)]");
 
         Pred p5 = Pred.parsePred("p1(t1,t2)[a1|[a(2,3),a(3)]]");
         u = new Unifier();
@@ -509,20 +491,20 @@ public class TermTest extends TestCase {
         Pred p6 = Pred.parsePred("p1(t1,t2)[a(3)|T]");
         u = new Unifier();
         assertTrue(p6.hasSubsetAnnot(p1, u));
-        assertEquals(u.get("T").toString(), "[a1,a(2,3)]");
+        assertEquals("[a(2,3),a1]", u.get("T").toString());
         assertTrue(p1.hasSubsetAnnot(p6, u));
 
         Pred p7 = Pred.parsePred("p1(t1,t2)[A|T]");
         u = new Unifier();
         assertTrue(p7.hasSubsetAnnot(p1, u));
-        assertEquals("a1", u.get("A").toString() );
-        assertEquals("[a(3),a(2,3)]", u.get("T").toString());
+        assertEquals("a(2,3)", u.get("A").toString() );
+        assertEquals("[a(3),a1]", u.get("T").toString());
         assertTrue(p1.hasSubsetAnnot(p7, u));
 
         u = new Unifier();
         assertTrue(p1.hasSubsetAnnot(p7, u));
-        assertEquals("a1", u.get("A").toString() );
-        assertEquals("[a(3),a(2,3)]", u.get("T").toString());
+        assertEquals("a(2,3)", u.get("A").toString() );
+        assertEquals("[a(3),a1]", u.get("T").toString());
 
         // test many vars
         l1 = Literal.parseLiteral(                         "p[4,W,a,b,X,Y,e,Z]");
@@ -574,6 +556,28 @@ public class TermTest extends TestCase {
         assertTrue(u2.equals(u));
     }
 
+    public void testSubsetAnnotBugAmandine() throws Exception {
+        Literal l1 = ASSyntax.parseLiteral("b(a)[annot1,annot2,source(self)]");
+        Literal l2 = ASSyntax.parseLiteral("_[Z,Y]");
+        Literal l3 = ASSyntax.parseLiteral("_[annot2,Y,source(self)]");
+        Literal l4 = ASSyntax.parseLiteral("b(a)[annot1,annot2,Z,source(self)]");
+        Unifier u = new Unifier();
+        assertTrue(u.unifies(l2, l1));
+        u = new Unifier();
+        assertFalse(u.unifies(l1, l2));
+
+        u = new Unifier();
+        u.unifies(new VarTerm("Z"), ASSyntax.parseTerm("annot1"));
+        assertTrue(l2.hasSubsetAnnot(l1, u));
+
+        u = new Unifier();
+        assertTrue(l1.hasSubsetAnnot(l3, u));
+        u = new Unifier();
+        assertTrue(l4.hasSubsetAnnot(l3, u)); // true if {Y=annot1, Z=annot1}
+        u = new Unifier();
+        assertTrue(l3.hasSubsetAnnot(l1, u));
+    }
+
     public void testAnnotUnifAsList() {
         Pred p1 = Pred.parsePred("p[b(2),x]");
         Pred p2 = Pred.parsePred("p[a,b(2),c]");
@@ -585,13 +589,13 @@ public class TermTest extends TestCase {
         p2 = Pred.parsePred("p(t1,B)[a(X)|R]");
 
         assertTrue(u.unifies(p2,p1));
-        assertEquals("[z,a(3),a(2,3)]", u.get("R").toString());
+        assertEquals("[a(2,3),a(3),z]", u.get("R").toString());
 
         u = new Unifier();
         assertTrue(u.unifies(p1,p2));
         //System.out.println(u+"-"+p2);
         p2 = (Pred)p2.capply(u);
-        assertEquals("p(t1,t2)[z,a(1),a(3),a(2,3)]", p2.toString());
+        assertEquals("p(t1,t2)[a(1),a(2,3),a(3),z]", p2.toString());
     }
 
     public void testCompare() throws ParseException {
@@ -620,28 +624,44 @@ public class TermTest extends TestCase {
         Literal l1 = Literal.parseLiteral("~a(3)");
         Literal l2 = Literal.parseLiteral("a(3)");
         Literal l3 = Literal.parseLiteral("a(10)[5]");
-        assertTrue(l1.compareTo(l2) == 1);
-        assertTrue(l1.compareTo(l3) == 1);
-        assertTrue(l2.compareTo(l3) == -1);
+        Term l4 = ASSyntax.parseTerm("a");
+        Term l5 = ASSyntax.parseTerm("b");
+        assertTrue(l1.compareTo(l2) > 0);
+        assertTrue(l2.compareTo(l1) < 0);
+        assertTrue(l1.compareTo(l3) > 0);
+        assertTrue(l3.compareTo(l1) < 0);
+        assertTrue(l2.compareTo(l3) < 0);
 
-        assertTrue(l2.compareTo(new Atom("g")) > 0);
-        assertTrue(new Atom("g").compareTo(l2) < 0);
+        assertTrue(l2.compareTo(l4) > 0);
+        assertTrue(l4.compareTo(l2) < 0);
+        assertTrue(l2.compareTo(l5) < 0);
+        assertTrue(l5.compareTo(l2) > 0);
+
+        assertTrue(l2.compareTo(new Atom("g")) < 0);
+        assertTrue(new Atom("g").compareTo(l2) > 0);
         assertTrue(new Atom("g").compareTo(new Atom("g")) == 0);
 
         ListTerm lt1 = ListTermImpl.parseList("[3,10]");
         ListTerm lt2 = ListTermImpl.parseList("[3,4]");
         ListTerm lt3 = ListTermImpl.parseList("[1,1,1]");
-        assertTrue(lt1.compareTo(lt2) > 0);
-        assertTrue(lt1.compareTo(lt3) < 0);
+        ListTerm lt4 = ListTermImpl.parseList("[3,4,10]");
         assertTrue(lt1.compareTo(p1) < 0);
+
+        assertTrue(lt1.compareTo(lt1) == 0);
+        assertTrue(lt1.compareTo(lt2) > 0);
+        assertTrue(lt2.compareTo(lt1) < 0);
+        assertTrue(lt1.compareTo(lt3) > 0);
+        assertTrue(lt3.compareTo(lt1) < 0);
+        assertTrue(lt1.compareTo(lt4) > 0);
+        assertTrue(lt4.compareTo(lt1) < 0);
 
         ListTerm l = ListTermImpl.parseList("[C,b(4),A,4,b(1,1),\"x\",[],[c],[a],[b,c],[a,b],~a(3),a(e,f),b,a(3),b(3),a(10)[30],a(10)[5],a,a(d,e)]");
         Collections.sort(l);
-        assertEquals("[4,\"x\",[],[a],[c],[a,b],[b,c],a,b,a(3),a(10)[5],a(10)[30],b(3),b(4),a(d,e),a(e,f),b(1,1),~a(3),A,C]", l.toString());
+        assertEquals("[4,\"x\",[],[a],[a,b],[b,c],[c],a,a(3),a(10)[5],a(10)[30],a(d,e),a(e,f),~a(3),b,b(1,1),b(3),b(4),A,C]", l.toString());
 
         l = ListTermImpl.parseList("[b,[1,1,1],c,10,g,casa,f(10),5,[3,10],f(4),[3,4]]");
         Collections.sort(l);
-        assertEquals("[5,10,[3,4],[3,10],[1,1,1],b,c,casa,g,f(4),f(10)]",l.toString());
+        assertEquals("[5,10,[1,1,1],[3,4],[3,10],b,c,casa,f(4),f(10),g]",l.toString());
 
         Term t1 = ASSyntax.createNumber(10);
         Term t2 = ASSyntax.createNumber(10);
@@ -660,7 +680,7 @@ public class TermTest extends TestCase {
     }
 
     public void testComparePI() {
-        List<PredicateIndicator> l = new ArrayList<PredicateIndicator>();
+        List<PredicateIndicator> l = new ArrayList<>();
         l.add(new PredicateIndicator("b", 2));
         l.add(new PredicateIndicator("b", 7));
         l.add(new PredicateIndicator("a", 2));
@@ -741,7 +761,7 @@ public class TermTest extends TestCase {
     public void testMakeVarAnnon3() {
         Literal l1 = Literal.parseLiteral("calc(AgY,X)[vl(X),source(AgY),bla(Y),X]");
         l1.makeVarsAnnon();
-        Map<VarTerm, Integer> v = new HashMap<VarTerm, Integer>();
+        Map<VarTerm, Integer> v = new HashMap<>();
         l1.countVars(v);
         assertEquals(3, v.size());
         assertEquals("vl("+l1.getTerm(1)+")",l1.getAnnots("vl").get(0).toString());
@@ -807,7 +827,7 @@ public class TermTest extends TestCase {
         // if we make a literal anonymous multiple times, the instances should not
         // be equal but should eb unifiable.
         Literal literal = Literal.parseLiteral("literal(Variable, _)");
-        List<Literal> literals = new ArrayList<Literal>();
+        List<Literal> literals = new ArrayList<>();
         literals.add(literal);
         // create a list of anonymized l1s
         for (int i = 0; i < 5; i++) {
@@ -859,6 +879,14 @@ public class TermTest extends TestCase {
 
         p1.addAnnots(p3.getAnnots());
         assertEquals(8,p1.getAnnots().size());
+    }
+
+    public void testGetAnnot() {
+        Literal p3 = Literal.parseLiteral("b(a)[annot2,annot1(x),annot3,source(self)]");
+        assertNotNull(p3.getAnnot("annot1"));
+        assertNotNull(p3.getAnnot("annot2"));
+        assertNotNull(p3.getAnnot("source"));
+        assertNull(p3.getAnnot("kkk"));
     }
 
     public void testGetSources() {
@@ -1101,7 +1129,6 @@ public class TermTest extends TestCase {
         //assertTrue(u.unifies(new VarTerm("X"), parseTerm("f(Y)")));
         //assertTrue(u.unifies(new VarTerm("Y"), parseTerm("g(X)")));
 
-        //System.out.println(u);
         VarTerm m = new VarTerm("Glob");
         Literal tm = (Literal)m.capply(u);
         assertTrue(tm.getTerm(1).isCyclicTerm());
@@ -1113,7 +1140,6 @@ public class TermTest extends TestCase {
         assertTrue(u.unifies(new VarTerm("X"), parseTerm("f(Y)")));
         assertTrue(u.unifies(new VarTerm("Y"), parseTerm("g(X)")));
 
-        //System.out.println(u);
         VarTerm x = new VarTerm("X");
         Term tx = x.capply(u);
         assertTrue(tx.isCyclicTerm());
@@ -1136,5 +1162,96 @@ public class TermTest extends TestCase {
         assertTrue(u.unifies(t2, v2));
         assertTrue(new Unifier().unifies(t1, t2));
         assertTrue(u.unifies(v1, v2));
+    }
+    
+    public void testSetTerm() throws ParseException, TokenMgrError {
+        SetTerm t1 = new SetTermImpl();
+        t1.addAll( ASSyntax.parseList("[a,5,p(3),a]"));
+        assertEquals(3, t1.size());
+        
+        SetTerm t2 = new SetTermImpl();
+        t2.addAll( ASSyntax.parseList("[p(3),a,5]"));
+        
+        assertTrue(t1.equals(t2));
+        
+        Unifier u = new Unifier();
+        assertTrue(u.unifies(t1, t2));
+
+        t1.add(new Atom("r"));
+        assertFalse(u.unifies(t1, t2));
+
+    }
+
+    /*
+     * bugs reported by Michael at https://github.com/jason-lang/jason/issues/40
+     */
+    public void testHash() throws ParseException, TokenMgrError {
+        Term t1 = ASSyntax.parseLiteral("~alice(person(female))");
+        Term t2 = ASSyntax.parseLiteral("alice(~person(female))");
+        assertTrue(t1.hashCode() != t2.hashCode());
+        
+        t1 = ASSyntax.createLiteral("test", ASSyntax.createString("TermOne"), ASSyntax.createString("TermTwo"));
+        t2 = ASSyntax.createLiteral("test", ASSyntax.createString("TermTwo"), ASSyntax.createString("TermOne"));        
+        assertTrue(t1.hashCode() != t2.hashCode());
+    }
+
+    public void testJSON() throws ParseException, TokenMgrError {
+        Term t1 = ASSyntax.parseLiteral("alice");
+
+        assertEquals("{\n" + 
+                "   \"functor\" : \"alice\"\n" + 
+                "}", t1.getAsJSON(""));
+
+        t1 = ASSyntax.parseLiteral("~alice(female,10)");
+        assertEquals("{\n" + 
+                "   \"functor\" : \"alice\",\n" + 
+                "   \"negated\" : true,\n" + 
+                "   \"terms\"   : [\n" + 
+                "      {\n" + 
+                "         \"functor\" : \"female\"\n" + 
+                "      },\n" + 
+                "      10\n" + 
+                "   ]\n" + 
+                "}", t1.getAsJSON(""));
+
+        t1 = ASSyntax.parseLiteral("~alice(person(female),10,[a,\"10\",p(10)])[source(bob),43]");
+        assertEquals("{\n" + 
+                "   \"functor\" : \"alice\",\n" + 
+                "   \"negated\" : true,\n" + 
+                "   \"terms\"   : [\n" + 
+                "      {\n" + 
+                "         \"functor\" : \"person\",\n" + 
+                "         \"terms\"   : [\n" + 
+                "            {\n" + 
+                "               \"functor\" : \"female\"\n" + 
+                "            }\n" + 
+                "         ]\n" + 
+                "      },\n" + 
+                "      10,\n" + 
+                "      [\n" + 
+                "         {\n" + 
+                "            \"functor\" : \"a\"\n" + 
+                "         },\n" + 
+                "         \"10\",\n" + 
+                "         {\n" + 
+                "            \"functor\" : \"p\",\n" + 
+                "            \"terms\"   : [\n" + 
+                "               10\n" + 
+                "            ]\n" + 
+                "         }\n" + 
+                "      ]\n" + 
+                "   ],\n" + 
+                "   \"annotations\"   : [\n" + 
+                "      43,\n" + 
+                "      {\n" + 
+                "         \"functor\" : \"source\",\n" + 
+                "         \"terms\"   : [\n" + 
+                "            {\n" + 
+                "               \"functor\" : \"bob\"\n" + 
+                "            }\n" + 
+                "         ]\n" + 
+                "      }\n" + 
+                "   ]\n" + 
+                "}", t1.getAsJSON(""));
     }
 }

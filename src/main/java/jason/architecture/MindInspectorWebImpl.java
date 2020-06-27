@@ -22,7 +22,7 @@ import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 
 import jason.asSemantics.Agent;
-import jason.infra.centralised.BaseCentralisedMAS;
+import jason.runtime.RuntimeServices;
 import jason.runtime.Settings;
 import jason.util.Config;
 import jason.util.asl2html;
@@ -36,8 +36,8 @@ public class MindInspectorWebImpl extends MindInspectorWeb {
     private Map<String,Integer>        lastStepSeenByUser = new HashMap<>();
     private Map<String,Agent>          registeredAgents = new HashMap<>();
 
-    private BaseCentralisedMAS         runner = null;
-    
+    private RuntimeServices            runner = null;
+
     public MindInspectorWebImpl() {
     }
 
@@ -68,7 +68,7 @@ public class MindInspectorWebImpl extends MindInspectorWeb {
         httpServer.stop(0);
         httpServer = null;
     }
-    
+
     private void registerRootBrowserView() {
         if (httpServer == null)
             return;
@@ -121,7 +121,7 @@ public class MindInspectorWebImpl extends MindInspectorWeb {
         try {
             Agent ag = registeredAgents.get(getAgNameFromPath(path));
             if (ag != null) {
-                AgArch arch = ag.getTS().getUserAgArch();
+                AgArch arch = ag.getTS().getAgArch();
                 if (arch != null) {
                     // should add a new conf for mindinspector, otherwise will start a new gui for the agent
                     arch.getTS().getSettings().addOption(Settings.MIND_INSPECTOR,"web(cycle,html,no_history)");
@@ -156,9 +156,9 @@ public class MindInspectorWebImpl extends MindInspectorWeb {
                         for (String a: histories.keySet()) {
                             responseBody.write( ("- <a href=\"/agent-mind/"+a+"/latest\" target=\"am\" style=\"font-family: arial; text-decoration: none\">"+a+"</a><br/>").getBytes());
                         }
-                        
+
                         if (runner != null && !runner.getDF().isEmpty()) {
-                            responseBody.write( ("<br/><a href=\"/df\" target=\"am\" style=\"font-family: arial; text-decoration: none\">DF</a><br/>").getBytes());                            
+                            responseBody.write( ("<br/><a href=\"/df\" target=\"am\" style=\"font-family: arial; text-decoration: none\">DF</a><br/>").getBytes());
                         }
                     }
                     responseBody.write("<hr/>by <a href=\"http://jason.sf.net\" target=\"_blank\">Jason</a>".getBytes());
@@ -173,7 +173,7 @@ public class MindInspectorWebImpl extends MindInspectorWeb {
 
     /** add the agent in the list of available agent for mind inspection */
     public synchronized void registerAg(Agent ag) {
-        String agName = ag.getTS().getUserAgArch().getAgName();
+        String agName = ag.getTS().getAgArch().getAgName();
         if (!agName.equals("no-named")) {
             registeredAgents.put(agName, ag);
             histories.put(agName, new ArrayList<Document>()); // just for the agent name to appear in the list of agents
@@ -181,13 +181,13 @@ public class MindInspectorWebImpl extends MindInspectorWeb {
     }
 
     public synchronized void removeAg(Agent ag) {
-        String agName = ag.getTS().getUserAgArch().getAgName();
+        String agName = ag.getTS().getAgArch().getAgName();
         registeredAgents.remove(agName);
         histories.remove(agName);
     }
 
     public synchronized void addAgState(Agent ag, Document mind, boolean hasHistory) {
-        String agName = ag.getTS().getUserAgArch().getAgName();
+        String agName = ag.getTS().getAgArch().getAgName();
         List<Document> h = histories.get(agName);
         if (h == null) {
             h = new ArrayList<>();
@@ -256,7 +256,7 @@ public class MindInspectorWebImpl extends MindInspectorWeb {
                                         try {
                                             int pos = path.lastIndexOf("/");
                                             String n = path.substring(pos+1).trim();
-                                            i = new Integer(n);
+                                            i = Integer.valueOf(n);
                                         } catch (Exception e) {}
                                     }
                                     if (i == -1) {
@@ -355,9 +355,9 @@ public class MindInspectorWebImpl extends MindInspectorWeb {
         }
     }
 
-    public synchronized void registerCentRunner(BaseCentralisedMAS rs) {
+    public synchronized void registerCentRunner(RuntimeServices rs) {
         if (rs == null) return;
-        
+
         this.runner = rs;
         httpServer.createContext("/df", new HttpHandler() {
             public void handle(HttpExchange exchange) throws IOException {
@@ -370,7 +370,7 @@ public class MindInspectorWebImpl extends MindInspectorWeb {
                 if (requestMethod.equalsIgnoreCase("GET")) {
                     responseBody.write(("<html><head><title>Directory Facilitator State</title></head><body>").getBytes());
                     responseBody.write(("<font size=\"+2\"><p style='color: red; font-family: arial;'>Directory Facilitator State</p></font>").getBytes());
-                                        
+
                     responseBody.write("<table border=\"0\" cellspacing=\"3\" cellpadding=\"6\" >".getBytes());
                     responseBody.write("<tr style='background-color: #ece7e6; font-family: arial;'><td><b>Agent</b></td><td><b>Services</b></td></tr>".getBytes());
                     Map<String, Set<String>> df = runner.getDF();
@@ -380,7 +380,7 @@ public class MindInspectorWebImpl extends MindInspectorWeb {
                             responseBody.write(("<td>"+s+"<br/></td>").getBytes());
                         }
                         responseBody.write("</tr>".getBytes());
-                            
+
                     }
                     responseBody.write("</table>".getBytes());
                 }
@@ -388,7 +388,7 @@ public class MindInspectorWebImpl extends MindInspectorWeb {
                 responseBody.close();
             }
         });
-            
+
     }
 
 }

@@ -103,7 +103,7 @@ public class Structure extends Atom {
         int result = super.calcHashCode();
         final int ts = getArity();
         for (int i=0; i<ts; i++)
-            result = 7 * result + getTerm(i).hashCode();
+            result += (i+7) * getTerm(i).hashCode();
         return result;
     }
 
@@ -141,7 +141,7 @@ public class Structure extends Atom {
         return false;
     }
 
-    public int compareTo(Term t) {
+    /*public int compareTo(Term t) {
         int c = super.compareTo(t);
         if (c != 0)
             return c;
@@ -151,14 +151,19 @@ public class Structure extends Atom {
 
             final int ma = getArity();
             final int oa = tAsStruct.getArity();
+            //System.out.println(this + " <> "+tAsStruct +  " " + ma + " " + oa);
             for (int i=0; i<ma && i<oa; i++) {
                 c = getTerm(i).compareTo(tAsStruct.getTerm(i));
                 if (c != 0)
                     return c;
             }
+            if (ma < oa)
+                return -1;
+            else if (ma > oa)
+                return 1;
         }
         return 0;
-    }
+    }*/
 
     @Override
     public boolean subsumes(Term t) {

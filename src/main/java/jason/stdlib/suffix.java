@@ -61,22 +61,22 @@ import java.util.Iterator;
                 "list"
         },
         examples= {
-                ".suffix([c],[a,b,c]): true" + 
-                ".suffix([a,b],[a,b,c]): false" + 
+                ".suffix([c],[a,b,c]): true" +
+                ".suffix([a,b],[a,b,c]): false" +
                 ".suffix(X,[a,b,c]): unifies X with any suffix of the list, i.e., [a,b,c], [b,c], [c], and [] in this order"
         },
         seeAlso= {
-                "jason.stdlib.concat", 
-                "jason.stdlib.length", 
-                "jason.stdlib.sort", 
-                "jason.stdlib.nth", 
-                "jason.stdlib.max", 
-                "jason.stdlib.min", 
-                "jason.stdlib.reverse", 
-                "jason.stdlib.prefix", 
-                "jason.stdlib.sublist", 
-                "jason.stdlib.difference", 
-                "jason.stdlib.intersection", 
+                "jason.stdlib.concat",
+                "jason.stdlib.length",
+                "jason.stdlib.sort",
+                "jason.stdlib.nth",
+                "jason.stdlib.max",
+                "jason.stdlib.min",
+                "jason.stdlib.reverse",
+                "jason.stdlib.prefix",
+                "jason.stdlib.sublist",
+                "jason.stdlib.difference",
+                "jason.stdlib.intersection",
                 "jason.stdlib.union"
         }
     )

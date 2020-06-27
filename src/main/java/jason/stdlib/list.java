@@ -43,20 +43,20 @@ import jason.asSyntax.Term;
                 "term"
         },
         examples= {
-                ".list([a,b,c]): true", 
-                ".list([a,b,c(X)]): true", 
-                ".list(b(10)): false", 
-                ".list(10): false", 
-                ".list(\"home page\"): false", 
-                ".list(X): false if X is free, true if X is bound to a list", 
+                ".list([a,b,c]): true",
+                ".list([a,b,c(X)]): true",
+                ".list(b(10)): false",
+                ".list(10): false",
+                ".list(\"home page\"): false",
+                ".list(X): false if X is free, true if X is bound to a list",
                 ".list(a(X)): false"
         },
         seeAlso= {
-                "jason.stdlib.atom", 
-                "jason.stdlib.literal", 
-                "jason.stdlib.number", 
-                "jason.stdlib.string", 
-                "jason.stdlib.structure", 
+                "jason.stdlib.atom",
+                "jason.stdlib.literal",
+                "jason.stdlib.number",
+                "jason.stdlib.string",
+                "jason.stdlib.structure",
                 "jason.stdlib.ground"
         }
     )

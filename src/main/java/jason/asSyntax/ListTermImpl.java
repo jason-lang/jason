@@ -872,4 +872,17 @@ public class ListTermImpl extends Structure implements ListTerm {
         }
         return u;
     }
+    
+    @Override
+    public String getAsJSON(String identation) {
+        StringBuilder json = new StringBuilder(identation+"[\n");
+        String c = "";
+        for (Term t: this) {
+            json.append(c+ t.getAsJSON(identation+"   ") );
+            c = ",\n";
+        }
+        json.append("\n"+identation+"]");
+        return json.toString();
+    }
+
 }

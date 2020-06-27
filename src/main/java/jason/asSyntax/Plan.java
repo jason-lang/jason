@@ -10,6 +10,7 @@ import org.w3c.dom.Element;
 
 import jason.JasonException;
 import jason.asSemantics.Unifier;
+import jason.asSyntax.PlanBody.BodyType;
 import jason.asSyntax.parser.as2j;
 
 /** Represents an AgentSpack plan
@@ -42,8 +43,8 @@ public class Plan extends Structure implements Cloneable, Serializable {
 
     private boolean     isTerm = false; // it is true when the plan body is used as a term instead of an element of a plan
 
-    private String file = ""; // the file where this plan was inside
-    
+    private String source = ""; // the source of this plan (file, url, ....)
+
     // used by clone
     public Plan() {
         super("plan", 0);
@@ -69,9 +70,10 @@ public class Plan extends Structure implements Cloneable, Serializable {
         return 4;
     }
 
-    public void setFile(String f) { if (f!=null) this.file = f; }
-    public String getFile()       { return this.file; }
-    
+    public void setSource(String f) { if (f!=null) this.source = f; }
+    public String getSource()       { return this.source; }
+    @Deprecated public String getFile()       { return this.source; }
+
     private static final Term noLabelAtom = new Atom("nolabel");
 
     @Override
@@ -84,7 +86,7 @@ public class Plan extends Structure implements Cloneable, Serializable {
         case 2:
             return (context == null) ? Literal.LTrue : context;
         case 3:
-            if (body.getBodyNext() == null && body.getBodyTerm().isVar()) // the case of body as a single var
+            if (body.getBodyNext() == null && body.getBodyTerm() != null && body.getBodyType() == BodyType.none && body.getBodyTerm().isVar()) // the case of body as a single var
                 return body.getBodyTerm();
             return body;
         default:
@@ -105,6 +107,7 @@ public class Plan extends Structure implements Cloneable, Serializable {
             context = (LogicalFormula)t;
             break;
         case 3:
+            System.out.println("*1"+t+" "+this);
             body    = (PlanBody)t;
             break;
         }
@@ -130,7 +133,7 @@ public class Plan extends Structure implements Cloneable, Serializable {
     public Pred getLabel() {
         return label;
     }
-    
+
     public void delLabel() {
         setLabel(null);
     }
@@ -144,11 +147,11 @@ public class Plan extends Structure implements Cloneable, Serializable {
     public void setAsPlanTerm(boolean b) {
         isTerm = b;
     }
-    
+
     public boolean isPlanTerm() {
         return isTerm;
     }
-    
+
     @Override
     public ListTerm getAsListOfTerms() {
         ListTerm l = new ListTermImpl();
@@ -158,19 +161,19 @@ public class Plan extends Structure implements Cloneable, Serializable {
         l.add(getBody());
         return l;
     }
-    
+
     /** creates a plan from a list with four elements: [L, T, C, B] */
     public static Plan newFromListOfTerms(ListTerm lt) throws JasonException {
         Term c = lt.get(2);
         if (c.isPlanBody()) {
             c = ((PlanBody)c).getBodyTerm();
         }
-        return new Plan( new Pred((Literal)(lt.get(0))), 
-                (Trigger)lt.get(1), 
-                (LogicalFormula)c, 
+        return new Plan( new Pred((Literal)(lt.get(0))),
+                (Trigger)lt.get(1),
+                (LogicalFormula)c,
                 (PlanBody)lt.get(3));
     }
-    
+
 
     /** prefer using ASSyntax.parsePlan */
     public static Plan parse(String sPlan) {
@@ -215,10 +218,11 @@ public class Plan extends Structure implements Cloneable, Serializable {
     /** returns an unifier if this plan is relevant for the event <i>te</i>,
         returns null otherwise.
     */
-    public Unifier isRelevant(Trigger te) {
+    public Unifier isRelevant(Trigger te, Unifier u) {
         // annots in plan's TE must be a subset of the ones in the event!
         // (see definition of Unifier.unifies for 2 Preds)
-        Unifier u = new Unifier();
+        if (u == null)
+            u = new Unifier();
         if (u.unifiesNoUndo(tevent, te))
             return u;
         else
@@ -277,7 +281,7 @@ public class Plan extends Structure implements Cloneable, Serializable {
         // TODO: should we change the namespace of all elements of the plan?
         return (Plan)clone();
     }
-    
+
     /** used to create a plan clone in a new IM */
     public Plan cloneOnlyBody() {
         Plan p = new Plan();
@@ -326,10 +330,10 @@ public class Plan extends Structure implements Cloneable, Serializable {
             l.appendChild(new LiteralImpl(label).getAsDOM(document));
             u.appendChild(l);
         }
-        if (file != null && !file.isEmpty()) {
-            u.setAttribute("file", file);
+        if (source != null && !source.isEmpty()) {
+            u.setAttribute("file", source);
         }
-        
+
         u.appendChild(tevent.getAsDOM(document));
 
         if (context != null) {

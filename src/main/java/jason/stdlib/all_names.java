@@ -7,7 +7,7 @@ import jason.asSyntax.Atom;
 import jason.asSyntax.ListTerm;
 import jason.asSyntax.ListTermImpl;
 import jason.asSyntax.Term;
-import jason.runtime.RuntimeServices;
+import jason.runtime.RuntimeServicesFactory;
 
 /**
   <p>Internal action: <b><code>.all_names</code></b>.
@@ -33,7 +33,7 @@ import jason.runtime.RuntimeServices;
         literal=".all_names(result)",
         hint="get the names of all agents in the system",
         argsHint= {
-                "the resulting unification with all agent's names"      
+                "the resulting unification with all agent's names"
         },
         argsType= {
                 "list"
@@ -42,8 +42,8 @@ import jason.runtime.RuntimeServices;
                 ".all_names(L): unifies with L a list of all agents in the system"
         },
         seeAlso= {
-                "jason.stdlib.broadcast", 
-                "jason.stdlib.send", 
+                "jason.stdlib.broadcast",
+                "jason.stdlib.send",
                 "jason.stdlib.all_names",
                 "jason.runtime.RuntimeServices"
         }
@@ -61,10 +61,9 @@ public class all_names extends DefaultInternalAction {
     @Override
     public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {
         checkArguments(args);
-        RuntimeServices rs = ts.getUserAgArch().getRuntimeServices();
         ListTerm ln = new ListTermImpl();
         ListTerm tail = ln;
-        for (String a: rs.getAgentsNames()) {
+        for (String a: RuntimeServicesFactory.get().getAgentsNames()) {
             tail = tail.append(new Atom(a));
         }
         return un.unifies(args[0], ln);

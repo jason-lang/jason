@@ -2,6 +2,7 @@ package jason.asSyntax;
 
 import jason.asSemantics.Unifier;
 
+import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -99,7 +100,7 @@ public class Atom extends Literal {
         if (!isList() && t.isList()) return 1;
 
         // both are lists, check the size
-        if (isList() && t.isList()) {
+        /*if (isList() && t.isList()) {
             ListTerm l1 = (ListTerm)this;
             ListTerm l2 = (ListTerm)t;
             final int l1s = l1.size();
@@ -107,23 +108,64 @@ public class Atom extends Literal {
             if (l1s > l2s) return 1;
             if (l2s > l1s) return -1;
             return 0; // need to check elements (in Structure class)
-        }
+        }*/
+
         if (t.isVar())
             return -1;
+
         if (t instanceof Literal) {
             Literal tAsLit = (Literal)t;
-            if (getNS().equals(tAsLit.getNS())) { // same ns
-                final int ma = getArity();
-                final int oa = tAsLit.getArity();
-                if (ma < oa)
-                    return -1;
-                else if (ma > oa)
-                    return 1;
-                else
-                    return getFunctor().compareTo(tAsLit.getFunctor());
-            } else {
+            if (!getNS().equals(tAsLit.getNS())) // different ns
                 return getNS().compareTo(tAsLit.getNS());
+
+            // Functor
+            int c = getFunctor().compareTo(tAsLit.getFunctor());
+            if (c != 0)
+                return c;
+
+            if (!negated() && tAsLit.negated())
+                return -1;
+            else if (negated() && !tAsLit.negated())
+                return 1;
+
+            // Terms
+            final int ma = getArity(); // my arity
+            final int oa = tAsLit.getArity(); // other arity
+            for (int i=0; i<ma && i<oa; i++) {
+                c = getTerm(i).compareTo(tAsLit.getTerm(i));
+                if (c != 0)
+                    return c;
             }
+            if (ma < oa)
+                return -1;
+            else if (ma > oa)
+                return 1;
+
+            // annots
+            if (getAnnots() == null && tAsLit.getAnnots() == null)
+                return 0;
+            if (getAnnots() == null)
+                return -1;
+            if (tAsLit.getAnnots() == null)
+                return 1;
+
+            Iterator<Term> pai = tAsLit.getAnnots().iterator();
+            for (Term a : getAnnots()) {
+                if (!pai.hasNext())
+                    break;
+                c = a.compareTo(pai.next());
+                if (c != 0)
+                    return c;
+            }
+
+            final int ats = getAnnots().size();
+            final int ots = tAsLit.getAnnots().size();
+            if (ats < ots)
+                return -1;
+            if (ats > ots)
+                return 1;
+
+            return 0;
         }
 
         return super.compareTo(t);

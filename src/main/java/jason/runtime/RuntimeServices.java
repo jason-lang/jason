@@ -2,6 +2,8 @@ package jason.runtime;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Map;
+import java.util.Set;
 
 import jason.JasonException;
 import jason.architecture.AgArch;
@@ -23,12 +25,12 @@ public interface RuntimeServices {
      * class (default value is "DefaultBeliefBase"), <i>stts</i> as
      * Settings (default value is new Settings()), and
      * <i>father</i> is the agent creating this agent (null is none).
-     * 
-     * if no archClasses is informed (null value), 
+     *
+     * if no archClasses is informed (null value),
      *    if fathers is informed
      *        use father's ag archs
      *    else
-     *        use default ag archs (see registerDefaultAgArch) 
+     *        use default ag archs (see registerDefaultAgArch)
      *
      * <p> Example: createAgent("bob", "bob.asl", "mypkg.MyAgent", null, null, null);
      *
@@ -42,7 +44,7 @@ public interface RuntimeServices {
     default public void registerDefaultAgArch(String agArch) {}
 
     default public Collection<String> getDefaultAgArchs() { return new ArrayList<>(); }
-    
+
     /** starts an agent (e.g. create thread for it) */
     public void startAgent(String agName);
 
@@ -61,19 +63,25 @@ public interface RuntimeServices {
      * Kills the agent named <i>agName</i> as a requested by <i>byAg</i>.
      * Agent.stopAg() method is called before the agent is removed.
      */
-    public boolean killAgent(String agName, String byAg);
+    public boolean killAgent(String agName, String byAg, int deadline);
 
     /** Returns a set of all agents' name */
     public Collection<String> getAgentsNames();
 
     /** Gets the number of agents in the MAS. */
     public int getAgentsQty();
+    
+    public boolean isRunning();
 
     /** Stops all MAS (the agents, the environment, the controller, ...) */
-    public void stopMAS() throws Exception;
-    
-    default public void dfRegister(String agName, String service, String type) {}
-    default public void dfDeRegister(String agName, String service, String type) {}
+    public void stopMAS(int deadline, boolean stopJVM) throws Exception;
+    default public void stopMAS() throws Exception { stopMAS(0, true); }
+
+    default public void               dfRegister(String agName, String service, String type) {}
+    default public void               dfDeRegister(String agName, String service, String type) {}
     default public Collection<String> dfSearch(String service, String type) { return new ArrayList<>(); }
-    default public void dfSubscribe(String agName, String service, String type) {}
+    default public void               dfSubscribe(String agName, String service, String type) {}
+    
+    default public Map<String, Set<String>> getDF() { return null; }
+
 }

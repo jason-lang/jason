@@ -274,8 +274,9 @@ public class RunJadeMAS extends RunCentralisedMAS {
 
     public void finish() {
         try {
+            isRunning = false;
             logger.info("Finishing the system.");
-            new JadeRuntimeServices(cc,null).stopMAS();
+            new JadeRuntimeServices(cc,null).stopMAS(0, true); // TODO: implement deadline for stopMAS in JADE
         } catch (Exception e) {
             logger.log(Level.SEVERE, "Error stopping system.", e);
         }

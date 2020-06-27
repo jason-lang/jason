@@ -15,6 +15,8 @@ import org.w3c.dom.Element;
  */
 public abstract class BinaryStructure extends Structure {
 
+    private static final long serialVersionUID = 1L;
+
     /** Constructor for binary operator */
     public BinaryStructure(Term t1, String id, Term t2) {
         super(id,2);

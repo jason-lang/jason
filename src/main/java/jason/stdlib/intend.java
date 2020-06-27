@@ -18,19 +18,19 @@ import jason.asSyntax.Trigger.TEType;
 /**
   <p>Internal action: <b><code>.intend(<i>G</i>, [ <i>I</i> ] )</code></b>.
 
-  <p>Description: checks if goal <i>G</i> is intended: <i>G</i> is intended 
+  <p>Description: checks if goal <i>G</i> is intended: <i>G</i> is intended
   if there is a triggering event <code>+!G</code> in any plan within an
   intention <i>I</i>; just note that intentions can appear in E (list of events), PA (intentions with pending actions),
-  and PI (intentions waiting for something) as well. 
+  and PI (intentions waiting for something) as well.
   This internal action backtracks all values for G.
 
   <p>Example:<ul>
 
   <li> <code>.intend(go(1,3))</code>: is true if a plan with triggering event
   <code>+!go(1,3)</code> appears in an intention of the agent.
-  <li> <code>.intend(go(1,3),I)</code>: as above and <code>I</code> unifies with the intention that contains the goal. 
+  <li> <code>.intend(go(1,3),I)</code>: as above and <code>I</code> unifies with the intention that contains the goal.
   <code>I</code> is a representation of the intention as a term @see jason.stdlib.current_intention.
-  
+
 
   </ul>
 
@@ -60,7 +60,7 @@ import jason.asSyntax.Trigger.TEType;
                 "term"
         },
         examples= {
-                ".intend(go(1,3)): is true if a plan with triggering event +!go(1,3) appears in an intention of the agent", 
+                ".intend(go(1,3)): is true if a plan with triggering event +!go(1,3) appears in an intention of the agent",
                 ".intend(go(1,3),I): same, but I unifies with the intention that contains the goal"
         },
         seeAlso= {
@@ -108,11 +108,11 @@ public class intend extends DefaultInternalAction {
 
         return new Iterator<Unifier>() {
             Unifier solution = null; // the current response (which is an unifier)
-            Intention curInt = null; 
+            Intention curInt = null;
             Iterator<Intention> intInterator = C.getAllIntentions();
 
-            { find(); } // find first answer 
-            
+            { find(); } // find first answer
+
             public boolean hasNext() {
                 return solution != null;
             }
@@ -138,7 +138,7 @@ public class intend extends DefaultInternalAction {
             }
 
             void find() {
-                while (intInterator.hasNext()) { 
+                while (intInterator.hasNext()) {
                     curInt = intInterator.next();
                     if (isSolution())
                         return;
@@ -147,7 +147,7 @@ public class intend extends DefaultInternalAction {
             }
         };
     }
-    
+
     /*
     // data structures where intentions can be found
     enum Step { selEvt, selInt, evt, pendEvt, pendAct, pendInt, intentions, end }

@@ -1,7 +1,6 @@
 /* Initial beliefs and rules */
 
-all_proposals_received(CNPId)
-  :- nb_participants(CNPId,NP) &                 // number of participants
+all_proposals_received(CNPId,NP) :-              // NP = number of participants
      .count(propose(CNPId,_)[source(_)], NO) &   // number of proposes received
      .count(refuse(CNPId)[source(_)], NR) &      // number of refusals received
      NP = NO + NR.
@@ -9,8 +8,8 @@ all_proposals_received(CNPId)
 
 /* Initial goals */
 
-!startCNP(1,fix(computer)).
-//!startCNP(2,banana).
+!cnp(1,fix(computer)).
+!cnp(2,banana).
 
 !register.
 +!register <- .df_register(initiator).
@@ -18,45 +17,30 @@ all_proposals_received(CNPId)
 /* Plans */
 
 // start the CNP
-+!startCNP(Id,Task)
++!cnp(Id,Task)
+   <- !call(Id,Task,LP);
+      !bid(Id,LP);
+      !winner(Id,LO,WAg);
+      !result(Id,LO,WAg).
++!call(Id,Task,LP)
    <- .print("Waiting participants for task ",Task,"...");
       .wait(2000);  // wait participants introduction
-      +cnp_state(Id,propose);   // remember the state of the CNP
       .df_search("participant",LP);
       .print("Sending CFP to ",LP);
-      +nb_participants(Id,.length(LP));
-      .send(LP,tell,cfp(Id,Task));
-      // the deadline of the CNP is now + 4 seconds (or all proposals were received)
-      .wait(all_proposals_received(Id), 4000, _);
-      !contract(Id).
+      .send(LP,tell,cfp(Id,Task)).
++!bid(Id,LP) // the deadline of the CNP is now + 4 seconds (or all proposals received)
+   <- .wait(all_proposals_received(Id,.length(LP)), 4000, _).
++!winner(Id,LO,WAg)
+   :  .findall(offer(O,A),propose(CNPId,O)[source(A)],LO) & LO \== [] // there is a offer
+   <- .print("Offers are ",LO);
+      .min(LO,offer(WOf,WAg)); // the first offer is the best
+      .print("Winner is ",WAg," with ",WOf).
++!winner(_,_,nowinner). // no offer case
 
-// this plan needs to be atomic so as not to accept
-// proposals or refusals while contracting
-@lc1[atomic]
-+!contract(CNPId)
-   :  cnp_state(CNPId,propose)
-   <- -cnp_state(CNPId,_);
-      +cnp_state(CNPId,contract);
-      .findall(offer(O,A),propose(CNPId,O)[source(A)],L);
-      .print("Offers are ",L);
-      L \== []; // constraint the plan execution to at least one offer
-      .min(L,offer(WOf,WAg)); // sort offers, the first is the best
-      .print("Winner is ",WAg," with ",WOf);
-      !announce_result(CNPId,L,WAg);
-      -+cnp_state(CNPId,finished).
-
-// nothing todo, the current phase is not 'propose'
-@lc2 +!contract(_).
-
--!contract(CNPId)
-   <- .print("CNP ",CNPId," has failed!").
-
-+!announce_result(_,[],_).
-// announce to the winner
-+!announce_result(CNPId,[offer(_,WAg)|T],WAg)
++!result(_,[],_).
++!result(CNPId,[offer(_,WAg)|T],WAg) // announce result to the winner
    <- .send(WAg,tell,accept_proposal(CNPId));
-      !announce_result(CNPId,T,WAg).
-// announce to others
-+!announce_result(CNPId,[offer(_,LAg)|T],WAg)
+      !result(CNPId,T,WAg).
++!result(CNPId,[offer(_,LAg)|T],WAg) // announce to others
    <- .send(LAg,tell,reject_proposal(CNPId));
-      !announce_result(CNPId,T,WAg).
+      !result(CNPId,T,WAg).

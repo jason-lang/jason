@@ -34,7 +34,9 @@ public class RC extends DefaultDirective implements Directive {
             if (newAg != null) {
 
                 // add -m : true <- .succeed_goal(g).
-                newAg.getPL().add(ASSyntax.parsePlan("-"+motivation+" <- .succeed_goal("+goal+")."));
+                newAg.getPL()
+                    .add(ASSyntax.parsePlan("-"+motivation+" <- .succeed_goal("+goal+")."))
+                    .setSource(outerContent.getASLSrc());
 
                 return newAg;
             }

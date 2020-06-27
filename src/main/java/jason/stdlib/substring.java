@@ -66,19 +66,19 @@ import jason.asSyntax.Term;
         },
         examples= {
                 ".substring(\"b\",\"aaa\"): false",
-                ".substring(\"b\",\"aaa\",X): false", 
+                ".substring(\"b\",\"aaa\",X): false",
                 ".substring(\"a\",\"bbacc\"): true",
-                ".substring(\"a\",\"abbacca\",X): true and X unifies with 0, 3, and 6", 
+                ".substring(\"a\",\"abbacca\",X): true and X unifies with 0, 3, and 6",
                 ".substring(\"a\",\"bbacc\",0): false",
                 ".substring(a(10),b(t1,a(10)),X): true and X unifies with 5",
-                ".substring(a(10),b(\"t1,a(10),kk\"),X): true and X unifies with 6", 
-                ".substring(a(10,20),R,5): true and R unifies with \"20)\"", 
+                ".substring(a(10),b(\"t1,a(10),kk\"),X): true and X unifies with 6",
+                ".substring(a(10,20),R,5): true and R unifies with \"20)\"",
                 ".substring(a(10,20),R,5,7): true and R unifies with \"20\""
         },
         seeAlso= {
-                "jason.stdlib.concat", 
-                "jason.stdlib.delete", 
-                "jason.stdlib.length", 
+                "jason.stdlib.concat",
+                "jason.stdlib.delete",
+                "jason.stdlib.length",
                 "jason.stdlib.reverse"
         }
     )

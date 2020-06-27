@@ -1,8 +1,14 @@
 package jason.infra.centralised;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.logging.Level;
@@ -14,12 +20,14 @@ import jason.architecture.AgArch;
 import jason.asSemantics.ActionExec;
 import jason.asSemantics.Agent;
 import jason.asSemantics.Circumstance;
+import jason.asSemantics.Intention;
 import jason.asSemantics.Message;
 import jason.asSemantics.TransitionSystem;
 import jason.asSyntax.Atom;
 import jason.asSyntax.Literal;
 import jason.mas2j.ClassParameters;
 import jason.runtime.RuntimeServices;
+import jason.runtime.RuntimeServicesFactory;
 import jason.runtime.Settings;
 import jason.util.Config;
 
@@ -39,16 +47,18 @@ import jason.util.Config;
  * <li>stopAg.
  * </ul>
  */
-public class CentralisedAgArch extends AgArch implements Runnable {
+public class CentralisedAgArch extends AgArch implements Runnable, Serializable {
 
-    protected CentralisedEnvironment    infraEnv     = null;
-    private CentralisedExecutionControl infraControl = null;
-    private BaseCentralisedMAS           masRunner    = BaseCentralisedMAS.getRunner();
+    private static final long serialVersionUID = 4378889704809002271L;
 
-    private String           agName  = "";
-    private volatile boolean running = true;
-    private Queue<Message>   mbox    = new ConcurrentLinkedQueue<>();
-    protected Logger         logger  = Logger.getLogger(CentralisedAgArch.class.getName());
+    protected transient CentralisedEnvironment      infraEnv     = null;
+    private   transient CentralisedExecutionControl infraControl = null;
+    private   transient BaseCentralisedMAS          masRunner    = BaseCentralisedMAS.getRunner();
+
+    private String             agName  = "";
+    private volatile boolean   running = true;
+    private Queue<Message>     mbox    = new ConcurrentLinkedQueue<>();
+    protected transient Logger logger  = Logger.getLogger(CentralisedAgArch.class.getName());
 
     private static List<MsgListener> msgListeners = null;
     public static void addMsgListener(MsgListener l) {
@@ -61,14 +71,21 @@ public class CentralisedAgArch extends AgArch implements Runnable {
         msgListeners.remove(l);
     }
 
+    private void readObject(ObjectInputStream inputStream) throws IOException, ClassNotFoundException {
+        inputStream.defaultReadObject();
+        sleepSync   = new Object();
+        syncMonitor = new Object();
+        masRunner   = BaseCentralisedMAS.getRunner();
+    }   
+    
+
     /**
      * Creates the user agent architecture, default architecture is
      * jason.architecture.AgArch. The arch will create the agent that creates
      * the TS.
      */
-    public void createArchs(Collection<String> agArchClasses, String agClass, ClassParameters bbPars, String asSrc, Settings stts, BaseCentralisedMAS masRunner) throws JasonException {
+    public void createArchs(Collection<String> agArchClasses, String agClass, ClassParameters bbPars, String asSrc, Settings stts) throws JasonException {
         try {
-            this.masRunner = masRunner;
             Agent.create(this, agClass, bbPars, asSrc, stts);
             insertAgArch(this);
 
@@ -76,7 +93,7 @@ public class CentralisedAgArch extends AgArch implements Runnable {
 
             // mind inspector arch
             if (stts.getUserParameter(Settings.MIND_INSPECTOR) != null) {
-                insertAgArch( (AgArch)Class.forName( Config.get().getMindInspectorArchClassName()).newInstance() );
+                insertAgArch( (AgArch)Class.forName( Config.get().getMindInspectorArchClassName()).getConstructor().newInstance() );
                 getFirstAgArch().init();
             }
 
@@ -88,9 +105,9 @@ public class CentralisedAgArch extends AgArch implements Runnable {
     }
 
     /** init the agent architecture based on another agent */
-    public void createArchs(Collection<String> agArchClasses, Agent ag, BaseCentralisedMAS masRunner) throws JasonException {
+    public void createArchs(Collection<String> agArchClasses, Agent ag) throws JasonException {
         try {
-            this.masRunner = masRunner;
+            setMASRunner(masRunner); // TODO: remove
             setTS(ag.clone(this).getTS());
             insertAgArch(this);
 
@@ -102,6 +119,10 @@ public class CentralisedAgArch extends AgArch implements Runnable {
             throw new JasonException("as2j: error creating the agent class! - ", e);
         }
     }
+    
+    public void setMASRunner(BaseCentralisedMAS masRunner) {
+        this.masRunner = masRunner;
+    }
 
 
     public void stopAg() {
@@ -110,7 +131,13 @@ public class CentralisedAgArch extends AgArch implements Runnable {
         if (myThread != null)
             myThread.interrupt();
         getTS().getAg().stopAg();
-        getUserAgArch().stop(); // stops all archs
+
+        // stop all archs
+        AgArch f = getUserAgArch();
+        while (f != null) {
+            f.stop();
+            f = f.getNextAgArch();
+        }
     }
 
 
@@ -136,6 +163,10 @@ public class CentralisedAgArch extends AgArch implements Runnable {
         return agName;
     }
 
+    /**
+     * 
+     * @deprecated use getFirstAgArch instead
+     */
     public AgArch getUserAgArch() {
         return getFirstAgArch();
     }
@@ -156,12 +187,14 @@ public class CentralisedAgArch extends AgArch implements Runnable {
         return infraControl;
     }
 
-    private Thread myThread = null;
+    private transient Thread myThread = null;
     public void setThread(Thread t) {
         myThread = t;
         myThread.setName(agName);
     }
-
+    public Thread getThread() {
+        return myThread;
+    }
     public void startThread() {
         myThread.start();
     }
@@ -190,6 +223,7 @@ public class CentralisedAgArch extends AgArch implements Runnable {
         //System.out.println("running del "+(sumDel/nbDel)+"/"+cyclesDeliberate);
     }
 
+    /** the act as step of reasoning cycle */
     //int sumAct = 0; int nbAct = 0;
     protected void act() {
         TransitionSystem ts = getTS();
@@ -198,7 +232,7 @@ public class CentralisedAgArch extends AgArch implements Runnable {
         int ca = cyclesAct;
         if (ca != 1) { // not the default value, limit the value to the number of intentions
             ca = Math.min(cyclesAct, ts.getC().getNbRunningIntentions());
-            if (ca == 0) 
+            if (ca == 0)
                 ca = 1;
         }
         while (running && i++ < ca && !ts.canSleepAct()) {
@@ -209,9 +243,13 @@ public class CentralisedAgArch extends AgArch implements Runnable {
     }
 
     protected void reasoningCycle() {
+        getFirstAgArch().reasoningCycleStarting();
+        
         sense();
         deliberate();
         act();
+        
+        getFirstAgArch().reasoningCycleFinished();
     }
 
     public void run() {
@@ -229,7 +267,7 @@ public class CentralisedAgArch extends AgArch implements Runnable {
                 }
                 informCycleFinished(isBreakPoint, getCycleNumber());
             } else {
-                getUserAgArch().incCycleNumber();
+                getFirstAgArch().incCycleNumber(); // should not increment in case of sync execution
                 reasoningCycle();
                 if (ts.canSleep())
                     sleep();
@@ -238,7 +276,7 @@ public class CentralisedAgArch extends AgArch implements Runnable {
         logger.fine("I finished!");
     }
 
-    private Object sleepSync = new Object();
+    private transient Object sleepSync = new Object();
     private int    sleepTime = 50;
 
     public static final int MAX_SLEEP = 1000;
@@ -301,7 +339,7 @@ public class CentralisedAgArch extends AgArch implements Runnable {
 
         if (rec == null) {
             if (isRunning())
-                throw new ReceiverNotFoundException("Receiver '" + m.getReceiver() + "' does not exist! Could not send " + m);
+                throw new ReceiverNotFoundException("Receiver '" + m.getReceiver() + "' does not exist! Could not send " + m, m.getReceiver());
             else
                 return;
         }
@@ -318,11 +356,12 @@ public class CentralisedAgArch extends AgArch implements Runnable {
         wakeUpSense();
     }
 
-    public void broadcast(jason.asSemantics.Message m) throws Exception {
-        for (String agName: masRunner.getAgs().keySet()) {
+    public void broadcast(Message m) throws Exception {
+        for (String agName: RuntimeServicesFactory.get().getAgentsNames()) {
             if (!agName.equals(this.getAgName())) {
-                m.setReceiver(agName);
-                sendMsg(m);
+                Message newm = m.clone();
+                newm.setReceiver(agName);
+                getFirstAgArch().sendMsg(newm);
             }
         }
     }
@@ -362,7 +401,7 @@ public class CentralisedAgArch extends AgArch implements Runnable {
         return mbox.isEmpty() && isRunning();
     }
 
-    private Object  syncMonitor                = new Object();
+    private transient Object  syncMonitor = new Object();
     private volatile boolean inWaitSyncMonitor = false;
 
     /**
@@ -375,7 +414,7 @@ public class CentralisedAgArch extends AgArch implements Runnable {
                 inWaitSyncMonitor = true;
                 syncMonitor.wait();
                 inWaitSyncMonitor = false;
-            }
+            }            
         } catch (InterruptedException e) {
         } catch (Exception e) {
             logger.log(Level.WARNING,"Error waiting sync (1)", e);
@@ -413,7 +452,7 @@ public class CentralisedAgArch extends AgArch implements Runnable {
     }
 
     public RuntimeServices getRuntimeServices() {
-        return masRunner.getRuntimeServices();
+        return RuntimeServicesFactory.get();
     }
 
     private RConf conf;
@@ -464,4 +503,34 @@ public class CentralisedAgArch extends AgArch implements Runnable {
         this.cyclesAct = cyclesAct;
     }
 
+    @Override
+    public Map<String, Object> getStatus() {
+        Map<String, Object> status = super.getStatus();
+        
+        status.put("cycle", getCycleNumber());
+        status.put("idle", getTS().canSleep());
+        
+        // put intentions
+        Circumstance c = getTS().getC();
+        
+        status.put("nbIntentions", c.getNbRunningIntentions() + c.getPendingIntentions().size());
+
+        List<Map<String, Object>> ints = new ArrayList<>();
+        Iterator<Intention> ii = c.getAllIntentions();
+        while (ii.hasNext()) {
+            Intention i = ii.next();
+            Map<String, Object> iprops = new HashMap<>();
+            iprops.put("id", i.getId());
+            iprops.put("finished", i.isFinished());
+            iprops.put("suspended", i.isSuspended());
+            if (i.isSuspended()) {
+                iprops.put("suspendedReason", i.getSuspendedReason());
+            }
+            iprops.put("size", i.size());
+            ints.add(iprops);
+        }
+        status.put("intentions", ints);
+        
+        return status;
+    }
 }

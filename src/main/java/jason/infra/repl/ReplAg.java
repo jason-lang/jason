@@ -64,7 +64,7 @@ public abstract class ReplAg extends Agent {
             getTS().getC().addRunningIntention(i);
             cmdCounter++;
             clear();
-            getTS().getUserAgArch().wake();
+            getTS().getAgArch().wake();
         } catch (Exception e) {
             print("Error parsing "+sCmd+"\n"+e);
         }

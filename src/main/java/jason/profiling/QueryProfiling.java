@@ -2,6 +2,7 @@ package jason.profiling;
 
 import jason.asSemantics.Agent;
 import jason.asSyntax.Literal;
+import jason.runtime.RuntimeServicesFactory;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -27,11 +28,11 @@ public class QueryProfiling {
     private Set<String> uniqueQueries = new HashSet<String>();
     private Set<String> lastUniqueQueries = null;
 
-    private Agent ag;
+    //private Agent ag;
 
     public QueryProfiling(Agent ag) {
-        this.ag = ag;
-        logger  = Logger.getLogger(QueryProfiling.class.getName()+"-"+ag.getTS().getUserAgArch().getAgName());
+        //this.ag = ag;
+        logger  = Logger.getLogger(QueryProfiling.class.getName()+"-"+ag.getTS().getAgArch().getAgName());
     }
 
     public void incHits() {
@@ -76,7 +77,7 @@ public class QueryProfiling {
 
         if (nbAgs < 0)
             try {
-                nbAgs = ag.getTS().getUserAgArch().getRuntimeServices().getAgentsQty();
+                nbAgs = RuntimeServicesFactory.get().getAgentsQty();
             } catch (Exception e) {
                 logger.fine("Error getting number of agents: "+e);
             }

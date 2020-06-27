@@ -1,5 +1,9 @@
 package jason.stdlib;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
@@ -81,8 +85,8 @@ import jason.asSyntax.Trigger;
         examples= {
                 ".wait(1000)</code>: suspend the intention for 1 second",
                 ".wait({+b(1)})</code>: suspend the intention until the belief b(1) is added in the belief base",
-                ".wait(b(X) & X > 10): suspend the intention until the agent believes b(X) with X greater than 10", 
-                ".wait({+!g}, 2000): suspend the intention until the goal g is triggered or 2 seconds have passed, whatever happens first. In case the event does not happens in two seconds, the internal action fails" + 
+                ".wait(b(X) & X > 10): suspend the intention until the agent believes b(X) with X greater than 10",
+                ".wait({+!g}, 2000): suspend the intention until the goal g is triggered or 2 seconds have passed, whatever happens first. In case the event does not happens in two seconds, the internal action fails" +
                 ".wait({+!g}, 2000, EventTime): suspend the intention until the goal g is triggered or 2 seconds have passed, whatever happens first. In case the event does not happen in two seconds, the internal action does not fail. The third argument will be unified to the elapsed time (in milliseconds) from the start of .wait until the event or timeout."
         },
         seeAlso= {
@@ -142,7 +146,7 @@ public class wait extends DefaultInternalAction {
         return true;
     }
 
-    class WaitEvent implements CircumstanceListener {
+    class WaitEvent implements CircumstanceListener, Serializable {
         private Trigger          te;
         private LogicalFormula   formula;
         private String           sEvt; // a string version of what is being waited
@@ -153,13 +157,15 @@ public class wait extends DefaultInternalAction {
         private boolean          dropped = false;
         private Term             elapsedTimeTerm;
         private long             startTime;
+        private long             timeout;
 
         WaitEvent(Trigger te, LogicalFormula f, Unifier un, TransitionSystem ts, long timeout, Term elapsedTimeTerm) {
             this.te = te;
             this.formula = f;
             this.un = un;
             this.ts = ts;
-            c = ts.getC();
+            this.timeout = timeout;
+            c  = ts.getC();
             si = c.getSelectedIntention();
             this.elapsedTimeTerm = elapsedTimeTerm;
 
@@ -179,25 +185,39 @@ public class wait extends DefaultInternalAction {
             startTime = System.currentTimeMillis();
 
             if (timeout >= 0) {
-                Agent.getScheduler().schedule(new Runnable() {
-                    public void run() {
-                        resume(true);
-                    }
+                Agent.getScheduler().schedule(() -> {
+                    resume(true);
                 }, timeout, TimeUnit.MILLISECONDS);
             }
         }
+        
+        private void writeObject(ObjectOutputStream outputStream) throws IOException, ClassNotFoundException {
+            timeout = timeout - (System.currentTimeMillis() - startTime);
+            //System.out.println("new timeout = "+timeout);
+            outputStream.defaultWriteObject();          
+        }
+        private void readObject(ObjectInputStream inputStream) throws IOException, ClassNotFoundException {
+            inputStream.defaultReadObject();
+            
+            // add timeout again
+            if (timeout >= 0) {
+                Agent.getScheduler().schedule(() -> {
+                    resume(true);
+                }, timeout, TimeUnit.MILLISECONDS);
+            }
+        }   
+
 
         void resume(final boolean stopByTimeout) {
             // unregister (to not receive intentionAdded again)
             c.removeEventListener(this);
 
             // invoke changes in C latter, so to avoid concurrent changes in C
-            ts.runAtBeginOfNextCycle(new Runnable() {
-                public void run() {
+            ts.runAtBeginOfNextCycle((Runnable & Serializable) () -> {
                     try {
                         // add SI again in C.I if (1) it was not removed (2) is is not running (by some other reason) -- but this test does not apply to atomic intentions --, and (3) this wait was not dropped
                         if (c.removePendingIntention(sEvt) == si && (si.isAtomic() || !c.hasRunningIntention(si)) && !dropped) {
-                            if (stopByTimeout && te != null && elapsedTimeTerm == null) {
+                            if (stopByTimeout && (te != null || formula != null) && elapsedTimeTerm == null) {
                                 // fail the .wait by timeout
                                 if (si.isSuspended()) { // if the intention was suspended by .suspend
                                     PlanBody body = si.peek().getPlan().getBody();
@@ -223,9 +243,8 @@ public class wait extends DefaultInternalAction {
                     } catch (Exception e) {
                         ts.getLogger().log(Level.SEVERE, "Error at .wait thread", e);
                     }
-                }
             });
-            ts.getUserAgArch().wakeUpDeliberate();
+            ts.getAgArch().wakeUpDeliberate();
         }
 
         public void eventAdded(Event e) {
@@ -245,9 +264,6 @@ public class wait extends DefaultInternalAction {
             }
         }
 
-        public void intentionAdded(Intention i) { }
-        public void intentionResumed(Intention i) { }
-        public void intentionSuspended(Intention i, String reason) { }
         public String toString() {
             return sEvt;
         }

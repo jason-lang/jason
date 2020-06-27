@@ -15,7 +15,7 @@ import jason.asSyntax.Term;
   <p>Description: converts the string S1 into lower case S2.
 
   <p>Parameters:<ul>
-  <li>+ S1 (a term). The term representation as a string will be used.<br/>
+  <li>+ S1 (a term). In this case, the term to string is used.<br/>
   <li>-/+ S2 (a string).<br/>
   </ul>
 
@@ -44,9 +44,9 @@ import jason.asSyntax.Term;
                 ".lower_case(\"CArtAgO\",X): unifies X with \"cartago\""
         },
         seeAlso= {
-                "jason.stdlib.concat", 
-                "jason.stdlib.delete", 
-                "jason.stdlib.length", 
+                "jason.stdlib.concat",
+                "jason.stdlib.delete",
+                "jason.stdlib.length",
                 "jason.stdlib.reverse"
         }
     )

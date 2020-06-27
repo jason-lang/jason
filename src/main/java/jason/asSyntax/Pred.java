@@ -1,9 +1,7 @@
 package jason.asSyntax;
 
-import jason.asSemantics.Unifier;
-import jason.asSyntax.parser.as2j;
-
 import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +10,9 @@ import java.util.logging.Logger;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+
+import jason.asSemantics.Unifier;
+import jason.asSyntax.parser.as2j;
 
 /**
  * A Pred extends a Structure with annotations, e.g.: a(1)[an1,an2].
@@ -197,6 +198,16 @@ public class Pred extends Structure {
         return annots;
     }
 
+    public ListTerm capplyAnnots(Unifier u) {
+        if (hasAnnot()) {
+            Pred o = new Pred("t"); // use this simple literal so that we do not need to clone all "this" to get capply annots
+            o.setAnnots( (ListTerm)getAnnots().capply(u) );
+            return o.getAnnots();
+        } else {
+            return new ListTermImpl();
+        }
+    }
+
     @Override
     public boolean hasAnnot(Term t) {
         if (annots == null)
@@ -206,20 +217,19 @@ public class Pred extends Structure {
         while (i.hasNext()) {
             ListTerm lt = i.next();
             int c = t.compareTo(lt.getTerm());
-            if (c == 0) { // equals
-                return true;
-            } else if (c < 0) {
+            if (c < 0)
                 return false;
-            }
+            if (t.equals(lt.getTerm()))
+                return true;
         }
         return false; //annots.contains(t);
     }
 
+    /** find the first annotation with a given functor (only literal annots are considered) */
     @Override
     public Literal getAnnot(String functor) {
         if (annots == null)
             return null;
-        // annots are ordered
         for (Term t: annots) {
             if (t.isLiteral()) {
                 Literal l = (Literal)t;
@@ -308,9 +318,9 @@ public class Pred extends Structure {
 
     @Override
     public boolean hasSubsetAnnot(Literal p) {
-        if (annots == null)
+        if (!hasAnnot())
             return true;
-        if (hasAnnot() && !p.hasAnnot())
+        if (!p.hasAnnot())
             return false;
 
         // both has annots (annots are ordered)
@@ -334,7 +344,7 @@ public class Pred extends Structure {
 
     @Override
     public boolean hasSubsetAnnot(Literal p, Unifier u) {
-        if (annots == null)
+        if (!hasAnnot())
             return true;
         if (!p.hasAnnot())
             return false;
@@ -343,6 +353,14 @@ public class Pred extends Structure {
 
         // since p's annots will be changed, clone the list (but not the terms)
         ListTerm pAnnots     = p.getAnnots().cloneLTShallow();
+
+        // creates an iterator for the vars in p annots
+        List<Term> varsInPAnnots = new ArrayList<>();
+        for (Term ta: pAnnots)
+            if (ta.isVar())
+                varsInPAnnots.add(ta);
+        Iterator<Term> iVarsInPAnnots = varsInPAnnots.iterator();
+
         VarTerm  pTail       = pAnnots.getTail();
         Term pAnnot          = null;
         ListTerm pAnnotsTail = null;
@@ -350,7 +368,7 @@ public class Pred extends Structure {
         Iterator<Term> i2 = pAnnots.iterator();
         boolean i2Reset   = false;
 
-        Iterator<ListTerm> i1 = annots.listTermIterator(); // use this iterator to get the tail of the list
+        Iterator<ListTerm> i1 = capplyAnnots(u).listTermIterator(); // use this iterator to get the tail of the list
         while (i1.hasNext()) {
             ListTerm lt = i1.next();
             Term annot = lt.getTerm();
@@ -358,7 +376,7 @@ public class Pred extends Structure {
                 break;
             if (lt.isTail())
                 thisTail = lt.getTail();
-            if (annot.isVar() && !i2Reset) { // when we arrive to the vars in the annots of this, we need to start searching from the begin again
+            if (annot.isVar() && !i2Reset) { // when we arrive to the vars in the annots of "this", we need to start searching from the begin again
                 i2Reset = true;
                 i2 = pAnnots.iterator();
                 pAnnot = null;
@@ -374,6 +392,14 @@ public class Pred extends Structure {
                     pAnnot = i2.next();
                     break;
                 } else if (pAnnot != null && pAnnot.compareTo(annot) > 0) {
+                    // consider to consume a var from p annots
+                    if (iVarsInPAnnots.hasNext()) {
+                        Term v = iVarsInPAnnots.next();
+                        if (u.unifiesNoUndo(annot, v)) {
+                            ok = true;
+                            //pAnnots.remove(v); // se TermTest testSubsetAnnotBugAmandine case assertTrue(l4.hasSubsetAnnot(l3, u)); // true if {Y=annot1, Z=annot1}
+                        }
+                    }
                     break; // quite the loop, the current p annot is greater than this annot, so annot is not in p's annots
                 } else if (i2.hasNext()) {
                     pAnnot = i2.next();
@@ -421,6 +447,7 @@ public class Pred extends Structure {
             return false;
     }
 
+    @SuppressWarnings("serial")
     public static Pred createSource(Term source) {
         Pred s;
         if (source.isGround()) {
@@ -546,7 +573,7 @@ public class Pred extends Structure {
         return super.equals((Term) p);
     }
 
-    @Override
+    /*@Override
     public int compareTo(Term t) {
         int c = super.compareTo(t);
         if (c != 0)
@@ -571,7 +598,7 @@ public class Pred extends Structure {
             if (ats > ots) return 1;
         }
         return 0;
-    }
+    }*/
 
     @Override
     public Term capply(Unifier u) {

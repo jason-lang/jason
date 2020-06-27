@@ -34,7 +34,9 @@ public class SMC extends DefaultDirective implements Directive {
             if (newAg != null) {
 
                 // add +f : true <- .fail_goal(g).
-                newAg.getPL().add(ASSyntax.parsePlan("+"+fail+" <- .fail_goal("+goal+")."));
+                newAg.getPL()
+                    .add(ASSyntax.parsePlan("+"+fail+" <- .fail_goal("+goal+")."))
+                    .setSource(outerContent.getASLSrc());
 
                 return newAg;
             }

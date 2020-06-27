@@ -35,7 +35,7 @@ public class Intention implements Serializable, Comparable<Intention>, Iterable<
 
     private int     id;
     private int     atomicCount    = 0; // number of atomic intended means in the intention
-    private boolean isSuspended = false;
+    private boolean isSuspended = false; // suspended by the internal action .suspend
     private String  suspendedReason = null;
 
     private Deque<IntendedMeans> intendedMeans = new ArrayDeque<>();
@@ -67,15 +67,9 @@ public class Intention implements Serializable, Comparable<Intention>, Iterable<
     public IntendedMeans pop() {
         IntendedMeans top = intendedMeans.pop();
 
-        if (isAtomic() && top.isAtomic()) {
+        if (isAtomic() && top.isAtomic())
             atomicCount--;
-            /* for (IntendedMeans im : intendedMeans) {
-                if (im.isAtomic()) {
-                    isAtomic = true;
-                    break;
-                }
-            }*/
-        }
+
         return top;
     }
 
@@ -112,7 +106,7 @@ public class Intention implements Serializable, Comparable<Intention>, Iterable<
     public boolean isSuspended() {
         return isSuspended;
     }
-    
+
     public void setSuspendedReason(String r) {
         suspendedReason = r;
     }
@@ -123,11 +117,11 @@ public class Intention implements Serializable, Comparable<Intention>, Iterable<
             return suspendedReason;
     }
 
-    /** returns the IntendedMeans with TE = g, returns null if there isn't one */
-    public IntendedMeans getIM(Trigger g, Unifier u) {
+    /** returns the IntendedMeans that succeeds in test c, returns null if there isn't one */
+    public IntendedMeans getIM(IMCondition c, Unifier u) { //Trigger g, Unifier u) {
         for (IntendedMeans im : intendedMeans)
             //System.out.println(g + " = "+ im.getTrigger()+" = "+u.unifies(g, im.getTrigger()));
-            if (u.unifies(g, im.getTrigger()))
+            if (c.test(im,u)) //u.unifies(g, im.getTrigger()))
                 return im;
         return null;
     }
@@ -145,18 +139,18 @@ public class Intention implements Serializable, Comparable<Intention>, Iterable<
         return false;
     }
 
-    /** remove all IMs until the lowest IM with trigger te */
-    public boolean dropGoal(Trigger te, Unifier un) {
-        boolean r = false;
-        IntendedMeans im = getIM(te, un);
+    /** remove all IMs until the lowest IM that succeeds in test c */
+    public IntendedMeans dropGoal(IMCondition c, Unifier u) {
+        IntendedMeans r = null;
+        IntendedMeans im = getIM(c,u);
         while (im != null) {
-            r = true;
+            r = im;
             // remove the IMs until im-1
             while (peek() != im) {
                 pop();
             }
             pop(); // remove im
-            im = getIM(te, un); // keep removing other occurrences of te
+            im = getIM(c,u); // keep removing other occurrences of te
         }
         return r;
     }
@@ -165,20 +159,37 @@ public class Intention implements Serializable, Comparable<Intention>, Iterable<
     }
 
     public Pair<Event, Integer> findEventForFailure(Trigger tevent, PlanLibrary pl, Circumstance c) {
-        Trigger failTrigger = new Trigger(TEOperator.del, tevent.getType(), tevent.getLiteral());
         Iterator<IntendedMeans> ii = iterator();
+        IntendedMeans im;
         int posInStak = size();
+        if (tevent.isGoal() && !tevent.isAddition()) { // case of failure in a fail plan
+            im = ii.next();
+            // find its goal in the stack
+            boolean found = false;
+            while (ii.hasNext() && !found) {
+                im = ii.next();
+                posInStak--;
+                while (ii.hasNext() && im.unif.unifies(im.getTrigger().getLiteral(),tevent.getLiteral())) {
+                    im = ii.next();
+                    posInStak--;
+                    found = true;
+                }
+            }
+            tevent = im.getTrigger();
+        }
+        Trigger failTrigger = new Trigger(TEOperator.del, tevent.getType(), tevent.getLiteral());
         synchronized (pl.getLock()) {
             while (!pl.hasCandidatePlan(failTrigger) && ii.hasNext()) {
                 // TODO: pop IM until +!g or *!g (this TODO is valid only if meta events are pushed on top of the intention)
                 // If *!g is found first, no failure event
                 // - while popping, if some meta event (* > !) is in the stack, stop and simple pop instead of producing an failure event
-                IntendedMeans im = ii.next();
+                im = ii.next();
                 tevent = im.getTrigger();
                 failTrigger = new Trigger(TEOperator.del, tevent.getType(), tevent.getLiteral());
                 posInStak--;
             }
-            if (tevent.isGoal() && tevent.isAddition() && pl.hasCandidatePlan(failTrigger))
+            if (tevent.isGoal() && //tevent.isAddition() &&
+                    pl.hasCandidatePlan(failTrigger))
                 return new Pair<>(new Event(failTrigger.clone(), this), posInStak);
             else
                 return new Pair<>(null, 0);
@@ -186,7 +197,7 @@ public class Intention implements Serializable, Comparable<Intention>, Iterable<
     }
 
 
-    /** implements atomic intentions grater than not atomic intentions */
+    /** atomic intentions are grater than not atomic intentions */
     public int compareTo(Intention o) {
         if (o.atomicCount > this.atomicCount) return 1;
         if (this.atomicCount > o.atomicCount) return -1;

@@ -37,10 +37,12 @@ public class EnvSync extends TimeSteppedEnvironment {
 
     @Override
     protected void stepFinished(int step, long time, boolean timeout) {
+        try {
+            Thread.sleep(30);
+        } catch (Exception e) {}
         if (timeout) {
             logger.info("Step "+getStep()+" finished in "+time+" miliseconds, timeout = "+timeout);
             Counters.get().setTitle("Step time"+time);
         }
     }
 }
-

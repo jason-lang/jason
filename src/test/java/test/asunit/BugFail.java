@@ -20,7 +20,7 @@ public class BugFail {
             "+!g1 <- !g2; jason.asunit.print(bug). "+
             "-!g1 <- jason.asunit.print(ok). "+
             "+!g2 <- .fail. " +
-            
+
             "+!t([]). "+
             "+!t([Item|List]) <- .print(\"Getting \",Item); !g2; volta; !t(List). "+
             "-!t([Item|List]) <- .print(\"Throwing away \",Item);       !t(List). "
@@ -34,7 +34,7 @@ public class BugFail {
         ag.assertPrint("ok", 30);
         ag.assertPrint("end", 30);
     }
-    
+
     @Test(timeout=2000)
     public void test2() {
         ag.addGoal("t([banana,abacaxi,pera])");

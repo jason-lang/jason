@@ -9,6 +9,7 @@ import java.util.Set;
 
 import jason.NoValueException;
 import jason.asSyntax.parser.ParseException;
+import jason.asSyntax.parser.TokenMgrError;
 import jason.asSyntax.parser.as2j;
 import jason.asSyntax.parser.as2jConstants;
 
@@ -216,7 +217,7 @@ public class ASSyntax {
     // ----
 
     /** creates a new literal by parsing a string */
-    public static Literal parseLiteral(String sLiteral) throws ParseException {
+    public static Literal parseLiteral(String sLiteral) throws ParseException, TokenMgrError {
         //return new as2j(new StringReader(sLiteral)).literal();
         as2j parser = new as2j(new StringReader(sLiteral));
         Literal l = parser.literal();
@@ -231,7 +232,7 @@ public class ASSyntax {
     }
 
     /** creates a new structure (a kind of term) by parsing a string */
-    public static Structure parseStructure(String sStructure) throws ParseException {
+    public static Structure parseStructure(String sStructure) throws ParseException, TokenMgrError {
         as2j parser = new as2j(new StringReader(sStructure));
         Term t = parser.term();
         if (parser.getNextToken().kind != as2jConstants.EOF)
@@ -243,7 +244,7 @@ public class ASSyntax {
     }
 
     /** creates a new variable by parsing a string */
-    public static VarTerm parseVar(String sVar) throws ParseException {
+    public static VarTerm parseVar(String sVar) throws ParseException, TokenMgrError {
         //return new as2j(new StringReader(sVar)).var();
         as2j parser = new as2j(new StringReader(sVar));
         VarTerm v = parser.var(Literal.DefaultNS);
@@ -253,7 +254,7 @@ public class ASSyntax {
     }
 
     /** creates a new term by parsing a string */
-    public static Term parseTerm(String sTerm) throws ParseException {
+    public static Term parseTerm(String sTerm) throws ParseException, TokenMgrError {
         //return new as2j(new StringReader(sTerm)).term();
         as2j parser = new as2j(new StringReader(sTerm));
         Term t = parser.term();
@@ -263,7 +264,7 @@ public class ASSyntax {
     }
 
     /** creates a new plan by parsing a string */
-    public static Plan parsePlan(String sPlan) throws ParseException {
+    public static Plan parsePlan(String sPlan) throws ParseException, TokenMgrError {
         //return new as2j(new StringReader(sPlan)).plan();
         as2j parser = new as2j(new StringReader(sPlan));
         Plan p = parser.plan();
@@ -273,7 +274,7 @@ public class ASSyntax {
     }
 
     /** creates a new plan body by parsing a string */
-    public static PlanBody parsePlanBody(String sPlanBody) throws ParseException {
+    public static PlanBody parsePlanBody(String sPlanBody) throws ParseException, TokenMgrError {
         //return new as2j(new StringReader(sPlan)).plan();
         as2j parser = new as2j(new StringReader(sPlanBody));
         PlanBody p = parser.plan_body();
@@ -283,7 +284,7 @@ public class ASSyntax {
     }
 
     /** creates a new trigger by parsing a string */
-    public static Trigger parseTrigger(String sTe) throws ParseException {
+    public static Trigger parseTrigger(String sTe) throws ParseException, TokenMgrError {
         //return new as2j(new StringReader(sTe)).trigger();
         as2j parser = new as2j(new StringReader(sTe));
         Trigger te = parser.trigger();
@@ -293,7 +294,7 @@ public class ASSyntax {
     }
 
     /** creates a new list by parsing a string */
-    public static ListTerm parseList(String sList) throws ParseException {
+    public static ListTerm parseList(String sList) throws ParseException, TokenMgrError {
         //return new as2j(new StringReader(sList)).list();
         as2j parser = new as2j(new StringReader(sList));
         ListTerm l = parser.list();
@@ -303,7 +304,7 @@ public class ASSyntax {
     }
 
     /** creates a new logical formula by parsing a string */
-    public static LogicalFormula parseFormula(String sExpr) throws ParseException {
+    public static LogicalFormula parseFormula(String sExpr) throws ParseException, TokenMgrError {
         //return (LogicalFormula)new as2j(new StringReader(sExpr)).log_expr();
         as2j parser = new as2j(new StringReader(sExpr));
         LogicalFormula l = (LogicalFormula)parser.log_expr();
@@ -313,7 +314,7 @@ public class ASSyntax {
     }
 
     /** creates a new rule by parsing a string */
-    public static Rule parseRule(String sRule) throws ParseException {
+    public static Rule parseRule(String sRule) throws ParseException, TokenMgrError {
         //return (Rule)new as2j(new StringReader(sRule)).belief();
         as2j parser = new as2j(new StringReader(sRule));
         Rule r = (Rule)parser.belief();
@@ -321,10 +322,10 @@ public class ASSyntax {
             throw new ParseException("Expected <EOF> after "+r+" for parameter '"+sRule+"'");
         return r;
     }
-    
+
     /**
      * Convert a Jason term into a Java Object
-     * 
+     *
      * @param t Jason term
      */
     public static Object termToObject(Term t){
@@ -346,7 +347,7 @@ public class ASSyntax {
                 e.printStackTrace();
             }
             if (((byte)d)==d){
-                return (byte)d; 
+                return (byte)d;
             } else if (((int)d)==d){
                 return (int)d;
             } else if (((float)d)==d){
@@ -370,5 +371,5 @@ public class ASSyntax {
             return t.toString();
         }
     }
-    
+
 }

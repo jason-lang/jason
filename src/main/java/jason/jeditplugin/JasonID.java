@@ -60,6 +60,7 @@ import jason.util.asl2html;
 import jason.util.asl2tex;
 import jason.util.asl2xml;
 
+@SuppressWarnings("rawtypes")
 public class JasonID extends JPanel implements EBComponent, RunProjectListener {
 
     private static final long serialVersionUID = 1L;
@@ -72,6 +73,7 @@ public class JasonID extends JPanel implements EBComponent, RunProjectListener {
     JButton              btRun;
     JButton              btDebug;
     DefaultListModel     listModel   = new DefaultListModel();
+    @SuppressWarnings("unchecked")
     JList                lstAgs      = new JList(listModel);
 
     DefaultErrorSource   errorSource = null;

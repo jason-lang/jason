@@ -61,7 +61,7 @@ import java.util.List;
         hint="checks if a list is a subset of a given list, backtracking all free variables",
         argsHint= {
                 "the sublist to be checked",
-                "the list where the sublist may be to be a subset" 
+                "the list where the sublist may be to be a subset"
         },
         argsType= {
                 "list",
@@ -77,18 +77,18 @@ import java.util.List;
                 ".sublist(X,[a,b,c]): unifies X with any sublist of the list, i.e., [a,b,c], [a,b], [a], [b,c], [b], [c], and [] in this order"
         },
         seeAlso= {
-                "jason.stdlib.concat", 
-                "jason.stdlib.delete", 
-                "jason.stdlib.length", 
-                "jason.stdlib.member", 
-                "jason.stdlib.sort", 
-                "jason.stdlib.shuffle", 
-                "jason.stdlib.substring", 
-                "jason.stdlib.nth", 
-                "jason.stdlib.max", 
-                "jason.stdlib.min", 
-                "jason.stdlib.reverse", 
-                "jason.stdlib.difference", 
+                "jason.stdlib.concat",
+                "jason.stdlib.delete",
+                "jason.stdlib.length",
+                "jason.stdlib.member",
+                "jason.stdlib.sort",
+                "jason.stdlib.shuffle",
+                "jason.stdlib.substring",
+                "jason.stdlib.nth",
+                "jason.stdlib.max",
+                "jason.stdlib.min",
+                "jason.stdlib.reverse",
+                "jason.stdlib.difference",
                 "jason.stdlib.intersection",
                 "jason.stdlib.union"
         }

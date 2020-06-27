@@ -103,7 +103,7 @@ public class Environment {
      */
     public void informAgsEnvironmentChanged(Collection<String> agents) {
         if (environmentInfraTier != null) {
-            environmentInfraTier.informAgsEnvironmentChanged(agents);
+            environmentInfraTier.informAgsEnvironmentChanged((String[])agents.toArray());
         }
     }
 

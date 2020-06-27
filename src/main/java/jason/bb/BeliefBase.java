@@ -1,5 +1,7 @@
 package jason.bb;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -129,10 +131,17 @@ public abstract class BeliefBase implements Iterable<Literal>, Cloneable {
 
     public abstract BeliefBase clone();
 
-    Object lock = new Object();
+    transient Object lock = new Object();
 
     /** Gets a lock for the BB */
     public Object getLock() {
         return lock;
     }
+    
+    private void readObject(ObjectInputStream inputStream) throws IOException, ClassNotFoundException {
+        inputStream.defaultReadObject();
+        lock = new Object();
+    }   
+    
+
 }

@@ -28,7 +28,7 @@ public class MASConsoleLogHandler extends StreamHandler  {
         String formatter = LogManager.getLogManager().getProperty(formaterField);
         if (formatter != null) {
             try {
-                setFormatter((Formatter) Class.forName(formatter).newInstance());
+                setFormatter((Formatter) Class.forName(formatter).getConstructor().newInstance());
             } catch (Exception e) {
                 e.printStackTrace();
             }

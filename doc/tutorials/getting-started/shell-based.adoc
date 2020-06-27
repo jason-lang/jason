@@ -14,7 +14,7 @@ curl -s -O http://jason.sourceforge.net/np/np24.gradle
 gradle -b np24.gradle --console=plain
 -----
 
-NOTE: `np24.gradle` creates an application based on Jason 2.4. You can replace it by `npss.gradle` to create a JaCaMo application based on the current snap shot version. https://curl.haxx.se[`curl`] is a program that simply downloads the `np24.gradle` file from http://jason.sourceforge.net/np/np24.gradle.
+NOTE: `np24.gradle` creates an application based on Jason 2.4. You can replace it by `npss.gradle` to create a Jason application based on the current snap shot version. https://curl.haxx.se[`curl`] is a program that simply downloads the `np24.gradle` file from http://jason.sourceforge.net/np/np24.gradle.
 
 You will be asked to enter the identification of the application and then instructions about how to run it will be shown.
 

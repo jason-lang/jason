@@ -42,7 +42,7 @@ public class InternalActionLiteral extends Structure implements LogicalFormula {
         super((Structure) l, u);
         this.ia = l.ia;
     }
-    
+
     // used by cloneNS
     private InternalActionLiteral(Atom ns, InternalActionLiteral l) {
         super(ns, (Structure)l);
@@ -81,7 +81,7 @@ public class InternalActionLiteral extends Structure implements LogicalFormula {
 
     @SuppressWarnings("unchecked")
     public Iterator<Unifier> logicalConsequence(Agent ag, Unifier un) {
-        if (ag == null || ag.getTS().getUserAgArch().isRunning()) {
+        if (ag == null || ag.getTS().getAgArch().isRunning()) {
             try {
                 /*final QueryCache qCache;
                 final CacheKey kForChache;
@@ -114,10 +114,25 @@ public class InternalActionLiteral extends Structure implements LogicalFormula {
                         qCache.addAnswer(kForChache, un);
                         qCache.queryFinished(kForChache);
                     }*/
+                    if (ag.getLogger().isLoggable(Level.FINE)) ag.getLogger().log(Level.FINE, "     | internal action "+this+" executed "+ " -- "+un);
+
                     return LogExpr.createUnifIterator(un);
                 } else if (oresult instanceof Iterator) {
                     //if (kForChache == null) {
-                    return ((Iterator<Unifier>)oresult);
+                    if (ag.getLogger().isLoggable(Level.FINE)) {
+                        return new Iterator<Unifier>() {
+                            @Override public boolean hasNext() {
+                                return ((Iterator<Unifier>) oresult).hasNext();
+                            }
+                            @Override public Unifier next() {
+                                Unifier r = ((Iterator<Unifier>) oresult).next();
+                                ag.getLogger().log(Level.FINE, "     | internal action "+InternalActionLiteral.this+" option "+ " -- "+r);
+                                return r;
+                            }
+                        };
+                    } else {
+                        return ((Iterator<Unifier>)oresult);
+                    }
                     /*} else {
                         // add a wrapper to collect results into the cache
                         return qCache.queryFilter(kForChache, (Iterator<Unifier>)oresult);

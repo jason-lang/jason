@@ -1,8 +1,11 @@
 package jason.architecture;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 
 import jason.asSemantics.ActionExec;
@@ -28,7 +31,9 @@ import jason.runtime.RuntimeServices;
  *
  * Users can customise the architecture by overriding some methods of this class.
  */
-public class AgArch implements Comparable<AgArch> {
+public class AgArch implements Comparable<AgArch>, Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private TransitionSystem ts = null;
 
@@ -98,14 +103,14 @@ public class AgArch implements Comparable<AgArch> {
             // user custom arch
             if (!agArchClass.equals(AgArch.class.getName()) && !agArchClass.equals(CentralisedAgArch.class.getName())) {
                 try {
-                    AgArch a = (AgArch) Class.forName(agArchClass).newInstance();
+                    AgArch a = (AgArch) Class.forName(agArchClass).getConstructor().newInstance();
                     a.setTS(ts); // so a.init() can use TS
                     insertAgArch(a);
                     a.init();
                 } catch (Exception e) {
                     System.out.println("Error creating custom agent aarchitecture."+e);
                     e.printStackTrace();
-                    ts.getLogger().log(Level.SEVERE,"Error creating custom agent aarchitecture.",e);
+                    ts.getLogger().log(Level.SEVERE,"Error creating custom agent architecture.", e);
                 }
             }
         }
@@ -121,6 +126,15 @@ public class AgArch implements Comparable<AgArch> {
         //    q.setNbReasoningCycles(getCycleNumber());
         if (successor != null)
             successor.reasoningCycleStarting();
+    }
+    
+    /**
+     * A call-back method called by TS
+     * when a new reasoning cycle finished
+     */
+    public void reasoningCycleFinished() {
+        if (successor != null)
+            successor.reasoningCycleFinished();
     }
 
 
@@ -156,7 +170,7 @@ public class AgArch implements Comparable<AgArch> {
     }
 
     /**
-     * Executes the action <i>action</i> and, when finished, add it back in
+     * Executes the action <i>action</i> and, when finished, adds it back in
      * <i>feedback</i> actions.
      *
      * @return true if the action was handled (not necessarily executed, just started)
@@ -203,7 +217,9 @@ public class AgArch implements Comparable<AgArch> {
             successor.wakeUpAct();
     }
 
-
+    /**
+     * @deprecated use RuntimeServicesFactory.get instead
+     */
     public RuntimeServices getRuntimeServices() {
         if (successor == null)
             return null;
@@ -272,5 +288,12 @@ public class AgArch implements Comparable<AgArch> {
 
     public int compareTo(AgArch o) {
         return getAgName().compareTo(o.getAgName());
+    }
+    
+    public Map<String,Object> getStatus() {
+        if (successor != null)
+            return successor.getStatus();
+        else
+            return new HashMap<String, Object>();
     }
 }

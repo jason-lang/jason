@@ -117,7 +117,7 @@ import java.util.concurrent.TimeUnit;
 					".send(rafael,askOne,value(beer,X),A,2000)</code>: as in the previous example, but agent jomi waits for 2 seconds. If no message is received by then, A unifies with timeout"
 			},
 			seeAlso= {
-					"jason.stdlib.broadcast", 
+					"jason.stdlib.broadcast",
 					"jason.stdlib.my_name"
 			}
 		)
@@ -162,7 +162,7 @@ public class send extends DefaultInternalAction {
 
 
         // create a message to be sent
-        final Message m = new Message(ilf.toString(), ts.getUserAgArch().getAgName(), null, pcnt);
+        final Message m = new Message(ilf.toString(), ts.getAgArch().getAgName(), null, pcnt);
 
         // async ask has a fourth argument and should suspend the intention
         lastSendWasSynAsk = m.isAsk() && args.length > 3;
@@ -213,7 +213,7 @@ public class send extends DefaultInternalAction {
                             intention.peek().getUnif().unifies(send.getTerm(3), timeoutAns);
                             // add the intention back in C.I
                             ts.getC().resumeIntention(intention);
-                            ts.getUserAgArch().wakeUpAct();
+                            ts.getAgArch().wakeUpAct();
                         }
                     }
                 }, (long)((NumberTerm)tto).solve(), TimeUnit.MILLISECONDS);
@@ -233,13 +233,13 @@ public class send extends DefaultInternalAction {
         if (to.isString())
             rec = ((StringTerm)to).getString();
         else if (to.isAtom())
-        	rec = ((Atom)to).getFunctor(); // remove annotations 
+        	rec = ((Atom)to).getFunctor(); // remove annotations
     	else
             rec = to.toString();
         if (rec.equals("self"))
-            rec = ts.getUserAgArch().getAgName();
+            rec = ts.getAgArch().getAgName();
         m.setReceiver(rec);
-        ts.getUserAgArch().sendMsg(m);
+        ts.getAgArch().sendMsg(m);
     }
 
     @Override

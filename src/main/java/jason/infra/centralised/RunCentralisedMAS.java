@@ -11,18 +11,19 @@ import java.io.InputStream;
 import java.lang.management.ManagementFactory;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
-import javax.management.MBeanServer;
 import javax.management.ObjectName;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -33,7 +34,11 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 import jason.JasonException;
+import jason.architecture.AgArch;
 import jason.asSemantics.Agent;
+import jason.asSyntax.NumberTermImpl;
+import jason.asSyntax.PlanLibrary;
+import jason.asSyntax.Trigger;
 import jason.asSyntax.directives.DirectiveProcessor;
 import jason.asSyntax.directives.Include;
 import jason.bb.DefaultBeliefBase;
@@ -48,6 +53,7 @@ import jason.runtime.MASConsoleGUI;
 import jason.runtime.MASConsoleLogFormatter;
 import jason.runtime.MASConsoleLogHandler;
 import jason.runtime.RuntimeServices;
+import jason.runtime.RuntimeServicesFactory;
 import jason.runtime.Settings;
 import jason.runtime.SourcePath;
 import jason.util.Config;
@@ -57,10 +63,12 @@ import jason.util.Config;
  */
 public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentralisedMASMBean {
 
-    private JButton                   btDebug;
+    private JButton  btDebug;
+    protected boolean  isRunning = false;
 
     public RunCentralisedMAS() {
         super();
+        RuntimeServicesFactory.set( new CentralisedRuntimeServices(this) );
         runner = this;
     }
 
@@ -80,18 +88,17 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
         r.create();
         r.start();
         r.waitEnd();
-        r.finish();
+        r.finish(0, true);
     }
 
     protected void registerMBean() {
         try {
-            MBeanServer mbs = ManagementFactory.getPlatformMBeanServer(); 
-            mbs.registerMBean(this, new ObjectName("jason.sf.net:type=runner"));
+            ManagementFactory.getPlatformMBeanServer().registerMBean(this, new ObjectName("jason.sf.net:type=runner"));
         } catch (Exception e) {
             e.printStackTrace();
-        }       
+        }
     }
-    
+
     protected int init(String[] args) {
         String projectFileName = null;
         if (args.length < 1) {
@@ -208,8 +215,13 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
     protected void start() {
         startAgs();
         startSyncMode();
+        isRunning = true;
     }
 
+    public boolean isRunning() {
+        return isRunning;
+    }
+    
     public synchronized void setupLogger() {
         if (readFromJAR) {
             try {
@@ -341,7 +353,7 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
         btStop.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 MASConsoleGUI.get().setPause(false);
-                runner.finish();
+                runner.finish(0, true);
             }
         });
         MASConsoleGUI.get().addButton(btStop);
@@ -378,7 +390,7 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
         try {
             agArch.setAgName(n);
             agArch.setEnvInfraTier(env);
-            agArch.createArchs(null, ReplAgGUI.class.getName(), null, null, new Settings(), this);
+            agArch.createArchs(null, ReplAgGUI.class.getName(), null, null, new Settings());
             Thread agThread = new Thread(agArch);
             agArch.setThread(agThread);
             agThread.start();
@@ -404,8 +416,8 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
         int nbAg = 0;
         Agent pag = null;
 
-        RuntimeServices rs = getRuntimeServices();
-        
+        RuntimeServices rs = RuntimeServicesFactory.get();
+
         // create agents
         for (AgentParameters ap : project.getAgents()) {
             try {
@@ -423,7 +435,7 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
                     }
 
                     numberedAg = rs.getNewAgentName(numberedAg);
-                    
+
                     ap.addArchClass(rs.getDefaultAgArchs());
                     logger.fine("Creating agent " + numberedAg + " (" + (cAg + 1) + "/" + ap.getNbInstances() + ")");
 
@@ -475,10 +487,10 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
                     agArch.setEnvInfraTier(env);
                     if ((generalConf != RConf.THREADED) && cAg > 0 && ap.getAgArchClasses().isEmpty() && ap.getBBClass().getClassName().equals(DefaultBeliefBase.class.getName())) {
                         // creation by cloning previous agent (which is faster -- no parsing, for instance)
-                        agArch.createArchs(ap.getAgArchClasses(), pag, this);
+                        agArch.createArchs(ap.getAgArchClasses(), pag);
                     } else {
                         // normal creation
-                        agArch.createArchs(ap.getAgArchClasses(), ap.agClass.getClassName(), ap.getBBClass(), ap.asSource.toString(), ap.getAsSetts(debug, project.getControlClass() != null), this);
+                        agArch.createArchs(ap.getAgArchClasses(), ap.agClass.getClassName(), ap.getBBClass(), ap.asSource.toString(), ap.getAsSetts(debug, project.getControlClass() != null));
                     }
                     addAg(agArch);
 
@@ -663,6 +675,8 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
 
     /** an agent architecture for the infra based on thread pool */
     protected final class CentralisedAgArchSynchronousScheduled extends CentralisedAgArch {
+        private static final long serialVersionUID = 2752327732263465482L;
+        
         private volatile boolean runWakeAfterTS = false;
         private int currentStep = 0;
 
@@ -736,15 +750,28 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
         }
     }
 
-    protected void stopAgs() {
+    protected void stopAgs(int deadline) {
+        // if deadline is not 0, give agents some time
+        if (deadline != 0) {
+            for (AgArch ag: ags.values()) {
+                Trigger te = PlanLibrary.TE_JAG_SHUTTING_DOWN.clone();
+                te.getLiteral().addTerm(new NumberTermImpl(deadline));
+                ag.getTS().getC().addExternalEv(te);
+            }
+            try {
+                Thread.sleep(deadline);
+            } catch (InterruptedException e) {}
+        }
+
         // stop the agents
-        for (CentralisedAgArch ag : ags.values()) {
+        for (CentralisedAgArch ag : new ArrayList<>(ags.values())) {
             ag.stopAg();
+            delAg(ag.getAgName());
         }
     }
-    
+
     public boolean killAg(String agName) {
-        return getRuntimeServices().killAgent(agName, "??");
+        return RuntimeServicesFactory.get().killAgent(agName, "??", 0);
     }
 
     /** change the current running MAS to debug mode */
@@ -804,57 +831,76 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
         }
     }
 
-    private Boolean runningFinish = false;
+    protected AtomicBoolean isRunningFinish = new AtomicBoolean(false);
 
-    public void finish() {
+    public void finish(int deadline, boolean stopJVM) {
         // avoid two threads running finish!
-        synchronized (runningFinish) {
-            if (runningFinish)
-                return;
-            runningFinish = true;
-        }
+        if (isRunningFinish.getAndSet(true))
+            return;
+
+        isRunning = false;
         try {
-            // creates a thread that guarantees system.exit(0) in 5 seconds
-            // (the stop of agents can  block)
+            // creates a thread that guarantees system.exit(0) in deadline seconds
+            // (the stop of agents can block, for instance)
+            if (stopJVM) {
+                new Thread() {
+                    public void run() {
+                        try {
+                            if (deadline == 0)
+                                sleep(5000);
+                            else
+                                sleep(deadline);
+                        } catch (InterruptedException e) {}
+                        System.exit(0);
+                    }
+                } .start();
+            }
+
+            // use a thread to not block the caller
             new Thread() {
                 public void run() {
+                    System.out.flush();
+                    System.err.flush();
+
+                    if (MASConsoleGUI.hasConsole()) { // should close first! (case where console is in pause)
+                        MASConsoleGUI.get().close();
+                    }
+
+                    stopAgs(deadline);
+
+                    if (control != null) {
+                        control.stop();
+                        control = null;
+                    }
+                    if (env != null) {
+                        env.stop();
+                        env = null;
+                    }
+
+                    // remove the .stop___MAS file  (note that GUI console.close(), above, creates this file)
+                    File stop = new File(stopMASFileName);
+                    if (stop.exists()) {
+                        stop.delete();
+                    }
+                    
                     try {
-                        sleep(5000);
-                    } catch (InterruptedException e) {}
-                    System.exit(0);
-                }
-            } .start();
+                        ManagementFactory.getPlatformMBeanServer().unregisterMBean(new ObjectName("jason.sf.net:type=runner"));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
 
-            System.out.flush();
-            System.err.flush();
+                    //runner = null;
 
-            if (MASConsoleGUI.hasConsole()) { // should close first! (case where console is in pause)
-                MASConsoleGUI.get().close();
-            }
+                    if (stopJVM) {
+                        System.exit(0);
+                    }
+                    isRunningFinish.set(false);
+                };
+            }.start();
 
-            if (control != null) {
-                control.stop();
-                control = null;
-            }
-            if (env != null) {
-                env.stop();
-                env = null;
-            }
-
-            stopAgs();
-
-            runner = null;
-
-            // remove the .stop___MAS file  (note that GUI console.close(), above, creates this file)
-            File stop = new File(stopMASFileName);
-            if (stop.exists()) {
-                stop.delete();
-            }
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        System.exit(0);
     }
 
     /** show the sources of the project */
@@ -901,5 +947,5 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
         frame.setVisible(true);
     }
 
-    
+
 }

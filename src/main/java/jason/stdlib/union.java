@@ -54,17 +54,17 @@ import jason.asSyntax.Term;
                 ".union(\"[a,b,a,c]\",\"[f,e]\",X): X unifies with \"[a,b,c,e,f]\""
         },
         seeAlso= {
-                "jason.stdlib.concat", 
-                "jason.stdlib.delete", 
-                "jason.stdlib.length", 
-                "jason.stdlib.member", 
-                "jason.stdlib.sort", 
-                "jason.stdlib.substring", 
-                "jason.stdlib.nth", 
-                "jason.stdlib.max", 
-                "jason.stdlib.min", 
-                "jason.stdlib.reverse", 
-                "jason.stdlib.difference", 
+                "jason.stdlib.concat",
+                "jason.stdlib.delete",
+                "jason.stdlib.length",
+                "jason.stdlib.member",
+                "jason.stdlib.sort",
+                "jason.stdlib.substring",
+                "jason.stdlib.nth",
+                "jason.stdlib.max",
+                "jason.stdlib.min",
+                "jason.stdlib.reverse",
+                "jason.stdlib.difference",
                 "jason.stdlib.intersection"
         }
     )

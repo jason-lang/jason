@@ -1,5 +1,6 @@
 package jason.bb;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Deque;
@@ -25,7 +26,9 @@ import jason.asSyntax.PredicateIndicator;
 /**
  * Default implementation of Jason BB.
  */
-public class DefaultBeliefBase extends BeliefBase {
+public class DefaultBeliefBase extends BeliefBase implements Serializable {
+
+    private static final long serialVersionUID = 4189725430351480996L;
 
     private static Logger logger = Logger.getLogger(DefaultBeliefBase.class.getSimpleName());
 
@@ -49,7 +52,7 @@ public class DefaultBeliefBase extends BeliefBase {
     @Override
     public void init(Agent ag, String[] args) {
         if (ag != null) {
-            logger = Logger.getLogger(ag.getTS().getUserAgArch().getAgName() + "-"+DefaultBeliefBase.class.getSimpleName());
+            logger = Logger.getLogger(ag.getTS().getAgArch().getAgName() + "-"+DefaultBeliefBase.class.getSimpleName());
         }
     }
 
@@ -90,7 +93,6 @@ public class DefaultBeliefBase extends BeliefBase {
                 }
                 // remove from percepts
                 i.remove();
-                eDOMbels = null;
 
                 // remove the percept annot
                 current.delAnnot(BeliefBase.TPercept);
@@ -121,8 +123,7 @@ public class DefaultBeliefBase extends BeliefBase {
             logger.log(Level.SEVERE, "Error: '"+l+"' can not be added in the belief base.");
             return false;
         }
-        eDOMbels = null;
-        
+
         Literal bl = contains(l);
         if (bl != null && !bl.isRule()) {
             // add only annots
@@ -174,8 +175,6 @@ public class DefaultBeliefBase extends BeliefBase {
         Literal bl = contains(l);
         if (bl != null) {
             if (l.hasSubsetAnnot(bl)) { // e.g. removing b[a] or b[a,d] from BB b[a,b,c]
-                eDOMbels = null;
-                
                 // second case fails
                 if (l.hasAnnot(TPercept)) {
                     percepts.remove(bl);
@@ -253,8 +252,6 @@ public class DefaultBeliefBase extends BeliefBase {
     public boolean abolish(Atom namespace, PredicateIndicator pi) {
         BelEntry entry = nameSpaces.get(namespace).remove(pi);
         if (entry != null) {
-            eDOMbels = null;
-            
             size -= entry.size();
 
             // remove also in percepts list!
@@ -298,14 +295,14 @@ public class DefaultBeliefBase extends BeliefBase {
             return null;
         }
     }
-    
+
     class EntryIteratorWrapper implements Iterator<Literal> {
         Literal last = null;
         Iterator<Literal> il = null;
         BelEntry entry = null;
-        
+
         public EntryIteratorWrapper(BelEntry e) {
-                entry = e;
+            entry = e;
             il = entry.list.iterator();
         }
         @Override public boolean hasNext() {
@@ -322,7 +319,7 @@ public class DefaultBeliefBase extends BeliefBase {
                 percepts.remove(last);
             }
             size--;
-        }       
+        }
     }
 
     @Override
@@ -368,20 +365,14 @@ public class DefaultBeliefBase extends BeliefBase {
         return bb;
     }
 
-    // for cache
-    protected Element eDOMbels = null;
-    
     @Override
     public Element getAsDOM(Document document) {
-        if (eDOMbels != null)
-            return eDOMbels;
-        
+        Element eDOMbels = (Element) document.createElement("beliefs");
         int tries = 0;
         List<Literal> allBels;
         while (tries < 10) { // max 10 tries
             try {
                 synchronized (getLock()) {
-                    eDOMbels = (Element) document.createElement("beliefs");
                     Element enss = (Element) document.createElement("namespaces");
                     Element ens = (Element) document.createElement("namespace");
                     ens.setAttribute("id", Literal.DefaultNS.toString()); // to ensure default is the first
@@ -413,8 +404,10 @@ public class DefaultBeliefBase extends BeliefBase {
     }
 
     /** each predicate indicator has one BelEntry assigned to it */
-    final class BelEntry {
+    final class BelEntry implements Serializable {
 
+        private static final long serialVersionUID = 213020035116603827L;
+        
         final private Deque<Literal> list = new LinkedBlockingDeque<>();  // maintains the order of the beliefs
         final private Map<StructureWrapperForLiteral,Literal> map = new ConcurrentHashMap<>(); // to find content faster
 

@@ -111,7 +111,7 @@ public class PlanBodyImpl extends Structure implements PlanBody, Iterable<PlanBo
     public Term getBodyTerm() {
         return term;
     }
-    
+
     public PlanBody getHead() {
         return new PlanBodyImpl(getBodyType(), getBodyTerm());
     }
@@ -170,7 +170,7 @@ public class PlanBodyImpl extends Structure implements PlanBody, Iterable<PlanBo
     }
 
     //private static PlanBodyImpl emptyBody = new PlanBodyImpl();
-    
+
     @Override
     public Term getTerm(int i) {
         if (i == 0)

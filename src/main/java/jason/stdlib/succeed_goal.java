@@ -10,6 +10,8 @@ import jason.asSemantics.Intention;
 import jason.asSemantics.TransitionSystem;
 import jason.asSemantics.Unifier;
 import jason.asSemantics.GoalListener.FinishStates;
+import jason.asSemantics.IMCondition;
+import jason.asSemantics.IntendedMeans;
 import jason.asSyntax.Literal;
 import jason.asSyntax.Term;
 import jason.asSyntax.Trigger;
@@ -66,17 +68,17 @@ import java.util.Iterator;
                 ".succeed_goal(go(X,3)): stops any attempt to achieve goals such as !go(1,3) as if it had already been achieved"
         },
         seeAlso= {
-                "jason.stdlib.intend", 
-                "jason.stdlib.desire", 
-                "jason.stdlib.drop_all_desires", 
-                "jason.stdlib.drop_all_events", 
-                "jason.stdlib.drop_all_intentions", 
-                "jason.stdlib.drop_intention", 
-                "jason.stdlib.drop_desire", 
-                "jason.stdlib.fail_goal", 
-                "jason.stdlib.current_intention", 
-                "jason.stdlib.suspend", 
-                "jason.stdlib.suspended", 
+                "jason.stdlib.intend",
+                "jason.stdlib.desire",
+                "jason.stdlib.drop_all_desires",
+                "jason.stdlib.drop_all_events",
+                "jason.stdlib.drop_all_intentions",
+                "jason.stdlib.drop_intention",
+                "jason.stdlib.drop_desire",
+                "jason.stdlib.fail_goal",
+                "jason.stdlib.current_intention",
+                "jason.stdlib.suspend",
+                "jason.stdlib.suspended",
                 "jason.stdlib.resume"
         }
     )
@@ -100,27 +102,28 @@ public class succeed_goal extends DefaultInternalAction {
     @Override
     public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {
         checkArguments(args);
-        findGoalAndDrop(ts, (Literal)args[0], un);
+        drop(ts, (Literal)args[0], un);
         return true;
     }
 
-    public void findGoalAndDrop(TransitionSystem ts, Literal l, Unifier un) throws Exception {
-        Trigger g = new Trigger(TEOperator.add, TEType.achieve, l);
+    public void drop(TransitionSystem ts, Literal l, Unifier un) throws Exception {
+        final Trigger g = new Trigger(TEOperator.add, TEType.achieve, l);
+        drop(ts, new IMCondition() {
+            public boolean test(Trigger t, Unifier u) {
+                return u.unifies(g, t);
+            }
+            @Override
+            public Trigger getTrigger() {
+                return g;
+            }
+        }, un);
+    }
+
+    public void drop(TransitionSystem ts, IMCondition c, Unifier un) throws Exception {
         Circumstance C = ts.getC();
         Unifier bak = un.clone();
 
-        Iterator<Intention> itint = C.getRunningIntentionsPlusAtomic();
-        while (itint.hasNext()) {
-            Intention i = itint.next();
-            if (dropGoal(i, g, ts, un) > 1) {
-                C.dropRunningIntention(i);
-                un = bak.clone();
-            }
-        }
-
-        // dropping the current intention?
-        dropGoal(C.getSelectedIntention(), g, ts, un);
-        un = bak.clone();
+        // remove goal before in events, since the deletion from I can produce events for the goal
 
         // dropping G in Events
         Iterator<Event> ie = C.getEventsPlusAtomic();
@@ -128,7 +131,7 @@ public class succeed_goal extends DefaultInternalAction {
             Event e = ie.next();
             // test in the intention
             Intention i = e.getIntention();
-            int r = dropGoal(i, g, ts, un);
+            int r = dropIntention(i, c, ts, un);
             if (r > 0) {
                 C.removeEvent(e);
                 if (r == 1) {
@@ -141,8 +144,8 @@ public class succeed_goal extends DefaultInternalAction {
                 if (i != Intention.EmptyInt && !i.isFinished()) {
                     t = t.capply(i.peek().getUnif());
                 }
-                if (un.unifies(g, t)) {
-                    dropGoalInEvent(ts,e,i);
+                if (c.test(t, un)) {
+                    dropInEvent(ts,e,i);
                     un = bak.clone();
                 }
             }
@@ -153,7 +156,7 @@ public class succeed_goal extends DefaultInternalAction {
             // test in the intention
             Event e = C.getPendingEvents().get(ek);
             Intention i = e.getIntention();
-            int r = dropGoal(i, g, ts, un);
+            int r = dropIntention(i, c, ts, un);
             if (r > 0) {
                 C.removePendingEvent(ek);
                 if (r == 1) {
@@ -166,17 +169,30 @@ public class succeed_goal extends DefaultInternalAction {
                 if (i != Intention.EmptyInt && !i.isFinished()) { //i.size() > 0) {
                     t = t.capply(i.peek().getUnif());
                 }
-                if (un.unifies(g, t)) {
-                    dropGoalInEvent(ts,e,i);
+                if (c.test(t, un)) {
+                    dropInEvent(ts,e,i);
                     un = bak.clone();
                 }
             }
         }
 
+        Iterator<Intention> itint = C.getRunningIntentionsPlusAtomic();
+        while (itint.hasNext()) {
+            Intention i = itint.next();
+            if (dropIntention(i, c, ts, un) > 1) {
+                C.dropRunningIntention(i);
+                un = bak.clone();
+            }
+        }
+
+        // dropping the current intention?
+        dropIntention(C.getSelectedIntention(), c, ts, un);
+        un = bak.clone();
+
         // dropping from Pending Actions
         for (ActionExec a: C.getPendingActions().values()) {
             Intention i = a.getIntention();
-            int r = dropGoal(i, g, ts, un);
+            int r = dropIntention(i, c, ts, un);
             if (r > 0) { // i was changed
                 C.removePendingAction(i.getId());  // remove i from PA
                 if (r == 1) {                      // i must continue running
@@ -188,7 +204,7 @@ public class succeed_goal extends DefaultInternalAction {
 
         // dropping from Pending Intentions
         for (Intention i: C.getPendingIntentions().values()) {
-            int r = dropGoal(i, g, ts, un);
+            int r = dropIntention(i, c, ts, un);
             if (r > 0) {
                 C.removePendingIntention(i.getId());
                 if (r == 1) {
@@ -204,27 +220,31 @@ public class succeed_goal extends DefaultInternalAction {
      *           2 = fail event was generated and added in C.E
      *           3 = simply removed without event
      */
-    public int dropGoal(Intention i, Trigger g, TransitionSystem ts, Unifier un) throws JasonException {
-        if (i != null && i.dropGoal(g, un)) {
-            if (ts.hasGoalListener())
-                for (GoalListener gl: ts.getGoalListeners())
-                    gl.goalFinished(g, FinishStates.achieved);
+    public int dropIntention(Intention i, IMCondition c, TransitionSystem ts, Unifier un) throws JasonException {
+        if (i != null) {
+            IntendedMeans im = i.dropGoal(c,un);
+            //System.out.println("dropped "+im+"\nfrom "+i);
+            if (im != null) {
+                if (ts.hasGoalListener())
+                    for (GoalListener gl: ts.getGoalListeners())
+                        gl.goalFinished(im.getTrigger(), FinishStates.achieved);
 
-            // continue the intention
-            if (!i.isFinished()) { // could be finished after i.dropGoal() !!
-                if (ts.getC().getSelectedIntention() != i) // if i is not the current intention, remove
-                    i.peek().removeCurrentStep();
-                ts.applyClrInt(i);
-                return 1;
-            } else {
-                ts.applyClrInt(i);
-                return 3;
+                // continue the intention
+                if (!i.isFinished()) { // could be finished after i.dropGoal() !!
+                    if (ts.getC().getSelectedIntention() != i) // if i is not the current intention, remove
+                        i.peek().removeCurrentStep();
+                    ts.applyClrInt(i);
+                    return 1;
+                } else {
+                    ts.applyClrInt(i);
+                    return 3;
+                }
             }
         }
         return 0;
     }
 
-    void dropGoalInEvent(TransitionSystem ts, Event e, Intention i) throws Exception {
+    void dropInEvent(TransitionSystem ts, Event e, Intention i) throws Exception {
         Circumstance C = ts.getC();
         C.removeEvent(e);
         if (i != null) {

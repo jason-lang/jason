@@ -39,7 +39,9 @@ p(t)[a1,a2(0)].
 ----
 the literal `p(t)` has two annotations: terms `a1` and `a2(0)`.
 
-One important thing to note is that even though the complete notation for lists in Prolog is used for Jason annotations, this is semantically treated as as set of annotations.
+//One important thing to note is that even though the complete notation for lists in Prolog is used for Jason annotations, this is semantically treated as as set of annotations.
+
+One important thing to note is that even though the notation for lists in Prolog is used for Jason annotations, they are considered as a set and their order is not preserved. E.g. `p[b,c,10,b]` are replaced by `p[10,b,c]`.
 
 == Unification Between Literals
 

@@ -152,6 +152,11 @@ public class ArithFunctionTerm extends Structure implements NumberTerm {
     public NumberTerm clone() {
         return new ArithFunctionTerm(this);
     }
+    @Override
+    public Literal cloneNS(Atom newnamespace) {
+        return new ArithFunctionTerm(this);
+    }
+
 
     public Element getAsDOM(Document document) {
         Element u = (Element) document.createElement("expression");

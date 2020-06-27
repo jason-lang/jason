@@ -8,6 +8,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -89,9 +90,9 @@ public class Config extends Properties {
             if (configFactory == null)
                 configFactory = Config.class.getName();
             try {
-                singleton = (Config)Class.forName(configFactory).newInstance();
+                singleton = (Config)Class.forName(configFactory).getConstructor().newInstance();
             } catch (Exception e) {
-                System.err.println("Error creating config from "+configFactory+"("+e+"), using default.");
+                System.err.println("Error creating config from "+configFactory+" ("+e+"), using default.");
                 singleton = new Config();
             }
             if (!singleton.load()) {
@@ -104,7 +105,7 @@ public class Config extends Properties {
         return singleton;
     }
 
-    protected Config() {
+    public Config() {
     }
 
     public void setShowFixMsgs(boolean b) {
@@ -169,7 +170,7 @@ public class Config extends Properties {
     public String getJadeJar() {
         String r = getProperty(JADE_JAR);
         if (r == null) {
-            tryToFixJarFileConf(JADE_JAR,   "jade",  2000000);
+            tryToFixJarFileConf(JADE_JAR,   "jade");
             r = getProperty(JADE_JAR);
         }
         return r;
@@ -268,7 +269,7 @@ public class Config extends Properties {
 
     /** Set most important parameters with default values */
     public void fix() {
-        tryToFixJarFileConf(JASON_JAR,  "jason",  700000);
+        tryToFixJarFileConf(JASON_JAR,  "jason");
 
         // fix java home
         if (get(JAVA_HOME) == null || !checkJavaHomePath(getProperty(JAVA_HOME))) {
@@ -454,6 +455,7 @@ public class Config extends Properties {
         return "/dist.properties";
     }*/
 
+    @SuppressWarnings("deprecation")
     public String getJasonVersion() {
         Package j = Package.getPackage("jason.util");
         if (j != null && j.getSpecificationVersion() != null) {
@@ -485,6 +487,7 @@ public class Config extends Properties {
 
     }
 
+    @SuppressWarnings("deprecation")
     public String getJasonBuiltDate() {
         Package j = Package.getPackage("jason.util");
         if (j != null) {
@@ -501,15 +504,45 @@ public class Config extends Properties {
         }*/
     }
 
-    public boolean tryToFixJarFileConf(String jarEntry, String jarFilePrefix, int minSize) {
+    @SuppressWarnings("rawtypes")
+    public Class getClassForClassLoaderTest(String jarEntry) {
+        if (jarEntry == JASON_JAR)
+            return TransitionSystem.class;
+        return this.getClass();
+    }
+    
+    public String getJarFileForFixTest(String jarEntry) {
+        if (jarEntry == JASON_JAR)
+            return "jason/asSyntax/CyclicTerm.class";
+        if (jarEntry == JADE_JAR)
+            return "jade/Boot.class";
+        return null;
+    }
+
+
+    public boolean tryToFixJarFileConf(String jarEntry, String jarFilePrefix) {
         String jarFile = getProperty(jarEntry);
-        if (jarFile == null || !checkJar(jarFile, minSize)) {
+        String fileInJar = getJarFileForFixTest(jarEntry);
+        if (jarFile == null || !checkJar(jarFile, fileInJar)) {
             if (showFixMsgs)
                 System.out.println("Wrong configuration for " + jarFilePrefix + ", current is " + jarFile);
 
+            // try to get by class loader
+            try {
+                String fromLoader = getClassForClassLoaderTest(jarEntry).getProtectionDomain().getCodeSource().getLocation().toString();
+                if (fromLoader.startsWith("file:"))
+                    fromLoader = fromLoader.substring(5);
+                if (new File(fromLoader).getName().startsWith(jarFilePrefix) && checkJar(fromLoader, fileInJar)) {
+                    if (showFixMsgs)
+                        System.out.println("found at " + fromLoader+" by class loader");
+                    put(jarEntry, fromLoader);
+                    return true;
+                }
+            } catch (Exception e) {}
+
             // try to get from classpath (the most common case)
-            jarFile = getJarFromClassPath(jarFilePrefix);
-            if (checkJar(jarFile, minSize)) {
+            jarFile = getJarFromClassPath(jarFilePrefix, fileInJar);
+            if (checkJar(jarFile, fileInJar)) {
                 put(jarEntry, jarFile);
                 if (showFixMsgs)
                     System.out.println("found at " + jarFile+" by classpath");
@@ -518,7 +551,7 @@ public class Config extends Properties {
 
             // try eclipse installation
             jarFile = getJarFromEclipseInstallation(jarFilePrefix);
-            if (checkJar(jarFile, minSize)) {
+            if (checkJar(jarFile, fileInJar)) {
                 put(jarEntry, jarFile);
                 if (showFixMsgs)
                     System.out.println("found at " + jarFile+" in eclipse installation");
@@ -601,7 +634,7 @@ public class Config extends Properties {
                 }
             }
             if (jwsDir != null) {
-                jarFile = findFile(new File(jwsDir), jarFilePrefix, minSize);
+                jarFile = findFile(new File(jwsDir), jarFilePrefix);
                 if (showFixMsgs)
                     System.out.print("Searching " + jarFilePrefix + " in " + jwsDir + " ... ");
                 if (jarFile != null && checkJar(jarFile)) {
@@ -613,24 +646,24 @@ public class Config extends Properties {
                     put(jarEntry, File.separator);
                 }
             }
-            if (showFixMsgs)
-                System.out.println(jarFilePrefix+" not found");
+            //if (showFixMsgs)
+            //    System.out.println(jarFilePrefix+" not found");
             return false;
         }
         return true;
     }
 
-    static String findFile(File p, String file, int minSize) {
+    static String findFile(File p, String file) {
         if (p.isDirectory()) {
             File[] files = p.listFiles();
             for (int i = 0; i < files.length; i++) {
                 if (files[i].isDirectory()) {
-                    String r = findFile(files[i], file, minSize);
+                    String r = findFile(files[i], file);
                     if (r != null) {
                         return r;
                     }
                 } else {
-                    if (files[i].getName().endsWith(file) && files[i].length() > minSize) {
+                    if (files[i].getName().endsWith(file)) { // && files[i].length() > minSize) {
                         return files[i].getAbsolutePath();
                     }
                 }
@@ -658,9 +691,22 @@ public class Config extends Properties {
         return false;
     }
 
-    public static boolean checkJar(String jar, int minSize) {
+    public boolean checkJar(String jar, String file) {
         try {
-            return checkJar(jar) && new File(jar).length() > minSize;
+            return checkJar(jar) && checkJarHasFile(jar,file); //new File(jar).length() > minSize;
+        } catch (Exception e) {
+        }
+        return false;
+    }
+    
+    public boolean checkJarHasFile(String jarFile, String file) {
+        if (file == null || jarFile == null)
+            return true;
+        
+        jarFile = "jar:file:" + jarFile + "!/" + file;
+        try {
+            new URL(jarFile).openStream().close();
+            return true;
         } catch (Exception e) {
         }
         return false;
@@ -712,20 +758,18 @@ public class Config extends Properties {
         return System.getProperty("os.name").startsWith("Windows");
     }
 
-    static protected String getJarFromClassPath(String file) {
+    protected String getJarFromClassPath(String file, String fileInsideJar) {
         StringTokenizer st = new StringTokenizer(System.getProperty("java.class.path"), File.pathSeparator);
         while (st.hasMoreTokens()) {
             String token = st.nextToken();
             File f = new File(token);
-            if (f.getName().startsWith(file) && digitAfterMinus(f.getName()) && f.getName().endsWith(".jar") && !f.getName().endsWith("-sources.jar") && !f.getName().endsWith("-javadoc.jar")) {
+            if (f.getName().startsWith(file) &&
+                    f.getName().endsWith(".jar") &&
+                    checkJarHasFile(f.getAbsolutePath(), fileInsideJar)) {
                 return f.getAbsolutePath();
             }
         }
         return null;
-    }
-    private static boolean digitAfterMinus(String s) {
-        int pos = s.indexOf("-");
-        return pos > 0 && Character.isDigit(s.substring(pos+1, pos+2).charAt(0));
     }
 
     protected String getEclipseInstallationDirectory() {

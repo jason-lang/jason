@@ -13,6 +13,8 @@ import java.io.Serializable;
  */
 public abstract class DefaultArithFunction implements ArithFunction, Serializable {
 
+    private static final long serialVersionUID = 1L;
+
     public String getName() {
         return getClass().getName();
     }

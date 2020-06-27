@@ -3,6 +3,88 @@
 
 ifdef::env-github[:outfilesuffix: .adoc]
 
+== version 2.5 (2020-06-25)
+
+- cascading failures of failures (see FAQ)
+- new internal actions to manipulate a Java Set. In Jason, it is represented by a variable. Example:
++
+----
+.set.add(S,a);                 // S = {a}
+.set.add_all(S,[5,b,p(2),a]);  // S = {5,a,b,p(2)}
+.set.remove(S,b);              // S = {5,a,p(2)}
+.set.union(S,[a,1]);           // S = {1,5,a,p(2)}
+.length(S,X);                  // X = 4
+.set.difference(S,[1,a]);      // S = {5,p(2)}
+.findall(K, .member(K,S), LL)  // LL = [5,p(2)]
+.set.add(V,5);
+.set.intersection(S,V);        // S = {5}
+.set.clear(S);                 // S = {}
+// iteration
+for ( .member(V,S) ) {
+   .print(K,V);
+}.
+----
+
+- new internal actions to manipulate a Java Map. In Jason, it is represented by a variable. Example:
++
+----
+.map.put(M,a,10);                // M = {a->10}
+.map.put(M,b,ok);                // M = {a->10, b->ok}
+.map.put(M,a,20);                // M = {a->20, b->ok}
+.length(M,X);                    // X = 2
+.map.key(M,a)                    // true
+.map.key(M,V)                    // unifies V with all keys of M
+.map.value(M,10)                 // true
+.map.value(M,V)                  // unifies V with all values of M
+.findall(K, .map.key(M,K), LL)   // LL = [a,b]
+.findall(V, .map.value(M,V), LL) // LL = [20,ok]
+.findall([K,V], .map.key(M,K) & .map.get(M,K,V), LL)
+                                 // LL = [[a,30],[d,ok(3)]]
+.map.get(M,a,V);                 // V = 20
+.map.get(M,c,V);                 // fail
+.map.get(M,c,V,0);               // V = 0
+.map.remove(M,a,V);              // M = {b->ok} V = 20
+.map.clear(M);                   // M = {}
+// iteration
+for ( .map.key(M,K) & .map.get(M,K,V) ) {
+   .print(K,V);
+}.
+----
+
+- new internal action to replace strings (see internal action .replace).
+
+== version 2.4 (2019-05-24)
+
+(a built package is available at https://sourceforge.net/projects/jason/files/jason/version%202.4/[here])
+
+- `.stopMAS` accepts an optional parameter with an amount of time before shutdown. Agents thus can prepare themselves reacting to the signal `+jag_shutting_down(T)`. E.g.
++
+----
+...  .stopMAS(2000); // shutdown the system in 2 seconds
+...
++jag_shutting_down(T) <- .print("I have ",T/1000," seconds to pack my stuff").
+----
+
+- similarly, `.kill_agent` has an optional parameter to inform the amount of time before the agent will be killed.
+
+- New performative `signal`. The semantics is that the receiver will have the event added in its event queue. For example, if Alice executes
++
+----
+.send(bob,signal,hello);
+.send(bob,signal,hello);
+----
++
+it produces in Bob *two* events `+hello[source(alice)]`. Different than `tell`, no belief is added.
+
+- New internal action to change verbosity:
+    * `.verbose(2)`: start showing debug messages
+    * `.verbose(1)`: goes back to normal message / logging level
+
+- Improved support for meta-programming. See demos/meta-programming.
+
+- event `+!jag_sleeping` was replaced by (a signal) `+jag_sleeping`
+- event `+!jag_awaking`  was replaced by (a signal) `+jag_awaking`
+
 == version 2.3 (2018-10-01)
 
 (a built package is available at https://sourceforge.net/projects/jason/files/jason/version%202.3/[here])

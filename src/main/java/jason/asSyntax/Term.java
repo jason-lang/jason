@@ -2,6 +2,7 @@ package jason.asSyntax;
 
 import jason.asSemantics.Unifier;
 import jason.util.ToDOM;
+import jason.util.ToJSON;
 
 import java.io.Serializable;
 import java.util.Map;
@@ -11,13 +12,15 @@ import java.util.Map;
  *
  * @opt nodefillcolor lightgoldenrodyellow
  */
-public interface Term extends Cloneable, Comparable<Term>, Serializable, ToDOM {
+public interface Term extends Cloneable, Comparable<Term>, Serializable, ToDOM, ToJSON {
 
     public boolean isVar();
     public boolean isUnnamedVar();
     public boolean isLiteral();
     public boolean isRule();
     public boolean isList();
+    public boolean isSet();
+    public boolean isMap();
     public boolean isString();
     public boolean isInternalAction();
     public boolean isArithExpr();

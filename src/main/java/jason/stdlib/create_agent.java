@@ -14,6 +14,7 @@ import jason.asSyntax.Structure;
 import jason.asSyntax.Term;
 import jason.mas2j.ClassParameters;
 import jason.runtime.RuntimeServices;
+import jason.runtime.RuntimeServicesFactory;
 import jason.runtime.Settings;
 
 /**
@@ -49,14 +50,17 @@ import jason.runtime.Settings;
   creates the agent with customised agent class
   <code>myp.MyAgent</code>.</li>
 
+  <li>
   <code>.create_agent(bob,"x.asl", [agentArchClass("myp.MyArch")])</code>:
   creates the agent with customised architecture class
   <code>myp.MyArch</code>.</li>
 
+  <li>
   <code>.create_agent(bob,"x.asl", [beliefBaseClass("jason.bb.TextPersistentBB")])</code>:
   creates the agent with customised belief base
   <code>jason.bb.TextPersistentBB</code>.</li>
 
+  <li>
   <code>.create_agent(bob,"x.asl", [agentClass("myp.MyAgent"),
   agentArchClass("myp.MyArch"),
   beliefBaseClass("jason.bb.TextPersistentBB")])</code>: creates the
@@ -75,7 +79,7 @@ import jason.runtime.Settings;
 		argsHint= {
 				"the name for the new agent",
 				"path to the AgentSpeak code file [optional]",
-				"list of optional parameters [optional]"		
+				"list of optional parameters [optional]"
 		},
 		argsType= {
 				"atom, string, or variable",
@@ -139,7 +143,7 @@ public class create_agent extends DefaultInternalAction {
                 }
             }
         }
-        RuntimeServices rs = ts.getUserAgArch().getRuntimeServices();
+        RuntimeServices rs = RuntimeServicesFactory.get();
         name = rs.createAgent(name, source, agClass, agArchClasses, bbPars, getSettings(ts), ts.getAg());
         rs.startAgent(name);
 

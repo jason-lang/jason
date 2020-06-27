@@ -50,8 +50,8 @@ import jason.asSyntax.Term;
                 ".my_name(bob): true if the agent's name is \"bob\""
         },
         seeAlso= {
-                "jason.stdlib.broadcast", 
-                "jason.stdlib.send", 
+                "jason.stdlib.broadcast",
+                "jason.stdlib.send",
                 "jason.stdlib.all_names"
         }
     )
@@ -75,6 +75,6 @@ public class my_name extends DefaultInternalAction {
     @Override
     public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {
         checkArguments(args);
-        return un.unifies(args[0], new Atom(ts.getUserAgArch().getAgName()));
+        return un.unifies(args[0], new Atom(ts.getAgArch().getAgName()));
     }
 }

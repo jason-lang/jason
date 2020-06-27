@@ -64,7 +64,7 @@ import jason.asSyntax.parser.ParseException;
 				"list"
 		},
 		examples= {
-				".relevant_plans({+!go(X,Y)},LP): unifies LP with all plans in the agent's plan library that are relevant for the triggering event +!go(X,Y)", 
+				".relevant_plans({+!go(X,Y)},LP): unifies LP with all plans in the agent's plan library that are relevant for the triggering event +!go(X,Y)",
 				".relevant_plans({+!go(X,Y)},LP, LL): same as above but also unifies LL with a list of labels of plans in LP",
 				".relevant_plans({+!_},_,LL): gets the labels of all plans for achievement goals"
 		},

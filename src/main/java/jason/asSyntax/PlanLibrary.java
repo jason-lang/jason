@@ -1,6 +1,9 @@
 package jason.asSyntax;
 
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -23,7 +26,11 @@ import jason.util.Config;
 
     @has - plans 0..* Plan
 */
-public class PlanLibrary implements Iterable<Plan> {
+public class PlanLibrary implements Iterable<Plan>, Serializable {
+
+    private static final long serialVersionUID = 1913142118716665555L;
+
+    public static String KQML_PLANS_FILE = "kqmlPlans.asl";
 
     /** a MAP from TE to a list of relevant plans */
     private Map<PredicateIndicator,List<Plan>> relPlans = new ConcurrentHashMap<>();
@@ -47,11 +54,17 @@ public class PlanLibrary implements Iterable<Plan> {
 
     //private Logger logger = Logger.getLogger(PlanLibrary.class.getName());
 
-    private final Object lockPL = new Object();
+    private transient Object lockPL = new Object();
 
     public Object getLock() {
         return lockPL;
     }
+
+    private void readObject(ObjectInputStream inputStream) throws IOException, ClassNotFoundException {
+        inputStream.defaultReadObject();
+        lockPL = new Object();
+    }   
+    
 
     /**
      *  Add a new plan written as a String. The source
@@ -125,8 +138,8 @@ public class PlanLibrary implements Iterable<Plan> {
         }
     }
 
-    public void add(Plan p) throws JasonException {
-        add(p,false);
+    public Plan add(Plan p) throws JasonException {
+        return add(p,false);
     }
 
     private final String kqmlReceivedFunctor = Config.get().getKqmlFunctor();
@@ -139,7 +152,7 @@ public class PlanLibrary implements Iterable<Plan> {
      * @param before Whether or not to place the new plan before others
      * @throws JasonException
      */
-    public void add(Plan p, boolean before) throws JasonException {
+    public Plan add(Plan p, boolean before) throws JasonException {
         synchronized (lockPL) {
 
             // test p.label
@@ -148,7 +161,7 @@ public class PlanLibrary implements Iterable<Plan> {
                 Plan planInPL = get(p.getLabel());
                 if (p.equals(planInPL)) {
                     planInPL.getLabel().addSource(p.getLabel().getSources().get(0));
-                    return;
+                    return planInPL;
                 } else {
                     throw new JasonException("There already is a plan with label " + p.getLabel());
                 }
@@ -163,7 +176,9 @@ public class PlanLibrary implements Iterable<Plan> {
                 p.getLabel().addAnnot(BeliefBase.TSelf);
 
             if (p.getTrigger().getLiteral().getFunctor().equals(kqmlReceivedFunctor)) {
-                if (! (p.getSrcInfo() != null && "kqmlPlans.asl".equals(p.getSrcInfo().getSrcFile()))) {
+                // is it a KQML plan from a file different than the one provided by Jason?
+                if (! (p.getSrcInfo() != null && KQML_PLANS_FILE.equals(p.getSrcInfo().getSrcFile()))) {
+//                if (! (p.getSrcInfo() != null && p.getSrcInfo().getSrcFile().endsWith(".jar!/asl/kqmlPlans.asl"))) {
                     hasUserKqmlReceived = true;
                 }
             }
@@ -208,6 +223,8 @@ public class PlanLibrary implements Iterable<Plan> {
                 plans.add(0,p);
             else
                 plans.add(p);
+            
+            return p;
         }
     }
 
@@ -296,7 +313,7 @@ public class PlanLibrary implements Iterable<Plan> {
         Plan p = get(pLabel);
         if (p != null) {
         	eDOMPlans = null;
-        	
+
         	boolean hasSource = p.getLabel().delSource(source);
 
             // if no source anymore, remove the plan
@@ -385,8 +402,9 @@ public class PlanLibrary implements Iterable<Plan> {
         }
     }
 
-    public static final Trigger TE_JAG_SLEEPING  = new Trigger(TEOperator.add, TEType.achieve, new Atom("jag_sleeping"));
-    public static final Trigger TE_JAG_AWAKING   = new Trigger(TEOperator.add, TEType.achieve, new Atom("jag_awaking"));
+    public static final Trigger TE_JAG_SLEEPING      = new Trigger(TEOperator.add, TEType.belief, new Atom("jag_sleeping"));
+    public static final Trigger TE_JAG_AWAKING       = new Trigger(TEOperator.add, TEType.belief, new Atom("jag_awaking"));
+    public static final Trigger TE_JAG_SHUTTING_DOWN = new Trigger(TEOperator.add, TEType.belief, new LiteralImpl("jag_shutting_down"));
 
     public PlanLibrary clone() {
         PlanLibrary pl = new PlanLibrary();
@@ -411,19 +429,19 @@ public class PlanLibrary implements Iterable<Plan> {
         Map<String, StringBuilder> splans = new HashMap<>();
         StringBuilder r;
         for (Plan p: plans) {
-            r = splans.get(p.getFile());
+            r = splans.get(p.getSource());
             if (r == null) {
                 r = new StringBuilder();
-                if (p.getFile().isEmpty()) {
+                if (p.getSource().isEmpty()) {
                     r.append("\n\n// plans without file\n\n");
                 } else {
-                    r.append("\n\n// plans from "+p.getFile()+"\n\n");
+                    r.append("\n\n// plans from "+p.getSource()+"\n\n");
                 }
-                splans.put(p.getFile(), r);
+                splans.put(p.getSource(), r);
             }
-            r.append(p.toString()+"\n");            
+            r.append(p.toString()+"\n");
         }
-        
+
         r = new StringBuilder();
         StringBuilder end = new StringBuilder("\n");
         for (String f: splans.keySet()) {
@@ -439,10 +457,10 @@ public class PlanLibrary implements Iterable<Plan> {
         }
         return r.toString()+end.toString();
     }
-    
+
     // for cache
     protected Element eDOMPlans = null;
-    
+
     /** get as XML */
     public Element getAsDOM(Document document) {
         if (eDOMPlans != null)

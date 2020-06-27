@@ -111,7 +111,7 @@ public class TestArch extends CentralisedAgArch implements Runnable {
     public void clearPrintOutput() {
         output = new StringBuilder();
     }
-    
+
     public void clearDoneActions() {
         actions.clear();
     }

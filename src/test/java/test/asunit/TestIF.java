@@ -30,7 +30,7 @@ public class TestIF {
 
             "+!test3 <- if( b(X)) { Y = X*10; Z = 10; } else { Y = 60; Z=20; }; jason.asunit.print(Y,\" \",Z). "+
             "+!test4 <- -b(_); !test3. \n"+
-            
+
             "+!testELIF <- if   (e(1)) { jason.asunit.print(1); } "+
             "              elif (e(2)) { jason.asunit.print(2); } "+
             "              elif (e(3)) { jason.asunit.print(3); } "+

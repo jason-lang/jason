@@ -2,12 +2,15 @@ package jason.runtime;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 /** manages source paths and fixes absolute path for .asl */
-public class SourcePath {
+public class SourcePath implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     public static final String CRPrefix = "ClassResource:";
 
     protected String       root = ".";
@@ -43,7 +46,7 @@ public class SourcePath {
     	for (String p: sp.paths)
     		paths.add(p);
     }
-    
+
     public void clearPaths() {
     	paths.clear();
     }

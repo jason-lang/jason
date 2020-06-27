@@ -99,7 +99,7 @@ public class LiteralImpl extends Pred {
         return "Error in '"+this+"'"+src;
     }
 
-    @Override
+    /*@Override
     public int compareTo(Term t) {
         if (t == null)
             return -1;
@@ -111,7 +111,7 @@ public class LiteralImpl extends Pred {
                 return 1;
         }
         return super.compareTo(t);
-    }
+    }*/
 
     @Override
     public Term clone() {

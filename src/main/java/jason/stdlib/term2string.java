@@ -47,14 +47,14 @@ import jason.asSyntax.Term;
         },
         examples= {
                 ".term2string(b,\"b\"): true",
-                ".term2string(b,X): unifies X with \"b\"", 
-                ".term2string(X,\"b\"): unifies X with b", 
+                ".term2string(b,X): unifies X with \"b\"",
+                ".term2string(X,\"b\"): unifies X with b",
                 ".term2string(X,\"10\"): unifies X with 10 (a number term)"
         },
         seeAlso= {
-                "jason.stdlib.concat", 
-                "jason.stdlib.delete", 
-                "jason.stdlib.length", 
+                "jason.stdlib.concat",
+                "jason.stdlib.delete",
+                "jason.stdlib.length",
                 "jason.stdlib.reverse"
         }
     )
@@ -94,7 +94,7 @@ public class term2string extends DefaultInternalAction {
             if (args[1].isString()) {
                 return un.unifies(args[0], ASSyntax.parseTerm( ((StringTerm)args[1]).getString() ));
             } else {
-                return un.unifies(args[0], ASSyntax.parseTerm( args[1].toString()));                
+                return un.unifies(args[0], ASSyntax.parseTerm( args[1].toString()));
             }
         }
 

@@ -1,5 +1,8 @@
 package jason.infra.centralised;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import jason.JasonException;
 import jason.asSemantics.ActionExec;
 import jason.asSyntax.Structure;
@@ -7,10 +10,6 @@ import jason.environment.Environment;
 import jason.environment.EnvironmentInfraTier;
 import jason.mas2j.ClassParameters;
 import jason.runtime.RuntimeServices;
-
-import java.util.Collection;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 
 /**
@@ -29,7 +28,7 @@ public class CentralisedEnvironment implements EnvironmentInfraTier {
         this.masRunner = masRunner;
         if (userEnvArgs != null) {
             try {
-                userEnv = (Environment) getClass().getClassLoader().loadClass(userEnvArgs.getClassName()).newInstance();
+                userEnv = (Environment) getClass().getClassLoader().loadClass(userEnvArgs.getClassName()).getConstructor().newInstance();
                 userEnv.setEnvironmentInfraTier(this);
                 userEnv.init(userEnvArgs.getParametersArray());
             } catch (Exception e) {
@@ -74,15 +73,15 @@ public class CentralisedEnvironment implements EnvironmentInfraTier {
 
     public void informAgsEnvironmentChanged(String... agents) {
         if (agents.length == 0) {
-            for (CentralisedAgArch ag: masRunner.getAgs().values()) {
-                ag.getTS().getUserAgArch().wakeUpSense();
+            for (CentralisedAgArch ag: masRunner.getAgs().values()) {                
+                ag.getTS().getAgArch().wakeUpSense();
             }
         } else {
             for (String agName: agents) {
                 CentralisedAgArch ag = masRunner.getAg(agName);
                 if (ag != null) {
                     if (ag instanceof CentralisedAgArchAsynchronous) {
-                        ((CentralisedAgArchAsynchronous) ag.getTS().getUserAgArch()).wakeUpSense();
+                        ((CentralisedAgArchAsynchronous) ag.getTS().getAgArch()).wakeUpSense();
                     } else {
                         ag.wakeUpSense();
                     }
@@ -91,21 +90,6 @@ public class CentralisedEnvironment implements EnvironmentInfraTier {
                 }
             }
 
-        }
-    }
-
-    public void informAgsEnvironmentChanged(Collection<String> agentsToNotify) {
-        if (agentsToNotify == null) {
-            informAgsEnvironmentChanged();
-        } else {
-            for (String agName: agentsToNotify) {
-                CentralisedAgArch ag = masRunner.getAg(agName);
-                if (ag != null) {
-                    ag.getTS().getUserAgArch().wakeUpSense();
-                } else {
-                    logger.log(Level.SEVERE, "Error sending message notification: agent " + agName + " does not exist!");
-                }
-            }
         }
     }
 

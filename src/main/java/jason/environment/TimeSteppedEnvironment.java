@@ -60,7 +60,7 @@ public class TimeSteppedEnvironment extends Environment {
     /**
      * Resets step counter and scheduled action requests to neutral state, optionally sets a timeout for waiting
      * on agent actions in a step.
-     * 
+     *
      * @param args either empty, or contains timeout in milliseconds at pos 0
      */
     @Override
@@ -273,6 +273,8 @@ public class TimeSteppedEnvironment extends Environment {
                 if (nbAgs > 0 && testEndCycle(requests.keySet())) {
                     startNewStep();
                 }
+                
+                getEnvironmentInfraTier().informAgsEnvironmentChanged();
 
                 stepStarted(step);
             } catch (Exception ie) {

@@ -16,7 +16,7 @@ apply plugin: 'maven'
 apply plugin: 'maven-publish'
 apply plugin: 'signing'
 
-version '2.4-SNAPSHOT'
+version '2.5.1'
 group   'org.jason-lang'
 
 sourceCompatibility = 1.8
@@ -39,15 +39,16 @@ repositories {
 
 
 dependencies {
-	compile group: 'net.sf.ingenias', name: 'jade', version: '4.3'
+	  compile group: 'net.sf.ingenias', name: 'jade', version: '4.3'
     //compile group: 'com.tilab.jade', name: 'jade', version: '4.4.0'
+
     compile group: 'org.jacamo',     name: 'cartago', version: '2.3'
     compile group: 'org.jacamo',     name: 'jaca',    version: '2.3'
 
     // from jEdit
     compile fileTree(dir: 'jedit', include: '*.jar') // using fileTree, jedit jars are not included as a dependency in the pom file
 
-    runtime group: 'org.apache.ant',  name: 'ant',  version: '1.10.+'
+    runtime group: 'org.apache.ant',  name: 'ant',  version: '1.10.5'
 
     testCompile group: 'junit', name: 'junit', version: '4.12'
     testCompile name: 'hsqldb'
@@ -137,7 +138,6 @@ clean {
     delete fileTree('.')  { include '**/APDescription.txt'  }
     delete fileTree('.')  { include '**/MTPs-Main-Container.txt'  }
 
-    delete fileTree('.')  { include '**/bookstore.*'  }
     delete fileTree('examples')  { include '**/bin/**'  }
     delete fileTree('examples')  { include '**/*.log'  }
     delete fileTree('demos')  { include '**/bin/**'  }
@@ -433,7 +433,7 @@ task plugin(type: Jar, dependsOn: 'jar') {
 task publishMavenSF(dependsOn: [ 'build', 'publishToMavenLocal']) {
   doLast {
     def wdir = System.getProperty("user.home")+'/.m2/repository/org/jason-lang/jason'
-    def tdir = 'jomifred,jacamo@web.sf.net:/home/project-web/jacamo/htdocs/maven2/org/jason-lang/jason'
+    def tdir = System.getenv('USERSF')+',jacamo@web.sf.net:/home/project-web/jacamo/htdocs/maven2/org/jason-lang/jason'
     exec {
         commandLine 'scp', '-r', project.version, tdir
         workingDir wdir
@@ -454,7 +454,8 @@ task doc(dependsOn: [ 'jjdoc', 'javadoc', 'renderAsciiDocs']) {
 }
 
 task renderAsciiDocs(type: Exec) {
-    commandLine 'find', '.', '-name', '*.adoc', '-exec', 'asciidoctor', '-r', project.buildDir.absolutePath+'/../src/main/resources/pygments_init.rb', '{}', ';'
+    commandLine 'find', '.', '-name', '*.adoc', '-exec', 'scripts/asciidoc-docker', '{}', ';'
+    //commandLine 'find', '.', '-name', '*.adoc', '-exec', 'asciidoctor', '{}', ';'
 }
 
 task fixTab {

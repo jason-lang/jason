@@ -124,9 +124,9 @@ public class puts extends DefaultInternalAction {
             Matcher matcher = regex.matcher(st.getString());
 
             while (matcher.find()) {
-                
+
                 //System.out.println("I found the text \""+matcher.group()+ "\"starting at index "+matcher.start()+ " and ending at index "+matcher.end());
-                 
+
                 String sVar = matcher.group();
                 sVar = sVar.substring(2, sVar.length() - 1);
                 try {
@@ -135,9 +135,9 @@ public class puts extends DefaultInternalAction {
                         t = new UnnamedVar( Integer.valueOf( sVar.substring(1)));
                     else
                         t = ASSyntax.parseTerm(sVar);
-                         
+
                     //We use t.apply to evaluate any logical or arithmetic expression in Jason
-                    t = t.capply(un);                    
+                    t = t.capply(un);
                     matcher.appendReplacement(sb, t.isString() ? ((StringTerm)t).getString() : t.toString());
                 } catch (ParseException pe) {
                     // TODO: handle exception

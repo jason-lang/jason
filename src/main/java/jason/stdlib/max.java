@@ -72,15 +72,15 @@ numbers &lt; atoms &lt; structures &lt; lists
                 ".max([],X): false"
         },
         seeAlso= {
-                "jason.stdlib.concat", 
-                "jason.stdlib.delete", 
-                "jason.stdlib.length", 
-                "jason.stdlib.member", 
-                "jason.stdlib.sort", 
-                "jason.stdlib.nth", 
-                "jason.stdlib.min", 
-                "jason.stdlib.reverse", 
-                "jason.stdlib.difference", 
+                "jason.stdlib.concat",
+                "jason.stdlib.delete",
+                "jason.stdlib.length",
+                "jason.stdlib.member",
+                "jason.stdlib.sort",
+                "jason.stdlib.nth",
+                "jason.stdlib.min",
+                "jason.stdlib.reverse",
+                "jason.stdlib.difference",
                 "jason.stdlib.intersection",
                 "jason.stdlib.union"
         }
