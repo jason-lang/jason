@@ -48,9 +48,9 @@ divide(X,Y,R):-R = (X / Y).
 .
 
 /**
- * Add to belief string that starts with 'he'
+ * Add to belief string that starts with 'test'
  */
-+!add_to_belief_he :
++!add_to_belief_test :
     true
     <-
     for (.member(S,["test_k","hey_test_bla","test_j"])) {
@@ -103,13 +103,13 @@ divide(X,Y,R):-R = (X / Y).
 /**
  * Test if substring(_,_,0) really works as java startsWith
  */
-@test_add_to_belief_he[atomic]
-+!test_add_to_belief_he :
+@test_add_to_belief_test[atomic]
++!test_add_to_belief_test :
     true
     <-
     .abolish(starts_with_h(_));
     !assert_false(starts_with_h(_));
-    !add_to_belief_he;
+    !add_to_belief_test;
     !assert_true(starts_with_h("test_k"));
     !assert_false(starts_with_h("hey_test_bla"));
     !assert_true(starts_with_h("test_j"));
