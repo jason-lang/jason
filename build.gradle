@@ -545,3 +545,15 @@ task zipRel(type: Zip, dependsOn: copyRel) {
     from 'build/jason-'+project.version
     baseName 'jason'
 }
+
+task testJason (type: JavaExec, dependsOn: ['classes','test']) {
+    description 'runs Jason unit tests: tests.mas2j'
+    doFirst {
+        mkdir 'log'
+    }
+    main 'jason.runtime.RunJasonProject'
+    args = ['src/test/jason/unitTests.mas2j']
+    classpath sourceSets.main.runtimeClasspath
+    sourceSets.main.java.srcDirs += ['src/test/jason/jia']
+}
+tasks.test.finalizedBy(testJason)
