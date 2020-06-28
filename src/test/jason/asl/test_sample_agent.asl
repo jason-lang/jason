@@ -7,10 +7,10 @@
  * the agent to be tested like this: { include("sampleAgent.asl") }
  *
  * To execute automatically test plans, they should have a label
- * starting with @test (e.g.: @testSum[atomic])
+ * starting with @test (e.g.: @test_sum[atomic])
  */
 
-{ include("testAssert.asl") }
+{ include("test_assert.asl") }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
      A G E N T    I N I T I A L    B B    A N D    R U L E S
@@ -30,7 +30,7 @@ divide(X,Y,R):-R = (X / Y).
         A G E N T     I N I T I A L    D E S I R E S
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-!executeTestPlans.
+!execute_test_plans.
 
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -40,13 +40,25 @@ divide(X,Y,R):-R = (X / Y).
 /**
  * A sample plan in which it is expected to generate a belief
  */
-+doSomethingAddsBelief :
++!do_something_adding_belief :
     true
     <-
     ?sum(1,2,R);
     +raining;
 .
 
+/**
+ * Add to belief string that starts with 'he'
+ */
++!add_to_belief_he :
+    true
+    <-
+    for (.member(S,["test_k","hey_test_bla","test_j"])) {
+      if (.substring("test",S,0)) {
+        +starts_with_h(S);
+      }
+    }
+.
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
                     T E S T     P L A N S
@@ -55,34 +67,50 @@ divide(X,Y,R):-R = (X / Y).
 /**
  * Test sum using just equals(EXPECTED,ACTUAL)
  */
-@testSum[atomic]
-+!testSum :
+@test_sum[atomic]
++!test_sum :
     true
     <-
     ?sum(1.3,2.6,R);
-    !assertEquals(3.95,R);
+    !assert_equals(3.7,R,0.1);
 .
 
 /**
  * Test div using equals(EXPECTED,ACTUAL,TOLERANCE)
  */
-@testDivide[atomic]
-+!testDivide :
+@test_divide[atomic]
++!test_divide :
     true
     <-
     ?divide(10,3,R);
-    !assertEquals(3.33,R,0.01);
+    !assert_equals(3.33,R,0.01);
 .
 
 /*
  * Test if the agent has added a belief
  */
-@testDoSomethingAddsBelief[atomic]
-+!testDoSomethingAddsBelief :
+@test_do_something_adding_belief[atomic]
++!test_do_something_adding_belief :
     true
     <-
     .abolish(raining);
-    !assertFalse(raining);
-    +doSomethingAddsBelief;
-    !assertTrue(raining);
+    !assert_false(raining);
+    !do_something_adding_belief;
+    !assert_true(raining);
+.
+
+
+/**
+ * Test if substring(_,_,0) really works as java startsWith
+ */
+@test_add_to_belief_he[atomic]
++!test_add_to_belief_he :
+    true
+    <-
+    .abolish(starts_with_h(_));
+    !assert_false(starts_with_h(_));
+    !add_to_belief_he;
+    !assert_true(starts_with_h("test_k"));
+    !assert_false(starts_with_h("hey_test_bla"));
+    !assert_true(starts_with_h("test_j"));
 .

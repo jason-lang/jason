@@ -552,7 +552,7 @@ task testJason (type: JavaExec, dependsOn: ['classes','test']) {
         mkdir 'log'
     }
     main 'jason.runtime.RunJasonProject'
-    args = ['src/test/jason/unitTests.mas2j']
+    args = ['src/test/jason/unit_tests.mas2j']
     classpath sourceSets.main.runtimeClasspath
     sourceSets.main.java.srcDirs += ['src/test/jason/jia']
 }

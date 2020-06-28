@@ -2,18 +2,18 @@
  * Assert helpers
  */
 
-{ include("testController.asl") }
+{ include("test_controller.asl") }
 
-getIntentionId(I,ID) :- I =.. A & .nth(2,A,B) & .nth(0,B,ID).
+intention_id(I,ID) :- I =.. A & .nth(2,A,B) & .nth(0,B,ID).
 
 /**
- * Assert if X is equals to Y
+ * Asserts if X is equals to Y
  * IMPORTANT! Do no use this method to compare float numbers
  */
-@assertEquals[atomic]
-+!assertEquals(X,Y) :
+@assert_equals[atomic]
++!assert_equals(X,Y) :
     .current_intention(I) &
-    getIntentionId(I,ID)
+    intention_id(I,ID)
     <-
     if (X \== Y) {
       .print("Error on assenting equals! Expected: ",X,". Actual:",Y);
@@ -24,20 +24,20 @@ getIntentionId(I,ID) :- I =.. A & .nth(2,A,B) & .nth(0,B,ID).
       }
     }
 .
--!assertEquals(X,Y) :
+-!assert_equals(X,Y) :
     true
     <-
-    .send(testController,tell,error);
+    .send(test_controller,tell,error);
 .
 
 /**
- * Assert if X is equals to Y with tolerance T
+ * Asserts if X is equals to Y with tolerance T
  * IMPORTANT! Do no use this method to compare float numbers
  */
-@assertEqualsWithTolerance[atomic]
-+!assertEquals(X,Y,T) :
+@assert_equals_tolerant[atomic]
++!assert_equals(X,Y,T) :
     .current_intention(I) &
-    getIntentionId(I,ID)
+    intention_id(I,ID)
     <-
     if (not (Y >= X-T & Y <= X+T)) {
       .print("Error on assenting equals! Expected: ",X,"+/-",T,". Actual:",Y);
@@ -48,19 +48,19 @@ getIntentionId(I,ID) :- I =.. A & .nth(2,A,B) & .nth(0,B,ID).
       }
     }
 .
--!assertEquals(X,Y,T) :
+-!assert_equals(X,Y,T) :
     true
     <-
-    .send(testController,tell,error);
+    .send(test_controller,tell,error);
 .
 
 /**
- * Assert if X is true / exists
+ * Asserts if X is true / exists
  */
-@assertTrue[atomic]
-+!assertTrue(X) :
+@assert_true[atomic]
++!assert_true(X) :
     .current_intention(I) &
-    getIntentionId(I,ID)
+    intention_id(I,ID)
     <-
     if (not X) {
       .print("Error on assenting true! Expected: ",X);
@@ -71,19 +71,19 @@ getIntentionId(I,ID) :- I =.. A & .nth(2,A,B) & .nth(0,B,ID).
       }
     }
 .
--!assertTrue(X) :
+-!assert_true(X) :
     true
     <-
-    .send(testController,tell,error);
+    .send(test_controller,tell,error);
 .
 
 /**
- * Assert if X is false / does not exist
+ * Asserts if X is false / does not exist
  */
-@assertFalse[atomic]
-+!assertFalse(X) :
+@assert_false[atomic]
++!assert_false(X) :
     .current_intention(I) &
-    getIntentionId(I,ID)
+    intention_id(I,ID)
     <-
     if (X) {
       .print("Error on assenting false! Expected not: ",X);
@@ -94,8 +94,8 @@ getIntentionId(I,ID) :- I =.. A & .nth(2,A,B) & .nth(0,B,ID).
       }
     }
 .
--!assertFalse(X) :
+-!assert_false(X) :
     true
     <-
-    .send(testController,tell,error);
+    .send(test_controller,tell,error);
 .

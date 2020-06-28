@@ -6,30 +6,30 @@
  * Configurations
  */
 verbose.        // enable to see full log debug
-shutdownHook.     // enable to shutdown after finishing tests
+shutdown_hook.     // enable to shutdown after finishing tests
 
 /**
  * Startup operations
  */
-!setTestController.    // starts test controller operations
-!createTestAgents.     // create agents by .asl files in test/agt/
+!set_controller.    // starts test controller operations
+!create_test_agents.     // create agents by .asl files in test/agt/
 
 /**
  * execute plans that contains "test" in the name
  */
-@executeTestPlans[atomic]
-+!executeTestPlans:
+@execute_plans[atomic]
++!execute_test_plans:
     .relevant_plans({+!_},_,LL)
     <-
     for (.member(P,LL)) {
-      if (.substring("test",P)) {
-        !!executeTestPlan(P);
+      if (.substring("test",P,0)) {
+        !!execute_test_plan(P);
       }
     }
 .
 
-@executeTestPlan[atomic]
-+!executeTestPlan(P) :
+@execute_plan[atomic]
++!execute_test_plan(P) :
     true
     <-
     .current_intention(I);
@@ -41,46 +41,46 @@ shutdownHook.     // enable to shutdown after finishing tests
 /**
  * setup of the controller, including hook for shutdown
  */
- @setTestController[atomic]
-+!setTestController :
-    .my_name(testController)
+ @set_controller[atomic]
++!set_controller :
+    .my_name(test_controller)
     <-
     .print("\n\n");
     .print("**** Starting Jason unit tests...\n\n");
 
-    .at("now +2 s", {+!shutdownAferTests});
+    .at("now +2 s", {+!shutdown_after_tests});
 .
-+!setTestController. // avoid plan not found for asl that includes controller
++!set_controller. // avoid plan not found for asl that includes controller
 
 /**
  * enable to shutdown after finishing tests
  */
- @shutdownAferTestsError[atomic]
- +!shutdownAferTests :
-     shutdownHook &
+ @shutdown_after_error[atomic]
+ +!shutdown_after_tests :
+     shutdown_hook &
      error
      <-
      .print("\n\n");
      .print("**** End of Jason unit tests.\n\n");
      .exit_error;
  .
-@shutdownAferTestsSuccess[atomic]
-+!shutdownAferTests :
-    shutdownHook &
+@shutdown_after_success[atomic]
++!shutdown_after_tests :
+    shutdown_hook &
     not intention(_)
     <-
     .print("\n\n");
     .print("**** End of Jason unit tests.\n\n");
     .stopMAS;
 .
-+!shutdownAferTests. // If auto shutdown is disabled
++!shutdown_after_tests. // If auto shutdown is disabled
 
 /**
  * create agents by files present in folder test/agt/
  */
-@createTestAgents[atomic]
-+!createTestAgents :
-    .my_name(testController)
+@create_agents[atomic]
++!create_test_agents :
+    .my_name(test_controller)
     <-
     .list_files("./inc",".*.asl",IGNORE);
     .list_files("./",".*.asl",FILES);
@@ -97,4 +97,4 @@ shutdownHook.     // enable to shutdown after finishing tests
       }
     }
 .
-+!createTestAgents. // avoid plan not found for asl that includes controller
++!create_test_agents. // avoid plan not found for asl that includes controller
