@@ -4,8 +4,6 @@
 
 { include("test_controller.asl") }
 
-intention_id(I,ID) :- I =.. A & .nth(2,A,B) & .nth(0,B,ID).
-
 /**
  * Asserts if X is equals to Y
  * IMPORTANT! Do no use this method to compare float numbers
@@ -13,7 +11,7 @@ intention_id(I,ID) :- I =.. A & .nth(2,A,B) & .nth(0,B,ID).
 @assert_equals[atomic]
 +!assert_equals(X,Y) :
     .current_intention(I) &
-    intention_id(I,ID)
+    I = intention(ID,_)
     <-
     if (X \== Y) {
       .print("Error on assenting equals! Expected: ",X,". Actual:",Y);
@@ -37,7 +35,7 @@ intention_id(I,ID) :- I =.. A & .nth(2,A,B) & .nth(0,B,ID).
 @assert_equals_tolerant[atomic]
 +!assert_equals(X,Y,T) :
     .current_intention(I) &
-    intention_id(I,ID)
+    I = intention(ID,_)
     <-
     if (not (Y >= X-T & Y <= X+T)) {
       .print("Error on assenting equals! Expected: ",X,"+/-",T,". Actual:",Y);
@@ -60,7 +58,7 @@ intention_id(I,ID) :- I =.. A & .nth(2,A,B) & .nth(0,B,ID).
 @assert_true[atomic]
 +!assert_true(X) :
     .current_intention(I) &
-    intention_id(I,ID)
+    I = intention(ID,_)
     <-
     if (not X) {
       .print("Error on assenting true! Expected: ",X);
@@ -83,7 +81,7 @@ intention_id(I,ID) :- I =.. A & .nth(2,A,B) & .nth(0,B,ID).
 @assert_false[atomic]
 +!assert_false(X) :
     .current_intention(I) &
-    intention_id(I,ID)
+    I = intention(ID,_)
     <-
     if (X) {
       .print("Error on assenting false! Expected not: ",X);
