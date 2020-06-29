@@ -14,7 +14,7 @@
     I = intention(ID,_)
     <-
     if (X \== Y) {
-      .print("Error on assenting equals! Expected: ",X,". Actual:",Y);
+      .print("Intention ",ID," error! Assert equals expected ",X," but had ",Y);
       .fail;
     } else {
       if (verbose) {
@@ -38,7 +38,7 @@
     I = intention(ID,_)
     <-
     if (not (Y >= X-T & Y <= X+T)) {
-      .print("Error on assenting equals! Expected: ",X,"+/-",T,". Actual:",Y);
+      .print("Intention ",ID," error! Assert equals expected ",X,"+/-",T,", but had ",Y);
       .fail;
     } else {
       if (verbose) {
@@ -61,7 +61,7 @@
     I = intention(ID,_)
     <-
     if (not X) {
-      .print("Error on assenting true! Expected: ",X);
+      .print("Intention ",ID," error! Assert true expected ",X);
       .fail;
     } else {
       if (verbose) {
@@ -84,7 +84,7 @@
     I = intention(ID,_)
     <-
     if (X) {
-      .print("Error on assenting false! Expected not: ",X);
+      .print("Intention ",ID," error! Assert false expected not ",X);
       .fail;
     } else {
       if (verbose) {
