@@ -1,0 +1,9 @@
+MAS unit_tests {
+
+    infrastructure: Centralised
+
+    agents:
+        test_controller;
+
+    aslSourcePath: "asl";"inc";
+}
