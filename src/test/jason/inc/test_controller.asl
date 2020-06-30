@@ -61,7 +61,7 @@ shutdown_hook.     // enable to shutdown after finishing tests
      error
      <-
      .print("\n\n");
-     .print("**** End of Jason unit tests: ERROR!\n\n");
+     .print("**** End of Jason unit tests.\n\n");
      .exit_error;
  .
 @shutdown_after_success[atomic]
@@ -70,7 +70,7 @@ shutdown_hook.     // enable to shutdown after finishing tests
     not intention(_)
     <-
     .print("\n\n");
-    .print("**** End of Jason unit tests: SUCCESS!\n\n");
+    .print("**** End of Jason unit tests.\n\n");
     .stopMAS;
 .
 +!shutdown_after_tests. // If auto shutdown is disabled

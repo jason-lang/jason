@@ -546,11 +546,14 @@ task zipRel(type: Zip, dependsOn: copyRel) {
     baseName 'jason'
 }
 
-task testJason (type: JavaExec, dependsOn: 'classes') {
+task testJason (type: JavaExec, dependsOn: ['classes','test']) {
     description 'runs Jason unit tests: tests.mas2j'
+    doFirst {
+        mkdir 'log'
+    }
     main 'jason.runtime.RunJasonProject'
     args = ['src/test/jason/unit_tests.mas2j']
     classpath sourceSets.main.runtimeClasspath
-    sourceSets.test.java.srcDirs += ['src/test/jason/jia']
+    sourceSets.main.java.srcDirs += ['src/test/jason/jia']
 }
-tasks.test.dependsOn(testJason)
+tasks.test.finalizedBy(testJason)

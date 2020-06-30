@@ -1,4 +1,4 @@
-package jason.stdlib;
+package jia;
 
 import jason.asSemantics.DefaultInternalAction;
 import jason.asSemantics.TransitionSystem;
@@ -8,25 +8,15 @@ import jason.asSyntax.Term;
 
 public class exit_error extends DefaultInternalAction {
 
-    @Override public int getMinArgs() {
-        return 0;
-    }
-
-    @Override public int getMaxArgs() {
-        return 0;
-    }
-
     @Override
-    public boolean canBeUsedInContext() {
-        return false;
-    }
+    public Object execute(TransitionSystem ts, Unifier un, Term[] terms) throws Exception {
+        try {
+            System.exit(-1);
 
-    @Override
-    public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {
-        checkArguments(args);
-
-        System.err.println("Exiting with error!");
-        System.exit(-1);
-        return true;
+            return true;
+        } catch (Throwable e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }
