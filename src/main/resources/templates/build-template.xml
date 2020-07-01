@@ -13,7 +13,7 @@
          default="run">
 
     <property name="mas2j.project.file" value="<PROJECT-FILE>"/>
-    <property name="debug" value="<DEBUG>"/> <!-- use "-debug" to run in debug mode -->
+    <property name="debug" value="<DEBUG>"/> <!-- use "-d" to run in debug mode -->
     <property name="build.dir" value="${basedir}/bin/classes" />
 
     <property name="jasonJar" value="<JASON-JAR>"/>

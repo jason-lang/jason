@@ -5,6 +5,8 @@ ifdef::env-github[:outfilesuffix: .adoc]
 
 == version 2.6
 
+- add option `--log-conf` to setup the logging configuration file when launching the application
+
 == version 2.5 (2020-06-25)
 
 - cascading failures of failures (see FAQ)
