@@ -889,8 +889,6 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
                         e.printStackTrace();
                     }
 
-                    //runner = null;
-
                     if (stopJVM) {
                         System.exit(0);
                     }
