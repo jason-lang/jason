@@ -456,7 +456,8 @@ public class Config extends Properties {
     }*/
 
     public String getJasonVersion() {
-        Package j = jason.util.ConfigGUI.class.getClassLoader().getDefinedPackage("jason.util");
+        //Package j = jason.util.ConfigGUI.class.getClassLoader().getDefinedPackage("jason.util");
+    	Package j = Package.getPackage("jason.util");
         if (j != null && j.getSpecificationVersion() != null) {
             return j.getSpecificationVersion();
         }
@@ -488,7 +489,8 @@ public class Config extends Properties {
     }
 
     public String getJasonBuiltDate() {
-        Package j = jason.util.ConfigGUI.class.getClassLoader().getDefinedPackage("jason.util");
+        //Package j = jason.util.ConfigGUI.class.getClassLoader().getDefinedPackage("jason.util");
+    	Package j = Package.getPackage("jason.util");
         if (j != null) {
             return j.getImplementationVersion();
         }
