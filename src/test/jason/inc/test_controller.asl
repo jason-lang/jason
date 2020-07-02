@@ -82,8 +82,8 @@ shutdown_hook.     // enable to shutdown after finishing tests
 +!create_test_agents :
     .my_name(test_controller)
     <-
-    .list_files("./inc",".*.asl",IGNORE);
-    .list_files("./",".*.asl",FILES);
+    .list_files("./src/test/jason/inc",".*.asl",IGNORE);
+    .list_files("./src/test/jason/",".*.asl",FILES);
     for (.member(M,FILES)) {
       if (not .nth(N,IGNORE,M)) {
         for (.substring("/",M,R)) {

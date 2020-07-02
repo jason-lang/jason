@@ -5,5 +5,5 @@ MAS unit_tests {
     agents:
         test_controller;
 
-    aslSourcePath: "asl";"inc";
+    aslSourcePath: "src/test/jason/inc";"src/test/jason/asl";
 }

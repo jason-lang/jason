@@ -27,6 +27,7 @@ repositories {
     mavenCentral()
 
     maven { url "http://jacamo.sourceforge.net/maven2"  }
+    maven { url "https://raw.github.com/jacamo-lang/mvn-repo/master" }
     //maven { url "http://jade.tilab.com/maven"  //}
     flatDir {
        dirs 'jedit', 'demos/persistent-belief-base/lib'
@@ -548,8 +549,8 @@ task zipRel(type: Zip, dependsOn: copyRel) {
 
 task testJason (type: JavaExec, dependsOn: 'classes') {
     description 'runs Jason unit tests: tests.mas2j'
-    main 'jason.runtime.RunJasonProject'
-    args = ['src/test/jason/unit_tests.mas2j']
+    main = 'jason.infra.centralised.RunCentralisedMAS'
+    args = ['src/test/jason/unit_tests.mas2j', '--log-conf', 'l1.p']
     classpath sourceSets.main.runtimeClasspath
     sourceSets.test.java.srcDirs += ['src/test/jason/jia']
 }
