@@ -49,7 +49,7 @@ import java.util.Iterator;
   @see jason.stdlib.drop_intention
   @see jason.stdlib.drop_desire
   @see jason.stdlib.fail_goal
-  @see jason.stdlib.current_intention
+  @see jason.stdlib.intention
   @see jason.stdlib.suspend
   @see jason.stdlib.suspended
   @see jason.stdlib.resume
@@ -76,7 +76,7 @@ import java.util.Iterator;
                 "jason.stdlib.drop_intention",
                 "jason.stdlib.drop_desire",
                 "jason.stdlib.fail_goal",
-                "jason.stdlib.current_intention",
+                "jason.stdlib.intention",
                 "jason.stdlib.suspend",
                 "jason.stdlib.suspended",
                 "jason.stdlib.resume"

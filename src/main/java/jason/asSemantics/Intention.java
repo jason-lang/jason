@@ -1,15 +1,5 @@
 package jason.asSemantics;
 
-import jason.asSyntax.ListTerm;
-import jason.asSyntax.ListTermImpl;
-import jason.asSyntax.NumberTermImpl;
-import jason.asSyntax.PlanLibrary;
-import jason.asSyntax.Structure;
-import jason.asSyntax.Term;
-import jason.asSyntax.Trigger;
-import jason.asSyntax.Trigger.TEOperator;
-import jason.util.Pair;
-
 import java.io.Serializable;
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -18,6 +8,16 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+
+import jason.asSemantics.Circumstance.IntentionPlace;
+import jason.asSyntax.ListTerm;
+import jason.asSyntax.ListTermImpl;
+import jason.asSyntax.NumberTermImpl;
+import jason.asSyntax.PlanLibrary;
+import jason.asSyntax.Structure;
+import jason.asSyntax.Trigger;
+import jason.asSyntax.Trigger.TEOperator;
+import jason.util.Pair;
 
 /**
  * Represents and Intention (a stack of IntendedMeans).
@@ -37,6 +37,7 @@ public class Intention implements Serializable, Comparable<Intention>, Iterable<
     private int     atomicCount    = 0; // number of atomic intended means in the intention
     private boolean isSuspended = false; // suspended by the internal action .suspend
     private String  suspendedReason = null;
+    private IntentionPlace place = IntentionPlace.None;
 
     private Deque<IntendedMeans> intendedMeans = new ArrayDeque<>();
 
@@ -129,6 +130,32 @@ public class Intention implements Serializable, Comparable<Intention>, Iterable<
     public IntendedMeans getBottom() {
         return intendedMeans.getLast();
     }
+
+    /** returns where the intention is in the interpreter data structures. It is updated by circumstance getAllIntentions. */
+    public IntentionPlace getPlace() {
+        return place;
+    }
+    public void setPlace(IntentionPlace place) {
+        this.place = place;
+    }
+
+    public enum State { running, waiting_action, pending, suspended, undefined }
+    public State getStateBasedOnPlace() {
+        switch (place) {
+        case None: return State.undefined;
+
+        case PendingActions: return State.waiting_action;
+        case PendingEvents: return State.pending;
+        case PendingIntentions: return State.suspended;
+
+        case EventQueue: return State.running;
+        case RunningIntentions: return State.running;
+        case SelectedEvent: return State.running;
+        case SelectedIntention: return State.running;
+        }
+        return State.undefined;
+    }
+
 
     /** returns true if the intention has an IM where TE = g, using u to verify equality */
     public boolean hasTrigger(Trigger g, Unifier u) {
@@ -250,7 +277,7 @@ public class Intention implements Serializable, Comparable<Intention>, Iterable<
         return s.toString();
     }
 
-    public Term getAsTerm() {
+    public Structure getAsTerm() {
         Structure intention = new Structure("intention");
         intention.addTerm(new NumberTermImpl(getId()));
         ListTerm lt = new ListTermImpl();

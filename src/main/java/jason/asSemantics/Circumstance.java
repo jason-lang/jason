@@ -652,12 +652,21 @@ public class Circumstance implements Serializable {
     }
 
     // data structures where intentions can be found
-    enum Step { selEvt, selInt, evt, pendEvt, pendAct, pendInt, intentions, end }
+    public enum IntentionPlace {
+        SelectedEvent,
+        SelectedIntention,
+        EventQueue,
+        PendingEvents,
+        PendingActions,
+        PendingIntentions,
+        RunningIntentions,
+        None
+    }
 
     /** gets all intentions (running, pending, suspended, ...) */
     public Iterator<Intention> getAllIntentions() {
         return new Iterator<Intention>() {
-            Step curStep = Step.selEvt;
+            IntentionPlace curStep = IntentionPlace.SelectedEvent;
             Intention curInt = null; // the intention of solution
             Intention lastReturned = null;
             Iterator<Event>      evtIterator     = null;
@@ -682,55 +691,63 @@ public class Circumstance implements Serializable {
             void find() {
                 switch (curStep) {
 
-                case selEvt:
-                    curStep = Step.selInt; // set next step
+                case SelectedEvent:
+                    curStep = IntentionPlace.SelectedIntention; // set next step
                     // we need to check the intention in the selected event in this cycle!!!
                     // (as it was already removed from E)
                     if (getSelectedEvent() != null) {
                         curInt = getSelectedEvent().getIntention();
-                        if (curInt != null)
+                        if (curInt != null) {
+                            curInt.setPlace( IntentionPlace.SelectedEvent );
                             return;
+                        }
                     }
                     find();
                     return;
 
-                case selInt:
-                    curStep = Step.evt; // set next step
+                case SelectedIntention:
+                    curStep = IntentionPlace.EventQueue; // set next step
                     // we need to check the selected intention in this reasoning cycle too!!!
                     Intention prev = curInt;
                     curInt = getSelectedIntention();
-                    if (curInt != null && !curInt.equals(prev))
+                    if (curInt != null && !curInt.equals(prev)) {
+                        curInt.setPlace( IntentionPlace.SelectedIntention );
                         return;
+                    }
                     find();
                     return;
 
-                case evt:
+                case EventQueue:
                     if (evtIterator == null)
                         evtIterator = getEventsPlusAtomic();
 
                     while (evtIterator.hasNext()) {
                         curInt = evtIterator.next().getIntention();
-                        if (curInt != null && !curInt.equals(getSelectedIntention()))
+                        if (curInt != null && !curInt.equals(getSelectedIntention())) {
+                            curInt.setPlace( IntentionPlace.EventQueue );
                             return;
+                        }
                     }
-                    curStep = Step.pendEvt; // set next step
+                    curStep = IntentionPlace.PendingEvents; // set next step
                     find();
                     return;
 
-                case pendEvt:
+                case PendingEvents:
                     if (pendEvtIterator == null)
                         pendEvtIterator = getPendingEvents().values().iterator();
 
                     while (pendEvtIterator.hasNext()) {
                         curInt = pendEvtIterator.next().getIntention();
-                        if (curInt != null)
+                        if (curInt != null) {
+                            curInt.setPlace( IntentionPlace.PendingEvents );
                             return;
+                        }
                     }
-                    curStep = Step.pendAct; // set next step
+                    curStep = IntentionPlace.PendingActions; // set next step
                     find();
                     return;
 
-                case pendAct:
+                case PendingActions:
                     // intention may be suspended in PA! (in the new semantics)
                     if (hasPendingAction()) {
                         if (pendActIterator == null)
@@ -738,15 +755,17 @@ public class Circumstance implements Serializable {
 
                         while (pendActIterator.hasNext()) {
                             curInt = pendActIterator.next().getIntention();
-                            if (curInt != null)
+                            if (curInt != null) {
+                                curInt.setPlace( IntentionPlace.PendingActions );
                                 return;
+                            }
                         }
                     }
-                    curStep = Step.pendInt; // set next step
+                    curStep = IntentionPlace.PendingIntentions; // set next step
                     find();
                     return;
 
-                case pendInt:
+                case PendingIntentions:
                     // intention may be suspended in PI!
                     if (hasPendingIntention()) {
                         if (pendIntIterator == null)
@@ -754,27 +773,29 @@ public class Circumstance implements Serializable {
 
                         if (pendIntIterator.hasNext()) {
                             curInt  = pendIntIterator.next();
+                            curInt.setPlace( IntentionPlace.PendingIntentions );
                             return;
                         }
                     }
-                    curStep = Step.intentions; // set next step
+                    curStep = IntentionPlace.RunningIntentions; // set next step
                     find();
                     return;
 
-                case intentions:
+                case RunningIntentions:
                     if (intInterator == null)
                         intInterator = getRunningIntentionsPlusAtomic();
 
                     if (intInterator.hasNext()) {
                         curInt = intInterator.next();
+                        curInt.setPlace( IntentionPlace.RunningIntentions );
                         return;
                     }
 
-                    curStep = Step.end; // set next step
+                    curStep = IntentionPlace.None; // set next step
                     find();
                     return;
 
-                case end:
+                case None:
 
                 }
                 curInt = null; // nothing found
