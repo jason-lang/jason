@@ -1,0 +1,19 @@
+/**
+ * Test plans for jason internal actions in stdlib
+ *
+ * Most of then comes from examples of Jason's documentation
+ */
+
+{ include("test_assert.asl") }
+
+!execute_test_plans.
+
+@test_eval[atomic]
++!test_eval
+    <-
+    .eval(X1, true | false);
+    !assert_true(X1);
+    
+    .eval(X2, 3<5 & not 4+2<3);
+    !assert_true(X2);
+.
