@@ -11,43 +11,38 @@
 @test_substring[atomic]
 +!test_substring
     <-
-    .eval(X1, .substring("b","aaa"));
-    !assert_false(X1);
+    !assert_false(.substring("b","aaa"));
 
-    .eval(X2, .substring("b","aaa",X));
-    !assert_false(X2);
+    !assert_false(.substring("b","aaa",X));
 
-    .eval(X3, .substring("a","bbacc"));
-    !assert_true(X3);
+    !assert_true(.substring("a","bbacc"));
+
+    !assert_false(.substring("z","bbacc"));
 
     for (.substring("a","abbacca",X4)) {
       if ((X4 == 0) | (X4 == 3) | (X4 == 6)) {
         !assert_true(true);
       } else {
-        !assert_true(false);
+        !assert_equals("not expected","0");
       }
     }
 
     .print("TODO: it was expected false");
-    .eval(X5, .substring("a","bbacc",0));
-    !assert_false(X5);
+    !assert_false(.substring("a","bbacc",0));
 
-    .eval(X6, .substring(a(10),b(t1,a(10)),X));
-    !assert_true(X6);
+    !assert_true(.substring(a(10),b(t1,a(10)),X));
     .substring(a(10),b(t1,a(10)),X6_1);
     !assert_equals(5,X6_1);
 
     .substring(a(10),b("t1,a(10),kk"),X7);
     !assert_equals(6,X7);
 
-    .eval(X8, .substring(a(10,20),X,5));
-    !assert_true(X8);
+    !assert_true(.eval(X8, .substring(a(10,20),X,5)));
     .substring(a(10,20),X8_1,5);
     !assert_equals("20)",X8_1);
 
     .print("TODO: it was expected true");
-    .eval(X9, .substring(a(10,20),X,5,7));
-    !assert_true(X9);
+    !assert_true(.substring(a(10,20),X,5,7));
     .substring(a(10,20),X9_1,5,7);
     !assert_equals("20",X9_1);
 .

@@ -14,11 +14,11 @@
     I = intention(ID,_)
     <-
     if (X \== Y) {
-      .print("Intention ",ID," error! Assert equals expected ",X," but had ",Y);
+      .print("Intention ",ID," FAILED! Assert equals expected ",X," but had ",Y);
       .fail;
     } else {
       if (verbose) {
-        .print("Intention ",ID," passed!");
+        .print("Intention ",ID," PASSED");
       }
     }
 .
@@ -38,11 +38,11 @@
     I = intention(ID,_)
     <-
     if (not (Y >= X-T & Y <= X+T)) {
-      .print("Intention ",ID," error! Assert equals expected ",X,"+/-",T,", but had ",Y);
+      .print("Intention ",ID," FAILED! Assert equals expected ",X,"+/-",T,", but had ",Y);
       .fail;
     } else {
       if (verbose) {
-        .print("Intention ",ID," passed!");
+        .print("Intention ",ID," PASSED");
       }
     }
 .
@@ -61,11 +61,11 @@
     I = intention(ID,_)
     <-
     if (not X) {
-      .print("Intention ",ID," error! Assert true expected ",X);
+      .print("Intention ",ID," FAILED! Assert true expected ",X);
       .fail;
     } else {
       if (verbose) {
-        .print("Intention ",ID," passed!");
+        .print("Intention ",ID," PASSED");
       }
     }
 .
@@ -84,11 +84,11 @@
     I = intention(ID,_)
     <-
     if (X) {
-      .print("Intention ",ID," error! Assert false expected not ",X);
+      .print("Intention ",ID," FAILED! Assert false expected not ",X);
       .fail;
     } else {
       if (verbose) {
-        .print("Intention ",ID," passed!");
+        .print("Intention ",ID," PASSED");
       }
     }
 .
