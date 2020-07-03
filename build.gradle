@@ -556,7 +556,7 @@ task testJason (type: Test) {
         try {
             javaexec {
                 main = 'jason.infra.centralised.RunCentralisedMAS'
-                args = ['src/test/jason/unit_tests.mas2j', '--log-conf', 'l1.p']
+                args = ['src/test/jason/unit_tests.mas2j', '--log-conf', 'src/test/jason/l1.p']
                 classpath sourceSets.main.runtimeClasspath
                 sourceSets.test.java.srcDirs += ['src/test/jason/jia']
 
