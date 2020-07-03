@@ -25,6 +25,7 @@ import org.gjt.sp.jedit.View;
 
 import jason.mas2j.MAS2JProject;
 import jason.util.Config;
+import jason.util.CreateNewProject;
 
 @SuppressWarnings("rawtypes")
 public class NewProjectGUI extends NewAgentGUI {
@@ -126,17 +127,21 @@ public class NewProjectGUI extends NewAgentGUI {
     }
 
     protected boolean ok() {
-        String projDecl = getProjDecl();
+        /*String projDecl = getProjDecl();
         if (projDecl == null) {
             return false;
-        }
+        }*/
 
         File finalDir = new File(projFinalDir.getText().trim());
         try {
-            if (!finalDir.exists()) {
-                boolean ok = finalDir.mkdirs();
-                if (!ok)
-                    JOptionPane.showMessageDialog(this, "Error creating project directory: "+finalDir);
+            if (finalDir.exists()) {
+                JOptionPane.showMessageDialog(this, "Error directory exists already: "+finalDir);
+                return false;
+            } else {
+                CreateNewProject.main(new String[] { finalDir.getAbsolutePath() } );
+                //boolean ok = finalDir.mkdirs();
+                //if (!ok)
+                //    JOptionPane.showMessageDialog(this, "Error creating project directory: "+finalDir);
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Error creating project directory: "+finalDir+": " + e);
@@ -144,9 +149,10 @@ public class NewProjectGUI extends NewAgentGUI {
         }
 
         String pFile = finalDir + File.separator + projName.getText() + "." + MAS2JProject.EXT;
-        boolean newFile = !new File(pFile).exists();
-        Buffer b = org.gjt.sp.jedit.jEdit.openFile(view, pFile);
-        if (newFile) {
+        //boolean newFile = !new File(pFile).exists();
+        //Buffer b =
+        org.gjt.sp.jedit.jEdit.openFile(view, pFile);
+        /*if (newFile) {
             try {
                 b.writeLock();
                 b.insert(0, projDecl);
@@ -154,7 +160,7 @@ public class NewProjectGUI extends NewAgentGUI {
             } finally {
                 b.writeUnlock();
             }
-        }
+        }*/
         /*
          * jasonID.checkProjectView(projName.getText(), finalDir);
          *
@@ -168,7 +174,7 @@ public class NewProjectGUI extends NewAgentGUI {
         return true;
     }
 
-    private String getProjDecl() {
+    /*private String getProjDecl() {
         if (projName.getText().trim().length() == 0) {
             JOptionPane.showMessageDialog(this, "A project name must be informed.");
             return null;
@@ -188,5 +194,5 @@ public class NewProjectGUI extends NewAgentGUI {
         projDecl = projDecl.replace("<VERSION>", Config.get().getJasonVersion());
         projDecl = projDecl.replace("<DATE>", new SimpleDateFormat("MMMM dd, yyyy - HH:mm:ss").format(new Date()));
         return projDecl;
-    }
+    }*/
 }

@@ -19,7 +19,6 @@ public class CreateNewProject {
 
     File main, path;
     String id;
-    static Config c = Config.get();
     boolean consoleApp = false;
 
     public CreateNewProject(File m) {
@@ -96,14 +95,14 @@ public class CreateNewProject {
 
     void copyFile(String source, File target) {
         try {
-            BufferedReader in = new BufferedReader( new InputStreamReader( c.getDetaultResource(source) ));
+            BufferedReader in  = new BufferedReader(new InputStreamReader( Config.get().getDetaultResource(source) ));
             BufferedWriter out = new BufferedWriter(new FileWriter(target));
             String l = in.readLine();
             while (l != null) {
                 l = l.replace("<PROJECT_NAME>", id);
                 l = l.replace("<PLATFORM>", "");
                 l = l.replace("<INFRA>", "Centralised");
-                l = l.replace("<VERSION>", c.getJasonVersion());
+                l = l.replace("<VERSION>", Config.get().getJasonVersion());
                 l = l.replace("<DATE>", new SimpleDateFormat("MMMM dd, yyyy - HH:mm:ss").format(new Date()));
                 l = l.replace("<PROJECT-RUNNER-CLASS>", jason.infra.centralised.RunCentralisedMAS.class.getName());
                 l = l.replace("<PROJECT-FILE>", id+".mas2j");

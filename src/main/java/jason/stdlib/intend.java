@@ -8,6 +8,7 @@ import jason.asSemantics.DefaultInternalAction;
 import jason.asSemantics.Intention;
 import jason.asSemantics.TransitionSystem;
 import jason.asSemantics.Unifier;
+import jason.asSyntax.ASSyntax;
 import jason.asSyntax.Literal;
 import jason.asSyntax.Term;
 import jason.asSyntax.Trigger;
@@ -29,7 +30,7 @@ import jason.asSyntax.Trigger.TEType;
   <li> <code>.intend(go(1,3))</code>: is true if a plan with triggering event
   <code>+!go(1,3)</code> appears in an intention of the agent.
   <li> <code>.intend(go(1,3),I)</code>: as above and <code>I</code> unifies with the intention that contains the goal.
-  <code>I</code> is a representation of the intention as a term @see jason.stdlib.current_intention.
+  <code>I</code> is the identification of the intention. The internal action .intention can be used to further inspect the state of the intention.
 
 
   </ul>
@@ -42,7 +43,7 @@ import jason.asSyntax.Trigger.TEType;
   @see jason.stdlib.drop_desire
   @see jason.stdlib.succeed_goal
   @see jason.stdlib.fail_goal
-  @see jason.stdlib.current_intention
+  @see jason.stdlib.intention
   @see jason.stdlib.suspend
   @see jason.stdlib.suspended
   @see jason.stdlib.resume
@@ -72,7 +73,7 @@ import jason.asSyntax.Trigger.TEType;
                 "jason.stdlib.drop_desire",
                 "jason.stdlib.succeed_goal",
                 "jason.stdlib.fail_goal",
-                "jason.stdlib.current_intention",
+                "jason.stdlib.intention",
                 "jason.stdlib.resume",
                 "jason.stdlib.suspend",
                 "jason.stdlib.suspended"
@@ -129,7 +130,7 @@ public class intend extends DefaultInternalAction {
                 solution = un.clone();
                 if (curInt.hasTrigger(g, solution)) {
                     if (intAsTerm != null) {
-                        return solution.unifies(intAsTerm, curInt.getAsTerm());
+                        return solution.unifies(intAsTerm, ASSyntax.createNumber( curInt.getId() )); //curInt.getAsTerm());
                     } else {
                         return true;
                     }

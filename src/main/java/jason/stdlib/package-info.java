@@ -12,8 +12,7 @@ Internal actions of Jason.
   <li>{@link jason.stdlib.intend intend}: check agent's intentions.</li>
   <li>{@link jason.stdlib.drop_intention drop_intention}: remove one agent's intention.</li>
   <li>{@link jason.stdlib.drop_all_intentions drop_all_intentions}: remove agent's intentions.</li>
-  <li>{@link jason.stdlib.current_intention current_intention}: get a description of the
-  current intention.</li>
+  <li>{@link jason.stdlib.intention current_intention}: get details description of the state of intentions.</li>
 
   <li>{@link jason.stdlib.drop_event drop_event}: remove one event.</li>
   <li>{@link jason.stdlib.drop_all_events drop_all_events}: remove events in the interpreter.</li>

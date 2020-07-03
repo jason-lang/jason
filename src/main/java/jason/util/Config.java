@@ -455,13 +455,14 @@ public class Config extends Properties {
         return "/dist.properties";
     }*/
 
-    @SuppressWarnings("deprecation")
     public String getJasonVersion() {
+        //Package j = jason.util.ConfigGUI.class.getClassLoader().getDefinedPackage("jason.util");
         Package j = Package.getPackage("jason.util");
         if (j != null && j.getSpecificationVersion() != null) {
             return j.getSpecificationVersion();
         }
-        return "";
+
+        return "2.5.1";
         /*
         try {
             Properties p = new Properties();
@@ -487,8 +488,8 @@ public class Config extends Properties {
 
     }
 
-    @SuppressWarnings("deprecation")
     public String getJasonBuiltDate() {
+        //Package j = jason.util.ConfigGUI.class.getClassLoader().getDefinedPackage("jason.util");
         Package j = Package.getPackage("jason.util");
         if (j != null) {
             return j.getImplementationVersion();
@@ -510,7 +511,7 @@ public class Config extends Properties {
             return TransitionSystem.class;
         return this.getClass();
     }
-    
+
     public String getJarFileForFixTest(String jarEntry) {
         if (jarEntry == JASON_JAR)
             return "jason/asSyntax/CyclicTerm.class";
@@ -698,11 +699,11 @@ public class Config extends Properties {
         }
         return false;
     }
-    
+
     public boolean checkJarHasFile(String jarFile, String file) {
         if (file == null || jarFile == null)
             return true;
-        
+
         jarFile = "jar:file:" + jarFile + "!/" + file;
         try {
             new URL(jarFile).openStream().close();

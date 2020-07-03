@@ -13,7 +13,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -122,13 +124,13 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
             Config.get().fix();
         }
 
-        setupLogger();
+        Map<String,Object> mArgs = parseArgs(args);
 
-        if (args.length >= 2) {
-            if (args[1].equals("-debug")) {
-                debug = true;
-                Logger.getLogger("").setLevel(Level.FINE);
-            }
+        setupLogger((String)mArgs.get("log-conf"));
+
+        if ((boolean)(mArgs.getOrDefault("debug", false))) {
+            debug = true;
+            Logger.getLogger("").setLevel(Level.FINE);
         }
 
         // discover the handler
@@ -204,6 +206,24 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
         return errorCode;
     }
 
+    protected Map<String,Object> parseArgs(String[] args) {
+        Map<String, Object> margs = new HashMap<>();
+
+        if (args.length > 0) {
+            String la = "";
+            for (String arg: args) {
+                if (la.equals("--log-conf"))
+                    margs.put("log-conf", arg);
+                if (arg.equals("--debug") || arg.equals("-d"))
+                    margs.put("debug", true);
+
+                la = arg;
+            }
+        }
+
+        return margs;
+    }
+
     /** create environment, agents, controller */
     protected void create() throws JasonException {
         createEnvironment();
@@ -221,8 +241,12 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
     public boolean isRunning() {
         return isRunning;
     }
-    
-    public synchronized void setupLogger() {
+
+    public void setupLogger() {
+        setupLogger(null);
+    }
+
+    public synchronized void setupLogger(String confFile) {
         if (readFromJAR) {
             try {
                 LogManager.getLogManager().readConfiguration(
@@ -238,10 +262,15 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
                 Logger.getLogger("").setLevel(Level.INFO);
             }
         } else {
+            if (confFile == null)
+                confFile = logPropFile;
+            else if (!(new File(confFile).exists()))
+                System.err.println("Loggging properties file "+confFile+" not found!");
+
             // checks a local log configuration file
-            if (new File(logPropFile).exists()) {
+            if (new File(confFile).exists()) {
                 try {
-                    LogManager.getLogManager().readConfiguration(new FileInputStream(logPropFile));
+                    LogManager.getLogManager().readConfiguration(new FileInputStream(confFile));
                 } catch (Exception e) {
                     System.err.println("Error setting up logger:" + e);
                 }
@@ -676,7 +705,7 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
     /** an agent architecture for the infra based on thread pool */
     protected final class CentralisedAgArchSynchronousScheduled extends CentralisedAgArch {
         private static final long serialVersionUID = 2752327732263465482L;
-        
+
         private volatile boolean runWakeAfterTS = false;
         private int currentStep = 0;
 
@@ -882,14 +911,12 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
                     if (stop.exists()) {
                         stop.delete();
                     }
-                    
+
                     try {
                         ManagementFactory.getPlatformMBeanServer().unregisterMBean(new ObjectName("jason.sf.net:type=runner"));
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-
-                    //runner = null;
 
                     if (stopJVM) {
                         System.exit(0);

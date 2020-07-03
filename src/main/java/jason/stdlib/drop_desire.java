@@ -34,7 +34,7 @@ import jason.asSyntax.Trigger.TEType;
 
   </ul>
 
-  @see jason.stdlib.current_intention
+  @see jason.stdlib.intention
   @see jason.stdlib.desire
   @see jason.stdlib.drop_all_desires
   @see jason.stdlib.drop_all_events
@@ -72,7 +72,7 @@ import jason.asSyntax.Trigger.TEType;
                 "jason.stdlib.drop_desire",
                 "jason.stdlib.succeed_goal",
                 "jason.stdlib.fail_goal",
-                "jason.stdlib.current_intention",
+                "jason.stdlib.intention",
                 "jason.stdlib.resume",
                 "jason.stdlib.suspend",
                 "jason.stdlib.suspended"
