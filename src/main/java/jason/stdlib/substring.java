@@ -27,8 +27,7 @@ import jason.asSyntax.Term;
   <li>+/- string (any term).<br/>
   <li>+/- position (optional -- integer): the initial position of
   the string where the sub-string occurs.
-  <li>+/- position (optional -- integer): the last position of
-  the string where the sub-string occurs.
+  <li>+/- position (optional -- integer): the position in the string where the sub-string ends.
   </ul>
 
   <p>Examples:<ul>
@@ -147,15 +146,23 @@ public class substring extends DefaultInternalAction {
                 }
 
                 void find() {
-                    if (pos < s1.length()) {
+                    while (pos < s1.length()) {
                         pos = s1.indexOf(s0,pos);
-                        if (pos >= 0) {
+                        if (pos < 0) {
+                            // quit without solution
+                            pos = s1.length();
+                        } else {
                             c = (Unifier)un.clone();
-                            c.unifiesNoUndo(args[2], new NumberTermImpl(pos));
-                            pos++;
-                            return;
+                            if (c.unifiesNoUndo(args[2], new NumberTermImpl(pos++))) {
+                                if (args.length == 4) {
+                                    if (c.unifiesNoUndo(args[3], new NumberTermImpl( (pos-2)+s0.length() ))) {
+                                        return;
+                                    }
+                                } else {
+                                    return;
+                                }
+                            }
                         }
-                        pos = s1.length(); // to stop searching
                     }
                     c = null; // no member is found,
                 }

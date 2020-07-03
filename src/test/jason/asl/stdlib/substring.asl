@@ -42,7 +42,7 @@
     !assert_equals("20)",X8_1);
 
     .print("TODO: it was expected true");
-    !assert_true(.substring(a(10,20),X,5,7));
+    !assert_true(.substring("20)",a(10,20),5,7));
     .substring(a(10,20),X9_1,5,7);
     !assert_equals("20",X9_1);
 .
