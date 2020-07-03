@@ -547,11 +547,58 @@ task zipRel(type: Zip, dependsOn: copyRel) {
     baseName 'jason'
 }
 
-task testJason (type: JavaExec, dependsOn: 'classes') {
+task testJason (type: Test) {
     description 'runs Jason unit tests: tests.mas2j'
-    main = 'jason.infra.centralised.RunCentralisedMAS'
-    args = ['src/test/jason/unit_tests.mas2j', '--log-conf', 'l1.p']
-    classpath sourceSets.main.runtimeClasspath
-    sourceSets.test.java.srcDirs += ['src/test/jason/jia']
+    def errorOnTests = false
+    outputs.upToDateWhen { false } // disable cache
+
+    doFirst {
+        try {
+            javaexec {
+                main = 'jason.infra.centralised.RunCentralisedMAS'
+                args = ['src/test/jason/unit_tests.mas2j', '--log-conf', 'l1.p']
+                classpath sourceSets.main.runtimeClasspath
+                sourceSets.test.java.srcDirs += ['src/test/jason/jia']
+
+                errorOutput = new ByteArrayOutputStream()
+                standardOutput = new ByteArrayOutputStream()
+
+                ext.stdout = {
+                    return standardOutput.toString()
+                }
+                ext.errout = {
+                    return errorOutput.toString()
+                }
+            }
+        } catch (Exception e) {
+            errorOnTests = true
+        }
+    }
+
+    doLast {
+        def styler = 'black red green yellow blue magenta cyan white'
+            .split().toList().withIndex(30)
+            .collectEntries { key, val -> [(key) : { "\033[${val}m${it}\033[0m" }] }
+
+        def std = stdout()
+        std.splitEachLine('\n') { String line ->
+            line = line.replace("TESTING","${styler['yellow']('TESTING')}")
+            line = line.replace("PASSED","${styler['green']('PASSED')}")
+            line = line.replace("FAILED!","${styler['red']('FAILED!')}")
+            println line
+        }
+
+        def err = errout()
+        err.splitEachLine('\n') { String line ->
+            line = line.replace("TESTING","${styler['yellow']('TESTING')}")
+            line = line.replace("PASSED","${styler['green']('PASSED')}")
+            line = line.replace("FAILED!","${styler['red']('FAILED!')}")
+            println line
+        }
+
+        if (errorOnTests) {
+            throw new GradleException('Jason unit tests: ERROR!')
+        }
+    }
 }
 tasks.test.dependsOn(testJason)

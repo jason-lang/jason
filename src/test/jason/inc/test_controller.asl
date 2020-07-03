@@ -34,7 +34,7 @@ shutdown_hook.     // enable to shutdown after finishing tests
     <-
     .current_intention(I);
     I = intention(Id,IStack);
-    .print("Executing ",Id," (main plan: ",P,")");
+    .print("TESTING ",Id," (main plan: ",P,")");
     !P;
 .
 
