@@ -1,5 +1,5 @@
 /**
- * Test controller provides general test configurations and facilities
+ * Test manager provides general test configurations and facilities
  */
 
 /**
@@ -43,7 +43,7 @@ shutdown_hook.     // enable to shutdown after finishing tests
  */
  @set_controller[atomic]
 +!set_controller :
-    .my_name(test_controller)
+    .my_name(test_manager)
     <-
     .print("\n\n");
     .print("**** Starting Jason unit tests...\n\n");
@@ -61,7 +61,7 @@ shutdown_hook.     // enable to shutdown after finishing tests
      error
      <-
      .print("\n\n");
-     .print("**** End of Jason unit tests: ERROR!\n\n");
+     .print("**** End of Jason unit tests: FAILED!\n\n");
      .exit_error;
  .
 @shutdown_after_success[atomic]
@@ -70,7 +70,7 @@ shutdown_hook.     // enable to shutdown after finishing tests
     not intention(_)
     <-
     .print("\n\n");
-    .print("**** End of Jason unit tests: SUCCESS!\n\n");
+    .print("**** End of Jason unit tests: PASSED\n\n");
     .stopMAS;
 .
 +!shutdown_after_tests. // If auto shutdown is disabled
@@ -80,7 +80,7 @@ shutdown_hook.     // enable to shutdown after finishing tests
  */
 @create_agents[atomic]
 +!create_test_agents :
-    .my_name(test_controller)
+    .my_name(test_manager)
     <-
     .list_files("./src/test/jason/inc",".*.asl",IGNORE);
     .list_files("./src/test/jason/",".*.asl",FILES);

@@ -3,7 +3,7 @@ MAS unit_tests {
     infrastructure: Centralised
 
     agents:
-        test_controller;
+        test_manager;
 
     aslSourcePath: "src/test/jason/inc";"src/test/jason/asl";
 }

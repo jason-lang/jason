@@ -2,7 +2,7 @@
  * Assert helpers
  */
 
-{ include("test_controller.asl") }
+{ include("test_manager.asl") }
 
 /**
  * Asserts if X is equals to Y
@@ -25,7 +25,7 @@
 -!assert_equals(X,Y) :
     true
     <-
-    .send(test_controller,tell,error);
+    .send(test_manager,tell,error);
 .
 
 /**
@@ -49,7 +49,7 @@
 -!assert_equals(X,Y,T) :
     true
     <-
-    .send(test_controller,tell,error);
+    .send(test_manager,tell,error);
 .
 
 /**
@@ -72,7 +72,7 @@
 -!assert_true(X) :
     true
     <-
-    .send(test_controller,tell,error);
+    .send(test_manager,tell,error);
 .
 
 /**
@@ -95,5 +95,38 @@
 -!assert_false(X) :
     true
     <-
-    .send(test_controller,tell,error);
+    .send(test_manager,tell,error);
+.
+
+/**
+ * Force a passed test
+ */
+@force_pass[atomic]
++!force_pass :
+    .current_intention(I) &
+    I = intention(ID,_)
+    <-
+    .print("Intention ",ID," PASSED");
+.
+-!force_pass : // Only fails if not applicable
+    true
+    <-
+    .send(test_manager,tell,error);
+.
+
+/**
+ * Force a failure printing a giving message
+ */
+@force_failure[atomic]
++!force_failure(MSG) :
+    .current_intention(I) &
+    I = intention(ID,_)
+    <-
+    .print("Intention ",ID," forcedly FAILED! Msg: ",MSG);
+    .fail;
+.
+-!force_failure(MSG) :
+    true
+    <-
+    .send(test_manager,tell,error);
 .
