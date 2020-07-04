@@ -15,16 +15,31 @@ shutdown_hook.     // enable to shutdown after finishing tests
 !create_test_agents.     // create agents by .asl files in test/agt/
 
 /**
- * execute plans that contains "test" in the name
+ * execute plans that contains "test" in the label
  */
 @execute_plans[atomic]
 +!execute_test_plans:
     .relevant_plans({+!_},_,LL)
     <-
     for (.member(P,LL)) {
-      if (.substring("test",P,0)) {
-        !!execute_test_plan(P);
-      }
+        if (.substring("test",P,0)) {
+
+            /*
+             * Add a default fail plan to the @test plan
+             * Notice mock plans and other without @test label
+             * are not covered
+             */
+            .print("Adding: ",P);
+            .add_plan({
+                -!P <-
+                    !force_failure("Fail");
+            }, self, end);
+
+            /**
+             * Execute the @test plan
+             */
+            !!execute_test_plan(P);
+        }
     }
 .
 
