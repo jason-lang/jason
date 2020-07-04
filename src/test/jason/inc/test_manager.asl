@@ -5,14 +5,15 @@
 /**
  * Configurations
  */
-verbose.        // enable to see full log debug
-shutdown_hook.     // enable to shutdown after finishing tests
+verbose.                // enable to see full log debug
+auto_create_fail_plan.  // create a -!test fail plan for each desire starting with "test"
+shutdown_hook.          // enable to shutdown after finishing tests
 
 /**
  * Startup operations
  */
-!set_controller.    // starts test controller operations
-!create_test_agents.     // create agents by .asl files in test/agt/
+!set_controller.          // starts test controller operations
+!create_test_agents.      // create agents by .asl files in test/agt/
 
 /**
  * execute plans that contains "test" in the label
@@ -21,19 +22,10 @@ shutdown_hook.     // enable to shutdown after finishing tests
 +!execute_test_plans:
     .relevant_plans({+!_},_,LL)
     <-
+    !create_default_fail_plan;
+
     for (.member(P,LL)) {
         if (.substring("test",P,0)) {
-
-            /*
-             * Add a default fail plan to the @test plan
-             * Notice mock plans and other without @test label
-             * are not covered
-             */
-            .add_plan({
-                -!P <-
-                    !force_failure("Fail");
-            }, self, end);
-
             /**
              * Execute the @test plan
              */
@@ -41,6 +33,22 @@ shutdown_hook.     // enable to shutdown after finishing tests
         }
     }
 .
+
+/**
+ * Add a default -!P fail plan to generate
+ * assert failure for others non expected
+ * errors
+ */
+@create_default_fail_plan[atomic]
++!create_default_fail_plan:
+    auto_create_fail_plan
+    <-
+    .add_plan({
+        -!P <-
+            !force_failure("Fail");
+    }, self, end);
+.
++!create_default_fail_plan. // Do not create plans if it is disabled
 
 @execute_plan[atomic]
 +!execute_test_plan(P) :
