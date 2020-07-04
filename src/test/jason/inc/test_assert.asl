@@ -11,16 +11,33 @@
 @assert_equals[atomic]
 +!assert_equals(X,Y) :
     .current_intention(I) &
-    I = intention(ID,_)
+    I = intention(ID,_) &
+    not .list(X) & not .list(Y)
     <-
     if (X \== Y) {
-      .print("Intention ",ID," FAILED! Assert equals expected ",X," but had ",Y);
-      .fail;
+        .print("Intention ",ID," FAILED! Assert equals expected ",X," but had ",Y);
+        .fail;
     } else {
-      if (verbose) {
-        .print("Intention ",ID," PASSED");
-      }
+        if (verbose) { .print("Intention ",ID," PASSED"); }
     }
+.
++!assert_equals(X,Y) :
+    .current_intention(I) &
+    I = intention(ID,_)
+    <-
+    for (.member(Xth,X)) {
+        if (not .member(Xth,Y)) {
+            .print("Intention ",ID," FAILED! Assert equals expected ",X," but had ",Y);
+            .fail;
+        }
+    }
+    for (.member(Yth,Y)) {
+        if (not .member(Yth,X)) {
+            .print("Intention ",ID," FAILED! Assert equals expected ",X," but had ",Y);
+            .fail;
+        }
+    }
+    if (verbose) { .print("Intention ",ID," PASSED"); }
 .
 -!assert_equals(X,Y) :
     true
@@ -38,12 +55,10 @@
     I = intention(ID,_)
     <-
     if (not (Y >= X-T & Y <= X+T)) {
-      .print("Intention ",ID," FAILED! Assert equals expected ",X,"+/-",T,", but had ",Y);
-      .fail;
+        .print("Intention ",ID," FAILED! Assert equals expected ",X,"+/-",T,", but had ",Y);
+        .fail;
     } else {
-      if (verbose) {
-        .print("Intention ",ID," PASSED");
-      }
+        if (verbose) { .print("Intention ",ID," PASSED"); }
     }
 .
 -!assert_equals(X,Y,T) :
@@ -61,12 +76,10 @@
     I = intention(ID,_)
     <-
     if (not X) {
-      .print("Intention ",ID," FAILED! Assert true expected ",X);
-      .fail;
+        .print("Intention ",ID," FAILED! Assert true expected ",X);
+        .fail;
     } else {
-      if (verbose) {
-        .print("Intention ",ID," PASSED");
-      }
+        if (verbose) { .print("Intention ",ID," PASSED"); }
     }
 .
 -!assert_true(X) :
@@ -84,12 +97,10 @@
     I = intention(ID,_)
     <-
     if (X) {
-      .print("Intention ",ID," FAILED! Assert false expected not ",X);
-      .fail;
+        .print("Intention ",ID," FAILED! Assert false expected not ",X);
+        .fail;
     } else {
-      if (verbose) {
-        .print("Intention ",ID," PASSED");
-      }
+        if (verbose) { .print("Intention ",ID," PASSED"); }
     }
 .
 -!assert_false(X) :
@@ -106,9 +117,9 @@
     .current_intention(I) &
     I = intention(ID,_)
     <-
-    .print("Intention ",ID," PASSED");
+    if (verbose) { .print("Intention ",ID," PASSED"); }
 .
--!force_pass : // Only fails if not applicable
+-!force_pass : // Only pass if not applicable
     true
     <-
     .send(test_manager,tell,error);
@@ -125,7 +136,27 @@
     .print("Intention ",ID," forcedly FAILED! Msg: ",MSG);
     .fail;
 .
--!force_failure(MSG) :
+-!force_failure(MSG) : // Only failure if not applicable
+    true
+    <-
+    .send(test_manager,tell,error);
+.
+
+/**
+ * Asserts if X contains Y
+ */
+@assert_contains[atomic]
++!assert_contains(X,Y) :
+    .current_intention(I) &
+    I = intention(ID,_)
+    <-
+    if (not .member(Y,X)) {
+        .print("Intention ",ID," FAILED! Assert equals expected ",X," but had ",Y);
+        .fail;
+    }
+    if (verbose) { .print("Intention ",ID," PASSED"); }
+.
+-!assert_contains(X,Y) :
     true
     <-
     .send(test_manager,tell,error);

@@ -34,5 +34,5 @@
 
     // Print desires
     .findall(D,.desire(D),L);
-    .print("Desires: ",L);
+    //.print("Desires: ",L);
 .
