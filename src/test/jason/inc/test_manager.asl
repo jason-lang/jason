@@ -29,7 +29,6 @@ shutdown_hook.     // enable to shutdown after finishing tests
              * Notice mock plans and other without @test label
              * are not covered
              */
-            .print("Adding: ",P);
             .add_plan({
                 -!P <-
                     !force_failure("Fail");
