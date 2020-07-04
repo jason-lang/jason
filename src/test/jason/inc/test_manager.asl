@@ -34,7 +34,7 @@ shutdown_hook.     // enable to shutdown after finishing tests
     <-
     .current_intention(I);
     I = intention(Id,IStack);
-    .print("TESTING ",Id," (main plan: ",P,")");
+    if (verbose) { .print("TESTING ",Id," (main plan: ",P,")"); }
     !P;
 .
 
@@ -46,7 +46,7 @@ shutdown_hook.     // enable to shutdown after finishing tests
     .my_name(test_manager)
     <-
     .print("\n\n");
-    .print("**** Starting Jason unit tests...\n\n");
+    .print("Starting Jason unit tests...\n\n");
 
     .at("now +2 s", {+!shutdown_after_tests});
 .
@@ -61,7 +61,7 @@ shutdown_hook.     // enable to shutdown after finishing tests
      error
      <-
      .print("\n\n");
-     .print("**** End of Jason unit tests: FAILED!\n\n");
+     .print("End of Jason unit tests: FAILED!\n\n");
      .exit_error;
  .
 @shutdown_after_success[atomic]
@@ -70,7 +70,7 @@ shutdown_hook.     // enable to shutdown after finishing tests
     not intention(_)
     <-
     .print("\n\n");
-    .print("**** End of Jason unit tests: PASSED\n\n");
+    .print("End of Jason unit tests: PASSED\n\n");
     .stopMAS;
 .
 +!shutdown_after_tests. // If auto shutdown is disabled
@@ -92,7 +92,7 @@ shutdown_hook.     // enable to shutdown after finishing tests
         ?lastSlash(R0);
         .length(M,L);
         .substring(M,AGENT,R0+1,L-4);
-        .print("Launching : ",AGENT," (",M,")");
+        .print("LAUNCHING: ",AGENT," (",M,")");
         .create_agent(AGENT,M);
       }
     }

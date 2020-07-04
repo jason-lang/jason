@@ -585,6 +585,8 @@ task testJason (type: Test) {
             line = line.replace("TESTING","${styler['yellow']('TESTING')}")
             line = line.replace("PASSED","${styler['green']('PASSED')}")
             line = line.replace("FAILED!","${styler['red']('FAILED!')}")
+            line = line.replace("TODO:","${styler['magenta']('TODO:')}")
+            line = line.replace("LAUNCHING:","${styler['blue']('LAUNCHING:')}")
             println line
         }
 
@@ -593,6 +595,8 @@ task testJason (type: Test) {
             line = line.replace("TESTING","${styler['yellow']('TESTING')}")
             line = line.replace("PASSED","${styler['green']('PASSED')}")
             line = line.replace("FAILED!","${styler['red']('FAILED!')}")
+            line = line.replace("TODO:","${styler['magenta']('TODO:')}")
+            line = line.replace("LAUNCHING:","${styler['blue']('LAUNCHING:')}")
             println line
         }
 
