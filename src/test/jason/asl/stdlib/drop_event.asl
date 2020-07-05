@@ -8,8 +8,8 @@
 
 !execute_test_plans.
 
-@test_intend[atomic]
-+!test_intend
+@test_drop_event[atomic]
++!test_drop_event
     <-
     /**
      * Add a mock plan for go(X,Y)
@@ -19,14 +19,14 @@
           .wait(10); // An arbitrary delay
     }, self, begin);
 
-    // Trigger the mock plan
+    // Trigger the mock plan to test desire
     !!go(1,3);
     !!go(2,3);
+    !assert_true(.desire(go(1,3)));
+    !assert_true(.desire(go(2,3)));
 
-    // Print intentions
-    .findall(D,.intend(D),L);
-    //.print("Intentions: ",L);
+    .drop_event(go(1,3));
 
-    // There is an open issue regarding .intend
-    .print("TODO: see issue #44 https://github.com/jason-lang/jason/issues/44");
+    !assert_false(.desire(go(1,3)));
+    !assert_true(.desire(go(2,3)));
 .
