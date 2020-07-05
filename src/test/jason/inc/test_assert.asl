@@ -18,6 +18,7 @@
         .print("Intention ",ID," FAILED! Assert equals expected ",X," but had ",Y);
         .fail;
     } else {
+        .send(test_manager,achieve,count_tests(passed));
         if (verbose) { .print("Intention ",ID," PASSED"); }
     }
 .
@@ -37,12 +38,13 @@
             .fail;
         }
     }
+    .send(test_manager,achieve,count_tests(passed));
     if (verbose) { .print("Intention ",ID," PASSED"); }
 .
 -!assert_equals(X,Y) :
     true
     <-
-    .send(test_manager,tell,error);
+    .send(test_manager,achieve,count_tests(failed));
 .
 
 /**
@@ -58,13 +60,14 @@
         .print("Intention ",ID," FAILED! Assert equals expected ",X,"+/-",T,", but had ",Y);
         .fail;
     } else {
+        .send(test_manager,achieve,count_tests(passed));
         if (verbose) { .print("Intention ",ID," PASSED"); }
     }
 .
 -!assert_equals(X,Y,T) :
     true
     <-
-    .send(test_manager,tell,error);
+    .send(test_manager,achieve,count_tests(failed));
 .
 
 /**
@@ -79,13 +82,14 @@
         .print("Intention ",ID," FAILED! Assert true expected ",X);
         .fail;
     } else {
+        .send(test_manager,achieve,count_tests(passed));
         if (verbose) { .print("Intention ",ID," PASSED"); }
     }
 .
 -!assert_true(X) :
     true
     <-
-    .send(test_manager,tell,error);
+    .send(test_manager,achieve,count_tests(failed));
 .
 
 /**
@@ -100,13 +104,14 @@
         .print("Intention ",ID," FAILED! Assert false expected not ",X);
         .fail;
     } else {
+        .send(test_manager,achieve,count_tests(passed));
         if (verbose) { .print("Intention ",ID," PASSED"); }
     }
 .
 -!assert_false(X) :
     true
     <-
-    .send(test_manager,tell,error);
+    .send(test_manager,achieve,count_tests(failed));
 .
 
 /**
@@ -117,12 +122,13 @@
     .current_intention(I) &
     I = intention(ID,_)
     <-
+    .send(test_manager,achieve,count_tests(passed));
     if (verbose) { .print("Intention ",ID," PASSED"); }
 .
 -!force_pass : // Only pass if not applicable
     true
     <-
-    .send(test_manager,tell,error);
+    .send(test_manager,achieve,count_tests(failed));
 .
 
 /**
@@ -139,7 +145,7 @@
 -!force_failure(MSG) : // Only failure if not applicable
     true
     <-
-    .send(test_manager,tell,error);
+    .send(test_manager,achieve,count_tests(failed));
 .
 
 /**
@@ -154,10 +160,11 @@
         .print("Intention ",ID," FAILED! Assert equals expected ",X," but had ",Y);
         .fail;
     }
+    .send(test_manager,achieve,count_tests(passed));
     if (verbose) { .print("Intention ",ID," PASSED"); }
 .
 -!assert_contains(X,Y) :
     true
     <-
-    .send(test_manager,tell,error);
+    .send(test_manager,achieve,count_tests(failed));
 .

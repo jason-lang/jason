@@ -2,6 +2,8 @@
  * Test manager provides general test configurations and facilities
  */
 
+tests_performed(0).
+
 /**
  * Configurations
  */
@@ -77,21 +79,25 @@ shutdown_hook.          // enable to shutdown after finishing tests
 /**
  * enable to shutdown after finishing tests
  */
- @shutdown_after_error[atomic]
+ @shutdown_after_fail[atomic]
  +!shutdown_after_tests :
      shutdown_hook &
-     error
+     failed &
+     tests_performed(N)
      <-
      .print("\n\n");
+     .print(N," plans executed");
      .print("End of Jason unit tests: FAILED!\n\n");
      .exit_error;
  .
 @shutdown_after_success[atomic]
 +!shutdown_after_tests :
     shutdown_hook &
-    not intention(_)
+    not intention(_) &
+    tests_performed(N)
     <-
     .print("\n\n");
+    .print("#",N," tests performed");
     .print("End of Jason unit tests: PASSED\n\n");
     .stopMAS;
 .
@@ -120,3 +126,14 @@ shutdown_hook.          // enable to shutdown after finishing tests
     }
 .
 +!create_test_agents. // avoid plan not found for asl that includes controller
+
+/**
+ * Statistics for tests (passed/failed)
+ */
+@count_tests[atomic]
++!count_tests(M) :
+    tests_performed(N)
+    <-
+    +M;
+    -+tests_performed(N+1);
+.
