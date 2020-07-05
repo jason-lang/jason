@@ -3,6 +3,8 @@
  */
 
 tests_performed(0).
+tests_failed(0).
+tests_passed(0).
 
 /**
  * Configurations
@@ -47,7 +49,7 @@ shutdown_hook.          // enable to shutdown after finishing tests
     <-
     .add_plan({
         -!P <-
-            !force_failure("Fail");
+            !force_failure("Failure captured by default fail plan -!P.");
     }, self, end);
 .
 +!create_default_fail_plan. // Do not create plans if it is disabled
@@ -83,10 +85,12 @@ shutdown_hook.          // enable to shutdown after finishing tests
  +!shutdown_after_tests :
      shutdown_hook &
      failed &
-     tests_performed(N)
+     tests_performed(N) &
+     tests_failed(F) &
+     tests_passed(P)
      <-
      .print("\n\n");
-     .print(N," plans executed");
+     .print("#",N," plans executed, #",P," passed and #",F," failed.");
      .print("End of Jason unit tests: FAILED!\n\n");
      .exit_error;
  .
@@ -94,10 +98,12 @@ shutdown_hook.          // enable to shutdown after finishing tests
 +!shutdown_after_tests :
     shutdown_hook &
     not intention(_) &
-    tests_performed(N)
+    tests_performed(N) &
+    tests_failed(F) &
+    tests_passed(P)
     <-
     .print("\n\n");
-    .print("#",N," tests performed");
+    .print("#",N," plans executed, #",P," passed and #",F," failed.");
     .print("End of Jason unit tests: PASSED\n\n");
     .stopMAS;
 .
@@ -130,10 +136,20 @@ shutdown_hook.          // enable to shutdown after finishing tests
 /**
  * Statistics for tests (passed/failed)
  */
-@count_tests[atomic]
-+!count_tests(M) :
-    tests_performed(N)
+@count_tests_passed[atomic]
++!count_tests(passed) :
+    tests_performed(N) &
+    tests_passed(P)
     <-
-    +M;
     -+tests_performed(N+1);
+    -+tests_passed(P+1);
+.
+@count_tests_failed[atomic]
++!count_tests(failed) :
+    tests_performed(N) &
+    tests_failed(F)
+    <-
+    +failed;
+    -+tests_performed(N+1);
+    -+tests_failed(F+1);
 .
