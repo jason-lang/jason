@@ -30,8 +30,7 @@
 
 +!test_succeed_goal
     <-
-    //!assert_true(finished); // It is expected ^!go has added "finished" to bb
-    .print("TODO: It is expected ^!go has added 'finished' after succeed_goal");
+    !assert_true(finished); // It is expected ^!go has added "finished" to bb
 .
 
 ^!go(X,Y)[state(S)]
