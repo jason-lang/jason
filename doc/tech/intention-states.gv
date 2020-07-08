@@ -1,8 +1,6 @@
 // dot intention-states.gv -Tpdf -o intention-states.pdf
 
 digraph intention_states {
-   node [color=gray];
-
    compound=true;
 
    ENTRY[shape=point,color=black,label=""];
@@ -12,7 +10,6 @@ digraph intention_states {
      R [label=<<b>running</b><br/><font point-size="8">(I,E,SE,SI)</font>>];
      S [label=<<b>suspended</b><br/><font point-size="8">(PI)</font>>];
   	 P [label=<<b>pending</b><br/><font point-size="8">(PI,PE,PA)</font>>];
-
 
      R->S[arrowsize=0.5];
      S->R;
