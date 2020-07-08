@@ -17,7 +17,7 @@ import jason.JasonException;
 import jason.NoValueException;
 import jason.RevisionFailedException;
 import jason.architecture.AgArch;
-import jason.asSemantics.GoalListener.FinishStates;
+import jason.asSemantics.GoalListener.GoalStates;
 import jason.asSyntax.ASSyntax;
 import jason.asSyntax.Atom;
 import jason.asSyntax.BinaryStructure;
@@ -141,7 +141,7 @@ public class TransitionSystem implements Serializable {
             public void intentionDropped(Intention i) {
                 for (IntendedMeans im: i) //.getIMs())
                     if (im.getTrigger().isAddition() && im.getTrigger().isGoal())
-                        gl.goalFinished(im.getTrigger(), FinishStates.dropped);
+                        gl.goalFinished(im.getTrigger(), GoalStates.dropped);
             }
 
             public void intentionSuspended(Intention i, String reason) {
@@ -564,7 +564,7 @@ public class TransitionSystem implements Serializable {
 
                     if (hasGoalListener())
                         for (GoalListener gl: getGoalListeners())
-                            gl.goalFinished(top.getTrigger(), FinishStates.achieved);
+                            gl.goalFinished(top.getTrigger(), GoalStates.achieved);
                     
                     C.SE.intention.pop(); // remove the top IM
 
@@ -1006,7 +1006,7 @@ public class TransitionSystem implements Serializable {
             // produce ^!g[state(finished)[reason(achieved)]] event
             if (!topTrigger.isMetaEvent() && topTrigger.isGoal() && hasGoalListener()) {
                 for (GoalListener gl: goalListeners) {
-                    gl.goalFinished(topTrigger, FinishStates.achieved);
+                    gl.goalFinished(topTrigger, GoalStates.achieved);
                 }
             }
 
@@ -1195,7 +1195,7 @@ public class TransitionSystem implements Serializable {
                 for (GoalListener gl: goalListeners) {
                     gl.goalFailed(im.getTrigger());
                     if (!failEventIsRelevant)
-                        gl.goalFinished(im.getTrigger(), FinishStates.unachieved);
+                        gl.goalFinished(im.getTrigger(), GoalStates.failed);
                 }
 
             if (failEventIsRelevant) {

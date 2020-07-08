@@ -29,6 +29,8 @@ import jason.util.Pair;
  */
 public class Intention implements Serializable, Comparable<Intention>, Iterable<IntendedMeans> {
 
+    public enum State { running, waiting_action, pending, suspended, undefined }
+
     private static final long serialVersionUID = 1L;
     public  static final Intention EmptyInt = null;
     private static AtomicInteger idCount = new AtomicInteger(0);
@@ -139,7 +141,6 @@ public class Intention implements Serializable, Comparable<Intention>, Iterable<
         this.place = place;
     }
 
-    public enum State { running, waiting_action, pending, suspended, undefined }
     public State getStateBasedOnPlace() {
         switch (place) {
         case None: return State.undefined;

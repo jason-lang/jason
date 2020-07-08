@@ -4,6 +4,7 @@ import jason.asSyntax.ASSyntax;
 import jason.asSyntax.Atom;
 import jason.asSyntax.Literal;
 import jason.asSyntax.StringTermImpl;
+import jason.asSyntax.Term;
 import jason.asSyntax.Trigger;
 import jason.asSyntax.Trigger.TEOperator;
 import jason.asSyntax.Trigger.TEType;
@@ -26,8 +27,10 @@ public class GoalListenerForMetaEvents implements GoalListener {
         generateGoalStateEvent(goal.getLiteral(), goal.getType(), GoalStates.failed, null);
     }
 
-    public void goalFinished(Trigger goal, FinishStates result) {
-        generateGoalStateEvent(goal.getLiteral(), goal.getType(), GoalStates.finished, result.toString());
+    public void goalFinished(Trigger goal, GoalStates result) {
+        if (result != null)
+            generateGoalStateEvent(goal.getLiteral(), goal.getType(), result, null);
+        generateGoalStateEvent(goal.getLiteral(), goal.getType(), GoalStates.finished, null);
     }
 
     public void goalResumed(Trigger goal) {
@@ -43,8 +46,8 @@ public class GoalListenerForMetaEvents implements GoalListener {
             public void run() {
                 Literal newGoal = goal.forceFullLiteralImpl().copy();
                 Literal stateAnnot = ASSyntax.createLiteral("state", new Atom(state.toString()));
-                if (reason != null)
-                    stateAnnot.addAnnot( ASSyntax.createStructure("reason", new StringTermImpl(reason)));
+                Term tReason = (reason == null ? new StringTermImpl("no_reason") : new StringTermImpl(reason) );
+                stateAnnot.addAnnot( ASSyntax.createStructure("reason", tReason));
                 newGoal.addAnnot( stateAnnot );
                 Trigger eEnd = new Trigger(TEOperator.goalState, type, newGoal);
                 if (ts.getAg().getPL().hasCandidatePlan(eEnd))

@@ -3,7 +3,6 @@ package jason.stdlib;
 import jason.JasonException;
 import jason.asSemantics.Event;
 import jason.asSemantics.GoalListener;
-import jason.asSemantics.GoalListener.FinishStates;
 import jason.asSemantics.IMCondition;
 import jason.asSemantics.IntendedMeans;
 import jason.asSemantics.Intention;
@@ -121,7 +120,7 @@ public class fail_goal extends succeed_goal {
                     ts.getLogger().fine("'.fail_goal("+im.getTrigger()+")' is removing the intention without event:\n" + i);
                     if (ts.hasGoalListener())
                         for (GoalListener gl: ts.getGoalListeners())
-                            gl.goalFinished(im.getTrigger(), FinishStates.unachieved);
+                            gl.goalFinished(im.getTrigger(), null);
 
                     i.fail(ts.getC());
                     return 3;

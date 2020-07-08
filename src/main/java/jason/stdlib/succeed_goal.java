@@ -1,24 +1,24 @@
 package jason.stdlib;
 
+import java.util.Iterator;
+
 import jason.JasonException;
 import jason.asSemantics.ActionExec;
 import jason.asSemantics.Circumstance;
 import jason.asSemantics.DefaultInternalAction;
 import jason.asSemantics.Event;
 import jason.asSemantics.GoalListener;
+import jason.asSemantics.GoalListener.GoalStates;
+import jason.asSemantics.IMCondition;
+import jason.asSemantics.IntendedMeans;
 import jason.asSemantics.Intention;
 import jason.asSemantics.TransitionSystem;
 import jason.asSemantics.Unifier;
-import jason.asSemantics.GoalListener.FinishStates;
-import jason.asSemantics.IMCondition;
-import jason.asSemantics.IntendedMeans;
 import jason.asSyntax.Literal;
 import jason.asSyntax.Term;
 import jason.asSyntax.Trigger;
 import jason.asSyntax.Trigger.TEOperator;
 import jason.asSyntax.Trigger.TEType;
-
-import java.util.Iterator;
 
 /**
   <p>Internal action:
@@ -82,7 +82,7 @@ import java.util.Iterator;
                 "jason.stdlib.resume"
         }
     )
-@SuppressWarnings("serial")
+
 public class succeed_goal extends DefaultInternalAction {
 
     @Override public int getMinArgs() {
@@ -227,7 +227,7 @@ public class succeed_goal extends DefaultInternalAction {
             if (im != null) {
                 if (ts.hasGoalListener())
                     for (GoalListener gl: ts.getGoalListeners())
-                        gl.goalFinished(im.getTrigger(), FinishStates.achieved);
+                        gl.goalFinished(im.getTrigger(), GoalStates.achieved);
 
                 // continue the intention
                 if (!i.isFinished()) { // could be finished after i.dropGoal() !!
@@ -249,7 +249,7 @@ public class succeed_goal extends DefaultInternalAction {
         C.removeEvent(e);
         if (ts.hasGoalListener())
             for (GoalListener gl: ts.getGoalListeners())
-                gl.goalFinished(e.getTrigger(), FinishStates.achieved);
+                gl.goalFinished(e.getTrigger(), GoalStates.achieved);
         if (i != null) {
             i.peek().removeCurrentStep();
             ts.applyClrInt(i);
