@@ -8,12 +8,9 @@
 
 !execute_test_plans.
 
-@test_eval[atomic]
-+!test_eval
+@test_current_intention[atomic]
++!test_current_intention
     <-
-    .eval(X1, true | false);
-    !assert_true(X1);
-
-    .eval(X2, 3<5 & not 4+2<3);
-    !assert_true(X2);
+    .current_intention(intention(Id,[im(L,_,_,_)|_]));
+    !assert_true(.substring(test_current_intention,L,0));
 .

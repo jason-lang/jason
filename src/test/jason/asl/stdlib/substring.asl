@@ -1,7 +1,7 @@
 /**
  * Test plans for jason internal actions in stdlib
  *
- * Most of then comes from examples of Jason's documentation
+ * Most of examples come from Jason's documentation
  */
 
 { include("test_assert.asl") }
@@ -20,14 +20,9 @@
     !assert_false(.substring("z","bbacc"));
 
     for (.substring("a","abbacca",X4)) {
-      if ((X4 == 0) | (X4 == 3) | (X4 == 6)) {
-        !assert_true(true);
-      } else {
-        !assert_equals("not expected","0");
-      }
+        !assert_contains([0,3,6],X4);
     }
 
-    .print("TODO: it was expected false");
     !assert_false(.substring("a","bbacc",0));
 
     !assert_true(.substring(a(10),b(t1,a(10)),X));
@@ -41,7 +36,6 @@
     .substring(a(10,20),X8_1,5);
     !assert_equals("20)",X8_1);
 
-    .print("TODO: it was expected true");
     !assert_true(.substring("20)",a(10,20),5,7));
     .substring(a(10,20),X9_1,5,7);
     !assert_equals("20",X9_1);
@@ -55,25 +49,19 @@
     <-
     // Test startswith
     for (.member(S,["test_ss","somess_test_abc","test_j_ss"])) {
-      if (.substring("test",S,0)) {
-        if ((S == "test_ss") | (S == "test_j_ss")) {
-          !assert_true(true);
-        } else {
-          .print("TODO: No fails are extected");
-          !assert_true(false);
+        if (.substring("test",S,0)) {
+            !assert_contains(["test_ss","test_j_ss"],S);
         }
-      }
     }
-    // Test endswith
+    // Test endswith (using force_pass and force_failure as an example)
     for (.member(S,["test_ee","someee_test_abc","test_j_ee"])) {
-      P =  .length(S) - .length("ee");
-      if (.substring("ee",S,P)) {
-        if ((S == "test_ee") | (S == "test_j_ee")) {
-          !assert_true(true);
-        } else {
-          .print("TODO: No fails are extected");
-          !assert_true(false);
+        P =  .length(S) - .length("ee");
+        if (.substring("ee",S,P)) {
+            if ((S == "test_ee") | (S == "test_j_ee")) {
+                !force_pass;
+            } else {
+                !force_failure("expected test_ee or test_j_ee");
+            }
         }
-      }
     }
 .
