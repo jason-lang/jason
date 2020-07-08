@@ -35,7 +35,7 @@
 
 +!test_fail_goal
     <-
-    //!assert_true(failed); // It is expected ^!go has added 'failed' to bb
+    !assert_true(failed); // It is expected ^!go has added 'failed' to bb
     .print("TODO: It is expected ^!go has added 'failed' after fail_goal");
 .
 
