@@ -19,35 +19,39 @@ public class GoalListenerForMetaEvents implements GoalListener {
         this.ts = ts;
     }
 
+    @Override
     public void goalStarted(Event goal) {
         generateGoalStateEvent(goal.getTrigger().getLiteral(), TEType.achieve, GoalStates.started, null);
     }
 
+    @Override
     public void goalFailed(Trigger goal) {
         generateGoalStateEvent(goal.getLiteral(), goal.getType(), GoalStates.failed, null);
     }
 
+    @Override
     public void goalFinished(Trigger goal, GoalStates result) {
         if (result != null)
             generateGoalStateEvent(goal.getLiteral(), goal.getType(), result, null);
         generateGoalStateEvent(goal.getLiteral(), goal.getType(), GoalStates.finished, null);
     }
 
-    public void goalResumed(Trigger goal) {
-        generateGoalStateEvent(goal.getLiteral(), goal.getType(), GoalStates.resumed, null);
+    @Override
+    public void goalResumed(Trigger goal, Term reason) {
+        generateGoalStateEvent(goal.getLiteral(), goal.getType(), GoalStates.resumed, reason);
     }
 
-    public void goalSuspended(Trigger goal, String reason) {
+    @Override
+    public void goalSuspended(Trigger goal, Term reason) {
         generateGoalStateEvent(goal.getLiteral(), goal.getType(), GoalStates.suspended, reason);
     }
 
-    private void generateGoalStateEvent(final Literal goal, final TEType type, final GoalStates state, final String reason) {
+    private void generateGoalStateEvent(final Literal goal, final TEType type, final GoalStates state, final Term reason) {
         ts.runAtBeginOfNextCycle(new Runnable() {
             public void run() {
                 Literal newGoal = goal.forceFullLiteralImpl().copy();
                 Literal stateAnnot = ASSyntax.createLiteral("state", new Atom(state.toString()));
-                Term tReason = (reason == null ? new StringTermImpl("no_reason") : new StringTermImpl(reason) );
-                stateAnnot.addAnnot( ASSyntax.createStructure("reason", tReason));
+                stateAnnot.addAnnot( ASSyntax.createStructure("reason", (reason == null ? new StringTermImpl("") : reason)));
                 newGoal.addAnnot( stateAnnot );
                 Trigger eEnd = new Trigger(TEOperator.goalState, type, newGoal);
                 if (ts.getAg().getPL().hasCandidatePlan(eEnd))

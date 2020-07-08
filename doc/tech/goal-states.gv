@@ -33,7 +33,7 @@ digraph goal_states {
      //rankdir=TB;
      //label = "finished"; fontcolor=lightgrey;
      shape = rectangle; style=dotted; color=lightgrey;
-     node [shape=oval,fillcolor=lightgrey,color=gray,style=filled,fixedsize=shape,width=2,peripheries=2];
+     node [shape=oval,fillcolor=white,color=gray,style=filled,fixedsize=shape,width=2,peripheries=1];
      A [label="achieved"];
      F [label="failed"];
      D [label="dropped"];

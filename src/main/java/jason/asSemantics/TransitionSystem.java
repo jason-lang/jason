@@ -144,16 +144,16 @@ public class TransitionSystem implements Serializable {
                         gl.goalFinished(im.getTrigger(), GoalStates.dropped);
             }
 
-            public void intentionSuspended(Intention i, String reason) {
+            public void intentionSuspended(Intention i, Term reason) {
                 for (IntendedMeans im: i) //.getIMs())
                     if (im.getTrigger().isAddition() && im.getTrigger().isGoal())
                         gl.goalSuspended(im.getTrigger(), reason);
             }
 
-            public void intentionResumed(Intention i) {
+            public void intentionResumed(Intention i, Term reason) {
                 for (IntendedMeans im: i) //.getIMs())
                     if (im.getTrigger().isAddition() && im.getTrigger().isGoal())
-                        gl.goalResumed(im.getTrigger());
+                        gl.goalResumed(im.getTrigger(), reason);
             }
 
             public void eventAdded(Event e) {
@@ -382,7 +382,7 @@ public class TransitionSystem implements Serializable {
         Intention i = getC().removePendingIntention(msgId);
         i.peek().removeCurrentStep(); // removes the .send in the plan body
         if (i.peek().getUnif().unifies(answerVar, answerValue)) {
-            getC().resumeIntention(i);
+            getC().resumeIntention(i, ASSyntax.createStructure("ask_answer", new StringTermImpl(msgId)));
         } else {
             generateGoalDeletion(i, JasonException.createBasicErrorAnnots("ask_failed", "reply of an ask message ('"+answerValue+"') does not unify with fourth argument of .send ('"+answerVar+"')"));
         }
@@ -624,7 +624,7 @@ public class TransitionSystem implements Serializable {
                         if (hasGoalListener())
                             for (GoalListener gl: getGoalListeners())
                                 for (IntendedMeans im: curInt) //.getIMs())
-                                    gl.goalResumed(im.getTrigger());
+                                    gl.goalResumed(im.getTrigger(), ASSyntax.createStructure("action_executed", a.getActionTerm()));
                     } else {
                         String reason = a.getFailureMsg();
                         if (reason == null) reason = "";

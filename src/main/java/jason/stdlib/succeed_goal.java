@@ -14,6 +14,7 @@ import jason.asSemantics.IntendedMeans;
 import jason.asSemantics.Intention;
 import jason.asSemantics.TransitionSystem;
 import jason.asSemantics.Unifier;
+import jason.asSyntax.Atom;
 import jason.asSyntax.Literal;
 import jason.asSyntax.Term;
 import jason.asSyntax.Trigger;
@@ -85,6 +86,8 @@ import jason.asSyntax.Trigger.TEType;
 
 public class succeed_goal extends DefaultInternalAction {
 
+    private static Term resumeReason = new Atom("suceed_internal_action");
+
     @Override public int getMinArgs() {
         return 1;
     }
@@ -135,7 +138,7 @@ public class succeed_goal extends DefaultInternalAction {
             if (r > 0) {
                 C.removeEvent(e);
                 if (r == 1) {
-                    C.resumeIntention(i);
+                    C.resumeIntention(i,resumeReason);
                 }
                 un = bak.clone();
             } else {
@@ -160,7 +163,7 @@ public class succeed_goal extends DefaultInternalAction {
             if (r > 0) {
                 C.removePendingEvent(ek);
                 if (r == 1) {
-                    C.resumeIntention(i);
+                    C.resumeIntention(i,resumeReason);
                 }
                 un = bak.clone();
             } else {
@@ -194,10 +197,10 @@ public class succeed_goal extends DefaultInternalAction {
             Intention i = a.getIntention();
             int r = dropIntention(i, c, ts, un);
             if (r > 0) { // i was changed
-                C.removePendingAction(i.getId());  // remove i from PA
-                if (r == 1) {                      // i must continue running
-                    C.resumeIntention(i);          // and put the intention back in I
-                }                                  // if r > 1, the event was generated and i will be back soon
+                C.removePendingAction(i.getId());       // remove i from PA
+                if (r == 1) {                           // i must continue running
+                    C.resumeIntention(i,resumeReason);  // and put the intention back in I
+                }                                       // if r > 1, the event was generated and i will be back soon
                 un = bak.clone();
             }
         }
@@ -208,7 +211,7 @@ public class succeed_goal extends DefaultInternalAction {
             if (r > 0) {
                 C.removePendingIntention(i.getId());
                 if (r == 1) {
-                    C.resumeIntention(i);
+                    C.resumeIntention(i,resumeReason);
                 }
                 un = bak.clone();
             }

@@ -2,6 +2,7 @@ package jason.asSemantics;
 
 import java.io.Serializable;
 
+import jason.asSyntax.Term;
 import jason.asSyntax.Trigger;
 
 /** call-back interface to be notified about events on goals */
@@ -19,9 +20,9 @@ public interface GoalListener extends Serializable {
     public default void goalFailed(Trigger goal) {};
 
     /** method called when a goal is suspended (waiting action on the environment or due to internal actions like .wait and .suspend) */
-    public default void goalSuspended(Trigger goal, String reason) {};
+    public default void goalSuspended(Trigger goal, Term reason) {};
 
     /** called when a suspended goal is resumed */
-    public default void goalResumed(Trigger goal) {};
+    public default void goalResumed(Trigger goal, Term reason) {};
 
 }
