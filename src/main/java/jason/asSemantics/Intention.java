@@ -29,7 +29,7 @@ import jason.util.Pair;
  */
 public class Intention implements Serializable, Comparable<Intention>, Iterable<IntendedMeans> {
 
-    public enum State { running, waiting_action, pending, suspended, undefined }
+    public enum State { running, pending, suspended, undefined }
 
     private static final long serialVersionUID = 1L;
     public  static final Intention EmptyInt = null;
@@ -145,9 +145,13 @@ public class Intention implements Serializable, Comparable<Intention>, Iterable<
         switch (place) {
         case None: return State.undefined;
 
-        case PendingActions: return State.waiting_action;
+        case PendingActions: return State.pending;
         case PendingEvents: return State.pending;
-        case PendingIntentions: return State.suspended;
+        case PendingIntentions:
+            if (isSuspended())
+                return State.suspended;
+            else
+                return State.pending;
 
         case EventQueue: return State.running;
         case RunningIntentions: return State.running;
