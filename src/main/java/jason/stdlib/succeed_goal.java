@@ -247,10 +247,10 @@ public class succeed_goal extends DefaultInternalAction {
     void dropInEvent(TransitionSystem ts, Event e, Intention i) throws Exception {
         Circumstance C = ts.getC();
         C.removeEvent(e);
+        if (ts.hasGoalListener())
+            for (GoalListener gl: ts.getGoalListeners())
+                gl.goalFinished(e.getTrigger(), FinishStates.achieved);
         if (i != null) {
-            if (ts.hasGoalListener())
-                for (GoalListener gl: ts.getGoalListeners())
-                    gl.goalFinished(e.getTrigger(), FinishStates.achieved);
             i.peek().removeCurrentStep();
             ts.applyClrInt(i);
             C.addRunningIntention(i);

@@ -136,6 +136,10 @@ public class fail_goal extends succeed_goal {
 
     @Override
     void dropInEvent(TransitionSystem ts, Event e, Intention i) throws Exception {
+        if (ts.hasGoalListener())
+            for (GoalListener gl: ts.getGoalListeners())
+                gl.goalFailed(e.getTrigger().clone());
+
         e.getTrigger().setTrigOp(TEOperator.del);
     }
 }
