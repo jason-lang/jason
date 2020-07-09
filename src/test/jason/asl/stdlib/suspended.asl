@@ -24,20 +24,20 @@
     !assert_true(.desire(go(1,3)));
 
     if (.suspended(go(1,3),R0)) {
-        .print("It is suspended!");
+        .log(fine,"It is suspended!");
         !assert_equals("wait",R0);
     } else {
-        .print("TODO: It is expected to be suspended since go(X,Y) is always on .wait!");
+        .log(warning,"TODO: It is expected to be suspended since go(X,Y) is always on .wait!");
     }
 
     .suspend(go(1,3));
     if (.suspended(go(1,3),R1)) {
-        .print("It is suspended!");
+        .log(fine,"It is suspended!");
         !assert_equals("wait",R1);
     } else {
-        .print("TODO: It is expected to be suspended after .suspend!");
+        .log(warning,"TODO: It is expected to be suspended after .suspend!");
     }
 
     //.suspended(go(1,3),R2); // <<< Causing unexpected failure!
-    .print("TODO: Calling .suspended outside of a test structure should not cause error");
+    .log(warning,"TODO: Calling .suspended outside of a test structure should not cause error");
 .
