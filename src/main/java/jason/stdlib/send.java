@@ -212,7 +212,7 @@ public class send extends DefaultInternalAction {
                             }
                             intention.peek().getUnif().unifies(send.getTerm(3), timeoutAns);
                             // add the intention back in C.I
-                            ts.getC().resumeIntention(intention);
+                            ts.getC().resumeIntention(intention, new Atom("send_ask_msg_timeout"));
                             ts.getAgArch().wakeUpAct();
                         }
                     }

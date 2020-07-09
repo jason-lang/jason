@@ -15,7 +15,10 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import jason.asSyntax.ASSyntax;
+import jason.asSyntax.Atom;
 import jason.asSyntax.Literal;
+import jason.asSyntax.Term;
 import jason.asSyntax.Trigger;
 import jason.asSyntax.Trigger.TEOperator;
 import jason.asSyntax.Trigger.TEType;
@@ -327,13 +330,13 @@ public class Circumstance implements Serializable {
     }
 
     /** add the intention back to I, and also notify meta listeners that the goals are resumed  */
-    public void resumeIntention(Intention intention) {
+    public void resumeIntention(Intention intention, Term reason) {
         addRunningIntention(intention);
 
         // notify meta event listeners
         if (listeners != null)
             for (CircumstanceListener el : listeners)
-                el.intentionResumed(intention);
+                el.intentionResumed(intention, reason);
     }
 
     /** remove intention from set I */
@@ -415,6 +418,10 @@ public class Circumstance implements Serializable {
     }
 
     public void addPendingIntention(String id, Intention i) {
+        addPendingIntention(id, new Atom(id), i);
+    }
+
+    public void addPendingIntention(String id, Term reason, Intention i) {
         if (i.isAtomic()) {
             setAtomicIntention(i);
             atomicIntSuspended = true;
@@ -424,7 +431,7 @@ public class Circumstance implements Serializable {
 
         if (listeners != null)
             for (CircumstanceListener el : listeners)
-                el.intentionSuspended(i, id);
+                el.intentionSuspended(i, reason);
     }
 
     public Intention removePendingIntention(String pendingId) {
@@ -487,7 +494,7 @@ public class Circumstance implements Serializable {
 
         if (listeners != null && e.getIntention() != null)
             for (CircumstanceListener el : listeners)
-                el.intentionSuspended(e.getIntention(), id);
+                el.intentionSuspended(e.getIntention(), new Atom(id));
     }
 
     public Event removePendingEvent(String pendingId) {
@@ -597,7 +604,7 @@ public class Circumstance implements Serializable {
 
         if (listeners != null)
             for (CircumstanceListener el : listeners)
-                el.intentionSuspended(i, "action "+a.getActionTerm());
+                el.intentionSuspended(i, ASSyntax.createStructure("action", a.getActionTerm()));
     }
 
     public void clearPendingActions() {

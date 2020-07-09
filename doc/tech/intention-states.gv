@@ -1,0 +1,24 @@
+// dot intention-states.gv -Tpdf -o intention-states.pdf
+
+digraph intention_states {
+   compound=true;
+
+   ENTRY[shape=point,color=black,label=""];
+   EXIT[shape=point,color=black,label=""];
+
+     node [shape=oval,style=filled,color=gray, fillcolor="lightgoldenrod", fixedsize=shape,width=2];
+     R [label=<<b>running</b><br/><font point-size="8">(I,E,SE,SI)</font>>];
+     S [label=<<b>suspended</b><br/><font point-size="8">(PI)</font>>];
+  	 P [label=<<b>pending</b><br/><font point-size="8">(PI,PE,PA)</font>>];
+
+     R->S[arrowsize=0.5];
+     S->R;
+
+     R->P; //[label=<<i>^resumed</i>>,fontsize="8",arrowsize=0.5];
+     P->R;
+
+
+	 ENTRY->R[arrowsize=0.5];
+   {R,S,P} -> EXIT [arrowsize=0.5];
+
+}

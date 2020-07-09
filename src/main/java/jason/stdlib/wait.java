@@ -16,7 +16,9 @@ import jason.asSemantics.Event;
 import jason.asSemantics.Intention;
 import jason.asSemantics.TransitionSystem;
 import jason.asSemantics.Unifier;
+import jason.asSyntax.ASSyntax;
 import jason.asSyntax.InternalActionLiteral;
+import jason.asSyntax.Literal;
 import jason.asSyntax.LogicalFormula;
 import jason.asSyntax.NumberTerm;
 import jason.asSyntax.NumberTermImpl;
@@ -149,7 +151,8 @@ public class wait extends DefaultInternalAction {
     class WaitEvent implements CircumstanceListener, Serializable {
         private Trigger          te;
         private LogicalFormula   formula;
-        private String           sEvt; // a string version of what is being waited
+        private Literal          pendingReason;
+        private String           tEvt; // a string version of what is being waited
         private Unifier          un;
         private Intention        si;
         private TransitionSystem ts;
@@ -172,15 +175,16 @@ public class wait extends DefaultInternalAction {
             // register listener
             c.addEventListener(this);
 
+            pendingReason = ASSyntax.createLiteral("wait", ASSyntax.createNumber(si.getId()));
             if (te != null) {
-                sEvt = te.toString();
+                pendingReason.addAnnot(te.getLiteral());
             } else if (formula != null) {
-                sEvt = formula.toString();
+                pendingReason.addAnnot(formula);
             } else {
-                sEvt = "time"+(timeout);
+                pendingReason.addAnnot(ASSyntax.createStructure("time", ASSyntax.createNumber(timeout)));
             }
-            sEvt = si.getId()+"/"+sEvt;
-            c.addPendingIntention(sEvt, si);
+            tEvt = pendingReason.toString();
+            c.addPendingIntention(tEvt, pendingReason, si);
 
             startTime = System.currentTimeMillis();
 
@@ -216,7 +220,7 @@ public class wait extends DefaultInternalAction {
             ts.runAtBeginOfNextCycle((Runnable & Serializable) () -> {
                     try {
                         // add SI again in C.I if (1) it was not removed (2) is is not running (by some other reason) -- but this test does not apply to atomic intentions --, and (3) this wait was not dropped
-                        if (c.removePendingIntention(sEvt) == si && (si.isAtomic() || !c.hasRunningIntention(si)) && !dropped) {
+                        if (c.removePendingIntention(tEvt) == si && (si.isAtomic() || !c.hasRunningIntention(si)) && !dropped) {
                             if (stopByTimeout && (te != null || formula != null) && elapsedTimeTerm == null) {
                                 // fail the .wait by timeout
                                 if (si.isSuspended()) { // if the intention was suspended by .suspend
@@ -236,7 +240,7 @@ public class wait extends DefaultInternalAction {
                                 if (si.isSuspended()) { // if the intention was suspended by .suspend
                                     c.addPendingIntention(suspend.SUSPENDED_INT+si.getId(), si);
                                 } else {
-                                    c.resumeIntention(si);
+                                    c.resumeIntention(si, pendingReason);
                                 }
                             }
                         }
@@ -265,7 +269,7 @@ public class wait extends DefaultInternalAction {
         }
 
         public String toString() {
-            return sEvt;
+            return tEvt;
         }
     }
 }

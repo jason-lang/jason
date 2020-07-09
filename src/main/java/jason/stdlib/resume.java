@@ -1,5 +1,7 @@
 package jason.stdlib;
 
+import java.util.Iterator;
+
 import jason.JasonException;
 import jason.asSemantics.Circumstance;
 import jason.asSemantics.CircumstanceListener;
@@ -8,13 +10,12 @@ import jason.asSemantics.Event;
 import jason.asSemantics.Intention;
 import jason.asSemantics.TransitionSystem;
 import jason.asSemantics.Unifier;
+import jason.asSyntax.Atom;
 import jason.asSyntax.Literal;
 import jason.asSyntax.Term;
 import jason.asSyntax.Trigger;
 import jason.asSyntax.Trigger.TEOperator;
 import jason.asSyntax.Trigger.TEType;
-
-import java.util.Iterator;
 
 /**
   <p>Internal action:
@@ -75,6 +76,8 @@ import java.util.Iterator;
 @SuppressWarnings("serial")
 public class resume extends DefaultInternalAction {
 
+    private static Term resumeReason = new Atom("resume_internal_action");
+
     @Override public int getMinArgs() {
         return 1;
     }
@@ -108,7 +111,7 @@ public class resume extends DefaultInternalAction {
 
                     // add it back in I if not in PA
                     if (! C.getPendingActions().containsKey(i.getId())) {
-                        C.resumeIntention(i);
+                        C.resumeIntention(i, resumeReason);
                         notify = false; // the resumeIntention already notifies
                     }
                 }
@@ -116,7 +119,7 @@ public class resume extends DefaultInternalAction {
                 // notify meta event listeners
                 if (notify && C.getListeners() != null)
                     for (CircumstanceListener el : C.getListeners())
-                        el.intentionResumed(i);
+                        el.intentionResumed(i, resumeReason);
 
                 // remove the IA .suspend in case of self-suspend
                 if (k.startsWith(suspend.SELF_SUSPENDED_INT))

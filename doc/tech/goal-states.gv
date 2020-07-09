@@ -1,0 +1,64 @@
+// dot goal-states.gv -Tpdf -o goal-states.pdf
+
+digraph goal_states {
+   node [color=gray];
+
+   compound=true;
+
+   ENTRY[shape=point,color=black,label=""];
+   EXIT[shape=point,color=black,label=""];
+
+   subgraph cluster1 {
+     shape = rectangle; style=dotted; color=lightgrey;
+     node [shape=oval,style=filled,color=gray, fillcolor="lightgoldenrod", fixedsize=shape,width=2];
+     C [label="started"];
+
+     S [label="suspended"];
+
+     node [shape=rectangle,style="filled",fillcolor="lightgoldenrod",fixedsize=shape,width=2];
+  	 E [label="executing"];
+  	 P [label="pending"];
+
+     C->E[label=< has applicable plan<br/><i>^started</i> >,fontsize="8",arrowsize=0.5];
+
+     E->S[label=<.suspend<br/><i>^suspended</i>>,fontsize="8",arrowsize=0.5];
+     S->E[label=<  .resume<br/>   <i>^resumed</i>>,fontsize="8",arrowsize=0.5];
+
+     E->P[label=<act <br/> .wait<br/><i>^suspended</i>>,fontsize="8",arrowsize=0.5];
+     P->E[label=<<i>^resumed</i>>,fontsize="8",arrowsize=0.5];
+
+   }
+
+   subgraph cluster2 {
+     //rankdir=TB;
+     //label = "finished"; fontcolor=lightgrey;
+     shape = rectangle; style=dotted; color=lightgrey;
+     node [shape=oval,fillcolor=white,color=gray,style=filled,fixedsize=shape,width=2,peripheries=1];
+     A [label="achieved"];
+     F [label="failed"];
+     D [label="dropped"];
+   }
+
+	 ENTRY->C[label=" event +!",fontsize="8",arrowsize=0.5];
+
+   C->F[label=<no plan<br/><i>^failed</i>>,fontsize="8",arrowsize=0.5];
+
+   E->A[label=<plan finished<br/><i>^achieved</i>>,fontsize="8",arrowsize=0.5];
+   E->D[label=<.drop_intention <br/> .drop_desire<br/><i>^dropped</i>>,fontsize="8",arrowsize=0.5,ltail=cluster1];
+
+   E -> F [label=<.fail_goal <br/> <i>^failed</i>>,fontsize="8",arrowsize=0.5,ltail=cluster1];
+   E -> A [label=<.succeed_goal <br/><i>^achieved</i>>,fontsize="8",arrowsize=0.5,ltail=cluster1];
+
+   F -> E [label=<contingence plan>,fontsize="8",arrowsize=0.5];
+
+   {A,F,D} -> EXIT [label=<<i>  ^finished</i>>,fontsize="8",arrowsize=0.5];
+
+   subgraph cluster0 {
+      label = "key";
+      rankdir=LR; shape = rectangle; style=dotted;
+      key4 [label=< <i>^meta event</i> >, shape=plaintext,fontsize="10",];
+      key2 [label=".desire\n.intend",shape=rectangle,style=filled,fontsize="10", fillcolor=lightgoldenrod,fixedsize=shape,width=1];
+      key1 [label=".desire",   shape=oval,     style=filled,fontsize="10", fillcolor=lightgoldenrod,fixedsize=shape,width=1];
+      //key3 [label="finished", shape=oval,     style=filled,fontsize="10", fillcolor=lightgrey,fixedsize=shape,width=1];
+   }
+}
