@@ -28,14 +28,14 @@
     .resume(go(1,3));
     !assert_true(.desire(go(1,3)));
 
-    .print("TODO: It is expected to keep the desire even when suspended");
+    .log(warning,"TODO: It is expected to keep the desire even when suspended");
     !!test_resume_goal;
 .
 
 +!test_resume_goal
     <-
     //!assert_true(resumed); // It is expected ^!go has added 'resumed' to bb
-    .print("TODO: It is expected ^!go has added 'resumed' to bb");
+    .log(warning,"TODO: It is expected ^!go has added 'resumed' to bb");
 .
 
 ^!go(X,Y)[state(S)]

@@ -31,7 +31,7 @@
     // It is expected to have 3 intentions
     .findall(i(I1,D1),.intention(I1,D1),L1);
     .length(L1,LL1);
-    //.print("Intentions (id,state): ",L1);
+    .log(fine,"Intentions (id,state): ",L1);
     !assert_equals(3,LL1);
 
     // It is expected to have 1 running and two suspended

@@ -15,11 +15,11 @@
     not .list(X) & not .list(Y)
     <-
     if (X \== Y) {
-        .print("Intention ",ID," FAILED! Assert equals expected ",X," but had ",Y);
+        .log(severe,"Intention ",ID," FAILED! Assert equals expected ",X," but had ",Y);
         .fail;
     } else {
         .send(test_manager,achieve,count_tests(passed));
-        if (verbose) { .print("Intention ",ID," PASSED"); }
+        .log(fine,"Intention ",ID," PASSED");
     }
 .
 +!assert_equals(X,Y) :
@@ -28,18 +28,18 @@
     <-
     for (.member(Xth,X)) {
         if (not .member(Xth,Y)) {
-            .print("Intention ",ID," FAILED! Assert equals expected ",X," but had ",Y);
+            .log(severe,"Intention ",ID," FAILED! Assert equals expected ",X," but had ",Y);
             .fail;
         }
     }
     for (.member(Yth,Y)) {
         if (not .member(Yth,X)) {
-            .print("Intention ",ID," FAILED! Assert equals expected ",X," but had ",Y);
+            .log(severe,"Intention ",ID," FAILED! Assert equals expected ",X," but had ",Y);
             .fail;
         }
     }
     .send(test_manager,achieve,count_tests(passed));
-    if (verbose) { .print("Intention ",ID," PASSED"); }
+    .log(fine,"Intention ",ID," PASSED");
 .
 -!assert_equals(X,Y) :
     true
@@ -57,11 +57,11 @@
     I = intention(ID,_)
     <-
     if (not (Y >= X-T & Y <= X+T)) {
-        .print("Intention ",ID," FAILED! Assert equals expected ",X,"+/-",T,", but had ",Y);
+        .log(severe,"Intention ",ID," FAILED! Assert equals expected ",X,"+/-",T,", but had ",Y);
         .fail;
     } else {
         .send(test_manager,achieve,count_tests(passed));
-        if (verbose) { .print("Intention ",ID," PASSED"); }
+        .log(fine,"Intention ",ID," PASSED");
     }
 .
 -!assert_equals(X,Y,T) :
@@ -79,11 +79,11 @@
     I = intention(ID,_)
     <-
     if (not X) {
-        .print("Intention ",ID," FAILED! Assert true expected ",X);
+        .log(severe,"Intention ",ID," FAILED! Assert true expected ",X);
         .fail;
     } else {
         .send(test_manager,achieve,count_tests(passed));
-        if (verbose) { .print("Intention ",ID," PASSED"); }
+        .log(fine,"Intention ",ID," PASSED");
     }
 .
 -!assert_true(X) :
@@ -101,11 +101,11 @@
     I = intention(ID,_)
     <-
     if (X) {
-        .print("Intention ",ID," FAILED! Assert false expected not ",X);
+        .log(severe,"Intention ",ID," FAILED! Assert false expected not ",X);
         .fail;
     } else {
         .send(test_manager,achieve,count_tests(passed));
-        if (verbose) { .print("Intention ",ID," PASSED"); }
+        .log(fine,"Intention ",ID," PASSED");
     }
 .
 -!assert_false(X) :
@@ -123,7 +123,7 @@
     I = intention(ID,_)
     <-
     .send(test_manager,achieve,count_tests(passed));
-    if (verbose) { .print("Intention ",ID," PASSED"); }
+    .log(fine,"Intention ",ID," PASSED");
 .
 -!force_pass : // Only pass if not applicable
     true
@@ -139,7 +139,7 @@
     .current_intention(I) &
     I = intention(ID,_)
     <-
-    .print("Intention ",ID," forcedly FAILED! Msg: ",MSG);
+    .log(severe,"Intention ",ID," forcedly FAILED! Msg: ",MSG);
     .fail;
 .
 -!force_failure(MSG) : // Only failure if not applicable
@@ -157,11 +157,11 @@
     I = intention(ID,_)
     <-
     if (not .member(Y,X)) {
-        .print("Intention ",ID," FAILED! Assert equals expected ",X," but had ",Y);
+        .log(severe,"Intention ",ID," FAILED! Assert equals expected ",X," but had ",Y);
         .fail;
     }
     .send(test_manager,achieve,count_tests(passed));
-    if (verbose) { .print("Intention ",ID," PASSED"); }
+    .log(fine,"Intention ",ID," PASSED");
 .
 -!assert_contains(X,Y) :
     true
