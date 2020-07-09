@@ -556,7 +556,11 @@ task testJason (type: Test) {
         try {
             javaexec {
                 main = 'jason.infra.centralised.RunCentralisedMAS'
-                args = ['src/test/jason/unit_tests.mas2j', '--log-conf', 'src/main/resources/templates/console-logging.properties']
+                if (gradle.startParameter.logLevel.toString().equals("INFO")) {
+                    args = ['src/test/jason/unit_tests.mas2j', '--log-conf', 'src/main/resources/templates/console-info-logging.properties']
+                } else {
+                    args = ['src/test/jason/unit_tests.mas2j', '--log-conf', 'src/main/resources/templates/console-logging.properties']
+                }
                 classpath sourceSets.main.runtimeClasspath
                 sourceSets.test.java.srcDirs += ['src/test/jason/jia']
 
