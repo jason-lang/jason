@@ -19,7 +19,7 @@
         .fail;
     } else {
         .send(test_manager,achieve,count_tests(passed));
-        .log(fine,"Intention ",ID," PASSED");
+        .log(info,"Intention ",ID," PASSED");
     }
 .
 +!assert_equals(X,Y) :
@@ -39,7 +39,7 @@
         }
     }
     .send(test_manager,achieve,count_tests(passed));
-    .log(fine,"Intention ",ID," PASSED");
+    .log(info,"Intention ",ID," PASSED");
 .
 -!assert_equals(X,Y) :
     true
@@ -61,7 +61,7 @@
         .fail;
     } else {
         .send(test_manager,achieve,count_tests(passed));
-        .log(fine,"Intention ",ID," PASSED");
+        .log(info,"Intention ",ID," PASSED");
     }
 .
 -!assert_equals(X,Y,T) :
@@ -83,7 +83,7 @@
         .fail;
     } else {
         .send(test_manager,achieve,count_tests(passed));
-        .log(fine,"Intention ",ID," PASSED");
+        .log(info,"Intention ",ID," PASSED");
     }
 .
 -!assert_true(X) :
@@ -105,7 +105,7 @@
         .fail;
     } else {
         .send(test_manager,achieve,count_tests(passed));
-        .log(fine,"Intention ",ID," PASSED");
+        .log(info,"Intention ",ID," PASSED");
     }
 .
 -!assert_false(X) :
@@ -123,7 +123,7 @@
     I = intention(ID,_)
     <-
     .send(test_manager,achieve,count_tests(passed));
-    .log(fine,"Intention ",ID," PASSED");
+    .log(info,"Intention ",ID," PASSED");
 .
 -!force_pass : // Only pass if not applicable
     true
@@ -161,7 +161,7 @@
         .fail;
     }
     .send(test_manager,achieve,count_tests(passed));
-    .log(fine,"Intention ",ID," PASSED");
+    .log(info,"Intention ",ID," PASSED");
 .
 -!assert_contains(X,Y) :
     true

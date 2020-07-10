@@ -556,10 +556,12 @@ task testJason (type: Test) {
         try {
             javaexec {
                 main = 'jason.infra.centralised.RunCentralisedMAS'
-                if (gradle.startParameter.logLevel.toString().equals("INFO")) {
+                if (gradle.startParameter.logLevel.toString().equals("DEBUG")) {
+                    args = ['src/test/jason/unit_tests.mas2j', '--log-conf', 'src/main/resources/templates/console-debug-logging.properties']
+                } else if (gradle.startParameter.logLevel.toString().equals("INFO")) {
                     args = ['src/test/jason/unit_tests.mas2j', '--log-conf', 'src/main/resources/templates/console-info-logging.properties']
                 } else {
-                    args = ['src/test/jason/unit_tests.mas2j', '--log-conf', 'src/main/resources/templates/console-logging.properties']
+                    args = ['src/test/jason/unit_tests.mas2j', '--log-conf', 'src/main/resources/templates/console-lifecycle-logging.properties']
                 }
                 classpath sourceSets.main.runtimeClasspath
                 sourceSets.test.java.srcDirs += ['src/test/jason/jia']
@@ -588,9 +590,9 @@ task testJason (type: Test) {
         std.splitEachLine('\n') { String line ->
             line = line.replace("TESTING","${styler['yellow']('TESTING')}")
             line = line.replace("PASSED","${styler['green']('PASSED')}")
-            line = line.replace("FAILED!","${styler['red']('FAILED!')}")
-            line = line.replace("TODO:","${styler['magenta']('TODO:')}")
-            line = line.replace("LAUNCHING:","${styler['blue']('LAUNCHING:')}")
+            line = line.replace("FAILED","${styler['red']('FAILED')}")
+            line = line.replace("TODO","${styler['magenta']('TODO')}")
+            line = line.replace("LAUNCHING","${styler['blue']('LAUNCHING')}")
             println line
         }
 
@@ -598,9 +600,9 @@ task testJason (type: Test) {
         err.splitEachLine('\n') { String line ->
             line = line.replace("TESTING","${styler['yellow']('TESTING')}")
             line = line.replace("PASSED","${styler['green']('PASSED')}")
-            line = line.replace("FAILED!","${styler['red']('FAILED!')}")
-            line = line.replace("TODO:","${styler['magenta']('TODO:')}")
-            line = line.replace("LAUNCHING:","${styler['blue']('LAUNCHING:')}")
+            line = line.replace("FAILED","${styler['red']('FAILED')}")
+            line = line.replace("TODO","${styler['magenta']('TODO')}")
+            line = line.replace("LAUNCHING","${styler['blue']('LAUNCHING')}")
             println line
         }
 
@@ -609,4 +611,4 @@ task testJason (type: Test) {
         }
     }
 }
-tasks.test.dependsOn(testJason)
+tasks.test.finalizedBy testJason
