@@ -8,8 +8,8 @@
 
 !execute_test_plans.
 
-@test_launch_succeed_goal[atomic]
-+!test_launch_succeed_goal
+@test_launch_resume[atomic]
++!test_launch_resume
     <-
     /**
      * Add a mock plan for go(X,Y)
@@ -23,14 +23,19 @@
     !!go(1,3);
     !assert_true(.desire(go(1,3)));
 
-    .succeed_goal(go(1,3));
-    !assert_false(.desire(go(1,3)));
-    !!test_succeed_goal;
+    .suspend(go(1,3));
+
+    .resume(go(1,3));
+    !assert_true(.desire(go(1,3)));
+
+    .log(warning,"TODO: It is expected to keep the desire even when suspended");
+    !!test_resume_goal;
 .
 
-+!test_succeed_goal
++!test_resume_goal
     <-
-    !assert_true(finished); // It is expected ^!go has added "finished" to bb
+    //!assert_true(resumed); // It is expected ^!go has added 'resumed' to bb
+    .log(warning,"TODO: It is expected ^!go has added 'resumed' to bb");
 .
 
 ^!go(X,Y)[state(S)]

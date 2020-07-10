@@ -9,7 +9,6 @@ tests_passed(0).
 /**
  * Configurations
  */
-verbose.                // enable to see full log debug
 auto_create_fail_plan.  // create a -!test fail plan for each desire starting with "test"
 shutdown_hook.          // enable to shutdown after finishing tests
 
@@ -60,7 +59,7 @@ shutdown_hook.          // enable to shutdown after finishing tests
     <-
     .current_intention(I);
     I = intention(Id,IStack);
-    if (verbose) { .print("TESTING ",Id," (main plan: ",P,")"); }
+    .log(info,"TESTING ",Id," (main plan: ",P,")");
     !P;
 .
 
@@ -71,8 +70,8 @@ shutdown_hook.          // enable to shutdown after finishing tests
 +!set_controller :
     .my_name(test_manager)
     <-
-    .print("\n\n");
-    .print("Starting Jason unit tests...\n\n");
+    .log(info,"\n\n");
+    .log(info,"Starting Jason unit tests...\n\n");
 
     .at("now +2 s", {+!shutdown_after_tests});
 .
@@ -89,9 +88,9 @@ shutdown_hook.          // enable to shutdown after finishing tests
      tests_failed(F) &
      tests_passed(P)
      <-
-     .print("\n\n");
-     .print("#",N," plans executed, #",P," passed and #",F," failed.");
-     .print("End of Jason unit tests: FAILED!\n\n");
+     .log(severe,"\n\n");
+     .log(severe,"#",N," plans executed, #",P," passed and #",F," FAILED.");
+     .log(severe,"End of Jason unit tests: FAILED!\n\n");
      .exit_error;
  .
 @shutdown_after_success[atomic]
@@ -102,9 +101,9 @@ shutdown_hook.          // enable to shutdown after finishing tests
     tests_failed(F) &
     tests_passed(P)
     <-
-    .print("\n\n");
-    .print("#",N," plans executed, #",P," passed and #",F," failed.");
-    .print("End of Jason unit tests: PASSED\n\n");
+    .log(info,"\n\n");
+    .log(info,"#",N," plans executed, #",P," PASSED and #",F," failed.");
+    .log(info,"End of Jason unit tests: PASSED\n\n");
     .stopMAS;
 .
 +!shutdown_after_tests. // If auto shutdown is disabled
@@ -126,7 +125,7 @@ shutdown_hook.          // enable to shutdown after finishing tests
         ?lastSlash(R0);
         .length(M,L);
         .substring(M,AGENT,R0+1,L-4);
-        .print("LAUNCHING: ",AGENT," (",M,")");
+        .log(fine,"LAUNCHING: ",AGENT," (",M,")");
         .create_agent(AGENT,M);
       }
     }

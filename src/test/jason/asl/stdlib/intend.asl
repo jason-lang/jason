@@ -25,8 +25,8 @@
 
     // Print intentions
     .findall(D,.intend(D),L);
-    //.print("Intentions: ",L);
+    .log(fine,"Intentions: ",L);
 
     // There is an open issue regarding .intend
-    .print("TODO: see issue #44 https://github.com/jason-lang/jason/issues/44");
+    .log(warning,"TODO: see issue #44 https://github.com/jason-lang/jason/issues/44");
 .
