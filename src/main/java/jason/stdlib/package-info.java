@@ -28,13 +28,14 @@ Internal actions of Jason.
 
 <h2>Belief base</h2>
 <ul>
-  <li>{@link jason.stdlib.abolish abolish}: remove some beliefs.</li>
-  <li>{@link jason.stdlib.findall findall}: find a list of beliefs of some kind.</li>
-  <li>{@link jason.stdlib.setof setof}: find a set of beliefs of some kind.</li>
-  <li>{@link jason.stdlib.count count}: count the number of beliefs of some kind.</li>
+  <li>{@link jason.stdlib.abolish abolish}: removes some beliefs.</li>
+  <li>{@link jason.stdlib.belief belief}: consults some beliefs.</li>
+  <li>{@link jason.stdlib.findall findall}: finds all answers for a query.</li>
+  <li>{@link jason.stdlib.setof setof}: finds a set of answers for a query.</li>
+  <li>{@link jason.stdlib.count count}: counts the number of solutions of some query.</li>
   <li>{@link jason.stdlib.namespace namespace}: checks whether an argument is a name space.</li>
-  <li>{@link jason.stdlib.relevant_rules relevant_rules}: get a list of rules.</li>
-  <li>{@link jason.stdlib.list_rules list_rules}: print out the rules in the current belief base.</li>
+  <li>{@link jason.stdlib.relevant_rules relevant_rules}: gets a list of rules.</li>
+  <li>{@link jason.stdlib.list_rules list_rules}: prints out the rules in the current belief base.</li>
 </ul>
 
 

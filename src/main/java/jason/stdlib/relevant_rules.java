@@ -70,21 +70,23 @@ public class relevant_rules extends DefaultInternalAction {
             ListTerm result = new ListTermImpl();
             synchronized (ts.getAg().getBB().getLock()) {
                 Iterator<Literal> i = ts.getAg().getBB().getCandidateBeliefs(pattern, un);
-                while (i.hasNext()) {
-                    Literal l = i.next();
-                    if (l.isRule()) {
-                        if (un.clone().unifies(pattern, l)) {
-                            l = l.copy();
-                            l.delSources();
-                            ((Rule)l).setAsTerm(true);
-                            result.add(l);
+                if (i != null) {
+                    while (i.hasNext()) {
+                        Literal l = i.next();
+                        if (l.isRule()) {
+                            if (un.clone().unifies(pattern, l)) {
+                                l = l.copy();
+                                l.delSources();
+                                ((Rule)l).setAsTerm(true);
+                                result.add(l);
+                            }
                         }
                     }
                 }
             }
             return un.unifies(args[1],result);
         } catch (Exception e) {
-            ts.getLogger().warning("Error in internal action 'get_rules'! "+e);
+            ts.getLogger().warning("Error in internal action 'relevant_rules'! "+e);
         }
         return false;
     }

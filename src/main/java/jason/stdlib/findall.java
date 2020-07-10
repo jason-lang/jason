@@ -14,12 +14,11 @@ import java.util.Iterator;
 
 /**
 
-  <p>Internal action: <b><code>.findall(Var,Literal,List)</code></b>.
+  <p>Internal action: <b><code>.findall(Term,Query,List)</code></b>.
 
   <p>Description: builds a <i>List</i> of all instantiations of
-  <i>term</i> which make <i>query</i> a logical consequence of the
-  agent's BB. Unlike in Prolog, the second argument cannot be a
-  conjunction.
+  <i>Term</i> which make <i>Query</i> a logical consequence of the
+  agent's BB.
 
   <p>Parameters:<ul>
 
