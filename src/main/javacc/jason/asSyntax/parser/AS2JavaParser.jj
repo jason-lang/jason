@@ -185,7 +185,7 @@ TOKEN : {
 // Identifiers
 |  <ATOM      : (<LC_LETTER> | "." <CHAR>) (<CHAR> | "." <CHAR>)*
                 | ("'" (~["'"])* "'" ) >
-                { if (image.charAt(0) == '\'') matchedToken.image = image.substring(1, lengthOfMatch-1); }
+                //{ if (image.charAt(0) == '\'') matchedToken.image = image.substring(1, lengthOfMatch-1); }
 |  <UNNAMEDVARID: ("_" (<DIGIT>)+ (<CHAR>)*) >
 |  <UNNAMEDVAR: ("_" (<CHAR>)*) >
 |  <CHAR      : (<LETTER> | <DIGIT> | "_")>
@@ -732,20 +732,24 @@ Literal literal() :
                                     NS = Literal.DefaultNS;
                                 NS = nsDirective.map(NS);
 
-                                if (F.getFunctor().indexOf(".") >= 0) {
-                                   if (F.hasAnnot())
-                                      throw new ParseException(getSourceRef(F)+" Internal actions cannot have annotations.");
-                                   if (type == Literal.LNeg)
-                                      throw new ParseException(getSourceRef(F)+" Internal actions cannot be negated.");
-                                   try {
-                                      if (F.getFunctor().equals(".include")) // .include needs a namespace (see its code)
-                                         return new InternalActionLiteral(NS, F, curAg);
-                                      else
-                                         return new InternalActionLiteral(F, curAg);
-                                   } catch (Exception e) {
-                                      if (getArithFunction(F) == null) // it is not a registered function
-                                         logger.warning(getSourceRef(F)+" warning: The internal action class for '"+F+"' was not loaded! Error: "+e);
-                                   }
+                                if (F.getFunctor().charAt(0) == '\'') {
+                                    F = (Pred)F.newFunctor(F.getFunctor().substring(1, F.getFunctor().length()-1));
+                                } else {
+	                                if (F.getFunctor().indexOf(".") >= 0) {
+	                                   if (F.hasAnnot())
+	                                      throw new ParseException(getSourceRef(F)+" Internal actions cannot have annotations.");
+	                                   if (type == Literal.LNeg)
+	                                      throw new ParseException(getSourceRef(F)+" Internal actions cannot be negated.");
+	                                   try {
+	                                      if (F.getFunctor().equals(".include")) // .include needs a namespace (see its code)
+	                                         return new InternalActionLiteral(NS, F, curAg);
+	                                      else
+	                                         return new InternalActionLiteral(F, curAg);
+	                                   } catch (Exception e) {
+	                                      if (getArithFunction(F) == null) // it is not a registered function
+	                                         logger.warning(getSourceRef(F)+" warning: The internal action class for '"+F+"' was not loaded! Error: "+e);
+	                                   }
+	                                }
                                 }
 
                                 return new LiteralImpl(NS, type, F);

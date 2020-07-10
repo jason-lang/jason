@@ -74,6 +74,17 @@ public abstract class Literal extends DefaultTerm implements LogicalFormula {
     /** returns the functor of this literal */
     public abstract String getFunctor();
 
+
+    public Literal newFunctor(String f) {
+        Literal l = new LiteralImpl(this.getNS(), !this.negated(), f);
+        if (hasTerm())
+            l.addTerms(this.getTerms());
+        if (hasAnnot())
+            l.addAnnots(this.getAnnots());
+        return l;
+    }
+
+
     /** returns the name spaceof this literal */
     public abstract Atom getNS();
 
@@ -596,16 +607,19 @@ public abstract class Literal extends DefaultTerm implements LogicalFormula {
                 ns = (Atom)i.next();
 
             Term tfunctor = i.next();
-
             boolean pos = Literal.LPos;
             if (tfunctor.isLiteral() && ((Literal)tfunctor).negated()) {
                 pos = Literal.LNeg;
             }
+
+            String sfunctor;
             if (tfunctor.isString()) {
-                tfunctor = ASSyntax.parseTerm( ((StringTerm)tfunctor).getString() );
+                sfunctor = ((StringTerm)tfunctor).getString();
+            } else {
+            	sfunctor = ((Atom)tfunctor).getFunctor();
             }
 
-            Literal l = new LiteralImpl(ns, pos,((Atom)tfunctor).getFunctor());
+            Literal l = new LiteralImpl(ns, pos, sfunctor);
 
             if (i.hasNext()) {
                 l.setTerms(((ListTerm)i.next()).cloneLT());
@@ -615,7 +629,7 @@ public abstract class Literal extends DefaultTerm implements LogicalFormula {
             }
             return l;
         } catch (Exception e) {
-            throw new JasonException("Error creating literal from "+lt);
+            throw new JasonException("Error creating literal from "+lt+". "+e.getMessage());
         }
     }
 
@@ -634,7 +648,7 @@ public abstract class Literal extends DefaultTerm implements LogicalFormula {
     	StringBuilder json = new StringBuilder(identation+"{\n");
     	json.append(identation+"   \"functor\" : \""+ getFunctor() + "\"");
     	if (negated()) {
-        	json.append(identation+",\n   \"negated\" : true");    		
+        	json.append(identation+",\n   \"negated\" : true");
     	}
     	if (hasTerm()) {
 	    	json.append(",\n"+identation+"   \"terms\"   : [\n");

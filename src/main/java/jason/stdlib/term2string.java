@@ -7,9 +7,11 @@ import jason.asSemantics.InternalAction;
 import jason.asSemantics.TransitionSystem;
 import jason.asSemantics.Unifier;
 import jason.asSyntax.ASSyntax;
+import jason.asSyntax.Atom;
 import jason.asSyntax.StringTerm;
 import jason.asSyntax.StringTermImpl;
 import jason.asSyntax.Term;
+import jason.asSyntax.parser.ParseException;
 
 /**
   <p>Internal action: <b><code>.term2string(T,S)</code></b>.
@@ -76,7 +78,7 @@ public class term2string extends DefaultInternalAction {
     }
 
     @Override
-    public Object execute(TransitionSystem ts, final Unifier un, final Term[] args) throws Exception {
+    public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {
         checkArguments(args);
 
         // case 1, no vars
@@ -91,10 +93,20 @@ public class term2string extends DefaultInternalAction {
 
         // case 3, first is var
         if (args[0].isVar()) {
+            String tAsString;
+
             if (args[1].isString()) {
-                return un.unifies(args[0], ASSyntax.parseTerm( ((StringTerm)args[1]).getString() ));
+                tAsString = ((StringTerm)args[1]).getString();
             } else {
-                return un.unifies(args[0], ASSyntax.parseTerm( args[1].toString()));
+                tAsString = args[1].toString();
+            }
+
+            try {
+                // tries to parse it as an usual term
+                return un.unifies(args[0], ASSyntax.parseTerm( tAsString ));
+            } catch (ParseException e) {
+                // considers the string as special atom
+                return un.unifies(args[0], new Atom( tAsString ));
             }
         }
 
