@@ -90,7 +90,9 @@ jar {
                    'Specification-Version': project.version,
                    'Implementation-Version': new Date().toString()
     }
-
+    from('src') {
+        include '/test/jason/inc/**/*.asl'
+    }
     /*doFirst {
         Properties props = new Properties()
         props.put('version', '')
