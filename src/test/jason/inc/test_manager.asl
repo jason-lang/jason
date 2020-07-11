@@ -2,6 +2,9 @@
  * Test manager provides general test configurations and facilities
  */
 
+ /**
+ * Setup statistics
+ */
 tests_performed(0).
 tests_failed(0).
 tests_passed(0).
@@ -16,7 +19,7 @@ shutdown_hook.          // enable to shutdown after finishing tests
  * Startup operations
  */
 !set_controller.          // starts test controller operations
-!create_test_agents.      // create agents by .asl files in test/agt/
+!create_tester_agents.      // create agents by .asl files in test/agt/
 
 /**
  * execute plans that contains "test" in the label
@@ -111,8 +114,8 @@ shutdown_hook.          // enable to shutdown after finishing tests
 /**
  * create agents by files present in folder test/agt/
  */
-@create_agents[atomic]
-+!create_test_agents :
+@create_tester_agents[atomic]
++!create_tester_agents :
     .my_name(test_manager)
     <-
     .list_files("./src/test/jason/inc",".*.asl",IGNORE);
@@ -130,7 +133,7 @@ shutdown_hook.          // enable to shutdown after finishing tests
       }
     }
 .
-+!create_test_agents. // avoid plan not found for asl that includes controller
++!create_tester_agents. // avoid plan not found for asl that includes controller
 
 /**
  * Statistics for tests (passed/failed)
@@ -144,7 +147,7 @@ shutdown_hook.          // enable to shutdown after finishing tests
     -+tests_passed(P+1);
 .
 @count_tests_failed[atomic]
-+!count_tests(failed) :
++count_tests(failed) :
     tests_performed(N) &
     tests_failed(F)
     <-
