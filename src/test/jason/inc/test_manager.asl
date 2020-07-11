@@ -12,7 +12,6 @@ tests_passed(0).
 /**
  * Configurations
  */
-auto_create_fail_plan.  // create a -!test fail plan for each desire starting with "test"
 shutdown_hook.          // enable to shutdown after finishing tests
 
 /**
@@ -20,51 +19,6 @@ shutdown_hook.          // enable to shutdown after finishing tests
  */
 !set_controller.          // starts test controller operations
 !create_tester_agents.      // create agents by .asl files in test/agt/
-
-/**
- * execute plans that contains "test" in the label
- */
-@execute_plans[atomic]
-+!execute_test_plans:
-    .relevant_plans({+!_},_,LL)
-    <-
-    !create_default_fail_plan;
-
-    for (.member(P,LL)) {
-        if (.substring("test",P,0)) {
-            /**
-             * Execute the @test plan
-             */
-            !!execute_test_plan(P);
-        }
-    }
-.
-
-/**
- * Add a default -!P fail plan to generate
- * assert failure for others non expected
- * errors
- */
-@create_default_fail_plan[atomic]
-+!create_default_fail_plan:
-    auto_create_fail_plan
-    <-
-    .add_plan({
-        -!P <-
-            !force_failure("Failure captured by default fail plan -!P.");
-    }, self, end);
-.
-+!create_default_fail_plan. // Do not create plans if it is disabled
-
-@execute_plan[atomic]
-+!execute_test_plan(P) :
-    true
-    <-
-    .current_intention(I);
-    I = intention(Id,IStack);
-    .log(info,"TESTING ",Id," (main plan: ",P,")");
-    !P;
-.
 
 /**
  * setup of the controller, including hook for shutdown
