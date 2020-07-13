@@ -4,7 +4,7 @@
  * Most of examples come from Jason's documentation
  */
 
-{ include("test_assert.asl") }
+{ include("tester_agent.asl") }
 
 !execute_test_plans.
 

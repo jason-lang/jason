@@ -2,6 +2,9 @@
  * Test manager provides general test configurations and facilities
  */
 
+ /**
+ * Setup statistics
+ */
 tests_performed(0).
 tests_failed(0).
 tests_passed(0).
@@ -9,59 +12,13 @@ tests_passed(0).
 /**
  * Configurations
  */
-auto_create_fail_plan.  // create a -!test fail plan for each desire starting with "test"
 shutdown_hook.          // enable to shutdown after finishing tests
 
 /**
  * Startup operations
  */
 !set_controller.          // starts test controller operations
-!create_test_agents.      // create agents by .asl files in test/agt/
-
-/**
- * execute plans that contains "test" in the label
- */
-@execute_plans[atomic]
-+!execute_test_plans:
-    .relevant_plans({+!_},_,LL)
-    <-
-    !create_default_fail_plan;
-
-    for (.member(P,LL)) {
-        if (.substring("test",P,0)) {
-            /**
-             * Execute the @test plan
-             */
-            !!execute_test_plan(P);
-        }
-    }
-.
-
-/**
- * Add a default -!P fail plan to generate
- * assert failure for others non expected
- * errors
- */
-@create_default_fail_plan[atomic]
-+!create_default_fail_plan:
-    auto_create_fail_plan
-    <-
-    .add_plan({
-        -!P <-
-            !force_failure("Failure captured by default fail plan -!P.");
-    }, self, end);
-.
-+!create_default_fail_plan. // Do not create plans if it is disabled
-
-@execute_plan[atomic]
-+!execute_test_plan(P) :
-    true
-    <-
-    .current_intention(I);
-    I = intention(Id,IStack);
-    .log(info,"TESTING ",Id," (main plan: ",P,")");
-    !P;
-.
+!create_tester_agents.      // create agents by .asl files in test/agt/
 
 /**
  * setup of the controller, including hook for shutdown
@@ -111,8 +68,8 @@ shutdown_hook.          // enable to shutdown after finishing tests
 /**
  * create agents by files present in folder test/agt/
  */
-@create_agents[atomic]
-+!create_test_agents :
+@create_tester_agents[atomic]
++!create_tester_agents :
     .my_name(test_manager)
     <-
     .list_files("./src/test/jason/inc",".*.asl",IGNORE);
@@ -130,7 +87,7 @@ shutdown_hook.          // enable to shutdown after finishing tests
       }
     }
 .
-+!create_test_agents. // avoid plan not found for asl that includes controller
++!create_tester_agents. // avoid plan not found for asl that includes controller
 
 /**
  * Statistics for tests (passed/failed)
@@ -144,7 +101,7 @@ shutdown_hook.          // enable to shutdown after finishing tests
     -+tests_passed(P+1);
 .
 @count_tests_failed[atomic]
-+!count_tests(failed) :
++count_tests(failed) :
     tests_performed(N) &
     tests_failed(F)
     <-
