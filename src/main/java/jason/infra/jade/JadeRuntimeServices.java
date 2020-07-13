@@ -143,14 +143,14 @@ public class JadeRuntimeServices implements RuntimeServices {
     }
 
 
-    public void stopMAS(int deadline, boolean stopJVM) throws Exception {
+    public void stopMAS(int deadline, boolean stopJVM, int exitValue) throws Exception {
         if (cc != null) {
             new Thread() { // this command should not block the agent!
                 public void run() {
                     try {
                         cc.getPlatformController().kill();
                         if (stopJVM)
-                            System.exit(0);
+                            System.exit(exitValue);
                     } catch (ControllerException e) {
                         e.printStackTrace();
                     }

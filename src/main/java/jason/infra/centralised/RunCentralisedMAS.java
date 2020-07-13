@@ -90,7 +90,7 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
         r.create();
         r.start();
         r.waitEnd();
-        r.finish(0, true);
+        r.finish(0, true, 0);
     }
 
     protected void registerMBean() {
@@ -382,7 +382,7 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
         btStop.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 MASConsoleGUI.get().setPause(false);
-                runner.finish(0, true);
+                runner.finish(0, true, 0);
             }
         });
         MASConsoleGUI.get().addButton(btStop);
@@ -862,14 +862,14 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
 
     protected AtomicBoolean isRunningFinish = new AtomicBoolean(false);
 
-    public void finish(int deadline, boolean stopJVM) {
+    public void finish(int deadline, boolean stopJVM, int exitValue) {
         // avoid two threads running finish!
         if (isRunningFinish.getAndSet(true))
             return;
 
         isRunning = false;
         try {
-            // creates a thread that guarantees system.exit(0) in deadline seconds
+            // creates a thread that guarantees system.exit(.) in deadline seconds
             // (the stop of agents can block, for instance)
             if (stopJVM) {
                 new Thread() {
@@ -880,7 +880,7 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
                             else
                                 sleep(deadline);
                         } catch (InterruptedException e) {}
-                        System.exit(0);
+                        System.exit(exitValue);
                     }
                 } .start();
             }
@@ -919,7 +919,7 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
                     }
 
                     if (stopJVM) {
-                        System.exit(0);
+                        System.exit(exitValue);
                     }
                     isRunningFinish.set(false);
                 };

@@ -43,8 +43,8 @@ public abstract class BaseRuntimeServices implements RuntimeServices {
         return getAgentsNames().size();
     }
 
-    public void stopMAS(int deadline, boolean stopJVM) throws Exception {
-        masRunner.finish(deadline, stopJVM);
+    public void stopMAS(int deadline, boolean stopJVM, int exitValue) throws Exception {
+        masRunner.finish(deadline, stopJVM, exitValue);
     }
 
     @Override
