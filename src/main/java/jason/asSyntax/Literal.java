@@ -644,6 +644,26 @@ public abstract class Literal extends DefaultTerm implements LogicalFormula {
             return this;
     }
 
+    public Literal addSourceInfoAsAnnots(SourceInfo info) {
+        Term codesrc     = SourceInfo.aNOCODE;
+        Term codeline    = SourceInfo.aNOCODE;
+        if (info != null) {
+            if (info.getSrcFile() != null)
+                codesrc = new StringTermImpl(info.getSrcFile());
+            codeline = new NumberTermImpl(info.getSrcLine());
+        }
+
+        // ASL source
+        if (getAnnot("code_src") == null)
+            addAnnot(ASSyntax.createStructure("code_src", codesrc));
+
+        // line in the source
+        if (getAnnot("code_line") == null)
+            addAnnot(ASSyntax.createStructure("code_line", codeline));
+
+    	return this;
+    }
+
     public String getAsJSON(String identation) {
     	StringBuilder json = new StringBuilder(identation+"{\n");
     	json.append(identation+"   \"functor\" : \""+ getFunctor() + "\"");

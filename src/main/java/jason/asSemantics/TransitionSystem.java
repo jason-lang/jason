@@ -28,13 +28,13 @@ import jason.asSyntax.Literal;
 import jason.asSyntax.LiteralImpl;
 import jason.asSyntax.LogicalFormula;
 import jason.asSyntax.NumberTerm;
-import jason.asSyntax.NumberTermImpl;
 import jason.asSyntax.ObjectTermImpl;
 import jason.asSyntax.Plan;
 import jason.asSyntax.PlanBody;
 import jason.asSyntax.PlanBody.BodyType;
 import jason.asSyntax.PlanBodyImpl;
 import jason.asSyntax.PlanLibrary;
+import jason.asSyntax.SourceInfo;
 import jason.asSyntax.StringTermImpl;
 import jason.asSyntax.Structure;
 import jason.asSyntax.Term;
@@ -1273,8 +1273,6 @@ public class TransitionSystem implements Serializable {
         return null;
     }
 
-    private static final Atom aNOCODE = new Atom("no_code");
-
     /** add default error annotations (error, error_msg, code, code_src, code_line) in the failure event */
     private static void setDefaultFailureAnnots(Event failEvent, Term body, List<Term> failAnnots) {
         // add default failure annots
@@ -1285,29 +1283,15 @@ public class TransitionSystem implements Serializable {
         eventLiteral.addAnnots(failAnnots);
 
         // add failure annots in the event related to the code source
-        Literal bodyterm = aNOCODE;
-        Term codesrc     = aNOCODE;
-        Term codeline    = aNOCODE;
+        Literal bodyterm = SourceInfo.aNOCODE;
         if (body != null && body instanceof Literal) {
             bodyterm = (Literal)body;
-            if (bodyterm.getSrcInfo() != null) {
-                if (bodyterm.getSrcInfo().getSrcFile() != null)
-                    codesrc = new StringTermImpl(bodyterm.getSrcInfo().getSrcFile());
-                codeline = new NumberTermImpl(bodyterm.getSrcInfo().getSrcLine());
-            }
+            eventLiteral.addSourceInfoAsAnnots( ((Literal)body).getSrcInfo() );
         }
 
         // code
         if (eventLiteral.getAnnot("code") == null)
             eventLiteral.addAnnot(ASSyntax.createStructure("code", bodyterm.copy().makeVarsAnnon()));
-
-        // ASL source
-        if (eventLiteral.getAnnot("code_src") == null)
-            eventLiteral.addAnnot(ASSyntax.createStructure("code_src", codesrc));
-
-        // line in the source
-        if (eventLiteral.getAnnot("code_line") == null)
-            eventLiteral.addAnnot(ASSyntax.createStructure("code_line", codeline));
     }
 
     /*

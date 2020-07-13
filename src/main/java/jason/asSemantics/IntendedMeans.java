@@ -6,6 +6,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import jason.asSyntax.ASSyntax;
+import jason.asSyntax.Literal;
 import jason.asSyntax.Plan;
 import jason.asSyntax.PlanBody;
 import jason.asSyntax.PlanBodyImpl;
@@ -118,7 +119,9 @@ public class IntendedMeans implements Serializable {
             bd.setAsBodyTerm(true);
             Trigger te = getTrigger().clone();
             te.setAsTriggerTerm(true);
-            return ASSyntax.createStructure("im", ASSyntax.createString(plan.getLabel()), te, bd, unif.getAsTerm());
+            Literal label = plan.getLabel().copy();
+            label.addSourceInfoAsAnnots(plan.getSrcInfo());
+            return ASSyntax.createStructure("im", label, te, bd, unif.getAsTerm());
         } else {
             return ASSyntax.createAtom("noimplementedforclass"+planBody.getClass().getSimpleName());
         }
