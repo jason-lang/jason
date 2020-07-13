@@ -3,6 +3,7 @@ package jason.stdlib;
 import java.util.Iterator;
 
 import jason.asSemantics.DefaultInternalAction;
+import jason.asSemantics.Event;
 import jason.asSemantics.Intention;
 import jason.asSemantics.TransitionSystem;
 import jason.asSemantics.Unifier;
@@ -10,7 +11,7 @@ import jason.asSyntax.ASSyntax;
 import jason.asSyntax.Term;
 
 /**
-  <p>Internal action: <b><code>.intention( ID, STATE, STACK) </code></b>.
+  <p>Internal action: <b><code>.intention( ID, STATE, STACK, [current]) </code></b>.
 
   <p>Description: returns a description of an intention. It is useful
   for plans that need to inspect some intention. The description of each item of the
@@ -23,18 +24,19 @@ import jason.asSyntax.Term;
   <blockquote>
   <code><br>
   [<br>
-  im(l__6[source(self)], {+!g3},     { .current_intention(I); .print(end) }, [map(I, ....)]),<br>
-  im(l__5[source(self)], {+!g5(10)}, { !g3; .fail }, []),<br>
-  im(l__4[source(self)], {+!start},  { !g5(X); .print(endg4) }, [map(X, test)]),<br>
+  im(l__6[code_line(10),code_src("karlos.asl"),source(self)], {+!g3},     { .intention(I); .print(end) }, [map(I, ....)]),<br>
+  im(l__5[code_line(15),code_src("karlos.asl"),source(self)], {+!g5(10)}, { !g3; .fail }                , []),<br>
+  im(l__4[code_line(18),code_src("karlos.asl"),source(self)], {+!start},  { !g5(X); .print(endg4) }     , [map(X, test)]),<br>
   ...<br>
   ]</code>
   </blockquote>
 
   <p>Parameters:<ul>
 
-  <li>+/- intention id (number): the unique identifier of the intention. The special value of <code>current</code> can be used to get the intention executing this internal action. </li>
+  <li>+/- intention id (number): the unique identifier of the intention.
   <li>+/- intention state (atom): the state of the intention, suspended, running, ...</li>
   <li>-   intention stack (list, optional): all the intended means of the intention.</li>
+  <li>+   current intention (atom, optional): selects only the current intention.</li>
 
   </ul>
 
@@ -43,6 +45,7 @@ import jason.asSyntax.Term;
   <li> <code>.intention(I,_)</code>: <code>I</code> unifies with all intention identifiers.</li>
   <li> <code>.intention(I,running)</code>: <code>I</code> unifies with identifiers of running intentions.</li>
   <li> <code>.intention(I,_,S)</code>: <code>S</code> unifies with intended means stack all intentions.</li>
+  <li> <code>.intention(I,_,_,current)</code>: <code>I</code> unifies with the id of the current intention.</li>
 
   </ul>
 
@@ -73,21 +76,30 @@ public class intention extends DefaultInternalAction {
         return 2;
     }
     @Override public int getMaxArgs() {
-        return 3;
+        return 4;
     }
 
     @Override
     public Object execute(final TransitionSystem ts, final Unifier un, final Term[] args) throws Exception {
         checkArguments(args);
+
         return new Iterator<Unifier>() {
             Unifier solution = null; // the current response (which is an unifier)
-            Intention curInt = null;
-            Term argId = args[0];
+            Intention actInt = null; // intention being considered
+            Intention curInt = null; // current intention (executing this internal action)
             Iterator<Intention> intInterator = ts.getC().getAllIntentions();
 
             {
-                if ("current".equals(args[0].toString()))
-                    argId =  ASSyntax.createNumber( ts.getC().getSelectedIntention().getId() );
+                if (args.length == 4 && "current".equals(args[3].toString())) { // we have to consider current intention in the backtracking to find the correct state of the intention (given by C.getAllIntentions)
+                    curInt = ts.getC().getSelectedIntention();
+                    if (curInt == null) {
+                        // try to get the intention from the event
+                        Event evt = ts.getC().getSelectedEvent();
+                        if (evt != null)
+                            curInt = evt.getIntention();
+                    }
+                }
+
                 find(); // find first answer
             }
 
@@ -101,16 +113,20 @@ public class intention extends DefaultInternalAction {
                 find(); // find next response
                 return b;
             }
+
             void find() {
                 while (intInterator.hasNext()) {
-                    curInt = intInterator.next();
+                    actInt = intInterator.next();
+                    if (curInt != null && !curInt.equals(actInt)) // looking for current intention
+                        break;
+
                     solution = un.clone();
-                    if (solution.unifiesNoUndo( argId,   ASSyntax.createNumber( curInt.getId())) &&
-                        solution.unifiesNoUndo( args[1], ASSyntax.createAtom( curInt.getStateBasedOnPlace().toString())) ) {
+                    if (solution.unifiesNoUndo( args[0], ASSyntax.createNumber( actInt.getId())) &&
+                        solution.unifiesNoUndo( args[1], ASSyntax.createAtom( actInt.getStateBasedOnPlace().toString())) ) {
 
                         if (args.length == 2)
                             return;
-                        if (solution.unifiesNoUndo( args[2], curInt.getAsTerm().getTerm(1))) {
+                        if (solution.unifiesNoUndo( args[2], actInt.getAsTerm().getTerm(1))) {
                             return;
                         }
                     }
