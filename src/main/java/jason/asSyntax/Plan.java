@@ -107,7 +107,6 @@ public class Plan extends Structure implements Cloneable, Serializable {
             context = (LogicalFormula)t;
             break;
         case 3:
-            System.out.println("*1"+t+" "+this);
             body    = (PlanBody)t;
             break;
         }

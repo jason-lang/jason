@@ -346,9 +346,23 @@ Plan plan() :         { Token k;
                         Trigger T;
                         Object C = null;
                         PlanBody B = null;
-                        int start = -1, end;}
+                        int start = -1, end;
+                        ListTerm annots = null;
+                      }
 {
-    [ k = <TK_LABEL_AT> L2=literal()  { start = k.beginLine; L = new Pred(L2); }   ] // use literal to allow namespace
+    [ k = <TK_LABEL_AT>
+    	( L2=literal()    // use literal to allow namespace
+    	| annots = list() {
+    	                      if (curAg != null) {
+    	                      	  L2 = curAg.getPL().getUniqueLabel();
+    	                      } else {
+    	                          L2 = new Pred("undefined");
+    	                      }
+   	                      	  L2.addAnnots( annots.getAsList());
+    	                  }
+    	)
+    	{ start = k.beginLine; L = new Pred(L2); }
+    ]
     T=trigger()
     [ k = ":"  C = log_expr()    { if (start == -1) start = k.beginLine; } ]
     [ k = "<-" B = plan_body()   { if (start == -1) start = k.beginLine; } ]

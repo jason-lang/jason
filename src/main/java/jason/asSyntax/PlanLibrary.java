@@ -266,7 +266,7 @@ public class PlanLibrary implements Iterable<Plan>, Serializable {
     }
 
     /** add a label to the plan */
-    private Pred getUniqueLabel() {
+    public Pred getUniqueLabel() {
         String l;
         do {
             l = "l__" + (lastPlanLabel.incrementAndGet());
