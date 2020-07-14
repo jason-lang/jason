@@ -48,7 +48,7 @@ shutdown_hook.          // enable to shutdown after finishing tests
      .log(severe,"\n\n");
      .log(severe,"#",N," plans executed, #",P," passed and #",F," FAILED.");
      .log(severe,"End of Jason unit tests: FAILED!\n\n");
-     .exit_error;
+     .stopMAS(0,1);
  .
 @shutdown_after_success[atomic]
 +!shutdown_after_tests :
@@ -101,7 +101,7 @@ shutdown_hook.          // enable to shutdown after finishing tests
     -+tests_passed(P+1);
 .
 @count_tests_failed[atomic]
-+count_tests(failed) :
++!count_tests(failed) :
     tests_performed(N) &
     tests_failed(F)
     <-
