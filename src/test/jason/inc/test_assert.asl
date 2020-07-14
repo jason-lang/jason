@@ -8,8 +8,7 @@
  */
 @assert_equals[atomic]
 +!assert_equals(X,Y) :
-    .current_intention(I) &
-    I = intention(ID,_) &
+    .intention(ID,_) &
     not .list(X) & not .list(Y)
     <-
     if (X \== Y) {
@@ -21,8 +20,7 @@
     }
 .
 +!assert_equals(X,Y) :
-    .current_intention(I) &
-    I = intention(ID,_)
+    .intention(ID,_)
     <-
     for (.member(Xth,X)) {
         if (not .member(Xth,Y)) {
@@ -51,8 +49,7 @@
  */
 @assert_equals_tolerant[atomic]
 +!assert_equals(X,Y,T) :
-    .current_intention(I) &
-    I = intention(ID,_)
+    .intention(ID,_)
     <-
     if (not (Y >= X-T & Y <= X+T)) {
         .log(severe,"Intention ",ID," FAILED! Assert equals expected ",X,"+/-",T,", but had ",Y);
@@ -73,8 +70,7 @@
  */
 @assert_true[atomic]
 +!assert_true(X) :
-    .current_intention(I) &
-    I = intention(ID,_)
+    .intention(ID,_)
     <-
     if (not X) {
         .log(severe,"Intention ",ID," FAILED! Assert true expected ",X);
@@ -95,8 +91,7 @@
  */
 @assert_false[atomic]
 +!assert_false(X) :
-    .current_intention(I) &
-    I = intention(ID,_)
+    .intention(ID,_)
     <-
     if (X) {
         .log(severe,"Intention ",ID," FAILED! Assert false expected not ",X);
@@ -117,8 +112,7 @@
  */
 @force_pass[atomic]
 +!force_pass :
-    .current_intention(I) &
-    I = intention(ID,_)
+    .intention(ID,_)
     <-
     -+test_passed;
     .log(info,"Intention ",ID," PASSED");
@@ -134,8 +128,7 @@
  */
 @force_failure[atomic]
 +!force_failure(MSG) :
-    .current_intention(I) &
-    I = intention(ID,_)
+    .intention(ID,_)
     <-
     .log(severe,"Intention ",ID," forcedly FAILED! Msg: ",MSG);
     .fail;
@@ -151,8 +144,7 @@
  */
 @assert_contains[atomic]
 +!assert_contains(X,Y) :
-    .current_intention(I) &
-    I = intention(ID,_)
+    .intention(ID,_)
     <-
     if (not .member(Y,X)) {
         .log(severe,"Intention ",ID," FAILED! Assert equals expected ",X," but had ",Y);

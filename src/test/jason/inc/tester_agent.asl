@@ -46,10 +46,8 @@ auto_create_fail_plan.  // create -!P fail plan to capture unexpected failures
 
 @execute_plan[atomic]
 +!execute_test_plan(P) :
-    true
+    .intention(Id,_)
     <-
-    .current_intention(I);
-    I = intention(Id,IStack);
     .log(info,"TESTING ",Id," (main plan: ",P,")");
     !P;
 .
