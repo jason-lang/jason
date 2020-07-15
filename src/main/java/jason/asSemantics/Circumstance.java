@@ -418,20 +418,23 @@ public class Circumstance implements Serializable {
     }
 
     public void addPendingIntention(String id, Intention i) {
-        addPendingIntention(id, new Atom(id), i);
+        addPendingIntention(id, new Atom(id), i, true);
     }
 
-    public void addPendingIntention(String id, Term reason, Intention i) {
+    public void addPendingIntention(String id, Term reason, Intention i, boolean suspend) {
         if (i.isAtomic()) {
             setAtomicIntention(i);
             atomicIntSuspended = true;
         }
         PI.put(id, i);
-        i.setSuspendedReason(id);
+        i.setSuspendedReason(reason);
 
         if (listeners != null)
             for (CircumstanceListener el : listeners)
-                el.intentionSuspended(i, reason);
+                if (suspend)
+                    el.intentionSuspended(i, reason);
+                else
+                    el.intentionWaiting(i, reason);
     }
 
     public Intention removePendingIntention(String pendingId) {
@@ -489,12 +492,12 @@ public class Circumstance implements Serializable {
         PE.clear();
     }
 
-    public void addPendingEvent(String id, Event e) {
+    public void addPendingEvent(String id, Term reason, Event e) {
         PE.put(id, e);
 
         if (listeners != null && e.getIntention() != null)
             for (CircumstanceListener el : listeners)
-                el.intentionSuspended(e.getIntention(), new Atom(id));
+                el.intentionSuspended(e.getIntention(), reason);
     }
 
     public Event removePendingEvent(String pendingId) {
@@ -600,11 +603,11 @@ public class Circumstance implements Serializable {
             atomicIntSuspended = true;
         }
         PA.put(i.getId(), a);
-        i.setSuspendedReason(a.getActionTerm().toString());
+        i.setSuspendedReason(a.getActionTerm());
 
         if (listeners != null)
             for (CircumstanceListener el : listeners)
-                el.intentionSuspended(i, ASSyntax.createStructure("action", a.getActionTerm()));
+                el.intentionWaiting(i, ASSyntax.createStructure("action", a.getActionTerm()));
     }
 
     public void clearPendingActions() {
@@ -1016,7 +1019,7 @@ public class Circumstance implements Serializable {
             if (i.equals(getSelectedIntention()))
                 selIntEle.setAttribute("selected", "true");
             if (i.isSuspended())
-                selIntEle.setAttribute("pending", i.getSuspendedReason());
+                selIntEle.setAttribute("pending", i.getSuspendedReason().toString());
             ints.appendChild(selIntEle);
 
         }

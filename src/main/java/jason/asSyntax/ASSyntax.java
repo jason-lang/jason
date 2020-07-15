@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import jason.NoValueException;
@@ -147,9 +148,10 @@ public class ASSyntax {
         return (Structure)new Structure(functor, size).addTerms(terms);
     }
 
+    static Map<String,Atom> atomCache = new java.util.HashMap<>();
     /** creates a new Atom term (an atom is a structure with 0-arity) */
     public static Atom createAtom(String functor) {
-        return new Atom(functor);
+        return atomCache.computeIfAbsent(functor, k -> new Atom(functor));
     }
 
     /** creates a new number term */

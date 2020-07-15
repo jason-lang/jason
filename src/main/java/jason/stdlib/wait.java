@@ -184,7 +184,7 @@ public class wait extends DefaultInternalAction {
                 pendingReason.addAnnot(ASSyntax.createStructure("time", ASSyntax.createNumber(timeout)));
             }
             tEvt = pendingReason.toString();
-            c.addPendingIntention(tEvt, pendingReason, si);
+            c.addPendingIntention(tEvt, pendingReason, si, false);
 
             startTime = System.currentTimeMillis();
 
@@ -228,7 +228,7 @@ public class wait extends DefaultInternalAction {
                                     body.add(1, new PlanBodyImpl(BodyType.internalAction, new InternalActionLiteral(".fail")));
                                     c.addPendingIntention(suspend.SUSPENDED_INT+si.getId(), si);
                                 } else {
-                                    ts.generateGoalDeletion(si, JasonException.createBasicErrorAnnots("wait_timeout", "timeout in .wait"));
+                                    ts.generateGoalDeletion(si, JasonException.createBasicErrorAnnots("wait_timeout", "timeout in .wait"), ASSyntax.createAtom("wait_timeout"));
                                 }
                             } else if (! si.isFinished()) {
                                 si.peek().removeCurrentStep();
@@ -240,7 +240,7 @@ public class wait extends DefaultInternalAction {
                                 if (si.isSuspended()) { // if the intention was suspended by .suspend
                                     c.addPendingIntention(suspend.SUSPENDED_INT+si.getId(), si);
                                 } else {
-                                    c.resumeIntention(si, pendingReason);
+                                    c.resumeIntention(si, null); //pendingReason);
                                 }
                             }
                         }
@@ -251,7 +251,7 @@ public class wait extends DefaultInternalAction {
             ts.getAgArch().wakeUpDeliberate();
         }
 
-        public void eventAdded(Event e) {
+        @Override public void eventAdded(Event e) {
             if (dropped)
                 return;
             if (te != null && un.unifies(te, e.getTrigger())) {
@@ -261,7 +261,7 @@ public class wait extends DefaultInternalAction {
             }
         }
 
-        public void intentionDropped(Intention i) {
+        @Override public void intentionDropped(Intention i) {
             if (i.equals(si)) {
                 dropped = true;
                 resume(false);

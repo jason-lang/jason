@@ -1,5 +1,7 @@
 package jason.stdlib;
 
+import java.util.concurrent.TimeUnit;
+
 import jason.JasonException;
 import jason.asSemantics.Agent;
 import jason.asSemantics.DefaultInternalAction;
@@ -7,6 +9,7 @@ import jason.asSemantics.Intention;
 import jason.asSemantics.Message;
 import jason.asSemantics.TransitionSystem;
 import jason.asSemantics.Unifier;
+import jason.asSyntax.ASSyntax;
 import jason.asSyntax.Atom;
 import jason.asSyntax.ListTerm;
 import jason.asSyntax.ListTermImpl;
@@ -15,8 +18,6 @@ import jason.asSyntax.StringTerm;
 import jason.asSyntax.Structure;
 import jason.asSyntax.Term;
 import jason.asSyntax.VarTerm;
-
-import java.util.concurrent.TimeUnit;
 
 /**
   <p>Internal action: <b><code>.send</code></b>.
@@ -168,7 +169,7 @@ public class send extends DefaultInternalAction {
         lastSendWasSynAsk = m.isAsk() && args.length > 3;
         if (lastSendWasSynAsk) {
             m.setSyncAskMsgId();
-            ts.getC().addPendingIntention(m.getMsgId(), ts.getC().getSelectedIntention());
+            ts.getC().addPendingIntention(m.getMsgId(), ASSyntax.createAtom("waiting_ask"), ts.getC().getSelectedIntention(), false);
         }
 
         // (un)tell or unknown performative with 4 args is a reply to

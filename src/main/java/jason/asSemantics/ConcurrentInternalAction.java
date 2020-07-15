@@ -6,6 +6,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 
 import jason.JasonException;
+import jason.asSyntax.ASSyntax;
 import jason.asSyntax.Atom;
 import jason.asSyntax.Literal;
 import jason.asSyntax.Term;
@@ -91,7 +92,7 @@ public abstract class ConcurrentInternalAction implements InternalAction {
         final Circumstance C = ts.getC();
         Intention i = C.getSelectedIntention();
         i.setSuspended(true);
-        C.addPendingIntention(key, i);
+        C.addPendingIntention(key, ASSyntax.createAtom("concurrent_ia"), i, true);
 
         if (timeout > 0) {
             // schedule a future test of the end of the action
@@ -136,7 +137,7 @@ public abstract class ConcurrentInternalAction implements InternalAction {
                     try {
                         if (abort) {
                             // fail the IA
-                            ts.generateGoalDeletion(pi, failAnnots);
+                            ts.generateGoalDeletion(pi, failAnnots, null);
                         } else {
                             pi.peek().removeCurrentStep(); // remove the internal action that put the intention in suspend
                             ts.applyClrInt(pi);

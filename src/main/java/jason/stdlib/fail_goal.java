@@ -8,6 +8,7 @@ import jason.asSemantics.IntendedMeans;
 import jason.asSemantics.Intention;
 import jason.asSemantics.TransitionSystem;
 import jason.asSemantics.Unifier;
+import jason.asSyntax.ASSyntax;
 import jason.asSyntax.Literal;
 import jason.asSyntax.Term;
 import jason.asSyntax.Trigger.TEOperator;
@@ -106,7 +107,7 @@ public class fail_goal extends succeed_goal {
                 // notify listener
                 if (ts.hasGoalListener())
                     for (GoalListener gl: ts.getGoalListeners())
-                        gl.goalFailed(im.getTrigger());
+                        gl.goalFailed(im.getTrigger(), ASSyntax.createAtom("drop_by_fail_goal"));
 
                 // generate failure event
                 Event failEvent = ts.findEventForFailure(i, c.getTrigger()); // find fail event for the goal just dropped
@@ -137,7 +138,7 @@ public class fail_goal extends succeed_goal {
     void dropInEvent(TransitionSystem ts, Event e, Intention i) throws Exception {
         if (ts.hasGoalListener())
             for (GoalListener gl: ts.getGoalListeners())
-                gl.goalFailed(e.getTrigger().clone());
+                gl.goalFailed(e.getTrigger().clone(), ASSyntax.createAtom("drop_by_fail_goal"));
 
         e.getTrigger().setTrigOp(TEOperator.del);
     }

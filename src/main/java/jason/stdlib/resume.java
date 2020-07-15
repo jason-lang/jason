@@ -10,6 +10,7 @@ import jason.asSemantics.Event;
 import jason.asSemantics.Intention;
 import jason.asSemantics.TransitionSystem;
 import jason.asSemantics.Unifier;
+import jason.asSyntax.ASSyntax;
 import jason.asSyntax.Atom;
 import jason.asSyntax.Literal;
 import jason.asSyntax.Term;
@@ -76,7 +77,7 @@ import jason.asSyntax.Trigger.TEType;
 @SuppressWarnings("serial")
 public class resume extends DefaultInternalAction {
 
-    private static Term resumeReason = new Atom("resume_internal_action");
+    private static Term resumeReason = ASSyntax.createAtom("resume_ia");
 
     @Override public int getMinArgs() {
         return 1;

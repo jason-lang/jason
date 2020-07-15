@@ -10,11 +10,13 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import jason.asSemantics.Circumstance.IntentionPlace;
+import jason.asSyntax.Atom;
 import jason.asSyntax.ListTerm;
 import jason.asSyntax.ListTermImpl;
 import jason.asSyntax.NumberTermImpl;
 import jason.asSyntax.PlanLibrary;
 import jason.asSyntax.Structure;
+import jason.asSyntax.Term;
 import jason.asSyntax.Trigger;
 import jason.asSyntax.Trigger.TEOperator;
 import jason.util.Pair;
@@ -38,7 +40,7 @@ public class Intention implements Serializable, Comparable<Intention>, Iterable<
     private int     id;
     private int     atomicCount    = 0; // number of atomic intended means in the intention
     private boolean isSuspended = false; // suspended by the internal action .suspend
-    private String  suspendedReason = null;
+    private Term    suspendedReason = null;
     private IntentionPlace place = IntentionPlace.None;
 
     private Deque<IntendedMeans> intendedMeans = new ArrayDeque<>();
@@ -110,12 +112,13 @@ public class Intention implements Serializable, Comparable<Intention>, Iterable<
         return isSuspended;
     }
 
-    public void setSuspendedReason(String r) {
+    public void setSuspendedReason(Term r) {
         suspendedReason = r;
     }
-    public String getSuspendedReason() {
+    private static Atom noReason = new Atom("no_reason");
+    public Term getSuspendedReason() {
         if (suspendedReason == null)
-            return "";
+            return noReason;
         else
             return suspendedReason;
     }

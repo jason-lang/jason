@@ -21,12 +21,12 @@ public class GoalListenerForMetaEvents implements GoalListener {
 
     @Override
     public void goalStarted(Event goal) {
-        generateGoalStateEvent(goal.getTrigger().getLiteral(), TEType.achieve, GoalStates.started, null);
+        generateGoalStateEvent(goal.getTrigger().getLiteral(), TEType.achieve, GoalStates.pending, null);
     }
 
     @Override
-    public void goalFailed(Trigger goal) {
-        generateGoalStateEvent(goal.getLiteral(), goal.getType(), GoalStates.failed, null);
+    public void goalFailed(Trigger goal, Term reason) {
+        generateGoalStateEvent(goal.getLiteral(), goal.getType(), GoalStates.failed, reason);
     }
 
     @Override
@@ -37,13 +37,18 @@ public class GoalListenerForMetaEvents implements GoalListener {
     }
 
     @Override
-    public void goalResumed(Trigger goal, Term reason) {
-        generateGoalStateEvent(goal.getLiteral(), goal.getType(), GoalStates.resumed, reason);
+    public void goalExecuting(Trigger goal, Term reason) {
+        generateGoalStateEvent(goal.getLiteral(), goal.getType(), GoalStates.executing, reason);
     }
 
     @Override
     public void goalSuspended(Trigger goal, Term reason) {
         generateGoalStateEvent(goal.getLiteral(), goal.getType(), GoalStates.suspended, reason);
+    }
+
+    @Override
+    public void goalWaiting(Trigger goal, Term reason) {
+        generateGoalStateEvent(goal.getLiteral(), goal.getType(), GoalStates.waiting, reason);
     }
 
     private void generateGoalStateEvent(final Literal goal, final TEType type, final GoalStates state, final Term reason) {

@@ -524,7 +524,7 @@ public class CentralisedAgArch extends AgArch implements Runnable, Serializable 
             iprops.put("finished", i.isFinished());
             iprops.put("suspended", i.isSuspended());
             if (i.isSuspended()) {
-                iprops.put("suspendedReason", i.getSuspendedReason());
+                iprops.put("suspendedReason", i.getSuspendedReason().toString());
             }
             iprops.put("size", i.size());
             ints.add(iprops);

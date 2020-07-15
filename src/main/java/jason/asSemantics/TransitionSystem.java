@@ -138,25 +138,32 @@ public class TransitionSystem implements Serializable {
         CircumstanceListener cl = new CircumstanceListener() {
             private static final long serialVersionUID = 1L;
 
-            public void intentionDropped(Intention i) {
-                for (IntendedMeans im: i) //.getIMs())
+            @Override public void intentionDropped(Intention i) {
+                for (IntendedMeans im: i)
                     if (im.getTrigger().isAddition() && im.getTrigger().isGoal())
                         gl.goalFinished(im.getTrigger(), GoalStates.dropped);
             }
 
-            public void intentionSuspended(Intention i, Term reason) {
-                for (IntendedMeans im: i) //.getIMs())
-                    if (im.getTrigger().isAddition() && im.getTrigger().isGoal())
-                        gl.goalSuspended(im.getTrigger(), reason);
+            @Override public void intentionSuspended(Intention i, Term reason) {
+                //for (IntendedMeans im: i)
+                IntendedMeans im = i.peek();
+                if (im.getTrigger().isAddition() && im.getTrigger().isGoal())
+                    gl.goalSuspended(im.getTrigger(), reason);
+            }
+            @Override public void intentionWaiting(Intention i, Term reason) {
+                //for (IntendedMeans im: i)
+                IntendedMeans im = i.peek();
+                if (im.getTrigger().isAddition() && im.getTrigger().isGoal())
+                    gl.goalWaiting(im.getTrigger(), reason);
+            }
+            @Override public void intentionResumed(Intention i, Term reason) {
+                //for (IntendedMeans im: i)
+                IntendedMeans im = i.peek();
+                if (im.getTrigger().isAddition() && im.getTrigger().isGoal())
+                    gl.goalExecuting(im.getTrigger(), reason);
             }
 
-            public void intentionResumed(Intention i, Term reason) {
-                for (IntendedMeans im: i) //.getIMs())
-                    if (im.getTrigger().isAddition() && im.getTrigger().isGoal())
-                        gl.goalResumed(im.getTrigger(), reason);
-            }
-
-            public void eventAdded(Event e) {
+            @Override public void eventAdded(Event e) {
                 if (e.getTrigger().isAddition() && e.getTrigger().isGoal())
                     gl.goalStarted(e);
             }
@@ -177,7 +184,7 @@ public class TransitionSystem implements Serializable {
 
     public boolean removeGoalListener(GoalListener gl) {
         CircumstanceListener cl = (listenersMap == null ? null : listenersMap.get(gl));
-        if (cl != null) 
+        if (cl != null)
             C.removeEventListener(cl);
         return goalListeners.remove(gl);
     }
@@ -365,7 +372,7 @@ public class TransitionSystem implements Serializable {
                     if (!added) {
                         Literal received = new LiteralImpl(kqmlReceivedFunctor).addTerms(
                             new Atom(sender),
-                            new Atom(m.getIlForce()),
+                            ASSyntax.createAtom(m.getIlForce()),
                             content,
                             new Atom(m.getMsgId()));
 
@@ -384,7 +391,7 @@ public class TransitionSystem implements Serializable {
         if (i.peek().getUnif().unifies(answerVar, answerValue)) {
             getC().resumeIntention(i, ASSyntax.createStructure("ask_answer", new StringTermImpl(msgId)));
         } else {
-            generateGoalDeletion(i, JasonException.createBasicErrorAnnots("ask_failed", "reply of an ask message ('"+answerValue+"') does not unify with fourth argument of .send ('"+answerVar+"')"));
+            generateGoalDeletion(i, JasonException.createBasicErrorAnnots("ask_failed", "reply of an ask message ('"+answerValue+"') does not unify with fourth argument of .send ('"+answerVar+"')"), ASSyntax.createAtom("ask_failed"));
         }
 
     }
@@ -455,7 +462,7 @@ public class TransitionSystem implements Serializable {
                     logger.warning("we are likely in a problem with event "+C.SE.getTrigger()+" the intention stack has already "+C.SE.getIntention().size()+" intended means!");
                 }
                 String msg = "Found a goal for which there is no "+m+" plan: " + C.SE.getTrigger();
-                if (!generateGoalDeletionFromEvent(JasonException.createBasicErrorAnnots("no_"+m, msg))) {
+                if (!generateGoalDeletionFromEvent(JasonException.createBasicErrorAnnots("no_"+m, msg), ASSyntax.createAtom("no_"+m+"_plan"))) {
                     logger.warning(msg);
                 }
             } catch (Exception e) {
@@ -492,7 +499,7 @@ public class TransitionSystem implements Serializable {
             if (logger.isLoggable(Level.FINE)) logger.fine("Selected option "+C.SO+" for event "+C.SE);
         } else {
             logger.fine("** selectOption returned null!");
-            generateGoalDeletionFromEvent(JasonException.createBasicErrorAnnots("no_option", "selectOption returned null"));
+            generateGoalDeletionFromEvent(JasonException.createBasicErrorAnnots("no_option", "selectOption returned null"), ASSyntax.createAtom("no_option"));
             // can't carry on, no applicable plan.
             stepDeliberate = State.ProcAct;
         }
@@ -539,6 +546,12 @@ public class TransitionSystem implements Serializable {
         // create a new intended means
         IntendedMeans im = new IntendedMeans(C.SO, C.SE.getTrigger());
 
+        if (C.SE.getTrigger().isAchvGoal() && C.SE.getTrigger().isAddition()) {
+            if (hasGoalListener())
+                for (GoalListener gl: getGoalListeners())
+                    gl.goalExecuting(C.SE.getTrigger(), null);
+        }
+
         // Rule ExtEv
         if (C.SE.intention == Intention.EmptyInt) {
             Intention intention = new Intention();
@@ -565,7 +578,7 @@ public class TransitionSystem implements Serializable {
                     if (hasGoalListener())
                         for (GoalListener gl: getGoalListeners())
                             gl.goalFinished(top.getTrigger(), GoalStates.achieved);
-                    
+
                     C.SE.intention.pop(); // remove the top IM
 
                     IntendedMeans imBase = C.SE.intention.peek(); // base = where the new IM will be placed on top of
@@ -624,14 +637,14 @@ public class TransitionSystem implements Serializable {
                         if (hasGoalListener())
                             for (GoalListener gl: getGoalListeners())
                                 for (IntendedMeans im: curInt) //.getIMs())
-                                    gl.goalResumed(im.getTrigger(), ASSyntax.createStructure("action_executed", a.getActionTerm()));
+                                    gl.goalExecuting(im.getTrigger(), ASSyntax.createStructure("action_executed", a.getActionTerm()));
                     } else {
                         String reason = a.getFailureMsg();
                         if (reason == null) reason = "";
                         ListTerm annots = JasonException.createBasicErrorAnnots("action_failed", reason);
                         if (a.getFailureReason() != null)
                             annots.append(a.getFailureReason());
-                        generateGoalDeletion(curInt, annots);
+                        generateGoalDeletion(curInt, annots, ASSyntax.createAtom("action_failed"));
                         C.removeAtomicIntention(); // if (potential) atomic intention is not removed, it will be selected in selInt or selEv and runs again
                     }
                 } else {
@@ -693,14 +706,14 @@ public class TransitionSystem implements Serializable {
             bTerm = bTerm.capply(u);
             if (bTerm.isVar()) { // the case of !A with A not ground
                 String msg = h.getSrcInfo()+": "+ "Variable '"+bTerm+"' must be ground.";
-                if (!generateGoalDeletion(curInt, JasonException.createBasicErrorAnnots("body_var_without_value", msg)))
+                if (!generateGoalDeletion(curInt, JasonException.createBasicErrorAnnots("body_var_without_value", msg), null))
                     logger.log(Level.SEVERE, msg);
                 return;
             }
             if (bTerm.isPlanBody()) {
                 if (h.getBodyType() != BodyType.action) { // the case of ...; A = { !g }; +g; ....
                     String msg = h.getSrcInfo()+": "+ "The operator '"+h.getBodyType()+"' is lost with the variable '"+bTerm+"' unified with a plan body. ";
-                    if (!generateGoalDeletion(curInt, JasonException.createBasicErrorAnnots("body_var_with_op", msg)))
+                    if (!generateGoalDeletion(curInt, JasonException.createBasicErrorAnnots("body_var_with_op", msg), null))
                         logger.log(Level.SEVERE, msg);
                     return;
                 }
@@ -772,13 +785,13 @@ public class TransitionSystem implements Serializable {
                 msg += "].";
                 e = new NoValueException(msg);
                 errorAnnots = e.getErrorTerms();
-                if (!generateGoalDeletion(curInt, errorAnnots))
+                if (!generateGoalDeletion(curInt, errorAnnots, ASSyntax.createAtom("ia_failed")))
                     logger.log(Level.SEVERE, body.getErrorMsg()+": "+ e.getMessage());
                 ok = true; // just to not generate the event again
 
             } catch (JasonException e) {
                 errorAnnots = e.getErrorTerms();
-                if (!generateGoalDeletion(curInt, errorAnnots))
+                if (!generateGoalDeletion(curInt, errorAnnots, ASSyntax.createAtom("ia_failed")))
                     logger.log(Level.SEVERE, body.getErrorMsg()+": "+ e.getMessage());
                 ok = true; // just to not generate the event again
             } catch (Exception e) {
@@ -788,7 +801,7 @@ public class TransitionSystem implements Serializable {
                     logger.log(Level.SEVERE, body.getErrorMsg()+": "+ e.getMessage(), e);
             }
             if (!ok)
-                generateGoalDeletion(curInt, errorAnnots);
+                generateGoalDeletion(curInt, errorAnnots, ASSyntax.createAtom("ia_failed"));
 
             break;
 
@@ -799,7 +812,7 @@ public class TransitionSystem implements Serializable {
                 removeActionReQueue(curInt);
             } else {
                 String msg = "Constraint "+h+" was not satisfied ("+h.getSrcInfo()+") un="+u;
-                generateGoalDeletion(curInt, JasonException.createBasicErrorAnnots(new Atom("constraint_failed"), msg));
+                generateGoalDeletion(curInt, JasonException.createBasicErrorAnnots(ASSyntax.createAtom("constraint_failed"), msg), ASSyntax.createAtom("constraint_failed"));
                 logger.fine(msg);
             }
             break;
@@ -843,7 +856,7 @@ public class TransitionSystem implements Serializable {
                 }
                 if (fail) {
                     if (logger.isLoggable(Level.FINE)) logger.fine("Test '"+bTerm+"' failed ("+h.getSrcInfo()+").");
-                    generateGoalDeletion(curInt, JasonException.createBasicErrorAnnots("test_goal_failed", "Failed to test '"+bTerm+"'"));
+                    generateGoalDeletion(curInt, JasonException.createBasicErrorAnnots("test_goal_failed", "Failed to test '"+bTerm+"'"), ASSyntax.createAtom("test_goal_failed"));
                 }
             }
             break;
@@ -865,7 +878,7 @@ public class TransitionSystem implements Serializable {
                     updateEvents(result,Intention.EmptyInt);
                 }
             } catch (RevisionFailedException re) {
-                generateGoalDeletion(curInt, JasonException.createBasicErrorAnnots("belief_revision_failed", "BRF failed for '"+body+"'"));
+                generateGoalDeletion(curInt, JasonException.createBasicErrorAnnots("belief_revision_failed", "BRF failed for '"+body+"'"), ASSyntax.createAtom("belief_revision_failed"));
                 break;
             }
 
@@ -903,7 +916,7 @@ public class TransitionSystem implements Serializable {
                     removeActionReQueue(curInt);
                 }
             } catch (RevisionFailedException re) {
-                generateGoalDeletion(curInt, null);
+                generateGoalDeletion(curInt, null, null);
             }
             break;
 
@@ -931,7 +944,7 @@ public class TransitionSystem implements Serializable {
                     removeActionReQueue(curInt);
                 }
             } catch (RevisionFailedException re) {
-                generateGoalDeletion(curInt, null);
+                generateGoalDeletion(curInt, null, null);
             }
             break;
         }
@@ -1176,7 +1189,7 @@ public class TransitionSystem implements Serializable {
     }
 
     /** generate a failure event for an intention */
-    public boolean generateGoalDeletion(Intention i, List<Term> failAnnots) throws JasonException {
+    public boolean generateGoalDeletion(Intention i, List<Term> failAnnots, Term reason) throws JasonException {
         boolean failEventIsRelevant = false;
         IntendedMeans im = i.peek();
         // produce failure event
@@ -1189,13 +1202,22 @@ public class TransitionSystem implements Serializable {
         Term bodyPart = im.getCurrentStep().getBodyTerm().capply(im.unif);
         setDefaultFailureAnnots(failEvent, bodyPart, failAnnots);
 
-        if (im.getTrigger().isGoal()) { // isGoalAdd()) {
-            // notify listener
+        if (im.getTrigger().isGoal()) {
+
+            // notify listeners
             if (hasGoalListener())
                 for (GoalListener gl: goalListeners) {
-                    gl.goalFailed(im.getTrigger());
-                    if (!failEventIsRelevant)
-                        gl.goalFinished(im.getTrigger(), GoalStates.failed);
+                    gl.goalFailed(im.getTrigger(), reason);
+                    if (failEventIsRelevant) {
+                        gl.goalExecuting(im.getTrigger(), ASSyntax.createAtom("has_failure_plan"));
+                    } else {
+                        gl.goalFinished(im.getTrigger(), null);
+                        // finish other goals in the stack
+                        for (IntendedMeans oim: i) {
+                            if (oim != im)
+                                gl.goalFinished(oim.getTrigger(), GoalStates.failed);
+                        }
+                    }
                 }
 
             if (failEventIsRelevant) {
@@ -1220,7 +1242,7 @@ public class TransitionSystem implements Serializable {
     }
 
     // similar to the one above, but for an Event rather than intention
-    private boolean generateGoalDeletionFromEvent(List<Term> failAnnots) throws JasonException {
+    private boolean generateGoalDeletionFromEvent(List<Term> failAnnots, Term reason) throws JasonException {
         Event ev = C.SE;
         if (ev == null) {
             logger.warning("** It was impossible to generate a goal deletion event because SE is null! " + C);
@@ -1230,13 +1252,9 @@ public class TransitionSystem implements Serializable {
         Trigger tevent = ev.trigger;
         boolean failEeventGenerated = false;
         if (tevent.isAddition() && tevent.isGoal()) {
-            // notify listener
-            if (hasGoalListener())
-                for (GoalListener gl: goalListeners)
-                    gl.goalFailed(tevent);
-
             // produce failure event
             Event failEvent = findEventForFailure(ev.intention, tevent);
+
             if (failEvent != null) {
                 setDefaultFailureAnnots(failEvent, tevent.getLiteral(), failAnnots);
                 C.addEvent(failEvent);
@@ -1249,6 +1267,22 @@ public class TransitionSystem implements Serializable {
                     logger.warning("\n"+ev.intention);
                 }
             }
+
+            // notify listener
+            if (hasGoalListener())
+                for (GoalListener gl: goalListeners) {
+                    gl.goalFailed(tevent, reason);
+                    if (failEeventGenerated) {
+                        gl.goalExecuting(tevent, ASSyntax.createAtom("has_failure_plan"));
+                    } else {
+                        gl.goalFinished(tevent, null);
+                        if (ev.getIntention() != null)
+                            for (IntendedMeans im: ev.getIntention()) {
+                                gl.goalFinished(im.getTrigger(), GoalStates.failed);
+                            }
+                    }
+                }
+
         } else if (ev.isInternal()) {
             logger.warning("Could not finish intention:\n" + ev.intention);
         }
@@ -1332,7 +1366,7 @@ public class TransitionSystem implements Serializable {
                                 new fail_goal() {
                                     protected void addAnnotsToFailEvent(Event failEvent) {
                                         failEvent.getTrigger().getLiteral().addAnnots(JasonException.createBasicErrorAnnots("deadline_reached", ""));
-                                    }                                   
+                                    }
                                 }.drop(TransitionSystem.this, body, new Unifier());
                             } catch (Exception e) {
                                 e.printStackTrace();
@@ -1614,9 +1648,9 @@ public class TransitionSystem implements Serializable {
         else
             return agArch.getFirstAgArch();
     }
-    
+
     /**
-     * 
+     *
      * @deprecated use getAgArch
      */
     public AgArch getUserAgArch() {
