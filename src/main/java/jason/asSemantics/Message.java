@@ -138,13 +138,13 @@ public class Message implements Serializable, ToJSON {
         json.append(identation+"   \"performative\" : \""+ getIlForce() + "\",\n");
         json.append(identation+"   \"sender\" : \""+ getSender() + "\",\n");
         json.append(identation+"   \"receiver\" : \""+ getReceiver() + "\",\n");
-        json.append(identation+"   \"id\" : \""+ getMsgId() + "\",\n");
-        json.append(identation+"   \"in_reply_to\" : \""+ getInReplyTo() + "\",\n");
-        json.append(identation+"   \"content_str\" : \""+ getPropCont() + "\",\n");
+        json.append(identation+"   \"msgId\" : \""+ getMsgId() + "\",\n");
+        if (getInReplyTo() != null)
+            json.append(identation+"   \"inReplyTo\" : \""+ getInReplyTo() + "\",\n");
         if (getPropCont() instanceof Literal)
-            json.append(identation+"   \"content\" : "+ ((Literal)getPropCont()).getAsJSON(identation+"   ") + "\n");
-        else
-            json.append(identation+"   \"content\" : \""+ getPropCont() + "\"\n");
+            json.append(identation+"   \"predicate\" : "+ ((Literal)getPropCont()).getAsJSON(identation+"   ") + ",\n");
+        String content = getPropCont().toString().replaceAll("\"", "\\\\\"");
+        json.append(identation+"   \"content\" : \""+ content + "\"\n");
 
         json.append(identation+"}");
         return json.toString();
