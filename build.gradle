@@ -19,8 +19,10 @@ apply plugin: 'signing'
 version '2.6-SNAPSHOT'
 group   'org.jason'
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+compileJava {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
 
 
 repositories {
