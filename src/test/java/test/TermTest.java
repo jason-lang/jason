@@ -1260,10 +1260,8 @@ public class TermTest extends TestCase {
                 "   \"performative\" : \"tell\",\n" +
                 "   \"sender\" : \"bob\",\n" +
                 "   \"receiver\" : \"karlos\",\n" +
-                "   \"id\" : \"myuniqueid\",\n" +
-                "   \"in_reply_to\" : \"null\",\n" +
-                "   \"content_str\" : \"b(a,[2,1])\",\n" +
-                "   \"content\" :    {\n" +
+                "   \"msgId\" : \"myuniqueid\",\n" +
+                "   \"predicate\" :    {\n" +
                 "      \"functor\" : \"b\",\n" +
                 "      \"terms\"   : [\n" +
                 "         {\n" +
@@ -1274,7 +1272,8 @@ public class TermTest extends TestCase {
                 "            1\n" +
                 "         ]\n" +
                 "      ]\n" +
-                "   }\n" +
+                "   },\n" +
+                "   \"content\" : \"b(a,[2,1])\"\n" +
                 "}", m.getAsJSON(""));
     }
 }
