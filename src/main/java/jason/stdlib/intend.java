@@ -99,13 +99,13 @@ public class intend extends DefaultInternalAction {
     @Override
     public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {
         checkArguments(args);
-        return allIntentions(ts.getC(),(Literal)args[0],args.length == 2 ? args[1] : null, un);
+        return allIntentions(ts.getC(),(Literal)args[0],args.length == 2 ? args[1] : null, un, false);
     }
 
     /**
      * returns all unifications for intentions with some goal
      */
-    public static Iterator<Unifier> allIntentions(final Circumstance C, final Literal l, final Term intAsTerm, final Unifier un) {
+    public static Iterator<Unifier> allIntentions(final Circumstance C, final Literal l, final Term intAsTerm, final Unifier un, final boolean considerSuspended) {
         final Trigger g = new Trigger(TEOperator.add, TEType.achieve, l);
 
         return new Iterator<Unifier>() {
@@ -145,7 +145,8 @@ public class intend extends DefaultInternalAction {
 
                 if (intInterator.hasNext()) {
                     curInt = intInterator.next();
-                    intIM  = curInt.iterator();
+                    if (!(considerSuspended && curInt.isSuspended()))
+                        intIM  = curInt.iterator();
                     find();
                     return;
                 } else {

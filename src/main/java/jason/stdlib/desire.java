@@ -154,7 +154,7 @@ public class desire extends intend {
 
                 case useIntends:
                     if (intendInterator == null)
-                        intendInterator = allIntentions(C,l,intAsTerm,un);
+                        intendInterator = allIntentions(C,l,intAsTerm,un,true);
 
                     if (intendInterator.hasNext()) {
                         solution = intendInterator.next();
