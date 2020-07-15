@@ -1,16 +1,18 @@
 package jason.asSemantics;
 
-import jason.asSyntax.ASSyntax;
-import jason.asSyntax.parser.ParseException;
-
 import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import jason.asSyntax.ASSyntax;
+import jason.asSyntax.Literal;
+import jason.asSyntax.parser.ParseException;
+import jason.util.ToJSON;
 
-public class Message implements Serializable {
+
+public class Message implements Serializable, ToJSON {
 
     private static final long serialVersionUID = 7914409028691033870L;
-    
+
     private String ilForce  = null;
     private String sender   = null;
     private String receiver = null;
@@ -127,6 +129,25 @@ public class Message implements Serializable {
 
     public Message clone() {
         return new Message(this);
+    }
+
+    @Override
+    public String getAsJSON(String identation) {
+        StringBuilder json = new StringBuilder(identation+"{\n");
+
+        json.append(identation+"   \"performative\" : \""+ getIlForce() + "\",\n");
+        json.append(identation+"   \"sender\" : \""+ getSender() + "\",\n");
+        json.append(identation+"   \"receiver\" : \""+ getReceiver() + "\",\n");
+        json.append(identation+"   \"id\" : \""+ getMsgId() + "\",\n");
+        json.append(identation+"   \"in_reply_to\" : \""+ getInReplyTo() + "\",\n");
+        json.append(identation+"   \"content_str\" : \""+ getPropCont() + "\",\n");
+        if (getPropCont() instanceof Literal)
+            json.append(identation+"   \"content\" : "+ ((Literal)getPropCont()).getAsJSON(identation+"   ") + "\n");
+        else
+            json.append(identation+"   \"content\" : \""+ getPropCont() + "\"\n");
+
+        json.append(identation+"}");
+        return json.toString();
     }
 
     /**
