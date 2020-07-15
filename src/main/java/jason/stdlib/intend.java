@@ -5,6 +5,7 @@ import java.util.Iterator;
 import jason.JasonException;
 import jason.asSemantics.Circumstance;
 import jason.asSemantics.DefaultInternalAction;
+import jason.asSemantics.IntendedMeans;
 import jason.asSemantics.Intention;
 import jason.asSemantics.TransitionSystem;
 import jason.asSemantics.Unifier;
@@ -111,38 +112,44 @@ public class intend extends DefaultInternalAction {
             Unifier solution = null; // the current response (which is an unifier)
             Intention curInt = null;
             Iterator<Intention> intInterator = C.getAllIntentions();
+            Iterator<IntendedMeans> intIM = null;
 
-            { find(); } // find first answer
+            {
+                find(); // find first answer
+            }
 
             public boolean hasNext() {
                 return solution != null;
             }
 
             public Unifier next() {
-                if (solution == null) find();
                 Unifier b = solution;
                 find(); // find next response
                 return b;
             }
             public void remove() {}
 
-            boolean isSolution() {
-                solution = un.clone();
-                if (curInt.hasTrigger(g, solution)) {
-                    if (intAsTerm != null) {
-                        return solution.unifies(intAsTerm, ASSyntax.createNumber( curInt.getId() )); //curInt.getAsTerm());
-                    } else {
-                        return true;
+            void find() {
+                while (intIM != null && intIM.hasNext()) {
+                    IntendedMeans im = intIM.next();
+                    solution = un.clone();
+                    if (solution.unifies(g, im.getTrigger())) {
+                        if (intAsTerm != null) {
+                            if (solution.unifies(intAsTerm, ASSyntax.createNumber( curInt.getId() )))
+                                return;
+                        } else {
+                            return;
+                        }
                     }
                 }
-                return false;
-            }
 
-            void find() {
-                while (intInterator.hasNext()) {
+                if (intInterator.hasNext()) {
                     curInt = intInterator.next();
-                    if (isSolution())
-                        return;
+                    intIM  = curInt.iterator();
+                    find();
+                    return;
+                } else {
+                    intIM = null;
                 }
                 solution = null; // nothing found
             }
