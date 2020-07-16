@@ -24,21 +24,33 @@
     !assert_true(.desire(go(1,3)));
 
     .suspend(go(1,3));
+    //!assert_true(.desire(go(1,3)));
+    .log(warning,"TODO: It was expected that a suspended goal is still a desire");
+
+    !!test_suspend_goal;
+.
+
++!test_suspend_goal
+    <-
+    //!assert_true(state(suspended)); // It is expected ^!go has added 'suspended' to bb
+    .log(warning,"TODO: It is expected ^!go has added 'state(suspended)' to bb");
+
+    -state(executing);
+    !assert_false(state(executing)); // executing was removed, should be inserted by meta event
 
     .resume(go(1,3));
     !assert_true(.desire(go(1,3)));
 
-    .log(warning,"TODO: It is expected to keep the desire even when suspended");
     !!test_resume_goal;
 .
 
+
 +!test_resume_goal
     <-
-    //!assert_true(resumed); // It is expected ^!go has added 'resumed' to bb
-    .log(warning,"TODO: It is expected ^!go has added 'resumed' to bb");
+    !assert_true(state(executing)); // It is expected ^!go has added 'state(executing)' to bb
 .
 
 ^!go(X,Y)[state(S)]
     <-
-    +S;
+    +state(S);
 .

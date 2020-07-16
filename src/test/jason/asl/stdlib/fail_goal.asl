@@ -35,11 +35,11 @@
 
 +!test_fail_goal
     <-
-    .log(warning,"TODO: +!test_fail_goal <- !assert_true(failed) has no current intention!");
-    !assert_true(failed); // It is expected ^!go has added 'failed' to bb
+    .log(warning,"TODO: +!test_fail_goal <- !assert_true(state(failed)) has no current intention!");
+    !assert_true(state(failed)); // It is expected ^!go has added 'state(failed)' to bb
 .
 
 ^!go(X,Y)[state(S)]
     <-
-    +S;
+    +state(S);
 .
