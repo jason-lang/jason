@@ -1,9 +1,12 @@
+// to be run with
+//     jason unit_tests_2.mas2j
+
 MAS unit_tests {
 
     infrastructure: Centralised
 
     agents:
-        test_manager [goals="create_tester_agents(\"./src/test/jason\")"];
+        test_manager [goals="create_tester_agents(\"./asl\")"];
 
     aslSourcePath: "src/test/jason/inc";"src/test/jason/asl";"inc";
 }

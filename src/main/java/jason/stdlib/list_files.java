@@ -118,6 +118,8 @@ public class list_files extends DefaultInternalAction {
     }
 
     void listFiles(final String pattern, final File folder, List<Term> fileList) {
+        if (folder.listFiles() == null)
+            return;
         for (final File file : folder.listFiles()) {
             if (file.isFile()) {
                 if (file.getName().matches(pattern)) {

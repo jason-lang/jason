@@ -18,7 +18,6 @@ shutdown_hook.          // enable to shutdown after finishing tests
  * Startup operations
  */
 !set_controller.          // starts test controller operations
-!create_tester_agents.      // create agents by .asl files in test/agt/
 
 /**
  * setup of the controller, including hook for shutdown
@@ -68,12 +67,13 @@ shutdown_hook.          // enable to shutdown after finishing tests
 /**
  * create agents by files present in folder test/agt/
  */
-@create_tester_agents[atomic]
-+!create_tester_agents :
+@[atomic]
++!create_tester_agents(Path) :
     .my_name(test_manager)
     <-
-    .list_files("./src/test/jason/inc",".*.asl",IGNORE);
-    .list_files("./src/test/jason/",".*.asl",FILES);
+    .concat(Path,"/inc",PathInc);
+    .list_files(PathInc,".*.asl",IGNORE);
+    .list_files(Path,".*.asl",FILES);
     for (.member(M,FILES)) {
       if (not .nth(N,IGNORE,M)) {
         for (.substring("/",M,R)) {
@@ -87,7 +87,7 @@ shutdown_hook.          // enable to shutdown after finishing tests
       }
     }
 .
-+!create_tester_agents. // avoid plan not found for asl that includes controller
++!create_tester_agents(_). // avoid plan not found for asl that includes controller
 
 /**
  * Statistics for tests (passed/failed)
