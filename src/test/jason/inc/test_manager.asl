@@ -68,12 +68,12 @@ shutdown_hook.          // enable to shutdown after finishing tests
  * create agents by files present in folder test/agt/
  */
 @[atomic]
-+!create_tester_agents(Path) :
++!create_tester_agents(Path,Files) :
     .my_name(test_manager)
     <-
     .concat(Path,"/inc",PathInc);
-    .list_files(PathInc,".*.asl",IGNORE);
-    .list_files(Path,".*.asl",FILES);
+    .list_files(PathInc,Files,IGNORE);
+    .list_files(Path,Files,FILES);
     for (.member(M,FILES)) {
       if (not .nth(N,IGNORE,M)) {
         for (.substring("/",M,R)) {
@@ -87,7 +87,7 @@ shutdown_hook.          // enable to shutdown after finishing tests
       }
     }
 .
-+!create_tester_agents(_). // avoid plan not found for asl that includes controller
++!create_tester_agents(_,_). // avoid plan not found for asl that includes controller
 
 /**
  * Statistics for tests (passed/failed)
