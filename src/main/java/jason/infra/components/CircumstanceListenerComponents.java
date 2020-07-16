@@ -4,6 +4,7 @@ import jason.asSemantics.CircumstanceListener;
 import jason.asSemantics.Event;
 import jason.asSemantics.Intention;
 import jason.asSyntax.Term;
+import jason.asSyntax.Trigger;
 import jason.infra.centralised.CentralisedAgArchAsynchronous;
 
 public class CircumstanceListenerComponents implements CircumstanceListener {
@@ -33,7 +34,7 @@ public class CircumstanceListenerComponents implements CircumstanceListener {
         notifyDeliberate();
     }
 
-    @Override public void intentionSuspended(Intention i, Term reason) {
+    @Override public void intentionSuspended(Trigger t, Intention i, Term reason) {
         notifyDeliberate();
     }
 

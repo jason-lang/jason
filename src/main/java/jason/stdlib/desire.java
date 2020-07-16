@@ -84,7 +84,7 @@ public class desire extends intend {
         return allDesires(ts.getC(),(Literal)args[0],args.length == 2 ? args[1] : null, un);
     }
 
-    enum Step { selEvt, evt, useIntends, end }
+    enum Step { selEvt, evt, pendEvt, useIntends, end }
 
     public static Iterator<Unifier> allDesires(final Circumstance C, final Literal l, final Term intAsTerm, final Unifier un) {
         final Trigger teFromL = new Trigger(TEOperator.add, TEType.achieve, l);
@@ -94,6 +94,7 @@ public class desire extends intend {
             Unifier solution = null; // the current response (which is an unifier)
             Iterator<Event>      evtIterator     = null;
             Iterator<Unifier>    intendInterator = null;
+            Iterator<Event>      pendEvtIterator = null;
 
             { find(); }
 
@@ -142,6 +143,23 @@ public class desire extends intend {
                         if (i != Intention.EmptyInt && !i.isFinished()) {
                             t = t.capply(i.peek().getUnif());
                         }
+                        solution = un.clone();
+                        if (solution.unifiesNoUndo(teFromL, t)) {
+                            return;
+                        }
+                    } else {
+                        curStep = Step.pendEvt; // set next step
+                    }
+                    find();
+                    return;
+
+                case pendEvt:
+                    if (pendEvtIterator == null)
+                    	pendEvtIterator = C.getPendingEvents().values().iterator();
+
+                    if (pendEvtIterator.hasNext()) {
+                        Event   ei = pendEvtIterator.next();
+                        Trigger t = ei.getTrigger();
                         solution = un.clone();
                         if (solution.unifiesNoUndo(teFromL, t)) {
                             return;

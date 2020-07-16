@@ -169,7 +169,7 @@ public class suspend extends DefaultInternalAction {
                 C.addPendingEvent(SUSPENDED_INT+e.getTrigger()+(c++), reason, e);
                 if (i != null)
                     i.setSuspended(true);
-                //System.out.println("sus "+g+" from E "+e.getTrigger());
+                //System.out.println("sus "+g+" from E "+e.getTrigger()+". i="+i);
             }
 
 

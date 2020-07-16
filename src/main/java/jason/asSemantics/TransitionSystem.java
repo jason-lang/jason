@@ -144,11 +144,9 @@ public class TransitionSystem implements Serializable {
                         gl.goalFinished(im.getTrigger(), GoalStates.dropped);
             }
 
-            @Override public void intentionSuspended(Intention i, Term reason) {
-                //for (IntendedMeans im: i)
-                IntendedMeans im = i.peek();
-                if (im.getTrigger().isAddition() && im.getTrigger().isGoal())
-                    gl.goalSuspended(im.getTrigger(), reason);
+            @Override public void intentionSuspended(Trigger t, Intention i, Term reason) {
+                if (t.isAddition() && t.isGoal())
+                    gl.goalSuspended(t, reason);
             }
             @Override public void intentionWaiting(Intention i, Term reason) {
                 //for (IntendedMeans im: i)

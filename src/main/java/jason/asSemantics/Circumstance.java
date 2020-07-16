@@ -432,7 +432,7 @@ public class Circumstance implements Serializable {
         if (listeners != null)
             for (CircumstanceListener el : listeners)
                 if (suspend)
-                    el.intentionSuspended(i, reason);
+                    el.intentionSuspended(i.peek().getTrigger(), i, reason);
                 else
                     el.intentionWaiting(i, reason);
     }
@@ -495,9 +495,9 @@ public class Circumstance implements Serializable {
     public void addPendingEvent(String id, Term reason, Event e) {
         PE.put(id, e);
 
-        if (listeners != null && e.getIntention() != null)
+        if (listeners != null)
             for (CircumstanceListener el : listeners)
-                el.intentionSuspended(e.getIntention(), reason);
+                el.intentionSuspended(e.getTrigger(), e.getIntention(), reason);
     }
 
     public Event removePendingEvent(String pendingId) {
