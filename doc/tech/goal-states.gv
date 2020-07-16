@@ -21,8 +21,8 @@ digraph goal_states {
 
      C->E[label=< has applicable<br/>plan<br/>>,fontsize="8",arrowsize=0.5];
 
-     E->S[label=<.suspend>,fontsize="8",arrowsize=0.5];
-     S->E[label=<  .resume>,fontsize="8",arrowsize=0.5];
+     {E,P}->S[label=<.suspend>,fontsize="8",arrowsize=0.5];
+     S->{E,P}[label=<  .resume>,fontsize="8",arrowsize=0.5];
 
      E->P[label=<act <br/> .wait<br/>>,fontsize="8",arrowsize=0.5];
      P->E[label=<>,fontsize="8",arrowsize=0.5];

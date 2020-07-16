@@ -5,6 +5,7 @@ import java.util.Iterator;
 import jason.JasonException;
 import jason.asSemantics.ActionExec;
 import jason.asSemantics.Circumstance;
+import jason.asSemantics.CircumstanceListener;
 import jason.asSemantics.DefaultInternalAction;
 import jason.asSemantics.Event;
 import jason.asSemantics.Intention;
@@ -136,6 +137,10 @@ public class suspend extends DefaultInternalAction {
         for (Intention i: C.getPendingIntentions().values()) {
             if (i.hasTrigger(g, un)) {
                 i.setSuspended(true);
+
+                if (C.getListeners() != null)
+                    for (CircumstanceListener el : C.getListeners())
+                        el.intentionSuspended(g, i, reason);
             }
         }
 

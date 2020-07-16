@@ -16,7 +16,7 @@
      */
     .add_plan({
       +!go(X,Y) <-
-          .wait(10); // An arbitrary delay
+          .wait(500); // An arbitrary delay
     }, self, begin);
 
     // Trigger the mock plan to test desire
@@ -28,24 +28,19 @@
 
 +!test_waiting_goal
     <-
-    !assert_true(state(waiting)); // It is expected to be suspended since go(X,Y) is always on .wait
-
+    .wait(100); // waits !go to execute .wait
+    !assert_true(state(waiting)); // It is expected to be witing since go(X,Y) is always on .wait
     .suspend(go(1,3));
     !!test_suspended_goal;
 .
 
 +!test_suspended_goal
     <-
-    //!assert_true(state(suspended)); // It is expected ^!go has added 'state(waiting)' to bb
-    .log(warning,"TODO: It is expected ^!go has added 'state(suspended)' to bb");
+    .wait(100); // gives some time for the meta-event to be processed
+    !assert_true(state(suspended));
 
-    .suspended(go(1,3),R2); // Just calling .suspended() from outside of a test
-
-    //!assert_false(.string(R2));
-    .log(warning,"TODO: It is expected not a string after .suspended(_,R) unification");
-
-    //R2 = wait(W)[time(T)];
-    //!assert_equals(10,T);
+    .suspended(go(1,3), wait(W)[time(T)]); // Just calling .suspended() from outside of a test
+    !assert_equals(500,T);
 .
 
 ^!go(X,Y)[state(S)]
