@@ -26,10 +26,8 @@ shutdown_hook.          // enable to shutdown after finishing tests
 +!set_controller :
     .my_name(test_manager)
     <-
-    .log(info,"\n\n");
-    .log(info,"Starting Jason unit tests...\n\n");
-
     .at("now +2 s", {+!shutdown_after_tests});
+    .log(info,"Set hook to shutdown");
 .
 +!set_controller. // avoid plan not found for asl that includes controller
 
