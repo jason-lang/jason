@@ -37,6 +37,12 @@
     -+test_passed;
     .log(info,"Intention ",ID," PASSED");
 .
++!assert_equals(X,Y) :
+    true
+    <-
+    .log(severe,"Intention 'unknown' FAILED! Assert equals expected ",X," but had ",Y);
+    .fail;
+.
 -!assert_equals(X,Y) :
     true
     <-
@@ -59,6 +65,12 @@
         .log(info,"Intention ",ID," PASSED");
     }
 .
++!assert_equals(X,Y,T) :
+    true
+    <-
+    .log(severe,"Intention 'unknown' FAILED! Assert equals expected ",X,"+/-",T,", but had ",Y);
+    .fail;
+.
 -!assert_equals(X,Y,T) :
     true
     <-
@@ -70,8 +82,7 @@
  */
 @assert_true[atomic]
 +!assert_true(X) :
-    .intention(ID,_)
-    //.intention(ID,_,_,current)
+    .intention(ID,_,_,current)
     <-
     if (not X) {
         .log(severe,"Intention ",ID," FAILED! Assert true expected ",X);
@@ -80,6 +91,12 @@
         -+test_passed;
         .log(info,"Intention ",ID," PASSED");
     }
+.
++!assert_true(X) :
+    true
+    <-
+    .log(severe,"Intention 'unknown' FAILED! Assert true expected ",X);
+    .fail;
 .
 -!assert_true(X) :
     true
@@ -102,6 +119,12 @@
         .log(info,"Intention ",ID," PASSED");
     }
 .
++!assert_false(X) :
+    true
+    <-
+    .log(severe,"Intention 'unknown' FAILED! Assert false expected not ",X);
+    .fail;
+.
 -!assert_false(X) :
     true
     <-
@@ -117,6 +140,12 @@
     <-
     -+test_passed;
     .log(info,"Intention ",ID," PASSED");
+.
++!force_pass :
+    true
+    <-
+    .log(severe,"Intention 'unknown' FAILED! force_pass");
+    .fail;
 .
 -!force_pass : // Only pass if not applicable
     true
@@ -134,6 +163,12 @@
     .log(severe,"Intention ",ID," forcedly FAILED! Msg: ",MSG);
     .fail;
 .
++!force_failure(MSG) :
+    true
+    <-
+    .log(severe,"Intention 'unknown' FAILED! force_failure");
+    .fail;
+.
 -!force_failure(MSG) : // Only failure if not applicable
     true
     <-
@@ -148,11 +183,17 @@
     .intention(ID,_,_,current)
     <-
     if (not .member(Y,X)) {
-        .log(severe,"Intention ",ID," FAILED! Assert equals expected ",X," but had ",Y);
+        .log(severe,"Intention ",ID," FAILED! Assert contains expected ",Y," in ",Y);
         .fail;
     }
     -+test_passed;
     .log(info,"Intention ",ID," PASSED");
+.
++!assert_contains(X,Y) :
+    true
+    <-
+    .log(severe,"Intention 'unknown' FAILED! Assert contains expected ",Y," in ",Y);
+    .fail;
 .
 -!assert_contains(X,Y) :
     true
