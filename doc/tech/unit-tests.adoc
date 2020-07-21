@@ -100,15 +100,17 @@ Let us say, `bob` is not doing sums correctly, let us say the content of `bob.as
 sum(X,Y,R):-R = X + Y - 1. /* Notice, this -1 will make all sums wrong!!! */
 ----
 
-For this failure condition, running `./gradlew test --info` the result for this test should be (the id of the intention may varies):
+For this failure condition, running `./gradlew test` the result for this test should be:
 
 ----
-[test_bob] assert_equals on goal 'test_sum' FAILED! Expected 3.9+/-0.1, but had 2.9000000000000004
+[test_bob] assert_equals on event 'test_sum' starting at line 1 FAILED! Expected 3.9+/-0.1, but had 2.9000000000000004
 [test_manager] #1 plans executed, #0 passed and #1 FAILED.
 [test_manager] End of Jason unit tests: FAILED!
 > Task :testJason FAILED
 BUILD FAILED in 3s
 ----
+
+Notice that failures are severe messages that will be shown regardless '--info' is set or not on gradle test command.
 
 == The library
 
