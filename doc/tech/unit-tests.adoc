@@ -87,10 +87,9 @@ Running `./gradlew test` the result for this test should be:
 BUILD SUCCESSFUL in 3s
 ----
 
-Running `./gradlew test --info` the result for this test should be (the id of the intention may varies):
+Running `./gradlew test --info` the result for this test should be:
 ----
-[test_bob] TESTING 2 (main plan: test_sum[atomic])
-[test_bob] Intention 3 PASSED
+[test_bob] assert_equals on goal 'test_sum' PASSED
 [test_manager] #1 plans executed, #1 PASSED and #0 failed.
 [test_manager] End of Jason unit tests: PASSED
 BUILD SUCCESSFUL in 3s
@@ -104,8 +103,7 @@ sum(X,Y,R):-R = X + Y - 1. /* Notice, this -1 will make all sums wrong!!! */
 For this failure condition, running `./gradlew test --info` the result for this test should be (the id of the intention may varies):
 
 ----
-[test_bob] TESTING 2 (main plan: test_sum[atomic])
-[test_bob] Intention 3 FAILED! Assert equals expected 3.9+/-0.1, but had 2.9000000000000004
+[test_bob] assert_equals on goal 'test_sum' FAILED! Expected 3.9+/-0.1, but had 2.9000000000000004
 [test_manager] #1 plans executed, #0 passed and #1 FAILED.
 [test_manager] End of Jason unit tests: FAILED!
 > Task :testJason FAILED

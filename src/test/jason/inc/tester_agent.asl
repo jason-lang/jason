@@ -48,7 +48,7 @@ auto_create_fail_plan.  // create -!P fail plan to capture unexpected failures
 +!execute_test_plan(P) :
     .intention(ID,_,_,current)
     <-
-    .log(info,"TESTING ",ID," (main plan: ",P,")");
+    .log(fine,"TESTING ",ID," (main plan: ",P,")");
     !P;
 .
 
