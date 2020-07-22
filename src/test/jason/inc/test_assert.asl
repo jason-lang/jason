@@ -17,7 +17,7 @@
         .fail;
     } else {
         +test(Test,passed,Src,Line)[assert_equals(X,Y)];
-        .log(info,"assert_equals on goal '",Goal,"' PASSED");
+        .log(info,"assert_equals on event '",Goal,"' PASSED");
     }
 .
 +!assert_equals(X,Y) : // compare lists
@@ -37,7 +37,7 @@
         }
     }
     +test(Test,passed,Src,Line)[assert_equals(X,Y)];
-    .log(info,"assert_equals on goal '",Goal,"' PASSED");
+    .log(info,"assert_equals on event '",Goal,"' PASSED");
 .
 +!assert_equals(X,Y) :
     true
@@ -65,7 +65,7 @@
         .fail;
     } else {
         +test(Test,passed,Src,Line)[assert_equals(X,Y,T)];
-        .log(info,"assert_equals on goal '",Goal,"' PASSED");
+        .log(info,"assert_equals on event '",Goal,"' PASSED");
     }
 .
 +!assert_equals(X,Y,T) :
@@ -92,7 +92,7 @@
         .log(severe,"assert_true on event '",Goal,"' starting at line ",Line," FAILED! Expected ",X);
         .fail;
     } else {
-        .log(info,"assert_true on goal '",Goal,"' PASSED");
+        .log(info,"assert_true on event '",Goal,"' PASSED");
         +test(Test,passed,Src,Line)[assert_true(_)];
         .log(warning,"TODO: error when sending annotation assert_true(X): at jason.asSemantics.Unifier.get(Unifier.java:59)");
     }
@@ -122,7 +122,7 @@
         .fail;
     } else {
         +test(Test,passed,Src,Line)[assert_false(X)];
-        .log(info,"assert_false on goal '",Goal,"' PASSED");
+        .log(info,"assert_false on event '",Goal,"' PASSED");
     }
 .
 +!assert_false(X) :
@@ -146,7 +146,7 @@
     _[code_line(Line),code_src(Src)] = Label
     <-
     +test(Test,passed,Src,Line)[force_pass];
-    .log(info,"force_pass on goal '",Goal,"' PASSED");
+    .log(info,"force_pass on event '",Goal,"' PASSED");
 .
 +!force_pass :
     true
@@ -168,7 +168,7 @@
     .intention(ID,_,[ im(Label,{+!Goal[An]},{ Test; _ },_)|_],current) &
     _[code_line(Line),code_src(Src)] = Label
     <-
-    .log(severe,"force_failure on goal '",Goal,"' forcedly FAILED! Msg: ",MSG);
+    .log(severe,"force_failure on event '",Goal,"' forcedly FAILED! Msg: ",MSG);
     .fail;
 .
 +!force_failure(MSG) :
@@ -196,7 +196,7 @@
         .fail;
     }
     +test(Test,passed,Src,Line)[assert_contains(X,Y)];
-    .log(info,"assert_contains on goal '",Goal,"' PASSED");
+    .log(info,"assert_contains on event '",Goal,"' PASSED");
 .
 +!assert_contains(X,Y) :
     true

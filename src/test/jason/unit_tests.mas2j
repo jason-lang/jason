@@ -4,6 +4,7 @@ MAS unit_tests {
 
     agents:
         test_manager [goals="create_tester_agents(\"./src/test/jason\",\".*.asl\")"];
+        self_tester;
 
     aslSourcePath: "src/test/jason/inc";"src/test/jason/asl";"inc";
 }

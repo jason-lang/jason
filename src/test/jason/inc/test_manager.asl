@@ -2,7 +2,7 @@
  * Test manager provides general test configurations and facilities
  */
 
- /**
+/**
  * Setup statistics
  */
 tests_performed(0).
