@@ -55,16 +55,9 @@ auto_create_fail_plan.  // create -!P fail plan to capture unexpected failures
 /**
  * Send data to test_manager
  */
-@test_passed[atomic]
-+test_passed :
+@test_counter[atomic]
++test(Test,Result,Src,Line)[An] :
     true
     <-
-    .send(test_manager,achieve,count_tests(passed));
-.
-
-@test_failed[atomic]
-+test_failed :
-    true
-    <-
-    .send(test_manager,achieve,count_tests(failed));
+    .send(test_manager,achieve,count_tests(Result));
 .

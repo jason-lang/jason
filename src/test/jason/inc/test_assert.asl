@@ -7,7 +7,7 @@
  * IMPORTANT! Do no use this method to compare float numbers
  */
 @assert_equals[atomic]
-+!assert_equals(X,Y) :
++!assert_equals(X,Y) : // compare terms
     .intention(ID,_,[ im(Label,{+!Goal[An]},{ Test; _ },_)|_],current) &
     _[code_line(Line),code_src(Src)] = Label &
     not .list(X) & not .list(Y)
@@ -16,12 +16,13 @@
         .log(severe,"assert_equals on event '",Goal,"' starting at line ",Line," FAILED! Expected ",X," but had ",Y);
         .fail;
     } else {
-        -+test_passed;
+        +test(Test,passed,Src,Line)[assert_equals(X,Y)];
         .log(info,"assert_equals on goal '",Goal,"' PASSED");
     }
 .
-+!assert_equals(X,Y) :
-    .intention(ID,_,[ im(_,{+!Goal[An]},_,_)|_],current)
++!assert_equals(X,Y) : // compare lists
+    .intention(ID,_,[ im(Label,{+!Goal[An]},{ Test; _ },_)|_],current) &
+    _[code_line(Line),code_src(Src)] = Label
     <-
     for (.member(Xth,X)) {
         if (not .member(Xth,Y)) {
@@ -35,7 +36,7 @@
             .fail;
         }
     }
-    -+test_passed;
+    +test(Test,passed,Src,Line)[assert_equals(X,Y)];
     .log(info,"assert_equals on goal '",Goal,"' PASSED");
 .
 +!assert_equals(X,Y) :
@@ -47,7 +48,7 @@
 -!assert_equals(X,Y) :
     true
     <-
-    -+test_failed;
+    +test(Test,failed,Src,Line)[assert_equals(X,Y)];
 .
 
 /**
@@ -63,7 +64,7 @@
         .log(severe,"assert_equals on event '",Goal,"' starting at line ",Line," FAILED! Expected ",X,"+/-",T,", but had ",Y);
         .fail;
     } else {
-        -+test_passed;
+        +test(Test,passed,Src,Line)[assert_equals(X,Y,T)];
         .log(info,"assert_equals on goal '",Goal,"' PASSED");
     }
 .
@@ -76,7 +77,7 @@
 -!assert_equals(X,Y,T) :
     true
     <-
-    -+test_failed;
+    +test(Test,failed,Src,Line)[assert_equals(X,Y,T)];
 .
 
 /**
@@ -91,8 +92,9 @@
         .log(severe,"assert_true on event '",Goal,"' starting at line ",Line," FAILED! Expected ",X);
         .fail;
     } else {
-        -+test_passed;
         .log(info,"assert_true on goal '",Goal,"' PASSED");
+        +test(Test,passed,Src,Line)[assert_true(_)];
+        .log(warning,"TODO: error when sending annotation assert_true(X): at jason.asSemantics.Unifier.get(Unifier.java:59)");
     }
 .
 +!assert_true(X) :
@@ -104,7 +106,7 @@
 -!assert_true(X) :
     true
     <-
-    -+test_failed;
+    +test(Test,failed,Src,Line)[assert_true(X)];
 .
 
 /**
@@ -119,7 +121,7 @@
         .log(severe,"assert_false on event '",Goal,"' starting at line ",Line," FAILED! Expected not ",X);
         .fail;
     } else {
-        -+test_passed;
+        +test(Test,passed,Src,Line)[assert_false(X)];
         .log(info,"assert_false on goal '",Goal,"' PASSED");
     }
 .
@@ -132,7 +134,7 @@
 -!assert_false(X) :
     true
     <-
-    -+test_failed;
+    +test(Test,failed,Src,Line)[assert_false(X)];
 .
 
 /**
@@ -143,7 +145,7 @@
     .intention(ID,_,[ im(Label,{+!Goal[An]},{ Test; _ },_)|_],current) &
     _[code_line(Line),code_src(Src)] = Label
     <-
-    -+test_passed;
+    +test(Test,passed,Src,Line)[force_pass];
     .log(info,"force_pass on goal '",Goal,"' PASSED");
 .
 +!force_pass :
@@ -155,7 +157,7 @@
 -!force_pass : // Only pass if not applicable
     true
     <-
-    -+test_failed;
+    +test(Test,failed,Src,Line)[force_pass];
 .
 
 /**
@@ -178,7 +180,7 @@
 -!force_failure(MSG) : // Only failure if not applicable
     true
     <-
-    -+test_failed;
+    +test(Test,failed,Src,Line)[force_failure];
 .
 
 /**
@@ -193,7 +195,7 @@
         .log(severe,"assert_contains on event '",Goal,"' starting at line ",Line," FAILED! Expected ",Y," in ",X);
         .fail;
     }
-    -+test_passed;
+    +test(Test,passed,Src,Line)[assert_contains(X,Y)];
     .log(info,"assert_contains on goal '",Goal,"' PASSED");
 .
 +!assert_contains(X,Y) :
@@ -205,5 +207,5 @@
 -!assert_contains(X,Y) :
     true
     <-
-    -+test_failed;
+    +test(Test,failed,Src,Line)[assert_contains(X,Y)];
 .
