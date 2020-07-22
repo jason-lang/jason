@@ -8,7 +8,7 @@
 
 !execute_test_plans.
 
-@test_current_intention[atomic]
+@test_current_intention[atomic,test]
 +!test_current_intention
     <-
     .current_intention(intention(Id,[im(L,_,_,_)|_]));

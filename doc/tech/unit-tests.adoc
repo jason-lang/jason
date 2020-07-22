@@ -38,7 +38,7 @@ Jason tests is a NOT cacheable gradle task which means it runs completely every 
 
 The tester agents that imports the skeleton `tester_agent.asl` are equipped with the test library such as assertion plans.
 
-All plans in which the label starts with @test will be automatically launched by the test task.
+All plans in which the label has the annotation `test` will be automatically launched by the test task.
 
 == Using the test engine
 
@@ -51,7 +51,7 @@ All plans in which the label starts with @test will be automatically launched by
   ```
  { include("bob.asl") }
   ```
-4. Activate auto execution of plans labeled with `test`
+4. Activate auto execution of plans in which the label has the annotation `test`
  ```
  !execute_test_plans.
  ```
@@ -72,7 +72,7 @@ To test it, we can create a tester agent following the steps above. The content 
 
 !execute_test_plans.
 
-@test_sum[atomic] /* Notice the label starts with @test for automated launch */
+@[atomic,test] /* Notice the label with annotation test will be automatically launched */
 +!test_sum :
     true
     <-

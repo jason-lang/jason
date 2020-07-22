@@ -8,7 +8,7 @@
 
 !execute_test_plans.
 
-@test_substring[atomic]
+@[atomic,test]
 +!test_substring
     <-
     !assert_false(.substring("b","aaa"));
@@ -44,7 +44,7 @@
 /**
  * Test if substring(_,_,0) really works as java startsWith
  */
-@test_starts_with[atomic]
+@[atomic,test]
 +!test_starts_with
     <-
     // Test startswith

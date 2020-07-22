@@ -14,16 +14,22 @@ auto_create_fail_plan.  // create -!P fail plan to capture unexpected failures
  */
 @execute_plans[atomic]
 +!execute_test_plans:
-    .relevant_plans({+!_},_,LL)
+    .relevant_plans({+!_},LP,LL)
     <-
     !create_default_fail_plan;
 
-    for (.member(P,LL)) {
-        if (.substring("test",P,0)) {
+    for (.member(Label,LL)) {
+        Label = Name[Head|Tail];
+
+        if ((Head == test) | (.list(Tail) & (.member(test,Tail)))) {
+
+            .findall(T, .member(P,LP) & P = {@L +!T : C <- B} & Label = L, Plans);
+            .member(Plan,Plans); // it is expected only one plan in the list
+
             /**
-             * Execute the @test plan
+             * Execute the test plan
              */
-            !!execute_test_plan(P);
+            !!execute_test_plan(Plan);
         }
     }
 .

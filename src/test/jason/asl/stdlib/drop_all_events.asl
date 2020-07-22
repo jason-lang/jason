@@ -8,7 +8,7 @@
 
 !execute_test_plans.
 
-@test_drop_all_events[atomic]
+@[atomic,test]
 +!test_drop_all_events
     <-
     /**

@@ -32,7 +32,7 @@ tests_passed(0).
 /**
  * Send data to test_manager
  */
-@test_counter_passed[atomic]
+@[atomic]
 +test(Test,passed,Src,Line)[An] :
     tests_performed(N) &
     tests_passed(P)
@@ -40,7 +40,7 @@ tests_passed(0).
     -+tests_performed(N+1);
     -+tests_passed(P+1);
 .
-@test_counter_failed[atomic]
+@[atomic]
 +test(Test,failed,Src,Line)[An] :
     tests_performed(N) &
     tests_failed(F)
@@ -52,7 +52,7 @@ tests_passed(0).
 /**
  * Test all asserts, both passed and failed
  */
-@self_test_asserts[atomic]
+@[atomic]
 +!self_test_asserts :
     true
     <-

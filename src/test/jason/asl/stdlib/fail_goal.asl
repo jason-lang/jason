@@ -8,7 +8,7 @@
 
 !execute_test_plans.
 
-@test_launch_fail_goal[atomic]
+@[atomic,test]
 +!test_launch_fail_goal
     <-
     /**

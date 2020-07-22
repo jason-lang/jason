@@ -8,7 +8,7 @@
 
 !execute_test_plans.
 
-@test_suspended[atomic]
+@[atomic,test]
 +!test_suspended
     <-
     /**
