@@ -3,6 +3,7 @@
  */
 
 { include("test_assert.asl") }
+{ include("test_performance.asl") }
 
 /**
  * Configurations

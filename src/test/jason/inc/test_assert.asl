@@ -209,3 +209,21 @@
     <-
     +test(Test,failed,Src,Line)[assert_contains(X,Y)];
 .
+
+/**
+ * Asserts if X is greater than Y
+ */
+@assert_greaterthan[atomic]
++!assert_greaterthan(X,Y) : // compare terms
+    .intention(ID,_,[ im(Label,{+!Goal[An]},{ Test; _ },_)|_],current) &
+    _[code_line(Line),code_src(Src)] = Label &
+    .number(X) & .number(Y)
+    <-
+    if (X <= Y) {
+        .log(severe,"assert_greaterthan on event '",Goal,"' starting at line ",Line," FAILED! Expected ",X," > ",Y);
+        .fail;
+    } else {
+        +test(Test,passed,Src,Line)[assert_greaterthan(X,Y)];
+        .log(info,"assert_greaterthan on event '",Goal,"' PASSED");
+    }
+.
