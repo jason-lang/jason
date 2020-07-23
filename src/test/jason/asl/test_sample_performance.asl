@@ -20,7 +20,7 @@ nearest_b(T,X,Y) :-
 
 /**
  * Compare two approaches: 'sort+nth' vs 'min'
- * It is expected that 'sort+nth' takes more time than 'min' 
+ * It is expected that 'sort+nth' takes more time than 'min'
  */
 @[atomic,test]
 +!test_sortnth_vs_min :
@@ -39,8 +39,8 @@ nearest_b(T,X,Y) :-
     ?nearest_a(goal,X2,Y2);
     !assert_equals(4,X2);
     !assert_equals(2,Y2);
-    !check_performance(testNearest_aPerformance,10,R0);
-    !check_performance(testNearest_bPerformance,10,R1);
+    !check_performance(testNearest_aPerformance,30,R0);
+    !check_performance(testNearest_bPerformance,30,R1);
     !assert_greaterthan(R0,R1);
 .
 +!testNearest_aPerformance :

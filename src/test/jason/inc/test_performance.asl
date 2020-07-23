@@ -7,7 +7,7 @@
  * take the average on N iterations
  */
 @check_performance[atomic]
-+!check_performance(P,N,R) :
++!check_performance(P,N,MEAN) :
     .intention(ID,_,[ im(Label,{+!Goal[An]},{ Test; _ },_)|_],current) &
     _[code_line(Line),code_src(Src)] = Label
     <-
@@ -21,7 +21,6 @@
     }
     ?mean(P,MEAN);
     .log(info,"check_performance on event '",Goal,"' starting at line ",Line,": ",math.round(MEAN/1000)," microseconds");
-    R = MEAN;
 .
 -!check_performance(X,Y) :
     true
