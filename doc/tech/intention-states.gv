@@ -12,10 +12,10 @@ digraph intention_states {
   	 P [label=<<b>waiting</b><br/><font point-size="8">(PI,PA)</font>>];
 
      R->S[arrowsize=0.5];
-     S->R;
+     S->R[arrowsize=0.5];
 
-     R->P; //[label=<<i>^resumed</i>>,fontsize="8",arrowsize=0.5];
-     P->R;
+     R->P[arrowsize=0.5]; //[label=<<i>^resumed</i>>,fontsize="8",arrowsize=0.5];
+     P->R[arrowsize=0.5];
 
 
 	 ENTRY->R[arrowsize=0.5];
