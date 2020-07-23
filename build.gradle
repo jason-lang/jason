@@ -26,10 +26,11 @@ targetCompatibility = 1.8
 repositories {
     mavenCentral()
 
-    maven { url "http://jacamo.sourceforge.net/maven2"  }
+    //maven { url "http://jacamo.sourceforge.net/maven2"  }
+    maven { url "https://raw.github.com/jacamo-lang/mvn-repo/master" }
     //maven { url "http://jade.tilab.com/maven"  //}
     flatDir {
-	   dirs 'jedit', 'demos/persistent-belief-base/lib'
+ 	   dirs 'jedit', 'demos/persistent-belief-base/lib'
     }
 }
 
@@ -42,8 +43,8 @@ dependencies {
 	  compile group: 'net.sf.ingenias', name: 'jade', version: '4.3'
     //compile group: 'com.tilab.jade', name: 'jade', version: '4.4.0'
 
-    compile group: 'org.jacamo',     name: 'cartago', version: '2.3'
-    compile group: 'org.jacamo',     name: 'jaca',    version: '2.3'
+    compile group: 'org.jacamo',     name: 'cartago', version: '2.5'
+    compile group: 'org.jacamo',     name: 'jaca',    version: '2.5'
 
     // from jEdit
     compile fileTree(dir: 'jedit', include: '*.jar') // using fileTree, jedit jars are not included as a dependency in the pom file
@@ -448,6 +449,34 @@ task publishMavenSF(dependsOn: [ 'build', 'publishToMavenLocal']) {
     }
   }
 }
+
+task publishMavenGitHub(dependsOn: [ 'build', 'publishToMavenLocal']) {
+  doLast {
+    def wdir = System.getProperty("user.home")+'/.m2/repository/org/jason-lang/jason'
+    def rdir = '../jacamo-mvn-repo'
+    exec {
+        commandLine 'git', 'pull'
+        workingDir rdir
+    }
+    copy {
+        from wdir
+        into rdir + '/org/jason-lang/jason'
+    }
+    exec {
+        commandLine 'git', 'add', '*'
+        workingDir rdir
+    }
+    exec {
+        commandLine 'git', 'commit', '-a', '-m', 'new version of jason '+project.version
+        workingDir rdir
+    }
+    exec {
+        commandLine 'git', 'push'
+        workingDir rdir
+    }
+  }
+}
+
 
 // Builds the distribution, documentation and a new release
 task doc(dependsOn: [ 'jjdoc', 'javadoc', 'renderAsciiDocs']) {
