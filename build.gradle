@@ -449,6 +449,34 @@ task publishMavenSF(dependsOn: [ 'build', 'publishToMavenLocal']) {
   }
 }
 
+task publishMavenGitHub(dependsOn: [ 'build', 'publishToMavenLocal']) {
+  doLast {
+    def wdir = System.getProperty("user.home")+'/.m2/repository/org/jason-lang/jason'
+    def rdir = '../jacamo-mvn-repo'
+    exec {
+        commandLine 'git', 'pull'
+        workingDir rdir
+    }
+    copy {
+        from wdir
+        into rdir + '/org/jason-lang/jason'
+    }
+    exec {
+        commandLine 'git', 'add', '*'
+        workingDir rdir
+    }
+    exec {
+        commandLine 'git', 'commit', '-a', '-m', 'new version of jason '+project.version
+        workingDir rdir
+    }
+    exec {
+        commandLine 'git', 'push'
+        workingDir rdir
+    }
+  }
+}
+
+
 // Builds the distribution, documentation and a new release
 task doc(dependsOn: [ 'jjdoc', 'javadoc', 'renderAsciiDocs']) {
 }
