@@ -5,7 +5,7 @@
  * consumed
  */
 
-{ include("test_assert.asl") }
+{ include("$jasonJar/test/jason/inc/test_assert.asl") }
 
 /**
  * Setup local statistics

@@ -2,8 +2,8 @@
  * Tester agent is an agent managed by test_manager
  */
 
-{ include("test_assert.asl") }
-{ include("test_performance.asl") }
+{ include("$jasonJar/test/jason/inc/test_assert.asl") }
+{ include("$jasonJar/test/jason/inc/test_performance.asl") }
 
 /**
  * Configurations
