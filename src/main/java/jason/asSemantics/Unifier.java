@@ -366,11 +366,6 @@ public class Unifier implements Cloneable, Iterable<VarTerm>, Serializable {
     }
 
     public boolean bind(VarTerm vt, Term vl) {
-        if (vl.isVar()) {
-            bind(vt,(VarTerm)vl);
-            return true;
-        }
-
         if (vt.negated()) { // negated vars unifies only with negated literals
             if (!vl.isLiteral() || !((Literal)vl).negated()) {
                 return false;
@@ -394,7 +389,11 @@ public class Unifier implements Cloneable, Iterable<VarTerm>, Serializable {
             vl = new CyclicTerm((Literal)vl, (VarTerm)vt.clone());
         }
 
-        function.put(getVarForUnifier(vt), vl);
+        if (vl.isVar()) {
+            bind(vt,(VarTerm)vl);
+        } else {
+            function.put(getVarForUnifier(vt), vl);
+        }
         return true;
     }
 
