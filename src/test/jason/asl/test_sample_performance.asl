@@ -2,7 +2,7 @@
  * Test best performance of agent speak approaches
  */
 
-{ include("tester_agent.asl") }
+{ include("$jasonJar/test/jason/inc/tester_agent.asl") }
 
 distance(X1,Y1,X2,Y2,D) :- D = math.abs(X2-X1) + math.abs(Y2-Y1).
 
