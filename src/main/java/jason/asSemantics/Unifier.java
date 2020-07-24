@@ -366,7 +366,12 @@ public class Unifier implements Cloneable, Iterable<VarTerm>, Serializable {
     }
 
     public boolean bind(VarTerm vt, Term vl) {
-        if (vt.negated()) { // negated vars unifies only with negated literals
+    	if (vl.isVar()) {
+            bindVars(vt,(VarTerm)vl);
+            return true;
+        }
+
+    	if (vt.negated()) { // negated vars unifies only with negated literals
             if (!vl.isLiteral() || !((Literal)vl).negated()) {
                 return false;
             }
