@@ -8,7 +8,7 @@
 
 !execute_test_plans.
 
-@test_eval[atomic]
+@[atomic,test]
 +!test_eval
     <-
     .eval(X1, true | false);

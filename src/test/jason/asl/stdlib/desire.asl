@@ -8,7 +8,7 @@
 
 !execute_test_plans.
 
-@test_desire[atomic]
+@[atomic,test]
 +!test_desire
     <-
     !assert_false(.desire(go(1,3)));
