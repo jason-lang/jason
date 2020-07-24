@@ -39,6 +39,8 @@ digraph goal_states {
      F [label="failed"];
      D [label="dropped"];
      T [label="finished",peripheries=2];
+
+     {A,F,D} -> T [arrowsize=0.5];
    }
 
 	 ENTRY->C[label=< event +!>,fontsize="8",arrowsize=0.5];
@@ -46,14 +48,12 @@ digraph goal_states {
    C->F[label=< no plan<br/>>,fontsize="8",arrowsize=0.5];
 
    E->A[label=<plan finished>,fontsize="8",arrowsize=0.5];
-   E->D[label=<.drop_intention <br/> .drop_desire>,fontsize="8",arrowsize=0.5,ltail=cluster2];
+   E->D[label=<.drop_intention<br/>.drop_desire>,fontsize="8",arrowsize=0.5,ltail=cluster2];
 
-   E -> F [label=<.fail_goal <br/> failure>,fontsize="8",arrowsize=0.5,ltail=cluster2];
+   E -> F [label=<.fail_goal<br/>failure>,fontsize="8",arrowsize=0.5,ltail=cluster2];
    E -> A [label=<.succeed_goal>,fontsize="8",arrowsize=0.5,ltail=cluster2];
 
-   F -> E [label=< has<br/>contingence<br/>plan>,fontsize="8",arrowsize=0.5];
-
-   {A,F,D} -> T [arrowsize=0.5];
+   F -> E [label=<has<br/>contingence<br/>plan>,fontsize="8",arrowsize=0.5];
 
    P->S[label=<.suspend>,fontsize="8",arrowsize=0.5,ltail=cluster2];
    S->P[label=<.resume> ,fontsize="8",arrowsize=0.5,lhead=cluster2];
@@ -61,7 +61,7 @@ digraph goal_states {
    subgraph cluster0 {
       label = "key";
       rankdir=LR; shape = rectangle; style=dotted;
-      //key4 [label=< <i>^meta event</i> >, shape=plaintext,fontsize="10",];
+      //key4 [label=<<i>^meta event</i> >, shape=plaintext,fontsize="10",];
       key2 [label=".desire\n.intend",shape=rectangle,style=filled,fontsize="10", fillcolor=lightgoldenrod,fixedsize=shape,width=1];
       key1 [label=".desire",   shape=oval,     style=filled,fontsize="10", fillcolor=lightgoldenrod,fixedsize=shape,width=1];
       //key3 [label="finished", shape=oval,     style=filled,fontsize="10", fillcolor=lightgrey,fixedsize=shape,width=1];
