@@ -551,7 +551,7 @@ task zipRel(type: Zip, dependsOn: copyRel) {
     baseName 'jason'
 }
 
-task testJason {
+task testJason(dependsOn: 'jar') {
     description 'runs Jason unit tests: tests.mas2j'
     def errorOnTests = false
     outputs.upToDateWhen { false } // disable cache
