@@ -93,8 +93,7 @@
         .fail;
     } else {
         .log(info,"assert_true on event '",Goal,"' PASSED");
-        +test(Test,passed,Src,Line)[assert_true(_)];
-        .log(warning,"TODO: error when sending annotation assert_true(X): at jason.asSemantics.Unifier.get(Unifier.java:59)");
+        +test(Test,passed,Src,Line)[assert_true(X)];
     }
 .
 +!assert_true(X) :
