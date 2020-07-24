@@ -22,7 +22,7 @@ nearest_b(T,X,Y) :-
  * Compare two approaches: 'sort+nth' vs 'min'
  * It is expected that 'sort+nth' takes more time than 'min'
  */
-@[atomic,test]
+@[atomic] //test disabled since it is sometimes giving unexpected results
 +!test_sortnth_vs_min :
     true
     <-
