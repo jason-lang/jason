@@ -17,19 +17,19 @@ shutdown_hook.          // enable to shutdown after finishing tests
 /**
  * Startup operations
  */
-!set_controller.          // starts test controller operations
+!setup_manager.          // starts test manager operations
 
 /**
- * setup of the controller, including hook for shutdown
+ * setup of the manager adding a hook for shutdown
  */
- @set_controller[atomic]
-+!set_controller :
+ @setup_manager[atomic]
++!setup_manager :
     .my_name(test_manager)
     <-
-    .at("now +2 s", {+!shutdown_after_tests});
+    .at("now +4 s", {+!shutdown_after_tests});
+    .log(warning,"TODO: this hook is not safe, it must check if agents are running or if there are active intentions to shutdown only after that.");
     .log(info,"Set hook to shutdown");
 .
-+!set_controller. // avoid plan not found for asl that includes controller
 
 /**
  * enable to shutdown after finishing tests
