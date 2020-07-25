@@ -43,7 +43,11 @@ public class CircumstanceListenerComponents implements CircumstanceListener {
     }
 
     @Override public void intentionResumed(Intention i, Term reason) {
-        //notifyDeliberate();
+        notifyAct();
+    }
+
+    @Override
+    public void intentionExecuting(Intention i, Term reason) {
         notifyAct();
     }
 }

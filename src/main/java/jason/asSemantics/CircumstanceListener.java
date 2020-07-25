@@ -12,4 +12,5 @@ public interface CircumstanceListener extends Serializable {
     public default void intentionSuspended(Trigger t, Intention i, Term reason) {};
     public default void intentionWaiting(Intention i, Term reason) {};
     public default void intentionResumed(Intention i, Term reason) {};
+    public default void intentionExecuting(Intention i, Term reason) {};
 }

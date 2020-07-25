@@ -11,7 +11,6 @@ import jason.asSemantics.Intention;
 import jason.asSemantics.TransitionSystem;
 import jason.asSemantics.Unifier;
 import jason.asSyntax.ASSyntax;
-import jason.asSyntax.Atom;
 import jason.asSyntax.Literal;
 import jason.asSyntax.Term;
 import jason.asSyntax.Trigger;
@@ -106,21 +105,23 @@ public class resume extends DefaultInternalAction {
             Intention i = C.getPendingIntentions().get(k);
             if (i.isSuspended() && i.hasTrigger(g, un)) {
                 i.setSuspended(false);
-                boolean notify = true;
+
+                // notify meta event listeners
+                if (C.getListeners() != null)
+                    for (CircumstanceListener el : C.getListeners())
+                        el.intentionResumed(i, resumeReason);
+
                 if (k.startsWith(suspend.SUSPENDED_INT)) { // if not SUSPENDED_INT, it was suspended while already in PI, so, do not remove it from PI, just change the suspended status
                     ik.remove();
 
                     // add it back in I if not in PA
                     if (! C.getPendingActions().containsKey(i.getId())) {
-                        C.resumeIntention(i, resumeReason);
-                        notify = false; // the resumeIntention already notifies
+                        C.resumeIntention(i, null);
                     }
-                }
-
-                // notify meta event listeners
-                if (notify && C.getListeners() != null)
+                } else if (C.getListeners() != null) {
                     for (CircumstanceListener el : C.getListeners())
-                        el.intentionResumed(i, resumeReason);
+                        el.intentionWaiting(i, i.getSuspendedReason());
+                }
 
                 // remove the IA .suspend in case of self-suspend
                 if (k.startsWith(suspend.SELF_SUSPENDED_INT))
