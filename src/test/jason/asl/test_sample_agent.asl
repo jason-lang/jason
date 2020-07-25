@@ -100,7 +100,6 @@ divide(X,Y,R):-R = (X / Y).
     !assert_true(raining);
 .
 
-
 /**
  * Test if substring(_,_,0) really works as java startsWith
  */
@@ -114,4 +113,42 @@ divide(X,Y,R):-R = (X / Y).
     !assert_true(starts_with_h("test_k"));
     !assert_false(starts_with_h("hey_test_bla"));
     !assert_true(starts_with_h("test_j"));
+.
+
+/**
+ * Test fail event
+ */
+@[atomic,test]
++!test_fail_event :
+    true
+    <-
+    non_existing_action;
+.
+-!test_fail_event[error(ErrorId), error_msg(Msg), code(CodeBody), code_src(CodeSrc), code_line(CodeLine)] :
+    true
+   <-
+   .log(warning,"TODO: Notice the output says assert_equals on event 'unknown', i.e., -!events has no intention? Due to this issue all asserts return failure!");
+   //!assert_equals(action_failed,ErrorId);
+   //!assert_equals("test_sample_agent.asl",CodeSrc);
+   .print("Expected error: ", ErrorId, " '",Msg,"' by ",CodeBody," in ",CodeSrc,":",CodeLine);
+.
+
+/**
+ * Test generic fail event
+ */
+@[atomic,test]
++!test_generic_fail_event :
+    true
+    <-
+    .fail;
+.
+//-!F[error(ErrorId), error_msg(Msg), code(CodeBody), code_src(CodeSrc), code_line(CodeLine)] :
+-!test_generic_fail_event[error(ErrorId), error_msg(Msg), code(CodeBody), code_src(CodeSrc), code_line(CodeLine)] :
+    true
+    <-
+    .log(warning,"TODO: Notice the output says assert_equals on event 'unknown', i.e., -!events has no intention? Due to this issue all asserts return failure!");
+    .log(warning,"TODO: Notice a generic fail event -!F does not work with annotations. It just consume the failures and does not throw any exception giving wrong idea that everything is fine.");
+    //!assert_equals("ia_failed",ErrorId);
+    //!assert_equals("test_sample_agent.asl",CodeSrc);
+    .print("Expected error: ", ErrorId, " '",Msg,"' by ",CodeBody," in ",CodeSrc,":",CodeLine);
 .
