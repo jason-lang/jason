@@ -40,8 +40,8 @@ import java.util.GregorianCalendar;
   </ul>
 
   @see jason.stdlib.date
+  @see jason.stdlib.nano_time
   @see jason.functions.time function time
-
  */
 @Manual(
         literal=".time(hour,minute,second,milliseconds)",

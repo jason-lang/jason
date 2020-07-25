@@ -43,7 +43,7 @@ import java.io.File;
   @see jason.stdlib.save_agent
 */
 @Manual(
-        literal=".create_agent(name[,source,customisations])",
+        literal=".list_files(path,pattern)",
         hint="lists files of a folder",
         argsHint= {
                 "path to be listed",
