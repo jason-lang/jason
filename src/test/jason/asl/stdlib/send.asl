@@ -148,8 +148,7 @@
 +!send_ask3   <- .send(maria, askOne, t1(_), A);
                  .print(t1," ",A).
 
-+!send_ask4   <- .log(warning,"TODO: .send(maria, askOne, fullname, A) is throwing: [Literal] delSources is not implemented in the class Atom");
-                 //.send(maria, askOne, fullname, A);
++!send_ask4   <- .send(maria, askOne, fullname, A);
                  .print(A).
 
 +!send_ask5   <- .send(maria, tell, myv(10)); .send(maria, askOne, myv(_)).

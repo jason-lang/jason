@@ -17,7 +17,7 @@ public class remove_source_annot extends DefaultInternalAction {
         return singleton;
     }
     @Override public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {
-        return un.unifies(((Literal)args[0]).noSource(), args[1] );
+        return un.unifies(((Literal)args[0]).forceFullLiteralImpl().noSource(), args[1] );
     }
 
 }
