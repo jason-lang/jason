@@ -7,7 +7,7 @@ import jason.asSyntax.NumberTerm;
 import jason.asSyntax.Term;
 
 /**
- <p>Internal action: <b><code>math.set_random_seed(<i>N</i>)</code></b>.
+ <p>Internal action: <b><code>.set_random_seed(<i>N</i>)</code></b>.
 
  <p>Description: sets the seed of Jason's random number generator
 
@@ -19,7 +19,7 @@ import jason.asSyntax.Term;
 
  <p>Example:<ul>
 
- <li><code>math.set_random_seed(20)</code>: Sets the random number generator's seed to 20.</li>
+ <li><code>.set_random_seed(20)</code>: Sets the random number generator's seed to 20.</li>
  </ul>
 
  @see jason.functions.Random
@@ -36,7 +36,7 @@ import jason.asSyntax.Term;
                 "number"
         },
         examples= {
-                "math.set_random_seed(20): sets the random number generator's seed to 20"
+                ".set_random_seed(20): sets the random number generator's seed to 20"
         },
         seeAlso= {
                 "jason.functions.Random",
@@ -45,10 +45,6 @@ import jason.asSyntax.Term;
 )
 
 public class set_random_seed extends DefaultInternalAction {
-
-    public String getName() {
-        return "math.set_random_seed";
-    }
 
     @Override
     public Object execute(final TransitionSystem ts, final Unifier un, final Term[] args) throws Exception {
