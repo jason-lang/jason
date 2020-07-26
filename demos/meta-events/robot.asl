@@ -22,10 +22,9 @@
 
 // when goal charge is started, suspends goal move
 
-^!charge[state(started)] <- .suspend(move).
+^!charge[state(executing)] <- .suspend(move).
 ^!charge[state(finished)] <- .resume(move).
 ^!charge. // I am not interested in other states
 
 // states are: started, suspended, resumed, finished, failed
 // see GoalListener API doc
-

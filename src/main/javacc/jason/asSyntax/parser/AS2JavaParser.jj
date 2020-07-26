@@ -213,18 +213,9 @@ boolean agent(Agent a) throws jason.JasonException :
 {
   ( endDir = directive(a)     { if (endDir) return false; }  )*
 
-  // beliefs
-  ( b = belief()              { if (a != null) a.addInitialBel(b); }
-    ( endDir = directive(a)   { if (endDir) return false; }  )*
-  )*
-
-  // initial goals
-  ( g = initial_goal()        { if (a != null) a.addInitialGoal(g); }
-    ( endDir = directive(a)   { if (endDir) return false; }  )*
-  )*
-
-  // plans and rules
-  ( p = plan()                { if (a != null) {
+  (( b = belief()              { if (a != null) a.addInitialBel(b); }
+   | g = initial_goal()        { if (a != null) a.addInitialGoal(g); }
+   | p = plan()                { if (a != null) {
                                    p.setSource(asSource);
                                    a.getPL().add(p);
                                    // warning only not parsed files
@@ -236,18 +227,10 @@ boolean agent(Agent a) throws jason.JasonException :
                                    }
                                 }
                               }
-    ( b = belief()            { if (a != null) {
-                                  if (b.isRule()) {
-                                      a.addInitialBel(b);
-                                      //if (!parsedFiles.contains(asSource))
-                                      //   logger.warning(getSourceRef(b)+" warning: avoid to mix rules and plans ('"+b+"').");
-                                  } else {
-                                      throw new ParseException(getSourceRef(b)+" The belief '"+b+"' is not in the begin of the source code!");
-                                  }
-                                }
-                              }
+    )+
+
+    ( endDir = directive(a)   { if (endDir) return false; }
     )*
-    ( endDir = directive(a)   { if (endDir) return false; }  )*
 
   )*
 
@@ -704,7 +687,7 @@ Literal literal() :
 {
   ( (
       // namespace
-      [ LOOKAHEAD(27)
+      [ LOOKAHEAD(47)
         [
         (tns = <ATOM>         { if (tns.image.equals("default"))
                                      NS = Literal.DefaultNS;
