@@ -10,6 +10,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import jason.asSemantics.Circumstance.IntentionPlace;
+import jason.asSyntax.ASSyntax;
 import jason.asSyntax.Atom;
 import jason.asSyntax.ListTerm;
 import jason.asSyntax.ListTermImpl;
@@ -104,8 +105,8 @@ public class Intention implements Serializable, Comparable<Intention>, Iterable<
 
     public void setSuspended(boolean b) {
         isSuspended = b;
-        if (!b)
-            suspendedReason = null;
+        //if (!b)
+        //    suspendedReason = null;
     }
 
     public boolean isSuspended() {
@@ -115,7 +116,7 @@ public class Intention implements Serializable, Comparable<Intention>, Iterable<
     public void setSuspendedReason(Term r) {
         suspendedReason = r;
     }
-    private static Atom noReason = new Atom("no_reason");
+    private static Atom noReason = ASSyntax.createAtom("no_reason");
     public Term getSuspendedReason() {
         if (suspendedReason == null)
             return noReason;

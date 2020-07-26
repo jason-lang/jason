@@ -42,6 +42,11 @@ public class GoalListenerForMetaEvents implements GoalListener {
     }
 
     @Override
+    public void goalResumed(Trigger goal, Term reason) {
+        generateGoalStateEvent(goal.getLiteral(), goal.getType(), GoalStates.resumed, reason);
+    }
+
+    @Override
     public void goalSuspended(Trigger goal, Term reason) {
         generateGoalStateEvent(goal.getLiteral(), goal.getType(), GoalStates.suspended, reason);
     }

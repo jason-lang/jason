@@ -8,7 +8,7 @@ import jason.asSyntax.Trigger;
 /** call-back interface to be notified about events on goals */
 public interface GoalListener extends Serializable {
 
-    public enum GoalStates { pending, executing, suspended, waiting, achieved, dropped, failed, finished };
+    public enum GoalStates { pending, executing, suspended, resumed, waiting, achieved, dropped, failed, finished };
 
     /** method called when a new goal is produced by operator ! */
     public default void goalStarted(Event goal) {};
@@ -26,6 +26,9 @@ public interface GoalListener extends Serializable {
     public default void goalWaiting(Trigger goal, Term reason) {};
 
     /** called when a suspended goal is resumed */
+    public default void goalResumed(Trigger goal, Term reason) {};
+
+    /** called when a suspended goal is executing */
     public default void goalExecuting(Trigger goal, Term reason) {};
 
 }

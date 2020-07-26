@@ -336,7 +336,7 @@ public class Circumstance implements Serializable {
         // notify meta event listeners
         if (listeners != null)
             for (CircumstanceListener el : listeners)
-                el.intentionResumed(intention, reason);
+                el.intentionExecuting(intention, reason);
     }
 
     /** remove intention from set I */
@@ -494,6 +494,9 @@ public class Circumstance implements Serializable {
 
     public void addPendingEvent(String id, Term reason, Event e) {
         PE.put(id, e);
+
+        if (e.getIntention() != null)
+            e.getIntention().setSuspendedReason(reason);
 
         if (listeners != null)
             for (CircumstanceListener el : listeners)
