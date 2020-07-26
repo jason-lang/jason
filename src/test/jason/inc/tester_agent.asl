@@ -40,8 +40,13 @@ auto_create_fail_plan.  // create -!P fail plan to capture unexpected failures
     auto_create_fail_plan
     <-
     .add_plan({
-        -!P <-
-            !force_failure("Failure captured by default fail plan -!P.");
+        -!P[code(C),code_src(S),code_line(L),error_msg(M)] :
+            true
+            <-
+            .log(severe,
+                "The event '",C,"' on '",S,"' at line ",L," FAILED! Message: '",M,"' Error on code/parser! ",
+                "No test statistics will be displayed.");
+            .stopMAS(0,1);
     }, self, end);
 .
 +!create_default_fail_plan. // Do not create plans if it is disabled
