@@ -155,9 +155,6 @@ public class TransitionSystem implements Serializable {
                     gl.goalWaiting(im.getTrigger(), reason);
             }
             @Override public void intentionResumed(Intention i, Term reason) {
-                //for (IntendedMeans im: i)
-                if (i==null)
-                    return;
                 IntendedMeans im = i.peek();
                 if (im.getTrigger().isAddition() && im.getTrigger().isGoal())
                     gl.goalResumed(im.getTrigger(), reason);

@@ -138,7 +138,7 @@ public class suspend extends DefaultInternalAction {
             if (i.hasTrigger(g, un)) {
                 i.setSuspended(true);
 
-                if (C.getListeners() != null)
+                if (C.hasListener())
                     for (CircumstanceListener el : C.getListeners())
                         el.intentionSuspended(g, i, reason);
             }

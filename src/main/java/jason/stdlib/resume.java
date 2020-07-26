@@ -7,6 +7,7 @@ import jason.asSemantics.Circumstance;
 import jason.asSemantics.CircumstanceListener;
 import jason.asSemantics.DefaultInternalAction;
 import jason.asSemantics.Event;
+import jason.asSemantics.GoalListener;
 import jason.asSemantics.Intention;
 import jason.asSemantics.TransitionSystem;
 import jason.asSemantics.Unifier;
@@ -107,7 +108,7 @@ public class resume extends DefaultInternalAction {
                 i.setSuspended(false);
 
                 // notify meta event listeners
-                if (C.getListeners() != null)
+                if (C.hasListener())
                     for (CircumstanceListener el : C.getListeners())
                         el.intentionResumed(i, resumeReason);
 
@@ -118,7 +119,7 @@ public class resume extends DefaultInternalAction {
                     if (! C.getPendingActions().containsKey(i.getId())) {
                         C.resumeIntention(i, null);
                     }
-                } else if (C.getListeners() != null) {
+                } else if (C.hasListener()) {
                     for (CircumstanceListener el : C.getListeners())
                         el.intentionWaiting(i, i.getSuspendedReason());
                 }
@@ -140,9 +141,14 @@ public class resume extends DefaultInternalAction {
                     ik.remove();
 
                     // notify meta event listeners
-                    if (C.getListeners() != null)
+                    if (i == null) {
+                        if (ts.hasGoalListener())
+                            for (GoalListener gl : ts.getGoalListeners())
+                                gl.goalResumed(e.getTrigger(), resumeReason);
+                    } else if (C.hasListener()) {
                         for (CircumstanceListener el : C.getListeners())
                             el.intentionResumed(i, resumeReason);
+                    }
 
                     C.addEvent(e);
                     if (i != null)
