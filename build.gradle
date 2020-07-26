@@ -551,7 +551,13 @@ task zipRel(type: Zip, dependsOn: copyRel) {
     baseName 'jason'
 }
 
-task testJason {
+/**
+ * Gradle task to execute unit tests for Jason agents
+ * To run this script in a virtual machine to simulate a CI environment type:
+ * $ docker volume create --name gradle-cache
+ * $ docker run -ti --rm -u gradle -v gradle-cache:/home/gradle/.gradle -v "$PWD":/home/gradle/project -w /home/gradle/project -p 8000:8000 gradle:6.3.0-jdk11 bash -c "./gradlew config test -i"
+ */
+task testJason(dependsOn: 'jar') {
     description 'runs Jason unit tests: tests.mas2j'
     def errorOnTests = false
     outputs.upToDateWhen { false } // disable cache

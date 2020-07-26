@@ -19,7 +19,7 @@ auto_create_fail_plan.  // create -!P fail plan to capture unexpected failures
     <-
     !create_default_fail_plan;
 
-    for (.member(Label,LL) & _[test] = Label) {
+    for (.member(Label[test],LL)) {
         .findall(T, .member(P,LP) & P = {@L +!T : C <- B} & Label = L, Plans);
         .member(Plan,Plans); // it is expected only one plan in the list
 
