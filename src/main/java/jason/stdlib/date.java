@@ -35,6 +35,8 @@ import java.util.GregorianCalendar;
   </ul>
 
   @see jason.stdlib.time
+  @see jason.stdlib.nano_time
+  @see jason.functions.time function time
  */
 @Manual(
         literal=".date(year,month,day)",

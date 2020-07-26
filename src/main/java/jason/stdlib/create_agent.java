@@ -72,6 +72,7 @@ import jason.runtime.Settings;
   @see jason.stdlib.save_agent
   @see jason.stdlib.stopMAS
   @see jason.runtime.RuntimeServices
+  @see jason.stdlib.list_files
 */
 @Manual(
 		literal=".create_agent(name[,source,customisations])",

@@ -1,72 +1,44 @@
 package jason.stdlib;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-
 import jason.JasonException;
 import jason.asSemantics.DefaultInternalAction;
 import jason.asSemantics.TransitionSystem;
 import jason.asSemantics.Unifier;
-import jason.asSyntax.ASSyntax;
-import jason.asSyntax.ListTerm;
-import jason.asSyntax.StringTerm;
-import jason.asSyntax.StringTermImpl;
-import jason.asSyntax.Structure;
 import jason.asSyntax.Term;
-import jason.asSyntax.Atom;
-import jason.mas2j.ClassParameters;
-import jason.runtime.RuntimeServices;
-import jason.runtime.RuntimeServicesFactory;
-import jason.runtime.Settings;
-import java.io.File;
 import jason.asSyntax.NumberTermImpl;
 
 /**
-  <p>Internal action: <b><code>.list_files</code></b>.
+  <p>Internal action: <b><code>.nano_time</code></b>.
 
-  <p>Description: lists files of a folder
+  <p>Description: return system time in nano seconds
 
   <p>Parameters:<ul>
 
-  <li>+ path (string): path to be listed.<br/>
-
-  <li><i>+ pattern</i> (string -- optional): a regular expression file names should match.<br/>
+  <li>+ nano_time (number): system time in nano seconds.<br/>
 
   </ul>
 
   <p>Examples:<ul>
 
-  <li> <code>.list_files("./",R)</code>: unify in R the list of all files in the working directory and its
-  subdirectories.</li>
-
-  <li> <code>.list_files("./src/agt",".*.asl",L)</code>: unify in L the list of all '.asl' files in the directory
-  '.src/agt/' and its subdirectories (e.g. [./src/agt/bob.asl, .src/agt/alice.asl]) </li>
-
-  <li> <code>.list_files("/media/movies",".*[(][0-9]{4}[)].*",L)</code>: unify in L the
-  list of all files in '/media/movies' in which the name contains 4 numbers between parenthesis.</li>
+  <li> <code>.nano_time(T)</code>: unify in T the current system time in nano seconds.</li>
 
   </ul>
 
-  @see jason.stdlib.create_agent
-  @see jason.stdlib.save_agent
+  @see jason.stdlib.date
+  @see jason.stdlib.time
+  @see jason.functions.time function time  
 */
 @Manual(
-        literal=".create_agent(name[,source,customisations])",
-        hint="lists files of a folder",
+        literal=".nano_time(T)",
+        hint="eturn system time in nano seconds",
         argsHint= {
-                "path to be listed",
-                "a regular expression file names should match [optional]"
+                "system time in nano seconds"
         },
         argsType= {
-                "string",
-                "string"
+                "number"
         },
         examples= {
-                ".list_files(\"./\",R): unifies R with the list of all files in the working directory and subdirectories",
-                ".list_files(\"./src/agt\",\".*.asl\",L): unifies L with the list of all '.asl' files in the directory and subdirectories",
-                ".list_files(\"/media/movies\",\".*[(][0-9]{4}[)].*\",L): unifies L with the list of all files in '/media/movies' in which the name contains 4 numbers between parenthesis."
+                ".nano_time(T) unify in T the current system time in nano seconds"
         },
         seeAlso= {
                 "jason.stdlib.create_agent",
