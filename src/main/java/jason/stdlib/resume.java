@@ -126,8 +126,6 @@ public class resume extends DefaultInternalAction {
                 // remove the IA .suspend in case of self-suspend
                 if (k.startsWith(suspend.SELF_SUSPENDED_INT))
                     i.peek().removeCurrentStep();
-
-                //System.out.println("res "+g+" from I "+i.getId());
             }
         }
 
@@ -140,10 +138,15 @@ public class resume extends DefaultInternalAction {
                 Intention i = e.getIntention();
                 if (un.unifies(g, e.getTrigger()) || (i != null && i.hasTrigger(g, un))) {
                     ik.remove();
+
+                    // notify meta event listeners
+                    if (C.getListeners() != null)
+                        for (CircumstanceListener el : C.getListeners())
+                            el.intentionResumed(i, resumeReason);
+
                     C.addEvent(e);
                     if (i != null)
                         i.setSuspended(false);
-                    //System.out.println("res "+g+" from E "+e.getTrigger());
                 }
             }
         }

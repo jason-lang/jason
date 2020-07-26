@@ -495,6 +495,9 @@ public class Circumstance implements Serializable {
     public void addPendingEvent(String id, Term reason, Event e) {
         PE.put(id, e);
 
+        if (e.getIntention() != null)
+            e.getIntention().setSuspendedReason(reason);
+
         if (listeners != null)
             for (CircumstanceListener el : listeners)
                 el.intentionSuspended(e.getTrigger(), e.getIntention(), reason);
