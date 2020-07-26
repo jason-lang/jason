@@ -152,6 +152,7 @@ Internal actions of Jason.
   <li>{@link jason.stdlib.range range}: backtrack values in a range (used in <b>for</b>).</li>
 
   <li>{@link jason.stdlib.random random}: produces random numbers.</li>
+  <li>{@link jason.stdlib.set_random_seed math.set_random_seed}: sets the seed of Jason's random number generator.</li>
 
   <li>{@link jason.stdlib.include include}: imports a source code at run time.</li>
 
