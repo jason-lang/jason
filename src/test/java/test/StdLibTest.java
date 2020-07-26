@@ -10,21 +10,7 @@ import jason.asSemantics.Intention;
 import jason.asSemantics.Option;
 import jason.asSemantics.TransitionSystem;
 import jason.asSemantics.Unifier;
-import jason.asSyntax.ASSyntax;
-import jason.asSyntax.Atom;
-import jason.asSyntax.ListTerm;
-import jason.asSyntax.ListTermImpl;
-import jason.asSyntax.Literal;
-import jason.asSyntax.NumberTermImpl;
-import jason.asSyntax.Plan;
-import jason.asSyntax.Pred;
-import jason.asSyntax.StringTerm;
-import jason.asSyntax.StringTermImpl;
-import jason.asSyntax.Structure;
-import jason.asSyntax.Term;
-import jason.asSyntax.Trigger;
-import jason.asSyntax.UnnamedVar;
-import jason.asSyntax.VarTerm;
+import jason.asSyntax.*;
 import jason.asSyntax.parser.ParseException;
 import jason.bb.BeliefBase;
 import jason.stdlib.add_annot;
@@ -607,6 +593,15 @@ public class StdLibTest extends TestCase {
         u.unifies(ASSyntax.parseTerm("X"), ASSyntax.parseTerm("floripa"));
         u.bind(new UnnamedVar(26), ASSyntax.parseTerm("blabal"));
         assertTrue((Boolean)new jason.stdlib.puts().execute(ts, u, new Term[] { new StringTermImpl("Hello #{_26}, #{X}")}));
+    }
+
+    public void testRandom() throws Exception {
+        VarTerm X = new VarTerm("X");
+        Unifier u = new Unifier();
+        new jason.stdlib.set_random_seed().execute(null, u, new Term[] { ASSyntax.parseNumber("20")});
+
+        assertTrue((Boolean)new jason.stdlib.random().execute(null, u, new Term[] { X }));
+        assertEquals("0.7320427537419555", u.get(X).toString());
     }
 
     public void testReplace() throws Exception {
