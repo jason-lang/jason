@@ -3,13 +3,6 @@
  */
 
 /**
- * Setup statistics
- */
-tests_performed(0).
-tests_failed(0).
-tests_passed(0).
-
-/**
  * Configurations
  */
 shutdown_hook.          // enable to shutdown after finishing tests
@@ -36,28 +29,59 @@ shutdown_hook.          // enable to shutdown after finishing tests
  */
  @shutdown_after_fail[atomic]
  +!shutdown_after_tests :
-     shutdown_hook &
-     failed &
-     tests_performed(N) &
-     tests_failed(F) &
-     tests_passed(P)
-     <-
-     .log(severe,"\n\n");
-     .log(severe,"#",N," tests executed, #",P," passed and #",F," FAILED.");
-     .log(severe,"End of Jason unit tests: FAILED!\n\n");
-     .stopMAS(0,1);
+    shutdown_hook &
+    .count(test_statistics(performed,_,_),N) &
+    .count(test_statistics(failed,_,_),F) &
+    .count(test_statistics(passed,_,_),P) &
+    .count(plan_statistics(launched,_,_),LP) &
+    .count(plan_statistics(achieved,_,_),AP) &
+    F > 0
+    <-
+    .log(severe,"\n\n");
+    .log(severe,"#",N," tests executed, #",P," passed and #",F," FAILED.");
+    .log(severe,"End of Jason unit tests: FAILED!\n\n");
+    for (test_statistics(R,T,A)) {
+        .log(fine,"Agent '",A,"' ",R," test '",T,"'");
+    }
+    .stopMAS(0,1);
  .
+@shutdown_after_skipped[atomic]
++!shutdown_after_tests :
+    shutdown_hook &
+    not intention(_) &
+    .count(test_statistics(performed,_,_),N) &
+    .count(test_statistics(failed,_,_),F) &
+    .count(test_statistics(passed,_,_),P) &
+    .count(plan_statistics(launched,_,_),LP) &
+    .count(plan_statistics(achieved,_,_),AP) &
+    LP \== AP
+    <-
+    .log(severe,"\n\n");
+    .log(severe,"#",N," tests executed, #",P," passed and #",F," failed.");
+    .log(severe,"#",LP," plans launched, but #",AP," achieved!");
+    .log(severe,"Hook to shutdown FAILED! You may need to give more time for the shutdown.");
+    .log(severe,"End of Jason unit tests: FAILED!\n\n");
+    for (test_statistics(R,T,A)) {
+        .log(fine,"Agent '",A,"' ",R," test '",T,"'");
+    }
+    .stopMAS(0,1);
+.
 @shutdown_after_success[atomic]
 +!shutdown_after_tests :
     shutdown_hook &
     not intention(_) &
-    tests_performed(N) &
-    tests_failed(F) &
-    tests_passed(P)
+    .count(test_statistics(performed,_,_),N) &
+    .count(test_statistics(failed,_,_),F) &
+    .count(test_statistics(passed,_,_),P) &
+    .count(plan_statistics(launched,_,_),LP) &
+    .count(plan_statistics(achieved,_,_),AP)
     <-
     .log(info,"\n\n");
     .log(info,"#",N," tests executed, #",P," PASSED and #",F," failed.");
     .log(info,"End of Jason unit tests: PASSED\n\n");
+    for (test_statistics(R,T,A)) {
+        .log(fine,"Agent '",A,"' ",R," test '",T,"'");
+    }
     .stopMAS;
 .
 +!shutdown_after_tests. // If auto shutdown is disabled
@@ -90,20 +114,18 @@ shutdown_hook.          // enable to shutdown after finishing tests
 /**
  * Statistics for tests (passed/failed)
  */
-@count_tests_passed[atomic]
-+!count_tests(passed) :
-    tests_performed(N) &
-    tests_passed(P)
+@count_tests[atomic]
++!count_tests(R,T,A) // R \in [failed,passed]
     <-
-    -+tests_performed(N+1);
-    -+tests_passed(P+1);
+    +test_statistics(performed,T,A);
+    +test_statistics(R,T,A);
 .
-@count_tests_failed[atomic]
-+!count_tests(failed) :
-    tests_performed(N) &
-    tests_failed(F)
+
+/**
+ * Statistics for plans (a plan may have many tests/asserts)
+ */
+@count_plans[atomic]
++!count_plans(R,P,A) // R \in [launched,achieved]
     <-
-    +failed;
-    -+tests_performed(N+1);
-    -+tests_failed(F+1);
+    +plan_statistics(R,T,A);
 .

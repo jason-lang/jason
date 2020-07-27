@@ -16,7 +16,7 @@
      */
     .add_plan({
       +!go(X,Y) <-
-          .wait(50); // An arbitrary delay
+          .wait(150); // An arbitrary delay
     }, self, begin);
 
     // Trigger the mock plan
@@ -28,6 +28,7 @@
 // This plan should not be triggered by the manager
 +!test_intention
     <-
+    .wait(50); // Give some time to finish +!test_launch_intention
     // It is expected to have 3 intentions
     .findall(i(I1,D1),.intention(I1,D1),L1);
     .length(L1,LL1);
