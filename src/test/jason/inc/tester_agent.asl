@@ -13,7 +13,6 @@ auto_create_fail_plan.  // create -!P fail plan to capture unexpected failures
 /**
  * execute plans that contains "test" in the label
  */
-@execute_plans[atomic]
 +!execute_test_plans:
     .relevant_plans({+!_},LP,LL) &
     .my_name(ME)
@@ -28,7 +27,7 @@ auto_create_fail_plan.  // create -!P fail plan to capture unexpected failures
         /**
          * Execute the test plan
          */
-        !!execute_test_plan(Plan);
+        !execute_test_plan(Plan);
     }
 .
 
@@ -37,7 +36,6 @@ auto_create_fail_plan.  // create -!P fail plan to capture unexpected failures
  * assert failure for others non expected
  * errors
  */
-@create_default_fail_plan[atomic]
 +!create_default_fail_plan:
     auto_create_fail_plan
     <-
@@ -53,7 +51,6 @@ auto_create_fail_plan.  // create -!P fail plan to capture unexpected failures
 .
 +!create_default_fail_plan. // Do not create plans if it is disabled
 
-@execute_plan[atomic]
 +!execute_test_plan(P) :
     .intention(ID,_,_,current)
     <-

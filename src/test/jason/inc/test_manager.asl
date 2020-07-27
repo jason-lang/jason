@@ -89,7 +89,6 @@ shutdown_hook.          // enable to shutdown after finishing tests
 /**
  * create agents by files present in folder test/agt/
  */
-@[atomic]
 +!create_tester_agents(Path,Files) :
     .my_name(test_manager)
     <-
