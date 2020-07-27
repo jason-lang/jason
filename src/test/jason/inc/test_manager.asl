@@ -5,7 +5,7 @@
 /**
  * Configurations
  */
-shutdown_hook.          // enable to shutdown after finishing tests
+shutdown_hook.          // shutdown after shutdown_delay(SD), SD is the number of seconds
 
 /**
  * Startup operations
@@ -19,8 +19,12 @@ shutdown_hook.          // enable to shutdown after finishing tests
 +!setup_manager :
     .my_name(test_manager)
     <-
-    .at("now +4 s", {+!shutdown_after_tests});
-    .log(warning,"TODO: this hook is not safe, it must check if agents are running or if there are active intentions to shutdown only after that.");
+    if (shutdown_delay(SD)) {
+    .concat("now +",SD," s",DD);
+        .at(DD, {+!shutdown_after_tests});
+    } else {
+        .at("now +2 s", {+!shutdown_after_tests});
+    }
     .log(info,"Set hook to shutdown");
 .
 
@@ -59,7 +63,7 @@ shutdown_hook.          // enable to shutdown after finishing tests
     .log(severe,"\n\n");
     .log(severe,"#",N," tests executed, #",P," passed and #",F," failed.");
     .log(severe,"#",LP," plans launched, but #",AP," achieved!");
-    .log(severe,"Hook to shutdown FAILED! You may need to give more time for the shutdown.");
+    .log(severe,"Hook to shutdown FAILED! You may need to set a higher shutdown_delay(SD).");
     .log(severe,"End of Jason unit tests: FAILED!\n\n");
     for (test_statistics(R,T,A)) {
         .log(fine,"Agent '",A,"' ",R," test '",T,"'");

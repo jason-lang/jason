@@ -6,7 +6,10 @@ MAS unit_tests {
     infrastructure: Centralised
 
     agents:
-        test_manager [goals="create_tester_agents(\"./asl\",\"send.asl\")"];
+        test_manager [
+            goals="create_tester_agents(\"./asl\",\"send.asl\")",
+            beliefs="shutdown_delay(4)
+        ];
 
     aslSourcePath: "src/test/jason/inc";"src/test/jason/asl";"inc";
 }
