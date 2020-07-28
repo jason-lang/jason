@@ -46,9 +46,6 @@ shutdown_hook.          // shutdown after shutdown_delay(SD), SD is the number o
     .log(severe,"\n\n");
     .log(severe,"#",N," tests executed, #",P," passed and #",F," FAILED.");
     .log(severe,"End of Jason unit tests: FAILED!\n\n");
-    for (test_statistics(R,T,A)) {
-        .log(fine,"Agent '",A,"' ",R," test '",T,"'");
-    }
     .stopMAS(0,1);
  .
 @shutdown_after_skipped[atomic]
@@ -65,11 +62,12 @@ shutdown_hook.          // shutdown after shutdown_delay(SD), SD is the number o
     .log(severe,"\n\n");
     .log(severe,"#",N," tests executed, #",P," passed and #",F," failed.");
     .log(severe,"#",LP," plans launched, but #",AP," achieved!");
+
+    for (plan_statistics(launched,T,A) & not plan_statistics(achieved,T,A)) {
+        .log(severe,"Test '",T,"' was NOT ACHIEVED, agent '",A,"' has FAILED on testing!");
+    }
     .log(severe,"Hook to shutdown FAILED! You may need to set a higher shutdown_delay(SD).");
     .log(severe,"End of Jason unit tests: FAILED!\n\n");
-    for (test_statistics(R,T,A)) {
-        .log(fine,"Agent '",A,"' ",R," test '",T,"'");
-    }
     .stopMAS(0,1);
 .
 @shutdown_after_success[atomic]
@@ -85,9 +83,6 @@ shutdown_hook.          // shutdown after shutdown_delay(SD), SD is the number o
     .log(info,"\n\n");
     .log(info,"#",N," tests executed, #",P," PASSED and #",F," failed.");
     .log(info,"End of Jason unit tests: PASSED\n\n");
-    for (test_statistics(R,T,A)) {
-        .log(fine,"Agent '",A,"' ",R," test '",T,"'");
-    }
     .stopMAS;
 .
 +!shutdown_after_tests // If there is an active intention
@@ -135,5 +130,5 @@ shutdown_hook.          // shutdown after shutdown_delay(SD), SD is the number o
 @count_plans[atomic]
 +!count_plans(R,P,A) // R \in [launched,achieved]
     <-
-    +plan_statistics(R,T,A);
+    +plan_statistics(R,P,A);
 .
