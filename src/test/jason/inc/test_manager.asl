@@ -15,17 +15,19 @@ shutdown_hook.          // shutdown after shutdown_delay(SD), SD is the number o
 /**
  * setup of the manager adding a hook for shutdown
  */
- @setup_manager[atomic]
+ @setup_manager_user_delay[atomic]
 +!setup_manager :
-    .my_name(test_manager)
+    shutdown_delay(SD)
     <-
-    if (shutdown_delay(SD)) {
     .concat("now +",SD," s",DD);
-        .at(DD, {+!shutdown_after_tests});
-    } else {
-        .at("now +2 s", {+!shutdown_after_tests});
-    }
+    .at(DD, {+!shutdown_after_tests});
     .log(info,"Set hook to shutdown");
+.
+@setup_manager_default_delay[atomic]
++!setup_manager
+   <-
+   .at("now +2 s", {+!shutdown_after_tests});
+   .log(info,"Set hook to shutdown");
 .
 
 /**
@@ -34,12 +36,12 @@ shutdown_hook.          // shutdown after shutdown_delay(SD), SD is the number o
  @shutdown_after_fail[atomic]
  +!shutdown_after_tests :
     shutdown_hook &
-    .count(test_statistics(performed,_,_),N) &
     .count(test_statistics(failed,_,_),F) &
+    F > 0 &
+    .count(test_statistics(performed,_,_),N) &
     .count(test_statistics(passed,_,_),P) &
     .count(plan_statistics(launched,_,_),LP) &
-    .count(plan_statistics(achieved,_,_),AP) &
-    F > 0
+    .count(plan_statistics(achieved,_,_),AP)
     <-
     .log(severe,"\n\n");
     .log(severe,"#",N," tests executed, #",P," passed and #",F," FAILED.");
@@ -88,7 +90,12 @@ shutdown_hook.          // shutdown after shutdown_delay(SD), SD is the number o
     }
     .stopMAS;
 .
-+!shutdown_after_tests. // If auto shutdown is disabled
++!shutdown_after_tests // If there is an active intention
+    <-
+    .log(info,"waiting to finish active intention...");
+    .wait(1000);
+    !shutdown_after_tests;
+.
 
 /**
  * create agents by files present in folder test/agt/
@@ -99,17 +106,15 @@ shutdown_hook.          // shutdown after shutdown_delay(SD), SD is the number o
     .concat(Path,"/inc",PathInc);
     .list_files(PathInc,Files,IGNORE);
     .list_files(Path,Files,FILES);
-    for (.member(M,FILES)) {
-      if (not .nth(N,IGNORE,M)) {
+    for (.member(M,FILES) & not .nth(N,IGNORE,M)) {
         for (.substring("/",M,R)) {
-          -+lastSlash(R);
+            -+lastSlash(R);
         }
         ?lastSlash(R0);
         .length(M,L);
         .substring(M,AGENT,R0+1,L-4);
         .log(fine,"LAUNCHING: ",AGENT," (",M,")");
         .create_agent(AGENT,M);
-      }
     }
 .
 +!create_tester_agents(_,_). // avoid plan not found for asl that includes controller
@@ -118,7 +123,7 @@ shutdown_hook.          // shutdown after shutdown_delay(SD), SD is the number o
  * Statistics for tests (passed/failed)
  */
 @count_tests[atomic]
-+!count_tests(R,T,A) // R \in [failed,passed]
++!count_tests(R,T,A) // R \in [performed,failed,passed]
     <-
     +test_statistics(performed,T,A);
     +test_statistics(R,T,A);

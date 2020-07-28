@@ -61,21 +61,22 @@ auto_create_fail_plan.  // create -!P fail plan to capture unexpected failures
 /**
  * Send data to test_manager
  */
-@test_counter[atomic]
-+test(Test,Result,Src,Line)[source(Agent)] :
+@[atomic]
++test(Test,Result,Src,Line)[source(self)] :
     .my_name(ME)
     <-
-    if (Agent == self) {
-        .send(test_manager,achieve,count_tests(Result,Test,ME));
-    } else {
-        .send(test_manager,achieve,count_tests(Result,Test,Agent));
-    }
+    .send(test_manager,achieve,count_tests(Result,Test,ME));
+.
+@[atomic]
++test(Test,Result,Src,Line)[source(Agent)]
+    <-
+    .send(test_manager,achieve,count_tests(Result,Test,Agent));
 .
 
-^!P[state(STATE)] :
+@[atomic]
+^!P[state(achieved)] :
     .relevant_plans({+!P},_,L) & // Get all plan labels
-    .member(I[test],L) & // From the list of plan labels, get the ones
-    STATE == achieved &
+    .member(I[test],L) & // From the list of plan labels, get the test ones
     .my_name(ME)
     <-
     .send(test_manager,achieve,count_plans(achieved,P,ME));
