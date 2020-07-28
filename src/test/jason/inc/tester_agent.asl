@@ -13,7 +13,6 @@ auto_create_fail_plan.  // create -!P fail plan to capture unexpected failures
 /**
  * execute plans that contains "test" in the label
  */
-@execute_plans[atomic]
 +!execute_test_plans:
     .relevant_plans({+!_},LP,LL) &
     .my_name(ME)
@@ -28,7 +27,7 @@ auto_create_fail_plan.  // create -!P fail plan to capture unexpected failures
         /**
          * Execute the test plan
          */
-        !!execute_test_plan(Plan);
+        !execute_test_plan(Plan);
     }
 .
 
@@ -37,7 +36,6 @@ auto_create_fail_plan.  // create -!P fail plan to capture unexpected failures
  * assert failure for others non expected
  * errors
  */
-@create_default_fail_plan[atomic]
 +!create_default_fail_plan:
     auto_create_fail_plan
     <-
@@ -53,7 +51,6 @@ auto_create_fail_plan.  // create -!P fail plan to capture unexpected failures
 .
 +!create_default_fail_plan. // Do not create plans if it is disabled
 
-@execute_plan[atomic]
 +!execute_test_plan(P) :
     .intention(ID,_,_,current)
     <-
@@ -64,21 +61,22 @@ auto_create_fail_plan.  // create -!P fail plan to capture unexpected failures
 /**
  * Send data to test_manager
  */
-@test_counter[atomic]
-+test(Test,Result,Src,Line)[source(Agent)] :
+@[atomic]
++test(Test,Result,Src,Line)[source(self)] :
     .my_name(ME)
     <-
-    if (Agent == self) {
-        .send(test_manager,achieve,count_tests(Result,Test,ME));
-    } else {
-        .send(test_manager,achieve,count_tests(Result,Test,Agent));
-    }
+    .send(test_manager,achieve,count_tests(Result,Test,ME));
+.
+@[atomic]
++test(Test,Result,Src,Line)[source(Agent)]
+    <-
+    .send(test_manager,achieve,count_tests(Result,Test,Agent));
 .
 
-^!P[state(STATE)] :
+@[atomic]
+^!P[state(achieved)] :
     .relevant_plans({+!P},_,L) & // Get all plan labels
-    .member(I[test],L) & // From the list of plan labels, get the ones
-    STATE == achieved &
+    .member(I[test],L) & // From the list of plan labels, get the test ones
     .my_name(ME)
     <-
     .send(test_manager,achieve,count_plans(achieved,P,ME));
