@@ -2,11 +2,9 @@ package jason.stdlib;
 
 import java.util.Iterator;
 import java.util.List;
-import java.util.Random;
 
 import jason.JasonException;
 import jason.asSemantics.DefaultInternalAction;
-import jason.asSemantics.InternalAction;
 import jason.asSemantics.TransitionSystem;
 import jason.asSemantics.Unifier;
 import jason.asSyntax.ListTerm;
@@ -60,15 +58,6 @@ import jason.asSyntax.Term;
 @SuppressWarnings("serial")
 public class random extends DefaultInternalAction {
 
-    private static InternalAction singleton = null;
-    public static InternalAction create() {
-        if (singleton == null)
-            singleton = new random();
-        return singleton;
-    }
-
-    private Random random = new Random();
-
     @Override public int getMinArgs() {
         return 1;
     }
@@ -96,7 +85,7 @@ public class random extends DefaultInternalAction {
     public Object execute(final TransitionSystem ts, final Unifier un, final Term[] args) throws Exception {
         checkArguments(args);
         if (args.length == 1) {
-            return un.unifies(args[0], new NumberTermImpl(random.nextDouble()));
+            return un.unifies(args[0], new NumberTermImpl(RandomSingelton.nextDouble()));
         } else {
             final ListTerm l;
             final int      max;
@@ -124,9 +113,9 @@ public class random extends DefaultInternalAction {
                 public Unifier next() {
                     Unifier c = un.clone();
                     if (l == null)
-                        c.unifies(args[0], new NumberTermImpl(random.nextDouble()));
+                        c.unifies(args[0], new NumberTermImpl(RandomSingelton.nextDouble()));
                     else
-                        c.unifies(args[1], j.get(random.nextInt(j.size())));
+                        c.unifies(args[1], j.get(RandomSingelton.nextInt(j.size())));
                     n++;
                     return c;
                 }

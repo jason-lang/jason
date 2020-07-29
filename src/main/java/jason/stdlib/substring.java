@@ -133,14 +133,13 @@ public class substring extends DefaultInternalAction {
                 Unifier c = null; // the current response (which is an unifier)
                 int     pos = 0;  // current position in s1
 
+                { find(); }
+
                 public boolean hasNext() {
-                    if (c == null) // the first call of hasNext should find the first response
-                        find();
                     return c != null;
                 }
 
                 public Unifier next() {
-                    if (c == null) find();
                     Unifier b = c;
                     find(); // find next response
                     return b;

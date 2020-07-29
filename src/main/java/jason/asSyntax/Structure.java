@@ -232,7 +232,8 @@ public class Structure extends Atom {
 
     @Override
     public Literal addTerms(List<Term> l) {
-        if (terms == null) terms = new ArrayList<>(5);
+        if (terms == null)
+            terms = new ArrayList<>(5);
         for (Term t: l)
             terms.add(t);
         predicateIndicatorCache = null;

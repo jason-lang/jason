@@ -1,16 +1,18 @@
 package jason.asSemantics;
 
-import jason.asSyntax.ASSyntax;
-import jason.asSyntax.parser.ParseException;
-
 import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import jason.asSyntax.ASSyntax;
+import jason.asSyntax.Literal;
+import jason.asSyntax.parser.ParseException;
+import jason.util.ToJSON;
 
-public class Message implements Serializable {
+
+public class Message implements Serializable, ToJSON {
 
     private static final long serialVersionUID = 7914409028691033870L;
-    
+
     private String ilForce  = null;
     private String sender   = null;
     private String receiver = null;
@@ -127,6 +129,25 @@ public class Message implements Serializable {
 
     public Message clone() {
         return new Message(this);
+    }
+
+    @Override
+    public String getAsJSON(String identation) {
+        StringBuilder json = new StringBuilder(identation+"{\n");
+
+        json.append(identation+"   \"performative\" : \""+ getIlForce() + "\",\n");
+        json.append(identation+"   \"sender\" : \""+ getSender() + "\",\n");
+        json.append(identation+"   \"receiver\" : \""+ getReceiver() + "\",\n");
+        json.append(identation+"   \"msgId\" : \""+ getMsgId() + "\",\n");
+        if (getInReplyTo() != null)
+            json.append(identation+"   \"inReplyTo\" : \""+ getInReplyTo() + "\",\n");
+        if (getPropCont() instanceof Literal)
+            json.append(identation+"   \"predicate\" : "+ ((Literal)getPropCont()).getAsJSON(identation+"   ") + ",\n");
+        String content = getPropCont().toString().replaceAll("\"", "\\\\\"");
+        json.append(identation+"   \"content\" : \""+ content + "\"\n");
+
+        json.append(identation+"}");
+        return json.toString();
     }
 
     /**
