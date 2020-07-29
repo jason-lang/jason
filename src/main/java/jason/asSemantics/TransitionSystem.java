@@ -1186,8 +1186,10 @@ public class TransitionSystem implements Serializable {
         } else {
             failEvent = new Event(im.getTrigger().clone(), i);
         }
-        Term bodyPart = im.getCurrentStep().getBodyTerm().capply(im.unif);
-        setDefaultFailureAnnots(failEvent, bodyPart, failAnnots);
+        if (im.getCurrentStep() != null) {
+            Term bodyPart = im.getCurrentStep().getBodyTerm().capply(im.unif);
+            setDefaultFailureAnnots(failEvent, bodyPart, failAnnots);
+        }
 
         if (im.getTrigger().isGoal()) { // isGoalAdd()) {
             // notify listener
