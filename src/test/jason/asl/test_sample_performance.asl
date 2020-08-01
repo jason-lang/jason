@@ -41,7 +41,7 @@ nearest_b(T,X,Y) :-
     !assert_equals(2,Y2);
     !check_performance(testNearest_aPerformance,30,R0);
     !check_performance(testNearest_bPerformance,30,R1);
-    !assert_greaterthan(R0,R1);
+    !assert_greater_than(R0,R1);
 .
 +!testNearest_aPerformance :
     true

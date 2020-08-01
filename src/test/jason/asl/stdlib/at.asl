@@ -9,43 +9,61 @@
 !execute_test_plans.
 
 @[test]
-+!test_launch_at
++!test_at
     <-
+    .log(warning,"TODO: Uncomment lines below, .at with no metric unit is supposed to be in milli!");
+    //.nano_time(T);
+    //.at("now +500", {+!g(test0,T)});
+
     .nano_time(T0);
-    !assert_false(executed(g0));
-    .log(warning,"TODO: Error on at using miliseconds! .at with no metric unit is supposed to be in mili!");
-    //.at("now +500", {+!g(test1,T0)});
+    .at("now +500 ms", {+!g(test1,T0)});
     .wait(550);
-    //!test_at_test1;
+    !assert_true(executed(test1,_,_));
+    ?executed(test1,T0,T1);
+    /**
+     * Tolerance of 50 ms. Hopefully it is enough
+     * for the machines that may run this test
+     */
+    !assert_between((T1-T0)/1000000,500,550);
 
     .nano_time(T2);
     !assert_false(executed(g1));
     .at("now +1 s", {+!g(test2,T2)});
     .wait(1050);
-    .log(warning,"TODO: at not working as expected! Is the thread of the agent stopped? How to test at?");
-    //!test_at_test2;
 
-    .log(warning,"TODO: Create tests for different formats of 'when' parameter");
-    //.at("now +1 second", {+!g(g1)});
-    //.at("now +1 seconds", {+!g(g1)});
-.
-
-+!test_at_test1
-    <-
-    !assert_true(executed(test1,_,_));
-
-    ?executed(test1,T0,T1);
-    Tmili = (T1-T0)/1000000;
-    !assert_greaterthan(Tmili,500);
-.
-
-+!test_at_test2
-    <-
     !assert_true(executed(test2,_,_));
+    ?executed(test2,T2,T3);
+    /**
+     * Tolerance of 50 ms. Hopefully it is enough
+     * for the machines that may run this test
+     */
+    !assert_between((T3-T2)/1000000,1000,1050);
 
-    ?executed(test2,T0,T1);
-    Tmili = (T1-T0)/1000000;
-    !assert_greaterthan(Tmili,1000);
+    .at("now +1 second", {+!g(test3,_)}); // Just checking if no parse error is produced
+    .at("now +1 seconds", {+!g(test4,_)}); // Just checking if no parse error is produced
+    .at("now +1 m", {+!g(test5,_)}); // Just checking if no parse error is produced
+    .at("now +1 minute", {+!g(test6,_)}); // Just checking if no parse error is produced
+    .at("now +1 minutes", {+!g(test7,_)}); // Just checking if no parse error is produced
+    .at("now +1 h", {+!g(test8,_)}); // Just checking if no parse error is produced
+    .at("now +1 hour", {+!g(test9,_)}); // Just checking if no parse error is produced
+    .at("now +1 hours", {+!g(test10,_)}); // Just checking if no parse error is produced
+    .at("now +1 d", {+!g(test11,_)}); // Just checking if no parse error is produced
+    .at("now +1 day", {+!g(test12,_)}); // Just checking if no parse error is produced
+    .at("now +1 days", {+!g(test13,_)}); // Just checking if no parse error is produced
+.
+
+/**
+ * Since this plan is atomic, the agent will not
+ * perform !g until !test_at_atomic has an end.
+ * This agent is focused in one goal, other plans
+ * should not be executed, assertiong should be false.
+ */
+@[atomic,test]
++!test_at_atomic
+<-
+    .at("now +500 ms", {+!g(test100,T0)});
+    .wait(550);
+    !assert_false(executed(test100,_,_));
 .
 
 +!g(X,T)
