@@ -12,52 +12,39 @@
  * Tests based on from http://jason.sourceforge.net/api/jason/stdlib/send.html
  */
 @[test]
-+!test_launch_send
++!test_send
     <-
     .create_agent(rafael);
+
     .send(rafael, tell, vl(10));
     .send(rafael, askOne, vl(X), Y0);
-    !test_rafael_vl_10(Y0);
+    Y0 = vl(Z)[A];
+    !assert_equals(10,Z);
 
     .send(rafael, tellHow, "+!goto(X,Y)[source(Ag)] <- .send(Ag, tell, my_position(X,Y)).");
     .send(rafael, achieve, goto(10,30));
     .wait(200);
-    !test_rafael_reply_goto;
+    !assert_true(my_position(10,30));
 
     .send(rafael, tell, value(beer,10));
     .send(rafael, askOne, value(beer,X), Y1);
-    !test_rafael_value_10(Y1);
+    !assert_equals(value(beer,10)[source(rafael)[source(send)]],Y1);
 
-    .send(rafael,askOne,value(beer,X),Y2,2000);
-    !test_rafael_value_10(Y2);
-
-    .log(warning,"TODO: .send(tom,askOne,value(beer,X),Y3,500) is blocked, plan below (test_tom_value_600) is not being executed!")
-    //.send(tom,askOne,value(beer,X),Y3,500);
-    .wait(550); // let the timeout expires
-    //!test_tom_value_600(Y3);
+    .kill_agent(rafael);
 .
 
-+!test_rafael_vl_10(Y)
+@[test]
++!test_timeout_send
     <-
-    Y = vl(Z)[A];
-    !assert_equals(10,Z);
-.
-
-+!test_rafael_reply_goto
-    <-
-    !assert_true(my_position(10,30));
-.
-
-+!test_rafael_value_10(Y)
-    <-
-    Y = value(beer,Z)[A]
-    !assert_equals(10,Z);
-.
-
-+!test_tom_value_600(Y)
-    <-
-    Y = value(beer,Z)[A];
-    !assert_equals(600,Z);
+    .create_agent(tom);
+    .send(tom, tellHow, "+?retrieve_info(X,Y) <- .wait(100); Y = X + 1.");
+    .send(tom,askOne,retrieve_info(1,Z0),retrieve_info(_,Z0),110); // give enough time to answer
+    .wait(200);
+    !assert_equals(2,Z0);
+    .send(tom,askOne,retrieve_info(10,Z1),Z1,50); // let the timeout expires
+    .wait(200);
+    !assert_equals(timeout,Z1);
+    .kill_agent(tom);
 .
 
 /**
@@ -67,107 +54,87 @@
 +!test_kqml_simple_send
     <-
     .create_agent(maria);
+
     .send(maria, tell, vl(1));
     .send(maria, tell, vl(2));
-    .send(maria, tellHow, "+!goto(X,Y)[source(Ag)] <- .send(Ag, tell, my_position(X,Y)).");
-    .send(maria, tellHow, "+?t2(X)[source(A)] : vl(Y) <- X = 10 + Y; .print(A).");
-    .send(maria, tellHow,
-        "+!kqml_received(Sender, askOne, fullname, ReplyWith)  <- .send(Sender,tell,\"Maria dos Santos\", ReplyWith)."
-    );
-
-    !simple_send;
-
+    .send(maria, tell, vl(10));
     .send(maria, askOne, vl(X), Z0);
-    !test_simple_send_vl(Z0);
+    !assert_equals(vl(10)[source(maria)[source(send)]],Z0);
 
-    !test_maria_reply_goto;
-
-    .send(maria, askOne, loves(X,Y), Z1);
-    !test_simple_send_loves(Z1);
-.
-
-+!simple_send <- .send(maria, tell, vl(10));
-                 .send(maria, achieve, goto(10,2));
-                 .send(maria, tell, loves(maria,bob)[source(maria), source(mog)]);
-                 .log(warning,"TODO: Shouldn't this source 'mog' appear on test_simple_send_loves?");
-.
-
-+!test_maria_reply_goto
-    <-
+    .send(maria, tellHow, "+!goto(X,Y)[source(Ag)] <- .send(Ag, tell, my_position(X,Y)).");
+    .send(maria, achieve, goto(10,2));
     !assert_true(my_position(10,30));
+
+    // Maria does not believes loves(X,Y)
+    .send(maria, askOne, loves(X,Y), Z1);
+    !assert_false(Z1);
+
+    // Maria will believe loves(X,Y)[with given sources]
+    .send(maria, tell, loves(maria,bob)[source(maria), source(mog)]);
+    .send(maria, askOne, loves(X,Y), Z2);
+    .log(warning,"TODO: original source [source(maria),source(mog)] was lost!");
+    //!assert_equals(loves(maria,bob)[source(maria)[source(send)[source(maria),source(mog)]]],Z2);
+
+    .send(maria, askOne, vl(_), vl(X0));
+    .send(maria, askOne, vl(_));
+    !assert_equals(10,X0);
+
+    .send(maria, tellHow, "+?t2(X)[source(A)] : vl(Y) <- X = 10 + Y.");
+    .send(maria, askOne, t2(_), X1);
+    !assert_equals(t2(20)[source(maria)],X1);
+
+    .send(maria, askOne, t1(_), X2);
+    !assert_false(X2);
+
+    .send(maria, tellHow,
+        "+!kqml_received(Sender, askOne, fullname, ReplyWith)  <- .send(Sender,tell,name(\"Maria dos Santos\"), ReplyWith)."
+    );
+    .send(maria, askOne, fullname, X3);
+    .log(warning,"TODO: In .send(maria, askOne, fullname, X3), X3 is false, is it correct? X3 = ", X3);
+
+    .send(maria, askOne, Fullname, X4);
+    .log(warning,"TODO: In .send(maria, askOne, Fullname, X4), X4 is returning vl(10)[source(maria)[source(send)]], it looks like an access violation! X4 = ",X4);
+
+    .send(maria, tell, myv(10));
+    .send(maria, askOne, myv(_));
+
+    .send(maria, tell, myv(20));
+    .send(maria, askOne, myv(_), X5);
+    !assert_equals(myv(20)[source(maria)[source(send)]],X5);
+
+    .send(maria, askAll, vl(_), L0);
+    !assert_equals([
+        vl(10)[source(maria)[source(send)]],
+        vl(2)[source(maria)[source(send)]],
+        vl(1)[source(maria)[source(send)]]
+    ],L0);
+
+    .send(maria, askAll, t1(_), L1);
+    !assert_equals([],L1);
+
+    //telling how to perform plan +!hello
+    .plan_label(Plan,hp);
+    .send(maria,tellHow,Plan);
+    .send(maria, tellHow, "-!hello(Who) <- +failed(Who).");
+    .send(maria,achieve,hello(bob));
+    .send(maria,askOne,greeted(bob), W0);
+    !assert_equals(greeted(bob)[source(maria)],W0);
+    .send(maria,untell,greeted(bob));
+
+    // UN-telling how to perform plan +!hello
+    .send(maria,untellHow,hp);
+    .send(maria,achieve,hello(tom));
+    //expected that -!hello was performed
+    .send(maria, askOne, greeted(tom), W1);
+    !assert_false(W1);
+    .send(maria, askOne, failed(tom), W2);
+    !assert_equals(failed(tom)[source(maria)],W2);
+
+    .send(maria,askHow,{+!goto(_,_)},[{@L +!T : C <- B}]);
+    !assert_true(T = goto(_,_)[source(_)]);
+    !assert_true(C);
+    //The plan body starts with ".send("
+    !assert_true(.substring(".send(",B,0));
 .
 
-+!test_simple_send_vl(Z)
-    <-
-    Z = vl(X)[A]
-    A = source(S)[AA];
-    AA = source(SS);
-    !assert_equals(10,X);
-    !assert_equals(maria,S);
-    !assert_equals(send,SS);
-.
-
-+!test_simple_send_loves(Z)
-    <-
-    Z = loves(X,Y)[A];
-    A = source(S)[AA];
-    AA = source(SS);
-    !assert_equals(maria,X);
-    !assert_equals(bob,Y);
-    !assert_equals(maria,S);
-    !assert_equals(send,SS);
-.
-
-/**
- * Tests based on test.asunit.TestKQML
- */
- @[test]
- +!test_kqml_send_ask
-     <-
-     .log(warning,"TODO: Tests on .send still under development");
-     !send_ask1;
-     !send_ask2;
-     !send_ask3;
-     !send_ask4;
-     !send_ask5;
-     !send_ask6;
-     !send_askAll1;
-     !send_askAll2;
-     !send_tellHow;
-     !send_untellHow;
-     !send_askHow;
-.
-
-+!send_ask1   <- .send(maria, askOne, vl(_), vl(X));
-                 .send(maria, askOne, vl(_));
-                 .print(X).
-
-+!send_ask2   <- .send(maria, askOne, t2(_), A);
-                 .print(A).
-
-+!send_ask3   <- .send(maria, askOne, t1(_), A);
-                 .print(t1," ",A).
-
-+!send_ask4   <- .send(maria, askOne, fullname, A);
-                 .print(A).
-
-+!send_ask5   <- .send(maria, tell, myv(10)); .send(maria, askOne, myv(_)).
-
-+!send_ask6   <- .send(maria, tell, myv(10)); .send(maria, askOne, myv(_), A); .print(A).
-
-+!send_askAll1 <- .send(maria, askAll, vl(_), L);
-                  .print(L).
-
-+!send_askAll2 <- .send(maria, askAll, t1(_), L);
-                  .print(L).
-
-+!send_tellHow   <- .plan_label(Plan,hp);
-                    .send(maria,tellHow,Plan);
-                    .send(maria,achieve, hello(bob)).
-
-+!send_untellHow <- .send(maria,untellHow,hp).
-
-+!send_askHow    <- .send(maria,askHow,{+!goto(_,_)},LP); .add_plan(LP); .print(LP).
-
-
-@hp +!hello(Who)  <- .print("Hello ",Who).
+@hp +!hello(Who)  <- +greeted(Who).
