@@ -212,17 +212,62 @@
 /**
  * Asserts if X is greater than Y
  */
-@assert_greaterthan[atomic]
-+!assert_greaterthan(X,Y) : // compare terms
+@assert_greater_than[atomic]
++!assert_greater_than(X,Y) : // compare terms
     .intention(ID,_,[ im(Label,{+!Goal[An]},{ Test; _ },_)|_],current) &
     _[code_line(Line),code_src(Src)] = Label &
     .number(X) & .number(Y)
     <-
     if (X <= Y) {
-        .log(severe,"assert_greaterthan on event '",Goal,"' starting at line ",Line," FAILED! Expected ",X," > ",Y);
+        .log(severe,"assert_greater_than on event '",Goal,"' starting at line ",Line," FAILED! Expected ",X," > ",Y);
         .fail;
     } else {
-        +test(Test,passed,Src,Line)[assert_greaterthan(X,Y)];
-        .log(info,"assert_greaterthan on event '",Goal,"' PASSED");
+        +test(Test,passed,Src,Line)[assert_greater_than(X,Y)];
+        .log(info,"assert_greater_than on event '",Goal,"' PASSED");
     }
+.
+-!assert_greater_than(X,Y)
+    <-
+    +test(Test,failed,Src,Line)[assert_greater_than(X,Y)];
+.
+
+/**
+ * Asserts if X is greater/equal than Y
+ */
+@assert_greater_than_equals[atomic]
++!assert_greater_than_equals(X,Y) : // compare terms
+    .intention(ID,_,[ im(Label,{+!Goal[An]},{ Test; _ },_)|_],current) &
+    _[code_line(Line),code_src(Src)] = Label &
+    .number(X) & .number(Y)
+    <-
+    if (X < Y) {
+        .log(severe,"assert_greater_than_equals on event '",Goal,"' starting at line ",Line," FAILED! Expected ",X," > ",Y);
+        .fail;
+    } else {
+        +test(Test,passed,Src,Line)[assert_greater_than_equals(X,Y)];
+        .log(info,"assert_greater_than_equals on event '",Goal,"' PASSED");
+    }
+.
+-!assert_greater_than_equals(X,Y)
+    <-
+    +test(Test,failed,Src,Line)[assert_greater_than_equals(X,Y)];
+.
+
+@assert_between[atomic]
++!assert_between(X,Y0,Y1) : // compare if X is greater/equal than Y0 and lower/equal than Y1
+    .intention(ID,_,[ im(Label,{+!Goal[An]},{ Test; _ },_)|_],current) &
+    _[code_line(Line),code_src(Src)] = Label &
+    .number(X) & .number(Y0) & .number(Y1)
+    <-
+    if ((X < Y0) | (X > Y1)) {
+        .log(severe,"assert_between on event '",Goal,"' starting at line ",Line," FAILED! Expected ",Y0," <= ",X," <= ",Y1);
+        .fail;
+    } else {
+        +test(Test,passed,Src,Line)[assert_between(X,Y0,Y1)];
+        .log(info,"assert_between on event '",Goal,"' PASSED");
+    }
+.
+-!assert_between(X,Y0,Y1)
+    <-
+    +test(Test,failed,Src,Line)[assert_between(X,Y0,Y1)];
 .
