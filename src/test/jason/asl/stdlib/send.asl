@@ -135,6 +135,7 @@
     !assert_true(C);
     //The plan body starts with ".send("
     !assert_true(.substring(".send(",B,0));
+    .kill_agent(maria);
 .
 
 @hp +!hello(Who)  <- +greeted(Who).
