@@ -38,11 +38,11 @@
     <-
     .create_agent(tom);
     .send(tom, tellHow, "+?retrieve_info(X,Y) <- .wait(100); Y = X + 1.");
-    .send(tom,askOne,retrieve_info(1,Z0),retrieve_info(_,Z0),110); // give enough time to answer
-    .wait(200);
+    .send(tom,askOne,retrieve_info(1,Z0),retrieve_info(_,Z0),200); // give enough time to answer
+    .wait(220);
     !assert_equals(2,Z0);
     .send(tom,askOne,retrieve_info(10,Z1),Z1,50); // let the timeout expires
-    .wait(200);
+    .wait(220);
     !assert_equals(timeout,Z1);
     .kill_agent(tom);
 .
