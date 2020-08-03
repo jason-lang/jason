@@ -39,9 +39,7 @@ shutdown_hook.          // shutdown after shutdown_delay(SD), SD is the number o
     .count(test_statistics(failed,_,_),F) &
     F > 0 &
     .count(test_statistics(performed,_,_),N) &
-    .count(test_statistics(passed,_,_),P) &
-    .count(plan_statistics(launched,_,_),LP) &
-    .count(plan_statistics(achieved,_,_),AP)
+    .count(test_statistics(passed,_,_),P)
     <-
     .log(severe,"\n\n");
     .log(severe,"#",N," tests executed, #",P," passed and #",F," FAILED.");
@@ -55,13 +53,14 @@ shutdown_hook.          // shutdown after shutdown_delay(SD), SD is the number o
     .count(test_statistics(performed,_,_),N) &
     .count(test_statistics(failed,_,_),F) &
     .count(test_statistics(passed,_,_),P) &
+    .count(plan_statistics(unlaunched,_,_),UP) &
     .count(plan_statistics(launched,_,_),LP) &
     .count(plan_statistics(achieved,_,_),AP) &
-    LP \== AP
+    (LP \== AP | UP > 0)
     <-
     .log(severe,"\n\n");
     .log(severe,"#",N," tests executed, #",P," passed and #",F," failed.");
-    .log(severe,"#",LP," plans launched, but #",AP," achieved!");
+    .log(severe,"#",LP," plans launched, #",AP," achieved, at least #",UP," not launched!");
 
     for (plan_statistics(launched,T,A) & not plan_statistics(achieved,T,A)) {
         .log(severe,"Test '",T,"' was NOT ACHIEVED, agent '",A,"' has FAILED on testing!");
@@ -76,9 +75,7 @@ shutdown_hook.          // shutdown after shutdown_delay(SD), SD is the number o
     not intention(_) &
     .count(test_statistics(performed,_,_),N) &
     .count(test_statistics(failed,_,_),F) &
-    .count(test_statistics(passed,_,_),P) &
-    .count(plan_statistics(launched,_,_),LP) &
-    .count(plan_statistics(achieved,_,_),AP)
+    .count(test_statistics(passed,_,_),P)
     <-
     .log(info,"\n\n");
     .log(info,"#",N," tests executed, #",P," PASSED and #",F," failed.");
@@ -110,25 +107,41 @@ shutdown_hook.          // shutdown after shutdown_delay(SD), SD is the number o
         .substring(M,AGENT,R0+1,L-4);
         .log(fine,"LAUNCHING: ",AGENT," (",M,")");
         .create_agent(AGENT,M);
+
+        .at("now +500 ms", {+!check_executing_test_plans(AGENT)});
     }
 .
 +!create_tester_agents(_,_). // avoid plan not found for asl that includes controller
 
 /**
+ * In case of a parser error, the agent will not be able to answer
+ */
++!check_executing_test_plans(AGENT)
+    <-
+    .send(AGENT,askOne,executing_test_plans(_),executing_test_plans(AG));
+    .term2string(AG,AGstr);
+    AGENT = AGstr;
+.
+-!check_executing_test_plans(AGENT)
+    <-
+    !count_plans(unlaunched,execute_test_plans,AGENT);
+    .log(severe,"check_executing_test_plans on agent ",AGENT," FAILED! It is likely to present parser errors.");
+.
+/**
  * Statistics for tests (passed/failed)
  */
 @count_tests[atomic]
-+!count_tests(R,T,A) // R \in [performed,failed,passed]
++!count_tests(Status,Test,Agent) // R \in [performed,failed,passed]
     <-
-    +test_statistics(performed,T,A);
-    +test_statistics(R,T,A);
+    +test_statistics(performed,Test,Agent);
+    +test_statistics(Status,Test,Agent);
 .
 
 /**
  * Statistics for plans (a plan may have many tests/asserts)
  */
 @count_plans[atomic]
-+!count_plans(R,P,A) // R \in [launched,achieved]
++!count_plans(Status,Plan,Agent) // R \in [launched,achieved,unlaunched]
     <-
-    +plan_statistics(R,P,A);
+    +plan_statistics(Status,Plan,Agent);
 .
