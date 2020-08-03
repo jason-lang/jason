@@ -126,7 +126,14 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
 
         Map<String,Object> mArgs = parseArgs(args);
 
-        setupLogger((String)mArgs.get("log-conf"));
+        String logFile = (String)mArgs.get("log-conf");
+        if (logFile.startsWith("jar")) {
+            String outerPrefix = logFile.substring(0,logFile.indexOf("!")+1) + "/";
+            SourcePath aslSourcePath = new SourcePath();
+            logFile = aslSourcePath.fixPath(logFile, outerPrefix);
+        }
+        System.err.println("logfile "+logFile);
+        setupLogger(logFile);
 
         if ((boolean)(mArgs.getOrDefault("debug", false))) {
             debug = true;

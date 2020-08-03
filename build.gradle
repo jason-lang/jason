@@ -94,6 +94,7 @@ jar {
     }
     from('src') {
         include '/test/jason/inc/**/*.asl'
+        include '/test/jason/**/*.mas2j'
     }
     /*doFirst {
         Properties props = new Properties()
@@ -567,14 +568,25 @@ task testJason(dependsOn: 'jar') {
             javaexec {
                 main = 'jason.infra.centralised.RunCentralisedMAS'
                 if (gradle.startParameter.logLevel.toString().equals("DEBUG")) {
-                    args = ['src/test/jason/unit_tests.mas2j', '--log-conf', 'src/main/resources/templates/console-debug-logging.properties']
+                    args = [
+                        'jar:file:' + project.buildDir.absolutePath + '/libs/jason-' + project.version+'.jar!/test/jason/unit_tests.mas2j',
+                        '--log-conf',
+                        'jar:file:' + project.buildDir.absolutePath + '/libs/jason-' + project.version+'.jar!/templates/console-debug-logging.properties'
+                    ]
                 } else if (gradle.startParameter.logLevel.toString().equals("INFO")) {
-                    args = ['src/test/jason/unit_tests.mas2j', '--log-conf', 'src/main/resources/templates/console-info-logging.properties']
+                    args = [
+                        'jar:file:' + project.buildDir.absolutePath + '/libs/jason-' + project.version+'.jar!/test/jason/unit_tests.mas2j',
+                        '--log-conf',
+                        'jar:file:' + project.buildDir.absolutePath + '/libs/jason-' + project.version+'.jar!/templates/console-info-logging.properties'
+                    ]
                 } else {
-                    args = ['src/test/jason/unit_tests.mas2j', '--log-conf', 'src/main/resources/templates/console-lifecycle-logging.properties']
+                    args = [
+                        'jar:file:' + project.buildDir.absolutePath + '/libs/jason-' + project.version+'.jar!/test/jason/unit_tests.mas2j',
+                        '--log-conf',
+                        'jar:file:' + project.buildDir.absolutePath + '/libs/jason-' + project.version+'.jar!/templates/console-lifecycle-logging.properties'
+                    ]
                 }
                 classpath sourceSets.main.runtimeClasspath
-                sourceSets.test.java.srcDirs += ['src/test/jason/jia']
 
                 errorOutput = new ByteArrayOutputStream()
                 standardOutput = new ByteArrayOutputStream()
