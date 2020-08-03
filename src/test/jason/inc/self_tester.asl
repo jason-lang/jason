@@ -82,6 +82,19 @@ tests_passed(0).
     !assert_contains([1,2],1);  //should pass
     !assert_contains([1,2],3);  //should fail
 
+    !assert_greater_than(1.01,1);  //should pass
+    !assert_greater_than(-1.01,1);  //should fail
+
+    !assert_greater_than_equals(1,1);  //should pass
+    !assert_greater_than_equals(-1,1);  //should fail
+
+    !assert_between(1,0.99,1);  //should pass
+    !assert_between(1,1,1.01);  //should pass
+    !assert_between(1,1,1);  //should pass
+    !assert_between(0.99,1,1);  //should fail
+    !assert_between(1.01,1,1);  //should fail
+    !assert_between(1.0,-1,0);  //should fail
+
     .log(severe,">>> asserting if self tests went right");
     .log(severe,">>> notice that no fails are expected from now on");
 
@@ -91,9 +104,9 @@ tests_passed(0).
     ?tests_failed(F);
 
     // check if everything expected pass and fails have occurred
-    !assert_equals(14,N);
-    !assert_equals(7,P);
-    !assert_equals(7,F);
+    !assert_equals(24,N);
+    !assert_equals(12,P);
+    !assert_equals(12,F);
 
     .log(severe,">>> end of self tests.");
 .

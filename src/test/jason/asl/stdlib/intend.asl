@@ -9,7 +9,7 @@
 !execute_test_plans.
 
 @[test]
-+!test_launch_intend
++!test_intend
     <-
     /**
      * Add a mock plan for go(X,Y)
@@ -24,17 +24,9 @@
     // Trigger the mock plan
     !!go(1,3);
 
-    //!assert_true(.intend(go(1,3)));
-    .log(warning,"TODO: Even when test_launch_intend is not atomic go/2 does not appear on intentions list");
+    !assert_true(.intend(go(1,3)));
 
-    !!test_intend;
-.
-
-+!test_intend
-    <-
     // Print intentions
     .findall(D,.intend(D),L);
     .log(info,"Intentions: ",L);
-
-    !assert_true(.intend(go(1,3)));
 .
