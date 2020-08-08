@@ -172,23 +172,23 @@ public class StdLibTest extends TestCase {
         new add_plan().execute(ts, new Unifier(), new Term[] { plans, new Structure("fromLT") });
 
         // the plan t2 (first plan now) must have 4 sources
-        assertEquals(ag.getPL().get("t2").getLabel().getSources().size(), 4);
+        assertEquals(4, ag.getPL().get("t2").getLabel().getSources().size());
 
         // the plan t1 (third plan now) must have 2 sources
-        assertEquals(ag.getPL().get("t1").getLabel().getSources().size(), 2);
+        assertEquals(3, ag.getPL().get("t1").getLabel().getSources().size());
 
         // remove plan t2,t3 (source = nosource) from PS
         ListTerm llt = ListTermImpl.parseList("[t2,t3]");
         assertTrue((Boolean)new remove_plan().execute(ts, new Unifier(), new Term[] { (Term) llt, new Pred("nosource") }));
-        assertEquals(ag.getPL().getPlans().size(), 3);
+        assertEquals(3, ag.getPL().getPlans().size());
 
         // remove plan t2,t3 (source = self) from PS
         llt = ListTermImpl.parseList("[t2,t3]");
         assertTrue((Boolean)new remove_plan().execute(ts, new Unifier(), new Term[] { (Term) llt }));
-        assertEquals(ag.getPL().getPlans().size(), 2);
+        assertEquals(2, ag.getPL().getPlans().size());
 
         // the plan t2 (first plan now) must have 3 sources
-        assertEquals(ag.getPL().get("t2").getLabel().getSources().size(), 3);
+        assertEquals(3, ag.getPL().get("t2").getLabel().getSources().size());
 
     }
 

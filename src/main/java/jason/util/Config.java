@@ -586,19 +586,19 @@ public class Config extends Properties {
             } catch (Exception e) {}
             */
 
-            /*
-            // try current dir + lib
-            jarFile = findJarInDirectory(new File(".." + File.separator + "libs"), jarFilePrefix);
-            if (checkJar(jarFile, minSize)) {
+            // try current build/libs (from gradle build)
+            jarFile = findJarInDirectory(new File("build/libs"), jarFilePrefix);
+            if (checkJar(jarFile, fileInJar)) {
                 try {
                     put(jarEntry, new File(jarFile).getCanonicalFile().getAbsolutePath());
-                    if (showFixMsgs)
+                    //if (showFixMsgs)
                         System.out.println("found at " + jarFile);
-                    return;
+                    return true;
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
+            /*
             jarFile = findJarInDirectory(new File("libs"), jarFilePrefix);
             if (checkJar(jarFile, minSize)) {
                 try {

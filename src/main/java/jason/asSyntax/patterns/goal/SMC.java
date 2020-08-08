@@ -36,7 +36,7 @@ public class SMC extends DefaultDirective implements Directive {
                 // add +f : true <- .fail_goal(g).
                 newAg.getPL()
                     .add(ASSyntax.parsePlan("+"+fail+" <- .fail_goal("+goal+")."))
-                    .setSource(outerContent.getASLSrc());
+                    .setSourceFile(outerContent.getASLSrc());
 
                 return newAg;
             }

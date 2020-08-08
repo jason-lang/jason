@@ -36,16 +36,16 @@ public class OMC extends DefaultDirective implements Directive {
                 // add +f : true <- .fail_goal(g).
                 newAg.getPL()
                     .add(ASSyntax.parsePlan("+"+fail+" : .intend("+goal+",intention(_,[_,im(_,{+!G},_,_)|_])) <- .fail_goal(G)."))
-                    .setSource(sourceNewPlans);
+                    .setSourceFile(sourceNewPlans);
 
                 newAg.getPL()
                     .add(ASSyntax.parsePlan("+"+fail+" <- .drop_intention("+goal+").")) // no super goal, simply drop
-                    .setSource(sourceNewPlans);
+                    .setSourceFile(sourceNewPlans);
 
                 // add -m : true <- .succeed_goal(g).
                 newAg.getPL()
                     .add(ASSyntax.parsePlan("-"+motivation+" <- .succeed_goal("+goal+")."))
-                    .setSource(sourceNewPlans);
+                    .setSourceFile(sourceNewPlans);
 
                 return newAg;
             }

@@ -29,7 +29,7 @@ public class BDG extends DG {
                 // add -!g : true <- !g.
                 newAg.getPL()
                     .add(ASSyntax.parsePlan("-!"+goal+" <- !"+goal+"."))
-                    .setSource(outerContent.getASLSrc());
+                    .setSourceFile(outerContent.getASLSrc());
 
                 return newAg;
             }

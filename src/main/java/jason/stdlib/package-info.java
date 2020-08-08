@@ -32,7 +32,7 @@ Internal actions of Jason.
   <li>{@link jason.stdlib.findall findall}: finds all answers for a query.</li>
   <li>{@link jason.stdlib.setof setof}: finds a set of answers for a query.</li>
   <li>{@link jason.stdlib.count count}: counts the number of solutions of some query.</li>
-  <li>{@link jason.stdlib.namespace namespace}: checks whether an argument is a name space.</li>
+  <li>{@link jason.stdlib.namespace namespace}: checks whether the argument is a name space.</li>
   <li>{@link jason.stdlib.relevant_rules relevant_rules}: gets a list of rules.</li>
   <li>{@link jason.stdlib.list_rules list_rules}: prints out the rules in the current belief base.</li>
 </ul>

@@ -106,10 +106,10 @@ public class relevant_plans extends DefaultInternalAction {
         List<Option> rp = ts.relevantPlans(te);
         if (rp != null) {
             for (Option opt: rp) {
-                // remove sources (this IA is used for communication)
                 Plan np = (Plan)opt.getPlan().clone();
-                if (np.getLabel() != null)
-                    np.getLabel().delSources();
+                // remove sources (this IA is used for communication) ==> moved to the kqmlPlans that answer askHow
+                //if (np.getLabel() != null)
+                //    np.getLabel().delSources();
                 np.setAsPlanTerm(true);
                 np.makeVarsAnnon();
                 last = last.append(np);

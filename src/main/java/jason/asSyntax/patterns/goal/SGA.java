@@ -37,27 +37,27 @@ public class SGA extends DefaultDirective implements Directive {
             // add t : not f__l(_) & c <- !f__g(g).
             newAg.getPL()
                 .add(ASSyntax.parsePlan(trigger+" : not f__l(_) & " +context +" <- !f__g("+goal+")."))
-                .setSource(sourceNewPlans);
+                .setSourceFile(sourceNewPlans);
 
             // add t : f__l(_) & c <- +f__l(g).
             newAg.getPL()
                 .add(ASSyntax.parsePlan(trigger+" : f__l(_) & (" +context +") <- +f__l("+goal+")."))
-                .setSource(sourceNewPlans);
+                .setSourceFile(sourceNewPlans);
 
             // add +!fg(g) : true <- +fl(g); !g; -fl(g)
             newAg.getPL()
                 .add(ASSyntax.parsePlan("+!f__g("+goal+") <- +f__l("+goal+"); !"+goal+"; -f__l("+goal+")."))
-                .setSource(sourceNewPlans);
+                .setSourceFile(sourceNewPlans);
 
             // add -!fg(g) : true <- -fl(g)
             newAg.getPL()
                 .add(ASSyntax.parsePlan("-!f__g("+goal+") <- -f__l("+goal+")."))
-                .setSource(sourceNewPlans);
+                .setSourceFile(sourceNewPlans);
 
             // add -fl(_) : fg(g) <- !fg(g)
             newAg.getPL()
                 .add(ASSyntax.parsePlan("-f__l("+goal+") : f__l("+goal+") <- !f__g("+goal+")."))
-                .setSource(sourceNewPlans);
+                .setSourceFile(sourceNewPlans);
 
             return newAg;
         } catch (Exception e) {

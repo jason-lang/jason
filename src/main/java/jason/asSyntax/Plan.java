@@ -70,8 +70,15 @@ public class Plan extends Structure implements Cloneable, Serializable {
         return 4;
     }
 
-    public void setSource(String f) { if (f!=null) this.source = f; }
-    public String getSource()       { return this.source; }
+    public void setSourceFile(String f) {
+        if (f!=null) {
+            this.source = f;
+        }
+    }
+    public String getSourceFile() {
+        return this.source;
+    }
+
     @Deprecated public String getFile()       { return this.source; }
 
     private static final Term noLabelAtom = new Atom("nolabel");
@@ -271,6 +278,7 @@ public class Plan extends Structure implements Cloneable, Serializable {
         p.body = body.clonePB();
         p.setSrcInfo(srcInfo);
         p.isTerm = isTerm;
+        p.source = source;
 
         return p;
     }

@@ -48,7 +48,7 @@ PARSER_BEGIN(as2j)
   import jason.util.*;
 
   public class as2j {
-    private String    asSource = "no-asl-source";
+    private String    asSource = "";
     private Agent     curAg    = null;
 
     private Atom      namespace     = Literal.DefaultNS;
@@ -216,7 +216,7 @@ boolean agent(Agent a) throws jason.JasonException :
   (( b = belief()              { if (a != null) a.addInitialBel(b); }
    | g = initial_goal()        { if (a != null) a.addInitialGoal(g); }
    | p = plan()                { if (a != null) {
-                                   p.setSource(asSource);
+                                   p.setSourceFile(asSource);
                                    a.getPL().add(p);
                                    // warning only not parsed files
                                    if (config.getBoolean(Config.WARN_SING_VAR) && !parsedFiles.contains(asSource)) {

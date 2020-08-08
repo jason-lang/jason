@@ -63,8 +63,8 @@ public class PlanLibrary implements Iterable<Plan>, Serializable {
     private void readObject(ObjectInputStream inputStream) throws IOException, ClassNotFoundException {
         inputStream.defaultReadObject();
         lockPL = new Object();
-    }   
-    
+    }
+
 
     /**
      *  Add a new plan written as a String. The source
@@ -175,6 +175,11 @@ public class PlanLibrary implements Iterable<Plan>, Serializable {
             if (!p.getLabel().hasSource())
                 p.getLabel().addAnnot(BeliefBase.TSelf);
 
+            // add source file
+            if (p.getSourceFile() != null && !p.getSourceFile().isEmpty())
+                p.getLabel().addAnnot(ASSyntax.createStructure("file", ASSyntax.createString( p.getSourceFile())));
+
+
             if (p.getTrigger().getLiteral().getFunctor().equals(kqmlReceivedFunctor)) {
                 // is it a KQML plan from a file different than the one provided by Jason?
                 if (! (p.getSrcInfo() != null && KQML_PLANS_FILE.equals(p.getSrcInfo().getSrcFile()))) {
@@ -223,7 +228,7 @@ public class PlanLibrary implements Iterable<Plan>, Serializable {
                 plans.add(0,p);
             else
                 plans.add(p);
-            
+
             return p;
         }
     }
@@ -429,15 +434,15 @@ public class PlanLibrary implements Iterable<Plan>, Serializable {
         Map<String, StringBuilder> splans = new HashMap<>();
         StringBuilder r;
         for (Plan p: plans) {
-            r = splans.get(p.getSource());
+            r = splans.get(p.getSourceFile());
             if (r == null) {
                 r = new StringBuilder();
-                if (p.getSource().isEmpty()) {
+                if (p.getSourceFile().isEmpty()) {
                     r.append("\n\n// plans without file\n\n");
                 } else {
-                    r.append("\n\n// plans from "+p.getSource()+"\n\n");
+                    r.append("\n\n// plans from "+p.getSourceFile()+"\n\n");
                 }
-                splans.put(p.getSource(), r);
+                splans.put(p.getSourceFile(), r);
             }
             r.append(p.toString()+"\n");
         }
