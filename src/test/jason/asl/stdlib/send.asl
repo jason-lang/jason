@@ -23,7 +23,7 @@
 
     .send(rafael, tellHow, "+!goto(X,Y)[source(Ag)] <- .send(Ag, tell, my_position(X,Y)).");
     .send(rafael, achieve, goto(10,30));
-    .wait(200);
+    .wait(300);
     !assert_true(my_position(10,30));
 
     .send(rafael, tell, value(beer,10));
@@ -39,10 +39,10 @@
     .create_agent(tom);
     .send(tom, tellHow, "+?retrieve_info(X,Y) <- .wait(100); Y = X + 1.");
     .send(tom,askOne,retrieve_info(1,Z0),retrieve_info(_,Z0),200); // give enough time to answer
-    .wait(220);
+    .wait(300);
     !assert_equals(2,Z0);
     .send(tom,askOne,retrieve_info(10,Z1),Z1,50); // let the timeout expires
-    .wait(220);
+    .wait(300);
     !assert_equals(timeout,Z1);
     .kill_agent(tom);
 .
@@ -117,7 +117,7 @@
     .send(maria,tellHow,Plan);
     .send(maria, tellHow, "-!hello(Who) <- +failed(Who).");
     .send(maria,achieve,hello(bob));
-    .wait(200); // wait maris to process msgs
+    .wait(300); // wait maris to process msgs
     .send(maria,askOne,greeted(bob), W0);
     !assert_equals(greeted(bob)[source(maria)],W0);
     .send(maria,untell,greeted(bob));
