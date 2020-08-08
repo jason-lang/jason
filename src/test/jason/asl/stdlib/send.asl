@@ -117,6 +117,7 @@
     .send(maria,tellHow,Plan);
     .send(maria, tellHow, "-!hello(Who) <- +failed(Who).");
     .send(maria,achieve,hello(bob));
+    .wait(200); // wait maris to process msgs
     .send(maria,askOne,greeted(bob), W0);
     !assert_equals(greeted(bob)[source(maria)],W0);
     .send(maria,untell,greeted(bob));

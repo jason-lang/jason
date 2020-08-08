@@ -48,11 +48,19 @@ import jason.bb.BeliefBase;
 
   <li> <code>.relevant_plans({ +!g }, _, L); .remove_plan(LL)</code>:
   removes all plans with trigger event <code>+!g</code>.</li>
+
+  <li>
+  <code>for ( .relevant_plan( {+!_}, L[file("g.asl")]) ) {
+        .remove_plan(L);
+      }</code>: removes all achievement plans from source g.asl.
+  </li>
   </ul>
+
 
   @see jason.stdlib.add_plan
   @see jason.stdlib.plan_label
   @see jason.stdlib.relevant_plans
+  @see jason.stdlib.relevant_plan
 
  */
 @Manual(

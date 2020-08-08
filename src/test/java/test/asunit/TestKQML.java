@@ -1,12 +1,12 @@
 package test.asunit;
 
-import jason.asSyntax.ASSyntax;
-import jason.asSyntax.parser.ParseException;
-import jason.asunit.TestAgent;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
+import jason.asSyntax.ASSyntax;
+import jason.asSyntax.parser.ParseException;
+import jason.asunit.TestAgent;
 
 public class TestKQML {
 
@@ -130,6 +130,7 @@ public class TestKQML {
         bob.addGoal("send_tellHow");
         bob.assertIdle(10);
         maria.assertPrint("Hello bob", 20);
+        org.junit.Assert.assertTrue(maria.getPL().get("hp").getLabel().toString().contains("source(bob)"));
 
         bob.addGoal("send_untellHow");
         bob.assertIdle(10);

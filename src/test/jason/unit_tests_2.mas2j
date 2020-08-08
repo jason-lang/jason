@@ -8,7 +8,7 @@ MAS unit_tests {
     agents:
         test_manager [
             goals="create_tester_agents(\"./asl\",\"send.asl\")",
-            beliefs="shutdown_delay(4)
+            beliefs="shutdown_delay(4)"
         ];
 
     aslSourcePath: "src/test/jason/inc";"src/test/jason/asl";"inc";

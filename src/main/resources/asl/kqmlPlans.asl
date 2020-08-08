@@ -112,7 +112,8 @@
 
 @kqmlReceivedTellHow
 +!kqml_received(Sender, tellHow, Content, _)
-   <- .add_plan(Content, Sender).
+   <- .remove_source_annot(Content, ContentAn);
+      .add_plan(ContentAn, Sender).
 
 // In untellHow, content must be a plan's
 // label (or a list of labels)
@@ -125,7 +126,8 @@
 @kqmlReceivedAskHow
 +!kqml_received(Sender, askHow, Content, MsgId)
    <- .relevant_plans(Content, ListOfPlans);
-      .send(Sender, tellHow, ListOfPlans, MsgId).
+      .remove_source_annot(ListOfPlans, ListOfPlansAn);
+      .send(Sender, tellHow, ListOfPlansAn, MsgId).
 
 
 /* ---- signal performatives ---- */

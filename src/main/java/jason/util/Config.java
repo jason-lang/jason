@@ -591,7 +591,7 @@ public class Config extends Properties {
             if (checkJar(jarFile, fileInJar)) {
                 try {
                     put(jarEntry, new File(jarFile).getCanonicalFile().getAbsolutePath());
-                    //if (showFixMsgs)
+                    if (showFixMsgs)
                         System.out.println("found at " + jarFile);
                     return true;
                 } catch (IOException e) {

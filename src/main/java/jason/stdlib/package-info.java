@@ -44,6 +44,7 @@ Internal actions of Jason.
   <li>{@link jason.stdlib.remove_plan remove_plan}: remove a plan.</li>
   <li>{@link jason.stdlib.plan_label plan_label}: get the label of a plan.</li>
   <li>{@link jason.stdlib.relevant_plans relevant_plans}: get a list of plans.</li>
+  <li>{@link jason.stdlib.relevant_plan relevant_plan}: backtracking based version of .relevant_plans.</li>
   <li>{@link jason.stdlib.list_plans list_plans}: print out the plans in the current plan library.</li>
 </ul>
 

@@ -34,6 +34,7 @@ import jason.asSyntax.Term;
 
   @see jason.stdlib.add_plan
   @see jason.stdlib.relevant_plans
+  @see jason.stdlib.relevant_plan
   @see jason.stdlib.remove_plan
 
  */
@@ -88,11 +89,9 @@ public class plan_label extends DefaultInternalAction {
 
         if (p != null) {
             p = (Plan)p.clone();
-            p.getLabel().delSources();
+            //p.getLabel().delSources();
             p.setAsPlanTerm(true);
             p.makeVarsAnnon();
-            //String ps = p.toASString().replaceAll("\"", "\\\\\"");
-            //return un.unifies(new StringTermImpl(ps), args[0]);
             return un.unifies(p, args[0]);
         } else {
             return false;
