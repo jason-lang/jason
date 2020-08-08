@@ -23,7 +23,7 @@
 
     .send(rafael, tellHow, "+!goto(X,Y)[source(Ag)] <- .send(Ag, tell, my_position(X,Y)).");
     .send(rafael, achieve, goto(10,30));
-    .wait(300);
+    .wait(400);
     !assert_true(my_position(10,30));
 
     .send(rafael, tell, value(beer,10));

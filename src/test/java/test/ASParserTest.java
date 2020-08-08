@@ -345,10 +345,11 @@ public class ASParserTest extends TestCase {
                     } else if (f.getName().endsWith(MAS2JProject.AS_EXT)) {
                         if (f.getName().equals("search.asl"))  continue; // ignore this file
                         if (f.getName().equals("b.asl"))  continue; // ignore this file
+                        System.out.println("parsing "+f);
                         as2j parser = new as2j(new FileInputStream(f));
-                        //Agent ag = new Agent();
-                        //ag.init();
-                        parser.agent((Agent)null);
+                        Agent ag = new Agent();
+                        ag.initAg();
+                        parser.agent(ag);
                     } else if (f.getName().endsWith(MAS2JProject.EXT)) {
                         mas2j parser = new mas2j(new FileInputStream(f));
                         parser.mas();
