@@ -72,8 +72,7 @@
     // Maria will believe loves(X,Y)[with given sources]
     .send(maria, tell, loves(maria,bob)[source(maria), source(mog)]);
     .send(maria, askOne, loves(X,Y), Z2);
-    .log(warning,"TODO: original source [source(maria),source(mog)] was lost!");
-    //!assert_equals(loves(maria,bob)[source(maria)[source(send)[source(maria),source(mog)]]],Z2);
+    !assert_equals(loves(maria,bob)[source(maria)[source(send)[source(maria),source(mog)]]],Z2);
 
     .send(maria, askOne, vl(_), vl(X0));
     .send(maria, askOne, vl(_));
@@ -87,13 +86,19 @@
     !assert_false(X2);
 
     .send(maria, tellHow,
-        "+!kqml_received(Sender, askOne, fullname, ReplyWith)  <- .send(Sender,tell,name(\"Maria dos Santos\"), ReplyWith)."
+        {+!gg <- .add_plan(
+          {+!kqml_received(Sender, askOne, fullname, ReplyWith)  <- .send(Sender,tell,name("Maria dos Santos"), ReplyWith)},
+          kk,
+          begin)
+        }
     );
+    .send(maria, achieve,gg);
+    .wait(100);
     .send(maria, askOne, fullname, X3);
-    .log(warning,"TODO: In .send(maria, askOne, fullname, X3), X3 is false, is it correct? X3 = ", X3);
+    !assert_equals(name("Maria dos Santos")[source(maria)],X3);
 
-    .send(maria, askOne, Fullname, X4);
-    .log(warning,"TODO: In .send(maria, askOne, Fullname, X4), X4 is returning vl(10)[source(maria)[source(send)]], it looks like an access violation! X4 = ",X4);
+    //.send(maria, askAll, Fullname, X4);
+    //.log(warning,"TODO: In .send(maria, askOne, Fullname, X4), X4 is returning vl(10)[source(maria)[source(send)]], it looks like an access violation! X4 = ",X4);
 
     .send(maria, tell, myv(10));
     .send(maria, askOne, myv(_));

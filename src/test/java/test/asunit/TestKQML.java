@@ -92,7 +92,7 @@ public class TestKQML {
         bob.addGoal("send_ask4");
         bob.assertIdle(10);
         maria.assertIdle(10);
-        bob.assertPrint("Maria dos Santos", 5); // answer for ask3
+        bob.assertPrint("Maria dos Santos", 5); // answer for ask4
     }
 
     @Test(timeout=2000)

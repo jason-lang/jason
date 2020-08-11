@@ -34,7 +34,8 @@ public class remove_source_annot extends DefaultInternalAction {
     Term processTerm(Term in) {
         if (in instanceof Plan) {
             Plan p = (Plan)in.clone();
-            p.getLabel().delSources();
+            if (p.getLabel() != null)
+                p.getLabel().delSources();
             return p;
         }
         if (in.isLiteral()) {

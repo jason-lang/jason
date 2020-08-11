@@ -78,8 +78,8 @@
 
 @kqmlReceivedAskOne1b // (belief from other, sends back the source)
 +!kqml_received(Sender, askOne, NS::Content, MsgId)
-    : NS::Content[source(AGS)]
-   <- .send(Sender, tell, NS::Content[source(AGS)], MsgId).
+    : NS::Content[source(AGS)[HA|TA]]
+   <- .send(Sender, tell, NS::Content[source(AGS)[HA|TA]], MsgId).
 
 @kqmlReceivedAskOne1c // (no belief, try to trigger a plan with +?)
 +!kqml_received(Sender, askOne, NS::Content, MsgId)
