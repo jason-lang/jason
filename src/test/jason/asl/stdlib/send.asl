@@ -22,6 +22,7 @@
     !assert_equals(10,Z);
 
     .send(rafael, tellHow, "+!goto(X,Y)[source(Ag)] <- .send(Ag, tell, my_position(X,Y)).");
+    .wait(200);
     .send(rafael, achieve, goto(10,30));
     .wait(400);
     !assert_true(my_position(10,30));
@@ -62,7 +63,9 @@
     !assert_equals(vl(10)[source(maria)[source(send)]],Z0);
 
     .send(maria, tellHow, "+!goto(X,Y)[source(Ag)] <- .send(Ag, tell, my_position(X,Y)).");
+    .wait(300);
     .send(maria, achieve, goto(10,2));
+    .wait(300);
     !assert_true(my_position(10,30));
 
     // Maria does not believes loves(X,Y)
