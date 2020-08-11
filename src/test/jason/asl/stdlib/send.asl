@@ -92,8 +92,8 @@
           begin)
         }
     );
-    .send(maria, achieve,gg);
     .wait(100);
+    .send(maria, achieve, gg);
     .send(maria, askOne, fullname, X3);
     !assert_equals(name("Maria dos Santos")[source(maria)],X3);
 

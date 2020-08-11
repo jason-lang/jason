@@ -76,10 +76,15 @@
     : .remove_source_annot(Content,C2) & NS::C2[source(self)]
    <- .send(Sender, tell, NS::Content, MsgId).
 
-@kqmlReceivedAskOne1b // (belief from other, sends back the source)
+@kqmlReceivedAskOne1d // (belief from other + others, sends back all sources)
 +!kqml_received(Sender, askOne, NS::Content, MsgId)
-    : NS::Content[source(AGS)[HA|TA]]
+    : NS::Content[source(AGS)[HA|TA]] // the source as annotation with other sources
    <- .send(Sender, tell, NS::Content[source(AGS)[HA|TA]], MsgId).
+
+@kqmlReceivedAskOne1b // (belief from single other, sends back the source)
++!kqml_received(Sender, askOne, NS::Content, MsgId)
+    : NS::Content[source(AGS)]
+   <- .send(Sender, tell, NS::Content[source(AGS)], MsgId).
 
 @kqmlReceivedAskOne1c // (no belief, try to trigger a plan with +?)
 +!kqml_received(Sender, askOne, NS::Content, MsgId)
@@ -102,8 +107,13 @@
       .send(Sender, tell, L2, MsgId).
 
 +!clear_source(_,[],[]).
-+!clear_source(S,[B[source(self)]|R], [B           |RC]) <- !clear_source(S,R,RC).
-+!clear_source(S,[B[source(O)]   |R], [B[source(O)]|RC]) <- !clear_source(S,R,RC).
++!clear_source(S,[B[source(S)]|R], [B           |RC]) <- !clear_source(S,R,RC).
++!clear_source(S,[B[source(O)]|R], [B[source(O)]|RC]) <- !clear_source(S,R,RC).
+
+/*+!clear_source_self([],[]).
++!clear_source_self([source(self)|T],NT)    <- !clear_source_self(T,NT).
++!clear_source_self([A|T],          [A|NT]) <- !clear_source_self(T,NT).
+ */
 
 /* ---- know-how performatives ---- */
 
