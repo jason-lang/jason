@@ -71,20 +71,20 @@
 
 /* ---- ask performatives ---- */
 
-@kqmlReceivedAskOne1a // (self belief, do not send back the source)
+@kqmlReceivedAskOne1d
 +!kqml_received(Sender, askOne, NS::Content, MsgId)
-    : .remove_source_annot(Content,C2) & NS::C2[source(self)]
-   <- .send(Sender, tell, NS::Content, MsgId).
+    : kqml::bel_no_source_self(NS::Content, Ans)
+   <- .send(Sender, tell, Ans, MsgId).
 
-@kqmlReceivedAskOne1d // (belief from other + others, sends back all sources)
-+!kqml_received(Sender, askOne, NS::Content, MsgId)
-    : NS::Content[source(AGS)[HA|TA]] // the source as annotation with other sources
-   <- .send(Sender, tell, NS::Content[source(AGS)[HA|TA]], MsgId).
+//@kqmlReceivedAskOne1a // (self belief, do not send back the source)
+//+!kqml_received(Sender, askOne, NS::Content, MsgId)
+//    : .remove_source_annot(Content,C2) & NS::C2[source(self)]
+//   <- .send(Sender, tell, NS::Content, MsgId).
 
-@kqmlReceivedAskOne1b // (belief from single other, sends back the source)
-+!kqml_received(Sender, askOne, NS::Content, MsgId)
-    : NS::Content[source(AGS)]
-   <- .send(Sender, tell, NS::Content[source(AGS)], MsgId).
+//@kqmlReceivedAskOne1b // (belief from single other, sends back the source)
+//+!kqml_received(Sender, askOne, NS::Content, MsgId)
+//    : NS::Content[source(AGS)]
+//   <- .send(Sender, tell, NS::Content[source(AGS)], MsgId).
 
 @kqmlReceivedAskOne1c // (no belief, try to trigger a plan with +?)
 +!kqml_received(Sender, askOne, NS::Content, MsgId)
@@ -92,8 +92,6 @@
       ?NS::CA;
       // remove source annot from CA
       .remove_source_annot(CA,CA2);
-      //CA  =.. [_,F,Ts,_];
-      //CA2 =.. [_,F,Ts,[]];
       .send(Sender, tell, NS::CA2, MsgId).
 
 @kqmlReceivedAskOne2 // error in askOne by ?, send untell
@@ -102,18 +100,18 @@
 
 @kqmlReceivedAskAll2
 +!kqml_received(Sender, askAll, NS::Content, MsgId)
-   <- .findall(NS::Content[source(AGS)], NS::Content[source(AGS)], List);
-      !clear_source(self,List,L2);
-      .send(Sender, tell, L2, MsgId).
+   <- .findall(Ans, kqml::bel_no_source_self(NS::Content, Ans), List);
+      .send(Sender, tell, List, MsgId).
 
-+!clear_source(_,[],[]).
-+!clear_source(S,[B[source(S)]|R], [B           |RC]) <- !clear_source(S,R,RC).
-+!clear_source(S,[B[source(O)]|R], [B[source(O)]|RC]) <- !clear_source(S,R,RC).
+kqml::clear_source_self([],[]).
+kqml::clear_source_self([source(self)|T],NT)     :- kqml::clear_source_self(T,NT).
+kqml::clear_source_self([A|T],           [A|NT]) :- A \== source(self) & kqml::clear_source_self(T,NT).
 
-/*+!clear_source_self([],[]).
-+!clear_source_self([source(self)|T],NT)    <- !clear_source_self(T,NT).
-+!clear_source_self([A|T],          [A|NT]) <- !clear_source_self(T,NT).
- */
+kqml::bel_no_source_self(NS::Content, Ans) :-
+   NS::Content[HA|TA] &
+   kqml::clear_source_self([HA|TA],LA) &
+   Content =.. [F,T,_] &
+   Ans     =.. [NS,F,T,LA].
 
 /* ---- know-how performatives ---- */
 

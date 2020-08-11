@@ -106,7 +106,15 @@ public class VarTerm extends LiteralImpl implements NumberTerm, ListTerm { //, S
                 // Answer: use annots of var, useful for meta-programming like
                 //         P[step(N)]
                 if (vl.isLiteral() && this.hasAnnot()) { // if this var has annots, add them in the value's annots (Experimental)
-                    vl = ((Literal)vl).forceFullLiteralImpl().addAnnots((ListTerm)this.getAnnots().capply(u));
+                    Literal vll = (Literal)vl;
+                    vll = vll.forceFullLiteralImpl();
+                    if (vll.hasAnnot()) {
+                        vll.addAnnots((ListTerm)this.getAnnots().capply(u));
+                    } else {
+                        // use setAnnots to copy the tail in the list of annots
+                        vll.setAnnots((ListTerm)this.getAnnots().capply(u));
+                    }
+                    vl = vll;
                 }
                 return vl;
             } else if (hasAnnot()) {

@@ -74,9 +74,9 @@ public class TestKQML {
         bob.addGoal("send_ask1");
         bob.addGoal("send_ask2");
         bob.assertIdle(10);   // let bob to send the messages
-        maria.assertIdle(10); // let maria to process the messages
+        maria.assertIdle(30); // let maria to process the messages
         bob.assertAct("act1(1)", 15);
-        maria.assertIdle(5);
+        maria.assertIdle(30);
         bob.assertBel("vl(1)[source(maria)]", 5); // answer of maria for second askOne (assynchronous)
         maria.assertPrint("bob", 5);
         bob.assertPrint("t2(11)", 5); // answer for ask2

@@ -64,6 +64,7 @@ public class TestAgent extends Agent {
             else
                 parseAS(JasonException.class.getResource("/asl/kqmlPlans.asl"));
             setASLSrc("stringcode");
+            addInitialBelsInBB();
             return true;
         } catch (Exception e) {
             logger.log(Level.SEVERE, "Error parsing\n"+aslCode+": "+e.getMessage());

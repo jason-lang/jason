@@ -218,6 +218,15 @@ public class ListTermTest extends TestCase {
         assertEquals("[a,b,c]",lt5.toString());
     }
 
+    public void testTailUnify2() {
+        ListTerm lt5 = ListTermImpl.parseList("[H|T]");
+        Unifier u = new Unifier();
+        u.unifies(new VarTerm("H"), new Atom("a"));
+        lt5 = (ListTerm)lt5.capply(u);
+        System.out.println(lt5);
+        assertEquals("[a|T]",lt5.toString());
+    }
+
     public void testGround() {
         ListTerm l = ListTermImpl.parseList("[c,b,a,x,y,d]");
         assertTrue(l.isGround());
