@@ -11,9 +11,8 @@
 @[test]
 +!test_at
     <-
-    .log(warning,"TODO: Uncomment lines below, .at with no metric unit is supposed to be in milli!");
-    //.nano_time(T);
-    //.at("now +500", {+!g(test0,T)});
+    .nano_time(T);
+    .at("now +500", {+!g(test0,T)});
 
     .nano_time(T0);
     .at("now +500 ms", {+!g(test1,T0)});
