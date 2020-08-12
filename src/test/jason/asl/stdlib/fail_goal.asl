@@ -35,8 +35,9 @@
 
 +!test_fail_goal
     <-
-    .log(warning,"TODO: test_fail_goal has no current intention!");
-    //!assert_true(state(failed)); // It is expected ^!go has added 'state(failed)' to bb
+    .wait(100); //give some time for the meta event plan ^!go(X,Y)
+    !assert_true(state(pending)); // It is expected ^!go has added 'state(pending)' to bb
+    !assert_true(state(failed)); // It is expected ^!go has added 'state(failed)' to bb
 .
 
 ^!go(X,Y)[state(S)]
