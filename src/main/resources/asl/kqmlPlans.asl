@@ -108,10 +108,10 @@ kqml::clear_source_self([source(self)|T],NT)     :- kqml::clear_source_self(T,NT
 kqml::clear_source_self([A|T],           [A|NT]) :- A \== source(self) & kqml::clear_source_self(T,NT).
 
 kqml::bel_no_source_self(NS::Content, Ans) :-
-   NS::Content[HA|TA] &
-   kqml::clear_source_self([HA|TA],LA) &
+   NS::Content[|LA] &
+   kqml::clear_source_self(LA, NLA) &
    Content =.. [F,T,_] &
-   Ans     =.. [NS,F,T,LA].
+   Ans     =.. [NS,F,T,NLA].
 
 /* ---- know-how performatives ---- */
 

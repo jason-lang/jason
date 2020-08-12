@@ -135,12 +135,12 @@ public class Pred extends Structure {
         Iterator<ListTerm> i = l.listTermIterator();
         while (i.hasNext()) {
             ListTerm lt = i.next();
-            if (lt.getTerm() == null)
-                return this;
-            addAnnot(lt.getTerm()); // use addAnnot to sort them
+            if (lt.getTerm() != null)
+                addAnnot(lt.getTerm()); // use addAnnot to sort them
             if (lt.isTail()) {
+                if (annots == null)
+                    annots = new ListTermImpl();
                 annots.setTail(lt.getTail());
-                return this;
             }
         }
         return this;
@@ -372,10 +372,10 @@ public class Pred extends Structure {
         while (i1.hasNext()) {
             ListTerm lt = i1.next();
             Term annot = lt.getTerm();
-            if (annot == null)
-                break;
             if (lt.isTail())
                 thisTail = lt.getTail();
+            if (annot == null)
+                break;
             if (annot.isVar() && !i2Reset) { // when we arrive to the vars in the annots of "this", we need to start searching from the begin again
                 i2Reset = true;
                 i2 = pAnnots.iterator();

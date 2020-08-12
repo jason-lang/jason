@@ -1,9 +1,5 @@
 package jason.asSyntax;
 
-import jason.asSemantics.Agent;
-import jason.asSemantics.Unifier;
-import jason.asSyntax.parser.as2j;
-
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -18,6 +14,10 @@ import java.util.logging.Logger;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+
+import jason.asSemantics.Agent;
+import jason.asSemantics.Unifier;
+import jason.asSyntax.parser.as2j;
 
 
 /**
@@ -38,8 +38,8 @@ public class ListTermImpl extends Structure implements ListTerm {
     private static Logger logger = Logger.getLogger(ListTermImpl.class.getName());
 
     public static final String LIST_FUNCTOR = ".";
-    private Term term;
-    private Term next;
+    private Term term = null;
+    private Term next = null;
 
     public ListTermImpl() {
         super(LIST_FUNCTOR, 0);
@@ -79,8 +79,14 @@ public class ListTermImpl extends Structure implements ListTerm {
     @Override
     public ListTerm capply(Unifier u) {
         ListTermImpl t = new ListTermImpl();
-        if (term != null) t.term = this.term.capply(u);
-        if (next != null) t.next = this.next.capply(u);
+        if (term != null)
+            t.term = this.term.capply(u);
+        if (next != null) {
+            t.next = this.next.capply(u);
+            if (t.term == null && t.next.isList()) { // the case of [|T]
+                t = (ListTermImpl)t.next;
+            }
+        }
         return t;
     }
 
@@ -212,7 +218,7 @@ public class ListTermImpl extends Structure implements ListTerm {
     }
 
     public boolean isEmpty() {
-        return term == null;
+        return term == null && next == null;
     }
     public boolean isEnd() {
         return isEmpty() || isTail();
@@ -266,10 +272,14 @@ public class ListTermImpl extends Structure implements ListTerm {
 
     /** set the tail of this list */
     public void setTail(VarTerm v) {
-        if (getNext().isEmpty())
+        if (next == null) {
             next = v;
-        else
-            getNext().setTail(v);
+        } else {
+            if (getNext().isEmpty())
+                next = v;
+            else
+                getNext().setTail(v);
+        }
     }
 
     /** get the last ListTerm of this List */
@@ -566,7 +576,8 @@ public class ListTermImpl extends Structure implements ListTerm {
     public Iterator<Term> iterator() {
         return new ListTermIterator<Term>(this) {
             public boolean hasNext() {
-                return nextLT != null && !nextLT.isEmpty() && nextLT.isList();
+                //return nextLT != null && !nextLT.isEmpty() && nextLT.isList();
+                return nextLT != null && nextLT.getTerm() != null && nextLT.isList();
             }
             public Term next() {
                 moveNext();
@@ -614,17 +625,19 @@ public class ListTermImpl extends Structure implements ListTerm {
         StringBuilder s = new StringBuilder("[");
         ListTerm l = this;
         while (!l.isEmpty()) {
-            s.append(l.getTerm());
-            if (l.isTail()) {
-                s.append('|');
-                s.append(l.getTail());
+            if (l.getTerm() != null)
+                s.append(l.getTerm());
+            if (l.isTail())
                 break;
-            }
             l = l.getNext();
             if (l == null)
                 break;
             if (!l.isEmpty())
                 s.append(',');
+        }
+        if (l.isTail()) {
+            s.append('|');
+            s.append(l.getTail());
         }
         s.append(']');
         return s.toString();
@@ -872,7 +885,7 @@ public class ListTermImpl extends Structure implements ListTerm {
         }
         return u;
     }
-    
+
     @Override
     public String getAsJSON(String identation) {
         StringBuilder json = new StringBuilder(identation+"[\n");

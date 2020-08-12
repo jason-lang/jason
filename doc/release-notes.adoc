@@ -6,6 +6,7 @@ ifdef::env-github[:outfilesuffix: .adoc]
 == version 2.6
 
 - the functor of plan labels can be omitted, as in `@[atomic] +!g <- a`. In this case, as usual, a new unique label functor is defined by the interpreter.
+- new syntax for list tail: `[|T]` (note that we have no term before `|`). It unifies with any list (even empty) and thus it is conceptually equivalent to `T`. It is useful to get the list of all annotations of some belief: `?b(X)[|AllAnnots]`.
 - new tests framework implemented in Jason (see src/test/jason/asl and doc/tech/unit-tests), contribution of Cleber Amaral.
 - new internal action `.intention` used to inspect the state of intentions. It replaces `.current_intention`.
 - new internal action `.set_random_seed`, contribution of Timotheus Kampik.

@@ -1,5 +1,9 @@
 package test;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import jason.asSemantics.Unifier;
 import jason.asSyntax.ASSyntax;
 import jason.asSyntax.Atom;
@@ -10,11 +14,7 @@ import jason.asSyntax.Structure;
 import jason.asSyntax.Term;
 import jason.asSyntax.VarTerm;
 import jason.asSyntax.parser.ParseException;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
+import jason.asSyntax.parser.TokenMgrError;
 import junit.framework.TestCase;
 
 /** JUnit test case for syntax package */
@@ -223,7 +223,6 @@ public class ListTermTest extends TestCase {
         Unifier u = new Unifier();
         u.unifies(new VarTerm("H"), new Atom("a"));
         lt5 = (ListTerm)lt5.capply(u);
-        System.out.println(lt5);
         assertEquals("[a|T]",lt5.toString());
     }
 
@@ -377,6 +376,39 @@ public class ListTermTest extends TestCase {
         tv.makeVarsAnnon();
         assertTrue(tv.toString().indexOf("_") > 0);
     }
+
+    public void testOnlyTailList() throws ParseException, TokenMgrError {
+        ListTerm l = ASSyntax.parseList("[|T]");
+        assertEquals("[|T]", l.toString());
+
+        Iterator<ListTerm> i = l.listTermIterator();
+        assertTrue(i.hasNext());
+        assertTrue(i.next().isTail());
+        assertEquals("T", l.getTail().toString());
+
+        Unifier u = new Unifier();
+        assertTrue(u.unifies(l, ASSyntax.parseList("[a,b,c]")));
+        assertEquals("[a,b,c]", u.get("T").toString());
+
+        u = new Unifier();
+        assertTrue(u.unifies(ASSyntax.parseList("[a,b,c]"), l));
+        assertEquals("[a,b,c]", u.get("T").toString());
+
+        assertEquals("[a,b,c]", l.capply(u).toString());
+
+        Literal l1 = ASSyntax.parseLiteral("b(10)[a,b,c]");
+        Literal l2 = ASSyntax.parseLiteral("b(10)[|T]");
+        assertTrue(l2.hasAnnot());
+        assertEquals("b(10)[|T]", l2.toString());
+        u = new Unifier();
+        assertTrue(l1.hasSubsetAnnot(l2,u));
+        assertEquals("[a,b,c]", u.get("T").toString());
+        u = new Unifier();
+        assertTrue(l2.hasSubsetAnnot(l1,u));
+        assertEquals("[a,b,c]", u.get("T").toString());
+        assertEquals("b(10)[a,b,c]", l2.capply(u).toString());
+    }
+
 
     @SuppressWarnings("unchecked")
     List iterator2list(Iterator i) {

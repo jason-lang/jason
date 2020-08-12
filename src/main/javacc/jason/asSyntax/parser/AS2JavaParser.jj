@@ -804,22 +804,23 @@ Term term() :          { Object o; }
 }
 
 
-ListTermImpl list() :     { ListTermImpl lt = new ListTermImpl(); ListTerm last; Token K; Term f;
+ListTermImpl list() :     { ListTermImpl lt = new ListTermImpl(); ListTerm last = lt; Token K; Term f;
                             Atom ons = namespace; namespace = Literal.DefaultNS; // do not replace abstract namespace for terms
                           }
 {
   "["
-  [
-  f=term_in_list()        { last = lt.append(f); lt.setSrcInfo(f.getSrcInfo()); }
-  ( "," f=term_in_list()  { last = last.append(f); }
-  )*
+  [ f=term_in_list()      { last = lt.append(f); lt.setSrcInfo(f.getSrcInfo()); }
+    ( "," f=term_in_list(){ last = last.append(f); }
+    )*
+  ]
   [ "|"  ( K=<VAR>        { last.setNext(new VarTerm(K.image)); }
          | K=<UNNAMEDVAR> { last.setNext(UnnamedVar.create(K.image)); }
          | f=list()       { last = last.concat((ListTerm)f); }
          )
   ]
-  ]
-  "]"                     { namespace = ons; return lt; }
+  "]"                     { namespace = ons;
+                            return lt;
+                          }
 }
 
 // term_in_list is the same as term, but log_expr/plan_body must be enclosed by "("....")" to avoid problem with |
