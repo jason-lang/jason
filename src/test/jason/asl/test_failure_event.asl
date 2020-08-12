@@ -18,12 +18,10 @@
 .
 -!test_fail_event[error(ErrorId), error_msg(Msg), code(CodeBody), code_src(CodeSrc), code_line(CodeLine)]
    <-
-   .log(warning,"TODO: Remove !check_test_fail_event and uncomment asserts, notice the output says assert_equals on event 'unknown', i.e., -!events has no intention? Due to this issue all asserts return failure!");
-
    //This !check_test_fail_event was created just to performed the asserts below. When the problem is solved it can be removed and asserts uncommented
    !check_test_fail_event(ErrorId,Msg,CodeBody,CodeSrc,CodeLine);
-   //!assert_equals(action_failed,ErrorId);
-   //!assert_equals("test_failure_event.asl",CodeSrc);
+   !assert_equals(action_failed,ErrorId);
+   !assert_equals("test_failure_event.asl",CodeSrc);
 
    .print("Expected error: ", ErrorId, " '",Msg,"' by ",CodeBody," in ",CodeSrc,":",CodeLine);
 .
@@ -44,13 +42,11 @@
 .
 -!F[error(ErrorId), error_msg(Msg), code(CodeBody), code_src(CodeSrc), code_line(CodeLine)]
     <-
-    .log(warning,"TODO: Remove !check_test_fail_event and uncomment asserts, notice the output says assert_equals on event 'unknown', i.e., -!events has no intention? Due to this issue all asserts return failure!");
-
     //This !check_test_generic_fail_event was created just to performed the asserts below. When the problem is solved it can be removed and asserts uncommented
     !check_test_generic_fail_event(ErrorId,Msg,CodeBody,CodeSrc,CodeLine);
 
-    //!assert_equals(ia_failed,ErrorId);
-    //!assert_equals("test_failure_event.asl",CodeSrc);
+    !assert_equals(ia_failed,ErrorId);
+    !assert_equals("test_failure_event.asl",CodeSrc);
 
     .print("Expected error: ", ErrorId, " '",Msg,"' by ",CodeBody," in ",CodeSrc,":",CodeLine);
 .

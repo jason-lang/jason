@@ -2,14 +2,17 @@
  * Assert helpers
  */
 
+intention_test_goal(Goal,Test,Label,Line,Src) :- .intention(ID,_,[ im(Label,TGoal,{ Test; _ },_)|_],current) &
+    (TGoal = {+!Goal[_|_]} | TGoal = {-!Goal[_|_]}) &
+    _[code_line(Line),code_src(Src)] = Label.
+
 /**
  * Asserts if X is equals to Y
  * IMPORTANT! Do no use this method to compare float numbers
  */
 @assert_equals[atomic]
 +!assert_equals(X,Y) : // compare terms
-    .intention(ID,_,[ im(Label,{+!Goal[An]},{ Test; _ },_)|_],current) &
-    _[code_line(Line),code_src(Src)] = Label &
+    intention_test_goal(Goal,Test,Label,Line,Src) &
     not .list(X) & not .list(Y)
     <-
     if (X \== Y) {
@@ -21,8 +24,7 @@
     }
 .
 +!assert_equals(X,Y) : // compare lists
-    .intention(ID,_,[ im(Label,{+!Goal[An]},{ Test; _ },_)|_],current) &
-    _[code_line(Line),code_src(Src)] = Label
+    intention_test_goal(Goal,Test,Label,Line,Src)
     <-
     for (.member(Xth,X)) {
         if (not .member(Xth,Y)) {
@@ -57,8 +59,7 @@
  */
 @assert_equals_tolerant[atomic]
 +!assert_equals(X,Y,T) :
-    .intention(ID,_,[ im(Label,{+!Goal[An]},{ Test; _ },_)|_],current) &
-    _[code_line(Line),code_src(Src)] = Label
+    intention_test_goal(Goal,Test,Label,Line,Src)
     <-
     if (not (Y >= X-T & Y <= X+T)) {
         .log(severe,"assert_equals on event '",Goal,"' starting at line ",Line," FAILED! Expected ",X,"+/-",T,", but had ",Y);
@@ -85,8 +86,7 @@
  */
 @assert_true[atomic]
 +!assert_true(X) :
-    .intention(ID,_,[ im(Label,{+!Goal[An]},{ Test; _ },_)|_],current) &
-    _[code_line(Line),code_src(Src)] = Label
+    intention_test_goal(Goal,Test,Label,Line,Src)
     <-
     if (not X) {
         .log(severe,"assert_true on event '",Goal,"' starting at line ",Line," FAILED! Expected ",X);
@@ -113,8 +113,7 @@
  */
 @assert_false[atomic]
 +!assert_false(X) :
-    .intention(ID,_,[ im(Label,{+!Goal[An]},{ Test; _ },_)|_],current) &
-    _[code_line(Line),code_src(Src)] = Label
+    intention_test_goal(Goal,Test,Label,Line,Src)
     <-
     if (X) {
         .log(severe,"assert_false on event '",Goal,"' starting at line ",Line," FAILED! Expected not ",X);
@@ -141,8 +140,7 @@
  */
 @force_pass[atomic]
 +!force_pass :
-    .intention(ID,_,[ im(Label,{+!Goal[An]},{ Test; _ },_)|_],current) &
-    _[code_line(Line),code_src(Src)] = Label
+    intention_test_goal(Goal,Test,Label,Line,Src)
     <-
     +test(Test,passed,Src,Line)[force_pass];
     .log(info,"force_pass on event '",Goal,"' PASSED");
@@ -164,8 +162,7 @@
  */
 @force_failure[atomic]
 +!force_failure(MSG) :
-    .intention(ID,_,[ im(Label,{+!Goal[An]},{ Test; _ },_)|_],current) &
-    _[code_line(Line),code_src(Src)] = Label
+    intention_test_goal(Goal,Test,Label,Line,Src)
     <-
     .log(severe,"force_failure on event '",Goal,"' forcedly FAILED! Msg: ",MSG);
     .fail;
@@ -187,8 +184,7 @@
  */
 @assert_contains[atomic]
 +!assert_contains(X,Y) :
-    .intention(ID,_,[ im(Label,{+!Goal[An]},{ Test; _ },_)|_],current) &
-    _[code_line(Line),code_src(Src)] = Label
+    intention_test_goal(Goal,Test,Label,Line,Src)
     <-
     if (not .member(Y,X)) {
         .log(severe,"assert_contains on event '",Goal,"' starting at line ",Line," FAILED! Expected ",Y," in ",X);
@@ -214,8 +210,7 @@
  */
 @assert_greater_than[atomic]
 +!assert_greater_than(X,Y) : // compare terms
-    .intention(ID,_,[ im(Label,{+!Goal[An]},{ Test; _ },_)|_],current) &
-    _[code_line(Line),code_src(Src)] = Label &
+    intention_test_goal(Goal,Test,Label,Line,Src) &
     .number(X) & .number(Y)
     <-
     if (X <= Y) {
@@ -236,8 +231,7 @@
  */
 @assert_greater_than_equals[atomic]
 +!assert_greater_than_equals(X,Y) : // compare terms
-    .intention(ID,_,[ im(Label,{+!Goal[An]},{ Test; _ },_)|_],current) &
-    _[code_line(Line),code_src(Src)] = Label &
+    intention_test_goal(Goal,Test,Label,Line,Src) &
     .number(X) & .number(Y)
     <-
     if (X < Y) {
@@ -255,8 +249,7 @@
 
 @assert_between[atomic]
 +!assert_between(X,Y0,Y1) : // compare if X is greater/equal than Y0 and lower/equal than Y1
-    .intention(ID,_,[ im(Label,{+!Goal[An]},{ Test; _ },_)|_],current) &
-    _[code_line(Line),code_src(Src)] = Label &
+    intention_test_goal(Goal,Test,Label,Line,Src) &
     .number(X) & .number(Y0) & .number(Y1)
     <-
     if ((X < Y0) | (X > Y1)) {
