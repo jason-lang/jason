@@ -17,7 +17,8 @@ tests_passed(0).
 /**
  * Startup operations
  */
-!self_test_asserts.  // tests all asserts both passed and failed conditions
+!self_test_asserts.  // test all asserts both passed and failed conditions
+!self_test_mock_agent. // test the mock agent
 
 /**
  * -!P fail plan to generate assert failure
@@ -109,4 +110,23 @@ tests_passed(0).
     !assert_equals(12,F);
 
     .log(severe,">>> end of self tests.");
+.
+
+/**
+ * Test if the mock agent is sending its sleeping state
+ */
+@[atomic]
++!self_test_mock_agent :
+    .my_name(ME)
+    <-
+    !assert_false(sleeping(mock));
+
+    .create_agent(mock, "mock_agent.asl");
+    .send(mock, tell, mock_owner(ME));
+
+    .wait( not sleeping(mock), 300, _ );
+    .wait( sleeping(mock) );
+
+    !assert_true(sleeping(mock));
+    .kill_agent(mock);
 .
