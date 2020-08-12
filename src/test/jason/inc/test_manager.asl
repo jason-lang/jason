@@ -60,7 +60,12 @@ shutdown_hook.          // shutdown after shutdown_delay(SD), SD is the number o
     <-
     .log(severe,"\n\n");
     .log(severe,"#",N," tests executed, #",P," passed and #",F," failed.");
-    .log(severe,"#",LP," plans launched, #",AP," achieved, at least #",UP," not launched!");
+    if (LP \== AP) {
+        .log(severe,"#",LP," plans launched but only #",AP," achieved!");
+    }
+    if (UP > 0) {
+        .log(severe,"At least #",UP," plan(s) not launched!");
+    }
 
     for (plan_statistics(launched,T,A) & not plan_statistics(achieved,T,A)) {
         .log(severe,"Test '",T,"' was NOT ACHIEVED, agent '",A,"' has FAILED on testing!");
