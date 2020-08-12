@@ -60,7 +60,7 @@ auto_create_fail_plan.  // create -!P fail plan to capture unexpected failures
 .
 
 /**
- * Send data to test_manager
+ * Send data to test_manager the results of each assertion
  */
 @[atomic]
 +test(Test,Result,Src,Line)[source(self)] :
@@ -73,7 +73,9 @@ auto_create_fail_plan.  // create -!P fail plan to capture unexpected failures
     <-
     .send(test_manager,achieve,count_tests(Result,Test,Agent));
 .
-
+/**
+ * Use meta event to tell to the manager goal a plan was achieved
+ */
 @[atomic]
 ^!P[state(achieved)] :
     .relevant_plans({+!P},_,L) & // Get all plan labels
@@ -81,4 +83,27 @@ auto_create_fail_plan.  // create -!P fail plan to capture unexpected failures
     .my_name(ME)
     <-
     .send(test_manager,achieve,count_plans(achieved,P,ME));
+.
+
+/**
+ * Create a mock agent able to tell to the owner when it
+ * is sleeping which can be used to make sure the agent
+ * is ready to answer properly for tests
+ */
++!create_mock_agent(MockAgName) :
+    .my_name(ME)
+    <-
+    .create_agent(MockAgName, "mock_agent.asl");
+    .send(MockAgName, tell, mock_owner(ME));
+.
+/**
+ * Wait for the mock agent to be in idle mode, i.e., ready
+ * to do something.
+ */
++!wait_idle(MockAgName)
+    <-
+    // if the mock was already sleeping, wait it wake up first
+    .wait( not sleeping(MockAgName), 300, _ );
+    // wait the mock finish some task and tell that it is now sleeping
+    .wait( sleeping(MockAgName) );
 .
