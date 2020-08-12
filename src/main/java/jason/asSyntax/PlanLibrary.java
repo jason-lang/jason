@@ -47,6 +47,7 @@ public class PlanLibrary implements Iterable<Plan>, Serializable {
     private Map<String,Plan> planLabels = new ConcurrentHashMap<>();
 
     private boolean hasMetaEventPlans = false;
+    private boolean hasJagPlans = false; // plans for sleep/wake signals
 
     private static AtomicInteger lastPlanLabel = new AtomicInteger(0);
 
@@ -180,7 +181,8 @@ public class PlanLibrary implements Iterable<Plan>, Serializable {
                 p.getLabel().addAnnot(ASSyntax.createStructure("file", ASSyntax.createString( p.getSourceFile())));
 
 
-            if (p.getTrigger().getLiteral().getFunctor().equals(kqmlReceivedFunctor)) {
+            Trigger pte = p.getTrigger();
+            if (pte.getLiteral().getFunctor().equals(kqmlReceivedFunctor)) {
                 // is it a KQML plan from a file different than the one provided by Jason?
                 if (! (p.getSrcInfo() != null && KQML_PLANS_FILE.equals(p.getSrcInfo().getSrcFile()))) {
 //                if (! (p.getSrcInfo() != null && p.getSrcInfo().getSrcFile().endsWith(".jar!/asl/kqmlPlans.asl"))) {
@@ -192,7 +194,6 @@ public class PlanLibrary implements Iterable<Plan>, Serializable {
 
             planLabels.put( getStringForLabel(p.getLabel()), p);
 
-            Trigger pte = p.getTrigger();
             if (pte.getLiteral().isVar() || pte.getLiteral().getNS().isVar()) {
                 if (before)
                     varPlans.add(0,p);
@@ -223,6 +224,8 @@ public class PlanLibrary implements Iterable<Plan>, Serializable {
 
             if (pte.getOperator() == TEOperator.goalState)
                 hasMetaEventPlans = true;
+            if (pte.equals(TE_JAG_AWAKING) || pte.equals(TE_JAG_SHUTTING_DOWN) || pte.equals(TE_JAG_SLEEPING))
+                hasJagPlans = true;
 
             if (before)
                 plans.add(0,p);
@@ -268,6 +271,10 @@ public class PlanLibrary implements Iterable<Plan>, Serializable {
 
     public boolean hasUserKqmlReceivedPlans() {
         return hasUserKqmlReceived;
+    }
+
+    public boolean hasJagPlans() {
+        return hasJagPlans;
     }
 
     /** add a label to the plan */
