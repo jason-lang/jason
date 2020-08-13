@@ -1,5 +1,9 @@
 package jason.stdlib;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import jason.asSemantics.DefaultInternalAction;
 import jason.asSemantics.InternalAction;
 import jason.asSemantics.TransitionSystem;
@@ -17,11 +21,11 @@ import jason.asSyntax.Term;
 
   <p>Parameters:<ul>
 
-  <li>- plan (plan term): the term representing the plan, it is
+  <li>+/- plan (plan term): the term representing the plan, it is
   a plan enclosed by { and }
   (e.g. <code>{+!g : vl(X) <- .print(X)}</code>).<br/>
 
-  <li>+ label (structure): the label of that plan.<br/>
+  <li>+/- label (structure): the label of that plan.<br/>
 
   </ul>
 
@@ -80,21 +84,60 @@ public class plan_label extends DefaultInternalAction {
     public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {
         checkArguments(args);
 
-        Term label = args[1];
-        Plan p;
-        if (label.isLiteral())
-            p = ts.getAg().getPL().get( (Literal)label);
-        else
-            p = ts.getAg().getPL().get( new Atom(label.toString()));
+        if (args[0].isVar() && !args[1].isVar()) {
+            Term label = args[1];
+            Plan plan;
+	        if (label.isLiteral())
+	            plan = ts.getAg().getPL().get( (Literal)label);
+	        else
+	            plan = ts.getAg().getPL().get( new Atom(label.toString()));
 
-        if (p != null) {
-            p = (Plan)p.clone();
+	        if (plan == null)
+	        	return false;
+
+            plan = (Plan)plan.clone();
             //p.getLabel().delSources();
-            p.setAsPlanTerm(true);
-            p.makeVarsAnnon();
-            return un.unifies(p, args[0]);
-        } else {
-            return false;
+            plan.setAsPlanTerm(true);
+            plan.makeVarsAnnon();
+            return un.unifies(plan, args[0]);
         }
+        if (args[1].isVar() && !args[0].isVar()) {
+            return un.unifies(args[1], ((Plan)args[0]).getLabel());
+        }
+
+        // backtrack on all plans
+        // make a copy of all plans to avoid concurrent modification
+        List<Plan> plans = new ArrayList<>(ts.getAg().getPL().getPlans());
+        return new Iterator<Unifier>() {
+            Iterator<Plan> i = plans.iterator();
+            Unifier c = null; // the current response (which is an unifier)
+
+            { find(); }
+
+            public boolean hasNext() {
+                return c != null;
+            }
+
+            public Unifier next() {
+                Unifier b = c;
+                find(); // find next response
+                return b;
+            }
+
+            void find() {
+                while (i.hasNext()) {
+                	Plan p = i.next();
+                    c = un.clone();
+                    if (c.unifiesNoUndo(args[1], p.getLabel())) {
+                    	p = (Plan)p.clone();
+                    	p.setAsPlanTerm(true);
+                    	p.makeVarsAnnon();
+	                    if (c.unifiesNoUndo(args[0], p))
+	                        return;
+                    }
+                }
+                c = null; // no member is found,
+            }
+        };
     }
 }

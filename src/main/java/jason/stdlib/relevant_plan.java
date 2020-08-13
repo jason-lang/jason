@@ -21,26 +21,21 @@ import jason.asSyntax.parser.ParseException;
 
   <p>Parameters:<ul>
 
-  <li>+ trigger (trigger): the triggering event, enclosed by { and }.</li>
+  <li>+/- trigger (trigger): the triggering event, enclosed by { and }.</li>
 
-  <li>+/- plan label (atom): the label of the relevant plan for the trigger.</li>
+  <li>+/- plan  (plan as term): a relevant plan for the trigger.</li>
 
   </ul>
 
   <p>Example:<ul>
 
-  <li> <code>.relevant_plan({+!go(X,Y)},P)</code>: unifies P with all plans's label that are relevant for the triggering
-  event <code>+!go(X,Y)</code>. To find all labels the internal action .findall can be used to backtrack on all solutions:
-  <code>.findall(P, .relevant_plan({+!go(X,Y)},P), ListLabels)</code>.
-
-  To find all plans:
-  <code>
-  .findall(P, .relevant_plan({+!go(X,Y)},L) & .plan_label(P,L), ListPlans)
-  </code>
+  <li> <code>.relevant_plan({+!go(X,Y)},P)</code>: unifies P with all plans that are relevant for the triggering
+  event <code>+!go(X,Y)</code>. To find all plans the internal action .findall can be used to backtrack on all solutions:
+  <code>.findall(P, .relevant_plan({+!go(X,Y)},P), ListOfPlans)</code>.
 
   To find all plans from file source "a.asl":
   <code>
-  .findall(P, .relevant_plan({+!go(X,Y)},L[file("a.asl")]) & .plan_label(P,L), ListPlans)
+  .findall(P, .relevant_plan({+!go(X,Y)},P]) & .plan_label(P,L[file("a.asl")), ListPlans)
   </code>
 
   </li>
@@ -55,7 +50,7 @@ import jason.asSyntax.parser.ParseException;
 @SuppressWarnings("serial")
 public class relevant_plan extends DefaultInternalAction {
 
-	@Override public int getMinArgs() {
+    @Override public int getMinArgs() {
         return 2;
     }
     @Override public int getMaxArgs() {
@@ -66,6 +61,11 @@ public class relevant_plan extends DefaultInternalAction {
     public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {
         checkArguments(args);
 
+        if (args[0].isVar() && !args[1].isVar()) {
+            // case to get the Trigger of a plan
+            return un.unifies(args[0], ((Plan)args[1]).getTrigger());
+        }
+
         Trigger te = null;
         try {
             te = Trigger.tryToGetTrigger(args[0]);
@@ -74,17 +74,17 @@ public class relevant_plan extends DefaultInternalAction {
             throw JasonException.createWrongArgument(this,"first argument '"+args[0]+"' must follow the syntax of a trigger.");
 
         if (!te.getLiteral().hasSource()) {
-        	// the ts.relevantPlans requires a source to work properly
-        	te.setLiteral(te.getLiteral().forceFullLiteralImpl());
-        	te.getLiteral().addSource(new UnnamedVar());
+            // the ts.relevantPlans requires a source to work properly
+            te.setLiteral(te.getLiteral().forceFullLiteralImpl());
+            te.getLiteral().addSource(new UnnamedVar());
         }
         List<Plan> rp = ts.getAg().getPL().getCandidatePlans(te);
         if (rp == null)
-        	return false;
+            return false;
 
         final Trigger fte = te;
         return new Iterator<Unifier>() {
-        	Iterator<Plan> i = rp.iterator();
+            Iterator<Plan> i = rp.iterator();
             Unifier c = null; // the current response (which is an unifier)
 
             { find(); }
@@ -101,10 +101,10 @@ public class relevant_plan extends DefaultInternalAction {
 
             void find() {
                 while (i.hasNext()) {
-                	Plan p = i.next();
-                	c = p.isRelevant(fte, (Unifier)un.clone());
-                	if (c != null && c.unifiesNoUndo(args[1], p.getLabel()))
-                		return;
+                    Plan p = i.next();
+                    c = p.isRelevant(fte, (Unifier)un.clone());
+                    if (c != null && c.unifiesNoUndo(args[1], p)) // p.getLabel()))
+                        return;
                 }
                 c = null; // no member is found,
             }

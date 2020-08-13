@@ -7,6 +7,7 @@ import jason.asSyntax.ASSyntax;
 import jason.asSyntax.Atom;
 import jason.asSyntax.ListTerm;
 import jason.asSyntax.Literal;
+import jason.asSyntax.Plan;
 import jason.asSyntax.StringTerm;
 import jason.asSyntax.Term;
 import jason.asSyntax.parser.ParseException;
@@ -19,7 +20,7 @@ import jason.bb.BeliefBase;
 
   <p>Parameters:<ul>
 
-  <li>+ label(s) (atom or list of atoms): the label of the
+  <li>+ label(s)/plans (atom or list of atoms or plan): the label of the
   plan to be removed. If this parameter is a list of labels, all plans
   of this list are removed.</li>
 
@@ -46,12 +47,12 @@ import jason.bb.BeliefBase;
   by labels <code>l1[source(bob)]</code>, <code>l2[source(bob)]</code>, and
   <code>l3[source(bob)]</code>.</li>
 
-  <li> <code>.relevant_plans({ +!g }, _, L); .remove_plan(LL)</code>:
+  <li> <code>.relevant_plans({ +!g }, _, LL); .remove_plan(LL)</code>:
   removes all plans with trigger event <code>+!g</code>.</li>
 
   <li>
-  <code>for ( .relevant_plan( {+!_}, L[file("g.asl")]) ) {
-        .remove_plan(L);
+  <code>for ( .plan_label( P, L[file("g.asl")]) ) {
+        .remove_plan(P);
       }</code>: removes all achievement plans from source g.asl.
   </li>
   </ul>
@@ -101,6 +102,8 @@ public class remove_plan extends DefaultInternalAction {
     public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {
         checkArguments(args);
         Term label = args[0];
+        if (args[0] instanceof Plan)
+        	label = ((Plan)args[0]).getLabel();
 
         Term source = BeliefBase.ASelf;
         if (args.length > 1) {
@@ -108,11 +111,10 @@ public class remove_plan extends DefaultInternalAction {
         }
         if (label.isList()) { // arg[0] is a list
             for (Term t: (ListTerm)args[0]) {
-                //r = r && ts.getAg().getPL().remove((Atom)t, source);
-                ts.getAg().getPL().remove(fixLabel(t), source);
+            	ts.getAg().getPL().remove(fixLabel(t), source);
             }
         } else { // args[0] is a plan label
-            ts.getAg().getPL().remove(fixLabel(label), source);
+        	ts.getAg().getPL().remove(fixLabel(label), source);
         }
         return true;
     }
