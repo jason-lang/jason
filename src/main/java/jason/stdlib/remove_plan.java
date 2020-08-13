@@ -20,7 +20,7 @@ import jason.bb.BeliefBase;
 
   <p>Parameters:<ul>
 
-  <li>+ label(s)/plans (atom or list of atoms or plan): the label of the
+  <li>+ label(s) (atom or list of atoms or plan): the label of the
   plan to be removed. If this parameter is a list of labels, all plans
   of this list are removed.</li>
 

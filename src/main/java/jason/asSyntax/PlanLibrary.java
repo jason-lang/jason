@@ -281,7 +281,7 @@ public class PlanLibrary implements Iterable<Plan>, Serializable {
     public Pred getUniqueLabel() {
         String l;
         do {
-            l = "l__" + (lastPlanLabel.incrementAndGet());
+            l = "p__" + (lastPlanLabel.incrementAndGet());
         } while (planLabels.keySet().contains(l));
         return new Pred(l);
     }

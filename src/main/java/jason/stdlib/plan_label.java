@@ -84,6 +84,7 @@ public class plan_label extends DefaultInternalAction {
     public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {
         checkArguments(args);
 
+        // get plan
         if (args[0].isVar() && !args[1].isVar()) {
             Term label = args[1];
             Plan plan;
@@ -101,6 +102,8 @@ public class plan_label extends DefaultInternalAction {
             plan.makeVarsAnnon();
             return un.unifies(plan, args[0]);
         }
+
+        // get label
         if (args[1].isVar() && !args[0].isVar()) {
             return un.unifies(args[1], ((Plan)args[0]).getLabel());
         }
