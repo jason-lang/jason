@@ -37,8 +37,7 @@ public abstract class BaseCentralisedMAS extends NotificationBroadcasterSupport 
 
     protected static Logger             logger        = Logger.getLogger(BaseCentralisedMAS.class.getName());
     protected static BaseCentralisedMAS runner        = null;
-    protected static String             urlPrefix     = "";
-    protected static boolean            readFromJAR   = false;
+    protected static boolean            appFromClassPath = false;
     protected static MAS2JProject       project;
     protected static boolean            debug         = false;
 

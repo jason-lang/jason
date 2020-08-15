@@ -94,6 +94,7 @@ jar {
     }
     from('src') {
         include '/test/jason/inc/**/*.asl'
+        include '/test/jason/**/*.mas2j'
     }
     /*doFirst {
         Properties props = new Properties()

@@ -11,5 +11,5 @@ MAS unit_tests {
             beliefs="shutdown_delay(4)"
         ];
 
-    aslSourcePath: "src/test/jason/inc";"src/test/jason/asl";"inc";
+    aslSourcePath: "src/test/jason/inc";"src/test/jason/asl";"inc"; "$jasonJar/test/jason/inc";
 }

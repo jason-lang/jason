@@ -106,7 +106,7 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
         if (args.length < 1) {
             if (RunCentralisedMAS.class.getResource("/"+defaultProjectFileName) != null) {
                 projectFileName = defaultProjectFileName;
-                readFromJAR = true;
+                appFromClassPath = true;
                 Config.get(false); // to void to call fix/store the configuration in this case everything is read from a jar/jnlp file
             } else {
                 System.out.println("Jason "+Config.get().getJasonVersion());
@@ -145,18 +145,20 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
         int errorCode = 0;
 
         try {
+            String urlPrefix = null;
             if (projectFileName != null) {
                 InputStream inProject;
-                if (readFromJAR) {
+                if (appFromClassPath) {
                     inProject = RunCentralisedMAS.class.getResource("/"+defaultProjectFileName).openStream();
-                    urlPrefix = SourcePath.CRPrefix + "/";
+                    urlPrefix = SourcePath.CRPrefix;
                 } else {
                     URL file;
                     // test if the argument is an URL
                     try {
+                        projectFileName = new SourcePath().fixPath(projectFileName); // replace $jasonJar, if necessary
                         file = new URL(projectFileName);
                         if (projectFileName.startsWith("jar")) {
-                            urlPrefix = projectFileName.substring(0,projectFileName.indexOf("!")+1) + "/";
+                            urlPrefix = projectFileName.substring(0,projectFileName.indexOf("!")+1);
                         }
                     } catch (Exception e) {
                         file = new URL("file:"+projectFileName);
@@ -170,7 +172,7 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
             }
 
             project.setupDefault();
-            project.getSourcePaths().setUrlPrefix(urlPrefix);
+            project.getSourcePaths().addPath(urlPrefix);
             project.registerDirectives();
             // set the aslSrcPath in the include
             ((Include)DirectiveProcessor.getDirective("include")).setSourcePath(project.getSourcePaths());
@@ -212,8 +214,9 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
         if (args.length > 0) {
             String la = "";
             for (String arg: args) {
-                if (la.equals("--log-conf"))
+                if (la.equals("--log-conf")) {
                     margs.put("log-conf", arg);
+                }
                 if (arg.equals("--debug") || arg.equals("-d"))
                     margs.put("debug", true);
 
@@ -247,7 +250,7 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
     }
 
     public synchronized void setupLogger(String confFile) {
-        if (readFromJAR) {
+        if (appFromClassPath) {
             try {
                 LogManager.getLogManager().readConfiguration(
                         RunCentralisedMAS.class.getResource("/"+logPropFile).openStream());
@@ -261,11 +264,24 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
                 Logger.getLogger("").addHandler(h);
                 Logger.getLogger("").setLevel(Level.INFO);
             }
+        } else if (confFile != null && (confFile.startsWith("jar:") || confFile.startsWith("$"))) {
+            try {
+                confFile = new SourcePath().fixPath(confFile);
+                URL logurl = new URL(confFile);
+                LogManager.getLogManager().readConfiguration( logurl.openStream() );
+                System.out.println("logging read from "+logurl);
+            } catch (Exception e) {
+                System.err.println("Error setting up logger:" + e);
+                e.printStackTrace();
+            }
+
         } else {
-            if (confFile == null)
+            if (confFile == null) {
                 confFile = logPropFile;
-            else if (!(new File(confFile).exists()))
-                System.err.println("Loggging properties file "+confFile+" not found!");
+            } else {
+                if (!(new File(confFile).exists()))
+                   System.err.println("Loggging properties file "+confFile+" not found!");
+            }
 
             // checks a local log configuration file
             if (new File(confFile).exists()) {

@@ -46,8 +46,9 @@ public class Include extends DefaultDirective implements Directive {
                 if (outerContent != null && outerPrefix != null) {
                     // check if the outer is URL
                     if (outerPrefix.startsWith("jar")) {
-                        outerPrefix = outerPrefix.substring(0,outerPrefix.indexOf("!")+1) + "/";
-                        file = aslSourcePath.fixPath(file, outerPrefix);
+                        outerPrefix = outerPrefix.substring(0,outerPrefix.indexOf("!")+1);
+                        aslSourcePath.addPath(outerPrefix);
+                        file = aslSourcePath.fixPath(file);
                         in = new URL(file).openStream();
                     } else if (outerPrefix.startsWith(SourcePath.CRPrefix)) {
                         // outer is loaded from a resource ("application".jar) file, used for java web start
@@ -59,7 +60,8 @@ public class Include extends DefaultDirective implements Directive {
                         }
                         newpath.addAll(aslSourcePath);
 
-                        file = newpath.fixPath(file, SourcePath.CRPrefix+"/");
+                        newpath.addPath(SourcePath.CRPrefix);
+                        file = newpath.fixPath(file);
                         in = Agent.class.getResource(file.substring(SourcePath.CRPrefix.length())).openStream();
                     } else if (outerPrefix.startsWith("file:") || outerPrefix.startsWith("http:") || outerPrefix.startsWith("https:")) {
                         URL url = new URL(new URL(outerPrefix), file);
@@ -76,11 +78,11 @@ public class Include extends DefaultDirective implements Directive {
                         SourcePath newpath = new SourcePath();
                         newpath.addPath(new File(outerPrefix).getAbsoluteFile().getParent());
                         newpath.addAll(aslSourcePath);
-                        file = newpath.fixPath(file, null);
+                        file = newpath.fixPath(file);
                         in = new FileInputStream(file);
                     }
                 } else {
-                    in = new FileInputStream(aslSourcePath.fixPath(file, null));
+                    in = new FileInputStream(aslSourcePath.fixPath(file));
                 }
             }
             // handles namespace (args[1])

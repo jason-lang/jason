@@ -9,5 +9,5 @@ MAS unit_tests {
         ];
         self_tester;
 
-    aslSourcePath: "src/test/jason/inc";"src/test/jason/asl";"inc";
+    aslSourcePath: "src/test/jason/inc";"src/test/jason/asl";"inc"; "$jasonJar/test/jason/inc";
 }

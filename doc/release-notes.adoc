@@ -11,8 +11,46 @@ ifdef::env-github[:outfilesuffix: .adoc]
 - new internal action `.intention` used to inspect the state of intentions. It replaces `.current_intention`.
 - new internal action `.set_random_seed`, contribution of Timotheus Kampik.
 - internal action `.stopMAS` has a new (optional) argument for exit value.
-- add option `--log-conf` to setup the logging configuration file when launching the application.
 - revision of goal states reported in meta events and used in .desire and .intend. See doc/tech/goal-states.pdf for more details.
+- url syntax can be used for project file, as in:
++
+----
+java -cp "$JASON_HOME/libs/*" jason.infra.centralised.RunCentralisedMAS jar:file:/home/bob/myfile.jar!/x.masj2
+----
+- url syntax can be used in `aslSourcePath`, for example:
++
+----
+MAS ex1 {
+    agents: bob;
+
+    aslSourcePath:
+       "src";
+       "http://acme.com/src";
+       "jar:file:/home/bob/my.jar/src";
+       "$jasonJar/test/jason/inc";
+}
+----
+
+- add option `--log-conf` to setup the logging configuration file when launching the application. Examples:
++
+----
+java -cp "$JASON_HOME/libs/*" jason.infra.centralised.RunCentralisedMAS \
+    x.mas2j \
+    --log-conf mylog..properties
+----
++
+----
+java -cp "$JASON_HOME/libs/*" jason.infra.centralised.RunCentralisedMAS \
+    x.mas2j \
+    --log-conf jar:file:$JASON_HOME/libs/jason-2.6-SNAPSHOT.jar!/templates/console-logging.properties
+----
++
+----
+java -cp "$JASON_HOME/libs/*" jason.infra.centralised.RunCentralisedMAS \
+    x.mas2j \
+    --log-conf \$jasonJar/templates/console-logging.properties
+----
+
 
 == version 2.5 (2020-06-25)
 
