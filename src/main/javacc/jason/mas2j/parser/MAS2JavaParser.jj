@@ -223,15 +223,26 @@ void agent() :              { Token agName;
                               AgentParameters ag = new AgentParameters();
                               Map opts;
                               ClassParameters arch;
+                              String fsource = null;
                             }
 {
   agName = <ASID>
 
-                            { ag.name = agName.image;
-                              ag.asSource = new File(agName.image+".asl");
-                            }
+                           { ag.name = agName.image;
+                             try {
+                                ag.setSource(agName.image+".asl");
+                             } catch (Exception e) {
+                                e.printStackTrace();
+                             }
+                           }
 
-  [ ag.asSource  = fileName() ]
+  [ fsource  = fileName()  { try {
+                                ag.setSource(fsource);
+                             } catch (Exception e) {
+                                e.printStackTrace();
+                             }
+                           }
+  ]
 
   opts = ASoptions()       { ag.setOptions(opts); }
 
@@ -253,7 +264,7 @@ void agent() :              { Token agName;
 }
 
 
-File fileName() :           { String path = "";
+String fileName() :         { String path = "";
                               Token t;
                               Token i;
                               Token e;
@@ -265,7 +276,7 @@ File fileName() :           { String path = "";
                             { //if (!path.startsWith(File.separator)) {
                               //  path = destDir + path;
                               //}
-                              return new File( path + i.image + ext);
+                              return path + i.image + ext;
                             }
 }
 

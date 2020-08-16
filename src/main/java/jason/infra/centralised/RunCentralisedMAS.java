@@ -535,7 +535,7 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
                         agArch.createArchs(ap.getAgArchClasses(), pag);
                     } else {
                         // normal creation
-                        agArch.createArchs(ap.getAgArchClasses(), ap.agClass.getClassName(), ap.getBBClass(), ap.asSource.toString(), ap.getAsSetts(debug, project.getControlClass() != null));
+                        agArch.createArchs(ap.getAgArchClasses(), ap.agClass.getClassName(), ap.getBBClass(), ap.getSource().toString(), ap.getAsSetts(debug, project.getControlClass() != null));
                     }
                     addAg(agArch);
 
@@ -955,7 +955,7 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
 
         for (AgentParameters ap : project.getAgents()) {
             try {
-                String tmpAsSrc = ap.asSource.toString();
+                String tmpAsSrc = ap.getSource().toString();
 
                 // read sources
                 InputStream in = null;

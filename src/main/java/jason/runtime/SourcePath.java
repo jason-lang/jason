@@ -24,6 +24,8 @@ public class SourcePath implements Serializable {
         return root;
     }
 
+    private boolean hasClassResource = false;
+
     public void addPath(String cp) {
         if (cp == null)
             return;
@@ -40,16 +42,40 @@ public class SourcePath implements Serializable {
         if (!cp.startsWith("jar:") && !cp.startsWith("http") && !cp.startsWith(CRPrefix))
         	cp = "file:" + cp;
         if (!paths.contains(cp)) {
-	        System.out.println("added "+cp);
 	        paths.add(cp);
+
+	        if (hasClassResource) {
+        		if (cp.startsWith("file:")) {
+        			paths.add(CRPrefix+"/"+cp.substring(5));
+        		}
+	        } else if (cp.startsWith(CRPrefix)) {
+	        	hasClassResource = true;
+	        	for (String p: new ArrayList<>(paths)) {
+	        		if (p.startsWith("file:")) {
+	        			paths.add(CRPrefix+"/"+p.substring(5));
+	        		}
+	        	}
+	        }
+        	//System.out.println(cp+" added to asl source path:" + paths);
         }
+    }
+
+    public void addParentInPath(String s) {
+    	int p = s.indexOf(":");
+    	if (p >= 0)
+    		s = s.substring(p+1);
+
+    	if (s.startsWith("/"))
+    		s = s.substring(1);
+    	File f = new File(s);
+    	addPath(f.getParent());
     }
 
     public void addAll(SourcePath sp) {
     	if (sp == null)
     		return;
     	for (String p: sp.paths)
-    		paths.add(p);
+    		addPath(p);
     }
 
     public void clearPaths() {
@@ -77,32 +103,38 @@ public class SourcePath implements Serializable {
     }
 
     /** fix path of the asl code based on aslSourcePath, also considers code from a jar file (if urlPrefix is not null) */
-    public String fixPath(String f) { //, String urlPrefix) {
+    public String fixPath(String f) {
     	if (f==null)
     		return f;
     	if (f.isEmpty())
     		return f;
-        if (new File(f).exists()) {
-            return f;
-        } else {
-            if (f.startsWith("$")) { // the case of "$jasonJar/src/a.asl"
-                String jar = f.substring(1,f.indexOf("/"));
-                if (Config.get().get(jar) == null) {
-                	System.err.println("The included file '"+jar+"' is not configured");
-                } else {
-                    String path = Config.get().get(jar).toString();
-                    String nf = "jar:file:" + path + "!" + f.substring(f.indexOf("/"));
-                    if (testURLSrc(nf))
-                    	return nf;
-                }
-            }
-            for (String path: getPaths()) {
-            	String newname = path + "/" + f;
-            	newname = newname.replaceAll("\\./", "");
-            	if (testURLSrc(newname))
-            		return newname;
+    	if (testURLSrc(f))
+    		return f;
+        if (new File(f).exists())
+            return "file:"+f;
+        if (f.startsWith("$")) { // the case of "$jasonJar/src/a.asl"
+            String jar = f.substring(1,f.indexOf("/"));
+            if (Config.get().get(jar) == null) {
+            	System.err.println("The included file '"+jar+"' is not configured");
+            } else {
+                String path = Config.get().get(jar).toString();
+                String nf = "jar:file:" + path + "!" + f.substring(f.indexOf("/"));
+                if (testURLSrc(nf))
+                	return nf;
             }
         }
+        String nf = f;
+        if (nf.startsWith("file:"))
+        	nf = f.substring(5);
+        for (String path: getPaths()) {
+        	String newname = path + "/" + nf;
+        	newname = newname.replaceAll("\\./", "");
+        	if (testURLSrc(newname)) {
+        		//System.out.println(f+" fixed with "+newname);
+        		return newname;
+        	}
+        }
+
         return f;
     }
 

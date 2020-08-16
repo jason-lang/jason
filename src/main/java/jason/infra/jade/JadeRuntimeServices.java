@@ -1,6 +1,5 @@
 package jason.infra.jade;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -58,7 +57,7 @@ public class JadeRuntimeServices implements RuntimeServices {
             ap.setAgClass(agClass);
             ap.addArchClass(archClasses);
             ap.setBB(bbPars);
-            ap.asSource = new File(agSource);
+            ap.setSource(agSource);
 
             if (stts == null) stts = new Settings();
             agName = getNewAgentName(agName);

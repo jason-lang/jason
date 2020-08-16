@@ -120,13 +120,13 @@ public class TestPlanbodyAsTerm {
     @Test(timeout=2000)
     public void testPlanUnif1() {
         ag.addGoal("testPTUn");
-        ag.assertPrint("mylabel[file(\"stringcode\"),source(self)]plan1(1)(1 > 10).print(a)c(1); !g2(bob)", 5);
+        ag.assertPrint("mylabel[source(self),url(\"stringcode\")]plan1(1)(1 > 10).print(a)c(1); !g2(bob)", 5);
     }
 
     @Test(timeout=2000)
     public void testPlanUnif2() {
         ag.addGoal("testPTUnLitBuild");
-        ag.assertPrint("mylabel[file(\"stringcode\"),source(self)]+!plan1(1)(1 > 10).print(a); c(1); !g2(bob)", 5);
+        ag.assertPrint("mylabel[source(self),url(\"stringcode\")]+!plan1(1)(1 > 10).print(a); c(1); !g2(bob)", 5);
         ag.clearExecutionTrace();
         ag.assertPrint(".print(a)", 15);
         ag.assertPrint("c(1)", 15);

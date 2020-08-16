@@ -62,7 +62,7 @@ public class JasonProjectSideKickParser extends sidekick.SideKickParser {
                 jid.listModel.clear();
             }
             for (AgentParameters ap: project.getAgents()) {
-                pd.root.add(new ProjectAsset("", ap.name + " ("+ap.asSource+")", buf, AG_TYPE).createTreeNode());
+                pd.root.add(new ProjectAsset("", ap.name + " ("+ap.getSource()+")", buf, AG_TYPE).createTreeNode());
 
                 for (JasonID jid: jasonPluginInstance) {
                     jid.listModel.addElement(ap);

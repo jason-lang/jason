@@ -1,7 +1,5 @@
 package jason.asSyntax.directives;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.net.URL;
@@ -14,7 +12,6 @@ import jason.asSyntax.Pred;
 import jason.asSyntax.StringTerm;
 import jason.asSyntax.parser.as2j;
 import jason.runtime.SourcePath;
-import jason.util.Config;
 
 /** Implementation of the <code>include</code> directive. */
 public class Include extends DefaultDirective implements Directive {
@@ -30,61 +27,28 @@ public class Include extends DefaultDirective implements Directive {
         // handles file (arg[0])
         String file = ((StringTerm)directive.getTerm(0)).getString().replaceAll("\\\\", "/");
         try {
+            file = aslSourcePath.fixPath(file);
+
             InputStream in = null;
-            // test include from jar
-            if (file.startsWith("$")) { // the case of "$jasonJar/src/a.asl"
-                String jar = file.substring(1,file.indexOf("/"));
-                if (Config.get().get(jar) == null) {
-                    logger.log(Level.SEVERE,"The included file '"+jar+"' is not configured");
-                    return null;
-                }
-                String path = Config.get().get(jar).toString();
-                file = "jar:file:" + path + "!" + file.substring(file.indexOf("/"));
-                in = new URL(file).openStream();
-            } else {
-                String outerPrefix = outerContent.getASLSrc(); // the source file that has the include directive
-                if (outerContent != null && outerPrefix != null) {
-                    // check if the outer is URL
-                    if (outerPrefix.startsWith("jar")) {
-                        outerPrefix = outerPrefix.substring(0,outerPrefix.indexOf("!")+1);
-                        aslSourcePath.addPath(outerPrefix);
-                        file = aslSourcePath.fixPath(file);
-                        in = new URL(file).openStream();
-                    } else if (outerPrefix.startsWith(SourcePath.CRPrefix)) {
-                        // outer is loaded from a resource ("application".jar) file, used for java web start
-                        int posSlash = outerPrefix.lastIndexOf("/");
-
-                        SourcePath newpath = new SourcePath();
-                        if (outerPrefix.indexOf("/") != posSlash) { // has only one slash
-                            newpath.addPath(outerPrefix.substring(SourcePath.CRPrefix.length()+1,posSlash));
-                        }
-                        newpath.addAll(aslSourcePath);
-
-                        newpath.addPath(SourcePath.CRPrefix);
-                        file = newpath.fixPath(file);
-                        in = Agent.class.getResource(file.substring(SourcePath.CRPrefix.length())).openStream();
-                    } else if (outerPrefix.startsWith("file:") || outerPrefix.startsWith("http:") || outerPrefix.startsWith("https:")) {
-                        URL url = new URL(new URL(outerPrefix), file);
-                        file = url.toString();
-                        in = url.openStream();
-                    } else if (file.startsWith("jar:") || file.startsWith("file:") || file.startsWith("http:") || file.startsWith("https:")) {
-                        URL url = new URL(file);
-                        file = url.toString();
-                        in = url.openStream();
-                    } else {
-                        // get the directory of the source of the outer agent and
-                        // try to find the included source in the same directory
-                        // or in the source paths
-                        SourcePath newpath = new SourcePath();
-                        newpath.addPath(new File(outerPrefix).getAbsoluteFile().getParent());
-                        newpath.addAll(aslSourcePath);
-                        file = newpath.fixPath(file);
-                        in = new FileInputStream(file);
-                    }
-                } else {
-                    in = new FileInputStream(aslSourcePath.fixPath(file));
-                }
+            String outerPrefix = outerContent.getASLSrc(); // the source file that has the include directive
+            if (outerPrefix != null) {
+                // get the directory of the source of the outer agent and
+                // try to find the included source in the same directory
+                // or in the source paths
+                SourcePath newpath = new SourcePath();
+                newpath.addParentInPath(outerPrefix);
+                newpath.addAll(aslSourcePath);
+                file = newpath.fixPath(file);
             }
+            if (file.startsWith(SourcePath.CRPrefix)) {
+                // outer is loaded from a resource ("application".jar) file, used for java web start
+                in = Agent.class.getResource(file.substring(SourcePath.CRPrefix.length())).openStream();
+            }
+
+            if (in == null) {
+                in = new URL(file).openStream();
+            }
+
             // handles namespace (args[1])
             Atom ns = directive.getNS();
             if (directive.getArity() > 1) {

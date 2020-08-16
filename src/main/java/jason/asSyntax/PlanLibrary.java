@@ -178,7 +178,7 @@ public class PlanLibrary implements Iterable<Plan>, Serializable {
 
             // add source file
             if (p.getSourceFile() != null && !p.getSourceFile().isEmpty())
-                p.getLabel().addAnnot(ASSyntax.createStructure("file", ASSyntax.createString( p.getSourceFile())));
+                p.getLabel().addAnnot(ASSyntax.createStructure("url", ASSyntax.createString( p.getSourceFile())));
 
 
             Trigger pte = p.getTrigger();

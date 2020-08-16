@@ -102,13 +102,17 @@ public class StartNewAgentGUI extends BaseDialogGUI {
             JOptionPane.showMessageDialog(this, "An agent name must be informed.");
             return false;
         }
-        if (ap.asSource == null) {
-            ap.asSource = new File(ap.name + "." + MAS2JProject.AS_EXT);
+        if (ap.getSource() == null) {
+            try {
+                ap.setSource(ap.name + "." + MAS2JProject.AS_EXT);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
-        if (!ap.asSource.exists()) {
+        /*if (!ap.asSource.exists()) {
             JOptionPane.showMessageDialog(this, "The source file '" + ap.asSource + "' does not exist!");
             return false;
-        }
+        }*/
         new Thread() {
             public void run() {
                 boolean debug = BaseCentralisedMAS.getRunner().isDebug();
@@ -125,7 +129,7 @@ public class StartNewAgentGUI extends BaseDialogGUI {
                             name = name + (i + 1);
                         }
                         // TODO: implements bb class
-                        name = services.createAgent(name, ap.asSource.getAbsolutePath(), agClass, ap.getAgArchClasses(), null, ap.getAsSetts(debug, fs), null);
+                        name = services.createAgent(name, ap.getSource().toString(), agClass, ap.getAgArchClasses(), null, ap.getAsSetts(debug, fs), null);
                         services.startAgent(name);
                     }
                 } catch (Exception e) {
@@ -151,10 +155,14 @@ public class StartNewAgentGUI extends BaseDialogGUI {
         }
 
         if (agSource.getText().trim().length() > 0) {
-            if (agSource.getText().startsWith(File.separator)) {
-                ap.asSource = new File(agSource.getText().trim());
-            } else {
-                ap.asSource = new File(openDir + File.separator + agSource.getText().trim());
+            try {
+                if (agSource.getText().startsWith(File.separator)) {
+                    ap.setSource(agSource.getText().trim());
+                } else {
+                    ap.setSource(openDir + File.separator + agSource.getText().trim());
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
 

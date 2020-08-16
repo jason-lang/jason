@@ -51,7 +51,7 @@ import jason.bb.BeliefBase;
   removes all plans with trigger event <code>+!g</code>.</li>
 
   <li>
-  <code>for ( .plan_label( P, L[file("g.asl")]) ) {
+  <code>for ( .plan_label( P, L[url("file:g.asl")]) ) {
         .remove_plan(P);
       }</code>: removes all achievement plans from source g.asl.
   </li>

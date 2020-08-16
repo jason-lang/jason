@@ -41,7 +41,7 @@ public class JasonBridgeArch extends AgArch {
     }
 
     public void init(AgentParameters ap) throws Exception {
-        Agent.create(this, ap.agClass.getClassName(), ap.getBBClass(), ap.asSource.getAbsolutePath(), ap.getAsSetts(false, false));
+        Agent.create(this, ap.agClass.getClassName(), ap.getBBClass(), ap.getSourceAsFile().getAbsolutePath(), ap.getAsSetts(false, false));
         insertAgArch(this);
         createCustomArchs(ap.getAgArchClasses());
 

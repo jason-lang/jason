@@ -1,8 +1,6 @@
 package jason.infra.jade;
 
-import java.io.File;
 import java.io.FileReader;
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.logging.Level;
 
@@ -73,7 +71,7 @@ public class JadeAgArch extends JadeAg {
                 tsBehaviour = new JasonTSReasoner();
                 addBehaviour(tsBehaviour);
 
-                logger.fine("Created from source "+ap.asSource);
+                logger.fine("Created from source "+ap.getSource());
             }
         } catch (Exception e) {
             logger.log(Level.SEVERE,"Error creating JADE architecture.",e);
@@ -96,7 +94,7 @@ public class JadeAgArch extends JadeAg {
             tsBehaviour.restart();
     }
 
-    protected AgentParameters parseParameters() throws ParseException, IOException {
+    protected AgentParameters parseParameters() throws ParseException, Exception {
 
         Object[] args = getArguments();
         if (args == null || args.length == 0) {
@@ -139,7 +137,7 @@ public class JadeAgArch extends JadeAg {
                 if (ap == null) {
                     logger.log(Level.SEVERE, "There is no agent '"+args[2]+"' in project '"+args[1]+"'.");
                 } else {
-                    ap.asSource = new File(project.getSourcePaths().fixPath(ap.asSource.toString()));
+                    ap.setSource(project.getSourcePaths().fixPath(ap.getSource().toString()));
                     //if (ap.qty > 1)
                     //    logger.warning("Ignoring quantity of agents from mas2j, jade arch creates only ONE agent.");
                 }
@@ -152,7 +150,7 @@ public class JadeAgArch extends JadeAg {
 
             } else { // load parameters from shell
                 AgentParameters ap = new AgentParameters();
-                ap.asSource = new File(args[0].toString());
+                ap.setSource(args[0].toString());
 
                 int i=1;
                 while (i < args.length) {

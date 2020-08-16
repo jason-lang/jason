@@ -262,12 +262,12 @@ public class JasonID extends JPanel implements EBComponent, RunProjectListener {
 
     void openAgentBuffer(AgentParameters ap) {
         try {
-            if (ap == null || ap.asSource == null)
+            if (ap == null || ap.getSource() == null)
                 return;
 
             // fix file name
             Buffer projectb = getProjectBuffer();
-            String file = ap.asSource.toString();
+            String file = ap.getSource().toString();
             if (file.indexOf('/') < 0 && file.indexOf('\\') < 0)
                 // append project directory
                 file = projectb.getDirectory() + "/" + file;
@@ -278,7 +278,7 @@ public class JasonID extends JPanel implements EBComponent, RunProjectListener {
             // textArea.append(lstAgs.getSelectedValue()+"");
             if (newFile) {
                 try {
-                    ap.asSource = new File(projectb.getDirectory() + ap.name + "." + MAS2JProject.AS_EXT);
+                    ap.setSource(projectb.getDirectory() + ap.name + "." + MAS2JProject.AS_EXT);
                     String agcode = Config.get().getTemplate("agent");
                     agcode = agcode.replace("<AG_NAME>", ap.getAgName());
                     agcode = agcode.replace("<PROJECT_NAME>", projectb.getName());

@@ -1,7 +1,5 @@
 package jason.jeditplugin;
 
-import java.io.File;
-
 import javax.swing.JOptionPane;
 
 import org.gjt.sp.jedit.Buffer;
@@ -32,8 +30,12 @@ public class NewAgentGUI extends StartNewAgentGUI {
             JOptionPane.showMessageDialog(this, "An agent name must be informed.");
             return false;
         }
-        if (agDecl.asSource == null) {
-            agDecl.asSource = new File(buffer.getDirectory() + agDecl.name + "." + MAS2JProject.AS_EXT);
+        if (agDecl.getSource() == null) {
+            try {
+                agDecl.setSource(buffer.getDirectory() + agDecl.name + "." + MAS2JProject.AS_EXT);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         try {
             buffer.writeLock();
@@ -52,8 +54,8 @@ public class NewAgentGUI extends StartNewAgentGUI {
             buffer.writeUnlock();
         }
 
-        boolean newFile = !agDecl.asSource.exists();
-        Buffer nb = org.gjt.sp.jedit.jEdit.openFile(view, agDecl.asSource.getAbsolutePath());
+        boolean newFile = !agDecl.getSourceAsFile().exists();
+        Buffer nb = org.gjt.sp.jedit.jEdit.openFile(view, agDecl.getSourceAsFile().getAbsolutePath());
         if (newFile) {
             try {
                 String agcode = Config.get().getTemplate("agent");
@@ -61,7 +63,7 @@ public class NewAgentGUI extends StartNewAgentGUI {
                 agcode = agcode.replace("<PROJECT_NAME>", buffer.getName());
                 nb.writeLock();
                 nb.insert(0, agcode);
-                nb.save(view, agDecl.asSource.getAbsolutePath());
+                nb.save(view, agDecl.getSourceAsFile().getAbsolutePath());
             } finally {
                 nb.writeUnlock();
             }
