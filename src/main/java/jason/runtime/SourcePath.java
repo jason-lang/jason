@@ -39,7 +39,7 @@ public class SourcePath implements Serializable {
         if (cp.startsWith("$"))
         	cp = fixPath(cp);
         cp = cp.replaceAll("\\\\", "/"); // use unix path separator
-        if (!cp.startsWith("jar:") && !cp.startsWith("http") && !cp.startsWith(CRPrefix))
+        if (!cp.startsWith("file:") && !cp.startsWith("jar:") && !cp.startsWith("http") && !cp.startsWith(CRPrefix))
         	cp = "file:" + cp;
         if (!paths.contains(cp)) {
 	        paths.add(cp);
@@ -56,7 +56,7 @@ public class SourcePath implements Serializable {
 	        		}
 	        	}
 	        }
-        	//System.out.println(cp+" added to asl source path:" + paths);
+        	//System.out.println(cp+" added to asl source path: " + paths);
         }
     }
 

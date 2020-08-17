@@ -269,7 +269,7 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
                 confFile = new SourcePath().fixPath(confFile);
                 URL logurl = new URL(confFile);
                 LogManager.getLogManager().readConfiguration( logurl.openStream() );
-                System.out.println("logging read from "+logurl);
+                System.out.println("logging configuration was loaded from "+logurl);
             } catch (Exception e) {
                 System.err.println("Error setting up logger:" + e);
                 e.printStackTrace();
