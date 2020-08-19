@@ -46,7 +46,12 @@ public class Include extends DefaultDirective implements Directive {
             }
 
             if (in == null) {
-                in = new URL(file).openStream();
+                try {
+                    in = new URL(file).openStream();
+                } catch (java.net.MalformedURLException e) {
+                    // try as a file... just in case
+                    in = new URL("file:" + file).openStream();
+                }
             }
 
             // handles namespace (args[1])
