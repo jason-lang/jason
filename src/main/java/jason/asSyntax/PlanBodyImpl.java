@@ -56,7 +56,6 @@ public class PlanBodyImpl extends Structure implements PlanBody, Iterable<PlanBo
 
     public PlanBodyImpl(BodyType t, Term b, boolean planTerm) {
         this(t,planTerm);
-        formType = t;
         if (b != null) {
             srcInfo = b.getSrcInfo();
 
@@ -335,7 +334,11 @@ public class PlanBodyImpl extends Structure implements PlanBody, Iterable<PlanBo
             c = new PlanBodyImpl();
             c.isTerm = isTerm;
         } else {
-            c = new PlanBodyImpl(formType, term.capply(u), isTerm);
+            Term ta = term.capply(u);
+            if (ta.isPlanBody())
+                c = new PlanBodyImpl(((PlanBody)ta).getBodyType(), ta, isTerm);
+            else
+                c = new PlanBodyImpl(formType, ta, isTerm);
             if (c.term.isPlanBody()) { // we cannot have "inner" body literals
                 c.formType = ((PlanBody)c.term).getBodyType();
                 c.next     = ((PlanBody)c.term).getBodyNext();
@@ -343,10 +346,13 @@ public class PlanBodyImpl extends Structure implements PlanBody, Iterable<PlanBo
             }
         }
 
-        if (next != null)
-            c.add((PlanBody)next.capply(u));
+        if (next != null) {
+            PlanBody nc = (PlanBody)next.capply(u);
+            if (!nc.isEmptyBody())
+                c.add(nc);
+        }
 
-        //System.out.println(this+" = "+c+" using "+u+" term="+c.term+"/"+term.capply(u));
+        //System.out.println("===="+this+"/"+next+" = "+c+" t="+c.getBodyType()+" using "+u); //+" term="+c.term+"/"+term.capply(u));
         return c;
     }
 
