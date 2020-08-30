@@ -6,8 +6,6 @@
 
 { include("tester_agent.asl") }
 
-!execute_test_plans.
-
 /**
  * Tests based on from http://jason.sourceforge.net/api/jason/stdlib/send.html
  */

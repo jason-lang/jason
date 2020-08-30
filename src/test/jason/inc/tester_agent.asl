@@ -11,6 +11,11 @@
 auto_create_fail_plan.  // create -!P fail plan to capture unexpected failures
 
 /**
+ * Startup operations
+ */
+!execute_test_plans.    // automatically launch all plans with [test] annotation
+
+/**
  * execute plans that contains "test" in the label
  */
 +!execute_test_plans:

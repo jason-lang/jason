@@ -11,7 +11,7 @@
  * @[atomic,test]).
  */
 
-{ include("$jasonJar/test/jason/inc/tester_agent.asl") }
+{ include("tester_agent.asl") }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
      A G E N T    I N I T I A L    B B    A N D    R U L E S
@@ -31,7 +31,6 @@ divide(X,Y,R):-R = (X / Y).
         A G E N T     I N I T I A L    D E S I R E S
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-!execute_test_plans.
 
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *

@@ -4,9 +4,7 @@
  * http://jason.sourceforge.net/doc/faq.html#_why_is_jasons_plan_failure_mechanism_different_from_other_agent_platforms
  */
 
-{ include("$jasonJar/test/jason/inc/tester_agent.asl") }
-
-!execute_test_plans.
+{ include("tester_agent.asl") }
 
 /**
  * Test fail event and action_failed
