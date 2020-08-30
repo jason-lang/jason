@@ -24,7 +24,7 @@ auto_create_fail_plan.  // create -!P fail plan to capture unexpected failures
     <-
     !create_default_fail_plan;
 
-    .send(test_manager,tell,executing_test_plans(ME));
+    .send(test_manager,tell,launching_test_set(ME));
     for (.member(Label[test],LL)) {
         .findall(T, .member(P,LP) & P = {@L +!T : C <- B} & Label = L, Plans);
         .member(Plan,Plans); // it is expected only one plan in the list
@@ -35,6 +35,7 @@ auto_create_fail_plan.  // create -!P fail plan to capture unexpected failures
          */
         !execute_test_plan(Plan);
     }
+    .send(test_manager,tell,launched_test_set(ME));
 .
 
 /**
