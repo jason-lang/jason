@@ -119,14 +119,11 @@ shutdown_hook.          // shutdown after shutdown_delay(SD), SD is the number o
 +!create_tester_agents(_,_). // avoid plan not found for asl that includes controller
 
 /**
- * In case of a parser error, the agent will not be able to answer
+ * In case of a parser error, the agent won't say it is executing_test_plans
  */
-+!check_executing_test_plans(AGENT)
-    <-
-    .send(AGENT,askOne,executing_test_plans(_),executing_test_plans(AG));
-    .term2string(AG,AGstr);
-    AGENT = AGstr;
-.
++!check_executing_test_plans(AGENT) :
+    .term2string(AG,AGENT) &
+    executing_test_plans(AG).
 -!check_executing_test_plans(AGENT)
     <-
     !count_plans(unlaunched,execute_test_plans,AGENT);
