@@ -8,7 +8,7 @@ MAS unit_tests {
 
     agents:
         test_manager [
-            goals="create_tester_agents(\"./src/test/jason\",\".*.asl\")",
+            goals="create_tester_agents(\"./src/test/jason\",\".*.asl\",\"/inc\")",
             beliefs="shutdown_delay(600)"
         ];
         self_tester;

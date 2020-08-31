@@ -124,11 +124,19 @@ shutdown_hook.          // shutdown after finishing or shutdown_delay(SD). Defau
 /**
  * create agents by files present in folder test/agt/
  */
-+!create_tester_agents(Path,Files) :
++!create_tester_agents(Path,Files)
+    <-
+    !create_tester_agents(Path,Files,"");
+.
++!create_tester_agents(Path,Files,IgnoreSubFolder) :
     .my_name(test_manager)
     <-
-    .concat(Path,"/inc",PathInc);
-    .list_files(PathInc,Files,IGNORE);
+    if (.length(IgnoreSubFolder) > 0) {
+        .concat(Path,IgnoreSubFolder,PathInc);
+        .list_files(PathInc,Files,IGNORE);
+    } else {
+        IGNORE = [];
+    }
     .list_files(Path,Files,FILES);
     for (.member(M,FILES) & not .nth(N,IGNORE,M)) {
         for (.substring("/",M,R)) {
@@ -144,7 +152,7 @@ shutdown_hook.          // shutdown after finishing or shutdown_delay(SD). Defau
         .at("now +500 ms", {+!check_launching_test_set(AGENT)});
     }
 .
-+!create_tester_agents(_,_). // avoid plan not found for asl that includes controller
++!create_tester_agents(_,_,_). // avoid plan not found for asl that includes controller
 
 /**
  * In case of a parser error, the agent won't say it is launching_test_set
