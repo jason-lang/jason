@@ -155,7 +155,7 @@ shutdown_hook.          // shutdown after finishing or shutdown_delay(SD). Defau
 -!check_launching_test_set(AGENT)
     <-
     !count_plans(unlaunched,execute_test_plans,AGENT);
-    .log(severe,"check_launching_test_set on agent ",AGENT," FAILED! It is likely to present parser errors.");
+    .log(severe,"check_launching_test_set on agent ",AGENT," FAILED! Please, check if all agents in the src/test folder are tester_agent and check for parser errors.");
 .
 
 /**

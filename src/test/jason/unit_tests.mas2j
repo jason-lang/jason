@@ -1,3 +1,7 @@
+/**
+ * This is a mas2j is used to test jason package itself.
+ */
+
 MAS unit_tests {
 
     infrastructure: Centralised
@@ -9,5 +13,6 @@ MAS unit_tests {
         ];
         self_tester;
 
-    aslSourcePath: "src/test/jason/inc";"src/test/jason/asl";"inc"; "$jasonJar/test/jason/inc";
+    aslSourcePath:  "src/test/jason/inc";
+                    "src/test/jason/asl";
 }
