@@ -9,6 +9,45 @@ import jason.asSyntax.Term;
 
 import java.util.Iterator;
 
+/**
+  <p>Internal action: <b><code>.namespace</code></b>.
+
+  <p>Description: checks whether the argument is a namespace.
+
+  <p>Parameter:<ul>
+  <li>+ arg[0] (any term): the term to be checked.<br/>
+  </ul>
+
+  <p>Examples assuming the BB is currently
+  {a(10),family::brother(bob),b(f,1)}:
+  <ul>
+  <li> <code>.namespace(family)</code>: true.
+  <li> <code>.namespace(any_other)</code>: false.
+  </ul>
+
+  @see jason.stdlib.findall
+  @see jason.stdlib.setof
+  @see jason.stdlib.count
+*/
+@Manual(
+        literal=".namespace(argument)",
+        hint="checks whether the argument is a namespace",
+        argsHint= {
+                "the term to be checked"
+        },
+        argsType= {
+                "term"
+        },
+        examples= {
+                ".namespace(family), assuming the BB is {a(10),family::brother(bob),b(f,1)}: true",
+                ".namespace(any_other), assuming the BB is {a(10),family::brother(bob),b(f,1)}: false"
+        },
+        seeAlso= {
+                "jason.stdlib.findall",
+                "jason.stdlib.setof",
+                "jason.stdlib.count"
+        }
+    )
 @SuppressWarnings("serial")
 public class namespace extends DefaultInternalAction {
 

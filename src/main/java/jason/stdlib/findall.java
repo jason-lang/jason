@@ -34,7 +34,7 @@ import java.util.Iterator;
   </ul>
 
   <p>Examples assuming the BB is currently
-  {a(30),a(20),b(1,2),b(3,4),b(5,6)}:
+  {a(30),a(20),b(1,2),b(3,4),b(5,6),c(100),c(200),c(100)}:
 
   <ul>
 
@@ -47,6 +47,9 @@ import java.util.Iterator;
   <li> <code>.findall(r(X,V1,V2), (a(X) & b(V1,V2) & V1*V2 < X), L)</code>: <code>L</code> unifies
   with <code>[r(30,1,2),r(30,3,4),r(20,1,2),r(20,3,4)]</code>.</li>
   </ul>
+
+  <li> <code>.findall(X,c(X),L)</code>: <code>L</code> unifies with
+  <code>[100,200,100]</code>.</li>
 
 
   @see jason.stdlib.count
@@ -68,7 +71,8 @@ import java.util.Iterator;
 		examples= {
 				".findall(X,a(X),L): assuming current BB with {a(30),a(20),b(1,2),b(3,4),b(5,6)}, L unifies with [30,20]",
 				".findall(c(Y,X),b(X,Y),L): assuming current BB with {a(30),a(20),b(1,2),b(3,4),b(5,6)}, L unifies with [c(2,1),c(4,3),c(6,5)]",
-				".findall(r(X,V1,V2), (a(X) & b(V1,V2) & V1*V2 < X), L): assuming current BB with {a(30),a(20),b(1,2),b(3,4),b(5,6)}, L unifies with [r(30,1,2),r(30,3,4),r(20,1,2),r(20,3,4)]"
+				".findall(r(X,V1,V2), (a(X) & b(V1,V2) & V1*V2 < X), L): assuming current BB with {a(30),a(20),b(1,2),b(3,4),b(5,6)}, L unifies with [r(30,1,2),r(30,3,4),r(20,1,2),r(20,3,4)]",
+				".findall(X, c(X), L): assuming current BB with {c(100),c(200),c(100)}, L unifies with [100,200,100]"
 		},
 		seeAlso= {
 				"jason.stdlib.count",
