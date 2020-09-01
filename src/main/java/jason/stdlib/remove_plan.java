@@ -80,7 +80,7 @@ import jason.bb.BeliefBase;
 				".remove_plan(l1,bob): removes the plan identified by label l1[source(bob)]. Note this plan was probably added by a tellHow message",
 				".remove_plan([l1,l2,l3]): removes the plans identified by labels l1[source(self)], l2[source(self)], and l3[source(self)]",
 				".remove_plan([l1,l2,l3],bob): removes the plans identified by labels l1[source(bob)], l2[source(bob)], and l3[source(bob)]",
-				".relevant_plans({ +!g }, _, L); .remove_plan(LL): removes all plans with trigger event +!g"
+				".relevant_plans({ +!g }, _, LL); .remove_plan(LL): removes all plans with trigger event +!g"
 		},
 		seeAlso= {
 				"jason.stdlib.add_plan",
