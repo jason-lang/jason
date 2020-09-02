@@ -11,6 +11,8 @@ p(X,Y):-Y=X+1.
 @[test]
 +!test_list_rules
     <-
+    +{n(X,Y):-Y=X-1};
+
     .log(warning,"TODO: Can't assert whether .list_rules is working properly");
-    .list_rules;
+    //.list_rules;
 .
