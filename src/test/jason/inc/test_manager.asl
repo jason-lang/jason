@@ -5,7 +5,7 @@
 /**
  * Configurations
  */
-shutdown_hook.          // shutdown after shutdown_delay(SD), SD is the number of seconds
+shutdown_hook.          // shutdown after finishing or shutdown_delay(SD). Default: disabled
 
 /**
  * Startup operations
@@ -15,19 +15,49 @@ shutdown_hook.          // shutdown after shutdown_delay(SD), SD is the number o
 /**
  * setup of the manager adding a hook for shutdown
  */
- @setup_manager_user_delay[atomic]
-+!setup_manager :
-    shutdown_delay(SD)
-    <-
-    .concat("now +",SD," s",DD);
-    .at(DD, {+!shutdown_after_tests});
-    .log(info,"Set hook to shutdown");
++!setup_manager <-
+    if (shutdown_hook) { //If the hook for timeout is enabled
+        if (shutdown_delay(SD)) { //SD is the number of seconds
+            .concat("now +",SD," s",DD);
+            .at(DD, {+!set_timeout});
+        } else {
+            .at("now +600 s", {+!set_timeout});
+        }
+    }
+    .at("now +2 s", {+!shutdown_when_done});
 .
-@setup_manager_default_delay[atomic]
-+!setup_manager
-   <-
-   .at("now +2 s", {+!shutdown_after_tests});
-   .log(info,"Set hook to shutdown");
+
+/**
+ * Inform that timeout for shutdown is up
+ */
++!set_timeout
+    <-
+    +time_is_up;
+.
+
+/**
+ * enable to shutdown after finishing tests
+ */
++!shutdown_when_done :
+    .count(launching_test_set(_),ETS) &
+    .count(launched_test_set(_),LTS) &
+    ETS == LTS & // All tester_agents have launched their test sets
+    .count(plan_statistics(launched,_,_),LP) &
+    .count(plan_statistics(achieved,_,_),AP) &
+    LP == AP  //All LAUNCHED plans were ACHIEVED
+    <-
+    !shutdown_after_tests;
+.
++!shutdown_when_done :
+    shutdown_hook &
+    time_is_up
+    <-
+    !shutdown_after_tests;
+.
++!shutdown_when_done
+    <-
+    .wait(1000);
+    !shutdown_when_done;
 .
 
 /**
@@ -35,7 +65,6 @@ shutdown_hook.          // shutdown after shutdown_delay(SD), SD is the number o
  */
  @shutdown_after_fail[atomic]
  +!shutdown_after_tests :
-    shutdown_hook &
     .count(test_statistics(failed,_,_),F) &
     F > 0 &
     .count(test_statistics(performed,_,_),N) &
@@ -48,7 +77,6 @@ shutdown_hook.          // shutdown after shutdown_delay(SD), SD is the number o
  .
 @shutdown_after_skipped[atomic]
 +!shutdown_after_tests :
-    shutdown_hook &
     not intention(_) &
     .count(test_statistics(performed,_,_),N) &
     .count(test_statistics(failed,_,_),F) &
@@ -76,7 +104,6 @@ shutdown_hook.          // shutdown after shutdown_delay(SD), SD is the number o
 .
 @shutdown_after_success[atomic]
 +!shutdown_after_tests :
-    shutdown_hook &
     not intention(_) &
     .count(test_statistics(performed,_,_),N) &
     .count(test_statistics(failed,_,_),F) &
@@ -97,11 +124,19 @@ shutdown_hook.          // shutdown after shutdown_delay(SD), SD is the number o
 /**
  * create agents by files present in folder test/agt/
  */
-+!create_tester_agents(Path,Files) :
++!create_tester_agents(Path,Files)
+    <-
+    !create_tester_agents(Path,Files,"");
+.
++!create_tester_agents(Path,Files,IgnoreSubFolder) :
     .my_name(test_manager)
     <-
-    .concat(Path,"/inc",PathInc);
-    .list_files(PathInc,Files,IGNORE);
+    if (.length(IgnoreSubFolder) > 0) {
+        .concat(Path,IgnoreSubFolder,PathInc);
+        .list_files(PathInc,Files,IGNORE);
+    } else {
+        IGNORE = [];
+    }
     .list_files(Path,Files,FILES);
     for (.member(M,FILES) & not .nth(N,IGNORE,M)) {
         for (.substring("/",M,R)) {
@@ -113,25 +148,24 @@ shutdown_hook.          // shutdown after shutdown_delay(SD), SD is the number o
         .log(fine,"LAUNCHING: ",AGENT," (",M,")");
         .create_agent(AGENT,M);
 
-        .at("now +500 ms", {+!check_executing_test_plans(AGENT)});
+        // The tool is expecting that all agents in this folder are tester_agents
+        .at("now +500 ms", {+!check_launching_test_set(AGENT)});
     }
 .
-+!create_tester_agents(_,_). // avoid plan not found for asl that includes controller
++!create_tester_agents(_,_,_). // avoid plan not found for asl that includes controller
 
 /**
- * In case of a parser error, the agent will not be able to answer
+ * In case of a parser error, the agent won't say it is launching_test_set
  */
-+!check_executing_test_plans(AGENT)
-    <-
-    .send(AGENT,askOne,executing_test_plans(_),executing_test_plans(AG));
-    .term2string(AG,AGstr);
-    AGENT = AGstr;
-.
--!check_executing_test_plans(AGENT)
++!check_launching_test_set(AGENT) :
+    .term2string(AG,AGENT) &
+    launching_test_set(AG).
+-!check_launching_test_set(AGENT)
     <-
     !count_plans(unlaunched,execute_test_plans,AGENT);
-    .log(severe,"check_executing_test_plans on agent ",AGENT," FAILED! It is likely to present parser errors.");
+    .log(severe,"check_launching_test_set on agent ",AGENT," FAILED! Please, check if all agents in the src/test folder are tester_agent and check for parser errors.");
 .
+
 /**
  * Statistics for tests (passed/failed)
  */

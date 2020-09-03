@@ -6,12 +6,13 @@
 
 { include("tester_agent.asl") }
 
-@[test]
-+!test_eval
-    <-
-    .eval(X1, true | false);
-    !assert_true(X1);
+p(X,Y):-Y=X+1.
 
-    .eval(X2, 3<5 & not 4+2<3);
-    !assert_true(X2);
+@[test]
++!test_list_rules
+    <-
+    +{n(X,Y):-Y=X-1};
+
+    .log(warning,"TODO: Can't assert whether .list_rules is working properly");
+    //.list_rules;
 .

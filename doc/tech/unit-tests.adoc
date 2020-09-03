@@ -32,7 +32,7 @@ The test management engine is launched by `$ ./gradlew test` command (use just `
 
 In case of any assertion fails the exit status will inform failure to the operation system. If all tests pass, the exit status is normal, meaning success. These status inform integration tools (e.g. circle CI, github actions) about the results of tests.
 
-The default command `$ ./gradlew test` prints only `warning` and `severe` log messages. It also supports `$ ./gradlew test --info` which besides higher levels also prints `info` messages (which include the .print internal action). For even more deailed output `$ ./gradlew test --debug` can be used.
+The default command `$ ./gradlew test` prints out only `warning` and `severe` log messages. It also supports `$ ./gradlew test --info` which besides higher levels also prints `info` messages (which include the .print internal action). For even more deailed output `$ ./gradlew test --debug` can be used.
 
 Jason tests is a NOT cacheable gradle task which means it runs completely every time and no clean command is needed.
 
@@ -43,19 +43,15 @@ All plans in which the label has the annotation `test` will be automatically lau
 == Using the test engine
 
 1. Create an agent for testing your agent(s) in the folder `src/test/jason/asl` (all agents in this folder are automatically launched in the test task).
-2. Make your agent a tester agent including `tester_agent.asl` skeleton
+2. Make your agent a tester agent (e.g.: `test_bob.asl`) including the `tester_agent.asl` skeleton
  ```
- { include("tester_agent.asl") }
+ { include("$jasonJar/test/jason/inc/tester_agent.asl") }
  ```
 3. Add to your test agent support to the agent it is going to test, eg:
   ```
  { include("bob.asl") }
   ```
-4. Activate auto execution of plans in which the label has the annotation `test`
- ```
- !execute_test_plans.
- ```
-5. Run `$ ./gradlew test` to check the results.
+4. Run `$ ./gradlew test` to check the results.
 
 === Example
 
@@ -70,9 +66,7 @@ To test it, we can create a tester agent following the steps above. The content 
 { include("$jasonJar/test/jason/inc/tester_agent.asl") }
 { include("bob.asl") }
 
-!execute_test_plans.
-
-@[atomic,test] /* Notice the label with annotation test will be automatically launched */
+@[atomic,test] /* Notice the label with the annotation `test` will be automatically launched */
 +!test_sum :
     true
     <-

@@ -2,7 +2,7 @@
  * Test best performance of agent speak approaches
  */
 
-{ include("$jasonJar/test/jason/inc/tester_agent.asl") }
+{ include("tester_agent.asl") }
 
 distance(X1,Y1,X2,Y2,D) :- D = math.abs(X2-X1) + math.abs(Y2-Y1).
 
@@ -15,8 +15,6 @@ nearest_b(T,X,Y) :-
     myposition(X1,Y1) &
     .findall(p(D,X2,Y2),map(_,X2,Y2,T) & distance(X1,Y1,X2,Y2,D),FL) &
     .min(FL,p(_,X,Y)).
-
-!execute_test_plans.
 
 /**
  * Compare two approaches: 'sort+nth' vs 'min'

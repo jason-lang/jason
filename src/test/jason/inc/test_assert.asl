@@ -206,6 +206,31 @@ intention_test_goal(Goal,Test,Label,Line,Src) :- .intention(ID,_,[ im(Label,TGoa
 .
 
 /**
+ * Asserts if X does not contain Y
+ */
+@assert_not_contains[atomic]
++!assert_not_contains(X,Y) :
+    intention_test_goal(Goal,Test,Label,Line,Src)
+    <-
+    if ( .member(Y,X) ) {
+        .log(severe,"assert_not_contains on event '",Goal,"' starting at line ",Line," FAILED! Expected ",Y," NOT in ",X);
+        .fail;
+    }
+    +test(Test,passed,Src,Line)[assert_not_contains(X,Y)];
+    .log(info,"assert_not_contains on event '",Goal,"' PASSED");
+.
++!assert_not_contains(X,Y) :
+    true
+    <-
+    .log(severe,"assert_not_contains on event 'unknown' FAILED! Expected ",Y," NOT in ",X);
+    .fail;
+.
+-!assert_not_contains(X,Y) :
+    true
+    <-
+    +test(Test,failed,Src,Line)[assert_not_contains(X,Y)];
+.
+/**
  * Asserts if X is greater than Y
  */
 @assert_greater_than[atomic]

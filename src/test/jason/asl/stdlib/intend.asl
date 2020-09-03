@@ -6,8 +6,6 @@
 
 { include("tester_agent.asl") }
 
-!execute_test_plans.
-
 @[test]
 +!test_intend
     <-

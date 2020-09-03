@@ -4,9 +4,7 @@
  * http://jason.sourceforge.net/doc/faq.html#_why_is_jasons_plan_failure_mechanism_different_from_other_agent_platforms
  */
 
-{ include("$jasonJar/test/jason/inc/tester_agent.asl") }
-
-!execute_test_plans.
+{ include("tester_agent.asl") }
 
 /**
  * Test fail event and action_failed
@@ -21,7 +19,7 @@
    //This !check_test_fail_event was created just to performed the asserts below. When the problem is solved it can be removed and asserts uncommented
    !check_test_fail_event(ErrorId,Msg,CodeBody,CodeSrc,CodeLine);
    !assert_equals(action_failed,ErrorId);
-   //!assert_equals("file:./asl/test_failure_event.asl",CodeSrc);
+   !assert_equals("file:./src/test/jason/asl/test_failure_event.asl",CodeSrc);
 
    .print("Expected error: ", ErrorId, " '",Msg,"' by ",CodeBody," in ",CodeSrc,":",CodeLine);
 .
@@ -29,7 +27,7 @@
 +!check_test_fail_event(E,M,C,S,L)
     <-
     !assert_equals(action_failed,E);
-    //!assert_equals("test_failure_event.asl",S);
+    !assert_equals("file:./src/test/jason/asl/test_failure_event.asl",S);
 .
 
 /**
@@ -46,7 +44,7 @@
     !check_test_generic_fail_event(ErrorId,Msg,CodeBody,CodeSrc,CodeLine);
 
     !assert_equals(ia_failed,ErrorId);
-    //!assert_equals("test_failure_event.asl",CodeSrc);
+    !assert_equals("file:./src/test/jason/asl/test_failure_event.asl",CodeSrc);
 
     .print("Expected error: ", ErrorId, " '",Msg,"' by ",CodeBody," in ",CodeSrc,":",CodeLine);
 .
@@ -54,5 +52,5 @@
 +!check_test_generic_fail_event(E,M,C,S,L)
     <-
     !assert_equals(ia_failed,E);
-    //!assert_equals("test_failure_event.asl",S);
+    !assert_equals("file:./src/test/jason/asl/test_failure_event.asl",S);
 .
