@@ -586,6 +586,22 @@ public class Config extends Properties {
             } catch (Exception e) {}
             */
 
+            // try with $JASON_HOME
+            String jh = System.getenv().get("JASON_HOME");
+            if (jh != null) {
+            	jarFile = findJarInDirectory(new File(jh+"/libs"), jarFilePrefix);
+                if (checkJar(jarFile, fileInJar)) {
+                    try {
+                        put(jarEntry, new File(jarFile).getCanonicalFile().getAbsolutePath());
+                        if (showFixMsgs)
+                            System.out.println("found at " + jarFile + " based on JACAMO_HOME");
+                        return true;
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
             // try current build/libs (from gradle build)
             jarFile = findJarInDirectory(new File("build/libs"), jarFilePrefix);
             if (checkJar(jarFile, fileInJar)) {
@@ -598,6 +614,7 @@ public class Config extends Properties {
                     e.printStackTrace();
                 }
             }
+
             /*
             jarFile = findJarInDirectory(new File("libs"), jarFilePrefix);
             if (checkJar(jarFile, minSize)) {
