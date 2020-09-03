@@ -1159,14 +1159,18 @@ public class TransitionSystem implements Serializable {
         if (result == null) return;
         // create the events
         for (Literal ladd: result[0]) {
-            Trigger te = new Trigger(TEOperator.add, TEType.belief, ladd);
-            updateEvents(new Event(te, focus));
-            focus = Intention.EmptyInt;
+            if (!ladd.isRule()) {
+                Trigger te = new Trigger(TEOperator.add, TEType.belief, ladd);
+                updateEvents(new Event(te, focus));
+                focus = Intention.EmptyInt;
+            }
         }
         for (Literal lrem: result[1]) {
-            Trigger te = new Trigger(TEOperator.del, TEType.belief, lrem);
-            updateEvents(new Event(te, focus));
-            focus = Intention.EmptyInt;
+            if (!lrem.isRule()) {
+                Trigger te = new Trigger(TEOperator.del, TEType.belief, lrem);
+                updateEvents(new Event(te, focus));
+                focus = Intention.EmptyInt;
+            }
         }
     }
 
