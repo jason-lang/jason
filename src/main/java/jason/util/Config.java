@@ -589,7 +589,7 @@ public class Config extends Properties {
             // try with $JASON_HOME
             String jh = System.getenv().get("JASON_HOME");
             if (jh != null) {
-            	jarFile = findJarInDirectory(new File(jh+"/libs"), jarFilePrefix);
+                jarFile = findJarInDirectory(new File(jh+"/libs"), jarFilePrefix);
                 if (checkJar(jarFile, fileInJar)) {
                     try {
                         put(jarEntry, new File(jarFile).getCanonicalFile().getAbsolutePath());
