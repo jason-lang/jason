@@ -911,8 +911,7 @@ public class TransitionSystem implements Serializable {
                     result = ag.brf(body,null,curInt); // use default (well documented and used) method in case someone has overridden it
                 if (result != null) { // really added something
                     // generate events
-                    updateEvents(result,newfocus);
-                    if (!isSameFocus) {
+                    if (!updateEvents(result,newfocus) || !isSameFocus) {
                         removeActionReQueue(curInt);
                     }
                 } else {
@@ -939,8 +938,7 @@ public class TransitionSystem implements Serializable {
                 List<Literal>[] result = ag.brf(null, body, curInt); // the intention is not the new focus
                 if (result != null) { // really change something
                     // generate events
-                    updateEvents(result,newfocus);
-                    if (!isSameFocus) {
+                    if (!updateEvents(result,newfocus) || !isSameFocus) {
                         removeActionReQueue(curInt);
                     }
                 } else {
@@ -1155,13 +1153,15 @@ public class TransitionSystem implements Serializable {
         }
     }
 
-    public void updateEvents(List<Literal>[] result, Intention focus) {
-        if (result == null) return;
+    public boolean updateEvents(List<Literal>[] result, Intention focus) {
+        if (result == null) return false;
+        boolean evtAdded = false;
         // create the events
         for (Literal ladd: result[0]) {
             if (!ladd.isRule()) {
                 Trigger te = new Trigger(TEOperator.add, TEType.belief, ladd);
                 updateEvents(new Event(te, focus));
+                evtAdded = true;
                 focus = Intention.EmptyInt;
             }
         }
@@ -1169,9 +1169,11 @@ public class TransitionSystem implements Serializable {
             if (!lrem.isRule()) {
                 Trigger te = new Trigger(TEOperator.del, TEType.belief, lrem);
                 updateEvents(new Event(te, focus));
+                evtAdded = true;
                 focus = Intention.EmptyInt;
             }
         }
+        return evtAdded;
     }
 
     // only add External Event if it is relevant in respect to the PlanLibrary

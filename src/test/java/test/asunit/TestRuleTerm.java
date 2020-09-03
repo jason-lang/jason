@@ -53,7 +53,7 @@ public class TestRuleTerm {
         ag.assertPrint("12", 10);
 
         ag.addGoal("test4");
-        ag.assertPrint("ok", 5);
+        ag.assertPrint("ok", 15);
     }
 
     @Test(timeout=2000)
