@@ -571,8 +571,6 @@ Object body_formula() :
    ]
 
    (
-      B = rule_plan_term()
-    |
       B = log_expr()
    )
                        { if (formType == BodyType.action && B instanceof RelExpr) {
@@ -796,10 +794,7 @@ List terms() :    { ArrayList listTerms = new ArrayList(); Term v; PlanBody o; }
 
 Term term() :          { Object o; }
 {
-  ( o=list()
-  | o=rule_plan_term()
-  | o=log_expr()       // log_expr includes literals/atoms/structures
-  )
+  o=log_expr()         // log_expr includes literals/atoms/structures
                        { return changeToAtom(o); }
 }
 
@@ -877,6 +872,8 @@ Object rel_expr() :
 {
     (   op1 = arithm_expr()
       | op1 = string()
+      | op1 = list()
+      | op1 = rule_plan_term()
     )
 
     [
