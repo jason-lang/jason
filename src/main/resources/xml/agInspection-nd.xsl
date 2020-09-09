@@ -30,6 +30,7 @@
     <xsl:param name="show-int"     select="'true'" />
     <xsl:param name="show-plan-details"   select="'true'" />
     <xsl:param name="show-int-details"    select="'true'" />
+    <xsl:param name="show-status"     select="'false'" />
 
     <xsl:output method="html" />
     <xsl:strip-space elements="*" />
@@ -61,6 +62,8 @@
 	                </xsl:call-template>
 	                <th/>
 	            </tr>
+                <xsl:apply-templates select="status" />
+
             </table>
         </html>
     </xsl:template>
@@ -631,4 +634,30 @@
         <xsl:text>}</xsl:text>
     </xsl:template>
 
+    <xsl:template match="status">
+            <tr style="{$trh-style}">
+                <xsl:call-template name="hideshow">
+                    <xsl:with-param name="show" select="$show-status" />
+                    <xsl:with-param name="item" select="'status'" />
+                    <xsl:with-param name="ds" select="'Status'" />
+                </xsl:call-template>
+                <xsl:if test="$show-status='true'">
+	                    <td style="{$td-style}">
+	                        <hr/>
+	                        <table cellspacing="0" cellpadding="2">
+			                    <xsl:for-each select="entry">
+		                                <tr style="{$trh-style}">
+		                                    <td style="text-align: left">
+			                                    <xsl:value-of select="@key"/>
+		                                    </td>
+		                                    <td style="text-align: left">
+			                                    <xsl:value-of select="@value"/>
+		                                    </td>
+		                                </tr>
+                                </xsl:for-each>
+	                        </table>
+	                    </td>
+                </xsl:if>
+            </tr>
+	</xsl:template>
 </xsl:stylesheet>

@@ -684,6 +684,8 @@ public class Circumstance implements Serializable {
             Iterator<Intention>  pendIntIterator = null;
             Iterator<Intention>  intInterator    = null;
 
+            Intention bySelEvt = null, bySelInt = null;
+
             { find(); } // find the first intention
 
             public boolean hasNext() {
@@ -708,6 +710,7 @@ public class Circumstance implements Serializable {
                         curInt = getSelectedEvent().getIntention();
                         if (curInt != null) {
                             curInt.setPlace( IntentionPlace.SelectedEvent );
+                            bySelEvt = curInt;
                             return;
                         }
                     }
@@ -717,10 +720,10 @@ public class Circumstance implements Serializable {
                 case SelectedIntention:
                     curStep = IntentionPlace.EventQueue; // set next step
                     // we need to check the selected intention in this reasoning cycle too!!!
-                    Intention prev = curInt;
                     curInt = getSelectedIntention();
-                    if (curInt != null && !curInt.equals(prev)) {
+                    if (curInt != null && !curInt.equals(bySelEvt)) {
                         curInt.setPlace( IntentionPlace.SelectedIntention );
+                        bySelInt = curInt;
                         return;
                     }
                     find();
@@ -780,8 +783,10 @@ public class Circumstance implements Serializable {
                         if (pendIntIterator == null)
                             pendIntIterator = getPendingIntentions().values().iterator();
 
-                        if (pendIntIterator.hasNext()) {
+                        while (pendIntIterator.hasNext()) {
                             curInt  = pendIntIterator.next();
+                            if (curInt == bySelEvt || curInt == bySelInt)
+                                continue;
                             curInt.setPlace( IntentionPlace.PendingIntentions );
                             return;
                         }
@@ -794,8 +799,10 @@ public class Circumstance implements Serializable {
                     if (intInterator == null)
                         intInterator = getRunningIntentionsPlusAtomic();
 
-                    if (intInterator.hasNext()) {
+                    while (intInterator.hasNext()) {
                         curInt = intInterator.next();
+                        if (curInt == bySelEvt || curInt == bySelInt)
+                            continue;
                         curInt.setPlace( IntentionPlace.RunningIntentions );
                         return;
                     }
