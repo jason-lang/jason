@@ -107,7 +107,7 @@
 	                        <table cellspacing="0" cellpadding="2">
 			                    <xsl:for-each select="namespaces/namespace">
     		                        <xsl:variable name="nsId" select="@id" />
-		                            <xsl:for-each select="../../literal[@namespace=$nsId]">
+		                            <xsl:for-each select="../../literal[@namespace=$nsId] | ../../rule[@namespace=$nsId]">
 		                                <!-- xsl:sort select="structure/@functor" / -->
 		                                <tr style="{$trh-style}">
 		                                    <td style="text-align: left">
@@ -117,7 +117,6 @@
 		                                        <span style="color: {$bc}">
 		                                            <xsl:apply-templates select="." />
 		                                        </span>
-		                                        <xsl:text>.</xsl:text>
 		                                    </td>
 		                                </tr>
 		                            </xsl:for-each>
@@ -129,7 +128,7 @@
         </xsl:if>
 
         <!-- Rules -->
-        <xsl:if test="count(rule) > 0" >
+        <!-- xsl:if test="count(rule) > 0" >
             <tr style="{$trh-style}">
                 <xsl:call-template name="hideshow">
                     <xsl:with-param name="show" select="$show-rules" />
@@ -153,7 +152,7 @@
                     </td>
                 </xsl:if>
             </tr>
-        </xsl:if>
+        </xsl:if -->
     </xsl:template>
 
     <xsl:template match="mailbox">
@@ -536,7 +535,7 @@
         <table>
             <tr>
                 <td width="20" />
-                <td><xsl:apply-templates select="context" />.</td>
+                <td><xsl:apply-templates select="context" /></td>
             </tr>
         </table>
     </xsl:template>

@@ -138,6 +138,7 @@ public class Rule extends LiteralImpl {
     @Override
     public Element getAsDOM(Document document) {
         Element u = (Element) document.createElement("rule");
+        u.setAttribute("namespace", getNS().getFunctor());
 
         Element h = (Element) document.createElement("head");
         h.appendChild(super.getAsDOM(document));
