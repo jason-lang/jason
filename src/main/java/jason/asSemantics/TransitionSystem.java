@@ -1416,6 +1416,7 @@ public class TransitionSystem implements Serializable {
      */
     public void runAtBeginOfNextCycle(Runnable r) {
         taskForBeginOfCycle.offer(r);
+        getAgArch().wake();
     }
 
     /**********************************************************************/
