@@ -13,10 +13,12 @@ member(Item, [Item|Tail]).
 @[test]
 +!test_lists
     <-
-    .log(warning,"TODO: Jason does not support direct list unification? e.g.: [H|T] = [a,b,c(0),1]?")
-    p([H|T]) = p([a,b,c(0),1]);
+    [H|T] = [a,b,c(0),1];
     !assert_equals(a,H);
     !assert_equals([b,c(0),1],T);
+    [a,b,c(0),1] = [Hb|Tb];
+    !assert_equals(a,Hb);
+    !assert_equals([b,c(0),1],Tb);
 
     q([X,Y|R]) = q([a,b,c(0),1]);
     !assert_equals(a,X);
