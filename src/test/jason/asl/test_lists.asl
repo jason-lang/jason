@@ -4,13 +4,16 @@
 
 { include("tester_agent.asl") }
 
+member(Item, [Item|Tail]).
+//member(Item, [Head|Tail]) :- member(Item,Tail).
+
 /**
  * Test
  */
 @[test]
-+!test_fail_event
++!test_lists
     <-
-    .log(warning,"Jason does not support direct list unification? e.g.: [H|T] = [a,b,c(0),1]?")
+    .log(warning,"TODO: Jason does not support direct list unification? e.g.: [H|T] = [a,b,c(0),1]?")
     p([H|T]) = p([a,b,c(0),1]);
     !assert_equals(a,H);
     !assert_equals([b,c(0),1],T);
@@ -32,4 +35,11 @@
 
     // Get head and tail of an empty list should return false
     !assert_false(s([H3|T3]) = s([]));
+
+    .log(warning,"TODO: Adding two rules statements are generating error. Uncomment line below and comment the statement member(Item, [Item|Tail]) on the top of this file.");
+    //+{member(Item, [Item|Tail])};
+    +{member(Item, [Head|Tail]) :- member(Item,Tail)};
+    !assert_true(member(a, [a,b,c]));
+    !assert_true(member(c, [a,b,c]));
+    !assert_false(member(d, [a,b,c]));
 .
