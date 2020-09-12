@@ -436,6 +436,14 @@ public class ASParserTest extends TestCase {
         Agent a = new Agent();
         a.initAg();
         parser.agent(a);
-
     }
+
+    public void testBodyTermLeftUnif() throws ParseException, JasonException {
+        String source =   "{ NewBodyTerm;_ } = { !gg(Name, SubstitutedSubGoals) }  ";
+        LogicalFormula f = ASSyntax.parseFormula( source) ;
+        assertNotNull(f);
+
+        assertEquals("([a,b,c] = [a,b,c])", ASSyntax.parseFormula("[a,b,c] = [a,b,c]").toString());
+    }
+
 }

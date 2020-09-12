@@ -369,10 +369,11 @@ public class DefaultBeliefBase extends BeliefBase implements Serializable {
     public Element getAsDOM(Document document) {
         Element eDOMbels = (Element) document.createElement("beliefs");
         int tries = 0;
-        List<Literal> allBels;
+        //List<Literal> allBels;
         while (tries < 10) { // max 10 tries
             try {
                 synchronized (getLock()) {
+                    // declare namespaces
                     Element enss = (Element) document.createElement("namespaces");
                     Element ens = (Element) document.createElement("namespace");
                     ens.setAttribute("id", Literal.DefaultNS.toString()); // to ensure default is the first
@@ -386,13 +387,27 @@ public class DefaultBeliefBase extends BeliefBase implements Serializable {
                     }
                     eDOMbels.appendChild(enss);
                     // copy bels to an array to sort it
-                    allBels = new ArrayList<>(size());
-                    for (Literal l: this)
-                        allBels.add(l);
+                    // should not sort, may affect the interpretation (the order is important in consult) ==> sort by PI
+                    //allBels = new ArrayList<>(size());
+                    //for (Literal l: this)
+                        //allBels.add(l);
+
+                    for (Atom ns: getNameSpaces()) {
+                        // sort by PI
+                        Map<PredicateIndicator, BelEntry> pis = nameSpaces.get(ns);
+                        List<PredicateIndicator> allPI = new ArrayList<>(pis.keySet());
+                        Collections.sort(allPI);
+                        for (PredicateIndicator pi: allPI) {
+                            for (Literal l: pis.get(pi).list) {
+                                eDOMbels.appendChild(l.getAsDOM(document));
+                            }
+                        }
+                    }
+
                 }
-                Collections.sort(allBels);
+                /*Collections.sort(allBels);
                 for (Literal l: allBels)
-                    eDOMbels.appendChild(l.getAsDOM(document));
+                    eDOMbels.appendChild(l.getAsDOM(document));*/
                 break; // quit the loop
             } catch (Exception e) { // normally concurrent modification, but others happen
                 tries++;
@@ -407,7 +422,7 @@ public class DefaultBeliefBase extends BeliefBase implements Serializable {
     final class BelEntry implements Serializable {
 
         private static final long serialVersionUID = 213020035116603827L;
-        
+
         final private Deque<Literal> list = new LinkedBlockingDeque<>();  // maintains the order of the beliefs
         final private Map<StructureWrapperForLiteral,Literal> map = new ConcurrentHashMap<>(); // to find content faster
 

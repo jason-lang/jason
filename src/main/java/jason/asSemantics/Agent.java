@@ -72,7 +72,7 @@ import jason.util.Config;
 public class Agent implements Serializable {
 
     private static final long serialVersionUID = -2628324957954474455L;
-    
+
     // Members
     protected BeliefBase       bb = null;
     protected PlanLibrary      pl = null;
@@ -217,17 +217,17 @@ public class Agent implements Serializable {
         }
     }
 
-    /** 
-     * Clear Agent's Beliefs and Plan Library 
+    /**
+     * Clear Agent's Beliefs and Plan Library
      */
     public void clearAg() {
         if (bb != null) bb.clear();
         if (pl != null) pl.clear();
     }
 
-    /** 
-     * only parse and load the initial agent code, asSrc may be null 
-     * it does not load kqml default plans and do not trigger initial beliefs and goals 
+    /**
+     * only parse and load the initial agent code, asSrc may be null
+     * it does not load kqml default plans and do not trigger initial beliefs and goals
      */
     public void loadAgSrc(String asSrc) throws JasonException {
         // set the agent
@@ -1153,6 +1153,17 @@ public class Agent implements Serializable {
         ag.appendChild(importedNodeBB);
         Node importedNodePL = document.importNode(getPL().getAsDOM(document), true);
         ag.appendChild(importedNodePL);
+
+        // agent status
+        Element ess = (Element) document.createElement("status");
+        ag.appendChild(ess);
+        Map<String,Object> status = getTS().getAgArch().getStatus();
+        for (String k: status.keySet()) {
+            Element es = (Element) document.createElement("entry");
+            es.setAttribute("key", k);
+            es.setAttribute("value", status.get(k).toString());
+            ess.appendChild(es);
+        }
         return ag;
     }
 
