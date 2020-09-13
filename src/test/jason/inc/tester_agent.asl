@@ -50,9 +50,8 @@ auto_create_fail_plan.  // create -!P fail plan to capture unexpected failures
         -!P[error(E),code(C),code_src(S),code_line(L),error_msg(M)] :
             true
             <-
-            .log(severe,
-                "Error '",E,"' in '",S,"' on event '",C,"' at line ",L," FAILED! Message: '",M,"' Error on code/parser! ",
-                "No test statistics will be displayed.");
+            .log(severe,"Error '",E,"' in '",S,"' on event '",C,"' at line ",L," FAILED! Message: '",M);
+            .send(test_manager,tell,fatal_error);
     }, self, end);
 .
 +!create_default_fail_plan. // Do not create plans if it is disabled
