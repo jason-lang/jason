@@ -184,3 +184,15 @@ shutdown_hook.          // shutdown after finishing or shutdown_delay(SD). Defau
     <-
     +plan_statistics(Status,Plan,Agent);
 .
+
+/**
+ * Fatal error informed
+ */
+ @fatal_error
+ +fatal_error
+    <-
+    .log(severe,"\n\n");
+    .log(severe,"Fatal error informed. It is likely to be an error on code/parser!");
+    .log(severe,"No test statistics will be displayed. FAILED!\n\n");
+    .stopMAS(0,1);
+ .
