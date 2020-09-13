@@ -7,13 +7,22 @@
 member(Item, [Item|Tail]).
 //member(Item, [Head|Tail]) :- member(Item,Tail).
 
+l([a,b,c(0),1]).
+a_rule(X,RET) :- l(L) & .reverse(L,LREV) & LREV = [H|T] & RET = H + X.
+another_rule(Y,RET2) :- a_rule(Y,RET) & RET > Y & RET2 = RET.
+
 /**
  * Test
  */
 @[test]
 +!test_lists
     <-
-    [H|T] = [a,b,c(0),1];
+    [HX|TX] = [a,b,c(0),1];
+    !assert_equals(a,HX);
+    !assert_equals([b,c(0),1],TX);
+
+    L = [a,b,c(0),1];
+    L = [H|T];
     !assert_equals(a,H);
     !assert_equals([b,c(0),1],T);
     [a,b,c(0),1] = [Hb|Tb];
@@ -44,4 +53,21 @@ member(Item, [Item|Tail]).
     !assert_true(member(a, [a,b,c]));
     !assert_true(member(c, [a,b,c]));
     !assert_false(member(d, [a,b,c]));
+
+    !test_list_in_context;
+
+    !test_list_in_rules;
+.
+
++!test_list_in_context :
+    L = [a,b,c(0),1] & L = [H|T]
+    <-
+    !assert_equals(a,H);
+    !assert_equals([b,c(0),1],T);
+.
+
++!test_list_in_rules :
+    another_rule(2,R)
+    <-
+    !assert_equals(3,R);
 .
