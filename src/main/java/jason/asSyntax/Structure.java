@@ -223,7 +223,7 @@ public class Structure extends Atom {
     @Override
     public Literal addTerms(Term ... ts ) {
         if (terms == null) 
-        	terms = new ArrayList<>(5);
+            terms = new ArrayList<>(5);
         for (Term t: ts)
             terms.add(t);
         predicateIndicatorCache = null;
@@ -254,7 +254,7 @@ public class Structure extends Atom {
     @Override
     public void setTerm(int i, Term t) {
         if (terms == null) 
-        	terms = new ArrayList<>(5);
+            terms = new ArrayList<>(5);
         terms.set(i,t);
         resetHashCodeCache();
         //if (!t.isGround() && isGround())
@@ -421,9 +421,9 @@ public class Structure extends Atom {
         Map<VarTerm, Integer> all = new HashMap<>();
         countVars(all);
         return all.entrySet().stream()
-        	.filter( e -> e.getValue() == 1 && !e.getKey().isUnnamedVar())
-        	.map(Map.Entry::getKey)
-        	.collect(Collectors.toList());
+            .filter( e -> e.getValue() == 1 && !e.getKey().isUnnamedVar())
+            .map(Map.Entry::getKey)
+            .collect(Collectors.toList());
         
         /*List<VarTerm> r = new ArrayList<>();
         for (VarTerm k: all.keySet()) {
