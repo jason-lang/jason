@@ -126,7 +126,7 @@ public class MindInspectorAgArch extends AgArch {
                         while (isRunning()) {
                             Thread.sleep(updateInterval);
                             getTS().runAtBeginOfNextCycle(
-                            		() -> addAgState());
+                                    () -> addAgState());
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
