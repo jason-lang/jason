@@ -3,11 +3,11 @@ package jason.asSyntax;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -222,7 +222,8 @@ public class Structure extends Atom {
 
     @Override
     public Literal addTerms(Term ... ts ) {
-        if (terms == null) terms = new ArrayList<>(5);
+        if (terms == null) 
+        	terms = new ArrayList<>(5);
         for (Term t: ts)
             terms.add(t);
         predicateIndicatorCache = null;
@@ -252,7 +253,8 @@ public class Structure extends Atom {
 
     @Override
     public void setTerm(int i, Term t) {
-        if (terms == null) terms = new ArrayList<>(5);
+        if (terms == null) 
+        	terms = new ArrayList<>(5);
         terms.set(i,t);
         resetHashCodeCache();
         //if (!t.isGround() && isGround())
@@ -416,14 +418,19 @@ public class Structure extends Atom {
     }
 
     public List<VarTerm> getSingletonVars() {
-        Map<VarTerm, Integer> all  = new HashMap<>();
+        Map<VarTerm, Integer> all = new HashMap<>();
         countVars(all);
-        List<VarTerm> r = new ArrayList<>();
+        return all.entrySet().stream()
+        	.filter( e -> e.getValue() == 1 && !e.getKey().isUnnamedVar())
+        	.map(Map.Entry::getKey)
+        	.collect(Collectors.toList());
+        
+        /*List<VarTerm> r = new ArrayList<>();
         for (VarTerm k: all.keySet()) {
             if (all.get(k) == 1 && !k.isUnnamedVar())
                 r.add(k);
         }
-        return r;
+        return r;*/
     }
 
     public void countVars(Map<VarTerm, Integer> c) {
@@ -445,11 +452,9 @@ public class Structure extends Atom {
             s.append(getFunctor());
         if (getArity() > 0) {
             s.append('(');
-            Iterator<Term> i = terms.iterator();
-            while (i.hasNext()) {
-                s.append(i.next());
-                if (i.hasNext()) s.append(',');
-            }
+            s.append( terms.stream()
+                    .map(Term::toString)
+                    .collect(Collectors.joining(",")));
             s.append(')');
         }
         if (hasAnnot())
