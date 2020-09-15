@@ -287,7 +287,7 @@ public class Intention implements Serializable, Comparable<Intention>, Iterable<
     }
 
     public Structure getAsTerm() {
-        Structure intention = new Structure("intention");
+        Structure intention = new Structure("intention", 2);
         intention.addTerm(new NumberTermImpl(getId()));
         ListTerm lt = new ListTermImpl();
         for (IntendedMeans im: intendedMeans)

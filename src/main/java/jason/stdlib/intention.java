@@ -99,7 +99,7 @@ public class intention extends DefaultInternalAction {
                             curInt = evt.getIntention();                        
                     }
                     if (curInt == null)
-                        ts.getLogger().warning(".intention wants the current intention, but I cannot identify which are the current intention!");
+                        ts.getLogger().warning(".intention wants the current intention, but I cannot identify which is the current intention!");
                 }
                 
                 find(); // find first answer
