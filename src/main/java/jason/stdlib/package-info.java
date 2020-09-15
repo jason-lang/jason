@@ -124,7 +124,6 @@ Internal actions of Jason.
   <li>{@link jason.stdlib.ground ground}: check whether an argument is ground.</li>
   <li>{@link jason.stdlib.number number}: check whether an argument is a number (1, 2.3).</li>
   <li>{@link jason.stdlib.string string}: check whether an argument is a string ("s").</li>
-  <li>{@link jason.stdlib.ground ground}: check whether an argument is ground.</li>
 <!--  <li>{@link jason.stdlib.add_annot add_annot}: add an annotation in --
   --  a literal.</li> -->
   <li>{@link jason.stdlib.add_nested_source add_nested_source}: add a source in a literal.</li>
