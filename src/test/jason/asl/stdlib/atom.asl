@@ -7,7 +7,7 @@
 { include("tester_agent.asl") }
 
 @[test]
-+!test_string
++!test_atom
     <-
     !assert_false( .atom(b(10)) );
     !assert_true( .atom(b) );
