@@ -714,8 +714,8 @@ public class Circumstance implements Serializable {
                             return;
                         }
                     }
-                    find();
-                    return;
+                    //find();
+                    //return;
 
                 case SelectedIntention:
                     curStep = IntentionPlace.EventQueue; // set next step
@@ -726,8 +726,8 @@ public class Circumstance implements Serializable {
                         bySelInt = actInt;
                         return;
                     }
-                    find();
-                    return;
+                    //find();
+                    //return;
 
                 case EventQueue:
                     if (evtIterator == null)
@@ -741,8 +741,8 @@ public class Circumstance implements Serializable {
                         }
                     }
                     curStep = IntentionPlace.PendingEvents; // set next step
-                    find();
-                    return;
+                    //find();
+                    //return;
 
                 case PendingEvents:
                     if (pendEvtIterator == null)
@@ -756,8 +756,8 @@ public class Circumstance implements Serializable {
                         }
                     }
                     curStep = IntentionPlace.PendingActions; // set next step
-                    find();
-                    return;
+                    //find();
+                    //return;
 
                 case PendingActions:
                     // intention may be suspended in PA! (in the new semantics)
@@ -774,8 +774,8 @@ public class Circumstance implements Serializable {
                         }
                     }
                     curStep = IntentionPlace.PendingIntentions; // set next step
-                    find();
-                    return;
+                    //find();
+                    //return;
 
                 case PendingIntentions:
                     // intention may be suspended in PI!
@@ -792,8 +792,8 @@ public class Circumstance implements Serializable {
                         }
                     }
                     curStep = IntentionPlace.RunningIntentions; // set next step
-                    find();
-                    return;
+                    //find();
+                    //return;
 
                 case RunningIntentions:
                     if (intInterator == null)
@@ -808,8 +808,8 @@ public class Circumstance implements Serializable {
                     }
 
                     curStep = IntentionPlace.None; // set next step
-                    find();
-                    return;
+                    //find();
+                    //return;
 
                 case None:
 
