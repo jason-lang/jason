@@ -7,6 +7,7 @@ import jason.asSemantics.Event;
 import jason.asSemantics.Intention;
 import jason.asSemantics.TransitionSystem;
 import jason.asSemantics.Unifier;
+import jason.asSemantics.Intention.State;
 import jason.asSyntax.ASSyntax;
 import jason.asSyntax.Term;
 
@@ -83,25 +84,36 @@ public class intention extends DefaultInternalAction {
     public Object execute(final TransitionSystem ts, final Unifier un, final Term[] args) throws Exception {
         checkArguments(args);
 
+        if (args.length == 4 && "current".equals(args[3].toString())) {
+            Intention curInt = null; // current intention (executing this internal action)
+
+            curInt = ts.getC().getSelectedIntention();
+            if (curInt == null) {
+                // try to get the intention from the current event
+                Event evt = ts.getC().getSelectedEvent();
+                if (evt != null)
+                    curInt = evt.getIntention();                        
+            }
+            if (curInt == null) {
+                ts.getLogger().warning(".intention wants the current intention, but I cannot identify which is the current intention!");
+            } else {
+                Unifier solution = un.clone();
+                if (solution.unifiesNoUndo( args[0], ASSyntax.createNumber( curInt.getId())) &&
+                    solution.unifiesNoUndo( args[1], ASSyntax.createAtom( State.running.toString())) &
+                    solution.unifiesNoUndo( args[2], curInt.getAsTerm().getTerm(1))) {
+                    un.compose(solution);
+                    return true;
+                }
+            }
+            return false;
+        }
+        
         return new Iterator<Unifier>() {
             Unifier solution = null; // the current response (which is an unifier)
             Intention actInt = null; // intention being considered
-            Intention curInt = null; // current intention (executing this internal action)
             Iterator<Intention> intInterator = ts.getC().getAllIntentions();
 
             {
-                if (args.length == 4 && "current".equals(args[3].toString())) { // we have to consider current intention in the backtracking to find the correct state of the intention (given by C.getAllIntentions)
-                    curInt = ts.getC().getSelectedIntention();
-                    if (curInt == null) {
-                        // try to get the intention from the current event
-                        Event evt = ts.getC().getSelectedEvent();
-                        if (evt != null)
-                            curInt = evt.getIntention();                        
-                    }
-                    if (curInt == null)
-                        ts.getLogger().warning(".intention wants the current intention, but I cannot identify which is the current intention!");
-                }
-                
                 find(); // find first answer
             }
 
@@ -119,27 +131,18 @@ public class intention extends DefaultInternalAction {
             void find() {
                 while (intInterator.hasNext()) {
                     actInt = intInterator.next();
-                    if (curInt != null && !curInt.equals(actInt)) // looking for current intention (i.e. curInt != null)
-                        continue; // keeps looking for current intention (until curInt == actInt)
 
                     solution = un.clone();
                     if (solution.unifiesNoUndo( args[0], ASSyntax.createNumber( actInt.getId())) &&
                         solution.unifiesNoUndo( args[1], ASSyntax.createAtom( actInt.getStateBasedOnPlace().toString())) ) {
 
-                        if (args.length == 2)
+                        if (args.length == 2) {
                             return;
+                        }
                         if (solution.unifiesNoUndo( args[2], actInt.getAsTerm().getTerm(1))) {
                             return;
                         }
                     }
-                     
-                    if (curInt != null) { // if actInt (which is equals to curInt) does not unifies => no solution (no need to continue in the loop)
-                    	solution = null;
-                        return;
-                    }
-                }
-                if (curInt != null) { // didn't find curInt in TS.C all intentions (!)
-                	ts.getLogger().warning(".intention wants the current intention, but I cannot identify which is the current intention in TS.circunstance!");
                 }
                 solution = null; // nothing found
             }
