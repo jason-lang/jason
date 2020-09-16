@@ -213,6 +213,13 @@ intention_test_goal(Goal,Test,Label,Line,Src) :- .intention(ID,_,[ im(Label,TGoa
  */
 @assert_contains[atomic]
 +!assert_contains(X,Y) :
+    intention_test_goal(Goal,Test,Label,Line,Src) &
+    .findall(T, .type(X,T) ,Types) & not .member(list,Types) & not .member(set,Types) 
+    <-
+    .log(severe,"assert_contains expecting '",Y,"' in '",X,"' could not be performed since '",X,"' must be a list or a set. FAILED!");
+    .fail;
+.
++!assert_contains(X,Y) :
     intention_test_goal(Goal,Test,Label,Line,Src)
     <-
     if (not .member(Y,X)) {
@@ -236,6 +243,13 @@ intention_test_goal(Goal,Test,Label,Line,Src) :- .intention(ID,_,[ im(Label,TGoa
  * Asserts if X does not contain Y
  */
 @assert_not_contains[atomic]
++!assert_not_contains(X,Y) :
+    intention_test_goal(Goal,Test,Label,Line,Src) &
+    .findall(T, .type(X,T) ,Types) & not .member(list,Types) & not .member(set,Types)
+    <-
+    .log(severe,"assert_not_contains expecting '",Y,"' NOT in '",X,"' could not be performed since '",X,"' must be a list or a set. FAILED!");
+    .fail;
+.
 +!assert_not_contains(X,Y) :
     intention_test_goal(Goal,Test,Label,Line,Src)
     <-
