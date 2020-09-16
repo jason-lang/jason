@@ -16,7 +16,9 @@ intention_test_goal(Goal,Test,Label,Line,Src) :- .intention(ID,_,[ im(Label,TGoa
     not .list(X) & not .list(Y)
     <-
     if (X \== Y) {
-        .log(severe,"assert_equals on event '",Goal,"' starting at line ",Line," FAILED! Expected ",X," but had ",Y);
+        .type(X,TX);
+        .type(Y,TY);
+        .log(severe,"assert_equals on event '",Goal,"' starting at line ",Line," FAILED! Expected '",X,"' (",TX,") but had '",Y,"' (",TY,")");
         .fail;
     } else {
         +test(Test,passed,Src,Line)[assert_equals(X,Y)];
@@ -26,29 +28,31 @@ intention_test_goal(Goal,Test,Label,Line,Src) :- .intention(ID,_,[ im(Label,TGoa
 +!assert_equals(X,Y) : // compare lists
     intention_test_goal(Goal,Test,Label,Line,Src)
     <-
-    for (.member(Xth,X)) {
-        if (not .member(Xth,Y)) {
-            .log(severe,"assert_equals on event '",Goal,"' starting at line ",Line," FAILED! Expected ",X," but had ",Y);
+    .type(X,TX);
+    .type(Y,TY);
+    for ( .member(Xth,X) ) {
+        if ( not .member(Xth,Y) ) {
+            .log(severe,"assert_equals on event '",Goal,"' starting at line ",Line," FAILED! Expected '",X,"' (",TX,") but had '",Y,"' (",TY,")");
             .fail;
         }
     }
-    for (.member(Yth,Y)) {
-        if (not .member(Yth,X)) {
-            .log(severe,"assert_equals on event '",Goal,"' starting at line ",Line," FAILED! Expected ",X," but had ",Y);
+    for ( .member(Yth,Y) ) {
+        if ( not .member(Yth,X) ) {
+            .log(severe,"assert_equals on event '",Goal,"' starting at line ",Line," FAILED! Expected '",X,"' (",TX,") but had '",Y,"' (",TY,")");
             .fail;
         }
     }
     +test(Test,passed,Src,Line)[assert_equals(X,Y)];
     .log(info,"assert_equals on event '",Goal,"' PASSED");
 .
-+!assert_equals(X,Y) :
-    true
++!assert_equals(X,Y)
     <-
-    .log(severe,"assert_equals on event 'unknown' FAILED! Expected ",X," but had ",Y);
+    .type(X,TX);
+    .type(Y,TY);
+    .log(severe,"assert_equals expecting '",X,"' (",TX,") and having '",Y,"' (",TY,") could not be performed! FAILED!");
     .fail;
 .
--!assert_equals(X,Y) :
-    true
+-!assert_equals(X,Y)
     <-
     +test(Test,failed,Src,Line)[assert_equals(X,Y)];
 .
@@ -61,24 +65,57 @@ intention_test_goal(Goal,Test,Label,Line,Src) :- .intention(ID,_,[ im(Label,TGoa
 +!assert_equals(X,Y,T) :
     intention_test_goal(Goal,Test,Label,Line,Src)
     <-
+    .type(X,TX);
+    .type(Y,TY);
     if (not (Y >= X-T & Y <= X+T)) {
-        .log(severe,"assert_equals on event '",Goal,"' starting at line ",Line," FAILED! Expected ",X,"+/-",T,", but had ",Y);
+        .log(severe,"assert_equals on event '",Goal,"' starting at line ",Line," FAILED! Expected '",X,"+/-",T,"' (",TX,"), but had '",Y,"' (",TY,")");
         .fail;
     } else {
         +test(Test,passed,Src,Line)[assert_equals(X,Y,T)];
         .log(info,"assert_equals on event '",Goal,"' PASSED");
     }
 .
-+!assert_equals(X,Y,T) :
-    true
++!assert_equals(X,Y,T)
     <-
-    .log(severe,"assert_equals on event 'unknown' FAILED! Expected ",X,"+/-",T,", but had ",Y);
+    .type(X,TX);
+    .type(Y,TY);
+    .log(severe,"assert_equals expecting '",X,"+/-",T,"' (",TX,") and having '",Y,"' (",TY,") could not be performed! FAILED!");
     .fail;
 .
--!assert_equals(X,Y,T) :
-    true
+-!assert_equals(X,Y,T)
     <-
     +test(Test,failed,Src,Line)[assert_equals(X,Y,T)];
+.
+
+/**
+ * Asserts if X is not equals to Y
+ * IMPORTANT! Do no use this method to compare float numbers
+ */
+@assert_not_equals[atomic]
++!assert_not_equals(X,Y) : // compare terms
+    intention_test_goal(Goal,Test,Label,Line,Src) &
+    not .list(X) & not .list(Y)
+    <-
+    .type(X,TX);
+    .type(Y,TY);
+    if (X == Y) {
+        .log(severe,"assert_not_equals on event '",Goal,"' starting at line ",Line," FAILED! Expected '",X,"' (",TX,") different than '",Y,"' (",TY,")");
+        .fail;
+    } else {
+        +test(Test,passed,Src,Line)[assert_equals(X,Y)];
+        .log(info,"assert_not_equals on event '",Goal,"' PASSED");
+    }
+.
++!assert_not_equals(X,Y)
+    <-
+    .type(X,TX);
+    .type(Y,TY);
+    .log(severe,"assert_not_equals expecting '",X,"' (",TX,") and having '",Y,"' (",TY,") could not be performed! FAILED!");
+    .fail;
+.
+-!assert_not_equals(X,Y)
+    <-
+    +test(Test,failed,Src,Line)[assert_not_equals(X,Y)];
 .
 
 /**
@@ -89,21 +126,19 @@ intention_test_goal(Goal,Test,Label,Line,Src) :- .intention(ID,_,[ im(Label,TGoa
     intention_test_goal(Goal,Test,Label,Line,Src)
     <-
     if (not X) {
-        .log(severe,"assert_true on event '",Goal,"' starting at line ",Line," FAILED! Expected ",X);
+        .log(severe,"assert_true on event '",Goal,"' starting at line ",Line," FAILED! Expected '",X,"'");
         .fail;
     } else {
         .log(info,"assert_true on event '",Goal,"' PASSED");
         +test(Test,passed,Src,Line)[assert_true(X)];
     }
 .
-+!assert_true(X) :
-    true
++!assert_true(X)
     <-
-    .log(severe,"assert_true on event 'unknown' FAILED! Expected ",X);
+    .log(severe,"assert_true expecting '",X,"' could not be performed! FAILED!");
     .fail;
 .
--!assert_true(X) :
-    true
+-!assert_true(X)
     <-
     +test(Test,failed,Src,Line)[assert_true(X)];
 .
@@ -116,21 +151,19 @@ intention_test_goal(Goal,Test,Label,Line,Src) :- .intention(ID,_,[ im(Label,TGoa
     intention_test_goal(Goal,Test,Label,Line,Src)
     <-
     if (X) {
-        .log(severe,"assert_false on event '",Goal,"' starting at line ",Line," FAILED! Expected not ",X);
+        .log(severe,"assert_false on event '",Goal,"' starting at line ",Line," FAILED! Expected 'not ",X,"'");
         .fail;
     } else {
         +test(Test,passed,Src,Line)[assert_false(X)];
         .log(info,"assert_false on event '",Goal,"' PASSED");
     }
 .
-+!assert_false(X) :
-    true
++!assert_false(X)
     <-
-    .log(severe,"assert_false on event 'unknown' FAILED! Expected not ",X);
+    .log(severe,"assert_false expecting 'not ",X,"' could not be performed! FAILED!");
     .fail;
 .
--!assert_false(X) :
-    true
+-!assert_false(X)
     <-
     +test(Test,failed,Src,Line)[assert_false(X)];
 .
@@ -145,14 +178,12 @@ intention_test_goal(Goal,Test,Label,Line,Src) :- .intention(ID,_,[ im(Label,TGoa
     +test(Test,passed,Src,Line)[force_pass];
     .log(info,"force_pass on event '",Goal,"' PASSED");
 .
-+!force_pass :
-    true
++!force_pass
     <-
-    .log(severe,"force_pass on event 'unknown' FAILED!");
+    .log(severe,"force_pass could not be performed properly! FAILED!");
     .fail;
 .
--!force_pass : // Only pass if not applicable
-    true
+-!force_pass // Only pass if not applicable
     <-
     +test(Test,failed,Src,Line)[force_pass];
 .
@@ -164,17 +195,15 @@ intention_test_goal(Goal,Test,Label,Line,Src) :- .intention(ID,_,[ im(Label,TGoa
 +!force_failure(MSG) :
     intention_test_goal(Goal,Test,Label,Line,Src)
     <-
-    .log(severe,"force_failure on event '",Goal,"' forcedly FAILED! Msg: ",MSG);
+    .log(severe,"force_failure on event '",Goal,"' forcedly FAILED! Msg: '",MSG,"'");
     .fail;
 .
-+!force_failure(MSG) :
-    true
++!force_failure(MSG)
     <-
-    .log(severe,"force_failure on event 'unknown' FAILED!");
+    .log(severe,"force_failure could not be performed properly! FAILED!");
     .fail;
 .
--!force_failure(MSG) : // Only failure if not applicable
-    true
+-!force_failure(MSG) // Only failure if not applicable
     <-
     +test(Test,failed,Src,Line)[force_failure];
 .
@@ -184,23 +213,28 @@ intention_test_goal(Goal,Test,Label,Line,Src) :- .intention(ID,_,[ im(Label,TGoa
  */
 @assert_contains[atomic]
 +!assert_contains(X,Y) :
+    intention_test_goal(Goal,Test,Label,Line,Src) &
+    .findall(T, .type(X,T) ,Types) & not .member(list,Types) & not .member(set,Types) 
+    <-
+    .log(severe,"assert_contains expecting '",Y,"' in '",X,"' could not be performed since '",X,"' must be a list or a set. FAILED!");
+    .fail;
+.
++!assert_contains(X,Y) :
     intention_test_goal(Goal,Test,Label,Line,Src)
     <-
     if (not .member(Y,X)) {
-        .log(severe,"assert_contains on event '",Goal,"' starting at line ",Line," FAILED! Expected ",Y," in ",X);
+        .log(severe,"assert_contains on event '",Goal,"' starting at line ",Line," FAILED! Expected '",Y,"' in '",X,"'");
         .fail;
     }
     +test(Test,passed,Src,Line)[assert_contains(X,Y)];
     .log(info,"assert_contains on event '",Goal,"' PASSED");
 .
-+!assert_contains(X,Y) :
-    true
++!assert_contains(X,Y)
     <-
-    .log(severe,"assert_contains on event 'unknown' FAILED! Expected ",Y," in ",X);
+    .log(severe,"assert_contains expecting '",Y,"' in '",X,"' could not be performed! FAILED!");
     .fail;
 .
--!assert_contains(X,Y) :
-    true
+-!assert_contains(X,Y)
     <-
     +test(Test,failed,Src,Line)[assert_contains(X,Y)];
 .
@@ -210,23 +244,28 @@ intention_test_goal(Goal,Test,Label,Line,Src) :- .intention(ID,_,[ im(Label,TGoa
  */
 @assert_not_contains[atomic]
 +!assert_not_contains(X,Y) :
+    intention_test_goal(Goal,Test,Label,Line,Src) &
+    .findall(T, .type(X,T) ,Types) & not .member(list,Types) & not .member(set,Types)
+    <-
+    .log(severe,"assert_not_contains expecting '",Y,"' NOT in '",X,"' could not be performed since '",X,"' must be a list or a set. FAILED!");
+    .fail;
+.
++!assert_not_contains(X,Y) :
     intention_test_goal(Goal,Test,Label,Line,Src)
     <-
     if ( .member(Y,X) ) {
-        .log(severe,"assert_not_contains on event '",Goal,"' starting at line ",Line," FAILED! Expected ",Y," NOT in ",X);
+        .log(severe,"assert_not_contains on event '",Goal,"' starting at line ",Line," FAILED! Expected '",Y,"' NOT in '",X,"'");
         .fail;
     }
     +test(Test,passed,Src,Line)[assert_not_contains(X,Y)];
     .log(info,"assert_not_contains on event '",Goal,"' PASSED");
 .
-+!assert_not_contains(X,Y) :
-    true
++!assert_not_contains(X,Y)
     <-
-    .log(severe,"assert_not_contains on event 'unknown' FAILED! Expected ",Y," NOT in ",X);
+    .log(severe,"assert_not_contains expecting '",Y,"' NOT in '",X,"' could not be performed! FAILED!");
     .fail;
 .
--!assert_not_contains(X,Y) :
-    true
+-!assert_not_contains(X,Y)
     <-
     +test(Test,failed,Src,Line)[assert_not_contains(X,Y)];
 .
@@ -239,12 +278,17 @@ intention_test_goal(Goal,Test,Label,Line,Src) :- .intention(ID,_,[ im(Label,TGoa
     .number(X) & .number(Y)
     <-
     if (X <= Y) {
-        .log(severe,"assert_greater_than on event '",Goal,"' starting at line ",Line," FAILED! Expected ",X," > ",Y);
+        .log(severe,"assert_greater_than on event '",Goal,"' starting at line ",Line," FAILED! Expected '",X," > ",Y,"'");
         .fail;
     } else {
         +test(Test,passed,Src,Line)[assert_greater_than(X,Y)];
         .log(info,"assert_greater_than on event '",Goal,"' PASSED");
     }
+.
++!assert_greater_than(X,Y)
+    <-
+    .log(severe,"assert_greater_than expecting '",X," > ",Y,"' could not be performed! FAILED!");
+    .fail;
 .
 -!assert_greater_than(X,Y)
     <-
@@ -260,12 +304,17 @@ intention_test_goal(Goal,Test,Label,Line,Src) :- .intention(ID,_,[ im(Label,TGoa
     .number(X) & .number(Y)
     <-
     if (X < Y) {
-        .log(severe,"assert_greater_than_equals on event '",Goal,"' starting at line ",Line," FAILED! Expected ",X," > ",Y);
+        .log(severe,"assert_greater_than_equals on event '",Goal,"' starting at line ",Line," FAILED! Expected '",X," >= ",Y,"'");
         .fail;
     } else {
         +test(Test,passed,Src,Line)[assert_greater_than_equals(X,Y)];
         .log(info,"assert_greater_than_equals on event '",Goal,"' PASSED");
     }
+.
++!assert_greater_than_equals(X,Y)
+    <-
+    .log(severe,"assert_greater_than_equals expecting '",X," >= ",Y,"' could not be performed! FAILED!");
+    .fail;
 .
 -!assert_greater_than_equals(X,Y)
     <-
@@ -278,12 +327,17 @@ intention_test_goal(Goal,Test,Label,Line,Src) :- .intention(ID,_,[ im(Label,TGoa
     .number(X) & .number(Y0) & .number(Y1)
     <-
     if ((X < Y0) | (X > Y1)) {
-        .log(severe,"assert_between on event '",Goal,"' starting at line ",Line," FAILED! Expected ",Y0," <= ",X," <= ",Y1);
+        .log(severe,"assert_between on event '",Goal,"' starting at line ",Line," FAILED! Expected '",Y0," <= ",X," <= ",Y1,"'");
         .fail;
     } else {
         +test(Test,passed,Src,Line)[assert_between(X,Y0,Y1)];
         .log(info,"assert_between on event '",Goal,"' PASSED");
     }
+.
++!assert_between(X,Y0,Y1)
+    <-
+    .log(severe,"assert_between expecting '",Y0," <= ",X," <= ",Y1,"' could not be performed! FAILED!");
+    .fail;
 .
 -!assert_between(X,Y0,Y1)
     <-
