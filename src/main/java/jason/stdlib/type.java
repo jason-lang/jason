@@ -14,11 +14,11 @@ import jason.asSyntax.Term;
 /**
   <p>Internal action: <b><code>.type</code></b>.
 
-  <p>Description: retrieves types of the argument or checks whether the argument is of a given type.
+  <p>Description: retrieves types of the argument.
 
   <p>Parameter:<ul>
   <li>+ argument (any term): the term to be checked.<br/>
-  <li>+ type (any term or variable): the given type or a variable to retrieves types.<br/>
+  <li>+/- type (atom or variable): the given type or a variable. Values are atoms.<br/>
   </ul>
 
   <p>Examples:<ul>
@@ -111,14 +111,9 @@ public class type extends DefaultInternalAction {
 
                 public Unifier next() {
                     Unifier c = un.clone();
-                    
-                    if (types.size() > 0)
-                        c.unifies(args[1], types.get(n++));
-                    
+                    c.unifies(args[1], types.get(n++));                    
                     return c;
                 }
-                
-                public void remove() {}
             };
         }
     }

@@ -133,8 +133,13 @@ public class intention extends DefaultInternalAction {
                         }
                     }
                      
-                    if (curInt != null) // if actInt (which is equals to curInt) does not unifies => no solution (no need to continue in the loop)
-                        break;
+                    if (curInt != null) { // if actInt (which is equals to curInt) does not unifies => no solution (no need to continue in the loop)
+                    	solution = null;
+                        return;
+                    }
+                }
+                if (curInt != null) { // didn't find curInt in TS.C all intentions (!)
+                	ts.getLogger().warning(".intention wants the current intention, but I cannot identify which is the current intention in TS.circunstance!");
                 }
                 solution = null; // nothing found
             }
