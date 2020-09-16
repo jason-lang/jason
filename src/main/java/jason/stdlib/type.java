@@ -93,8 +93,12 @@ public class type extends DefaultInternalAction {
         if (args[0].isString())     types.add(ASSyntax.createAtom("string"));
         if (args[0].isList())       types.add(ASSyntax.createAtom("list"));
         if (args[0].isSet())        types.add(ASSyntax.createAtom("set"));
-        if (args[0].isGround())     types.add(ASSyntax.createAtom("ground"));
+        if (args[0].isMap())        types.add(ASSyntax.createAtom("map"));
         if (args[0].isStructure())  types.add(ASSyntax.createAtom("structure"));
+        if (args[0].isRule())       types.add(ASSyntax.createAtom("rule"));
+        if (args[0].isPlanBody())   types.add(ASSyntax.createAtom("plan"));
+
+        if (args[0].isGround())     types.add(ASSyntax.createAtom("ground"));
         if (args[0].isVar())        types.add(ASSyntax.createAtom("free"));
 
         // if it just wants to check whether args[0] is of type args[1]
