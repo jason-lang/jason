@@ -6,35 +6,42 @@
 
 { include("tester_agent.asl") }
 
+/**
+ * time interval between the exact time it is expected that the event occur and the maximum allowed time
+ * I have tried 50 ms, but on github it is causing failures quite often (maybe one in twice).
+ */
+time_frame(200).
+
 @[test]
-+!test_at
++!test_at :
+    time_frame(TF)
     <-
     .nano_time(T);
     .at("now +500", {+!g(test0,T)});
 
     .nano_time(T0);
     .at("now +500 ms", {+!g(test1,T0)});
-    .wait(550);
+    .wait(500+TF);
     !assert_true(executed(test1,_,_));
     ?executed(test1,T0,T1);
     /**
-     * Tolerance of 50 ms. Hopefully it is enough
+     * Tolerance given by TF. Hopefully it is enough
      * for the machines that may run this test
      */
-    !assert_between((T1-T0)/1000000,500,550);
+    !assert_between((T1-T0)/1000000,500,500+TF);
 
     .nano_time(T2);
     !assert_false(executed(g1));
     .at("now +1 s", {+!g(test2,T2)});
-    .wait(1050);
+    .wait(1000+TF);
 
     !assert_true(executed(test2,_,_));
     ?executed(test2,T2,T3);
     /**
-     * Tolerance of 50 ms. Hopefully it is enough
+     * Tolerance given by TF. Hopefully it is enough
      * for the machines that may run this test
      */
-    !assert_between((T3-T2)/1000000,1000,1050);
+    !assert_between((T3-T2)/1000000,1000,1000+TF);
 
     .at("now +1 second", {+!g(test3,_)}); // Just checking if no parse error is produced
     .at("now +1 seconds", {+!g(test4,_)}); // Just checking if no parse error is produced
@@ -56,10 +63,11 @@
  * should not be executed, assertiong should be false.
  */
 @[atomic,test]
-+!test_at_atomic
-<-
++!test_at_atomic :
+    time_frame(TF)
+    <-
     .at("now +500 ms", {+!g(test100,T0)});
-    .wait(550);
+    .wait(500+TF);
     !assert_false(executed(test100,_,_));
 .
 
