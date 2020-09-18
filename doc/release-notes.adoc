@@ -12,6 +12,34 @@ ifdef::env-github[:outfilesuffix: .adoc]
 - new internal action `.set_random_seed`, contribution of Timotheus Kampik.
 - internal action `.stopMAS` has a new (optional) argument for exit value.
 - revision of goal states reported in meta events and used in .desire and .intend. See doc/tech/goal-states.pdf for more details.
+- new internal actions to manipulate a Java Queues. In Jason, it is represented by a variable. Example:
++
+----
+.queue.create(Q);                // Q = []
+.queue.add(Q,a);                 // Q = [a]
+.queue.add(Q,b);                 // Q = [a, b]
+.queue.add_all(Q,[c,d,e]);       // Q = [a, b, c, d, e]
+.queue.head(Q,H);                // H = a
+.queue.remove(Q,H);              // H = a, Q = [b, c, d, e]
+.length(Q,X);                    // X = 4
+// iteration
+for ( .member(V,Q) ) {
+   .print(V);
+}.
+.queue.clear(Q);                 // Q = []
+----
++
+The queue can be ordered as follows (and a Java Priority Queue is used):
++
+----
+.queue.create(Q,priority);       // Q = [] with priority
+.queue.add(Q,d);                 // Q = [d]
+.queue.add(Q,c);                 // Q = [c, d]
+.queue.add_all(Q,[b,d,a]);       // Q = [a, b, c, d, e]
+.queue.head(Q,H);                // H = a
+----
+
+
 - url syntax can be used for project file, as in:
 +
 ----
@@ -58,6 +86,7 @@ java -cp "$JASON_HOME/libs/*" jason.infra.centralised.RunCentralisedMAS \
 - new internal actions to manipulate a Java Set. In Jason, it is represented by a variable. Example:
 +
 ----
+.set.create(S);                // S = {}
 .set.add(S,a);                 // S = {a}
 .set.add_all(S,[5,b,p(2),a]);  // S = {5,a,b,p(2)}
 .set.remove(S,b);              // S = {5,a,p(2)}
@@ -77,6 +106,7 @@ for ( .member(V,S) ) {
 - new internal actions to manipulate a Java Map. In Jason, it is represented by a variable. Example:
 +
 ----
+.map.create(M);                  // M = {}
 .map.put(M,a,10);                // M = {a->10}
 .map.put(M,b,ok);                // M = {a->10, b->ok}
 .map.put(M,a,20);                // M = {a->20, b->ok}

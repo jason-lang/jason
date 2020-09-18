@@ -1,5 +1,7 @@
 package jason.stdlib;
 
+import java.util.Collection;
+
 import jason.asSemantics.DefaultInternalAction;
 import jason.asSemantics.InternalAction;
 import jason.asSemantics.TransitionSystem;
@@ -8,6 +10,7 @@ import jason.asSyntax.ListTerm;
 import jason.asSyntax.MapTerm;
 import jason.asSyntax.NumberTerm;
 import jason.asSyntax.NumberTermImpl;
+import jason.asSyntax.ObjectTerm;
 import jason.asSyntax.SetTerm;
 import jason.asSyntax.StringTerm;
 import jason.asSyntax.Term;
@@ -93,6 +96,7 @@ public class length extends DefaultInternalAction {
         return 2;
     }
 
+    @SuppressWarnings("rawtypes")
     @Override
     public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {
         checkArguments(args);
@@ -110,6 +114,11 @@ public class length extends DefaultInternalAction {
             size = new NumberTermImpl(((SetTerm) l1).size());
         } else if (l1.isMap()) {
             size = new NumberTermImpl(((MapTerm) l1).size());
+        } else if (l1 instanceof ObjectTerm) {
+            ObjectTerm o = (ObjectTerm)l1;
+            if (o.getObject() instanceof Collection) {
+                size = new NumberTermImpl(((Collection) o.getObject()).size());
+            }
         }
         if (size != null) {
             return un.unifies(l2, size);

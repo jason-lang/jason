@@ -119,7 +119,6 @@ public class LogExpr extends BinaryStructure implements LogicalFormula {
                     public Unifier next() {
                         if (needsUpdate)
                             get();
-                        //Unifier a = current;
                         if (current != null)
                             needsUpdate = true;
                         //if (kForChache != null)
@@ -155,7 +154,6 @@ public class LogExpr extends BinaryStructure implements LogicalFormula {
                     public Unifier next() {
                         if (needsUpdate)
                             get();
-                        //Unifier a = current;
                         if (current != null)
                             needsUpdate = true;
                         //if (kForChache != null)
