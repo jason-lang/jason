@@ -13,7 +13,7 @@ import jason.asSemantics.Unifier;
 import jason.asSyntax.PlanBody.BodyType;
 import jason.asSyntax.parser.as2j;
 
-/** Represents an AgentSpack plan
+/** Represents an AgentSpeak plan
     (it extends structure to be used as a term)
 
  @navassoc - label - Pred
