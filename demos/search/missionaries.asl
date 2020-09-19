@@ -6,11 +6,9 @@
 
 !solve.
 +!solve
-   <- InitRule = system.time;
-      ?a_star( [3,3,l], [0,0,r], Solution, Cost);
-      .print("solution A*");
-      for (.member( S, Solution)) {
-        .print("   ",S);
+   <- ?a_star( [3,3,l], [0,0,r], Solution, Cost);
+      for (.member( op(O,S), Solution)) {
+        .print("   ",S," <-< ",O);
       }
    .
 
