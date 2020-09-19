@@ -17,8 +17,8 @@ a_star_l( Open, GoalState, Solution, Closed) :-
     //.print("exploring ",State," to be explored ", .length(Open)) &
     State \== GoalState &
     .findall(
-	     s(NF,NG,[ op(NOp,NewState), op(Op,State)|Path]), // new paths
-		   ( suc(State,NewState,Cost,NOp) &
+         s(NF,NG,[ op(NOp,NewState), op(Op,State)|Path]), // new paths
+           ( suc(State,NewState,Cost,NOp) &
          not .member(NewState, Closed) &
          .set.add(Closed, NewState) &
          NG = G + Cost & // cost to achieve NewState

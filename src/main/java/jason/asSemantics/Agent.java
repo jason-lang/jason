@@ -189,6 +189,8 @@ public class Agent implements Serializable {
                 addInitialGoalsFromProjectInBB();
                 addInitialGoalsInTS();
                 fixAgInIAandFunctions(this); // used to fix agent reference in functions used inside includes
+            } else {
+                throw new JasonException("Error loading code from "+asSrc);
             }
 
             loadKqmlPlans();

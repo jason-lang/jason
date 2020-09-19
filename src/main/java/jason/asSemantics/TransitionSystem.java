@@ -802,6 +802,8 @@ public class TransitionSystem implements Serializable {
                     logger.log(Level.SEVERE, "Selected an intention with null body in '"+h+"' and IM "+im, e);
                 else
                     logger.log(Level.SEVERE, body.getErrorMsg()+": "+ e.getMessage(), e);
+            } catch (Error e) {
+                logger.log(Level.SEVERE, body.getErrorMsg()+": "+ e.getMessage(), e);
             }
             if (!ok)
                 generateGoalDeletion(curInt, errorAnnots, ASSyntax.createAtom("ia_failed"));
