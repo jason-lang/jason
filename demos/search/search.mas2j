@@ -1,0 +1,6 @@
+MAS search {
+
+    agents:
+        a_star;
+
+}
