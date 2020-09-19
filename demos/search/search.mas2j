@@ -3,5 +3,5 @@ MAS search {
     agents:
         numbers;
         waterjug;
-
+        missionaries;
 }

@@ -9,7 +9,6 @@
    <- InitRule = system.time;
       ?a_star( [0,0], [2,0], Solution, Cost);
       .print("solution A* =", Solution, " with cost ",Cost," in ", (system.time - InitRule), " ms.");
-      .stopMAS;
    .
 
 /* The following two rules are domain dependent and have to be redefined accordingly */
