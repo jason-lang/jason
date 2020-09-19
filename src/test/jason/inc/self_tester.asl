@@ -19,6 +19,7 @@ tests_passed(0).
  */
 !self_test_asserts.  // test all asserts both passed and failed conditions
 !self_test_mock_agent. // test the mock agent
+!test_does_not_terminate.
 
 /**
  * -!P fail plan to generate assert failure
@@ -64,6 +65,9 @@ tests_passed(0).
     !assert_equals(1,1);    //should pass
     !assert_equals(1,2);    //should fail
 
+    !assert_equals(2,2.0000000000);    //should pass
+    !assert_equals(2,2.0000000001);    //should fail
+
     !assert_equals([1,2],[1,2]);    //should pass
     !assert_equals([1,2],[1,2,3]);  //should fail
 
@@ -105,9 +109,9 @@ tests_passed(0).
     ?tests_failed(F);
 
     // check if everything expected pass and fails have occurred
-    !assert_equals(24,N);
-    !assert_equals(12,P);
-    !assert_equals(12,F);
+    !assert_equals(26,N);
+    !assert_equals(13,P);
+    !assert_equals(13,F);
 
     .log(severe,">>> end of self tests.");
 .

@@ -18,7 +18,7 @@ ifdef::env-github[:outfilesuffix: .adoc]
 
 == Introduction
 
-Jason has a set of tools for testing Jason agents which includes a test management engine, a tester agent skeleton and plans for assertion checks.
+Jason has a set of tools for testing Jason agents which includes a test management engine, a tester agent skeleton and plans for assertion and performance checks.
 
 The test library is written and interpreted by Jason.
 
@@ -53,7 +53,7 @@ All plans in which the label has the annotation `test` will be automatically lau
   ```
 4. Run `$ ./gradlew test` to check the results.
 
-=== Example
+=== Example 1
 
 Let us say we have an agent `bob` which has a rule to sum two numbers. We want to check if bob can sum correctly. The content of `bob.asl` is:
 ----
@@ -66,7 +66,7 @@ To test it, we can create a tester agent following the steps above. The content 
 { include("$jasonJar/test/jason/inc/tester_agent.asl") }
 { include("bob.asl") }
 
-@[atomic,test] /* Notice the label with the annotation `test` will be automatically launched */
+@[test] /* Notice the label with the annotation `test` will be automatically launched */
 +!test_sum :
     true
     <-
@@ -105,6 +105,66 @@ BUILD FAILED in 3s
 ----
 
 Notice that failures are severe messages that will be shown regardless '--info' is set or not on gradle test command.
+
+=== Example 2
+
+Let us say we have an agent `alice` as below in which the testing functionality is provided by the plan `do_something_with_a_counter`. However, the agent is using an artifact `counter` that is not focus of our tests.
+
+In this sense, one may find a good approach bypassing `inc` external action using a mock plan which is useful to abstract complexity that is not necessary in the current context.
+
+----
++!do_something_with_a_counter
+    <-
+    !do_inc;
+    ?count(N);
+    .log(warning,"Counter state ",N);
+.
+
++!do_inc
+    <-
+    inc;
+.
+
+{ include("$jacamoJar/templates/common-cartago.asl") }
+{ include("$jacamoJar/templates/common-moise.asl") }
+----
+
+To test it, we can create a tester agent `src/test/jason/asl/test_alice.asl` which the code is as below.
+
+In this implementation, the plan `!do_inc` which is triggering the external action `inc` is being mocked.
+
+We can bypass a plan adding a mock plan on the beginning of agent's plans library. Since it has same functor and it is on the top, the agent by default will use the mock plan.
+
+----
+{ include("$jasonJar/test/jason/inc/tester_agent.asl") }
+{ include("alice.asl") }
+
+count(5).
+
+@[test]
++!test_do_something_with_a_counter
+    <-
+    ?count(N0);
+
+    !assert_equals(5,N0);
+    .add_plan({ +!do_inc :
+        count(N)
+        <-
+        -+count(N+1);
+    }, self, begin);
+
+    !do_something_with_a_counter;
+
+    ?count(N1);
+    !assert_equals(6,N1);
+.
+----
+
+=== Additional info
+
+* The default test folder `src/test/jason/asl` should only have tester agents, otherwise statistics will fail.
+* Files you want to include into your tester agents can be placed into `src/test/jason/inc`, the content of this folder is not counted into statistics.
+* Two similar assertions done in the same plan will not be counted since they would have same signatures.
 
 == The library
 
