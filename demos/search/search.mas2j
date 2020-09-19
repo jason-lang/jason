@@ -2,5 +2,6 @@ MAS search {
 
     agents:
         numbers;
+        waterjug;
 
 }
