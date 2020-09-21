@@ -4,7 +4,7 @@ import jason.asSemantics.DefaultArithFunction;
 import jason.asSemantics.TransitionSystem;
 import jason.asSyntax.NumberTerm;
 import jason.asSyntax.Term;
-import jason.stdlib.RandomSingleton;
+import jason.stdlib.set_random_seed;
 
 /**
    <p>Function: <b><code>math.random(N)</code></b>: encapsulates java Math.random;
@@ -30,10 +30,11 @@ public class Random extends DefaultArithFunction  {
 
     @Override
     public double evaluate(TransitionSystem ts, Term[] args) throws Exception {
+        java.util.Random r = set_random_seed.getAgRandomIA(ts);
         if (args.length == 1 && args[0].isNumeric()) {
-            return RandomSingleton.nextDouble() * ((NumberTerm)args[0]).solve();
+            return r.nextDouble() * ((NumberTerm)args[0]).solve();
         } else {
-            return RandomSingleton.nextDouble();
+            return r.nextDouble();
         }
     }
 

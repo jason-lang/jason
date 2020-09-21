@@ -1,5 +1,7 @@
 package jason.stdlib;
 
+import java.util.Random;
+
 import jason.asSemantics.DefaultInternalAction;
 import jason.asSemantics.TransitionSystem;
 import jason.asSemantics.Unifier;
@@ -46,11 +48,17 @@ import jason.asSyntax.Term;
 
 public class set_random_seed extends DefaultInternalAction {
 
+    public static Random getAgRandomIA(TransitionSystem ts) throws Exception {
+        random r_ia = (random)ts.getAg().getIA(".random");
+        return r_ia.getRandomGenerator();
+    }
+    
     @Override
     public Object execute(final TransitionSystem ts, final Unifier un, final Term[] args) throws Exception {
         checkArguments(args);
         Long seed = (long) ((NumberTerm)args[0]).solve();
-        RandomSingleton.setSeed(seed);
+        //RandomSingleton.setSeed(seed);
+        getAgRandomIA(ts).setSeed(seed);
         return true;
     }
 }

@@ -672,15 +672,6 @@ public class StdLibTest extends TestCase {
         assertTrue((Boolean)new jason.stdlib.puts().execute(ts, u, new Term[] { new StringTermImpl("Hello #{_26}, #{X}")}));
     }
 
-    public void testRandom() throws Exception {
-        VarTerm X = new VarTerm("X");
-        Unifier u = new Unifier();
-        new jason.stdlib.set_random_seed().execute(null, u, new Term[] { ASSyntax.parseNumber("20")});
-
-        assertTrue((Boolean)new jason.stdlib.random().execute(null, u, new Term[] { X }));
-        assertEquals("0.7320427537419555", u.get(X).toString());
-    }
-
     public void testReplace() throws Exception {
         Agent ag = new Agent();
         ag.initAg();
