@@ -85,7 +85,7 @@ public class random extends DefaultInternalAction {
     public Object execute(final TransitionSystem ts, final Unifier un, final Term[] args) throws Exception {
         checkArguments(args);
         if (args.length == 1) {
-            return un.unifies(args[0], new NumberTermImpl(RandomSingelton.nextDouble()));
+            return un.unifies(args[0], new NumberTermImpl(RandomSingleton.nextDouble()));
         } else {
             final ListTerm l;
             final int      max;
@@ -113,9 +113,9 @@ public class random extends DefaultInternalAction {
                 public Unifier next() {
                     Unifier c = un.clone();
                     if (l == null)
-                        c.unifies(args[0], new NumberTermImpl(RandomSingelton.nextDouble()));
+                        c.unifies(args[0], new NumberTermImpl(RandomSingleton.nextDouble()));
                     else
-                        c.unifies(args[1], j.get(RandomSingelton.nextInt(j.size())));
+                        c.unifies(args[1], j.get(RandomSingleton.nextInt(j.size())));
                     n++;
                     return c;
                 }

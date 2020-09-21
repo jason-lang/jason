@@ -50,7 +50,7 @@ public class set_random_seed extends DefaultInternalAction {
     public Object execute(final TransitionSystem ts, final Unifier un, final Term[] args) throws Exception {
         checkArguments(args);
         Long seed = (long) ((NumberTerm)args[0]).solve();
-        RandomSingelton.setSeed(seed);
+        RandomSingleton.setSeed(seed);
         return true;
     }
 }
