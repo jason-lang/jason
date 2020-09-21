@@ -152,7 +152,10 @@ shutdown_hook.          // shutdown after finishing or shutdown_delay(SD). Defau
         .at("now +500 ms", {+!check_launching_test_set(AGENT)});
     }
 .
-+!create_tester_agents(_,_,_). // avoid plan not found for asl that includes controller
+-!create_tester_agents(_,_,_)
+    <-
+    +fatal_error;
+.
 
 /**
  * In case of a parser error, the agent won't say it is launching_test_set

@@ -19,7 +19,6 @@ tests_passed(0).
  */
 !self_test_asserts.  // test all asserts both passed and failed conditions
 !self_test_mock_agent. // test the mock agent
-!test_does_not_terminate.
 
 /**
  * -!P fail plan to generate assert failure
