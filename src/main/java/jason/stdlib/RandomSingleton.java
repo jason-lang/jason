@@ -10,7 +10,7 @@ import java.util.Random;
  @author Timotheus Kampik
 */
 
-public class RandomSingelton {
+public class RandomSingleton {
     private static Random random = new Random();
 
     public static void setSeed(long seed) {
