@@ -16,7 +16,8 @@ endif::[]
 
 ifdef::env-github[:outfilesuffix: .adoc]
 
-== Singleton Plan
+== Concurrency
+=== Singleton Plan
 
 Some times we want that a plan has only one intention running it. For instance, when the agent wants to control the movement of a robot, it will be chaotic if two intentions with different targets are controlling the robot.
 
@@ -48,16 +49,16 @@ Prints:
 0
 ----
 
-NOTE: The annotation `atomic` could be considered for the first plan. However it will constraint too much the agent execution: no other intention will run until `+!g` finished.
+NOTE: The annotation `atomic` could be considered for the first plan. However it will constraint too much the agent execution: no other intention (even not related to `g`) will run until `+!g` finished. The reactivity of the agent is thus compromised.
 
-== "Queued" Plan
+=== "Queued" Singleton Plan
 
-As for the singleton plan, we want that only one intention is executing the plan. However, when an intention has no access to the plan, it waits in for the running intention to complete and then tries again to execute.
+As for the singleton plan, we want that only one intention is executing the plan. However, when an intention has no access to the plan, it waits for the running intention to complete and then tries again to execute.
 ----
 +!g : not .intend(g)
    <- dosomething;
       !!resume(g).     // resume other intentions waiting to execute
-                       // must be a new intention, othewise this plan will not be selected again
+                       // must be a new intention (!!), othewise this plan will not be selected again
 +!g
    <- .suspend;        // suspend this intention
       !!g.             // and try again (note that we have to use !!, otherwise this intention prevents the above plan to be selected)
@@ -102,4 +103,10 @@ Prints:
 1
 ----
 
-We can notice no interleaving among the execution of the intentions.
+NOTE: There is no interleaving among the execution of the intentions.
+
+This pattern is used in the Santa Claus example that comes with Jason.
+
+== Commitment
+
+(TBD copy from paper about commitment and the directives)
