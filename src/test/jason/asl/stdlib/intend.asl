@@ -32,21 +32,19 @@
 @[test]
 +!test_intend_avoid_concurrence
     <-
-    -+count(0);
     for ( .range(I,1,100) ) {
-        !!singleton_plan;
+        !!singleton_plan(I);
     }
     .wait(1000);
-    ?count(C);
+    .count(register(_),C);
     !assert_equals(1,C);
 .
 
-+!singleton_plan :
-    not .intend(singleton_plan)
++!singleton_plan(I) :
+    not .intend(singleton_plan(_))
     <-
     .wait(100);
-    ?count(C);
-    -+count(C+1);
+    +register(I);
     .wait(100);
 .
-+!singleton_plan.
++!singleton_plan(I).
