@@ -28,3 +28,23 @@
     .findall(D,.intend(D),L);
     .log(info,"Intentions: ",L);
 .
+
+@[test]
++!test_intend_avoid_concurrence
+    <-
+    for ( .range(I,1,100) ) {
+        !!singleton_plan(I);
+    }
+    .wait(1000);
+    .count(register(_),C);
+    !assert_equals(1,C);
+.
+
++!singleton_plan(I) :
+    not .intend(singleton_plan(_))
+    <-
+    .wait(100);
+    +register(I);
+    .wait(100);
+.
++!singleton_plan(I).

@@ -59,3 +59,26 @@
     !go(8,12);
     !assert_false(.desire(go(8,12)));
 .
+
+
+@[test]
++!test_desire_avoid_concurrence
+    <-
+    -+count(0);
+    for ( .range(I,1,100) ) {
+        if (not .desire(singleton_plan(_))) {
+            !!singleton_plan(I);
+        }
+    }
+    .wait(1000);
+    .count(register(I),C);
+    !assert_equals(1,C);
+.
+
++!singleton_plan(I)
+    <-
+    .wait(100);
+    +register(I);
+    .wait(100);
+.
++!singleton_plan(I).
