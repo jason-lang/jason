@@ -30,11 +30,13 @@ The following code avoids two or more concurrent executions of plan `g`:
 
 If the agent has two events `+!g`, when the first is handled, the agent does not intend `g` and the first plan is selected and thus the agent now intends `g` avoiding this plan to be selected again.
 
+NOTE: This pattern considers `g` as achieved if someother intention is trying it (cf. the second plan for `g`).
+
 Example:
 ----
 e.
 +!e
-   <- for ( .range(I,0,5) ) { // creates 5 concurrent intentions for g
+   <- for ( .range(I,0,5) ) { // creates 6 concurrent intentions for g
          !!g(I);
       }.
 
@@ -48,8 +50,6 @@ Prints:
 ----
 0
 ----
-
-NOTE: The annotation `atomic` could be considered for the first plan. However it will constraint too much the agent execution: no other intention (even not related to `g`) will run until `+!g` finished. The reactivity of the agent is thus compromised.
 
 === "Queued" Singleton Plan
 
@@ -67,11 +67,14 @@ As for the singleton plan, we want that only one intention is executing the plan
    <- .resume(G).
 ----
 
+NOTE: The annotation `atomic` could be considered for the first plan to achieve `g` (the plan being `@[atomic] +!g <- dosomething.`). However it may constraint too much the agent execution: no other intention (even not related to `g`) will run until `+!g` is finished. The reactivity of the agent can be compromised, specially in cases where `dosomething` takes a lot of time to execute. If `dosomething` is fast, `atomic` can be considered since it is far simple to use that this patter (this pattern adds two extra plans).
+
+
 Example:
 ----
 !e.
 +!e
-   <- for ( .range(I,0,5)) {
+   <- for ( .range(I,0,5)) { // creates 6 concurrent intentions for g
          !!g(I);
       }.
 
