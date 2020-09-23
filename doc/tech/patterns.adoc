@@ -17,6 +17,10 @@ endif::[]
 ifdef::env-github[:outfilesuffix: .adoc]
 
 == Concurrency
+
+Regarding concurrent execution in Jason, we recommend the reading of this https://github.com/jason-lang/jason/blob/develop/doc/tech/concurrency.adoc[doc].
+
+
 === Singleton Plan
 
 Some times we want that a plan has only one intention running it. For instance, when the agent wants to control the movement of a robot, it will be chaotic if two intentions with different targets are controlling the robot.
@@ -67,7 +71,7 @@ As for the singleton plan, we want that only one intention is executing the plan
    <- .resume(G).
 ----
 
-NOTE: The annotation `atomic` could be considered for the first plan to achieve `g` (the plan being `@[atomic] +!g <- dosomething.`). However it may constraint too much the agent execution: no other intention (even not related to `g`) will run until `+!g` is finished. The reactivity of the agent can be compromised, specially in cases where `dosomething` takes a lot of time to execute. If `dosomething` is fast, `atomic` can be considered since it is far simple to use that this patter (this pattern adds two extra plans).
+NOTE: The annotation `atomic` could be considered for the first plan to achieve `g` (the plan being `@[atomic] +!g <- dosomething.`). However it may constraint too much the agent execution: no other intention (even not related to `g`) will run until `+!g` is finished. The reactivity of the agent can be compromised, specially in cases where `dosomething` takes a lot of time to execute. If `dosomething` is fast, `atomic` can be considered since it is far simple to use than this patter (this pattern adds two extra plans).
 
 
 Example:
