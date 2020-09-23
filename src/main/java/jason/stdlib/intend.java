@@ -143,14 +143,14 @@ public class intend extends DefaultInternalAction {
                     }
                 }
 
-                if (intInterator.hasNext()) {
+                intIM = null;
+                while (intInterator.hasNext()) {
                     curInt = intInterator.next();
-                    if (!(considerSuspended && curInt.isSuspended()))
-                        intIM  = curInt.iterator();
-                    find();
-                    return;
-                } else {
-                    intIM = null;
+                    if (considerSuspended || !curInt.isSuspended()) {
+                        intIM = curInt.iterator();
+                        find();
+                        return;
+                    }
                 }
                 solution = null; // nothing found
             }

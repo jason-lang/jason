@@ -7,7 +7,7 @@ MAS unit_tests {
 
     agents:
         test_manager [
-            goals="create_tester_agents(\"./asl\",\"test_lists.asl\")",
+            goals="create_tester_agents(\"./asl\",\"queueplan.asl\")",
             beliefs="shutdown_delay(4)"
         ];
 
