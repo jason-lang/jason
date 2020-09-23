@@ -32,11 +32,16 @@ public class DG extends DefaultDirective implements Directive {
 
             Literal goal = Literal.parseLiteral(directive.getTerm(0).toString());
 
-            // add +!g : g <- true.
+            // add +!g : g.
             newAg.getPL()
                 .add(ASSyntax.parsePlan("+!"+goal+" : " +goal+"."))
                 .setSourceFile(outerContent.getASLSrc());
             
+            // add +!g : .intend(g).
+            newAg.getPL()
+                .add(ASSyntax.parsePlan("+!"+goal+" : .intend("+goal+")."))
+                .setSourceFile(outerContent.getASLSrc());
+
             // add ?g in the end of all inner plans
             for (Plan p: innerContent.getPL()) {
                 // only for +!g plans
