@@ -60,14 +60,19 @@
     !assert_false(.desire(go(8,12)));
 .
 
-
+/**
+ * Avoid that a plan is called concurrently
+ * This is a kind of "soft" singleton, i.e.,
+ * an alternative to a "hard" singleton_plan
+ * that can be implemented with .intend.
+ */
 @[test]
 +!test_desire_avoid_concurrence
     <-
     -+count(0);
-    for ( .range(I,1,100) ) {
-        if (not .desire(singleton_plan(_))) {
-            !!singleton_plan(I);
+    for ( .range(I,1,10) ) {
+        if (not .desire(soft_singleton_plan(_))) {
+            !!soft_singleton_plan(I);
         }
     }
     .wait(1000);
@@ -75,10 +80,9 @@
     !assert_equals(1,C);
 .
 
-+!singleton_plan(I)
++!soft_singleton_plan(I)
     <-
     .wait(100);
     +register(I);
     .wait(100);
 .
-+!singleton_plan(I).
