@@ -59,16 +59,18 @@ Prints:
 
 As for the singleton plan, we want that only one intention is executing the plan. However, when an intention has no access to the plan, it waits for the running intention to complete and then tries again to execute.
 ----
-+!g : not .intend(g)
++!g : not .intend(g)   // I do not intend g yet, so starts doing something to achieve g
    <- dosomething;
       !!resume(g).     // resume other intentions waiting to execute
-                       // must be a new intention (!!), othewise this plan will not be selected again
-+!g
-   <- .suspend;        // suspend this intention
-      !!g.             // and try again (note that we have to use !!, otherwise this intention prevents the above plan to be selected)
+                       // must be done by a new intention (!!) and be the last command in the plan,
+                       // otherwise this plan will not be selected again
+
++!g                    // a plan for g is running, suspends this tentative
+   <- .suspend;        // (when the running intention finishes, it will resume this one)
+      !!g.             // tries again (note that we have to use !!, otherwise this intention prevents the above plan to be selected)
 
 +!resume(G)
-   <- .resume(G).
+   <- .resume(G).      // resume all suspended Gs.
 ----
 
 NOTE: The annotation `atomic` could be considered for the first plan to achieve `g` (the plan being `@[atomic] +!g <- dosomething.`). However it may constraint too much the agent execution: no other intention (even not related to `g`) will run until `+!g` is finished. The reactivity of the agent can be compromised, specially in cases where `dosomething` takes a lot of time to execute. If `dosomething` is fast, `atomic` can be considered since it is far simple to use than this patter (this pattern adds two extra plans).

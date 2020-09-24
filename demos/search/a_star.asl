@@ -16,17 +16,15 @@ a_star_l( Open, GoalState, Solution, Closed) :-
     .queue.remove(Open,s(F,G,[op(Op,State)|Path])) &
     //.print("exploring ",State," to be explored ", .length(Open)) &
     State \== GoalState &
+    .set.add(Closed, State) & // do not explore State again
     .findall(
          s(NF,NG,[ op(NOp,NewState), op(Op,State)|Path]), // new paths
            ( suc(State,NewState,Cost,NOp) &
-         not .member(NewState, Closed) &
-         .set.add(Closed, NewState) &
-         NG = G + Cost & // cost to achieve NewState
-         //h(NewState,GoalState,H) &
-         //NF = H + NG // cost + heuristic for new state
-         NF = search.h(NewState,GoalState) + NG // cost + heuristic for new state
-       ),
-       Suc
+             not .member(NewState, Closed) &
+             NG = G + Cost & // cost to achieve NewState
+             NF = search.h(NewState,GoalState) + NG // cost + heuristic for new state
+           ),
+         Suc
     ) &
     //.print("     ",Suc) &
     .queue.add_all(Open, Suc) &

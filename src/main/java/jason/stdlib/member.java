@@ -120,14 +120,14 @@ public class member extends DefaultInternalAction {
         if (args[1].isList()) {
             i = ((ListTerm)args[1]).iterator();
         } else if (args[1].isSet()) {
-            if (args[0].isVar()) {
-                i = ((SetTerm)args[1]).iterator();
-            } else {
+            if (args[0].isGround()) // use contains
                 return ((SetTerm)args[1]).contains(args[0]); // fast track for sets
-            }
+            i = ((SetTerm)args[1]).iterator();
         } else if (args[1] instanceof ObjectTerm) { // case of queue
             ObjectTerm o = (ObjectTerm)args[1];
             if (o.getObject() instanceof Collection) {
+                if (args[0].isGround())
+                    return ((Collection<Term>)o.getObject()).contains(args[0]);
                 i = ((Collection<Term>)o.getObject()).iterator();
             } else {
                 i = ListTerm.EMPTY_LIST.iterator();
