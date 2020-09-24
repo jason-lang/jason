@@ -34,7 +34,7 @@ The following code avoids two or more concurrent executions of plan `g`:
 
 If the agent has two events `+!g`, when the first is handled, the agent does not intend `g` and the first plan is selected and thus the agent now intends `g` avoiding this plan to be selected again.
 
-NOTE: This pattern considers `g` as achieved if someother intention is trying it (cf. the second plan for `g`).
+NOTE: This pattern considers `g` as achieved if some other intention is trying it (cf. the second plan for `g`).
 
 Example:
 ----
@@ -120,8 +120,7 @@ The section 8.3 of the http://jason.sf.net/jBook[Jason Book] presents some usefu
 
 === Single-Minded Commitment
 
-In this pattern we want an agent that keeps trying to achieve goal `g` until it believes `g` is achieved (as a declarative goal) or that `g` is impossible. See paper "Cohen & Levesque. Intention is choice with commitment. Artificial
-Intelligence 42(3), 213–261, 1990."
+In this pattern we want an agent that keeps trying to achieve goal `g` until it believes `g` is achieved (as a declarative goal) or that `g` is impossible. See paper "Cohen & Levesque. Intention is choice with commitment. Artificial Intelligence 42(3), 213–261, 1990."
 
 Supposing that to believe in `f` implies that `g` is impossible, the pattern can be written as:
 
@@ -136,15 +135,15 @@ Supposing that to believe in `f` implies that `g` is impossible, the pattern can
    <- dosomething2;
    ?g.
 
-+!g : !g.               // no applicable plan, keep trying
--!g <- !g.              // if the above plans have failed, keep trying hopping for better conditions
-+g <- .succeed_goal(g). // stop trying g if g
-+f <- .fail_goal(g).    // stop trying g if f
++!g : !g.               // no applicable plan, keeps trying
+-!g <- !g.              // if the above plans have failed, keeps trying hopping for better conditions
++g <- .succeed_goal(g). // stops trying g if g
++f <- .fail_goal(g).    // stops trying g if f
 ----
 
 NOTE: The plans to achieve `g` end with `?g`, so they only succeed if after doing something to acheive `g` the agent believes `g` (for instance, it perceives `g`).
 
-In Jason, a directive is available to simplify the use this pattern:
+In Jason, a directive is available to simplify the use of this pattern:
 ----
 { begin smc(g,f) }
 +!g : somecontext1 <- dosomething1.

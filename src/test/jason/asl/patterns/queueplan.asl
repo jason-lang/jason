@@ -3,16 +3,15 @@
 @[test]
 +!test_pattern_queue
    <- !e;
-      //.wait(500);
-      //!assert_equals( 6, .count(run(_)))
+      .wait(500);
+      !assert_equals( 6, .count(run(_)))
    .
 
 // the pattern
 
-!e.
 +!e
    <- for ( .range(I,0,5)) {
-         .print(I);
+         //.print(I);
          !!g(I);
       }.
 
