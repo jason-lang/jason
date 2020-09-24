@@ -1,0 +1,169 @@
+= Some Programming Patterns in Jason
+:toc: right
+:source-highlighter: coderay
+:coderay-linenums-mode: inline
+:icons: font
+:prewrap!:
+
+ifdef::env-github[]
+:tip-caption: :bulb:
+:note-caption: :information_source:
+:important-caption: :heavy_exclamation_mark:
+:caution-caption: :fire:
+:warning-caption: :warning:
+endif::[]
+
+
+ifdef::env-github[:outfilesuffix: .adoc]
+
+== Concurrency
+
+Regarding concurrent execution in Jason, we recommend the reading of this https://github.com/jason-lang/jason/blob/develop/doc/tech/concurrency.adoc[doc].
+
+
+=== Singleton Plan
+
+Some times we want that a plan has only one intention running it. For instance, when the agent wants to control the movement of a robot, it will be chaotic if two intentions with different targets are controlling the robot.
+
+The following code avoids two or more concurrent executions of plan `g`:
+
+----
++!g : not .intend(g) <- dosomething.
++!g. // do nothing for g
+----
+
+If the agent has two events `+!g`, when the first is handled, the agent does not intend `g` and the first plan is selected and thus the agent now intends `g` avoiding this plan to be selected again.
+
+NOTE: This pattern considers `g` as achieved if some other intention is trying it (cf. the second plan for `g`).
+
+Example:
+----
+e.
++!e
+   <- for ( .range(I,0,5) ) { // creates 6 concurrent intentions for g
+         !!g(I);
+      }.
+
++!g(I) : not .intend(g(_))
+   <- .wait(200);
+      .print(I).
++!g(I).
+----
+
+Prints:
+----
+0
+----
+
+=== "Queued" Singleton Plan
+
+As for the singleton plan, we want that only one intention is executing the plan. However, when an intention has no access to the plan, it waits for the running intention to complete and then tries again to execute.
+----
++!g : not .intend(g)
+   <- dosomething;
+      !!resume(g).     // resume other intentions waiting to execute
+                       // must be a new intention (!!), othewise this plan will not be selected again
++!g
+   <- .suspend;        // suspend this intention
+      !!g.             // and try again (note that we have to use !!, otherwise this intention prevents the above plan to be selected)
+
++!resume(G)
+   <- .resume(G).
+----
+
+NOTE: The annotation `atomic` could be considered for the first plan to achieve `g` (the plan being `@[atomic] +!g <- dosomething.`). However it may constraint too much the agent execution: no other intention (even not related to `g`) will run until `+!g` is finished. The reactivity of the agent can be compromised, specially in cases where `dosomething` takes a lot of time to execute. If `dosomething` is fast, `atomic` can be considered since it is far simple to use than this patter (this pattern adds two extra plans).
+
+
+Example:
+----
+!e.
++!e
+   <- for ( .range(I,0,5)) { // creates 6 concurrent intentions for g
+         !!g(I);
+      }.
+
++!g(I) : not .intend(g(_))
+   <- .print(I);
+      .wait(50);
+      .print(I);
+      !!resume(g(_)).
++!g(I)
+   <- .suspend;
+      !!g(I).
++!resume(G)
+   <- .resume(G).
+----
+
+Prints:
+----
+0
+0
+4
+4
+5
+5
+2
+2
+3
+3
+1
+1
+----
+
+NOTE: There is no interleaving among the execution of the intentions.
+
+This pattern is used in the Santa Claus example that comes with Jason.
+
+== Commitment
+
+The section 8.3 of the http://jason.sf.net/jBook[Jason Book] presents some useful patterns to configure the agent commitment towards some goal. Two of these patterns are included here.
+
+=== Single-Minded Commitment
+
+In this pattern we want an agent that keeps trying to achieve goal `g` until it believes `g` is achieved (as a declarative goal) or that `g` is impossible. See paper "Cohen & Levesque. Intention is choice with commitment. Artificial Intelligence 42(3), 213–261, 1990."
+
+Supposing that to believe in `f` implies that `g` is impossible, the pattern can be written as:
+
+----
++!g : g.                // if I already believe g, there is nothing to do
++!g : .intend(g).       // if there is an intention to g already, do nothing
+
++!g : somecontext1      // a possible plan to achieve g
+   <- dosomething1;
+   ?g.
++!g : somecontext2      // another possibility
+   <- dosomething2;
+   ?g.
+
++!g : !g.               // no applicable plan, keeps trying
+-!g <- !g.              // if the above plans have failed, keeps trying hopping for better conditions
++g <- .succeed_goal(g). // stops trying g if g
++f <- .fail_goal(g).    // stops trying g if f
+----
+
+NOTE: The plans to achieve `g` end with `?g`, so they only succeed if after doing something to acheive `g` the agent believes `g` (for instance, it perceives `g`).
+
+In Jason, a directive is available to simplify the use of this pattern:
+----
+{ begin smc(g,f) }
++!g : somecontext1 <- dosomething1.
++!g : somecontext2 <- dosomething2.
+{ end }
+----
+
+=== Maintenance Goal
+
+In the case of a maintenance goal, the agent should keep `g` always true. Whenever it realises that `g` is no longer in its belief base, it attempts to bring about `g` again by having the respective (declarative) achievement goal.
+
+----
+-g <- !g.
+
+// the code to achieve g follows
+
+{ begin bc(g) }
++!g : somecontext1 <- dosomething1.
++!g : somecontext2 <- dosomething2.
+{ end }
+----
+
+NOTE: BC (Blindly Commitment) is a pattern similar to SMC, without the failure condition `f`.

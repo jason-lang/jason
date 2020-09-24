@@ -52,7 +52,7 @@ The plan
 
 creates a new intention for `gb` and then executes the action `a1`. `a1` is executed after the creation of the intention for `gb` and not after the achievement of `gb` (as it would be the case if `!` was used instead of `!!`). The intention for `gb` is a new intention and not the same as the intention for `ga`.
 
-=== Concurrent plans
+=== Concurrent Operators
 
 Besides the usual sequence operator `;`,  plan bodies can also use fork and join operators for concurrent execution of plan bodies: `|&|` and `|||`. The first is called __fork-join-and__ and the second __fork-join-xor__.
 
@@ -113,13 +113,13 @@ When a *.succeed_goal(gb)* is executed:
 If some intention cannot interleave its execution with another, the *atomic* annotation can be used in the label of plans:
 
 ----
-@alabel[atomic] // no other intention will run if an intention based on this plan starts running
+@alabel[atomic] // no other intention will run if an intention selects this plan
 +!update(X)
    <- -vl(T);   // gets the current value of belief vl
       +vl(T+X). // updates its value
 ----
 
-If an atomic plan runs, all its subgoals will be also atomic.
+If an atomic plan runs, all its subgoals will be also atomic. More documentation regarding this matter can be found https://github.com/jason-lang/jason/blob/develop/doc/tech/patterns.adoc[here].
 
 // add new support with conflict
 
