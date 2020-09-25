@@ -29,10 +29,20 @@
     .log(info,"Intentions: ",L);
 .
 
+/**
+ * Avoid that a plan is called concurrently
+ * This is a kind of "hard" singleton, since
+ * it is checked by the context of the singleton plan.
+ * An alternativa +!sigleton_plan(I) is necessary
+ * to catch concurrent occurrences.
+ *
+ * There is an alternative to this "hard" singleton_plan
+ * that can be implemented with .desire.
+ */
 @[test]
 +!test_intend_avoid_concurrence
     <-
-    for ( .range(I,1,100) ) {
+    for ( .range(I,1,10) ) {
         !!singleton_plan(I);
     }
     .wait(1000);
@@ -48,3 +58,28 @@
     .wait(100);
 .
 +!singleton_plan(I).
+
+@[test]
++!test_intend_avoid_concurrence_complex_context
+    <-
+    for ( .range(I,1,100) ) {
+        +registered_belief( math.random(10) );
+    }
+    for ( .range(I,1,10) ) {
+        !!singleton_plan_complex_context(I);
+    }
+    .wait(1000);
+    .count(register(_),C);
+    !assert_equals(1,C);
+.
+
++!singleton_plan_complex_context(I) :
+    .findall(registered_belief(R),registered_belief(R),LR ) &
+    .sort( LR,SR ) &
+    not .intend(singleton_plan_complex_context(_))
+    <-
+    .wait(100);
+    +register(I);
+    .wait(100);
+.
++!singleton_plan_complex_context(I).
