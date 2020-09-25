@@ -49,6 +49,7 @@ import jason.asSyntax.Term;
 
   <p>Notes:<ul>
 
+  <li>The internal action .intention(ID,State,Stack,current) can be used in place of .current_intention. </li>
   <li>In case this internal action is used in the <i>body</i> of a plan, the intention that
       are executing the plan is used.</li>
   <li>In case this internal action is used in the <i>context</i> of a plan, the intention that
@@ -57,6 +58,7 @@ import jason.asSyntax.Term;
 
   @see jason.stdlib.intend
   @see jason.stdlib.desire
+  @see jason.stdlib.intention
   @see jason.stdlib.drop_all_desires
   @see jason.stdlib.drop_all_events
   @see jason.stdlib.drop_all_intentions
@@ -83,6 +85,7 @@ import jason.asSyntax.Term;
         seeAlso= {
                 "jason.stdlib.intend",
                 "jason.stdlib.desire",
+                "jason.stdlib.intention",
                 "jason.stdlib.drop_all_desires",
                 "jason.stdlib.drop_all_events",
                 "jason.stdlib.drop_all_intentions",

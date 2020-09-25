@@ -5,6 +5,7 @@ import jason.asSemantics.InternalAction;
 import jason.asSemantics.TransitionSystem;
 import jason.asSemantics.Unifier;
 import jason.asSyntax.ListTerm;
+import jason.asSyntax.NumberTerm;
 import jason.asSyntax.StringTerm;
 import jason.asSyntax.Term;
 
@@ -71,6 +72,11 @@ public class empty extends DefaultInternalAction {
             StringTerm st = (StringTerm) l1;
             return st.getString().isEmpty();
         }
+
+        NumberTerm s = length.getSize(l1);
+        if (s != null && ((int)s.solve()) == 0)
+            return true;
+
         return false;
     }
 }

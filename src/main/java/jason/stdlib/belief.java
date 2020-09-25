@@ -10,7 +10,7 @@ import jason.asSyntax.Rule;
 import jason.asSyntax.Term;
 
 /**
-<p>Internal action: <b><code>.belief</code></b>.
+<p>Internal action: <b><code>.belief(Bel)</code></b>.
 
 <p>Description: gets beliefs in BB (excluding rules or inferred beliefs).
 Different from ordinary belief query that uses logical consequence to be verified, this internal action considers only the set of beliefs in the BB.

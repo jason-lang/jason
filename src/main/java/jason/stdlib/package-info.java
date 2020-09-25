@@ -8,21 +8,20 @@ Internal actions of Jason.
   <li>{@link jason.stdlib.drop_desire drop_desire}: remove one agent's desire.</li>
   <li>{@link jason.stdlib.drop_all_desires drop_all_desires}: remove agent's desires.</li>
 
-
   <li>{@link jason.stdlib.intend intend}: check agent's intentions.</li>
   <li>{@link jason.stdlib.drop_intention drop_intention}: remove one agent's intention.</li>
-  <li>{@link jason.stdlib.drop_all_intentions drop_all_intentions}: remove agent's intentions.</li>
-  <li>{@link jason.stdlib.intention current_intention}: get details description of the state of intentions.</li>
-
-  <li>{@link jason.stdlib.drop_event drop_event}: remove one event.</li>
-  <li>{@link jason.stdlib.drop_all_events drop_all_events}: remove events in the interpreter.</li>
+  <li>{@link jason.stdlib.drop_all_intentions drop_all_intentions}: remove all agent's intentions.</li>
+  <li>{@link jason.stdlib.intention intention}: get details of the state of Jason intentions.</li>
 
   <li>{@link jason.stdlib.succeed_goal succeed_goal}: abort some goal with success.</li>
   <li>{@link jason.stdlib.fail_goal fail_goal}: abort some goal with failure.</li>
 
+  <li>{@link jason.stdlib.drop_event drop_event}: remove one event.</li>
+  <li>{@link jason.stdlib.drop_all_events drop_all_events}: remove events in the interpreter.</li>
+
   <li>{@link jason.stdlib.suspend suspend}: suspend intentions.</li>
-  <li>{@link jason.stdlib.suspended suspended}: check agent's suspended goals.</li>
   <li>{@link jason.stdlib.resume resume}: resume suspended intentions.</li>
+  <li>{@link jason.stdlib.suspended suspended}: check agent's suspended goals.</li>
 </ul>
 
 <h2>Belief base</h2>
@@ -124,6 +123,7 @@ Internal actions of Jason.
   <li>{@link jason.stdlib.ground ground}: check whether an argument is ground.</li>
   <li>{@link jason.stdlib.number number}: check whether an argument is a number (1, 2.3).</li>
   <li>{@link jason.stdlib.string string}: check whether an argument is a string ("s").</li>
+  <li>{@link jason.stdlib.type type}: gets the type of a term.</li>
 <!--  <li>{@link jason.stdlib.add_annot add_annot}: add an annotation in --
   --  a literal.</li> -->
   <li>{@link jason.stdlib.add_nested_source add_nested_source}: add a source in a literal.</li>
