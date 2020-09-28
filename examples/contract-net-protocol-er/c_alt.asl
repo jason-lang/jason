@@ -43,11 +43,10 @@ all_proposals_received(CNPId, NP)                // NP: number of participants
        <- .print("CNP ",Id," with no offer!").
 
     +!result(LO,WAg)
-       <- for( .member( offer(_,Ag), LO) ) {
-             if (Ag == WAg) {
-               .send(Ag,tell,accept_proposal(Id));
-             } else {
-               .send(Ag,tell,reject_proposal(Id));
-             }
+       <- for( .member( offer(_,WAg), LO) ) {
+             .send(WAg,tell,accept_proposal(Id));
+          }
+          for( .member( offer(_,Ag), LO) & Ag \== WAg) {
+             .send(Ag,tell,reject_proposal(Id));
           }.
 }

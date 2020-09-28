@@ -16,7 +16,7 @@ apply plugin: 'maven'
 apply plugin: 'maven-publish'
 apply plugin: 'signing'
 
-version '2.6'
+version '3.0-SNAPSHOT'
 group   'org.jason'
 
 compileJava {

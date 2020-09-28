@@ -24,6 +24,6 @@ price(_Service,X) :- .random(R) & X = (10*R)+100.
         .done.
 
    +!do
-       <- .print("Doing my task.....",Task);
-          .wait(3000).
+     <- .print("Doing my task.....",Task);
+        .wait(3000).
 }

@@ -331,10 +331,9 @@ Plan plan() :         { Token k = null;
                         Object GC = null;
                         PlanBody B = null;
                         List sps = null; Plan sp;
-                        int start = -1, end = -1;}
-                        // TODO: consider
-                        // int start = -1, end;
-                        // ListTerm annots = null;
+                        int start = -1, end = -1;
+                        ListTerm annots = null;
+                      }
 {
     [ k = <TK_LABEL_AT>
     	( L2=literal()    // use literal to allow namespace

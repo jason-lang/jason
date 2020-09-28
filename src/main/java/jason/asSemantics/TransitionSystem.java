@@ -423,15 +423,22 @@ public class TransitionSystem implements Serializable {
                 logger.fine("Selected event "+C.SE);
             if (C.SE != null) {
 
-                // update events (+ and -) are copied for all intentions (new JasonER)
+                // update (external) events (+ and -) are copied for all intentions interested on them (new JasonER)
                 // possibly creating branches for these intentions
+                // an intention is interested in the event if some of its IM has sub-plans for it.
+                //
+                // pseudo code:
+                //     for all intentions i interested in the external event
+                //         create a clone intention of i to handle the event
+                //
                 if (C.SE.isExternal() && C.SE.getTrigger().isUpdate()) {
                     //logger.info("Selected event "+C.SE.getTrigger()+  C.SE.isExternal());
                     Iterator<Intention> ii = C.getAllIntentions();
                     while (ii.hasNext()) {
                         Intention i = ii.next();
-                        // if i has sub plans (so potentially interested in external events)
                         //logger.info("-- "+i.getId()+" "+i.hasIntestedInUpdateEvents()+" "+ (C.SE.getIntention() != null ? C.SE.getIntention().getId() : " no int "));
+
+                        // if intention i has sub plans (so potentially interested in external events)
                         if (i.hasIntestedInUpdateEvents()) {
                             // consider all goals in the intention stack that have sub-plans
                             outerloop:
@@ -481,7 +488,7 @@ public class TransitionSystem implements Serializable {
                 else
                     stepDeliberate = State.FindOp;*/
 
-                stepDeliberate = State.FindOp; // TODO: JasonER does not support yet relplans custom
+                stepDeliberate = State.FindOp; // TODO: JasonER does not support custom selectOption yet (TBD)
             }
         } else {
             // Rule SelEv2
@@ -490,7 +497,7 @@ public class TransitionSystem implements Serializable {
         }
     }
 
-    // used to handle goal condition (new in JasonER)
+    // internal action used to handle goal condition (new in JasonER)
     private succeed_goal scia = new succeed_goal();
     int nbOfGoalConditions = 0;
     private IMCondition  imcondSat = new IMCondition() {
@@ -501,7 +508,7 @@ public class TransitionSystem implements Serializable {
             return null;
         }
         public boolean test(IntendedMeans im, Unifier u) {
-            if (im.getPlan().hasGoalCondition() && !im.getPlan().getGoalCondition().equals(Literal.LFalse)) { // no need to test "false"
+            if (im.getPlan().hasGoalCondition() && !im.getPlan().getGoalCondition().equals(Literal.LFalse)) { // no need to test goal condition = "false"
                 nbOfGoalConditions++;
             }
             return im.isSatisfied(getAg());
@@ -1512,9 +1519,6 @@ public class TransitionSystem implements Serializable {
                         }
                         if (drop) {
                             try {
-                              // TODO: verify
-                              // FailWithDeadline ia = new FailWithDeadline(intention, evt.getTrigger());
-                              //ia.drop(TransitionSystem.this, body, new Unifier());
                                 new fail_goal() {
                                     protected void addAnnotsToFailEvent(Event failEvent) {
                                         failEvent.getTrigger().getLiteral().addAnnots(JasonException.createBasicErrorAnnots("deadline_reached", ""));
@@ -1527,58 +1531,6 @@ public class TransitionSystem implements Serializable {
                 });
                 getAgArch().wakeUpSense();
         }, deadline, TimeUnit.MILLISECONDS);
-    }
-
-    class FailWithDeadline extends fail_goal {
-        private static final long serialVersionUID = 1L;
-
-        Intention intToDrop;
-        Trigger   te;
-
-        public FailWithDeadline(Intention i, Trigger t) {
-            intToDrop = i;
-            te        = t;
-        }
-
-        /* returns: >0 the intention was changed
-         *           1 = intention must continue running
-         *           2 = fail event was generated and added in C.E
-         *           3 = simply removed without event
-         */
-        @Override
-        public int dropIntention(Intention i, IMCondition c, TransitionSystem ts, Unifier un) throws JasonException {
-            if (i != null) {
-                // only consider dropping if the intention is the one that created the deadline goal
-                if (intToDrop == null) {
-                    if (te != i.getBottom().getTrigger()) { // no intention, then consider the bottom trigger
-                        return 0;
-                    }
-                } else if (!intToDrop.equals(i)) {
-                    return 0;
-                }
-
-                IntendedMeans im = i.dropGoal(c, un);
-                if (im != null) {
-                    // notify listener
-                    if (ts.hasGoalListener())
-                        for (GoalListener gl: ts.getGoalListeners())
-                            gl.goalFailed(im.getTrigger());
-
-                    // generate failure event
-                    Event failEvent = ts.findEventForFailure(i, im.getTrigger()); // find fail event for the goal just dropped
-                    if (failEvent != null) {
-                        failEvent.getTrigger().getLiteral().addAnnots(JasonException.createBasicErrorAnnots("deadline_reached", ""));
-                        ts.getC().addEvent(failEvent);
-                        ts.getLogger().fine("'hard_deadline("+im.getTrigger()+")' is generating a goal deletion event: " + failEvent.getTrigger());
-                        return 2;
-                    } else { // i is finished or without failure plan
-                        ts.getLogger().fine("'hard_deadline("+im.getTrigger()+")' is removing the intention without event:\n" + i);
-                        return 3;
-                    }
-                }
-            }
-            return 0;
-        }
     }
 
     public boolean canSleep() {
