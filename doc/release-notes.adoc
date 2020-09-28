@@ -3,7 +3,14 @@
 
 ifdef::env-github[:outfilesuffix: .adoc]
 
-== version 2.6
+== version 3.0
+
+- This version major contrubution is the inclusion of Jason(ER), see papers https://link.springer.com/chapter/10.1007%2F978-3-030-25693-7_3[AgentSpeak(ER): Enhanced Encapsulation in Agent Plans] and http://lamas20.ipipan.waw.pl/assets/proceedings/paper-12.pdf[Encapsulating Reactive Behaviour in Goal-based Plans for Programming BDI Agents].
+  * improved encapsulation (sub-plans)
+  * goal condition (to be dropped)
+  * see examples/contract-net-protocol-er for an example
+
+== version 2.6  (2020-09-28)
 
 - the functor of plan labels can be omitted, as in `@[atomic] +!g <- a`. In this case, as usual, a new unique label functor is defined by the interpreter.
 - new syntax for list tail: `[|T]` (note that we have no term before `|`). It unifies with any list (even empty) and thus it is conceptually equivalent to `T`. It is useful to get the list of all annotations of some belief: `?b(X)[|AllAnnots]`.
