@@ -207,7 +207,7 @@ boolean agent(Agent a) throws jason.JasonException :
                                 Literal g;
                                 Plan    p;
                                 curAg = a;
-                                if (a != null && a.getASLSrc() != null) asSource = a.getASLSrc();
+                                //if (a != null && a.getASLSrc() != null) asSource = a.getASLSrc();
                                 boolean endDir = false;
                               }
 {
