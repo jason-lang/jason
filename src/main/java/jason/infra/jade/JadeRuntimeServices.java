@@ -41,7 +41,7 @@ public class JadeRuntimeServices implements RuntimeServices {
     public String getNewAgentName(String baseName) {
         return baseName;
     }
-    
+
     @Override
     public boolean isRunning() {
         return cc != null;

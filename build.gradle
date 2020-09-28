@@ -16,17 +16,20 @@ apply plugin: 'maven'
 apply plugin: 'maven-publish'
 apply plugin: 'signing'
 
-version '3.0-SNAPSHOT'
-group   'org.jason-lang'
+version '2.6'
+group   'org.jason'
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+compileJava {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
 
 
 repositories {
     mavenCentral()
 
-    maven { url "http://jacamo.sourceforge.net/maven2"  }
+    //maven { url "https://raw.github.com/jacamo-lang/mvn-repo/master" }
+    //maven { url "http://jacamo.sourceforge.net/maven2"  }
     //maven { url "http://jade.tilab.com/maven"  //}
     flatDir {
        dirs 'jedit', 'demos/persistent-belief-base/lib'
@@ -89,7 +92,10 @@ jar {
                    'Specification-Version': project.version,
                    'Implementation-Version': new Date().toString()
     }
-
+    from('src') {
+        include '/test/jason/inc/**/*.asl'
+        include '/test/jason/**/*.mas2j'
+    }
     /*doFirst {
         Properties props = new Properties()
         props.put('version', '')
@@ -138,7 +144,6 @@ clean {
     delete fileTree('.')  { include '**/APDescription.txt'  }
     delete fileTree('.')  { include '**/MTPs-Main-Container.txt'  }
 
-    delete fileTree('.')  { include '**/bookstore.*'  }
     delete fileTree('examples')  { include '**/bin/**'  }
     delete fileTree('examples')  { include '**/*.log'  }
     delete fileTree('demos')  { include '**/bin/**'  }
@@ -433,8 +438,8 @@ task plugin(type: Jar, dependsOn: 'jar') {
 // transfer local maven artifact to our maven2 repository at sourceforge
 task publishMavenSF(dependsOn: [ 'build', 'publishToMavenLocal']) {
   doLast {
-    def wdir = System.getProperty("user.home")+'/.m2/repository/org/jason-lang/jason'
-    def tdir = System.getenv('USERSF')+',jacamo@web.sf.net:/home/project-web/jacamo/htdocs/maven2/org/jason-lang/jason'
+    def wdir = System.getProperty("user.home")+'/.m2/repository/org/jason/jason'
+    def tdir = System.getenv('USERSF')+',jacamo@web.sf.net:/home/project-web/jacamo/htdocs/maven2/org/jason/jason'
     exec {
         commandLine 'scp', '-r', project.version, tdir
         workingDir wdir
@@ -449,6 +454,34 @@ task publishMavenSF(dependsOn: [ 'build', 'publishToMavenLocal']) {
     }
   }
 }
+
+task publishMavenGitHub(dependsOn: [ 'build', 'publishToMavenLocal']) {
+  doLast {
+    def wdir = System.getProperty("user.home")+'/.m2/repository/org/jason/jason'
+    def rdir = '../jacamo-mvn-repo'
+    exec {
+        commandLine 'git', 'pull'
+        workingDir rdir
+    }
+    copy {
+        from wdir
+        into rdir + '/org/jason/jason'
+    }
+    exec {
+        commandLine 'git', 'add', '*'
+        workingDir rdir
+    }
+    exec {
+        commandLine 'git', 'commit', '-a', '-m', 'new version of jason '+project.version
+        workingDir rdir
+    }
+    exec {
+        commandLine 'git', 'push'
+        workingDir rdir
+    }
+  }
+}
+
 
 // Builds the distribution, documentation and a new release
 task doc(dependsOn: [ 'jjdoc', 'javadoc', 'renderAsciiDocs']) {
@@ -518,3 +551,75 @@ task zipRel(type: Zip, dependsOn: copyRel) {
     from 'build/jason-'+project.version
     baseName 'jason'
 }
+
+/**
+ * Gradle task to execute unit tests for Jason agents
+ * To run this script in a virtual machine to simulate a CI environment type:
+ * $ docker volume create --name gradle-cache
+ * $ docker run -ti --rm -u gradle -v gradle-cache:/home/gradle/.gradle -v "$PWD":/home/gradle/project -w /home/gradle/project -p 8000:8000 gradle:6.3.0-jdk11 bash -c "./gradlew config test -i"
+ */
+task testJason(dependsOn: 'jar') {
+    description 'runs Jason unit tests: tests.mas2j'
+    def errorOnTests = false
+    outputs.upToDateWhen { false } // disable cache
+
+    doFirst {
+        try {
+            javaexec {
+                main = 'jason.infra.centralised.RunCentralisedMAS'
+                if (gradle.startParameter.logLevel.toString().equals("DEBUG")) {
+                    args = ['src/test/jason/unit_tests.mas2j', '--log-conf', 'src/main/resources/templates/console-debug-logging.properties']
+                } else if (gradle.startParameter.logLevel.toString().equals("INFO")) {
+                    args = ['src/test/jason/unit_tests.mas2j', '--log-conf', 'src/main/resources/templates/console-info-logging.properties']
+                } else {
+                    args = ['src/test/jason/unit_tests.mas2j', '--log-conf', 'src/main/resources/templates/console-lifecycle-logging.properties']
+                }
+                classpath sourceSets.main.runtimeClasspath
+                sourceSets.test.java.srcDirs += ['src/test/jason/jia']
+
+                errorOutput = new ByteArrayOutputStream()
+                standardOutput = new ByteArrayOutputStream()
+
+                ext.stdout = {
+                    return standardOutput.toString()
+                }
+                ext.errout = {
+                    return errorOutput.toString()
+                }
+            }
+        } catch (Exception e) {
+            errorOnTests = true
+        }
+    }
+
+    doLast {
+        def styler = 'black red green yellow blue magenta cyan white'
+            .split().toList().withIndex(30)
+            .collectEntries { key, val -> [(key) : { "\033[${val}m${it}\033[0m" }] }
+
+        def std = stdout()
+        std.splitEachLine('\n') { String line ->
+            line = line.replace("TESTING","${styler['yellow']('TESTING')}")
+            line = line.replace("PASSED","${styler['green']('PASSED')}")
+            line = line.replace("FAILED","${styler['red']('FAILED')}")
+            line = line.replace("TODO","${styler['magenta']('TODO')}")
+            line = line.replace("LAUNCHING","${styler['blue']('LAUNCHING')}")
+            println line
+        }
+
+        def err = errout()
+        err.splitEachLine('\n') { String line ->
+            line = line.replace("TESTING","${styler['yellow']('TESTING')}")
+            line = line.replace("PASSED","${styler['green']('PASSED')}")
+            line = line.replace("FAILED","${styler['red']('FAILED')}")
+            line = line.replace("TODO","${styler['magenta']('TODO')}")
+            line = line.replace("LAUNCHING","${styler['blue']('LAUNCHING')}")
+            println line
+        }
+
+        if (errorOnTests) {
+            throw new GradleException('Jason unit tests: ERROR!')
+        }
+    }
+}
+tasks.test.finalizedBy testJason

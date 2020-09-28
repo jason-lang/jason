@@ -194,22 +194,22 @@ public class wait extends DefaultInternalAction {
                 }, timeout, TimeUnit.MILLISECONDS);
             }
         }
-        
+
         private void writeObject(ObjectOutputStream outputStream) throws IOException, ClassNotFoundException {
             timeout = timeout - (System.currentTimeMillis() - startTime);
             //System.out.println("new timeout = "+timeout);
-            outputStream.defaultWriteObject();          
+            outputStream.defaultWriteObject();
         }
         private void readObject(ObjectInputStream inputStream) throws IOException, ClassNotFoundException {
             inputStream.defaultReadObject();
-            
+
             // add timeout again
             if (timeout >= 0) {
                 Agent.getScheduler().schedule(() -> {
                     resume(true);
                 }, timeout, TimeUnit.MILLISECONDS);
             }
-        }   
+        }
 
 
         void resume(final boolean stopByTimeout) {

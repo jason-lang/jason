@@ -20,7 +20,7 @@ public class put extends DefaultInternalAction {
 
     protected MapTerm getMap(Unifier un, Term[] args) {
         if (args[0].isMap()) {
-            return (MapTerm)args[0];            
+            return (MapTerm)args[0];
         } else if (args[0].isVar()) {
             MapTerm s = new MapTermImpl();
             un.unifies(args[0], s);
@@ -28,7 +28,7 @@ public class put extends DefaultInternalAction {
         }
         return null;
     }
-    
+
     @Override
     public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {
         getMap(un,args).put(args[1], args[2]);

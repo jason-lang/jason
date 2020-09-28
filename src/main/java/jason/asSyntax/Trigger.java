@@ -31,7 +31,7 @@ import org.w3c.dom.Element;
 public class Trigger extends Structure implements Cloneable {
 
     private static final long serialVersionUID = 1L;
-    
+
     private static Logger logger = Logger.getLogger(Trigger.class.getName());
 
     public enum TEOperator {

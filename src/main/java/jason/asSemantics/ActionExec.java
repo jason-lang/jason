@@ -13,7 +13,7 @@ import org.w3c.dom.Element;
 public class ActionExec implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    
+
     private Literal   action;
     private Intention intention;
     private boolean   result;

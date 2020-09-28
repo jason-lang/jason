@@ -12,7 +12,7 @@ import java.util.logging.Logger;
 public class Settings implements Serializable {
 
     private static final long serialVersionUID = -1428556037435207789L;
-    
+
     public static final byte      ODiscard        = 1;
     public static final byte      ORequeue        = 2;
     public static final byte      ORetrieve       = 3;

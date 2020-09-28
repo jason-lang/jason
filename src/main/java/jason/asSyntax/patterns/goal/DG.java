@@ -36,7 +36,7 @@ public class DG extends DefaultDirective implements Directive {
             newAg.getPL()
                 .add(ASSyntax.parsePlan("+!"+goal+" : " +goal+"."))
                 .setSourceFile(outerContent.getASLSrc());
-            
+
             // add +!g : .intend(g).
             newAg.getPL()
                 .add(ASSyntax.parsePlan("+!"+goal+" : .intend("+goal+")."))

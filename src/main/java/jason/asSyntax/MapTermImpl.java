@@ -33,12 +33,12 @@ public class MapTermImpl extends DefaultTerm implements MapTerm {
     @Override
     public MapTerm clone() {
         MapTermImpl t = new MapTermImpl();
-        for (Term k: this.map.keySet()) 
+        for (Term k: this.map.keySet())
             t.map.put(k.clone(), map.get(k).clone());
         t.hashCodeCache = this.hashCodeCache;
         return t;
     }
-    
+
     /** make a hard copy of the terms */
     @Override
     public MapTerm capply(Unifier u) {
@@ -80,7 +80,7 @@ public class MapTermImpl extends DefaultTerm implements MapTerm {
     public Term get(Term k) {
         return map.get(k);
     }
-    
+
     @Override
     public void put(Term k, Term v) {
         map.put(k,v);
@@ -90,22 +90,22 @@ public class MapTermImpl extends DefaultTerm implements MapTerm {
     public Term remove(Term k) {
         return map.remove(k);
     }
-    
+
     @Override
     public Set<Term> keys() {
-        return map.keySet(); 
+        return map.keySet();
     }
-    
+
     @Override
     public Collection<Term> values() {
         return map.values();
     }
-    
+
     @Override
     public void clear() {
-        map.clear();        
+        map.clear();
     }
-    
+
 
     public String toString() {
         StringBuilder s = new StringBuilder("{");
@@ -136,7 +136,7 @@ public class MapTermImpl extends DefaultTerm implements MapTerm {
         }
         return u;
     }
-    
+
     @Override
     public String getAsJSON(String identation) {
         StringBuilder json = new StringBuilder(identation+"{\n");

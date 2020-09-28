@@ -19,8 +19,8 @@ public class get extends put {
     public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {
         Term v = getMap(un,args).get(args[1]);
         if (v == null) {
-            if (args.length == 4) 
-                return un.unifies(args[2], args[3]);                
+            if (args.length == 4)
+                return un.unifies(args[2], args[3]);
             else
                 return false;
         } else {

@@ -35,7 +35,7 @@ public class EBDG extends DefaultDirective implements Directive {
 
             Literal goal = Literal.parseLiteral(directive.getTerm(0).toString());
             String sourceNewPlans = outerContent.getASLSrc();
-            
+
             // add +!g : g <- true.
             newAg.getPL()
                 .add(ASSyntax.parsePlan("+!"+goal+" : " +goal+"."))

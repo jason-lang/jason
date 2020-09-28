@@ -710,7 +710,7 @@ public class TransitionSystem implements Serializable {
 
                     C.SE.intention.pop(); // remove the top IM
 
-                    IntendedMeans imBase = C.SE.intention.peek(); // base = where the new IM will be place on top of
+                    IntendedMeans imBase = C.SE.intention.peek(); // base = where the new IM will be placed on top of
                     if (imBase != null && imBase.renamedVars != null) {
                         // move top relevant values into the base (relevant = renamed vars in base)
 
@@ -1502,10 +1502,8 @@ public class TransitionSystem implements Serializable {
             e1.printStackTrace();
         }
 
-        Agent.getScheduler().schedule(new Runnable() {
-            public void run() {
-                runAtBeginOfNextCycle(new Runnable() {
-                    public void run() {
+        Agent.getScheduler().schedule(() -> {
+                runAtBeginOfNextCycle(() -> {
                         boolean drop = false;
                         if (intention == null) { // deadline in !!g, test if the agent still desires it
                             drop = desire.allDesires(C, body, null, new Unifier()).hasNext();
@@ -1526,10 +1524,8 @@ public class TransitionSystem implements Serializable {
                                 e.printStackTrace();
                             }
                         }
-                    }
                 });
                 getAgArch().wakeUpSense();
-            }
         }, deadline, TimeUnit.MILLISECONDS);
     }
 
@@ -1835,7 +1831,10 @@ public class TransitionSystem implements Serializable {
         agArch = arch;
     }
     public AgArch getAgArch() {
-        return agArch;
+        if (agArch == null)
+            return null;
+        else
+            return agArch.getFirstAgArch();
     }
 
     /**

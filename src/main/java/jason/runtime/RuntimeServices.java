@@ -70,7 +70,7 @@ public interface RuntimeServices {
 
     /** Gets the number of agents in the MAS. */
     public int getAgentsQty();
-    
+
     public boolean isRunning();
 
     /** Stops all MAS (the agents, the environment, the controller, ...) */
@@ -81,7 +81,7 @@ public interface RuntimeServices {
     default public void               dfDeRegister(String agName, String service, String type) {}
     default public Collection<String> dfSearch(String service, String type) { return new ArrayList<>(); }
     default public void               dfSubscribe(String agName, String service, String type) {}
-    
+
     default public Map<String, Set<String>> getDF() { return null; }
 
 }

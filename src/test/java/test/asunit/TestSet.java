@@ -26,7 +26,7 @@ public class TestSet {
             "    .set.add(S,a(3));" +
             "    .set.add_all(S,[1,22,z(4),z(1)]);" +
             ". \n"+
-            
+
             "+!test1(S) <- " +
             "    !b(S);" +
             "    jason.asunit.print(S);" +
@@ -37,36 +37,36 @@ public class TestSet {
             "    !g1(S,A)." +
             "+!g1(S,A) : .member(A,S) <- jason.asunit.print(tem)." +
             "+!g1(S,A)                <- jason.asunit.print(naot). \n"+
-            
+
             "+!test3 <- " +
             "    !b(S);" +
             "    .findall(K, .member(K,S), L);" +
             "    jason.asunit.print(L)." +
-            
+
             "+!testToList <- " +
             "    !b(S);" +
             "    .set.to_list(S,[H|T]);" +
             "    jason.asunit.print(H,T)." +
-            
+
             "+!testUn <- " +
             "    !b(S);" +
-            "    .set.add_all(NS,[kk,d,a,oo]);" +           
+            "    .set.add_all(NS,[kk,d,a,oo]);" +
             "    .set.union(S,NS);" +
             "    .set.union(S,[8,[4,5]]);" +
             "    jason.asunit.print(S). \n"+
-            
+
             "+!testInt <- " +
             "    !b(S);" +
-            "    .set.add_all(NS,[kk,d,a,oo,10]);" +           
+            "    .set.add_all(NS,[kk,d,a,oo,10]);" +
             "    .set.intersection(S,NS);" +
             "    .set.intersection(S,[oo,a,d,10]);" +
             "    jason.asunit.print(S). \n" +
-            
+
             "+!testDif <- " +
             "    !b(S);" +
-            "    .set.add_all(NS,[kk,d,z(4),a,oo,10]);" +           
+            "    .set.add_all(NS,[kk,d,z(4),a,oo,10]);" +
             "    .set.difference(S,NS);" +
-            "    jason.asunit.print(S)." 
+            "    jason.asunit.print(S)."
         );
     }
 

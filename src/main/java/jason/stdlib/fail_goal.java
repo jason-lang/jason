@@ -130,7 +130,7 @@ public class fail_goal extends succeed_goal {
         }
         return 0;
     }
-    
+
     protected void addAnnotsToFailEvent(Event failEvent) {
     }
 

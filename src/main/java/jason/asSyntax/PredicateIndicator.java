@@ -10,7 +10,7 @@ import java.io.Serializable;
 public final class PredicateIndicator implements Comparable<PredicateIndicator>, Serializable {
 
     private static final long serialVersionUID = 1L;
-    
+
     private final String functor;
     private final int    arity;
     private final int    hash;

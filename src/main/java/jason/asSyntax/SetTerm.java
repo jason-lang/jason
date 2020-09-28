@@ -10,7 +10,7 @@ import java.util.Collection;
 public interface SetTerm extends Term, Collection<Term>, Iterable<Term> {
     public void union(Iterable<Term> lt);
     public void intersection(Collection<Term> lt);
-    public void difference(Collection<Term> lt);   
-    
+    public void difference(Collection<Term> lt);
+
     public ListTerm getAsListTerm();
 }

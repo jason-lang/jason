@@ -20,7 +20,7 @@ import jason.asSyntax.Term;
  */
 public class ClassParameters implements Serializable {
     private static final long serialVersionUID = -2202523371417849466L;
-    
+
     private String className;
     private List<String> parameters = new ArrayList<>();
     private String host;

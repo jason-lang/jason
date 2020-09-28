@@ -76,8 +76,8 @@ public class CentralisedAgArch extends AgArch implements Runnable, Serializable 
         sleepSync   = new Object();
         syncMonitor = new Object();
         masRunner   = BaseCentralisedMAS.getRunner();
-    }   
-    
+    }
+
 
     /**
      * Creates the user agent architecture, default architecture is
@@ -119,7 +119,7 @@ public class CentralisedAgArch extends AgArch implements Runnable, Serializable 
             throw new JasonException("as2j: error creating the agent class! - ", e);
         }
     }
-    
+
     public void setMASRunner(BaseCentralisedMAS masRunner) {
         this.masRunner = masRunner;
     }
@@ -164,7 +164,7 @@ public class CentralisedAgArch extends AgArch implements Runnable, Serializable 
     }
 
     /**
-     * 
+     *
      * @deprecated use getFirstAgArch instead
      */
     public AgArch getUserAgArch() {
@@ -244,11 +244,11 @@ public class CentralisedAgArch extends AgArch implements Runnable, Serializable 
 
     protected void reasoningCycle() {
         getFirstAgArch().reasoningCycleStarting();
-        
+
         sense();
         deliberate();
         act();
-        
+
         getFirstAgArch().reasoningCycleFinished();
     }
 
@@ -414,7 +414,7 @@ public class CentralisedAgArch extends AgArch implements Runnable, Serializable 
                 inWaitSyncMonitor = true;
                 syncMonitor.wait();
                 inWaitSyncMonitor = false;
-            }            
+            }
         } catch (InterruptedException e) {
         } catch (Exception e) {
             logger.log(Level.WARNING,"Error waiting sync (1)", e);
@@ -506,13 +506,13 @@ public class CentralisedAgArch extends AgArch implements Runnable, Serializable 
     @Override
     public Map<String, Object> getStatus() {
         Map<String, Object> status = super.getStatus();
-        
+
         status.put("cycle", getCycleNumber());
         status.put("idle", getTS().canSleep());
-        
+
         // put intentions
         Circumstance c = getTS().getC();
-        
+
         status.put("nbIntentions", c.getNbRunningIntentions() + c.getPendingIntentions().size());
 
         List<Map<String, Object>> ints = new ArrayList<>();
@@ -531,7 +531,7 @@ public class CentralisedAgArch extends AgArch implements Runnable, Serializable 
             ints.add(iprops);
         }
         status.put("intentions", ints);
-        
+
         return status;
     }
 }

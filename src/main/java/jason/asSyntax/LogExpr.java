@@ -138,7 +138,7 @@ public class LogExpr extends BinaryStructure implements LogicalFormula {
                         if (ileft != null && ileft.hasNext())
                             current = ileft.next();
                         else {
-                            if (iright == null) 
+                            if (iright == null)
                                 iright = getRHS().logicalConsequence(ag,originalUn);
                             if (iright != null && iright.hasNext())
                                 current = iright.next();
