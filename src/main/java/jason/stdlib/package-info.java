@@ -8,33 +8,32 @@ Internal actions of Jason.
   <li>{@link jason.stdlib.drop_desire drop_desire}: remove one agent's desire.</li>
   <li>{@link jason.stdlib.drop_all_desires drop_all_desires}: remove agent's desires.</li>
 
-
   <li>{@link jason.stdlib.intend intend}: check agent's intentions.</li>
   <li>{@link jason.stdlib.drop_intention drop_intention}: remove one agent's intention.</li>
-  <li>{@link jason.stdlib.drop_all_intentions drop_all_intentions}: remove agent's intentions.</li>
-  <li>{@link jason.stdlib.current_intention current_intention}: get a description of the
-  current intention.</li>
-
-  <li>{@link jason.stdlib.drop_event drop_event}: remove one event.</li>
-  <li>{@link jason.stdlib.drop_all_events drop_all_events}: remove events in the interpreter.</li>
+  <li>{@link jason.stdlib.drop_all_intentions drop_all_intentions}: remove all agent's intentions.</li>
+  <li>{@link jason.stdlib.intention intention}: get details of the state of Jason intentions.</li>
 
   <li>{@link jason.stdlib.succeed_goal succeed_goal}: abort some goal with success.</li>
   <li>{@link jason.stdlib.fail_goal fail_goal}: abort some goal with failure.</li>
 
+  <li>{@link jason.stdlib.drop_event drop_event}: remove one event.</li>
+  <li>{@link jason.stdlib.drop_all_events drop_all_events}: remove events in the interpreter.</li>
+
   <li>{@link jason.stdlib.suspend suspend}: suspend intentions.</li>
-  <li>{@link jason.stdlib.suspended suspended}: check agent's suspended goals.</li>
   <li>{@link jason.stdlib.resume resume}: resume suspended intentions.</li>
+  <li>{@link jason.stdlib.suspended suspended}: check agent's suspended goals.</li>
 </ul>
 
 <h2>Belief base</h2>
 <ul>
-  <li>{@link jason.stdlib.abolish abolish}: remove some beliefs.</li>
-  <li>{@link jason.stdlib.findall findall}: find a list of beliefs of some kind.</li>
-  <li>{@link jason.stdlib.setof setof}: find a set of beliefs of some kind.</li>
-  <li>{@link jason.stdlib.count count}: count the number of beliefs of some kind.</li>
-  <li>{@link jason.stdlib.namespace namespace}: checks whether an argument is a name space.</li>
-  <li>{@link jason.stdlib.relevant_rules relevant_rules}: get a list of rules.</li>
-  <li>{@link jason.stdlib.list_rules list_rules}: print out the rules in the current belief base.</li>
+  <li>{@link jason.stdlib.abolish abolish}: removes some beliefs.</li>
+  <li>{@link jason.stdlib.belief belief}: consults some beliefs.</li>
+  <li>{@link jason.stdlib.findall findall}: finds all answers for a query.</li>
+  <li>{@link jason.stdlib.setof setof}: finds a set of answers for a query.</li>
+  <li>{@link jason.stdlib.count count}: counts the number of solutions of some query.</li>
+  <li>{@link jason.stdlib.namespace namespace}: checks whether the argument is a name space.</li>
+  <li>{@link jason.stdlib.relevant_rules relevant_rules}: gets a list of rules.</li>
+  <li>{@link jason.stdlib.list_rules list_rules}: prints out the rules in the current belief base.</li>
 </ul>
 
 
@@ -44,6 +43,7 @@ Internal actions of Jason.
   <li>{@link jason.stdlib.remove_plan remove_plan}: remove a plan.</li>
   <li>{@link jason.stdlib.plan_label plan_label}: get the label of a plan.</li>
   <li>{@link jason.stdlib.relevant_plans relevant_plans}: get a list of plans.</li>
+  <li>{@link jason.stdlib.relevant_plan relevant_plan}: backtracking based version of .relevant_plans.</li>
   <li>{@link jason.stdlib.list_plans list_plans}: print out the plans in the current plan library.</li>
 </ul>
 
@@ -98,6 +98,8 @@ Internal actions of Jason.
   <li>{@link jason.stdlib.nth nth}: nth element of a string. </li>
   <li>{@link jason.stdlib.substring substring}: test substrings of strings. </li>
   <li>{@link jason.stdlib.string string}: check whether an argument is a string.</li>
+  <li>{@link jason.stdlib.suffix suffix}: suffixes of a string. </li>
+  <li>{@link jason.stdlib.prefix prefix}: prefixes of a string. </li>
   <li>{@link jason.stdlib.term2string term2string}: convert terms to strings and vice-versa.</li>
   <li>{@link jason.stdlib.lower_case lower_case}: lower case strings.</li>
   <li>{@link jason.stdlib.upper_case upper_case}: upper case strings.</li>
@@ -121,7 +123,7 @@ Internal actions of Jason.
   <li>{@link jason.stdlib.ground ground}: check whether an argument is ground.</li>
   <li>{@link jason.stdlib.number number}: check whether an argument is a number (1, 2.3).</li>
   <li>{@link jason.stdlib.string string}: check whether an argument is a string ("s").</li>
-  <li>{@link jason.stdlib.ground ground}: check whether an argument is ground.</li>
+  <li>{@link jason.stdlib.type type}: gets the type of a term.</li>
 <!--  <li>{@link jason.stdlib.add_annot add_annot}: add an annotation in --
   --  a literal.</li> -->
   <li>{@link jason.stdlib.add_nested_source add_nested_source}: add a source in a literal.</li>
@@ -151,6 +153,7 @@ Internal actions of Jason.
   <li>{@link jason.stdlib.range range}: backtrack values in a range (used in <b>for</b>).</li>
 
   <li>{@link jason.stdlib.random random}: produces random numbers.</li>
+  <li>{@link jason.stdlib.set_random_seed math.set_random_seed}: sets the seed of Jason's random number generator.</li>
 
   <li>{@link jason.stdlib.include include}: imports a source code at run time.</li>
 

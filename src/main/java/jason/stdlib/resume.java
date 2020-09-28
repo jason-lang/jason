@@ -1,20 +1,22 @@
 package jason.stdlib;
 
+import java.util.Iterator;
+
 import jason.JasonException;
 import jason.asSemantics.Circumstance;
 import jason.asSemantics.CircumstanceListener;
 import jason.asSemantics.DefaultInternalAction;
 import jason.asSemantics.Event;
+import jason.asSemantics.GoalListener;
 import jason.asSemantics.Intention;
 import jason.asSemantics.TransitionSystem;
 import jason.asSemantics.Unifier;
+import jason.asSyntax.ASSyntax;
 import jason.asSyntax.Literal;
 import jason.asSyntax.Term;
 import jason.asSyntax.Trigger;
 import jason.asSyntax.Trigger.TEOperator;
 import jason.asSyntax.Trigger.TEType;
-
-import java.util.Iterator;
 
 /**
   <p>Internal action:
@@ -39,7 +41,7 @@ import java.util.Iterator;
   @see jason.stdlib.drop_desire
   @see jason.stdlib.succeed_goal
   @see jason.stdlib.fail_goal
-  @see jason.stdlib.current_intention
+  @see jason.stdlib.intention
   @see jason.stdlib.suspend
   @see jason.stdlib.suspended
 
@@ -66,7 +68,7 @@ import java.util.Iterator;
                 "jason.stdlib.drop_desire",
                 "jason.stdlib.succeed_goal",
                 "jason.stdlib.fail_goal",
-                "jason.stdlib.current_intention",
+                "jason.stdlib.intention",
                 "jason.stdlib.resume",
                 "jason.stdlib.suspend",
                 "jason.stdlib.suspended"
@@ -74,6 +76,8 @@ import java.util.Iterator;
     )
 @SuppressWarnings("serial")
 public class resume extends DefaultInternalAction {
+
+    private static Term resumeReason = ASSyntax.createAtom("resume_ia");
 
     @Override public int getMinArgs() {
         return 1;
@@ -102,27 +106,27 @@ public class resume extends DefaultInternalAction {
             Intention i = C.getPendingIntentions().get(k);
             if (i.isSuspended() && i.hasTrigger(g, un)) {
                 i.setSuspended(false);
-                boolean notify = true;
+
+                // notify meta event listeners
+                if (C.hasListener())
+                    for (CircumstanceListener el : C.getListeners())
+                        el.intentionResumed(i, resumeReason);
+
                 if (k.startsWith(suspend.SUSPENDED_INT)) { // if not SUSPENDED_INT, it was suspended while already in PI, so, do not remove it from PI, just change the suspended status
                     ik.remove();
 
                     // add it back in I if not in PA
                     if (! C.getPendingActions().containsKey(i.getId())) {
-                        C.resumeIntention(i);
-                        notify = false; // the resumeIntention already notifies
+                        C.resumeIntention(i, null);
                     }
-                }
-
-                // notify meta event listeners
-                if (notify && C.getListeners() != null)
+                } else if (C.hasListener()) {
                     for (CircumstanceListener el : C.getListeners())
-                        el.intentionResumed(i);
+                        el.intentionWaiting(i, i.getSuspendedReason());
+                }
 
                 // remove the IA .suspend in case of self-suspend
                 if (k.startsWith(suspend.SELF_SUSPENDED_INT))
                     i.peek().removeCurrentStep();
-
-                //System.out.println("res "+g+" from I "+i.getId());
             }
         }
 
@@ -135,10 +139,20 @@ public class resume extends DefaultInternalAction {
                 Intention i = e.getIntention();
                 if (un.unifies(g, e.getTrigger()) || (i != null && i.hasTrigger(g, un))) {
                     ik.remove();
+
+                    // notify meta event listeners
+                    if (i == null) {
+                        if (ts.hasGoalListener())
+                            for (GoalListener gl : ts.getGoalListeners())
+                                gl.goalResumed(e.getTrigger(), resumeReason);
+                    } else if (C.hasListener()) {
+                        for (CircumstanceListener el : C.getListeners())
+                            el.intentionResumed(i, resumeReason);
+                    }
+
                     C.addEvent(e);
                     if (i != null)
                         i.setSuspended(false);
-                    //System.out.println("res "+g+" from E "+e.getTrigger());
                 }
             }
         }

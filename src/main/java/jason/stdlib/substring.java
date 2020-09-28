@@ -27,8 +27,7 @@ import jason.asSyntax.Term;
   <li>+/- string (any term).<br/>
   <li>+/- position (optional -- integer): the initial position of
   the string where the sub-string occurs.
-  <li>+/- position (optional -- integer): the last position of
-  the string where the sub-string occurs.
+  <li>+/- position (optional -- integer): the position in the string where the sub-string ends.
   </ul>
 
   <p>Examples:<ul>
@@ -36,7 +35,7 @@ import jason.asSyntax.Term;
   <li> <code>.substring("b","aaa",X)</code>: false.
   <li> <code>.substring("a","bbacc")</code>: true.
   <li> <code>.substring("a","abbacca",X)</code>: true and <code>X</code> unifies with 0, 3, and 6.
-  <li> <code>.substring("a","bbacc",0)</code>: false.
+  <li> <code>.substring("a","bbacc",0)</code>: false. When the third argument is 0, .substring works like a java <b>startsWith</b> method.
   <li> <code>.substring(a(10),b(t1,a(10)),X)</code>: true and <code>X</code> unifies with 5.
   <li> <code>.substring(a(10),b("t1,a(10),kk"),X)</code>: true and <code>X</code> unifies with 6.
   <li> <code>.substring(a(10,20),R,5)</code>: true and <code>R</code> unifies with "20)".
@@ -133,29 +132,36 @@ public class substring extends DefaultInternalAction {
                 Unifier c = null; // the current response (which is an unifier)
                 int     pos = 0;  // current position in s1
 
+                { find(); }
+
                 public boolean hasNext() {
-                    if (c == null) // the first call of hasNext should find the first response
-                        find();
                     return c != null;
                 }
 
                 public Unifier next() {
-                    if (c == null) find();
                     Unifier b = c;
                     find(); // find next response
                     return b;
                 }
 
                 void find() {
-                    if (pos < s1.length()) {
+                    while (pos < s1.length()) {
                         pos = s1.indexOf(s0,pos);
-                        if (pos >= 0) {
+                        if (pos < 0) {
+                            // quit without solution
+                            pos = s1.length();
+                        } else {
                             c = (Unifier)un.clone();
-                            c.unifiesNoUndo(args[2], new NumberTermImpl(pos));
-                            pos++;
-                            return;
+                            if (c.unifiesNoUndo(args[2], new NumberTermImpl(pos++))) {
+                                if (args.length == 4) {
+                                    if (c.unifiesNoUndo(args[3], new NumberTermImpl( (pos-2)+s0.length() ))) {
+                                        return;
+                                    }
+                                } else {
+                                    return;
+                                }
+                            }
                         }
-                        pos = s1.length(); // to stop searching
                     }
                     c = null; // no member is found,
                 }

@@ -71,26 +71,6 @@ public class LogExpr extends BinaryStructure implements LogicalFormula {
 
     public Iterator<Unifier> logicalConsequence(final Agent ag, final Unifier un) {
         try {
-            /*final QueryCache qCache;
-            final CacheKey kForChache;
-            if (ag != null && (op == LogicalOp.and || op == LogicalOp.or)) {
-                qCache = null; //ag.getQueryCache();
-                if (qCache != null) {
-                    kForChache = qCache.prepareForCache(this, un);
-                    Iterator<Unifier> ic = qCache.getCache(kForChache);
-                    if (ic != null) {
-                        //ag.getLogger().info("from cache expression!"+this);
-                        return ic;
-                    }
-                } else {
-                    kForChache = null;
-                }
-            } else {
-                qCache = null;
-                kForChache = null;
-            }
-            */
-
             switch (op) {
 
             case none:
@@ -112,18 +92,13 @@ public class LogExpr extends BinaryStructure implements LogicalFormula {
                     public boolean hasNext() {
                         if (needsUpdate)
                             get();
-                        //if (kForChache != null && current == null)
-                        //    qCache.queryFinished(kForChache);
                         return current != null;
                     }
                     public Unifier next() {
                         if (needsUpdate)
                             get();
-                        //Unifier a = current;
                         if (current != null)
                             needsUpdate = true;
-                        //if (kForChache != null)
-                        //    qCache.addAnswer(kForChache, current);
                         return current;
                     }
                     private void get() {
@@ -148,18 +123,13 @@ public class LogExpr extends BinaryStructure implements LogicalFormula {
                     public boolean hasNext() {
                         if (needsUpdate)
                             get();
-                        //if (kForChache != null && current == null)
-                        //    qCache.queryFinished(kForChache);
                         return current != null;
                     }
                     public Unifier next() {
                         if (needsUpdate)
                             get();
-                        //Unifier a = current;
                         if (current != null)
                             needsUpdate = true;
-                        //if (kForChache != null)
-                        //    qCache.addAnswer(kForChache, current);
                         return current;
                     }
                     private void get() {

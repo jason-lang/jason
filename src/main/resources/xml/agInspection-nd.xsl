@@ -30,6 +30,7 @@
     <xsl:param name="show-int"     select="'true'" />
     <xsl:param name="show-plan-details"   select="'true'" />
     <xsl:param name="show-int-details"    select="'true'" />
+    <xsl:param name="show-status"     select="'false'" />
 
     <xsl:output method="html" />
     <xsl:strip-space elements="*" />
@@ -61,6 +62,8 @@
 	                </xsl:call-template>
 	                <th/>
 	            </tr>
+                <xsl:apply-templates select="status" />
+
             </table>
         </html>
     </xsl:template>
@@ -107,7 +110,7 @@
 	                        <table cellspacing="0" cellpadding="2">
 			                    <xsl:for-each select="namespaces/namespace">
     		                        <xsl:variable name="nsId" select="@id" />
-		                            <xsl:for-each select="../../literal[@namespace=$nsId]">
+		                            <xsl:for-each select="../../literal[@namespace=$nsId] | ../../rule[@namespace=$nsId]">
 		                                <!-- xsl:sort select="structure/@functor" / -->
 		                                <tr style="{$trh-style}">
 		                                    <td style="text-align: left">
@@ -117,7 +120,6 @@
 		                                        <span style="color: {$bc}">
 		                                            <xsl:apply-templates select="." />
 		                                        </span>
-		                                        <xsl:text>.</xsl:text>
 		                                    </td>
 		                                </tr>
 		                            </xsl:for-each>
@@ -129,7 +131,7 @@
         </xsl:if>
 
         <!-- Rules -->
-        <xsl:if test="count(rule) > 0" >
+        <!-- xsl:if test="count(rule) > 0" >
             <tr style="{$trh-style}">
                 <xsl:call-template name="hideshow">
                     <xsl:with-param name="show" select="$show-rules" />
@@ -153,7 +155,7 @@
                     </td>
                 </xsl:if>
             </tr>
-        </xsl:if>
+        </xsl:if -->
     </xsl:template>
 
     <xsl:template match="mailbox">
@@ -536,7 +538,7 @@
         <table>
             <tr>
                 <td width="20" />
-                <td><xsl:apply-templates select="context" />.</td>
+                <td><xsl:apply-templates select="context" /></td>
             </tr>
         </table>
     </xsl:template>
@@ -632,4 +634,30 @@
         <xsl:text>}</xsl:text>
     </xsl:template>
 
+    <xsl:template match="status">
+            <tr style="{$trh-style}">
+                <xsl:call-template name="hideshow">
+                    <xsl:with-param name="show" select="$show-status" />
+                    <xsl:with-param name="item" select="'status'" />
+                    <xsl:with-param name="ds" select="'Status'" />
+                </xsl:call-template>
+                <xsl:if test="$show-status='true'">
+	                    <td style="{$td-style}">
+	                        <hr/>
+	                        <table cellspacing="0" cellpadding="2">
+			                    <xsl:for-each select="entry">
+		                                <tr style="{$trh-style}">
+		                                    <td style="text-align: left">
+			                                    <xsl:value-of select="@key"/>
+		                                    </td>
+		                                    <td style="text-align: left">
+			                                    <xsl:value-of select="@value"/>
+		                                    </td>
+		                                </tr>
+                                </xsl:for-each>
+	                        </table>
+	                    </td>
+                </xsl:if>
+            </tr>
+	</xsl:template>
 </xsl:stylesheet>

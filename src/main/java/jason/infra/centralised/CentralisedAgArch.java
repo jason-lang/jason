@@ -522,9 +522,10 @@ public class CentralisedAgArch extends AgArch implements Runnable, Serializable 
             Map<String, Object> iprops = new HashMap<>();
             iprops.put("id", i.getId());
             iprops.put("finished", i.isFinished());
-            iprops.put("suspended", i.isSuspended());
+            //iprops.put("suspended", i.isSuspended());
+            iprops.put("state", i.getStateBasedOnPlace());
             if (i.isSuspended()) {
-                iprops.put("suspendedReason", i.getSuspendedReason());
+                iprops.put("suspendedReason", i.getSuspendedReason().toString());
             }
             iprops.put("size", i.size());
             ints.add(iprops);

@@ -242,8 +242,7 @@ public class Unifier implements Cloneable, Iterable<VarTerm>, Serializable {
 
         // both terms are not vars
 
-        // if any of the terms is not a literal (is a number or a
-        // string), they must be equal
+        // if any of the terms is not a literal (is a number or a string), they must be equal
         // (for unification, lists are literals)
         if (!t1g.isLiteral() && !t1g.isList() || !t2g.isLiteral() && !t2g.isList())
             return t1g.equals(t2g);
@@ -308,6 +307,12 @@ public class Unifier implements Cloneable, Iterable<VarTerm>, Serializable {
         // different name space
         if (!unifiesNamespace(t1s, t2s))
             return false;
+
+        // the special case of [|T]=[a,b,c]
+        if (t1s.isList() && t1s.getTerm(0) == null && ((ListTerm)t1s).isTail())
+            return unifiesNoUndo(t1s.getTerm(1), t2s);
+        if (t2s.isList() && t2s.getTerm(0) == null && ((ListTerm)t2s).isTail())
+            return unifiesNoUndo(t1s, t2s.getTerm(1));
 
         // unify inner terms
         // do not use iterator! (see ListTermImpl class)
@@ -389,7 +394,11 @@ public class Unifier implements Cloneable, Iterable<VarTerm>, Serializable {
             vl = new CyclicTerm((Literal)vl, (VarTerm)vt.clone());
         }
 
-        function.put(getVarForUnifier(vt), vl);
+        if (vl.isVar()) {
+            bind(vt,(VarTerm)vl);
+        } else {
+            function.put(getVarForUnifier(vt), vl);
+        }
         return true;
     }
 

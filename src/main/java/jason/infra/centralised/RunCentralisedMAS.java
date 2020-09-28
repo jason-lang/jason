@@ -13,7 +13,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -88,7 +90,7 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
         r.create();
         r.start();
         r.waitEnd();
-        r.finish(0, true);
+        r.finish(0, true, 0);
     }
 
     protected void registerMBean() {
@@ -104,7 +106,7 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
         if (args.length < 1) {
             if (RunCentralisedMAS.class.getResource("/"+defaultProjectFileName) != null) {
                 projectFileName = defaultProjectFileName;
-                readFromJAR = true;
+                appFromClassPath = true;
                 Config.get(false); // to void to call fix/store the configuration in this case everything is read from a jar/jnlp file
             } else {
                 System.out.println("Jason "+Config.get().getJasonVersion());
@@ -122,13 +124,13 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
             Config.get().fix();
         }
 
-        setupLogger();
+        Map<String,Object> mArgs = parseArgs(args);
 
-        if (args.length >= 2) {
-            if (args[1].equals("-debug")) {
-                debug = true;
-                Logger.getLogger("").setLevel(Level.FINE);
-            }
+        setupLogger((String)mArgs.get("log-conf"));
+
+        if ((boolean)(mArgs.getOrDefault("debug", false))) {
+            debug = true;
+            Logger.getLogger("").setLevel(Level.FINE);
         }
 
         // discover the handler
@@ -143,18 +145,20 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
         int errorCode = 0;
 
         try {
+            String urlPrefix = null;
             if (projectFileName != null) {
                 InputStream inProject;
-                if (readFromJAR) {
+                if (appFromClassPath) {
                     inProject = RunCentralisedMAS.class.getResource("/"+defaultProjectFileName).openStream();
-                    urlPrefix = SourcePath.CRPrefix + "/";
+                    urlPrefix = SourcePath.CRPrefix;
                 } else {
                     URL file;
                     // test if the argument is an URL
                     try {
+                        projectFileName = new SourcePath().fixPath(projectFileName); // replace $jasonJar, if necessary
                         file = new URL(projectFileName);
                         if (projectFileName.startsWith("jar")) {
-                            urlPrefix = projectFileName.substring(0,projectFileName.indexOf("!")+1) + "/";
+                            urlPrefix = projectFileName.substring(0,projectFileName.indexOf("!")+1);
                         }
                     } catch (Exception e) {
                         file = new URL("file:"+projectFileName);
@@ -168,7 +172,7 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
             }
 
             project.setupDefault();
-            project.getSourcePaths().setUrlPrefix(urlPrefix);
+            project.getSourcePaths().addPath(urlPrefix);
             project.registerDirectives();
             // set the aslSrcPath in the include
             ((Include)DirectiveProcessor.getDirective("include")).setSourcePath(project.getSourcePaths());
@@ -204,6 +208,25 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
         return errorCode;
     }
 
+    protected Map<String,Object> parseArgs(String[] args) {
+        Map<String, Object> margs = new HashMap<>();
+
+        if (args.length > 0) {
+            String la = "";
+            for (String arg: args) {
+                if (la.equals("--log-conf")) {
+                    margs.put("log-conf", arg);
+                }
+                if (arg.equals("--debug") || arg.equals("-d"))
+                    margs.put("debug", true);
+
+                la = arg;
+            }
+        }
+
+        return margs;
+    }
+
     /** create environment, agents, controller */
     protected void create() throws JasonException {
         createEnvironment();
@@ -221,9 +244,13 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
     public boolean isRunning() {
         return isRunning;
     }
-    
-    public synchronized void setupLogger() {
-        if (readFromJAR) {
+
+    public void setupLogger() {
+        setupLogger(null);
+    }
+
+    public synchronized void setupLogger(String confFile) {
+        if (appFromClassPath) {
             try {
                 LogManager.getLogManager().readConfiguration(
                         RunCentralisedMAS.class.getResource("/"+logPropFile).openStream());
@@ -237,11 +264,29 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
                 Logger.getLogger("").addHandler(h);
                 Logger.getLogger("").setLevel(Level.INFO);
             }
+        } else if (confFile != null && (confFile.startsWith("jar:") || confFile.startsWith("$"))) {
+            try {
+                confFile = new SourcePath().fixPath(confFile);
+                URL logurl = new URL(confFile);
+                LogManager.getLogManager().readConfiguration( logurl.openStream() );
+                System.out.println("logging configuration was loaded from "+logurl);
+            } catch (Exception e) {
+                System.err.println("Error setting up logger:" + e);
+                e.printStackTrace();
+            }
+
         } else {
+            if (confFile == null) {
+                confFile = logPropFile;
+            } else {
+                if (!(new File(confFile).exists()))
+                   System.err.println("Loggging properties file "+confFile+" not found!");
+            }
+
             // checks a local log configuration file
-            if (new File(logPropFile).exists()) {
+            if (new File(confFile).exists()) {
                 try {
-                    LogManager.getLogManager().readConfiguration(new FileInputStream(logPropFile));
+                    LogManager.getLogManager().readConfiguration(new FileInputStream(confFile));
                 } catch (Exception e) {
                     System.err.println("Error setting up logger:" + e);
                 }
@@ -353,7 +398,7 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
         btStop.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 MASConsoleGUI.get().setPause(false);
-                runner.finish(0, true);
+                runner.finish(0, true, 0);
             }
         });
         MASConsoleGUI.get().addButton(btStop);
@@ -490,7 +535,7 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
                         agArch.createArchs(ap.getAgArchClasses(), pag);
                     } else {
                         // normal creation
-                        agArch.createArchs(ap.getAgArchClasses(), ap.agClass.getClassName(), ap.getBBClass(), ap.asSource.toString(), ap.getAsSetts(debug, project.getControlClass() != null));
+                        agArch.createArchs(ap.getAgArchClasses(), ap.agClass.getClassName(), ap.getBBClass(), ap.getSource().toString(), ap.getAsSetts(debug, project.getControlClass() != null));
                     }
                     addAg(agArch);
 
@@ -676,7 +721,7 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
     /** an agent architecture for the infra based on thread pool */
     protected final class CentralisedAgArchSynchronousScheduled extends CentralisedAgArch {
         private static final long serialVersionUID = 2752327732263465482L;
-        
+
         private volatile boolean runWakeAfterTS = false;
         private int currentStep = 0;
 
@@ -833,14 +878,14 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
 
     protected AtomicBoolean isRunningFinish = new AtomicBoolean(false);
 
-    public void finish(int deadline, boolean stopJVM) {
+    public void finish(int deadline, boolean stopJVM, int exitValue) {
         // avoid two threads running finish!
         if (isRunningFinish.getAndSet(true))
             return;
 
         isRunning = false;
         try {
-            // creates a thread that guarantees system.exit(0) in deadline seconds
+            // creates a thread that guarantees system.exit(.) in deadline seconds
             // (the stop of agents can block, for instance)
             if (stopJVM) {
                 new Thread() {
@@ -851,7 +896,7 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
                             else
                                 sleep(deadline);
                         } catch (InterruptedException e) {}
-                        System.exit(0);
+                        System.exit(exitValue);
                     }
                 } .start();
             }
@@ -882,17 +927,15 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
                     if (stop.exists()) {
                         stop.delete();
                     }
-                    
+
                     try {
                         ManagementFactory.getPlatformMBeanServer().unregisterMBean(new ObjectName("jason.sf.net:type=runner"));
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
 
-                    //runner = null;
-
                     if (stopJVM) {
-                        System.exit(0);
+                        System.exit(exitValue);
                     }
                     isRunningFinish.set(false);
                 };
@@ -912,7 +955,7 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
 
         for (AgentParameters ap : project.getAgents()) {
             try {
-                String tmpAsSrc = ap.asSource.toString();
+                String tmpAsSrc = ap.getSource().toString();
 
                 // read sources
                 InputStream in = null;

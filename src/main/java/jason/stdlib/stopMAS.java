@@ -19,6 +19,7 @@ import jason.runtime.RuntimeServicesFactory;
   <li> <code>.stopMAS(2000)</code> shuts down the system in 2 seconds.
   The signal +jag_shutting_down(T) will be produced so that agents can prepare themselves for the shutdown.<br/>
   <li> <code>.stopMAS(2000,false)</code> same as before, but do not kill the JVM.
+  <li> <code>.stopMAS(0,1)</code> shuts down the system and returns 1.
 
   </ul>
 
@@ -62,11 +63,15 @@ public class stopMAS extends DefaultInternalAction {
     public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {
         checkArguments(args);
         int deadline = 0;
+        int exitValue = 0;
         if (args.length >= 1 && args[0].isNumeric()) {
             deadline = (int)((NumberTerm)args[0]).solve();
         }
+        if (args.length >= 2 && args[1].isNumeric()) {
+            exitValue = (int)((NumberTerm)args[1]).solve();
+        }
         boolean stopJVM = !(args.length >= 2 && args[1].toString().equals("false"));
-        RuntimeServicesFactory.get().stopMAS(deadline, stopJVM);
+        RuntimeServicesFactory.get().stopMAS(deadline, stopJVM, exitValue);
         return true;
     }
 }

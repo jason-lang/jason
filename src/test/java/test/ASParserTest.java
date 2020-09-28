@@ -196,7 +196,7 @@ public class ASParserTest extends TestCase {
         a.initAg();
         a.setASLSrc("test1");
         parser.agent(a);
-        assertEquals(9, a.getPL().getPlans().size());
+        assertEquals(10, a.getPL().getPlans().size());
         assertEquals("@l1[source(self)] +!at(X,left(H)) : not (b(X)) <- go(3,Y); ?at(X,left(H)).", a.getPL().get("l1").toString());
 
         source =  " { begin mg(at(10,10)) } \n";
@@ -210,7 +210,7 @@ public class ASParserTest extends TestCase {
         //for (Plan p: a.getPL().getPlans()) {
         //    System.out.println(p);
         //}
-        assertTrue(a.getPL().getPlans().size() == 7);
+        assertTrue(a.getPL().getPlans().size() == 8);
         assertTrue(a.getInitialBels().size() == 1);
 
         source =  " { begin sga(\"+go(X,Y)\", \"(at(home) & not c)\", at(X,Y)) } \n";
@@ -345,10 +345,11 @@ public class ASParserTest extends TestCase {
                     } else if (f.getName().endsWith(MAS2JProject.AS_EXT)) {
                         if (f.getName().equals("search.asl"))  continue; // ignore this file
                         if (f.getName().equals("b.asl"))  continue; // ignore this file
+                        System.out.println("parsing "+f);
                         as2j parser = new as2j(new FileInputStream(f));
-                        //Agent ag = new Agent();
-                        //ag.init();
-                        parser.agent((Agent)null);
+                        Agent ag = new Agent();
+                        ag.initAg();
+                        parser.agent(ag);
                     } else if (f.getName().endsWith(MAS2JProject.EXT)) {
                         mas2j parser = new mas2j(new FileInputStream(f));
                         parser.mas();
@@ -435,6 +436,14 @@ public class ASParserTest extends TestCase {
         Agent a = new Agent();
         a.initAg();
         parser.agent(a);
-
     }
+
+    public void testBodyTermLeftUnif() throws ParseException, JasonException {
+        String source =   "{ NewBodyTerm;_ } = { !gg(Name, SubstitutedSubGoals) }  ";
+        LogicalFormula f = ASSyntax.parseFormula( source) ;
+        assertNotNull(f);
+
+        assertEquals("([a,b,c] = [a,b,c])", ASSyntax.parseFormula("[a,b,c] = [a,b,c]").toString());
+    }
+
 }

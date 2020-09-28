@@ -10,9 +10,10 @@ import org.w3c.dom.Element;
 
 import jason.JasonException;
 import jason.asSemantics.Unifier;
+import jason.asSyntax.PlanBody.BodyType;
 import jason.asSyntax.parser.as2j;
 
-/** Represents an AgentSpack plan
+/** Represents an AgentSpeak plan
     (it extends structure to be used as a term)
 
  @navassoc - label - Pred
@@ -74,8 +75,15 @@ public class Plan extends Structure implements Cloneable, Serializable {
         return 4;
     }
 
-    public void setSource(String f) { if (f!=null) this.source = f; }
-    public String getSource()       { return this.source; }
+    public void setSourceFile(String f) {
+        if (f!=null) {
+            this.source = f;
+        }
+    }
+    public String getSourceFile() {
+        return this.source;
+    }
+
     @Deprecated public String getFile()       { return this.source; }
 
     private static final Term noLabelAtom = new Atom("nolabel");
@@ -90,7 +98,7 @@ public class Plan extends Structure implements Cloneable, Serializable {
         case 2:
             return (context == null) ? Literal.LTrue : context;
         case 3:
-            if (body.getBodyNext() == null && body.getBodyTerm() != null && body.getBodyTerm().isVar()) // the case of body as a single var
+            if (body.getBodyNext() == null && body.getBodyTerm() != null && body.getBodyType() == BodyType.none && body.getBodyTerm().isVar()) // the case of body as a single var
                 return body.getBodyTerm();
             return body;
         default:
@@ -277,6 +285,7 @@ public class Plan extends Structure implements Cloneable, Serializable {
         p.body = body.clonePB();
         p.setSrcInfo(srcInfo);
         p.isTerm = isTerm;
+        p.source = source;
 
         if (this.goalCondition != null)
             p.goalCondition = (LogicalFormula)this.goalCondition.clone();

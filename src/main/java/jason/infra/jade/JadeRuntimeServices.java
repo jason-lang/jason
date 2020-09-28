@@ -1,6 +1,5 @@
 package jason.infra.jade;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -58,7 +57,7 @@ public class JadeRuntimeServices implements RuntimeServices {
             ap.setAgClass(agClass);
             ap.addArchClass(archClasses);
             ap.setBB(bbPars);
-            ap.asSource = new File(agSource);
+            ap.setSource(agSource);
 
             if (stts == null) stts = new Settings();
             agName = getNewAgentName(agName);
@@ -143,14 +142,14 @@ public class JadeRuntimeServices implements RuntimeServices {
     }
 
 
-    public void stopMAS(int deadline, boolean stopJVM) throws Exception {
+    public void stopMAS(int deadline, boolean stopJVM, int exitValue) throws Exception {
         if (cc != null) {
             new Thread() { // this command should not block the agent!
                 public void run() {
                     try {
                         cc.getPlatformController().kill();
                         if (stopJVM)
-                            System.exit(0);
+                            System.exit(exitValue);
                     } catch (ControllerException e) {
                         e.printStackTrace();
                     }

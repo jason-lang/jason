@@ -21,6 +21,7 @@ public class BugDelBel {
     @Before
     public void setupAg() {
         ag1 = new TestAgent("a");
+
         ag1.parseAScode(
             "mybelief(abc)[annot1(d)]. "+
             "+!start1 <- -mybelief(abc)." +
@@ -37,23 +38,26 @@ public class BugDelBel {
 
     @Test(timeout=2000)
     public void test1() {
+        int s = ag1.getBB().size();
         ag1.addGoal("start1");
         ag1.assertIdle(10);
-        assertEquals(0, ag1.getBB().size());
+        assertEquals(s-1, ag1.getBB().size());
     }
 
     @Test(timeout=2000)
     public void test2() {
+        int s = ag1.getBB().size();
         ag1.addGoal("start2");
         ag1.assertIdle(10);
-        assertEquals(0, ag1.getBB().size());
+        assertEquals(s-1, ag1.getBB().size());
     }
 
     @Test(timeout=2000)
     public void test3() {
+        int s = ag1.getBB().size();
         ag2.addGoal("start1");
         ag2.assertIdle(10);
-        assertEquals(0, ag2.getBB().size());
+        assertEquals(s-1, ag2.getBB().size());
     }
 
 }

@@ -115,6 +115,9 @@ public class at extends DefaultInternalAction {
                     if (stime.equals("d") || stime.startsWith("day")) {
                         deadline *= 1000 * 60 * 60 * 24;
                     }
+                } else {
+                    // no unit, use ms
+                    deadline = Integer.parseInt(stime);
                 }
             }
 

@@ -1,0 +1,18 @@
+/**
+ * This is a mas2j is used to test jason package itself.
+ */
+
+MAS unit_tests {
+
+    infrastructure: Centralised
+
+    agents:
+        test_manager [
+            goals="create_tester_agents(\"./src/test/jason\",\".*.asl\",\"/inc\")",
+            beliefs="shutdown_delay(600)"
+        ];
+        self_tester;
+
+    aslSourcePath:  "src/test/jason/inc";
+                    "src/test/jason/asl";
+}

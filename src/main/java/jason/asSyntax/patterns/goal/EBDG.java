@@ -39,7 +39,7 @@ public class EBDG extends DefaultDirective implements Directive {
             // add +!g : g <- true.
             newAg.getPL()
                 .add(ASSyntax.parsePlan("+!"+goal+" : " +goal+"."))
-                .setSource(sourceNewPlans);
+                .setSourceFile(sourceNewPlans);
 
             // change all inner plans
             int i = 0;
@@ -75,17 +75,17 @@ public class EBDG extends DefaultDirective implements Directive {
             // add -!g : true <- !g.
             newAg.getPL()
                 .add(ASSyntax.parsePlan("-!"+goal+" <- !"+goal+"."))
-                .setSource(sourceNewPlans);
+                .setSourceFile(sourceNewPlans);
 
             // add +g : true <- .abolish(p__f(_,g)); .succeed_goal(g).
             newAg.getPL()
                 .add(ASSyntax.parsePlan("+"+goal+" <- .abolish(p__f(_,"+goal+")); .succeed_goal("+goal+")."))
-                .setSource(sourceNewPlans);
+                .setSourceFile(sourceNewPlans);
 
             // add -g <- .abolish(p__f(_,g)).
             newAg.getPL()
                 .add(ASSyntax.parsePlan("-"+goal+" <- .abolish(p__f(_,"+goal+"))."))
-                .setSource(sourceNewPlans);
+                .setSourceFile(sourceNewPlans);
 
             return newAg;
         } catch (Exception e) {

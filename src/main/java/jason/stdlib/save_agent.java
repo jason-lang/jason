@@ -37,6 +37,7 @@ import jason.bb.BeliefBase;
   @see jason.stdlib.create_agent
   @see jason.stdlib.stopMAS
   @see jason.runtime.RuntimeServices
+  @see jason.stdlib.list_files
 */
 @Manual(
         literal=".save_agent(file[,initial_goals])",

@@ -48,7 +48,7 @@ PARSER_BEGIN(as2j)
   import jason.util.*;
 
   public class as2j {
-    private String    asSource = "no-asl-source";
+    private String    asSource = "";
     private Agent     curAg    = null;
 
     private Atom      namespace     = Literal.DefaultNS;
@@ -67,7 +67,7 @@ PARSER_BEGIN(as2j)
     public Atom getNS()         { return namespace; }
 
     public void setASLSource(String src) { asSource = src; }
- 
+
     private String getSourceRef(SourceInfo s) {
         if (s == null)
             return "[]";
@@ -185,7 +185,7 @@ TOKEN : {
 // Identifiers
 |  <ATOM      : (<LC_LETTER> | "." <CHAR>) (<CHAR> | "." <CHAR>)*
                 | ("'" (~["'"])* "'" ) >
-                { if (image.charAt(0) == '\'') matchedToken.image = image.substring(1, lengthOfMatch-1); }
+                //{ if (image.charAt(0) == '\'') matchedToken.image = image.substring(1, lengthOfMatch-1); }
 |  <UNNAMEDVARID: ("_" (<DIGIT>)+ (<CHAR>)*) >
 |  <UNNAMEDVAR: ("_" (<CHAR>)*) >
 |  <CHAR      : (<LETTER> | <DIGIT> | "_")>
@@ -213,19 +213,10 @@ boolean agent(Agent a) throws jason.JasonException :
 {
   ( endDir = directive(a)     { if (endDir) return false; }  )*
 
-  // beliefs
-  ( b = belief()              { if (a != null) a.addInitialBel(b); }
-    ( endDir = directive(a)   { if (endDir) return false; }  )*
-  )*
-
-  // initial goals
-  ( g = initial_goal()        { if (a != null) a.addInitialGoal(g); }
-    ( endDir = directive(a)   { if (endDir) return false; }  )*
-  )*
-
-  // plans and rules
-  ( p = plan()                { if (a != null) {
-                                   p.setSource(asSource);
+  (( b = belief()              { if (a != null) a.addInitialBel(b); }
+   | g = initial_goal()        { if (a != null) a.addInitialGoal(g); }
+   | p = plan()                { if (a != null) {
+                                   p.setSourceFile(asSource);
                                    a.getPL().add(p);
                                    // warning only not parsed files
                                    if (config.getBoolean(Config.WARN_SING_VAR) && !parsedFiles.contains(asSource)) {
@@ -236,18 +227,10 @@ boolean agent(Agent a) throws jason.JasonException :
                                    }
                                 }
                               }
-    ( b = belief()            { if (a != null) {
-                                  if (b.isRule()) {
-                                      a.addInitialBel(b);
-                                      //if (!parsedFiles.contains(asSource))
-                                      //   logger.warning(getSourceRef(b)+" warning: avoid to mix rules and plans ('"+b+"').");
-                                  } else {
-                                      throw new ParseException(getSourceRef(b)+" The belief '"+b+"' is not in the begin of the source code!");
-                                  }
-                                }
-                              }
+    )+
+
+    ( endDir = directive(a)   { if (endDir) return false; }
     )*
-    ( endDir = directive(a)   { if (endDir) return false; }  )*
 
   )*
 
@@ -349,8 +332,23 @@ Plan plan() :         { Token k = null;
                         PlanBody B = null;
                         List sps = null; Plan sp;
                         int start = -1, end = -1;}
+                        // TODO: consider
+                        // int start = -1, end;
+                        // ListTerm annots = null;
 {
-    [ k = <TK_LABEL_AT> L2=literal()  { start = k.beginLine; L = new Pred(L2); }   ] // use literal to allow namespace
+    [ k = <TK_LABEL_AT>
+    	( L2=literal()    // use literal to allow namespace
+    	| annots = list() {
+    	                      if (curAg != null) {
+    	                      	  L2 = curAg.getPL().getUniqueLabel();
+    	                      } else {
+    	                          L2 = new Pred("undefined");
+    	                      }
+   	                      	  L2.addAnnots( annots.getAsList());
+    	                  }
+    	)
+    	{ start = k.beginLine; L = new Pred(L2); }
+    ]
     T=trigger()
     [ k = ":"  C  = log_expr()   { if (start == -1) start = k.beginLine; } ]
     [ k = "<:" GC = log_expr()   { if (start == -1) start = k.beginLine; } ] // NEW ER syntax for goal condition
@@ -361,7 +359,7 @@ Plan plan() :         { Token k = null;
       [ "{" // NEW ER syntax for sub plans
         [ k = "<-" B = plan_body() "." { if (start == -1) start = k.beginLine; } ]
                                    { sps = new ArrayList(); }
-        (                          
+        (
             sp = plan()            { sps.add(sp); }
         )*
         "}"
@@ -377,7 +375,7 @@ Plan plan() :         { Token k = null;
                      Plan p = new Plan(L,T,(LogicalFormula)C, B);
                      p.setSrcInfo(new SourceInfo(asSource,start,end));
                      p.setGoalCondition((LogicalFormula)GC);
-                     if (sps != null) 
+                     if (sps != null)
                      	for (Object o: sps)
                      		try {
                      		    p.addSubPlan((Plan)o);
@@ -508,16 +506,16 @@ PlanBody stmtIFCommon() :    { Object B; Term T1; Term T2 = null; Literal stmtLi
    ")"
    T1 = rule_plan_term()
    [ (
-     <TK_ELIF> T2 = stmtIFCommon() 
+     <TK_ELIF> T2 = stmtIFCommon()
      |
-     <TK_ELSE> T2 = rule_plan_term() 
+     <TK_ELSE> T2 = rule_plan_term()
      )
    ]
                        { try {
                             if (T1.isRule()) {
                                 throw new ParseException(getSourceRef(T1)+" if requires a plan body.");
                             }
-                            if (T2 == null) { 
+                            if (T2 == null) {
                                 stmtLiteral = new InternalActionLiteral(ASSyntax.createStructure(".if_then_else", (Term)B, T1), curAg);
                             } else if (T2 != null) { // else case
                                 if (T2.isRule()) {
@@ -596,9 +594,7 @@ Object body_formula() :
    ]
 
    (
-   B = rule_plan_term()
-   |
-   B = log_expr()
+      B = log_expr()
    )
                        { if (formType == BodyType.action && B instanceof RelExpr) {
                             return new PlanBodyImpl(BodyType.constraint, (RelExpr)B); // constraint
@@ -620,6 +616,9 @@ Object body_formula() :
                            } catch (Exception e) {
                              e.printStackTrace();
                            }
+                         }
+                         if (B instanceof InternalActionLiteral && formType != BodyType.action) {
+                         	throw new ParseException(getSourceRef(B)+" Wrong combination of operator "+formType+" and internal action "+B+".");
                          }
                          if (B instanceof Literal) {
                             if ( ((Literal)B).isInternalAction() )
@@ -709,7 +708,7 @@ Literal literal() :
 {
   ( (
       // namespace
-      [ LOOKAHEAD(27)
+      [ LOOKAHEAD(47)
         [
         (tns = <ATOM>         { if (tns.image.equals("default"))
                                      NS = Literal.DefaultNS;
@@ -751,20 +750,24 @@ Literal literal() :
                                     NS = Literal.DefaultNS;
                                 NS = nsDirective.map(NS);
 
-                                if (F.getFunctor().indexOf(".") >= 0) {
-                                   if (F.hasAnnot())
-                                      throw new ParseException(getSourceRef(F)+" Internal actions cannot have annotations.");
-                                   if (type == Literal.LNeg)
-                                      throw new ParseException(getSourceRef(F)+" Internal actions cannot be negated.");
-                                   try {
-                                      if (F.getFunctor().equals(".include")) // .include needs a namespace (see its code)
-                                         return new InternalActionLiteral(NS, F, curAg);
-                                      else
-                                         return new InternalActionLiteral(F, curAg);
-                                   } catch (Exception e) {
-                                      if (getArithFunction(F) == null) // it is not a registered function
-                                         logger.warning(getSourceRef(F)+" warning: The internal action class for '"+F+"' was not loaded! Error: "+e);
-                                   }
+                                if (F.getFunctor().charAt(0) == '\'') {
+                                    F = (Pred)F.newFunctor(F.getFunctor().substring(1, F.getFunctor().length()-1));
+                                } else {
+	                                if (F.getFunctor().indexOf(".") >= 0) {
+	                                   if (F.hasAnnot())
+	                                      throw new ParseException(getSourceRef(F)+" Internal actions cannot have annotations.");
+	                                   if (type == Literal.LNeg)
+	                                      throw new ParseException(getSourceRef(F)+" Internal actions cannot be negated.");
+	                                   try {
+	                                      if (F.getFunctor().equals(".include")) // .include needs a namespace (see its code)
+	                                         return new InternalActionLiteral(NS, F, curAg);
+	                                      else
+	                                         return new InternalActionLiteral(F, curAg);
+	                                   } catch (Exception e) {
+	                                      if (getArithFunction(F) == null) // it is not a registered function
+	                                         logger.warning(getSourceRef(F)+" warning: The internal action class for '"+F+"' was not loaded! Error: "+e);
+	                                   }
+	                                }
                                 }
 
                                 return new LiteralImpl(NS, type, F);
@@ -814,30 +817,28 @@ List terms() :    { ArrayList listTerms = new ArrayList(); Term v; PlanBody o; }
 
 Term term() :          { Object o; }
 {
-  ( o=list()
-  | o=rule_plan_term()
-  | o=log_expr()       // log_expr includes literals/atoms/structures
-  )
+  o=log_expr()         // log_expr includes literals/atoms/structures
                        { return changeToAtom(o); }
 }
 
 
-ListTermImpl list() :     { ListTermImpl lt = new ListTermImpl(); ListTerm last; Token K; Term f;
+ListTermImpl list() :     { ListTermImpl lt = new ListTermImpl(); ListTerm last = lt; Token K; Term f;
                             Atom ons = namespace; namespace = Literal.DefaultNS; // do not replace abstract namespace for terms
                           }
 {
   "["
-  [
-  f=term_in_list()        { last = lt.append(f); lt.setSrcInfo(f.getSrcInfo()); }
-  ( "," f=term_in_list()  { last = last.append(f); }
-  )*
+  [ f=term_in_list()      { last = lt.append(f); lt.setSrcInfo(f.getSrcInfo()); }
+    ( "," f=term_in_list(){ last = last.append(f); }
+    )*
+  ]
   [ "|"  ( K=<VAR>        { last.setNext(new VarTerm(K.image)); }
          | K=<UNNAMEDVAR> { last.setNext(UnnamedVar.create(K.image)); }
          | f=list()       { last = last.concat((ListTerm)f); }
          )
   ]
-  ]
-  "]"                     { namespace = ons; return lt; }
+  "]"                     { namespace = ons;
+                            return lt;
+                          }
 }
 
 // term_in_list is the same as term, but log_expr/plan_body must be enclosed by "("....")" to avoid problem with |
@@ -894,6 +895,8 @@ Object rel_expr() :
 {
     (   op1 = arithm_expr()
       | op1 = string()
+      | op1 = list()
+      | op1 = rule_plan_term()
     )
 
     [
@@ -917,7 +920,7 @@ Object rel_expr() :
                                              //   throw new ParseException(getSourceRef(op1)+" RelExpr: operand '"+op1+"' can not be an internal action.");
                                              //if ( ((Term)op2).isInternalAction() && operator != RelationalOp.literalBuilder)
                                              //   throw new ParseException(getSourceRef(op2)+" RelExpr: operand '"+op2+"' can not be an internal action.");
-                                             
+
                                              // remove namespace (if not defined), args of rel ops are terms (not literals)
                                              if (op1 instanceof Literal) {
                                              	Literal l = (Literal)op1;

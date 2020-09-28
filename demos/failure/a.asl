@@ -19,5 +19,5 @@
 
 +!print_im([]).
 +!print_im([im(PlanLabel,Trigger,Body,Unif)|R])
-  <- .println("*        ",Body,"      * unifier: ",Unif);
+  <- .println("*        ",Body,"      * unifier: ",Unif,", plan ",PlanLabel);
      !print_im(R).

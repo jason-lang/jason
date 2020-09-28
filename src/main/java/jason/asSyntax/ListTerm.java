@@ -47,4 +47,6 @@ public interface ListTerm extends java.util.List<Term>, Term {
 
     /** make a shallow copy of the list (terms are not cloned, only the structure) */
     public ListTerm cloneLTShallow();
+
+    public static ListTerm EMPTY_LIST = new ListTermImpl();
 }

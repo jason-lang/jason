@@ -5,9 +5,11 @@ import java.util.Iterator;
 import jason.JasonException;
 import jason.asSemantics.Circumstance;
 import jason.asSemantics.DefaultInternalAction;
+import jason.asSemantics.IntendedMeans;
 import jason.asSemantics.Intention;
 import jason.asSemantics.TransitionSystem;
 import jason.asSemantics.Unifier;
+import jason.asSyntax.ASSyntax;
 import jason.asSyntax.Literal;
 import jason.asSyntax.Term;
 import jason.asSyntax.Trigger;
@@ -29,7 +31,7 @@ import jason.asSyntax.Trigger.TEType;
   <li> <code>.intend(go(1,3))</code>: is true if a plan with triggering event
   <code>+!go(1,3)</code> appears in an intention of the agent.
   <li> <code>.intend(go(1,3),I)</code>: as above and <code>I</code> unifies with the intention that contains the goal.
-  <code>I</code> is a representation of the intention as a term @see jason.stdlib.current_intention.
+  <code>I</code> is the identification of the intention. The internal action .intention can be used to further inspect the state of the intention.
 
 
   </ul>
@@ -42,7 +44,7 @@ import jason.asSyntax.Trigger.TEType;
   @see jason.stdlib.drop_desire
   @see jason.stdlib.succeed_goal
   @see jason.stdlib.fail_goal
-  @see jason.stdlib.current_intention
+  @see jason.stdlib.intention
   @see jason.stdlib.suspend
   @see jason.stdlib.suspended
   @see jason.stdlib.resume
@@ -72,7 +74,7 @@ import jason.asSyntax.Trigger.TEType;
                 "jason.stdlib.drop_desire",
                 "jason.stdlib.succeed_goal",
                 "jason.stdlib.fail_goal",
-                "jason.stdlib.current_intention",
+                "jason.stdlib.intention",
                 "jason.stdlib.resume",
                 "jason.stdlib.suspend",
                 "jason.stdlib.suspended"
@@ -97,51 +99,58 @@ public class intend extends DefaultInternalAction {
     @Override
     public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {
         checkArguments(args);
-        return allIntentions(ts.getC(),(Literal)args[0],args.length == 2 ? args[1] : null, un);
+        return allIntentions(ts.getC(),(Literal)args[0],args.length == 2 ? args[1] : null, un, false);
     }
 
     /**
      * returns all unifications for intentions with some goal
      */
-    public static Iterator<Unifier> allIntentions(final Circumstance C, final Literal l, final Term intAsTerm, final Unifier un) {
+    public static Iterator<Unifier> allIntentions(final Circumstance C, final Literal l, final Term intAsTerm, final Unifier un, final boolean considerSuspended) {
         final Trigger g = new Trigger(TEOperator.add, TEType.achieve, l);
 
         return new Iterator<Unifier>() {
             Unifier solution = null; // the current response (which is an unifier)
             Intention curInt = null;
             Iterator<Intention> intInterator = C.getAllIntentions();
+            Iterator<IntendedMeans> intIM = null;
 
-            { find(); } // find first answer
+            {
+                find(); // find first answer
+            }
 
             public boolean hasNext() {
                 return solution != null;
             }
 
             public Unifier next() {
-                if (solution == null) find();
                 Unifier b = solution;
                 find(); // find next response
                 return b;
             }
             public void remove() {}
 
-            boolean isSolution() {
-                solution = un.clone();
-                if (curInt.hasTrigger(g, solution)) {
-                    if (intAsTerm != null) {
-                        return solution.unifies(intAsTerm, curInt.getAsTerm());
-                    } else {
-                        return true;
+            void find() {
+                while (intIM != null && intIM.hasNext()) {
+                    IntendedMeans im = intIM.next();
+                    solution = un.clone();
+                    if (solution.unifies(g, im.getTrigger())) {
+                        if (intAsTerm != null) {
+                            if (solution.unifies(intAsTerm, ASSyntax.createNumber( curInt.getId() )))
+                                return;
+                        } else {
+                            return;
+                        }
                     }
                 }
-                return false;
-            }
 
-            void find() {
+                intIM = null;
                 while (intInterator.hasNext()) {
                     curInt = intInterator.next();
-                    if (isSolution())
+                    if (considerSuspended || !curInt.isSuspended()) {
+                        intIM = curInt.iterator();
+                        find();
                         return;
+                    }
                 }
                 solution = null; // nothing found
             }

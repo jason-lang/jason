@@ -2,6 +2,8 @@ package jason.mas2j;
 
 import java.io.File;
 import java.io.Serializable;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -13,6 +15,7 @@ import jason.architecture.AgArch;
 import jason.asSemantics.Agent;
 import jason.bb.DefaultBeliefBase;
 import jason.runtime.Settings;
+import jason.runtime.SourcePath;
 
 /**
  * represents the agent declaration in the MAS2J project file.
@@ -22,9 +25,9 @@ import jason.runtime.Settings;
  */
 public class AgentParameters implements Serializable {
     private static final long serialVersionUID = -5418598943239425602L;
-    
+
     public String                name      = null;
-    public File                  asSource  = null;
+    protected URI                asSource  = null;
     public ClassParameters       agClass   = null;
     public ClassParameters       bbClass   = null;
     protected int                   nbInstances       = 1;
@@ -49,8 +52,7 @@ public class AgentParameters implements Serializable {
     }
     protected void copyTo(AgentParameters newap) {
         newap.name = this.name;
-        if (this.asSource != null)
-            newap.asSource = new File(this.asSource.toString());
+        newap.asSource = asSource;
         newap.agClass = this.agClass.copy();
         newap.bbClass = this.bbClass.copy();
         newap.nbInstances = this.nbInstances;
@@ -163,10 +165,29 @@ public class AgentParameters implements Serializable {
         return options;
     }
 
+    public void setSource(URI s) {
+    	asSource = s;
+    }
+    public void setSource(String s) throws URISyntaxException {
+    	if (s.startsWith("file:")||s.startsWith("jar:")||s.startsWith("http") || s.startsWith(SourcePath.CRPrefix))
+    		asSource = new URI(s);
+    	else
+    		asSource = new URI("file:"+s);
+    }
+    public URI getSource() {
+    	return asSource;
+    }
+    public File getSourceAsFile() {
+    	if (asSource != null && asSource.toString().startsWith("file:"))
+    		return new File(asSource.toString().substring(5));
+    	else
+    		return null;
+    }
+
     public String getAsInMASProject() {
         StringBuilder s = new StringBuilder(name+" ");
-        if (asSource != null && !asSource.getName().startsWith(name)) {
-            s.append(asSource+" ");
+        if (asSource != null && !getSourceAsFile().toString().startsWith(name)) {
+            s.append(getSourceAsFile()+" ");
         }
         if (options != null && !options.isEmpty()) {
             s.append("[");

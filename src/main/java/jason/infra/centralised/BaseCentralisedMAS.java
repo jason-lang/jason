@@ -37,8 +37,7 @@ public abstract class BaseCentralisedMAS extends NotificationBroadcasterSupport 
 
     protected static Logger             logger        = Logger.getLogger(BaseCentralisedMAS.class.getName());
     protected static BaseCentralisedMAS runner        = null;
-    protected static String             urlPrefix     = "";
-    protected static boolean            readFromJAR   = false;
+    protected static boolean            appFromClassPath = false;
     protected static MAS2JProject       project;
     protected static boolean            debug         = false;
 
@@ -92,8 +91,13 @@ public abstract class BaseCentralisedMAS extends NotificationBroadcasterSupport 
     public CentralisedAgArch delAg(String agName) {
         //df.remove(agName);
         try {
-            getDFAg().abolish(ASSyntax.createLiteral("provider",  new Atom(agName), new UnnamedVar()), null);
-            getDFAg().abolish(ASSyntax.createLiteral("subscribe", new Atom(agName), new UnnamedVar()), null);
+            if (RunCentralisedMAS.getRunner().getAg("df") != null) { // if DF is running
+                Agent df = getDFAg();
+                if (df != null) {
+                    getDFAg().abolish(ASSyntax.createLiteral("provider",  new Atom(agName), new UnnamedVar()), null);
+                    getDFAg().abolish(ASSyntax.createLiteral("subscribe", new Atom(agName), new UnnamedVar()), null);
+                }
+            }
         } catch (RevisionFailedException e) {
             e.printStackTrace();
         }
@@ -114,8 +118,8 @@ public abstract class BaseCentralisedMAS extends NotificationBroadcasterSupport 
 
     public abstract void setupLogger();
 
-    public abstract void finish(int deadline, boolean stopJVM);
-    public void finish() { finish(0, true); }
+    public abstract void finish(int deadline, boolean stopJVM, int exitValue);
+    public void finish() { finish(0, true, 0); }
 
     public abstract boolean hasDebugControl();
 

@@ -66,6 +66,7 @@ import jason.bb.BeliefBase;
 
   @see jason.stdlib.plan_label
   @see jason.stdlib.relevant_plans
+  @see jason.stdlib.relevant_plan
   @see jason.stdlib.remove_plan
 
   @author Jomi

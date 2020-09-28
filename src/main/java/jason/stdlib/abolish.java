@@ -27,6 +27,7 @@ import jason.asSyntax.Term;
 
   @see jason.stdlib.asserta
   @see jason.stdlib.assertz
+  @see jason.stdlib.belief
 
  */
 @Manual(

@@ -88,7 +88,7 @@ public class JasonException extends java.lang.Exception {
     }
 
     public static ListTerm createBasicErrorAnnots(String id, String msg) {
-        return createBasicErrorAnnots(new Atom(id), msg);
+        return createBasicErrorAnnots(ASSyntax.createAtom(id), msg);
     }
     public static ListTerm createBasicErrorAnnots(Term id, String msg) {
         return ASSyntax.createList(

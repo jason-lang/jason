@@ -9,6 +9,8 @@ import java.io.Serializable;
 public class SourceInfo implements Serializable {
 
     private static final long serialVersionUID = 1L;
+    public  static final Atom aNOCODE = new Atom("no_code");
+
     
     private final String      source;
     private final int         beginSrcLine; // the line this literal appears in the source
@@ -56,7 +58,7 @@ public class SourceInfo implements Serializable {
         return endSrcLine;
     }
 
-    public  String toString() {
+    public String toString() {
         return (source == null ? "nofile" : source)
                + (beginSrcLine >= 0 ? ":"+beginSrcLine : "");
     }

@@ -39,7 +39,7 @@ public class BC extends DefaultDirective implements Directive {
                 // add +!g : true <- !g.
                 newAg.getPL()
                     .add(ASSyntax.parsePlan("+!"+goal+" <- !"+goal+"."))
-                    .setSource(outerContent.getASLSrc());
+                    .setSourceFile(outerContent.getASLSrc());
 
                 return newAg;
             }

@@ -3,12 +3,90 @@
 
 ifdef::env-github[:outfilesuffix: .adoc]
 
+== version 2.6
+
+- the functor of plan labels can be omitted, as in `@[atomic] +!g <- a`. In this case, as usual, a new unique label functor is defined by the interpreter.
+- new syntax for list tail: `[|T]` (note that we have no term before `|`). It unifies with any list (even empty) and thus it is conceptually equivalent to `T`. It is useful to get the list of all annotations of some belief: `?b(X)[|AllAnnots]`.
+- new tests framework implemented in Jason (see src/test/jason/asl and doc/tech/unit-tests), contribution of Cleber Amaral.
+- new internal action `.intention` used to inspect the state of intentions. It replaces `.current_intention`.
+- new internal action `.set_random_seed`, contribution of Timotheus Kampik.
+- internal action `.stopMAS` has a new (optional) argument for exit value.
+- revision of goal states reported in meta events and used in .desire and .intend. See doc/tech/goal-states.pdf for more details.
+- new internal actions to manipulate a Java Queues. In Jason, it is represented by a variable. Example:
++
+----
+.queue.create(Q);                // Q = []
+.queue.add(Q,a);                 // Q = [a]
+.queue.add(Q,b);                 // Q = [a, b]
+.queue.add_all(Q,[c,d,e]);       // Q = [a, b, c, d, e]
+.queue.head(Q,H);                // H = a
+.queue.remove(Q,H);              // H = a, Q = [b, c, d, e]
+.length(Q,X);                    // X = 4
+// iteration
+for ( .member(V,Q) ) {
+   .print(V);
+}.
+.queue.clear(Q);                 // Q = []
+----
++
+The queue can be ordered as follows (and a Java Priority Queue is used):
++
+----
+.queue.create(Q,priority);       // Q = [] with priority
+.queue.add(Q,d);                 // Q = [d]
+.queue.add(Q,c);                 // Q = [c, d]
+.queue.add_all(Q,[b,d,a]);       // Q = [a, b, c, d, e]
+.queue.head(Q,H);                // H = a
+----
+
+
+- url syntax can be used for project file, as in:
++
+----
+java -cp "$JASON_HOME/libs/*" jason.infra.centralised.RunCentralisedMAS jar:file:/home/bob/myfile.jar!/x.masj2
+----
+- url syntax can be used in `aslSourcePath`, for example:
++
+----
+MAS ex1 {
+    agents: bob;
+
+    aslSourcePath:
+       "src";
+       "http://acme.com/src";
+       "jar:file:/home/bob/my.jar/src";
+       "$jasonJar/test/jason/inc";
+}
+----
+
+- add option `--log-conf` to setup the logging configuration file when launching the application. Examples:
++
+----
+java -cp "$JASON_HOME/libs/*" jason.infra.centralised.RunCentralisedMAS \
+    x.mas2j \
+    --log-conf mylog..properties
+----
++
+----
+java -cp "$JASON_HOME/libs/*" jason.infra.centralised.RunCentralisedMAS \
+    x.mas2j \
+    --log-conf jar:file:$JASON_HOME/libs/jason-2.6-SNAPSHOT.jar!/templates/console-logging.properties
+----
++
+----
+java -cp "$JASON_HOME/libs/*" jason.infra.centralised.RunCentralisedMAS \
+    x.mas2j \
+    --log-conf \$jasonJar/templates/console-logging.properties
+----
+
+
 == version 2.5 (2020-06-25)
 
 - cascading failures of failures (see FAQ)
 - new internal actions to manipulate a Java Set. In Jason, it is represented by a variable. Example:
 +
 ----
+.set.create(S);                // S = {}
 .set.add(S,a);                 // S = {a}
 .set.add_all(S,[5,b,p(2),a]);  // S = {5,a,b,p(2)}
 .set.remove(S,b);              // S = {5,a,p(2)}
@@ -28,6 +106,7 @@ for ( .member(V,S) ) {
 - new internal actions to manipulate a Java Map. In Jason, it is represented by a variable. Example:
 +
 ----
+.map.create(M);                  // M = {}
 .map.put(M,a,10);                // M = {a->10}
 .map.put(M,b,ok);                // M = {a->10, b->ok}
 .map.put(M,a,20);                // M = {a->20, b->ok}

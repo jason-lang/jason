@@ -1,13 +1,15 @@
 package jason.asSemantics;
 
-import jason.JasonException;
-import jason.asSyntax.Literal;
-import jason.asSyntax.Term;
-
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
+
+import jason.JasonException;
+import jason.asSyntax.ASSyntax;
+import jason.asSyntax.Atom;
+import jason.asSyntax.Literal;
+import jason.asSyntax.Term;
 
 /**
 
@@ -90,7 +92,7 @@ public abstract class ConcurrentInternalAction implements InternalAction {
         final Circumstance C = ts.getC();
         Intention i = C.getSelectedIntention();
         i.setSuspended(true);
-        C.addPendingIntention(key, i);
+        C.addPendingIntention(key, ASSyntax.createAtom("concurrent_ia"), i, true);
 
         if (timeout > 0) {
             // schedule a future test of the end of the action
@@ -135,11 +137,11 @@ public abstract class ConcurrentInternalAction implements InternalAction {
                     try {
                         if (abort) {
                             // fail the IA
-                            ts.generateGoalDeletion(pi, failAnnots);
+                            ts.generateGoalDeletion(pi, failAnnots, null);
                         } else {
                             pi.peek().removeCurrentStep(); // remove the internal action that put the intention in suspend
                             ts.applyClrInt(pi);
-                            C.resumeIntention(pi); // add it back in I
+                            C.resumeIntention(pi, new Atom("resume_from_concurrent_internal_action")); // add it back in I
                         }
                     } catch (JasonException e) {
                         ts.getLogger().log(Level.SEVERE, "Error resuming intention", e);

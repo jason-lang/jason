@@ -74,6 +74,17 @@ public abstract class Literal extends DefaultTerm implements LogicalFormula {
     /** returns the functor of this literal */
     public abstract String getFunctor();
 
+
+    public Literal newFunctor(String f) {
+        Literal l = new LiteralImpl(this.getNS(), !this.negated(), f);
+        if (hasTerm())
+            l.addTerms(this.getTerms());
+        if (hasAnnot())
+            l.addAnnots(this.getAnnots());
+        return l;
+    }
+
+
     /** returns the name spaceof this literal */
     public abstract Atom getNS();
 
@@ -352,25 +363,6 @@ public abstract class Literal extends DefaultTerm implements LogicalFormula {
      * Returns an iterator for all unifiers that are logCons.
      */
     public Iterator<Unifier> logicalConsequence(final Agent ag, final Unifier un) {
-        /*
-        final QueryProfiling   qProfiling;
-        final QueryCacheSimple qCache;
-        final long startTime;
-        if (ag != null) {
-            qCache     = ag.getQueryCache();
-            qProfiling = ag.getQueryProfiling();
-            if (qProfiling != null) {
-                qProfiling.queryStared(this);
-                startTime = System.nanoTime();
-            } else {
-                startTime = 0;
-            }
-        } else {
-            qCache     = null;
-            qProfiling = null;
-            startTime  = 0;
-        }
-        */
 
     	final boolean isInDebug = ag.getLogger().isLoggable(Level.FINE);
 
@@ -393,22 +385,9 @@ public abstract class Literal extends DefaultTerm implements LogicalFormula {
             Iterator<List<Term>>  annotsOptions = null;
             Literal               belInBB = null;
 
-            //Literal kForChache = null;
-            //Iterator<Unifier> cacheIt = null;
-            //List<Unifier> cacheResults = null;
-
             public boolean hasNext() {
                 if (needsUpdate)
                     get();
-
-                /*
-                if (current == null) { // end of query
-                    if (qCache != null && cacheResults != null)
-                        qCache.queryFinished(kForChache, cacheResults);
-                    if (qProfiling != null)
-                        qProfiling.queryFinished(Literal.this, System.nanoTime() - startTime);
-                }
-                */
                 return current != null;
             }
 
@@ -423,129 +402,99 @@ public abstract class Literal extends DefaultTerm implements LogicalFormula {
             private void get() {
                 needsUpdate = false;
                 current     = null;
-                if (arch != null && !arch.isRunning()) return;
 
-                // try cache iterator
-                /*
-                if (cacheIt != null) {
-                    while (cacheIt.hasNext()) {
-                        Literal ltmp = (Literal)Literal.this.capply( cacheIt.next() );
-                        Unifier u = un.clone();
-                        //System.out.println("   try "+ltmp);
-                        if (u.unifiesNoUndo(Literal.this, ltmp)) {
-                            //System.out.println("           - ans from cache "+Literal.this+": "+u);
-                            current = u;
-                            return;
-                        }
-                    }
-                    cacheIt = null;
-                    return; // do not try others after cache
-                }
-                */
+                beginloop:
+                while (current == null) { // usually quits by returns when a solutino is found (I use this loop to avoid a bit recursion and stack overflow)
 
+	                if (arch != null && !arch.isRunning()) return;
 
-                // try annots iterator
-                if (annotsOptions != null) {
-                    while (annotsOptions.hasNext()) {
-                        Literal belToTry = belInBB.copy().setAnnots(null).addAnnots( annotsOptions.next() );
-                        Unifier u = un.clone();
-                        if (u.unifiesNoUndo(Literal.this, belToTry)) {
-                            current = u;
-                        	if (isInDebug) ag.getLogger().log(Level.FINE, "     | belief annotation "+belToTry+" is an option for "+ Literal.this+ " -- "+u);
-                            return;
-                        } else {
-                        	if (isInDebug) ag.getLogger().log(Level.FINE, "     | belief annotation "+belToTry+" is NOT an option for "+ Literal.this+ " -- "+u);
-                        }
-                    }
-                    annotsOptions = null;
-                }
+	                // try annots iterator
+	                if (annotsOptions != null) {
+	                    while (annotsOptions.hasNext()) {
+	                        Literal belToTry = belInBB.copy().setAnnots(null).addAnnots( annotsOptions.next() );
+	                        Unifier u = un.clone();
+	                        if (u.unifiesNoUndo(Literal.this, belToTry)) {
+	                            current = u;
+	                        	if (isInDebug) ag.getLogger().log(Level.FINE, "     | belief annotation "+belToTry+" is an option for "+ Literal.this+ " -- "+u);
+	                            return;
+	                        } else {
+	                        	if (isInDebug) ag.getLogger().log(Level.FINE, "     | belief annotation "+belToTry+" is NOT an option for "+ Literal.this+ " -- "+u);
+	                        }
+	                    }
+	                    annotsOptions = null;
+	                }
 
-                // try rule iterator
-                if (ruleIt != null) {
-                    while (ruleIt.hasNext()) {
-                        // unifies the rule head with the result of rule evaluation
-                        Unifier ruleUn = ruleIt.next(); // evaluation result
-                        //Literal rhead  = rule.headClone();
-                        //rhead = (Literal)rhead.capply(ruleUn);
-                        Literal rhead  = rule.headCApply(ruleUn);
-                        useDerefVars(rhead, ruleUn); // replace vars by the bottom in the var clusters (e.g. X=_2; Y=_2, a(X,Y) ===> A(_2,_2))
-                        rhead.makeVarsAnnon(); // to remove vars in head with original names
+	                // try rule iterator
+	                if (ruleIt != null) {
+	                    while (ruleIt.hasNext()) {
+	                        // unifies the rule head with the result of rule evaluation
+	                        Unifier ruleUn = ruleIt.next(); // evaluation result
+	                        //Literal rhead  = rule.headClone();
+	                        //rhead = (Literal)rhead.capply(ruleUn);
+	                        Literal rhead  = rule.headCApply(ruleUn);
+	                        useDerefVars(rhead, ruleUn); // replace vars by the bottom in the var clusters (e.g. X=_2; Y=_2, a(X,Y) ===> A(_2,_2))
+	                        rhead.makeVarsAnnon(); // to remove vars in head with original names
 
-                        Unifier unC = un.clone();
-                        if (unC.unifiesNoUndo(Literal.this, rhead)) {
-                            current = unC;
-                        	if (isInDebug) ag.getLogger().log(Level.FINE, "     | rule "+rhead+" is an option for "+ Literal.this+ " -- "+unC);
-                            //if (cacheResults != null)
-                            //    cacheResults.add(unC);
-                            return;
-                        } else {
-                        	if (isInDebug) ag.getLogger().log(Level.FINE, "     | rule "+rhead+" is NOT an option for "+ Literal.this+ " -- "+unC);
-                        }
-                    }
-                    ruleIt = null;
-                }
+	                        Unifier unC = un.clone();
+	                        if (unC.unifiesNoUndo(Literal.this, rhead)) {
+	                            current = unC;
+	                        	if (isInDebug) ag.getLogger().log(Level.FINE, "     | rule "+rhead+" is an option for "+ Literal.this+ " -- "+unC);
+	                            return;
+	                        } else {
+	                        	if (isInDebug) ag.getLogger().log(Level.FINE, "     | rule "+rhead+" is NOT an option for "+ Literal.this+ " -- "+unC);
+	                        }
+	                    }
+	                    ruleIt = null;
+	                }
 
-                // try literal iterator
-                while (il.hasNext()) {
-                    belInBB = il.next(); // b is the relevant entry in BB
-                    if (belInBB.isRule()) {
-                        rule = (Rule)belInBB;
+	                // try literal iterator
+	                while (il.hasNext()) {
+	                    belInBB = il.next(); // b is the relevant entry in BB
+	                    if (belInBB.isRule()) {
+	                        rule = (Rule)belInBB;
 
-                        // create a copy of this literal, ground it and
-                        // make its vars anonymous,
-                        // it is used to define what will be the unifier used
-                        // inside the rule.
-                        if (cloneAnnon == null) {
-                            cloneAnnon = (Literal)Literal.this.capply(un);
-                            cloneAnnon.makeVarsAnnon();
-                        }
-
-                        // try cache
-                        /*
-                        if (ag != null && qCache != null) {
-                            kForChache = (Literal)Literal.this.capply(un);
-                            cacheIt = qCache.getCache(kForChache);
-                            if (cacheIt != null) {
-                                //System.out.println("use cache for "+kForChache);
-                                get();
-                                if (current != null) // if it get a value
-                                    return;
-                            }
-                            //System.out.println("start collecting "+kForChache);
-                            cacheResults = new ArrayList<Unifier>();
-                        }
-                        */
-
-                        Unifier ruleUn = new Unifier();
-                        if (ruleUn.unifiesNoUndo(cloneAnnon, rule)) { // the rule head unifies with the literal
-                            ruleIt = rule.getBody().logicalConsequence(ag,ruleUn);
-                            get();
-                            if (current != null) // if it get a value
-                                return;
-                        }
-                    } else { // not rule
-                        if (nbAnnots > 0) { // try annots backtracking
-                            if (belInBB.hasAnnot()) {
-                                int nbAnnotsB = belInBB.getAnnots().size();
-                                if (nbAnnotsB >= nbAnnots) {
-                                    annotsOptions = belInBB.getAnnots().subSets( nbAnnots );
-                                    get();
-                                    if (current != null) // if it get a value
-                                        return;
-                                }
-                            }
-                        } else { // it is an ordinary query on a belief
-                            Unifier u = un.clone();
-                            if (u.unifiesNoUndo(Literal.this, belInBB)) {
-                            	if (isInDebug) ag.getLogger().log(Level.FINE, "     | belief "+belInBB+" is an option for "+ Literal.this+ " -- "+u);
-                                current = u;
-                                return;
-                            } else {
-                            	if (isInDebug) ag.getLogger().log(Level.FINE, "     | belief "+belInBB+" is NOT an option for "+ Literal.this+ " -- "+u);
-                            }
-                        }
-                    }
-                }
+	                        // create a copy of this literal, ground it and
+	                        // make its vars anonymous,
+	                        // it is used to define what will be the unifier used
+	                        // inside the rule.
+	                        if (cloneAnnon == null) {
+	                            cloneAnnon = (Literal)Literal.this.capply(un);
+	                            cloneAnnon.makeVarsAnnon();
+	                        }
+	                        Unifier ruleUn = new Unifier();
+	                        if (ruleUn.unifiesNoUndo(cloneAnnon, rule)) { // the rule head unifies with the literal
+	                            ruleIt = rule.getBody().logicalConsequence(ag,ruleUn);
+	                            //get(); // just to avoid a bit of recursion, I am using goto
+	                            continue beginloop;
+	                            //if (current != null) // if it get a value
+	                            //    return;
+	                        }
+	                    } else { // not rule
+	                        if (nbAnnots > 0) { // try annots backtracking
+	                            if (belInBB.hasAnnot()) {
+	                                int nbAnnotsB = belInBB.getAnnots().size();
+	                                if (nbAnnotsB >= nbAnnots) {
+	                                    annotsOptions = belInBB.getAnnots().subSets( nbAnnots );
+	                                    continue beginloop;
+	                                    //get();
+	                                    //if (current != null) // if it get a value
+	                                    //    return;
+	                                }
+	                            }
+	                        } else { // it is an ordinary query on a belief
+	                            Unifier u = un.clone();
+	                            if (u.unifiesNoUndo(Literal.this, belInBB)) {
+	                            	if (isInDebug) ag.getLogger().log(Level.FINE, "     | belief "+belInBB+" is an option for "+ Literal.this+ " -- "+u);
+	                                current = u;
+	                                return;
+	                            } else {
+	                            	if (isInDebug) ag.getLogger().log(Level.FINE, "     | belief "+belInBB+" is NOT an option for "+ Literal.this+ " -- "+u);
+	                            }
+	                        }
+	                    }
+	                }
+	                break; // do not repeat! the loop is used by 'continue' only
+                } // while
             }
 
 
@@ -596,16 +545,19 @@ public abstract class Literal extends DefaultTerm implements LogicalFormula {
                 ns = (Atom)i.next();
 
             Term tfunctor = i.next();
-
             boolean pos = Literal.LPos;
             if (tfunctor.isLiteral() && ((Literal)tfunctor).negated()) {
                 pos = Literal.LNeg;
             }
+
+            String sfunctor;
             if (tfunctor.isString()) {
-                tfunctor = ASSyntax.parseTerm( ((StringTerm)tfunctor).getString() );
+                sfunctor = ((StringTerm)tfunctor).getString();
+            } else {
+            	sfunctor = ((Atom)tfunctor).getFunctor();
             }
 
-            Literal l = new LiteralImpl(ns, pos,((Atom)tfunctor).getFunctor());
+            Literal l = new LiteralImpl(ns, pos, sfunctor);
 
             if (i.hasNext()) {
                 l.setTerms(((ListTerm)i.next()).cloneLT());
@@ -615,7 +567,7 @@ public abstract class Literal extends DefaultTerm implements LogicalFormula {
             }
             return l;
         } catch (Exception e) {
-            throw new JasonException("Error creating literal from "+lt);
+            throw new JasonException("Error creating literal from "+lt+". "+e.getMessage());
         }
     }
 
@@ -630,11 +582,31 @@ public abstract class Literal extends DefaultTerm implements LogicalFormula {
             return this;
     }
 
+    public Literal addSourceInfoAsAnnots(SourceInfo info) {
+        Term codesrc     = SourceInfo.aNOCODE;
+        Term codeline    = SourceInfo.aNOCODE;
+        if (info != null) {
+            if (info.getSrcFile() != null)
+                codesrc = new StringTermImpl(info.getSrcFile());
+            codeline = new NumberTermImpl(info.getSrcLine());
+        }
+
+        // ASL source
+        if (getAnnot("code_src") == null)
+            addAnnot(ASSyntax.createStructure("code_src", codesrc));
+
+        // line in the source
+        if (getAnnot("code_line") == null)
+            addAnnot(ASSyntax.createStructure("code_line", codeline));
+
+    	return this;
+    }
+
     public String getAsJSON(String identation) {
     	StringBuilder json = new StringBuilder(identation+"{\n");
     	json.append(identation+"   \"functor\" : \""+ getFunctor() + "\"");
     	if (negated()) {
-        	json.append(identation+",\n   \"negated\" : true");    		
+        	json.append(identation+",\n   \"negated\" : true");
     	}
     	if (hasTerm()) {
 	    	json.append(",\n"+identation+"   \"terms\"   : [\n");

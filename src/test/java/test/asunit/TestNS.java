@@ -81,7 +81,7 @@ public class TestNS {
         bob.assertPrint("[10]", 10);
 
         bob.addGoal("ia");
-        bob.assertPrint("[default,ns1,ns2,k]", 10);
+        bob.assertPrint("[kqml,default,ns1,ns2,k]", 10);
         bob.assertPrint("[50,0,10,20,40]", 10);
         bob.assertPrint("[default,k]", 10);
 

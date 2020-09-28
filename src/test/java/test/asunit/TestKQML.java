@@ -1,12 +1,12 @@
 package test.asunit;
 
-import jason.asSyntax.ASSyntax;
-import jason.asSyntax.parser.ParseException;
-import jason.asunit.TestAgent;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
+import jason.asSyntax.ASSyntax;
+import jason.asSyntax.parser.ParseException;
+import jason.asunit.TestAgent;
 
 public class TestKQML {
 
@@ -74,9 +74,9 @@ public class TestKQML {
         bob.addGoal("send_ask1");
         bob.addGoal("send_ask2");
         bob.assertIdle(10);   // let bob to send the messages
-        maria.assertIdle(10); // let maria to process the messages
+        maria.assertIdle(30); // let maria to process the messages
         bob.assertAct("act1(1)", 15);
-        maria.assertIdle(5);
+        maria.assertIdle(30);
         bob.assertBel("vl(1)[source(maria)]", 5); // answer of maria for second askOne (assynchronous)
         maria.assertPrint("bob", 5);
         bob.assertPrint("t2(11)", 5); // answer for ask2
@@ -92,7 +92,7 @@ public class TestKQML {
         bob.addGoal("send_ask4");
         bob.assertIdle(10);
         maria.assertIdle(10);
-        bob.assertPrint("Maria dos Santos", 5); // answer for ask3
+        bob.assertPrint("Maria dos Santos", 5); // answer for ask4
     }
 
     @Test(timeout=2000)
@@ -130,6 +130,7 @@ public class TestKQML {
         bob.addGoal("send_tellHow");
         bob.assertIdle(10);
         maria.assertPrint("Hello bob", 20);
+        org.junit.Assert.assertTrue(maria.getPL().get("hp").getLabel().toString().contains("source(bob)"));
 
         bob.addGoal("send_untellHow");
         bob.assertIdle(10);

@@ -19,16 +19,15 @@ targetCompatibility = 1.8
 repositories {
     mavenCentral()
 
-    maven { url "http://jacamo.sourceforge.net/maven2" }
+    //maven { url "http://jacamo.sourceforge.net/maven2" }
+    maven { url "https://raw.github.com/jacamo-lang/mvn-repo/master" }
     maven { url "https://jade.tilab.com/maven/" }
     
-    flatDir {
-       dirs 'lib'
-    }
+    flatDir { dirs 'lib' }
 }
 
 dependencies {
-    compile group: 'org.jason-lang',     name: 'jason' ,   version: '<VERSION>'
+    compile group: 'org.jason',     name: 'jason' ,   version: '<VERSION>'
 }
 
 sourceSets {
@@ -46,6 +45,9 @@ task run (type: JavaExec, dependsOn: 'classes') {
     description 'runs the application'
     main = '<PROJECT-RUNNER-CLASS>'
     args '<PROJECT-FILE>'
+	// options:
+	//     args = ['<PROJECT-FILE>', '--debug']
+	//     args = ['<PROJECT-FILE>', '--log-conf', 'l.p'] // to use file l.p to configure logging
     classpath sourceSets.main.runtimeClasspath
 }
 

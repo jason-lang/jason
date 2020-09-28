@@ -10,21 +10,7 @@ import jason.asSemantics.Intention;
 import jason.asSemantics.Option;
 import jason.asSemantics.TransitionSystem;
 import jason.asSemantics.Unifier;
-import jason.asSyntax.ASSyntax;
-import jason.asSyntax.Atom;
-import jason.asSyntax.ListTerm;
-import jason.asSyntax.ListTermImpl;
-import jason.asSyntax.Literal;
-import jason.asSyntax.NumberTermImpl;
-import jason.asSyntax.Plan;
-import jason.asSyntax.Pred;
-import jason.asSyntax.StringTerm;
-import jason.asSyntax.StringTermImpl;
-import jason.asSyntax.Structure;
-import jason.asSyntax.Term;
-import jason.asSyntax.Trigger;
-import jason.asSyntax.UnnamedVar;
-import jason.asSyntax.VarTerm;
+import jason.asSyntax.*;
 import jason.asSyntax.parser.ParseException;
 import jason.bb.BeliefBase;
 import jason.stdlib.add_annot;
@@ -186,23 +172,23 @@ public class StdLibTest extends TestCase {
         new add_plan().execute(ts, new Unifier(), new Term[] { plans, new Structure("fromLT") });
 
         // the plan t2 (first plan now) must have 4 sources
-        assertEquals(ag.getPL().get("t2").getLabel().getSources().size(), 4);
+        assertEquals(4, ag.getPL().get("t2").getLabel().getSources().size());
 
         // the plan t1 (third plan now) must have 2 sources
-        assertEquals(ag.getPL().get("t1").getLabel().getSources().size(), 2);
+        assertEquals(3, ag.getPL().get("t1").getLabel().getSources().size());
 
         // remove plan t2,t3 (source = nosource) from PS
         ListTerm llt = ListTermImpl.parseList("[t2,t3]");
         assertTrue((Boolean)new remove_plan().execute(ts, new Unifier(), new Term[] { (Term) llt, new Pred("nosource") }));
-        assertEquals(ag.getPL().getPlans().size(), 3);
+        assertEquals(3, ag.getPL().getPlans().size());
 
         // remove plan t2,t3 (source = self) from PS
         llt = ListTermImpl.parseList("[t2,t3]");
         assertTrue((Boolean)new remove_plan().execute(ts, new Unifier(), new Term[] { (Term) llt }));
-        assertEquals(ag.getPL().getPlans().size(), 2);
+        assertEquals(2, ag.getPL().getPlans().size());
 
         // the plan t2 (first plan now) must have 3 sources
-        assertEquals(ag.getPL().get("t2").getLabel().getSources().size(), 3);
+        assertEquals(3, ag.getPL().get("t2").getLabel().getSources().size());
 
     }
 
@@ -398,8 +384,45 @@ public class StdLibTest extends TestCase {
         assertEquals(i.next().get("X").toString(),"[a]");
         assertEquals(i.next().get("X").toString(),"[]");
         assertFalse(i.hasNext());
-
     }
+
+    @SuppressWarnings("unchecked")
+    public void testPrefixString() throws Exception {
+        Term l1 = ASSyntax.createString("abc");
+        Term l2 = ASSyntax.createString("ab");
+        Term l3 = ASSyntax.createString("bc");
+
+        Unifier u = new Unifier();
+        Iterator<Unifier> i = (Iterator<Unifier>)new jason.stdlib.prefix().execute(null, u, new Term[] { l1, l1 });
+        assertTrue(i != null);
+        assertTrue(i.hasNext());
+        assertTrue(i.next().size() == 0);
+
+        // test prefix([a,b],[a,b,c])
+        u = new Unifier();
+        i = (Iterator<Unifier>)new jason.stdlib.prefix().execute(null, u, new Term[] { l2, l1 });
+        assertTrue(i != null);
+        //assertTrue(i.hasNext());
+        //assertTrue(i.next().size() == 0);
+
+        // test prefix([b,c],[a,b,c])
+        u = new Unifier();
+        i = (Iterator<Unifier>)new jason.stdlib.prefix().execute(null, u, new Term[] { l3, l1 });
+        assertFalse(i.hasNext());
+
+        // test prefix(X,[a,b,c])
+        Term tx = ASSyntax.parseTerm("X");
+        u = new Unifier();
+        i = (Iterator<Unifier>)new jason.stdlib.prefix().execute(null, u, new Term[] { tx, l1 });
+        assertTrue(iteratorSize(i) == 4);
+        i = (Iterator<Unifier>)new jason.stdlib.prefix().execute(null, u, new Term[] { tx, l1 });
+        assertEquals("\"abc\"", i.next().get("X").toString());
+        assertEquals("\"ab\"",  i.next().get("X").toString());
+        assertEquals("\"a\"",   i.next().get("X").toString());
+        assertEquals("\"\"",    i.next().get("X").toString());
+        assertFalse(i.hasNext());
+    }
+
 
     @SuppressWarnings("unchecked")
     public void testSuffix() throws Exception {
@@ -449,8 +472,48 @@ public class StdLibTest extends TestCase {
         assertEquals(i.next().get("X").toString(),"[c]");
         assertEquals(i.next().get("X").toString(),"[]");
         assertFalse(i.hasNext());
-
     }
+
+    @SuppressWarnings("unchecked")
+    public void testSuffixString() throws Exception {
+        Term l1 = ASSyntax.createString("abc");
+        Term l2 = ASSyntax.createString("bc");
+        Term l3 = ASSyntax.createString("ab");
+
+        // test suffix([a,b,c],[a,b,c])
+        Unifier u = new Unifier();
+        Iterator<Unifier> i = (Iterator<Unifier>)new jason.stdlib.suffix().execute(null, u, new Term[] { l1, l1 });
+        assertTrue(i != null);
+        assertTrue(i.hasNext());
+        assertTrue(i.next().size() == 0);
+
+        // test suffix([b,c],[a,b,c])
+        u = new Unifier();
+        i = (Iterator<Unifier>)new jason.stdlib.suffix().execute(null, u, new Term[] { l2, l1 });
+        assertTrue(i != null);
+        //assertTrue(i.hasNext());
+        //assertTrue(i.next().size() == 0);
+
+        // test suffix([a,b],[a,b,c])
+        u = new Unifier();
+        i = (Iterator<Unifier>)new jason.stdlib.suffix().execute(null, u, new Term[] { l3, l1 });
+        assertFalse(i.hasNext());
+
+
+        // test suffix(X,[a,b,c])
+        Term tx = ASSyntax.parseTerm("X");
+        u = new Unifier();
+        i = (Iterator<Unifier>)new jason.stdlib.suffix().execute(null, u, new Term[] { tx, l1 });
+        assertTrue(iteratorSize(i) == 4);
+        i = (Iterator<Unifier>)new jason.stdlib.suffix().execute(null, u, new Term[] { tx, l1 });
+        assertEquals("\"abc\"", i.next().get("X").toString());
+        assertEquals("\"bc\"",  i.next().get("X").toString());
+        assertEquals("\"c\"",   i.next().get("X").toString());
+        assertEquals("\"\"",    i.next().get("X").toString());
+
+        assertFalse(i.hasNext());
+    }
+
 
     @SuppressWarnings("unchecked")
     public void testSublist() throws Exception {
@@ -616,7 +679,7 @@ public class StdLibTest extends TestCase {
 
         Unifier u = new Unifier();
         VarTerm y = new VarTerm("Y");
-        assertTrue((Boolean)new jason.stdlib.replace().execute(ts, u, 
+        assertTrue((Boolean)new jason.stdlib.replace().execute(ts, u,
             new Term[] {
                 ASSyntax.createString("hello day"),
                 ASSyntax.createString("day"),

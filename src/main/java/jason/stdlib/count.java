@@ -42,6 +42,8 @@ import java.util.Iterator;
   </ul>
 
   @see jason.stdlib.findall
+  @see jason.stdlib.setof
+  @see jason.stdlib.namespace
 
   @see jason.functions.Count function version
 */

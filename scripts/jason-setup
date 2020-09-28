@@ -1,6 +1,6 @@
 #!/bin/bash
 
-JasonREL=2.4
+JasonREL=2.6
 
 if [ -z "$JASON_HOME" ] ; then
     CURDIR="`pwd`"

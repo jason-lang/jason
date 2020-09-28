@@ -261,7 +261,7 @@ public class CentralisedMASLauncherAnt implements MASLauncherInfraTier {
         script = replace(script, "<PROJECT-RUNNER-CLASS>", jason.infra.centralised.RunCentralisedMAS.class.getName());
         String sDebug = "";
         if (debug) {
-            sDebug = " -debug";
+            sDebug = " -d";
         }
         script = replace(script, "<DEBUG>", sDebug);
         script = replace(script, "<OTHER-TASK>", "");

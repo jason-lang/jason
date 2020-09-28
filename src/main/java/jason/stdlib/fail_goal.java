@@ -3,12 +3,12 @@ package jason.stdlib;
 import jason.JasonException;
 import jason.asSemantics.Event;
 import jason.asSemantics.GoalListener;
-import jason.asSemantics.GoalListener.FinishStates;
 import jason.asSemantics.IMCondition;
 import jason.asSemantics.IntendedMeans;
 import jason.asSemantics.Intention;
 import jason.asSemantics.TransitionSystem;
 import jason.asSemantics.Unifier;
+import jason.asSyntax.ASSyntax;
 import jason.asSyntax.Literal;
 import jason.asSyntax.Term;
 import jason.asSyntax.Trigger.TEOperator;
@@ -50,7 +50,7 @@ import jason.asSyntax.Trigger.TEOperator;
   @see jason.stdlib.drop_intention
   @see jason.stdlib.drop_desire
   @see jason.stdlib.succeed_goal
-  @see jason.stdlib.current_intention
+  @see jason.stdlib.intention
   @see jason.stdlib.suspend
   @see jason.stdlib.suspended
   @see jason.stdlib.resume
@@ -78,7 +78,7 @@ import jason.asSyntax.Trigger.TEOperator;
 				"jason.stdlib.drop_desire",
 				"jason.stdlib.succeed_goal",
 				"jason.stdlib.fail_goal",
-				"jason.stdlib.current_intention",
+				"jason.stdlib.intention",
 				"jason.stdlib.resume",
 				"jason.stdlib.suspend",
 				"jason.stdlib.suspended"
@@ -107,7 +107,7 @@ public class fail_goal extends succeed_goal {
                 // notify listener
                 if (ts.hasGoalListener())
                     for (GoalListener gl: ts.getGoalListeners())
-                        gl.goalFailed(im.getTrigger());
+                        gl.goalFailed(im.getTrigger(), ASSyntax.createAtom("drop_by_fail_goal"));
 
                 // generate failure event
                 Event failEvent = ts.findEventForFailure(i, c.getTrigger()); // find fail event for the goal just dropped
@@ -121,7 +121,7 @@ public class fail_goal extends succeed_goal {
                     ts.getLogger().fine("'.fail_goal("+im.getTrigger()+")' is removing the intention without event:\n" + i);
                     if (ts.hasGoalListener())
                         for (GoalListener gl: ts.getGoalListeners())
-                            gl.goalFinished(im.getTrigger(), FinishStates.unachieved);
+                            gl.goalFinished(im.getTrigger(), null);
 
                     i.fail(ts.getC());
                     return 3;
@@ -136,6 +136,10 @@ public class fail_goal extends succeed_goal {
 
     @Override
     void dropInEvent(TransitionSystem ts, Event e, Intention i) throws Exception {
+        if (ts.hasGoalListener())
+            for (GoalListener gl: ts.getGoalListeners())
+                gl.goalFailed(e.getTrigger().clone(), ASSyntax.createAtom("drop_by_fail_goal"));
+
         e.getTrigger().setTrigOp(TEOperator.del);
     }
 }

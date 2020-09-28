@@ -1,24 +1,25 @@
 package jason.stdlib;
 
+import java.util.Iterator;
+
 import jason.JasonException;
 import jason.asSemantics.ActionExec;
 import jason.asSemantics.Circumstance;
 import jason.asSemantics.DefaultInternalAction;
 import jason.asSemantics.Event;
 import jason.asSemantics.GoalListener;
+import jason.asSemantics.GoalListener.GoalStates;
+import jason.asSemantics.IMCondition;
+import jason.asSemantics.IntendedMeans;
 import jason.asSemantics.Intention;
 import jason.asSemantics.TransitionSystem;
 import jason.asSemantics.Unifier;
-import jason.asSemantics.GoalListener.FinishStates;
-import jason.asSemantics.IMCondition;
-import jason.asSemantics.IntendedMeans;
+import jason.asSyntax.Atom;
 import jason.asSyntax.Literal;
 import jason.asSyntax.Term;
 import jason.asSyntax.Trigger;
 import jason.asSyntax.Trigger.TEOperator;
 import jason.asSyntax.Trigger.TEType;
-
-import java.util.Iterator;
 
 /**
   <p>Internal action:
@@ -49,7 +50,7 @@ import java.util.Iterator;
   @see jason.stdlib.drop_intention
   @see jason.stdlib.drop_desire
   @see jason.stdlib.fail_goal
-  @see jason.stdlib.current_intention
+  @see jason.stdlib.intention
   @see jason.stdlib.suspend
   @see jason.stdlib.suspended
   @see jason.stdlib.resume
@@ -76,14 +77,16 @@ import java.util.Iterator;
                 "jason.stdlib.drop_intention",
                 "jason.stdlib.drop_desire",
                 "jason.stdlib.fail_goal",
-                "jason.stdlib.current_intention",
+                "jason.stdlib.intention",
                 "jason.stdlib.suspend",
                 "jason.stdlib.suspended",
                 "jason.stdlib.resume"
         }
     )
-@SuppressWarnings("serial")
+
 public class succeed_goal extends DefaultInternalAction {
+
+    private static Term resumeReason = new Atom("suceed_internal_action");
 
     @Override public int getMinArgs() {
         return 1;
@@ -135,7 +138,7 @@ public class succeed_goal extends DefaultInternalAction {
             if (r > 0) {
                 C.removeEvent(e);
                 if (r == 1) {
-                    C.resumeIntention(i);
+                    C.resumeIntention(i,resumeReason);
                 }
                 un = bak.clone();
             } else {
@@ -160,7 +163,7 @@ public class succeed_goal extends DefaultInternalAction {
             if (r > 0) {
                 C.removePendingEvent(ek);
                 if (r == 1) {
-                    C.resumeIntention(i);
+                    C.resumeIntention(i,resumeReason);
                 }
                 un = bak.clone();
             } else {
@@ -194,10 +197,10 @@ public class succeed_goal extends DefaultInternalAction {
             Intention i = a.getIntention();
             int r = dropIntention(i, c, ts, un);
             if (r > 0) { // i was changed
-                C.removePendingAction(i.getId());  // remove i from PA
-                if (r == 1) {                      // i must continue running
-                    C.resumeIntention(i);          // and put the intention back in I
-                }                                  // if r > 1, the event was generated and i will be back soon
+                C.removePendingAction(i.getId());       // remove i from PA
+                if (r == 1) {                           // i must continue running
+                    C.resumeIntention(i,resumeReason);  // and put the intention back in I
+                }                                       // if r > 1, the event was generated and i will be back soon
                 un = bak.clone();
             }
         }
@@ -208,7 +211,7 @@ public class succeed_goal extends DefaultInternalAction {
             if (r > 0) {
                 C.removePendingIntention(i.getId());
                 if (r == 1) {
-                    C.resumeIntention(i);
+                    C.resumeIntention(i,resumeReason);
                 }
                 un = bak.clone();
             }
@@ -229,7 +232,7 @@ public class succeed_goal extends DefaultInternalAction {
                     return 3;
                 if (ts.hasGoalListener())
                     for (GoalListener gl: ts.getGoalListeners())
-                        gl.goalFinished(im.getTrigger(), FinishStates.achieved);
+                        gl.goalFinished(im.getTrigger(), GoalStates.achieved);
 
                 // continue the intention
                 if (!i.isFinished()) { // could be finished after i.dropGoal() !!
@@ -249,10 +252,10 @@ public class succeed_goal extends DefaultInternalAction {
     void dropInEvent(TransitionSystem ts, Event e, Intention i) throws Exception {
         Circumstance C = ts.getC();
         C.removeEvent(e);
+        if (ts.hasGoalListener())
+            for (GoalListener gl: ts.getGoalListeners())
+                gl.goalFinished(e.getTrigger(), GoalStates.achieved);
         if (i != null) {
-            if (ts.hasGoalListener())
-                for (GoalListener gl: ts.getGoalListeners())
-                    gl.goalFinished(e.getTrigger(), FinishStates.achieved);
             i.peek().removeCurrentStep();
             ts.applyClrInt(i);
             C.addRunningIntention(i);

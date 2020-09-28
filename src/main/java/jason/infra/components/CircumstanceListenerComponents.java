@@ -3,6 +3,8 @@ package jason.infra.components;
 import jason.asSemantics.CircumstanceListener;
 import jason.asSemantics.Event;
 import jason.asSemantics.Intention;
+import jason.asSyntax.Term;
+import jason.asSyntax.Trigger;
 import jason.infra.centralised.CentralisedAgArchAsynchronous;
 
 public class CircumstanceListenerComponents implements CircumstanceListener {
@@ -20,24 +22,32 @@ public class CircumstanceListenerComponents implements CircumstanceListener {
         ag.wakeUpAct();
     }
 
-    public void eventAdded(Event e) {
+    @Override public void eventAdded(Event e) {
         notifyDeliberate();
     }
 
-    public void intentionAdded(Intention i) {
+    @Override public void intentionAdded(Intention i) {
         notifyAct();
     }
 
-    public void intentionDropped(Intention i) {
+    @Override public void intentionDropped(Intention i) {
         notifyDeliberate();
     }
 
-    public void intentionSuspended(Intention i, String reason) {
+    @Override public void intentionSuspended(Trigger t, Intention i, Term reason) {
         notifyDeliberate();
     }
 
-    public void intentionResumed(Intention i) {
-        //notifyDeliberate();
+    @Override public void intentionWaiting(Intention i, Term reason) {
+        notifyDeliberate();
+    }
+
+    @Override public void intentionResumed(Intention i, Term reason) {
+        notifyAct();
+    }
+
+    @Override
+    public void intentionExecuting(Intention i, Term reason) {
         notifyAct();
     }
 }

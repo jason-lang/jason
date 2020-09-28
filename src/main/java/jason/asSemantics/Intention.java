@@ -1,5 +1,17 @@
 package jason.asSemantics;
 
+import java.io.Serializable;
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.Iterator;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
+import jason.asSemantics.Circumstance.IntentionPlace;
+import jason.asSyntax.ASSyntax;
+import jason.asSyntax.Atom;
 import jason.asSyntax.ListTerm;
 import jason.asSyntax.ListTermImpl;
 import jason.asSyntax.NumberTermImpl;
@@ -9,15 +21,6 @@ import jason.asSyntax.Term;
 import jason.asSyntax.Trigger;
 import jason.asSyntax.Trigger.TEOperator;
 import jason.util.Pair;
-
-import java.io.Serializable;
-import java.util.ArrayDeque;
-import java.util.Deque;
-import java.util.Iterator;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 /**
  * Represents and Intention (a stack of IntendedMeans).
@@ -29,6 +32,8 @@ import org.w3c.dom.Element;
  */
 public class Intention implements Serializable, Comparable<Intention>, Iterable<IntendedMeans> {
 
+    public enum State { running, waiting, suspended, undefined }
+
     private static final long serialVersionUID = 1L;
     public  static final Intention EmptyInt = null;
     private static AtomicInteger idCount = new AtomicInteger(0);
@@ -36,7 +41,8 @@ public class Intention implements Serializable, Comparable<Intention>, Iterable<
     private int     id;
     private int     atomicCount    = 0; // number of atomic intended means in the intention
     private boolean isSuspended = false; // suspended by the internal action .suspend
-    private String  suspendedReason = null;
+    private Term    suspendedReason = null;
+    private IntentionPlace place = IntentionPlace.None;
 
     // new in JasonER
     private int     intestedInUpdateEvents = 0;
@@ -123,20 +129,21 @@ public class Intention implements Serializable, Comparable<Intention>, Iterable<
 
     public void setSuspended(boolean b) {
         isSuspended = b;
-        if (!b)
-            suspendedReason = null;
+        //if (!b)
+        //    suspendedReason = null;
     }
 
     public boolean isSuspended() {
         return isSuspended;
     }
 
-    public void setSuspendedReason(String r) {
+    public void setSuspendedReason(Term r) {
         suspendedReason = r;
     }
-    public String getSuspendedReason() {
+    private static Atom noReason = ASSyntax.createAtom("no_reason");
+    public Term getSuspendedReason() {
         if (suspendedReason == null)
-            return "";
+            return noReason;
         else
             return suspendedReason;
     }
@@ -153,6 +160,35 @@ public class Intention implements Serializable, Comparable<Intention>, Iterable<
     public IntendedMeans getBottom() {
         return intendedMeans.getLast();
     }
+
+    /** returns where the intention is in the interpreter data structures. It is updated by circumstance getAllIntentions. */
+    public IntentionPlace getPlace() {
+        return place;
+    }
+    public void setPlace(IntentionPlace place) {
+        this.place = place;
+    }
+
+    public State getStateBasedOnPlace() {
+        switch (place) {
+        case None: return State.undefined;
+
+        case PendingActions: return State.waiting;
+        case PendingEvents: return State.suspended;
+        case PendingIntentions:
+            if (isSuspended())
+                return State.suspended;
+            else
+                return State.waiting;
+
+        case EventQueue: return State.running;
+        case RunningIntentions: return State.running;
+        case SelectedEvent: return State.running;
+        case SelectedIntention: return State.running;
+        }
+        return State.undefined;
+    }
+
 
     /** returns true if the intention has an IM where TE = g, using u to verify equality */
     public boolean hasTrigger(Trigger g, Unifier u) {
@@ -278,8 +314,8 @@ public class Intention implements Serializable, Comparable<Intention>, Iterable<
         return s.toString();
     }
 
-    public Term getAsTerm() {
-        Structure intention = new Structure("intention");
+    public Structure getAsTerm() {
+        Structure intention = new Structure("intention", 2);
         intention.addTerm(new NumberTermImpl(getId()));
         ListTerm lt = new ListTermImpl();
         for (IntendedMeans im: intendedMeans)

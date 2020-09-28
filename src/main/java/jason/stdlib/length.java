@@ -1,5 +1,7 @@
 package jason.stdlib;
 
+import java.util.Collection;
+
 import jason.asSemantics.DefaultInternalAction;
 import jason.asSemantics.InternalAction;
 import jason.asSemantics.TransitionSystem;
@@ -8,6 +10,7 @@ import jason.asSyntax.ListTerm;
 import jason.asSyntax.MapTerm;
 import jason.asSyntax.NumberTerm;
 import jason.asSyntax.NumberTermImpl;
+import jason.asSyntax.ObjectTerm;
 import jason.asSyntax.SetTerm;
 import jason.asSyntax.StringTerm;
 import jason.asSyntax.Term;
@@ -96,24 +99,34 @@ public class length extends DefaultInternalAction {
     @Override
     public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {
         checkArguments(args);
-        Term l1 = args[0];
         Term l2 = args[1];
 
-        NumberTerm size = null;
-        if (l1.isList()) {
-            ListTerm lt = (ListTerm) l1;
-            size = new NumberTermImpl(lt.size());
-        } else if (l1.isString()) {
-            StringTerm st = (StringTerm) l1;
-            size = new NumberTermImpl(st.getString().length());
-        } else if (l1.isSet()) {
-            size = new NumberTermImpl(((SetTerm) l1).size());
-        } else if (l1.isMap()) {
-            size = new NumberTermImpl(((MapTerm) l1).size());
-        }
+        NumberTerm size = getSize(args[0]);
         if (size != null) {
             return un.unifies(l2, size);
+        } else {
+            return false;
         }
-        return false;
+    }
+
+    @SuppressWarnings("rawtypes")
+    public static NumberTerm getSize(Term arg) {
+        if (arg.isList()) {
+            ListTerm lt = (ListTerm) arg;
+            return new NumberTermImpl(lt.size());
+        } else if (arg.isString()) {
+            StringTerm st = (StringTerm) arg;
+            return new NumberTermImpl(st.getString().length());
+        } else if (arg.isSet()) {
+            return new NumberTermImpl(((SetTerm) arg).size());
+        } else if (arg.isMap()) {
+            return new NumberTermImpl(((MapTerm) arg).size());
+        } else if (arg instanceof ObjectTerm) {
+            ObjectTerm o = (ObjectTerm)arg;
+            if (o.getObject() instanceof Collection) {
+                return new NumberTermImpl(((Collection) o.getObject()).size());
+            }
+        }
+        return null;
     }
 }

@@ -72,7 +72,7 @@ import jason.util.Config;
 public class Agent implements Serializable {
 
     private static final long serialVersionUID = -2628324957954474455L;
-    
+
     // Members
     protected BeliefBase       bb = null;
     protected PlanLibrary      pl = null;
@@ -130,8 +130,6 @@ public class Agent implements Serializable {
         }
     }
 
-
-
     /** Initialises the TS and other components of the agent */
     public void initAg() {
         if (bb == null) bb = new DefaultBeliefBase();
@@ -151,7 +149,6 @@ public class Agent implements Serializable {
 
         if (! "false".equals(Config.get().getProperty(Config.START_WEB_MI))) MindInspectorWeb.get().registerAg(this);
     }
-
 
     /** parse and load the agent code, asSrc may be null */
     @Deprecated
@@ -192,6 +189,8 @@ public class Agent implements Serializable {
                 addInitialGoalsFromProjectInBB();
                 addInitialGoalsInTS();
                 fixAgInIAandFunctions(this); // used to fix agent reference in functions used inside includes
+            } else {
+                throw new JasonException("Error loading code from "+asSrc);
             }
 
             loadKqmlPlans();
@@ -220,7 +219,49 @@ public class Agent implements Serializable {
         }
     }
 
+    /**
+     * Clear Agent's Beliefs and Plan Library
+     */
+    public void clearAg() {
+        if (bb != null) bb.clear();
+        if (pl != null) pl.clear();
+    }
 
+    /**
+     * only parse and load the initial agent code, asSrc may be null
+     * it does not load kqml default plans and do not trigger initial beliefs and goals
+     */
+    public void loadAgSrc(String asSrc) throws JasonException {
+        // set the agent
+        try {
+            boolean parsingOk = true;
+            if (asSrc != null && !asSrc.isEmpty()) {
+                asSrc = asSrc.replaceAll("\\\\", "/");
+
+                if (asSrc.startsWith(SourcePath.CRPrefix)) {
+                    // loads the class from a jar file (for example)
+                    parseAS(Agent.class.getResource(asSrc.substring(SourcePath.CRPrefix.length())).openStream() , asSrc);
+                } else {
+                    // check whether source is an URL string
+                    try {
+                        parsingOk = parseAS(new URL(asSrc));
+                    } catch (MalformedURLException e) {
+                        parsingOk = parseAS(new File(asSrc));
+                    }
+                }
+            }
+
+            if (parsingOk) {
+                if (getPL().hasMetaEventPlans())
+                    getTS().addGoalListener(new GoalListenerForMetaEvents(getTS()));
+            }
+
+            setASLSrc(asSrc);
+        } catch (Exception e) {
+            logger.log(Level.SEVERE, "Error loading code from "+asSrc, e);
+            throw new JasonException("Error loading code from "+asSrc + " ---- " + e);
+        }
+    }
 
     public void loadKqmlPlans() {
         // load kqml plans at the end of the ag PL
@@ -1114,6 +1155,17 @@ public class Agent implements Serializable {
         ag.appendChild(importedNodeBB);
         Node importedNodePL = document.importNode(getPL().getAsDOM(document), true);
         ag.appendChild(importedNodePL);
+
+        // agent status
+        Element ess = (Element) document.createElement("status");
+        ag.appendChild(ess);
+        Map<String,Object> status = getTS().getAgArch().getStatus();
+        for (String k: status.keySet()) {
+            Element es = (Element) document.createElement("entry");
+            es.setAttribute("key", k);
+            es.setAttribute("value", status.get(k).toString());
+            ess.appendChild(es);
+        }
         return ag;
     }
 

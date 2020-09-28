@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import jason.asSemantics.Message;
 import jason.asSemantics.Unifier;
 import jason.asSyntax.ASSyntax;
 import jason.asSyntax.Atom;
@@ -1163,17 +1164,17 @@ public class TermTest extends TestCase {
         assertTrue(new Unifier().unifies(t1, t2));
         assertTrue(u.unifies(v1, v2));
     }
-    
+
     public void testSetTerm() throws ParseException, TokenMgrError {
         SetTerm t1 = new SetTermImpl();
         t1.addAll( ASSyntax.parseList("[a,5,p(3),a]"));
         assertEquals(3, t1.size());
-        
+
         SetTerm t2 = new SetTermImpl();
         t2.addAll( ASSyntax.parseList("[p(3),a,5]"));
-        
+
         assertTrue(t1.equals(t2));
-        
+
         Unifier u = new Unifier();
         assertTrue(u.unifies(t1, t2));
 
@@ -1189,69 +1190,90 @@ public class TermTest extends TestCase {
         Term t1 = ASSyntax.parseLiteral("~alice(person(female))");
         Term t2 = ASSyntax.parseLiteral("alice(~person(female))");
         assertTrue(t1.hashCode() != t2.hashCode());
-        
+
         t1 = ASSyntax.createLiteral("test", ASSyntax.createString("TermOne"), ASSyntax.createString("TermTwo"));
-        t2 = ASSyntax.createLiteral("test", ASSyntax.createString("TermTwo"), ASSyntax.createString("TermOne"));        
+        t2 = ASSyntax.createLiteral("test", ASSyntax.createString("TermTwo"), ASSyntax.createString("TermOne"));
         assertTrue(t1.hashCode() != t2.hashCode());
     }
 
     public void testJSON() throws ParseException, TokenMgrError {
         Term t1 = ASSyntax.parseLiteral("alice");
 
-        assertEquals("{\n" + 
-                "   \"functor\" : \"alice\"\n" + 
+        assertEquals("{\n" +
+                "   \"functor\" : \"alice\"\n" +
                 "}", t1.getAsJSON(""));
 
         t1 = ASSyntax.parseLiteral("~alice(female,10)");
-        assertEquals("{\n" + 
-                "   \"functor\" : \"alice\",\n" + 
-                "   \"negated\" : true,\n" + 
-                "   \"terms\"   : [\n" + 
-                "      {\n" + 
-                "         \"functor\" : \"female\"\n" + 
-                "      },\n" + 
-                "      10\n" + 
-                "   ]\n" + 
+        assertEquals("{\n" +
+                "   \"functor\" : \"alice\",\n" +
+                "   \"negated\" : true,\n" +
+                "   \"terms\"   : [\n" +
+                "      {\n" +
+                "         \"functor\" : \"female\"\n" +
+                "      },\n" +
+                "      10\n" +
+                "   ]\n" +
                 "}", t1.getAsJSON(""));
 
         t1 = ASSyntax.parseLiteral("~alice(person(female),10,[a,\"10\",p(10)])[source(bob),43]");
-        assertEquals("{\n" + 
-                "   \"functor\" : \"alice\",\n" + 
-                "   \"negated\" : true,\n" + 
-                "   \"terms\"   : [\n" + 
-                "      {\n" + 
-                "         \"functor\" : \"person\",\n" + 
-                "         \"terms\"   : [\n" + 
-                "            {\n" + 
-                "               \"functor\" : \"female\"\n" + 
-                "            }\n" + 
-                "         ]\n" + 
-                "      },\n" + 
-                "      10,\n" + 
-                "      [\n" + 
-                "         {\n" + 
-                "            \"functor\" : \"a\"\n" + 
-                "         },\n" + 
-                "         \"10\",\n" + 
-                "         {\n" + 
-                "            \"functor\" : \"p\",\n" + 
-                "            \"terms\"   : [\n" + 
-                "               10\n" + 
-                "            ]\n" + 
-                "         }\n" + 
-                "      ]\n" + 
-                "   ],\n" + 
-                "   \"annotations\"   : [\n" + 
-                "      43,\n" + 
-                "      {\n" + 
-                "         \"functor\" : \"source\",\n" + 
-                "         \"terms\"   : [\n" + 
-                "            {\n" + 
-                "               \"functor\" : \"bob\"\n" + 
-                "            }\n" + 
-                "         ]\n" + 
-                "      }\n" + 
-                "   ]\n" + 
+        assertEquals("{\n" +
+                "   \"functor\" : \"alice\",\n" +
+                "   \"negated\" : true,\n" +
+                "   \"terms\"   : [\n" +
+                "      {\n" +
+                "         \"functor\" : \"person\",\n" +
+                "         \"terms\"   : [\n" +
+                "            {\n" +
+                "               \"functor\" : \"female\"\n" +
+                "            }\n" +
+                "         ]\n" +
+                "      },\n" +
+                "      10,\n" +
+                "      [\n" +
+                "         {\n" +
+                "            \"functor\" : \"a\"\n" +
+                "         },\n" +
+                "         \"10\",\n" +
+                "         {\n" +
+                "            \"functor\" : \"p\",\n" +
+                "            \"terms\"   : [\n" +
+                "               10\n" +
+                "            ]\n" +
+                "         }\n" +
+                "      ]\n" +
+                "   ],\n" +
+                "   \"annotations\"   : [\n" +
+                "      43,\n" +
+                "      {\n" +
+                "         \"functor\" : \"source\",\n" +
+                "         \"terms\"   : [\n" +
+                "            {\n" +
+                "               \"functor\" : \"bob\"\n" +
+                "            }\n" +
+                "         ]\n" +
+                "      }\n" +
+                "   ]\n" +
                 "}", t1.getAsJSON(""));
+
+        Message m = new Message("tell", "bob", "karlos", ASSyntax.parseLiteral("b(a,[2,1])"), "myuniqueid");
+        assertEquals("{\n" +
+                "   \"performative\" : \"tell\",\n" +
+                "   \"sender\" : \"bob\",\n" +
+                "   \"receiver\" : \"karlos\",\n" +
+                "   \"msgId\" : \"myuniqueid\",\n" +
+                "   \"predicate\" :    {\n" +
+                "      \"functor\" : \"b\",\n" +
+                "      \"terms\"   : [\n" +
+                "         {\n" +
+                "            \"functor\" : \"a\"\n" +
+                "         },\n" +
+                "         [\n" +
+                "            2,\n" +
+                "            1\n" +
+                "         ]\n" +
+                "      ]\n" +
+                "   },\n" +
+                "   \"content\" : \"b(a,[2,1])\"\n" +
+                "}", m.getAsJSON(""));
     }
 }

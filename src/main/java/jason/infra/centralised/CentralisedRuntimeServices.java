@@ -59,10 +59,10 @@ public class CentralisedRuntimeServices extends BaseRuntimeServices {
         if (stts == null)
             stts = new Settings();
 
-        String prefix = null;
         if (father != null && father.getASLSrc() != null && father.getASLSrc().startsWith(SourcePath.CRPrefix))
-            prefix = SourcePath.CRPrefix + "/";
-        agSource = masRunner.getProject().getSourcePaths().fixPath(agSource, prefix);
+            masRunner.getProject().getSourcePaths().addPath(SourcePath.CRPrefix);
+
+        agSource = masRunner.getProject().getSourcePaths().fixPath(agSource);
 
         synchronized (logger) { // to avoid problems related to concurrent executions of .create_agent
             agName = getNewAgentName(agName);

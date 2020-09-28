@@ -5,11 +5,14 @@ import java.util.Iterator;
 import jason.JasonException;
 import jason.asSemantics.ActionExec;
 import jason.asSemantics.Circumstance;
+import jason.asSemantics.CircumstanceListener;
 import jason.asSemantics.DefaultInternalAction;
 import jason.asSemantics.Event;
 import jason.asSemantics.Intention;
 import jason.asSemantics.TransitionSystem;
 import jason.asSemantics.Unifier;
+import jason.asSyntax.ASSyntax;
+import jason.asSyntax.Atom;
 import jason.asSyntax.Literal;
 import jason.asSyntax.Term;
 import jason.asSyntax.Trigger;
@@ -45,7 +48,7 @@ import jason.asSyntax.Trigger.TEType;
   @see jason.stdlib.drop_desire
   @see jason.stdlib.succeed_goal
   @see jason.stdlib.fail_goal
-  @see jason.stdlib.current_intention
+  @see jason.stdlib.intention
   @see jason.stdlib.resume
 
  */
@@ -73,11 +76,10 @@ import jason.asSyntax.Trigger.TEType;
                 "jason.stdlib.drop_desire",
                 "jason.stdlib.succeed_goal",
                 "jason.stdlib.fail_goal",
-                "jason.stdlib.current_intention",
+                "jason.stdlib.intention",
                 "jason.stdlib.resume"
         }
     )
-@SuppressWarnings("serial")
 public class suspend extends DefaultInternalAction {
 
     boolean suspendIntention = false;
@@ -97,6 +99,8 @@ public class suspend extends DefaultInternalAction {
             throw JasonException.createWrongArgument(this,"first argument must be a literal");
     }
 
+    private static Atom reason = ASSyntax.createAtom("suspend_ia");
+
     @Override
     public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {
         checkArguments(args);
@@ -110,7 +114,7 @@ public class suspend extends DefaultInternalAction {
             Intention i = C.getSelectedIntention();
             suspendIntention = true;
             i.setSuspended(true);
-            C.addPendingIntention(SELF_SUSPENDED_INT+i.getId(), i);
+            C.addPendingIntention(SELF_SUSPENDED_INT+i.getId(), reason, i, true);
             return true;
         }
 
@@ -125,7 +129,7 @@ public class suspend extends DefaultInternalAction {
             Intention i = a.getIntention();
             if (i.hasTrigger(g, un)) {
                 i.setSuspended(true);
-                C.addPendingIntention(SUSPENDED_INT+i.getId(), i);
+                C.addPendingIntention(SUSPENDED_INT+i.getId(), reason, i, true);
             }
         }
 
@@ -133,6 +137,10 @@ public class suspend extends DefaultInternalAction {
         for (Intention i: C.getPendingIntentions().values()) {
             if (i.hasTrigger(g, un)) {
                 i.setSuspended(true);
+
+                if (C.hasListener())
+                    for (CircumstanceListener el : C.getListeners())
+                        el.intentionSuspended(g, i, reason);
             }
         }
 
@@ -142,7 +150,7 @@ public class suspend extends DefaultInternalAction {
             if (i.hasTrigger(g, un)) {
                 i.setSuspended(true);
                 C.removeRunningIntention(i);
-                C.addPendingIntention(SUSPENDED_INT+i.getId(), i);
+                C.addPendingIntention(SUSPENDED_INT+i.getId(), reason, i, true);
                 //System.out.println("sus "+g+" from I "+i.getId()+" #"+C.getPendingIntentions().size());
             }
         }
@@ -152,7 +160,7 @@ public class suspend extends DefaultInternalAction {
         if (i != null && i.hasTrigger(g, un)) {
             suspendIntention = true;
             i.setSuspended(true);
-            C.addPendingIntention(SELF_SUSPENDED_INT+i.getId(), i);
+            C.addPendingIntention(SELF_SUSPENDED_INT+i.getId(), reason, i, true);
         }
 
         // suspending G in Events
@@ -163,10 +171,10 @@ public class suspend extends DefaultInternalAction {
             i = e.getIntention();
             if (un.unifies(g, e.getTrigger()) || (i != null && i.hasTrigger(g, un))) {
                 C.removeEvent(e);
-                C.addPendingEvent(SUSPENDED_INT+e.getTrigger()+(c++), e);
+                C.addPendingEvent(SUSPENDED_INT+e.getTrigger()+(c++), reason, e);
                 if (i != null)
                     i.setSuspended(true);
-                //System.out.println("sus "+g+" from E "+e.getTrigger());
+                //System.out.println("sus "+g+" from E "+e.getTrigger()+". i="+i);
             }
 
 

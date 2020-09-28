@@ -95,8 +95,6 @@ public class MindInspectorAgArch extends AgArch {
         super.reasoningCycleStarting();
     }
 
-
-
     /**
      *    process the mindinspector parameter used in the agent option in .mas2j project.
      *    E.g. agents bob x.asl [mindinspector="gui(cycle,html)"];
@@ -127,7 +125,8 @@ public class MindInspectorAgArch extends AgArch {
                     try {
                         while (isRunning()) {
                             Thread.sleep(updateInterval);
-                            addAgState();
+                            getTS().runAtBeginOfNextCycle(
+                                    () -> addAgState());
                         }
                     } catch (Exception e) {
                         e.printStackTrace();

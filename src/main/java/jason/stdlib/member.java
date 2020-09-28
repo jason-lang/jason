@@ -1,5 +1,6 @@
 package jason.stdlib;
 
+import java.util.Collection;
 import java.util.Iterator;
 
 import jason.JasonException;
@@ -8,6 +9,7 @@ import jason.asSemantics.InternalAction;
 import jason.asSemantics.TransitionSystem;
 import jason.asSemantics.Unifier;
 import jason.asSyntax.ListTerm;
+import jason.asSyntax.ObjectTerm;
 import jason.asSyntax.SetTerm;
 import jason.asSyntax.Term;
 
@@ -96,26 +98,42 @@ public class member extends DefaultInternalAction {
 
     @Override protected void checkArguments(Term[] args) throws JasonException {
         super.checkArguments(args); // check number of arguments
-        if (!args[1].isList() && !args[1].isSet())
+        if (!args[1].isList() && !args[1].isSet()) {
+            if (args[1] instanceof ObjectTerm) {
+                ObjectTerm o = (ObjectTerm)args[1];
+                if (o.getObject() instanceof Collection) {
+                    return;
+                }
+            }
             throw JasonException.createWrongArgument(this,"second argument must be a list or a set");
+        }
     }
 
 
-
+    @SuppressWarnings("unchecked")
     @Override
     public Object execute(TransitionSystem ts, final Unifier un, Term[] args) throws Exception {
         checkArguments(args);
 
         final Term member = args[0];
         final Iterator<Term> i;
-        if (args[1].isList())
+        if (args[1].isList()) {
             i = ((ListTerm)args[1]).iterator();
-        else  {
-            if (args[0].isVar()) {
-                i = ((SetTerm)args[1]).iterator();
-            } else {
+        } else if (args[1].isSet()) {
+            if (args[0].isGround()) // use contains
                 return ((SetTerm)args[1]).contains(args[0]); // fast track for sets
+            i = ((SetTerm)args[1]).iterator();
+        } else if (args[1] instanceof ObjectTerm) { // case of queue
+            ObjectTerm o = (ObjectTerm)args[1];
+            if (o.getObject() instanceof Collection) {
+                if (args[0].isGround())
+                    return ((Collection<Term>)o.getObject()).contains(args[0]);
+                i = ((Collection<Term>)o.getObject()).iterator();
+            } else {
+                i = ListTerm.EMPTY_LIST.iterator();
             }
+        } else {
+            i = ListTerm.EMPTY_LIST.iterator();
         }
 
         return new Iterator<Unifier>() {

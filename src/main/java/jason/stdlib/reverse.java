@@ -105,10 +105,10 @@ public class reverse extends DefaultInternalAction {
             // string reverse
             if (!args[1].isVar() && !args[1].isString())
                 throw JasonException.createWrongArgument(this,"last argument '"+args[1]+"' must be a string or a variable.");
-            String vl = args[0].toString();
-            if (args[0].isString())
-                vl = ((StringTerm)args[0]).getString();
+            if (!args[0].isString())
+                throw JasonException.createWrongArgument(this,"first argument of .reverse '"+args[0]+"' must be a string or a list");
 
+            String vl = ((StringTerm)args[0]).getString();
             return un.unifies(new StringTermImpl(new StringBuilder(vl).reverse().toString()), args[1]);
         }
     }

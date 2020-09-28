@@ -314,6 +314,23 @@ public class VarTermTest extends TestCase {
         assertEquals("p(1)[a,b,c]", v.capply(u).toString());
     }
 
+    public void testVarWithAnnots5bis() throws ParseException {
+        // X[A|R] = p(1)[a] - ok and
+        // X = p(1), A = a, R=[]
+        VarTerm v = ASSyntax.parseVar("X[A|R]");
+        Unifier u = new Unifier();
+        assertTrue(u.unifies(v, Literal.parseLiteral("p(1)[a]")));
+        assertEquals("[]", u.get("R").toString());
+        assertEquals("a", u.get("A").toString());
+        assertEquals("p(1)", u.get(v).toString());
+        assertEquals("p(1)[a]", v.capply(u).toString());
+
+        v = ASSyntax.parseVar("X[A|R]");
+        u = new Unifier();
+        assertTrue(u.unifies(new VarTerm("X"), Literal.parseLiteral("p")));
+        assertTrue(u.unifies(new VarTerm("A"), Literal.parseLiteral("v")));
+        assertEquals("p[v|R]", v.capply(u).toString());
+    }
 
     public void testVarWithAnnots6() throws ParseException {
         // P -> open[source(a)]

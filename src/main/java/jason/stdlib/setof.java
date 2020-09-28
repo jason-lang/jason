@@ -14,6 +14,60 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
 
+/**
+
+  <p>Internal action: <b><code>.setof(Term,Query,List)</code></b>.
+
+  <p>Description: builds a <i>Set</i> of unique instantiations of
+  <i>Term</i> which make <i>Query</i> a logical consequence of the
+  agent's BB.
+
+  <p>Parameters:<ul>
+
+  <li>+ term (variable or structure): the variable or structure whose
+  instances will "populate" the set.<br/>
+
+  <li>+ query (logical formula): the formula used to find literals in the belief base;
+  is has the same syntax as the plan context.
+  <br/>
+
+  <li>+/- result (list): the result set populated with found solutions for the query.<br/>
+
+  </ul>
+
+  <p>Examples assuming the BB is currently
+  {c(100),c(200),c(100)}:
+
+  <ul>
+
+  <li> <code>.setof(X,c(X),L)</code>: <code>L</code> unifies with
+  <code>[100,200]</code>.</li>
+
+
+  @see jason.stdlib.count
+  @see jason.stdlib.findall
+*/
+@Manual(
+		literal=".setof(term,query,result)",
+		hint="builds a Set of all instantiations of referred term which make query a logical consequence of the agent's BB",
+		argsHint= {
+				"the variable or structure whose instances will \"populate\" the set",
+				"the formula used to find literals in the belief base",
+				"the result set populated with found solutions for the query"
+		},
+		argsType= {
+				"variable or structure",
+				"logical formula",
+				"list"
+		},
+		examples= {
+				".setof(X,c(X),L): assuming current BB with {c(100),c(200),c(100)}, L unifies with [100,200]"
+		},
+		seeAlso= {
+				"jason.stdlib.count",
+				"jason.stdlib.findall"
+		}
+	)
 @SuppressWarnings("serial")
 public class setof extends DefaultInternalAction {
 

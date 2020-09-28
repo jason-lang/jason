@@ -37,3 +37,6 @@ doc/index.html
 
 APDescription.txt
 MTPs-Main-Container.txt
+demos/persistent-belief-base/bookstore.log
+doc/tech/unit-tests.html
+doc/tech/patterns.html

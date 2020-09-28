@@ -3,6 +3,7 @@ package jason.mas2j;
 import java.io.File;
 import java.io.FileReader;
 import java.io.Serializable;
+import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -137,7 +138,7 @@ public class MAS2JProject implements Serializable {
         Set<File> files = new HashSet<File>();
         for (AgentParameters agp: agents) {
             if (agp.asSource != null) {
-                files.add(agp.asSource);
+                files.add(agp.getSourceAsFile());
             }
         }
         return files;
@@ -148,7 +149,11 @@ public class MAS2JProject implements Serializable {
     public void fixAgentsSrc() {
         for (AgentParameters agp: agents) {
             if (agp.asSource != null) {
-                agp.asSource = new File(aslSourcepaths.fixPath(agp.asSource.toString()));
+                try {
+                    agp.setSource( aslSourcepaths.fixPath(agp.getSource().toString()));
+                } catch (URISyntaxException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }

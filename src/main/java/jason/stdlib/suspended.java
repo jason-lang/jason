@@ -7,6 +7,7 @@ import jason.asSemantics.DefaultInternalAction;
 import jason.asSemantics.Intention;
 import jason.asSemantics.TransitionSystem;
 import jason.asSemantics.Unifier;
+import jason.asSyntax.ASSyntax;
 import jason.asSyntax.Literal;
 import jason.asSyntax.StringTermImpl;
 import jason.asSyntax.Term;
@@ -19,7 +20,7 @@ import java.util.Map;
 /**
   <p>Internal action: <b><code>.suspended(<i>G</i>, <i>R</i>)</code></b>.
 
-  <p>Description: checks whether goal <i>G</i> belongs to a suspended intention. <i>R</i> (a String)
+  <p>Description: checks whether goal <i>G</i> belongs to a suspended intention. <i>R</i> (a term)
   unifies with the reason for the
   suspend (waiting action to be performed, .wait, ....).
 
@@ -44,7 +45,7 @@ import java.util.Map;
   @see jason.stdlib.drop_desire
   @see jason.stdlib.succeed_goal
   @see jason.stdlib.fail_goal
-  @see jason.stdlib.current_intention
+  @see jason.stdlib.intention
   @see jason.stdlib.suspend
   @see jason.stdlib.resume
 
@@ -58,7 +59,7 @@ import java.util.Map;
         },
         argsType= {
                 "literal",
-                "string"
+                "term"
         },
         examples= {
                 ".suspended(go(1,3),R): true if go(1,3) is a suspended goal. R unifies with \"act\" if the reason is an action waiting feedback from environment"
@@ -73,7 +74,7 @@ import java.util.Map;
                 "jason.stdlib.drop_desire",
                 "jason.stdlib.succeed_goal",
                 "jason.stdlib.fail_goal",
-                "jason.stdlib.current_intention",
+                "jason.stdlib.intention",
                 "jason.stdlib.suspend",
                 "jason.stdlib.resume"
         }
@@ -94,7 +95,7 @@ public class suspended extends DefaultInternalAction {
             throw JasonException.createWrongArgument(this,"first argument must be a literal");
     }
 
-    private static final Term aAct = new StringTermImpl("act");
+    private static final Term aAct = ASSyntax.createAtom("act");
 
     @Override
     public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {
@@ -110,9 +111,15 @@ public class suspended extends DefaultInternalAction {
 
         // search in PI
         Map<String, Intention> pi = C.getPendingIntentions();
-        for (String reason: pi.keySet())
-            if (pi.get(reason).hasTrigger(teGoal, un))
-                return un.unifies(args[1], new StringTermImpl(reason));
+        for (String id: pi.keySet()) {
+            Intention i = pi.get(id);
+            if (i.hasTrigger(teGoal, un)) {
+                Term reason = i.getSuspendedReason();
+                if (reason == null)
+                    reason = new StringTermImpl(id);
+                return un.unifies(args[1], reason);
+            }
+        }
 
         return false;
     }
