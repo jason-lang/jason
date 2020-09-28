@@ -13,6 +13,7 @@ public class Event implements Serializable {
 
     Trigger   trigger   = null;
     Intention intention = Intention.EmptyInt;
+    Option    option    = null; // option computed in selEv (JasonER)
 
     public Event(Trigger t, Intention i) {
         trigger   = t;
@@ -28,6 +29,13 @@ public class Event implements Serializable {
     }
     public void setIntention(Intention i) {
         intention = i;
+    }
+
+    public void setOption(Option po) {
+        option = po;
+    }
+    public Option getOption() {
+        return option;
     }
 
     public boolean sameTE(Object t) {

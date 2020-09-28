@@ -37,6 +37,11 @@ public class Plan extends Structure implements Cloneable, Serializable {
     private LogicalFormula    context;
     private PlanBody          body;
 
+    // new in JasonER
+    private LogicalFormula    goalCondition;
+    private PlanLibrary       subplans;
+    private PlanLibrary       scope;
+
     private boolean isAtomic      = false;
     private boolean isAllUnifs    = false;
     private boolean hasBreakpoint = false;
@@ -132,6 +137,7 @@ public class Plan extends Structure implements Cloneable, Serializable {
                     hasBreakpoint = true;
                 if (t.equals(TAllUnifs))
                     isAllUnifs = true;
+                // if change here, also change the clone()!
             }
         }
     }
@@ -269,6 +275,7 @@ public class Plan extends Structure implements Cloneable, Serializable {
 
     public Term clone() {
         Plan p = new Plan();
+
         if (label != null)
             p.setLabel((Pred) label.clone());
 
@@ -279,6 +286,11 @@ public class Plan extends Structure implements Cloneable, Serializable {
         p.setSrcInfo(srcInfo);
         p.isTerm = isTerm;
         p.source = source;
+
+        if (this.goalCondition != null)
+            p.goalCondition = (LogicalFormula)this.goalCondition.clone();
+        p.subplans      = this.subplans;
+        p.scope         = this.scope;
 
         return p;
     }
@@ -315,18 +327,31 @@ public class Plan extends Structure implements Cloneable, Serializable {
 
     /** returns this plan in a string complaint with AS syntax */
     public String toASString() {
-        String b, e;
-        if (isTerm) {
-            b = "{ ";
-            e = " }";
+        StringBuilder out = new StringBuilder();
+        if (isTerm)
+            out.append("{ ");
+        out.append(((label == null) ? "" : "@" + label + " "));
+        out.append(tevent);
+        out.append(((context == null) ? "" : " : " + context));
+        out.append(((goalCondition == null) ? "" : " <: " + goalCondition));
+        if (subplans == null) {
+            if (!body.isEmptyBody())
+                out.append(" <- " + body);
+            if (isTerm)
+                out.append(" }");
+            else
+                out.append(".");
         } else {
-            b = "";
-            e = ".";
+            out.append(" {");
+            if (!body.isEmptyBody())
+                out.append("\n   <- " + body + ".");
+            for (Plan p: subplans)
+                out.append("\n   "+p.toASString());
+            out.append("\n}");
+            if (isTerm)
+                out.append(" }");
         }
-        return b+((label == null) ? "" : "@" + label + " ") +
-               tevent + ((context == null) ? "" : " : " + context) +
-               (body.isEmptyBody() ? "" : " <- " + body) +
-               e;
+        return out.toString();
     }
 
     /** get as XML */
@@ -354,5 +379,39 @@ public class Plan extends Structure implements Cloneable, Serializable {
         }
 
         return u;
+    }
+
+    public void addSubPlan(Plan p) throws JasonException {
+        if (subplans == null)
+            subplans = new PlanLibrary(scope);
+        subplans.add(p);
+    }
+    public boolean hasSubPlans() {
+        return subplans != null;
+    }
+    public boolean hasInterestInUpdateEvents() {
+        return subplans != null && subplans.hasPlansForUpdateEvents();
+    }
+    public PlanLibrary getSubPlans() {
+        return subplans;
+    }
+    public void setScope(PlanLibrary pl) {
+        scope = pl;
+        if (subplans != null)
+            subplans.setFather(scope);
+    }
+    public PlanLibrary getScope() {
+        return scope;
+    }
+
+    public void setGoalCondition(LogicalFormula f) {
+        goalCondition = f;
+    }
+
+    public LogicalFormula getGoalCondition() {
+        return goalCondition;
+    }
+    public boolean hasGoalCondition() {
+        return goalCondition != null;
     }
 }

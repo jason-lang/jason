@@ -60,6 +60,17 @@ public class Circumstance implements Serializable {
         reset();
     }
 
+    // new JasonER
+    private int intentionsWithGoalCondition = 0;
+
+    public boolean hasIntentionWithGoalCondition() {
+        return intentionsWithGoalCondition > 0;
+    }
+    public void resetIntentionsWithGoalCondition() {
+        intentionsWithGoalCondition = 0;
+    }
+
+
     private void readObject(ObjectInputStream inputStream) throws IOException, ClassNotFoundException {
         inputStream.defaultReadObject();
         syncApPlanSense = new Object();
@@ -318,6 +329,10 @@ public class Circumstance implements Serializable {
             setAtomicIntention(intention);
         else
             I.offer(intention);
+
+        // JasonER
+        if (intention.hasGoalCondition())
+            intentionsWithGoalCondition++;
 
         // notify
         if (hasListener())

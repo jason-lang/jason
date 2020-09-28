@@ -49,6 +49,7 @@ import jason.runtime.Settings;
 import jason.stdlib.add_nested_source;
 import jason.stdlib.desire;
 import jason.stdlib.fail_goal;
+import jason.stdlib.succeed_goal;
 import jason.util.Config;
 
 
@@ -399,8 +400,9 @@ public class TransitionSystem implements Serializable {
 
     }
 
-    private void applySelEv() throws JasonException {
+    private static Plan planBaseForEPlans = null;
 
+    private void applySelEv() throws JasonException {
         // Rule for atomic, if there is an atomic intention, do not select event
         if (C.hasAtomicIntention()) {
             stepDeliberate = State.ProcAct; // need to go to ProcAct to see if an atomic intention received a feedback action
@@ -420,16 +422,112 @@ public class TransitionSystem implements Serializable {
             if (logger.isLoggable(Level.FINE))
                 logger.fine("Selected event "+C.SE);
             if (C.SE != null) {
-                if (ag.hasCustomSelectOption() || setts.verbose() == 2) // verbose == 2 means debug mode
+
+                // update (external) events (+ and -) are copied for all intentions interested on them (new JasonER)
+                // possibly creating branches for these intentions
+                // an intention is interested in the event if some of its IM has sub-plans for it.
+                //
+                // pseudo code:
+                //     for all intentions i interested in the external event
+                //         create a clone intention of i to handle the event
+                //
+                if (C.SE.isExternal() && C.SE.getTrigger().isUpdate()) {
+                    //logger.info("Selected event "+C.SE.getTrigger()+  C.SE.isExternal());
+                    Iterator<Intention> ii = C.getAllIntentions();
+                    while (ii.hasNext()) {
+                        Intention i = ii.next();
+                        //logger.info("-- "+i.getId()+" "+i.hasIntestedInUpdateEvents()+" "+ (C.SE.getIntention() != null ? C.SE.getIntention().getId() : " no int "));
+
+                        // if intention i has sub plans (so potentially interested in external events)
+                        if (i.hasIntestedInUpdateEvents()) {
+                            // consider all goals in the intention stack that have sub-plans
+                            outerloop:
+                            for (IntendedMeans im: i) {
+                                if (im.getPlan().hasSubPlans()) {
+                                    List<Plan> relPlans = im.getPlan().getSubPlans().getCandidatePlans(C.SE.getTrigger());
+                                    //System.out.println("***"+C.SE.getTrigger()+" try plans in "+im.getPlan().getTrigger()+" -- "+(relPlans != null));
+                                    if (relPlans != null) {
+                                        for (Plan p: relPlans) {
+                                            // test if we have an option
+                                            Option o = getOption(C.SE, p, im.getUnif().clone());
+                                            //logger.info("option "+o+" "+C.SE.getTrigger()+" for "+p+" with "+i.peek().getUnif());
+                                            if (o != null) {
+                                                // create the extra event based on intention i (to mimic the branching)
+                                                // and move intention i from I to E
+                                                try {
+                                                    if (planBaseForEPlans == null)
+                                                        planBaseForEPlans = ASSyntax.parsePlan("+artificial_plan <- .print(dropwhenreturntohere); .drop_intention."); // TODO: do not use drop_intention, but a new internal action that drops only this intention (important if the user decides to use .drop_intention to stop the g-plan)
+
+                                                    IntendedMeans joinIM = new IntendedMeans(new Option(planBaseForEPlans.cloneNS(Literal.DefaultNS), i.peek().getUnif()), C.SE.getTrigger());
+                                                    Intention newi = new Intention();
+                                                    newi.setGIntention(i); // to avoid succeed_goal to resume it
+                                                    i.copyTo(newi);
+                                                    newi.setNoInterestInUpdateEvents();
+                                                    newi.push(joinIM);
+
+                                                    Event e = new Event(C.SE.getTrigger(), newi);
+                                                    //logger.info("     ** add extra evt for "+e);
+                                                    e.setOption(o);
+                                                    C.addEvent(e);
+                                                } catch (Exception e1) {
+                                                    e1.printStackTrace();
+                                                }
+
+                                                break outerloop;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                /*if (ag.hasCustomSelectOption() || setts.verbose() == 2) // verbose == 2 means debug mode
                     stepDeliberate = State.RelPl;
                 else
-                    stepDeliberate = State.FindOp;
-                return;
+                    stepDeliberate = State.FindOp;*/
+
+                stepDeliberate = State.FindOp; // TODO: JasonER does not support custom selectOption yet (TBD)
+            }
+        } else {
+            // Rule SelEv2
+            // directly to ProcAct if no event to handle
+            stepDeliberate = State.ProcAct;
+        }
+    }
+
+    // internal action used to handle goal condition (new in JasonER)
+    private succeed_goal scia = new succeed_goal();
+    int nbOfGoalConditions = 0;
+    private IMCondition  imcondSat = new IMCondition() {
+        public boolean test(Trigger t, Unifier u) {
+            return false;
+        }
+        public Trigger getTrigger() {
+            return null;
+        }
+        public boolean test(IntendedMeans im, Unifier u) {
+            if (im.getPlan().hasGoalCondition() && !im.getPlan().getGoalCondition().equals(Literal.LFalse)) { // no need to test goal condition = "false"
+                nbOfGoalConditions++;
+            }
+            return im.isSatisfied(getAg());
+        }
+    };
+
+    private void applyClrSatInt() {
+        // remove all intentions with GoalCondition satisfied (new JasonER)
+        if (C.hasIntentionWithGoalCondition()) {
+            nbOfGoalConditions = 0;
+            try {
+                scia.drop(this, imcondSat, new Unifier());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            if (nbOfGoalConditions == 0) { // if no intention with GC anymore, stop checking
+                C.resetIntentionsWithGoalCondition();
             }
         }
-        // Rule SelEv2
-        // directly to ProcAct if no event to handle
-        stepDeliberate = State.ProcAct;
     }
 
     private void applyRelPl() throws JasonException {
@@ -518,31 +616,66 @@ public class TransitionSystem implements Serializable {
     private void applyFindOp() throws JasonException {
         stepDeliberate = State.AddIM; // default next step
 
-        // get all relevant plans for the selected event
-        //Trigger te = (Trigger) C.SE.trigger.clone();
-        List<Plan> candidateRPs = ag.pl.getCandidatePlans(C.SE.trigger);
-        if (candidateRPs != null) {
-            for (Plan pl : candidateRPs) {
-                Unifier relUn = pl.isRelevant(C.SE.trigger, null);
-                if (relUn != null) { // is relevant
-                    LogicalFormula context = pl.getContext();
-                    if (context == null) { // context is true
-                        C.SO = new Option(pl, relUn);
+        // consider scope (new in JasonER)
+        // TODO: implement Scope for RelPl ApplPl SelAppl (besides the fast track of applyFindOp)
+        C.SO = C.SE.getOption();
+        if (C.SO != null) { // an option was previously computed
+            return;
+        }
+
+        // gets the proper plan library (root, inner scope, ...)
+        PlanLibrary plib = ag.getPL();
+        if (C.SE.isInternal() && !C.SE.getIntention().isFinished()) {
+            Plan p = C.SE.getIntention().peek().getPlan();
+            if (p.hasSubPlans()) {
+                plib = p.getSubPlans();
+            } else {
+                plib = p.getScope();
+            }
+        }
+
+        String kindOfError = "relevant";
+        while (plib != null) {
+            // get all relevant plans for the selected event
+            List<Plan> candidateRPs = plib.getCandidatePlans(C.SE.getTrigger());
+            if (candidateRPs != null) {
+                kindOfError = "applicable";
+                for (Plan pl : candidateRPs) {
+                    C.SO = getOption(C.SE, pl, null);
+                    if (C.SO != null)
                         return;
-                    } else {
-                        Iterator<Unifier> r = context.logicalConsequence(ag, relUn);
-                        if (r != null && r.hasNext()) {
-                            C.SO = new Option(pl, r.next());
-                            return;
-                        }
-                    }
                 }
             }
-            applyRelApplPlRule2("applicable");
-        } else {
-            // problem: no plan
-            applyRelApplPlRule2("relevant");
+            plib = plib.getFather();
         }
+
+        applyRelApplPlRule2(kindOfError);
+    }
+
+    private Option getOption(Event evt, Plan pl, Unifier relUn) {
+        if (evt.isInternal()) {
+            // use IM vars in the context for sub-plans (new in JasonER)
+            for (IntendedMeans im: C.SE.getIntention()) {
+                if (im.getPlan().hasSubPlans() && im.getPlan().getSubPlans().get(pl.getLabel()) != null) {
+                    relUn = im.triggerUnif.clone();
+                    break;
+                }
+            }
+        }
+
+        relUn = pl.isRelevant(evt.trigger, relUn);
+        if (relUn != null) { // is relevant
+            LogicalFormula context = pl.getContext();
+            if (context == null) { // context is true
+                return new Option(pl, relUn);
+            } else {
+                Iterator<Unifier> r = context.logicalConsequence(ag, relUn);
+                if (r != null && r.hasNext()) {
+                    return new Option(pl, r.next());
+                }
+            }
+        }
+        return null;
     }
 
     private void applyAddIM() throws JasonException {
@@ -619,6 +752,8 @@ public class TransitionSystem implements Serializable {
     }
 
     private void applyProcAct() throws JasonException {
+        applyClrSatInt(); // TODO: create a proper step for ClrSatInt in the enumerations
+
         stepAct = State.SelInt; // default next step
         if (C.hasFeedbackAction()) { // suspended intentions are not considered
             ActionExec a = null;
@@ -1012,6 +1147,13 @@ public class TransitionSystem implements Serializable {
                 return;
             }
 
+            if (i.hasGoalCondition()) {
+                // move to PI
+                C.dropIntention(i);
+                C.addPendingIntention("wait_goal_condition_"+i.getId(), i);
+                return; // they are cleared by applyClrSatInt
+            }
+
             // remove the finished IM from the top of the intention
             IntendedMeans topIM = i.pop();
             Trigger topTrigger = topIM.getTrigger();
@@ -1183,10 +1325,11 @@ public class TransitionSystem implements Serializable {
         // Note: we have to add events even if they are not relevant to
         // a) allow the user to override selectOption and then provide an "unknown" plan; or then
         // b) create the failure event (it is done by SelRelPlan)
-        if (e.isInternal() || C.hasListener() || ag.getPL().hasCandidatePlan(e.trigger)) {
+        //if (e.isInternal() || C.hasListener() || ag.getPL().hasCandidatePlan(e.trigger)) {
+        // complex to optimise (the above if) in JasonER. removed until we have a good implementation
             C.addEvent(e);
             if (logger.isLoggable(Level.FINE)) logger.fine("Added event " + e+ ", events = "+C.getEvents());
-        }
+        //}
     }
 
     /** remove the top action and requeue the current intention */

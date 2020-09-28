@@ -324,12 +324,14 @@ Literal initial_goal() : { Literal g; }
 
 
 /* Plan */
-Plan plan() :         { Token k;
+Plan plan() :         { Token k = null;
                         Pred L = null; Literal L2;
                         Trigger T;
                         Object C = null;
+                        Object GC = null;
                         PlanBody B = null;
-                        int start = -1, end;
+                        List sps = null; Plan sp;
+                        int start = -1, end = -1;
                         ListTerm annots = null;
                       }
 {
@@ -347,10 +349,22 @@ Plan plan() :         { Token k;
     	{ start = k.beginLine; L = new Pred(L2); }
     ]
     T=trigger()
-    [ k = ":"  C = log_expr()    { if (start == -1) start = k.beginLine; } ]
-    [ k = "<-" B = plan_body()   { if (start == -1) start = k.beginLine; } ]
-    k = "."                      { if (start == -1) start = k.beginLine; }
-                   { end = k.beginLine;
+    [ k = ":"  C  = log_expr()   { if (start == -1) start = k.beginLine; } ]
+    [ k = "<:" GC = log_expr()   { if (start == -1) start = k.beginLine; } ] // NEW ER syntax for goal condition
+    (
+      [ k = "<-" B = plan_body()   { if (start == -1) start = k.beginLine; } ]
+      k = "."                      { if (start == -1) start = k.beginLine; }
+    |
+      [ "{" // NEW ER syntax for sub plans
+        [ k = "<-" B = plan_body() "." { if (start == -1) start = k.beginLine; } ]
+                                   { sps = new ArrayList(); }
+        (
+            sp = plan()            { sps.add(sp); }
+        )*
+        "}"
+      ]
+    )
+                   { if (k != null) end = k.beginLine;
                      InternalActionLiteral ial = null;
                      try { ial = checkInternalActionsInContext((LogicalFormula)C, curAg); } catch (Exception e) {}
                      if (ial != null)
@@ -359,6 +373,14 @@ Plan plan() :         { Token k;
 	                    B = (PlanBody)B.getBodyNext();
                      Plan p = new Plan(L,T,(LogicalFormula)C, B);
                      p.setSrcInfo(new SourceInfo(asSource,start,end));
+                     p.setGoalCondition((LogicalFormula)GC);
+                     if (sps != null)
+                     	for (Object o: sps)
+                     		try {
+                     		    p.addSubPlan((Plan)o);
+                     		} catch (Exception e) {
+                     			e.printStackTrace();
+                     		}
                      return p;
                    }
 }

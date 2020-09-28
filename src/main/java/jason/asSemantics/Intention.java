@@ -44,6 +44,13 @@ public class Intention implements Serializable, Comparable<Intention>, Iterable<
     private Term    suspendedReason = null;
     private IntentionPlace place = IntentionPlace.None;
 
+    // new in JasonER
+    private int     intestedInUpdateEvents = 0;
+    private int     imWithGoalCondition = 0;
+    private Intention gIntention = null; // in case of intentions for e-plans, this is the intention that derived this e-plan based intention
+    public void setGIntention(Intention i) { gIntention = i; }
+    public Intention getGIntention() { return gIntention; }
+
     private Deque<IntendedMeans> intendedMeans = new ArrayDeque<>();
 
     //private Trigger initialTrigger = null; // just for additional information/debug (not really necessary)
@@ -62,8 +69,10 @@ public class Intention implements Serializable, Comparable<Intention>, Iterable<
         intendedMeans.push(im);
         if (im.isAtomic())
             atomicCount++;
-        //if (initialTrigger == null)
-        //    initialTrigger = im.getTrigger();
+        if (im.getPlan().hasInterestInUpdateEvents())
+            intestedInUpdateEvents++;
+        if (im.getPlan().hasGoalCondition())
+            imWithGoalCondition++;
     }
 
     public IntendedMeans peek() {
@@ -76,6 +85,11 @@ public class Intention implements Serializable, Comparable<Intention>, Iterable<
         if (isAtomic() && top.isAtomic())
             atomicCount--;
 
+        if (hasIntestedInUpdateEvents() && top.getPlan().hasInterestInUpdateEvents())
+            intestedInUpdateEvents--;
+        if (hasGoalCondition() && top.getPlan().hasGoalCondition())
+            imWithGoalCondition--;
+
         return top;
     }
 
@@ -85,6 +99,16 @@ public class Intention implements Serializable, Comparable<Intention>, Iterable<
 
     public void setAtomic(int a) { // used for testing
         atomicCount = a;
+    }
+
+    public void setNoInterestInUpdateEvents() {
+        intestedInUpdateEvents = 0;
+    }
+    public boolean hasIntestedInUpdateEvents() {
+        return intestedInUpdateEvents > 0;
+    }
+    public boolean hasGoalCondition() {
+        return imWithGoalCondition > 0;
     }
 
     public Iterator<IntendedMeans> iterator() {
@@ -262,6 +286,10 @@ public class Intention implements Serializable, Comparable<Intention>, Iterable<
         for (IntendedMeans im: intendedMeans) {
             i.intendedMeans.add((IntendedMeans)im.clone());
         }
+
+        i.intestedInUpdateEvents = intestedInUpdateEvents;
+        i.imWithGoalCondition = imWithGoalCondition;
+
         return i;
     }
 

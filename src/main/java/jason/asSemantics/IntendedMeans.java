@@ -1,12 +1,14 @@
 package jason.asSemantics;
 
 import java.io.Serializable;
+import java.util.Iterator;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import jason.asSyntax.ASSyntax;
 import jason.asSyntax.Literal;
+import jason.asSyntax.LogicalFormula;
 import jason.asSyntax.Plan;
 import jason.asSyntax.PlanBody;
 import jason.asSyntax.PlanBodyImpl;
@@ -24,6 +26,8 @@ public class IntendedMeans implements Serializable {
 
     protected Unifier  renamedVars = null;
 
+    protected Unifier  triggerUnif   = null; // unif when the IM was created (used to check goal condition and g-plan scope vars)
+
     public IntendedMeans(Option opt, Trigger te) {
         plan     = opt.getPlan();
         planBody = plan.getBody();
@@ -34,6 +38,8 @@ public class IntendedMeans implements Serializable {
         } else {
             trigger = te.capply(unif);
         }
+
+        triggerUnif = unif.clone();
     }
 
     // used by clone
@@ -89,6 +95,16 @@ public class IntendedMeans implements Serializable {
         return planBody == null || planBody.isEmptyBody();
     }
 
+    public boolean isSatisfied(Agent ag) {
+        LogicalFormula goalCondition = getPlan().getGoalCondition();
+        if (goalCondition == null) {
+            return false;
+        } else {
+            Iterator<Unifier> iun = goalCondition.logicalConsequence(ag, triggerUnif);
+            return iun != null && iun.hasNext();
+        }
+    }
+
     public boolean isGoalAdd() {
         return trigger.isAddition() && trigger.isGoal();
     }
@@ -99,6 +115,8 @@ public class IntendedMeans implements Serializable {
         if (this.planBody != null)
             c.planBody = this.planBody.clonePB();
         c.trigger  = this.trigger.clone();
+        if (this.triggerUnif != null)
+            c.triggerUnif = this.triggerUnif.clone();
         c.plan     = this.plan;
         return c;
     }

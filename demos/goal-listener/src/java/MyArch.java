@@ -14,7 +14,7 @@ public class MyArch extends AgArch {
     public void init() throws Exception {
         getTS().addGoalListener(new GoalListener() {
             @Override
-            public void goalFinished(Trigger goal, FinishStates result) {
+            public void goalFinished(Trigger goal, GoalStates result) {
                 nbGoal++;
                 getTS().getLogger().info("goal finished: "+goal.getLiteral()+", total="+nbGoal);
             }
