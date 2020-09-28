@@ -16,9 +16,106 @@ endif::[]
 
 ifdef::env-github[:outfilesuffix: .adoc]
 
+== Loops
+
+=== List Iteration
+
+To do something for all members of a list, we have two main approaches: the classic recursion and the for each.
+
+==== Recursive approach
+----
++!iterate([]).            // list is empty -> nothing to do
++!iterate([Head|Tail])    // does something with the head of the list
+   <- dosomethingwith(Head);
+      !iterate(Tail).     // and continues with the tail
+----
+
+Example:
+----
+!print([b,a,n,a,n,a]).
+
++!print([]).
++!print([Head|Tail])
+   <- .print(Head);
+      !print(Tail).
+----
+
+Prints:
+----
+b
+a
+n
+a
+n
+a
+----
+
+==== For each approach
+
+----
++!iterate(List)
+   <- for (.member(M,List)) {   // use .member as the query
+         dosomethingwith(Head);
+      }.
+----
+
+NOTE: The Jason `for` is not like a typical for each (witch iterates over a collection of values). Jason `for` iterates over a query, it can be read as "for each solution of a query".
+
+Example:
+----
+!print([b,a,n,a,n,a]).
+
++!print(List)
+   <- for (.member(M,List) & M \== a) { // note the use of a query as the argumet
+         .print(M);
+      }.
+----
+
+Prints:
+----
+b
+n
+n
+----
+
+=== For i in a .. b
+
+The classical C like iteration with a counter variable can be implemented using recursion or `for`. Below the internal action `.range` is used as the `for` query to mimmic the typical C loop.
+
+----
++!loop
+   <- for (.range(I,1,5)) { // for i from 1 to 5 (included)
+         .print(I);
+      }.
+----
+
+Example:
+----
+!loop.
+
++!loop
+   <- for (.range(I,1,5) & .range(J,1,5) & I > J) {
+         .print(I," ",J);
+      }.
+----
+
+Prints:
+----
+2 1
+3 1
+3 2
+4 1
+4 2
+4 3
+5 1
+5 2
+5 3
+5 4
+----
+
 == Concurrency
 
-Regarding concurrent execution in Jason, we recommend the reading of this https://github.com/jason-lang/jason/blob/develop/doc/tech/concurrency.adoc[doc].
+Regarding concurrent execution in Jason, we recommend the reading of this https://github.com/jason-lang/jason/blob/master/doc/tech/concurrency.adoc[doc].
 
 
 === Singleton Plan
