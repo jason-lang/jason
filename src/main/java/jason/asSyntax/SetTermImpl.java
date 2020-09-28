@@ -33,12 +33,12 @@ public class SetTermImpl extends DefaultTerm implements SetTerm {
     @Override
     public SetTerm clone() {
         SetTermImpl t = new SetTermImpl();
-        for (Term a: this.set) 
+        for (Term a: this.set)
             t.set.add(a.clone());
         t.hashCodeCache = this.hashCodeCache;
         return t;
     }
-    
+
     /** make a hard copy of the terms */
     @Override
     public SetTerm capply(Unifier u) {
@@ -101,16 +101,16 @@ public class SetTermImpl extends DefaultTerm implements SetTerm {
             add(t);
         }
     }
-    
+
     @Override
     public void intersection(Collection<Term> lt) {
         set.retainAll(lt);
     }
-    
+
     @Override
     public void difference(Collection<Term> lt) {
         set.removeAll(lt);
-    }    
+    }
 
 
     public String toString() {
@@ -135,7 +135,7 @@ public class SetTermImpl extends DefaultTerm implements SetTerm {
         }
         return u;
     }
-    
+
     @Override
     public String getAsJSON(String identation) {
         StringBuilder json = new StringBuilder("[\n");
@@ -197,13 +197,13 @@ public class SetTermImpl extends DefaultTerm implements SetTerm {
 
 
     @Override
-    public boolean retainAll(Collection<?> c) {     
+    public boolean retainAll(Collection<?> c) {
         return set.removeAll(c);
     }
 
 
     @Override
     public void clear() {
-        set.clear();        
+        set.clear();
     }
 }

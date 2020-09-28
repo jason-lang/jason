@@ -137,11 +137,11 @@ public abstract class BeliefBase implements Iterable<Literal>, Cloneable {
     public Object getLock() {
         return lock;
     }
-    
+
     private void readObject(ObjectInputStream inputStream) throws IOException, ClassNotFoundException {
         inputStream.defaultReadObject();
         lock = new Object();
-    }   
-    
+    }
+
 
 }

@@ -115,7 +115,7 @@ public class type extends DefaultInternalAction {
 
                 public Unifier next() {
                     Unifier c = un.clone();
-                    c.unifies(args[1], types.get(n++));                    
+                    c.unifies(args[1], types.get(n++));
                     return c;
                 }
             };

@@ -64,7 +64,7 @@ public class random extends DefaultInternalAction {
     public Random getRandomGenerator() {
         return random;
     }
-    
+
     @Override public int getMinArgs() {
         return 1;
     }

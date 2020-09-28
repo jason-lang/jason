@@ -26,7 +26,7 @@ import jason.asSyntax.NumberTermImpl;
 
   @see jason.stdlib.date
   @see jason.stdlib.time
-  @see jason.functions.time function time  
+  @see jason.functions.time function time
 */
 @Manual(
         literal=".nano_time(T)",

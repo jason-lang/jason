@@ -19,13 +19,13 @@ public class BugFor {
 
         // defines the agent's AgentSpeak code
         ag.parseAScode(
-            "+!start <- "+ 
-            "     S = [a,b,c]; " + 
-            "     for ( .range(I,0,2)) {\n" + 
-            "       .nth(I,S,A);\n" + 
-            "       jason.asunit.print(A);\n" + 
+            "+!start <- "+
+            "     S = [a,b,c]; " +
+            "     for ( .range(I,0,2)) {\n" +
+            "       .nth(I,S,A);\n" +
+            "       jason.asunit.print(A);\n" +
             "     };"  +
-            "     jason.asunit.print(end)."  
+            "     jason.asunit.print(end)."
         );
     }
 

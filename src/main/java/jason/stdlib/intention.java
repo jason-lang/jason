@@ -92,7 +92,7 @@ public class intention extends DefaultInternalAction {
                 // try to get the intention from the current event
                 Event evt = ts.getC().getSelectedEvent();
                 if (evt != null)
-                    curInt = evt.getIntention();                        
+                    curInt = evt.getIntention();
             }
             if (curInt == null) {
                 ts.getLogger().warning(".intention wants the current intention, but I cannot identify which is the current intention!");
@@ -107,7 +107,7 @@ public class intention extends DefaultInternalAction {
             }
             return false;
         }
-        
+
         return new Iterator<Unifier>() {
             Unifier solution = null; // the current response (which is an unifier)
             Intention actInt = null; // intention being considered

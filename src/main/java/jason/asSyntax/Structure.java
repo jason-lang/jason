@@ -222,7 +222,7 @@ public class Structure extends Atom {
 
     @Override
     public Literal addTerms(Term ... ts ) {
-        if (terms == null) 
+        if (terms == null)
             terms = new ArrayList<>(5);
         for (Term t: ts)
             terms.add(t);
@@ -253,7 +253,7 @@ public class Structure extends Atom {
 
     @Override
     public void setTerm(int i, Term t) {
-        if (terms == null) 
+        if (terms == null)
             terms = new ArrayList<>(5);
         terms.set(i,t);
         resetHashCodeCache();
@@ -424,7 +424,7 @@ public class Structure extends Atom {
             .filter( e -> e.getValue() == 1 && !e.getKey().isUnnamedVar())
             .map(Map.Entry::getKey)
             .collect(Collectors.toList());
-        
+
         /*List<VarTerm> r = new ArrayList<>();
         for (VarTerm k: all.keySet()) {
             if (all.get(k) == 1 && !k.isUnnamedVar())

@@ -17,13 +17,13 @@ public class TestMap {
         // defines the agent's AgentSpeak code
         ag.parseAScode(
             "+!b(M) <- " +
-            "    .map.put(M,a,10);" + 
+            "    .map.put(M,a,10);" +
             "    .map.put(M,d,ok(3));" +
             "    .map.put(M,a,30);" +
             "    .map.put(M,c,11);" +
             "    .map.remove(M,c,11);" +
             ". \n"+
-            
+
             "+!test1(S) <- " +
             "    !b(S);" +
             "    jason.asunit.print(S);" +
@@ -34,12 +34,12 @@ public class TestMap {
             "    !g1(S,A,V)." +
             "+!g1(S,A,V) : .map.get(S,A,V,0) <- jason.asunit.print(tem)." +
             "+!g1(S,A,V)                     <- jason.asunit.print(naot). \n"+
-            
+
             "+!test_values <- " +
             "    !b(S);" +
             "    .findall(V, .map.value(S,V), L);" +
             "    jason.asunit.print(L)."+
-            
+
             "+!test_loop <- " +
             "    !b(S);" +
             "    for ( .map.key(S,K) & .map.get(S,K,V) ) {" +
@@ -52,7 +52,7 @@ public class TestMap {
             "    jason.asunit.print(L);" +
             "    .findall([K,V], .map.key(S,K) & .map.get(S,K,V), L2);" +
             "    jason.asunit.print(L2)."
-            
+
         );
     }
 
@@ -90,7 +90,7 @@ public class TestMap {
         ag.assertPrint("[a,d]", 20);
         ag.assertPrint("[[a,30],[d,ok(3)]]", 20);
     }
-    
+
     @Test(timeout=2000)
     public void testValues() {
         ag.addGoal("test_values");

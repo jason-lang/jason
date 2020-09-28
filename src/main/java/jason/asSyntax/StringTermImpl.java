@@ -107,7 +107,7 @@ public final class StringTermImpl extends DefaultTerm implements StringTerm {
         u.appendChild(document.createTextNode(toString()));
         return u;
     }
-    
+
     @Override
     public String getAsJSON(String identation) {
         return identation+toString();

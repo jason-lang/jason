@@ -217,7 +217,7 @@ public class RuleTest extends TestCase {
         }
         */
     }
-    
+
     public void testOr() throws RevisionFailedException, ParseException, TokenMgrError {
         Agent ag = new Agent();
         ag.initAg();

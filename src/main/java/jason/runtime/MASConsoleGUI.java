@@ -179,7 +179,7 @@ public class MASConsoleGUI {
                             }
                         });
                     } catch (InterruptedException e) {
-                        return; // ignore the append    
+                        return; // ignore the append
                     }
                 }
                 if (ta != null) {

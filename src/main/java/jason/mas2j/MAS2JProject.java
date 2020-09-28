@@ -28,7 +28,7 @@ import jason.util.Config;
 public class MAS2JProject implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    
+
     public static final String EXT       = "mas2j";
     public static final String AS_EXT    = "asl";
 

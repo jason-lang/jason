@@ -171,12 +171,12 @@ public class ArithExpr extends ArithFunctionTerm implements NumberTerm {
     public NumberTerm clone() {
         return new ArithExpr(this);
     }
-    
+
     @Override
     public jason.asSyntax.Literal cloneNS(Atom newnamespace) {
         return new ArithExpr(this);
     }
-    
+
 
     /** gets the Operation of this Expression */
     public ArithmeticOp getOp() {

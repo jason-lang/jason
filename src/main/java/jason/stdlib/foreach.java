@@ -130,7 +130,7 @@ public class foreach extends DefaultInternalAction {
                 // get all solutions for the loop
                 // Note: we have to get all solutions here, otherwise a concurrent modification will occur for the iterator
                 //       it seems not necessary anymore (maybe due to the use of data structures that better support concurrency)
-                //       so I commented the lines and get back to the lazy implementation 
+                //       so I commented the lines and get back to the lazy implementation
                 LogicalFormula logExpr = (LogicalFormula)args[0];
                 iu = logExpr.logicalConsequence(ts.getAg(), un.clone());
                 if (!iu.hasNext())

@@ -60,7 +60,7 @@ public class log extends DefaultInternalAction {
     protected String getNewLine() {
         return "\n";
     }
-    
+
     protected void checkArguments(Term[] args) throws JasonException {
         super.checkArguments(args); // check number of arguments
         if (!args[0].isAtom())
@@ -70,7 +70,7 @@ public class log extends DefaultInternalAction {
     @Override
     public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {
         StringBuilder sout = new StringBuilder();
-        
+
         for (int i = 1; i < args.length; i++) {
             if (args[i].isString()) {
                 StringTerm st = (StringTerm)args[i];
@@ -95,7 +95,7 @@ public class log extends DefaultInternalAction {
         default:
             level = Level.INFO; break;
         }
-        
+
         if (ts != null) {
             ts.getLogger().log(level, sout.toString());
         } else {

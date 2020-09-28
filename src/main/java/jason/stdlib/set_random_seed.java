@@ -52,7 +52,7 @@ public class set_random_seed extends DefaultInternalAction {
         random r_ia = (random)ts.getAg().getIA(".random");
         return r_ia.getRandomGenerator();
     }
-    
+
     @Override
     public Object execute(final TransitionSystem ts, final Unifier un, final Term[] args) throws Exception {
         checkArguments(args);

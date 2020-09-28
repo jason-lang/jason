@@ -43,7 +43,7 @@ public class replace extends DefaultInternalAction {
             arg = ((StringTerm)args[0]).getString();
         else
             arg = args[0].toString();
-        
+
         String s2 = ((StringTerm)args[1]).getString();
         String s3 = ((StringTerm)args[2]).getString();
         arg = arg.replaceAll(s2, s3);

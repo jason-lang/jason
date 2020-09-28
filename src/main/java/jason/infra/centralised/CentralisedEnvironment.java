@@ -73,7 +73,7 @@ public class CentralisedEnvironment implements EnvironmentInfraTier {
 
     public void informAgsEnvironmentChanged(String... agents) {
         if (agents.length == 0) {
-            for (CentralisedAgArch ag: masRunner.getAgs().values()) {                
+            for (CentralisedAgArch ag: masRunner.getAgs().values()) {
                 ag.getTS().getAgArch().wakeUpSense();
             }
         } else {

@@ -47,11 +47,11 @@ import jason.util.asl2xml;
 public class MindInspectorAgArch extends AgArch {
 
     private static final long serialVersionUID = 1L;
-    
+
     // variables for mind inspector
     protected transient boolean hasMindInspectorByCycle = false;
     protected transient int     updateInterval = 0;
-    
+
     protected transient static JFrame         mindInspectorFrame = null;
     protected transient static JTabbedPane    mindInspectorTab = null;
     protected transient        JTextPane      mindInspectorPanel = null;

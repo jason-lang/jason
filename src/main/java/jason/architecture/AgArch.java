@@ -127,7 +127,7 @@ public class AgArch implements Comparable<AgArch>, Serializable {
         if (successor != null)
             successor.reasoningCycleStarting();
     }
-    
+
     /**
      * A call-back method called by TS
      * when a new reasoning cycle finished
@@ -289,7 +289,7 @@ public class AgArch implements Comparable<AgArch>, Serializable {
     public int compareTo(AgArch o) {
         return getAgName().compareTo(o.getAgName());
     }
-    
+
     public Map<String,Object> getStatus() {
         if (successor != null)
             return successor.getStatus();

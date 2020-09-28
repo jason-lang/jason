@@ -56,14 +56,14 @@ public abstract class BaseCentralisedMAS extends NotificationBroadcasterSupport 
     }
 
     /**
-     * @deprecated use RuntimeServicesFactory.get() instead.  
+     * @deprecated use RuntimeServicesFactory.get() instead.
      */
     public RuntimeServices getRuntimeServices() {
         return RuntimeServicesFactory.get();
     }
 
     /**
-     * @deprecated use RuntimeServicesFactory.set() instead.  
+     * @deprecated use RuntimeServicesFactory.set() instead.
      */
     public void setRuntimeServives(RuntimeServices rts) {
         RuntimeServicesFactory.set(rts);
@@ -140,7 +140,7 @@ public abstract class BaseCentralisedMAS extends NotificationBroadcasterSupport 
         }
         return dfAg;
     }
-    
+
     protected Agent getDFAg() {
         return getDFAgArch().getTS().getAg();
     }
@@ -155,13 +155,13 @@ public abstract class BaseCentralisedMAS extends NotificationBroadcasterSupport 
         }
         return a;
     }
-    
+
     /** DF methods  **/
 
     public void dfRegister(String agName, String service) {
         try {
             getDFAg().addBel( ASSyntax.createLiteral("provider", new Atom(agName), new Atom(service)));
-            
+
             // inform subscribers
             for (Literal p: getSubscribers()) {
                 if (p.getTerm(1).toString().equals(service))
@@ -203,7 +203,7 @@ public abstract class BaseCentralisedMAS extends NotificationBroadcasterSupport 
             e.printStackTrace();
         }
     }
-    
+
     protected void sendProvider(String receiver, String provider, String service) {
         try {
             Message m = new Message("tell", getDFAgArch().getAgName(), receiver, ASSyntax.createLiteral("provider", new Atom(provider), new StringTermImpl(service)));
@@ -226,7 +226,7 @@ public abstract class BaseCentralisedMAS extends NotificationBroadcasterSupport 
                 a.put(ag, services);
             }
         }
-        
+
         return a;
     }
 }

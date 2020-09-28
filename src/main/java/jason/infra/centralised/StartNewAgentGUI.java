@@ -117,7 +117,7 @@ public class StartNewAgentGUI extends BaseDialogGUI {
             public void run() {
                 boolean debug = BaseCentralisedMAS.getRunner().isDebug();
                 boolean fs = BaseCentralisedMAS.getRunner().getControllerInfraTier() != null;
-                RuntimeServices services = RuntimeServicesFactory.get(); 
+                RuntimeServices services = RuntimeServicesFactory.get();
                 try {
                     String agClass = null;
                     if (ap.agClass != null) {

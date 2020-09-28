@@ -12,11 +12,11 @@ public class FunctionsTest extends TestCase {
     public void testRandom() throws Exception {
         Agent ag = new Agent();
         ag.initAg();
-        
+
         new jason.stdlib.set_random_seed().execute(ag.getTS(), new Unifier(), new Term[] { ASSyntax.parseNumber("20") });
 
         InternalAction ia_r = (InternalAction) ag.getIA(".random");
-        
+
         double retFunc = new jason.functions.Random().evaluate(ag.getTS(), new Term[] { ASSyntax.parseNumber("10") });
         assertEquals(7.320, retFunc, 0.01);
 
