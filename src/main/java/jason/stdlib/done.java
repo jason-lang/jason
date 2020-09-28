@@ -9,7 +9,7 @@ import jason.asSemantics.IntendedMeans;
 import jason.asSemantics.Intention;
 import jason.asSemantics.TransitionSystem;
 import jason.asSemantics.Unifier;
-import jason.asSyntax.Atom;
+import jason.asSyntax.ASSyntax;
 import jason.asSyntax.Literal;
 import jason.asSyntax.Term;
 import jason.asSyntax.Trigger;
@@ -47,7 +47,7 @@ public class done extends succeed_goal {
                 Iterator<IntendedMeans> iim = i.iterator();
                 while (iim.hasNext()) {
                     IntendedMeans im = iim.next();
-                    if (im.getPlan().getTrigger().getLiteral().equals(new Atom("artificial_plan"))) {
+                    if (im.getPlan().getTrigger().getLiteral().equals(ASSyntax.createAtom("artificial_plan"))) {
                         im = iim.next();
                         g = im.getTrigger().clone();
                         break;
@@ -60,13 +60,12 @@ public class done extends succeed_goal {
             g = new Trigger(TEOperator.add, TEType.achieve, (Literal)args[0]);
         }
         if (g != null) {
-            Trigger g2 = g;
+            final Trigger g2 = g;
             drop(ts, new IMCondition() {
-                public boolean test(Trigger t, Unifier u) {
+            	@Override public boolean test(Trigger t, Unifier u) {
                     return u.unifies(g2, t);
                 }
-                @Override
-                public Trigger getTrigger() {
+                @Override public Trigger getTrigger() {
                     return g2;
                 }
             }, un);
