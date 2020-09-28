@@ -45,7 +45,7 @@ public class Intention implements Serializable, Comparable<Intention>, Iterable<
     private IntentionPlace place = IntentionPlace.None;
 
     // new in JasonER
-    private int     intestedInUpdateEvents = 0;
+    private int     interestedInUpdateEvents = 0;
     private int     imWithGoalCondition = 0;
     private Intention gIntention = null; // in case of intentions for e-plans, this is the intention that derived this e-plan based intention
     public void setGIntention(Intention i) { gIntention = i; }
@@ -70,7 +70,7 @@ public class Intention implements Serializable, Comparable<Intention>, Iterable<
         if (im.isAtomic())
             atomicCount++;
         if (im.getPlan().hasInterestInUpdateEvents())
-            intestedInUpdateEvents++;
+            interestedInUpdateEvents++;
         if (im.getPlan().hasGoalCondition())
             imWithGoalCondition++;
     }
@@ -85,8 +85,8 @@ public class Intention implements Serializable, Comparable<Intention>, Iterable<
         if (isAtomic() && top.isAtomic())
             atomicCount--;
 
-        if (hasIntestedInUpdateEvents() && top.getPlan().hasInterestInUpdateEvents())
-            intestedInUpdateEvents--;
+        if (hasInterestInUpdateEvents() && top.getPlan().hasInterestInUpdateEvents())
+            interestedInUpdateEvents--;
         if (hasGoalCondition() && top.getPlan().hasGoalCondition())
             imWithGoalCondition--;
 
@@ -102,10 +102,10 @@ public class Intention implements Serializable, Comparable<Intention>, Iterable<
     }
 
     public void setNoInterestInUpdateEvents() {
-        intestedInUpdateEvents = 0;
+        interestedInUpdateEvents = 0;
     }
-    public boolean hasIntestedInUpdateEvents() {
-        return intestedInUpdateEvents > 0;
+    public boolean hasInterestInUpdateEvents() {
+        return interestedInUpdateEvents > 0;
     }
     public boolean hasGoalCondition() {
         return imWithGoalCondition > 0;
@@ -287,7 +287,7 @@ public class Intention implements Serializable, Comparable<Intention>, Iterable<
             i.intendedMeans.add((IntendedMeans)im.clone());
         }
 
-        i.intestedInUpdateEvents = intestedInUpdateEvents;
+        i.interestedInUpdateEvents = interestedInUpdateEvents;
         i.imWithGoalCondition = imWithGoalCondition;
 
         return i;

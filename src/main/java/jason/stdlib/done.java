@@ -39,6 +39,8 @@ public class done extends succeed_goal {
     @Override
     public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {
         checkArguments(args);
+        resultSuspend = true;
+
         Trigger g = null;
         if (args.length == 0) {
             // get goal from the context => the near goal
@@ -62,7 +64,7 @@ public class done extends succeed_goal {
         if (g != null) {
             final Trigger g2 = g;
             drop(ts, new IMCondition() {
-            	@Override public boolean test(Trigger t, Unifier u) {
+                @Override public boolean test(Trigger t, Unifier u) {
                     return u.unifies(g2, t);
                 }
                 @Override public Trigger getTrigger() {
@@ -83,24 +85,32 @@ public class done extends succeed_goal {
         Intention i = C.getSelectedIntention();
         if (i != null) {
             int r = dropIntention(i, c, ts, un);
-            //ts.getLogger().info("** rem 1 : "+r+" for "+i);
+            //ts.getLogger().info("** rem 1 : "+r+" for "+c.getTrigger()+" "+i.getId()+ " "+un);
             if (r > 0) {
-                i = i.getGIntention();
-                if (i == null) {
+                Intention ig = i.getGIntention();
+                if (ig == null) {
                     // the g-plan is done, do not suspend it
                     resultSuspend = false;
-                    // TODO: stop e-plan siblings, if they branch above the removed IM
+                    // stop e-plan siblings, TODO: if they branch above the removed IM
+                    Iterator<Intention> ii = C.getAllIntentions();
+                    while (ii.hasNext()) {
+                        Intention iii = ii.next();
+                        if (i.equals(iii.getGIntention())) {
+                            ii.remove();
+                        }
+                    }
                 } else {
                     // e-plan case
                     un = bak.clone();
-                    r = dropIntention(i, c, ts, un);
+                    r = dropIntention(ig, c, ts, un);
                     //ts.getLogger().info("** rem 2 : "+r+" for "+i);
-                    if (r > 0)
-                        // the e-plan is done
-                        C.dropIntention(i); // remove it from whatever it is
-                    if (r == 1) {
-                        //ts.getLogger().info("back to "+i);
-                        C.addRunningIntention(i); // and resume
+                    //if (r > 0) { // the intention was changed
+                    //    C.dropIntention(ig); // remove it from whatever it is in C, to avoid having ig in two places
+                    //}
+                    if (r == 1) {  // intention should continue running
+                        C.dropIntention(ig); // remove it from whatever it is in C, to avoid having ig in two places
+                        //ts.getLogger().info("back to "+i+ " "+c.getTrigger());
+                        C.addRunningIntention(ig); // and resume
                     }
                 }
             }

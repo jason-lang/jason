@@ -436,10 +436,10 @@ public class TransitionSystem implements Serializable {
                     Iterator<Intention> ii = C.getAllIntentions();
                     while (ii.hasNext()) {
                         Intention i = ii.next();
-                        //logger.info("-- "+i.getId()+" "+i.hasIntestedInUpdateEvents()+" "+ (C.SE.getIntention() != null ? C.SE.getIntention().getId() : " no int "));
+                        //logger.info("**"+C.SE + "-- "+i.getId()+" "+i.hasInterestInUpdateEvents()+" "+ (C.SE.getIntention() != null ? C.SE.getIntention().getId() : " no int "));
 
                         // if intention i has sub plans (so potentially interested in external events)
-                        if (i.hasIntestedInUpdateEvents()) {
+                        if (i.hasInterestInUpdateEvents()) {
                             // consider all goals in the intention stack that have sub-plans
                             outerloop:
                             for (IntendedMeans im: i) {
@@ -466,7 +466,7 @@ public class TransitionSystem implements Serializable {
                                                     newi.push(joinIM);
 
                                                     Event e = new Event(C.SE.getTrigger(), newi);
-                                                    //logger.info("     ** add extra evt for "+e);
+                                                    //logger.info("     ** add extra evt for "+e.getTrigger()+" ");
                                                     e.setOption(o);
                                                     C.addEvent(e);
                                                 } catch (Exception e1) {
@@ -1147,10 +1147,11 @@ public class TransitionSystem implements Serializable {
                 return;
             }
 
+            // new JasonER
             if (i.hasGoalCondition()) {
                 // move to PI
                 C.dropIntention(i);
-                C.addPendingIntention("wait_goal_condition_"+i.getId(), i);
+                C.addPendingIntention(""+i.getId(), ASSyntax.createAtom("wait_goal_condition"), i, false);
                 return; // they are cleared by applyClrSatInt
             }
 
