@@ -20,7 +20,7 @@ ifdef::env-github[:outfilesuffix: .adoc]
 
 === List Iteration
 
-To do something for all members of a list, we have two main approaches: the classic recursion and the for each.
+To do something for all members of a list, we have two main approaches: the classic recursion and the for-each.
 
 ==== Recursive approach
 ----
@@ -50,7 +50,7 @@ n
 a
 ----
 
-==== For each approach
+==== For-each approach
 
 ----
 +!iterate(List)
@@ -59,7 +59,7 @@ a
       }.
 ----
 
-NOTE: The Jason `for` is not like a typical for each (witch iterates over a collection of values). Jason `for` iterates over a query, it can be read as "for each solution of a query".
+NOTE: The Jason `for` is not like a typical for-each (witch iterates over a collection of values). Jason `for` iterates over a query, it can be read as "for each solution of a query".
 
 Example:
 ----
