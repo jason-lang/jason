@@ -625,7 +625,7 @@ public class TransitionSystem implements Serializable {
 
         // gets the proper plan library (root, inner scope, ...)
         PlanLibrary plib = ag.getPL();
-        if (C.SE.isInternal()) {
+        if (C.SE.isInternal() && !C.SE.getIntention().isFinished()) {
             Plan p = C.SE.getIntention().peek().getPlan();
             if (p.hasSubPlans()) {
                 plib = p.getSubPlans();
