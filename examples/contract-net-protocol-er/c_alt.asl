@@ -28,6 +28,7 @@ all_proposals_received(CNPId, NP)                // NP: number of participants
           .print("Sending CFP to ",LP);
           .send(LP,tell,cfp(Id,Task)).
 
+    +!bids(LP) : all_proposals_received(Id, .length(LP)). // all proposals received already!
     +!bids(LP) : NP = .length(LP) <: false {
        <- .wait(4000); .done.
        +propose(Id,_) : all_proposals_received(Id, NP) <- .done.
