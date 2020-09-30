@@ -7,6 +7,7 @@ import jason.asSemantics.Event;
 import jason.asSemantics.Intention;
 import jason.asSemantics.TransitionSystem;
 import jason.asSemantics.Unifier;
+import jason.asSyntax.ASSyntax;
 import jason.asSyntax.Literal;
 import jason.asSyntax.Term;
 import jason.asSyntax.Trigger;
@@ -14,22 +15,19 @@ import jason.asSyntax.Trigger.TEOperator;
 import jason.asSyntax.Trigger.TEType;
 
 /**
-  <p>Internal action: <b><code>.desire(<i>D</i>)</code></b>.
+  <p>Internal action: <b><code>.desire(<i>D</i>, [ <i>I</i> ])</code></b>.
 
   <p>Description: checks whether <i>D</i> is a desire: <i>D</i> is a desire
   either if there is an event with <code>+!D</code> as triggering
-  event or it is a goal in one of the agent's intentions.
-
-  <p>Parameters:<ul>
-
-  <li>- desire (literal): the desire to be checked if it is present.</li>
-
-  </ul>
+  event or it is a goal in one of the agent's intentions <i>I</i>.
 
   <p>Example:<ul>
 
   <li> <code>.desire(go(1,3))</code>: true if <code>go(1,3)</code>
-  is a desire of the agent.
+  is a desire of the agent. </li>
+
+  <li> <code>.desire(go(1,3), I)</code>: as above and <code>I</code> unifies with the intention that contains the desire.
+  <code>I</code> is the identification of the intention. The internal action .intention can be used to further inspect the state of the intention. </li>
 
   </ul>
 
@@ -45,7 +43,6 @@ import jason.asSyntax.Trigger.TEType;
   @see jason.stdlib.suspend
   @see jason.stdlib.suspended
   @see jason.stdlib.resume
-
 */
 @Manual(
 		literal=".desire(desire)",
@@ -86,7 +83,7 @@ public class desire extends intend {
 
     enum Step { selEvt, evt, pendEvt, useIntends, end }
 
-    public static Iterator<Unifier> allDesires(final Circumstance C, final Literal l, final Term intAsTerm, final Unifier un) {
+    public static Iterator<Unifier> allDesires(final Circumstance C, final Literal l, final Term intID, final Unifier un) {
         final Trigger teFromL = new Trigger(TEOperator.add, TEType.achieve, l);
 
         return new Iterator<Unifier>() {
@@ -119,60 +116,39 @@ public class desire extends intend {
 
                     // we need to check the selected event in this cycle (already removed from E)
                     if (C.getSelectedEvent() != null) {
-                        Trigger   t = C.getSelectedEvent().getTrigger();
-                        Intention i = C.getSelectedEvent().getIntention();
-                        if (i != Intention.EmptyInt && !i.isFinished()) {
-                            t = (Trigger)t.capply(i.peek().getUnif());
-                        }
-                        solution = un.clone();
-                        if (solution.unifiesNoUndo(teFromL, t)) {
+                    	solution = testEvent(C.getSelectedEvent(), teFromL, intID, un);
+                        if (solution != null) {
                             return;
                         }
                     }
-                    find();
-                    return;
 
                 case evt:
                     if (evtIterator == null)
                         evtIterator = C.getEventsPlusAtomic();
 
-                    if (evtIterator.hasNext()) {
-                        Event ei = evtIterator.next();
-                        Trigger   t = ei.getTrigger();
-                        Intention i = ei.getIntention();
-                        if (i != Intention.EmptyInt && !i.isFinished()) {
-                            t = t.capply(i.peek().getUnif());
-                        }
-                        solution = un.clone();
-                        if (solution.unifiesNoUndo(teFromL, t)) {
+                    while (evtIterator.hasNext()) {
+                    	solution = testEvent(evtIterator.next(), teFromL, intID, un);
+                        if (solution != null) {
                             return;
                         }
-                    } else {
-                        curStep = Step.pendEvt; // set next step
                     }
-                    find();
-                    return;
+                    curStep = Step.pendEvt; // set next step
 
                 case pendEvt:
                     if (pendEvtIterator == null)
                     	pendEvtIterator = C.getPendingEvents().values().iterator();
 
-                    if (pendEvtIterator.hasNext()) {
-                        Event   ei = pendEvtIterator.next();
-                        Trigger t = ei.getTrigger();
-                        solution = un.clone();
-                        if (solution.unifiesNoUndo(teFromL, t)) {
+                    while (pendEvtIterator.hasNext()) {
+                    	solution = testEvent(pendEvtIterator.next(), teFromL, intID, un);
+                        if (solution != null) {
                             return;
                         }
-                    } else {
-                        curStep = Step.useIntends; // set next step
                     }
-                    find();
-                    return;
+                    curStep = Step.useIntends; // set next step
 
                 case useIntends:
                     if (intendInterator == null)
-                        intendInterator = allIntentions(C,l,intAsTerm,un,true);
+                        intendInterator = allIntentions(C,l,intID,un,true);
 
                     if (intendInterator.hasNext()) {
                         solution = intendInterator.next();
@@ -186,6 +162,27 @@ public class desire extends intend {
                 }
                 solution = null; // nothing found
             }
+
+            protected Unifier testEvent(Event evt, Trigger triggerToCheck, Term intID, Unifier un) {
+            	if (evt == null)
+            		return null;
+
+                Trigger   t = evt.getTrigger();
+                Intention i = evt.getIntention();
+                if (i != Intention.EmptyInt && !i.isFinished()) {
+                    t = (Trigger)t.capply(i.peek().getUnif());
+                }
+                Unifier solution = un.clone();
+                if (solution.unifiesNoUndo(triggerToCheck, t)) {
+                	if (i == null || intID == null)
+                		return solution;
+                	else if (solution.unifies(intID, ASSyntax.createNumber( i.getId() )))
+                		return solution;
+                }
+                return null;
+            }
+
         };
     }
+
 }
