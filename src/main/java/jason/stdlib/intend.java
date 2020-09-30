@@ -29,10 +29,9 @@ import jason.asSyntax.Trigger.TEType;
   <p>Example:<ul>
 
   <li> <code>.intend(go(1,3))</code>: is true if a plan with triggering event
-  <code>+!go(1,3)</code> appears in an intention of the agent.
+  <code>+!go(1,3)</code> appears in an intention of the agent. </li>
   <li> <code>.intend(go(1,3),I)</code>: as above and <code>I</code> unifies with the intention that contains the goal.
-  <code>I</code> is the identification of the intention. The internal action .intention can be used to further inspect the state of the intention.
-
+  <code>I</code> is the identification of the intention. The internal action .intention can be used to further inspect the state of the intention.</li>
 
   </ul>
 
@@ -105,7 +104,7 @@ public class intend extends DefaultInternalAction {
     /**
      * returns all unifications for intentions with some goal
      */
-    public static Iterator<Unifier> allIntentions(final Circumstance C, final Literal l, final Term intAsTerm, final Unifier un, final boolean considerSuspended) {
+    public static Iterator<Unifier> allIntentions(final Circumstance C, final Literal l, final Term intID, final Unifier un, final boolean considerSuspended) {
         final Trigger g = new Trigger(TEOperator.add, TEType.achieve, l);
 
         return new Iterator<Unifier>() {
@@ -134,8 +133,8 @@ public class intend extends DefaultInternalAction {
                     IntendedMeans im = intIM.next();
                     solution = un.clone();
                     if (solution.unifies(g, im.getTrigger())) {
-                        if (intAsTerm != null) {
-                            if (solution.unifies(intAsTerm, ASSyntax.createNumber( curInt.getId() )))
+                        if (intID != null) {
+                            if (solution.unifies(intID, ASSyntax.createNumber( curInt.getId() )))
                                 return;
                         } else {
                             return;
