@@ -2,12 +2,13 @@ package jason.stdlib;
 
 import java.util.Iterator;
 
+import jason.asSemantics.Circumstance.IntentionPlace;
 import jason.asSemantics.DefaultInternalAction;
 import jason.asSemantics.Event;
 import jason.asSemantics.Intention;
+import jason.asSemantics.Intention.State;
 import jason.asSemantics.TransitionSystem;
 import jason.asSemantics.Unifier;
-import jason.asSemantics.Intention.State;
 import jason.asSyntax.ASSyntax;
 import jason.asSyntax.Term;
 
@@ -52,6 +53,9 @@ import jason.asSyntax.Term;
 
   <p>Notes:<ul>
 
+  <li>For possible states, see https://github.com/jason-lang/jason/blob/master/doc/tech/intention-states.pdf.
+  		Some states can be annotated with further details, for instance: suspended[reason(wait(2)[time(3000)])]].
+  </li>
   <li>In case this internal action is used in the <i>body</i> of a plan, the intention that
       are executing the plan is used as <code>current</code>.</li>
   <li>In case this internal action is used in the <i>context</i> of a plan, the intention that
@@ -113,9 +117,7 @@ public class intention extends DefaultInternalAction {
             Intention actInt = null; // intention being considered
             Iterator<Intention> intInterator = ts.getC().getAllIntentions();
 
-            {
-                find(); // find first answer
-            }
+            { find(); } // find first answer
 
             public boolean hasNext() {
                 return solution != null;
@@ -134,7 +136,7 @@ public class intention extends DefaultInternalAction {
 
                     solution = un.clone();
                     if (solution.unifiesNoUndo( args[0], ASSyntax.createNumber( actInt.getId())) &&
-                        solution.unifiesNoUndo( args[1], ASSyntax.createAtom( actInt.getStateBasedOnPlace().toString())) ) {
+                        solution.unifiesNoUndo( args[1], computeState(actInt) )) {
 
                         if (args.length == 2) {
                             return;
@@ -145,6 +147,17 @@ public class intention extends DefaultInternalAction {
                     }
                 }
                 solution = null; // nothing found
+            }
+
+            Term computeState(Intention i) {
+                if (i.getPlace() == IntentionPlace.PendingActions) {
+                    return ASSyntax.createLiteral(i.getStateBasedOnPlace().toString())
+                            .addAnnots(ASSyntax.createLiteral("action",i.getSuspendedReason()));
+                } else if (i.isSuspended()) {
+                    return ASSyntax.createLiteral(i.getStateBasedOnPlace().toString())
+                            .addAnnots(ASSyntax.createLiteral("reason",i.getSuspendedReason()));
+                }
+                return ASSyntax.createAtom(i.getStateBasedOnPlace().toString());
             }
         };
     }
