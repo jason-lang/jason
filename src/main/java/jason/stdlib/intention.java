@@ -54,7 +54,7 @@ import jason.asSyntax.Term;
   <p>Notes:<ul>
 
   <li>For possible states, see https://github.com/jason-lang/jason/blob/master/doc/tech/intention-states.pdf.
-  		Some states can be annotated with further details, for instance: suspended[reason(wait(2)[time(3000)])]].
+        Some states can be annotated with further details, for instance: waiting[reason(wait(5)[time(400)])]].
   </li>
   <li>In case this internal action is used in the <i>body</i> of a plan, the intention that
       are executing the plan is used as <code>current</code>.</li>
@@ -153,7 +153,7 @@ public class intention extends DefaultInternalAction {
                 if (i.getPlace() == IntentionPlace.PendingActions) {
                     return ASSyntax.createLiteral(i.getStateBasedOnPlace().toString())
                             .addAnnots(ASSyntax.createLiteral("action",i.getSuspendedReason()));
-                } else if (i.isSuspended()) {
+                } else if (i.getStateBasedOnPlace() == State.waiting) {
                     return ASSyntax.createLiteral(i.getStateBasedOnPlace().toString())
                             .addAnnots(ASSyntax.createLiteral("reason",i.getSuspendedReason()));
                 }
