@@ -39,10 +39,10 @@ public class Intention implements Serializable, Comparable<Intention>, Iterable<
     private static AtomicInteger idCount = new AtomicInteger(0);
 
     private int     id;
-    private int     atomicCount    = 0; // number of atomic intended means in the intention
-    private boolean isSuspended = false; // suspended by the internal action .suspend
+    private int     atomicCount     = 0; // number of atomic intended means in the intention
+    private boolean isSuspended     = false; // suspended by the internal action .suspend
     private Term    suspendedReason = null;
-    private IntentionPlace place = IntentionPlace.None;
+    private IntentionPlace place    = IntentionPlace.None; // the place this intention is in C
 
     // new in JasonER
     private int     interestedInUpdateEvents = 0;
@@ -127,6 +127,7 @@ public class Intention implements Serializable, Comparable<Intention>, Iterable<
         intendedMeans.clear();
     }
 
+    /** suspended intention means suspended by the internal action .suspend */
     public void setSuspended(boolean b) {
         isSuspended = b;
         //if (!b)
@@ -140,7 +141,8 @@ public class Intention implements Serializable, Comparable<Intention>, Iterable<
     public void setSuspendedReason(Term r) {
         suspendedReason = r;
     }
-    private static Atom noReason = ASSyntax.createAtom("no_reason");
+
+    public static Atom noReason = ASSyntax.createAtom("no_reason");
     public Term getSuspendedReason() {
         if (suspendedReason == null)
             return noReason;
