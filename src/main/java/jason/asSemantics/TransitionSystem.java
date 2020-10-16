@@ -467,6 +467,26 @@ public class TransitionSystem implements Serializable {
                 String msg = "Found a goal for which there is no "+m+" plan: " + C.SE.getTrigger();
                 if (!generateGoalDeletionFromEvent(JasonException.createBasicErrorAnnots("no_"+m, msg), ASSyntax.createAtom("no_"+m+"_plan"))) {
                     logger.warning(msg);
+
+                    // show details of evaluation of each candidate plan
+                    if (C.RP != null) {
+                        Level oldLevel = ag.getLogger().getLevel();
+                        ag.getLogger().setLevel(Level.FINE);
+                        for (Option o: C.RP) {
+                            ag.getLogger().fine("Plan @"+o.getPlan().getLabel()+" for "+o.getPlan().getTrigger());
+                            if (o.getUnifier() == null) {
+                                ag.getLogger().fine("     |> not relevant");
+                            } else {
+                                ag.getLogger().fine("     |> context = "+o.getPlan().getContext() + " with "+ o.getUnifier());
+                                LogicalFormula context = o.getPlan().getContext();
+                                Iterator<Unifier> r = context.logicalConsequence(ag, o.getUnifier());
+                                while (r != null && r.hasNext()) {
+                                    r.next(); // just to evaluate and show debug messages
+                                }
+                            }
+                        }
+                        ag.getLogger().setLevel(oldLevel);
+                    }
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -520,14 +540,16 @@ public class TransitionSystem implements Serializable {
 
         // get all relevant plans for the selected event
         //Trigger te = (Trigger) C.SE.trigger.clone();
+        C.RP = new ArrayList<>();
         List<Plan> candidateRPs = ag.pl.getCandidatePlans(C.SE.trigger);
         if (candidateRPs != null) {
             for (Plan pl : candidateRPs) {
                 Unifier relUn = pl.isRelevant(C.SE.trigger, null);
+                C.SO = new Option(pl, relUn);
+                C.RP.add(C.SO);
                 if (relUn != null) { // is relevant
                     LogicalFormula context = pl.getContext();
                     if (context == null) { // context is true
-                        C.SO = new Option(pl, relUn);
                         return;
                     } else {
                         Iterator<Unifier> r = context.logicalConsequence(ag, relUn);
@@ -538,6 +560,7 @@ public class TransitionSystem implements Serializable {
                     }
                 }
             }
+            C.SO = null;
             applyRelApplPlRule2("applicable");
         } else {
             // problem: no plan

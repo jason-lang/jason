@@ -83,25 +83,6 @@ public class InternalActionLiteral extends Structure implements LogicalFormula {
     public Iterator<Unifier> logicalConsequence(Agent ag, Unifier un) {
         if (ag == null || ag.getTS().getAgArch().isRunning()) {
             try {
-                /*final QueryCache qCache;
-                final CacheKey kForChache;
-                if (ag != null) {
-                    qCache = ag.getQueryCache();
-                    if (qCache != null) {
-                        kForChache = qCache.prepareForCache(this, un);
-                        Iterator<Unifier> ic = qCache.getCache(kForChache);
-                        if (ic != null) {
-                            //ag.getLogger().info("from cache internal action "+this);
-                            return ic;
-                        }
-                    } else {
-                        kForChache = null;
-                    }
-                } else {
-                    qCache = null;
-                    kForChache = null;
-                }*/
-
                 InternalAction ia = getIA(ag);
                 if (!ia.canBeUsedInContext()) {
                     logger.log(Level.SEVERE, getErrorMsg() + ": internal action "+getFunctor()+" cannot be used in context or rules!");
@@ -109,14 +90,13 @@ public class InternalActionLiteral extends Structure implements LogicalFormula {
                 }
                 // calls IA's execute method
                 Object oresult = ia.execute(ag.getTS(), un, ia.prepareArguments(this, un));
-                if (oresult instanceof Boolean && (Boolean)oresult) {
-                    /*if (kForChache != null) {
-                        qCache.addAnswer(kForChache, un);
-                        qCache.queryFinished(kForChache);
-                    }*/
-                    if (ag.getLogger().isLoggable(Level.FINE)) ag.getLogger().log(Level.FINE, "     | internal action "+this+" executed "+ " -- "+un);
-
-                    return LogExpr.createUnifIterator(un);
+                if (oresult instanceof Boolean) {
+                    if ((Boolean)oresult) {
+                        if (ag.getLogger().isLoggable(Level.FINE)) ag.getLogger().log(Level.FINE, "     | internal action "+this+" executed "+ " -- "+un);
+                        return LogExpr.createUnifIterator(un);
+                    } else {
+                        if (ag.getLogger().isLoggable(Level.FINE)) ag.getLogger().log(Level.FINE, "     | internal action "+this+" failed "+ " -- "+un);
+                    }
                 } else if (oresult instanceof Iterator) {
                     //if (kForChache == null) {
                     if (ag.getLogger().isLoggable(Level.FINE)) {
@@ -133,10 +113,6 @@ public class InternalActionLiteral extends Structure implements LogicalFormula {
                     } else {
                         return ((Iterator<Unifier>)oresult);
                     }
-                    /*} else {
-                        // add a wrapper to collect results into the cache
-                        return qCache.queryFilter(kForChache, (Iterator<Unifier>)oresult);
-                    }*/
                 }
             } catch (ConcurrentModificationException e) {
                 System.out.println("*-*-* "+getFunctor()+" concurrent exception - try later");

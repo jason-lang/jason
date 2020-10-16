@@ -444,6 +444,7 @@ public abstract class Literal extends DefaultTerm implements LogicalFormula {
 	                        	if (isInDebug) ag.getLogger().log(Level.FINE, "     | rule "+rhead+" is NOT an option for "+ Literal.this+ " -- "+unC);
 	                        }
 	                    }
+                    	if (isInDebug) ag.getLogger().log(Level.FINE, "     | rule "+rule+" has NO more options for "+ Literal.this);
 	                    ruleIt = null;
 	                }
 
@@ -463,11 +464,16 @@ public abstract class Literal extends DefaultTerm implements LogicalFormula {
 	                        }
 	                        Unifier ruleUn = new Unifier();
 	                        if (ruleUn.unifiesNoUndo(cloneAnnon, rule)) { // the rule head unifies with the literal
+                            	if (isInDebug) ag.getLogger().log(Level.FINE, "     | rule "+rule+" is an option for "+ cloneAnnon+ " -- "+ruleUn);
+
 	                            ruleIt = rule.getBody().logicalConsequence(ag,ruleUn);
 	                            //get(); // just to avoid a bit of recursion, I am using goto
 	                            continue beginloop;
 	                            //if (current != null) // if it get a value
 	                            //    return;
+	                        } else {
+                            	if (isInDebug) ag.getLogger().log(Level.FINE, "     | rule "+rule+" is an NOT option for "+ cloneAnnon+ " -- "+ruleUn);
+
 	                        }
 	                    } else { // not rule
 	                        if (nbAnnots > 0) { // try annots backtracking
