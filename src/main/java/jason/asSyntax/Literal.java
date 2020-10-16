@@ -444,7 +444,7 @@ public abstract class Literal extends DefaultTerm implements LogicalFormula {
 	                        	if (isInDebug) ag.getLogger().log(Level.FINE, "     | rule "+rhead+" is NOT an option for "+ Literal.this+ " -- "+unC);
 	                        }
 	                    }
-                    	if (isInDebug) ag.getLogger().log(Level.FINE, "     | rule "+rule+" has NO more options for "+ Literal.this);
+                    	//if (isInDebug) ag.getLogger().log(Level.FINE, "     | rule "+rule+" has NO more options for "+ Literal.this);
 	                    ruleIt = null;
 	                }
 
@@ -473,7 +473,6 @@ public abstract class Literal extends DefaultTerm implements LogicalFormula {
 	                            //    return;
 	                        } else {
                             	if (isInDebug) ag.getLogger().log(Level.FINE, "     | rule "+rule+" is an NOT option for "+ cloneAnnon+ " -- "+ruleUn);
-
 	                        }
 	                    } else { // not rule
 	                        if (nbAnnots > 0) { // try annots backtracking
@@ -494,11 +493,12 @@ public abstract class Literal extends DefaultTerm implements LogicalFormula {
 	                                current = u;
 	                                return;
 	                            } else {
-	                            	if (isInDebug) ag.getLogger().log(Level.FINE, "     | belief "+belInBB+" is NOT an option for "+ Literal.this+ " -- "+u);
+	                            	//if (isInDebug) ag.getLogger().log(Level.FINE, "     | belief "+belInBB+" is NOT an option for "+ Literal.this+ " -- "+u);
 	                            }
 	                        }
 	                    }
 	                }
+                	if (isInDebug) ag.getLogger().log(Level.FINE, "     | NO more options for "+ Literal.this);
 	                break; // do not repeat! the loop is used by 'continue' only
                 } // while
             }
