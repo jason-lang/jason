@@ -473,11 +473,11 @@ public class TransitionSystem implements Serializable {
                         Level oldLevel = ag.getLogger().getLevel();
                         ag.getLogger().setLevel(Level.FINE);
                         for (Option o: C.RP) {
-                            ag.getLogger().fine("Plan @"+o.getPlan().getLabel()+" for "+o.getPlan().getTrigger());
                             if (o.getUnifier() == null) {
+                                ag.getLogger().fine("Plan @"+o.getPlan().getLabel()+" "+o.getPlan().getTrigger());
                                 ag.getLogger().fine("     |> not relevant");
                             } else {
-                                ag.getLogger().fine("     |> context = "+o.getPlan().getContext() + " with "+ o.getUnifier());
+                                ag.getLogger().fine("Plan @"+o.getPlan().getLabel()+" "+o.getPlan().getTrigger() + " : " + o.getPlan().getContext()+ " -- "+ o.getUnifier());
                                 LogicalFormula context = o.getPlan().getContext();
                                 Iterator<Unifier> r = context.logicalConsequence(ag, o.getUnifier());
                                 while (r != null && r.hasNext()) {
