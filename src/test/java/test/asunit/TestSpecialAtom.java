@@ -1,12 +1,9 @@
 package test.asunit;
 
-import jason.RevisionFailedException;
-import jason.asSyntax.ASSyntax;
-import jason.asSyntax.parser.ParseException;
-import jason.asunit.TestAgent;
-
 import org.junit.Before;
 import org.junit.Test;
+
+import jason.asunit.TestAgent;
 
 public class TestSpecialAtom {
 
