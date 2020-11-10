@@ -1,5 +1,5 @@
 /**
- * Test lists
+ * Test rules
  */
 
 { include("tester_agent.asl") }
