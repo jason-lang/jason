@@ -84,7 +84,7 @@ public class CentralisedAgArch extends AgArch implements Runnable, Serializable 
      * jason.architecture.AgArch. The arch will create the agent that creates
      * the TS.
      */
-    public void createArchs(Collection<String> agArchClasses, String agClass, ClassParameters bbPars, String asSrc, Settings stts) throws JasonException {
+    public void createArchs(Collection<String> agArchClasses, String agClass, ClassParameters bbPars, String asSrc, Settings stts) throws Exception {
         try {
             Agent.create(this, agClass, bbPars, asSrc, stts);
             insertAgArch(this);
@@ -100,7 +100,7 @@ public class CentralisedAgArch extends AgArch implements Runnable, Serializable 
             setLogger();
         } catch (Exception e) {
             running = false;
-            throw new JasonException("as2j: error creating the agent class! - "+e.getMessage(), e);
+            throw e; //new JasonException("as2j: error creating the agent class! - "+e.getMessage(), e);
         }
     }
 

@@ -1,5 +1,10 @@
 package jason.asSyntax.directives;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import jason.asSemantics.Agent;
 import jason.asSemantics.ArithFunction;
 import jason.asSyntax.NumberTerm;
@@ -20,13 +25,9 @@ import jason.functions.ceil;
 import jason.functions.e;
 import jason.functions.floor;
 import jason.functions.log;
+import jason.functions.mean;
 import jason.functions.pi;
 import jason.functions.time;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * This class maintains the set of arithmetic functions available for the AS parser.
@@ -47,6 +48,7 @@ public class FunctionRegister extends DefaultDirective implements Directive {
         addJasonFunction(Sum.class);
         addJasonFunction(StdDev.class);
         addJasonFunction(Average.class);
+        addJasonFunction(mean.class);
         addJasonFunction(Length.class);
         addJasonFunction(Random.class);
         addJasonFunction(Round.class);

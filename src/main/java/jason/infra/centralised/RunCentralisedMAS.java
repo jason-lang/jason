@@ -439,7 +439,7 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
             Thread agThread = new Thread(agArch);
             agArch.setThread(agThread);
             agThread.start();
-        } catch (JasonException e1) {
+        } catch (Exception e1) {
             e1.printStackTrace();
         }
         addAg(agArch);
@@ -541,6 +541,8 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
 
                     pag = agArch.getTS().getAg();
                 }
+            } catch (jason.asSyntax.parser.ParseException e) {
+                logger.log(Level.SEVERE,"as2j: error parsing \"" + ap.getSource() + "\": "+e.getMessage());
             } catch (Exception e) {
                 logger.log(Level.SEVERE, "Error creating agent " + ap.name, e);
             }

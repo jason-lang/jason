@@ -61,19 +61,19 @@ public class ASParserTest extends TestCase {
         assertEquals("jason.asSyntax.Literal$FalseLiteral", t.getClass().getName());
     }
 
-    public void testKQML() {
+    public void testKQML() throws Exception {
         Agent ag = new Agent();
         ag.initAg();
 
-        assertTrue(ag.parseAS(new File("src/main/resources/asl/kqmlPlans.asl")));
-        assertTrue(ag.parseAS(new File("examples/auction/ag1.asl")));
+        ag.parseAS(new File("src/main/resources/asl/kqmlPlans.asl"));
+        ag.parseAS(new File("examples/auction/ag1.asl"));
         Plan p = ag.getPL().get("lbid");
         //System.out.println(ag.getPL());
         assertNotNull(p);
         assertEquals(p.getBody().getPlanSize(), 1);
         assertEquals(((PlanBody)p.getBody()).getBodyType(), PlanBody.BodyType.internalAction);
-        assertTrue(ag.parseAS(new File("examples/auction/ag2.asl")));
-        assertTrue(ag.parseAS(new File("examples/auction/ag3.asl")));
+        ag.parseAS(new File("examples/auction/ag2.asl"));
+        ag.parseAS(new File("examples/auction/ag3.asl"));
     }
 
     public void testLogicalExpr() throws Exception {

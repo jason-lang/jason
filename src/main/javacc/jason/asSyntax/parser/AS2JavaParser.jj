@@ -605,9 +605,9 @@ Object body_formula() :
                              if (formType == BodyType.delBel) {
                                 ia = new InternalActionLiteral(ASSyntax.createStructure(".remove_plan", (Term)B), curAg);
                              } else if (formType == BodyType.addBel) {
-                                ia = new InternalActionLiteral(ASSyntax.createStructure(".add_plan", (Term)B, BeliefBase.ASelf, new Atom("begin")), curAg);
+                                ia = new InternalActionLiteral(ASSyntax.createStructure(".add_plan", (Term)B, BeliefBase.ASelf, ASSyntax.createAtom("begin")), curAg);
                              } else if (formType == BodyType.addBelEnd) {
-                                ia = new InternalActionLiteral(ASSyntax.createStructure(".add_plan", (Term)B, BeliefBase.ASelf, new Atom("end")), curAg);
+                                ia = new InternalActionLiteral(ASSyntax.createStructure(".add_plan", (Term)B, BeliefBase.ASelf, ASSyntax.createAtom("end")), curAg);
                              } else {
                                 throw new ParseException(getSourceRef(B)+" Wrong combination of operator "+formType+" and plan.");
                              }
@@ -714,7 +714,7 @@ Literal literal() :
                                 else if (tns.image.equals("this_ns"))
                                      NS = thisnamespace;
                                 else
-                                     NS = new Atom(tns.image);
+                                     NS = ASSyntax.createAtom(tns.image);
                                 explicitAbstractNS = false;
                               }
          |
@@ -750,7 +750,7 @@ Literal literal() :
                                 NS = nsDirective.map(NS);
 
                                 if (F.getFunctor().charAt(0) == '\'') {
-                                    F = (Pred)F.newFunctor(F.getFunctor().substring(1, F.getFunctor().length()-1));
+                                    //F = (Pred)F.newFunctor(F.getFunctor().substring(1, F.getFunctor().length()-1));
                                 } else {
 	                                if (F.getFunctor().indexOf(".") >= 0) {
 	                                   if (F.hasAnnot())

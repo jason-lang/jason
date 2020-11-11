@@ -124,17 +124,9 @@ public class concat extends DefaultInternalAction {
             /*if (!args[args.length-1].isVar() && !args[args.length-1].isString()) {
                 throw JasonException.createWrongArgument(this,"Last argument '"+args[args.length-1]+"' is not a string nor a variable.");
             }*/
-            String vl = args[0].toString();
-            if (args[0].isString()) {
-                vl = ((StringTerm)args[0]).getString();
-            }
-            StringBuilder sr = new StringBuilder(vl);
+            StringBuilder sr = new StringBuilder( getPlainValue(args[0]) );
             for (int i=1; i<args.length-1; i++) {
-                vl = args[i].toString();
-                if (args[i].isString()) {
-                    vl = ((StringTerm)args[i]).getString();
-                }
-                sr.append(vl);
+                sr.append( getPlainValue(args[i]) );
             }
             Term lastArg = args[args.length-1];
             if (!lastArg.isString() && !lastArg.isVar())
@@ -143,5 +135,15 @@ public class concat extends DefaultInternalAction {
             //} else {
             //    throw JasonException.createWrongArgument(this,"First argument '"+args[0]+"' must be a list, string or term.");
         }
+    }
+
+    String getPlainValue(Term t) {
+        if (t.isString()) {
+            return ((StringTerm)t).getString();
+        }
+        String r = t.toString();
+        if (t.isAtom() && r.startsWith("'") && r.endsWith("'"))
+            return r.substring(1, r.length()-1);
+        return r;
     }
 }

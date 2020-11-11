@@ -8,12 +8,24 @@ import jason.asSyntax.NumberTerm;
 import jason.asSyntax.Term;
 
 /**
-@deprecated use function mean instead
+<p>Function: <b><code>math.mean(L)</code></b>: returns the average mean of all values of L.
+
+<p>Examples:<ul>
+<li> <code>math.mean([1,3])</code>: returns 2.</li>
+<li> <code>math.mean([])</code>: fail.</li>
+</ul>
+
+@author Jomi
+
+@see jason.functions.Min
+@see jason.functions.Max
+@see jason.functions.Sum
+
 */
-public class Average extends DefaultArithFunction  {
+public class mean extends DefaultArithFunction  {
 
     public String getName() {
-        return "math.average";
+        return "math.mean";
     }
 
     @Override

@@ -565,6 +565,26 @@ public class TransitionSystem implements Serializable {
                 String msg = "Found a goal for which there is no "+m+" plan: " + C.SE.getTrigger();
                 if (!generateGoalDeletionFromEvent(JasonException.createBasicErrorAnnots("no_"+m, msg), ASSyntax.createAtom("no_"+m+"_plan"))) {
                     logger.warning(msg);
+
+                    // show details of evaluation of each candidate plan
+                    if (C.RP != null) {
+                        Level oldLevel = ag.getLogger().getLevel();
+                        ag.getLogger().setLevel(Level.FINE);
+                        for (Option o: C.RP) {
+                            if (o.getUnifier() == null) {
+                                ag.getLogger().fine("Plan @"+o.getPlan().getLabel()+" "+o.getPlan().getTrigger());
+                                ag.getLogger().fine("     |> not relevant");
+                            } else {
+                                ag.getLogger().fine("Plan @"+o.getPlan().getLabel()+" "+o.getPlan().getTrigger() + " : " + o.getPlan().getContext()+ " -- "+ o.getUnifier());
+                                LogicalFormula context = o.getPlan().getContext();
+                                Iterator<Unifier> r = context.logicalConsequence(ag, o.getUnifier());
+                                while (r != null && r.hasNext()) {
+                                    r.next(); // just to evaluate and show debug messages
+                                }
+                            }
+                        }
+                        ag.getLogger().setLevel(oldLevel);
+                    }
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -637,6 +657,7 @@ public class TransitionSystem implements Serializable {
         String kindOfError = "relevant";
         while (plib != null) {
             // get all relevant plans for the selected event
+            // TODO: compute as in 2.6.2 // C.RP = new ArrayList<>();
             List<Plan> candidateRPs = plib.getCandidatePlans(C.SE.getTrigger());
             if (candidateRPs != null) {
                 kindOfError = "applicable";

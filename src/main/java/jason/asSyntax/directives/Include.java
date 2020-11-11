@@ -79,8 +79,10 @@ public class Include extends DefaultDirective implements Directive {
             return ag;
         } catch (FileNotFoundException e) {
             logger.log(Level.SEVERE,"The included file '"+file+"' was not found! (it is being included in the agent '"+outerContent.getTS().getAgArch().getAgName()+"')");
+        } catch (jason.asSyntax.parser.ParseException e) {
+            logger.log(Level.SEVERE,"as2j: error parsing \"" + file + "\": "+e.getMessage()+ "(it is being included in the agent '"+outerContent.getTS().getAgArch().getAgName()+"')");
         } catch (Exception e) {
-            logger.log(Level.SEVERE,"as2j: error parsing \"" + file + "\"", e);
+            logger.log(Level.SEVERE,"as2j: error including \"" + file + "\"", e);
         }
         return null;
     }
