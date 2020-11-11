@@ -415,10 +415,10 @@ public abstract class Literal extends DefaultTerm implements LogicalFormula {
 	                        Unifier u = un.clone();
 	                        if (u.unifiesNoUndo(Literal.this, belToTry)) {
 	                            current = u;
-	                        	if (isInDebug) ag.getLogger().log(Level.FINE, "     | belief annotation "+belToTry+" is an option for "+ Literal.this+ " -- "+u);
+	                        	if (isInDebug) ag.getLogger().log(Level.FINE, "     | for "+Literal.this+", belief annotation "+belToTry+" is an option -- "+u);
 	                            return;
 	                        } else {
-	                        	if (isInDebug) ag.getLogger().log(Level.FINE, "     | belief annotation "+belToTry+" is NOT an option for "+ Literal.this+ " -- "+u);
+	                        	if (isInDebug) ag.getLogger().log(Level.FINE, "     | for "+Literal.this+", belief annotation "+belToTry+" is NOT an option -- "+u);
 	                        }
 	                    }
 	                    annotsOptions = null;
@@ -438,10 +438,10 @@ public abstract class Literal extends DefaultTerm implements LogicalFormula {
 	                        Unifier unC = un.clone();
 	                        if (unC.unifiesNoUndo(Literal.this, rhead)) {
 	                            current = unC;
-	                        	if (isInDebug) ag.getLogger().log(Level.FINE, "     | rule "+rhead+" is an option for "+ Literal.this+ " -- "+unC);
+	                        	if (isInDebug) ag.getLogger().log(Level.FINE, "     | for "+Literal.this+", rule "+rhead+" is an option -- "+unC);
 	                            return;
 	                        } else {
-	                        	if (isInDebug) ag.getLogger().log(Level.FINE, "     | rule "+rhead+" is NOT an option for "+ Literal.this+ " -- "+unC);
+	                        	if (isInDebug) ag.getLogger().log(Level.FINE, "     | for "+Literal.this+", rule "+rhead+" is NOT an option -- "+unC);
 	                        }
 	                    }
                     	//if (isInDebug) ag.getLogger().log(Level.FINE, "     | rule "+rule+" has NO more options for "+ Literal.this);
@@ -464,7 +464,7 @@ public abstract class Literal extends DefaultTerm implements LogicalFormula {
 	                        }
 	                        Unifier ruleUn = new Unifier();
 	                        if (ruleUn.unifiesNoUndo(cloneAnnon, rule)) { // the rule head unifies with the literal
-                            	if (isInDebug) ag.getLogger().log(Level.FINE, "     | rule "+rule+" is an option for "+ cloneAnnon+ " -- "+ruleUn);
+                            	if (isInDebug) ag.getLogger().log(Level.FINE, "     | for "+cloneAnnon+", rule "+rule+" is an option -- "+ruleUn);
 
 	                            ruleIt = rule.getBody().logicalConsequence(ag,ruleUn);
 	                            //get(); // just to avoid a bit of recursion, I am using goto
@@ -472,7 +472,7 @@ public abstract class Literal extends DefaultTerm implements LogicalFormula {
 	                            //if (current != null) // if it get a value
 	                            //    return;
 	                        } else {
-                            	if (isInDebug) ag.getLogger().log(Level.FINE, "     | rule "+rule+" is an NOT option for "+ cloneAnnon+ " -- "+ruleUn);
+                            	if (isInDebug) ag.getLogger().log(Level.FINE, "     | for "+cloneAnnon+", rule "+rule+" is an NOT option -- "+ruleUn);
 	                        }
 	                    } else { // not rule
 	                        if (nbAnnots > 0) { // try annots backtracking
@@ -489,7 +489,7 @@ public abstract class Literal extends DefaultTerm implements LogicalFormula {
 	                        } else { // it is an ordinary query on a belief
 	                            Unifier u = un.clone();
 	                            if (u.unifiesNoUndo(Literal.this, belInBB)) {
-	                            	if (isInDebug) ag.getLogger().log(Level.FINE, "     | belief "+belInBB+" is an option for "+ Literal.this+ " -- "+u);
+	                            	if (isInDebug) ag.getLogger().log(Level.FINE, "     | for "+Literal.this+", belief "+belInBB+" is an option -- "+u);
 	                                current = u;
 	                                return;
 	                            } else {
