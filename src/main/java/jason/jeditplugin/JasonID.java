@@ -267,7 +267,7 @@ public class JasonID extends JPanel implements EBComponent, RunProjectListener {
 
             // fix file name
             Buffer projectb = getProjectBuffer();
-            String file = ap.getSource().toString();
+            String file = ap.getSourceAsFile().toString();
             if (file.indexOf('/') < 0 && file.indexOf('\\') < 0)
                 // append project directory
                 file = projectb.getDirectory() + "/" + file;
