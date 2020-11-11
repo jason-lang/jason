@@ -9,6 +9,7 @@ import jason.functions.Abs;
 import jason.functions.Average;
 import jason.functions.Length;
 import jason.functions.Max;
+import jason.functions.median;
 import jason.functions.Min;
 import jason.functions.Random;
 import jason.functions.Round;
@@ -41,6 +42,7 @@ public class FunctionRegister extends DefaultDirective implements Directive {
     static {
         addJasonFunction(Abs.class);
         addJasonFunction(Max.class);
+        addJasonFunction(median.class);
         addJasonFunction(Min.class);
         addJasonFunction(Sum.class);
         addJasonFunction(StdDev.class);
