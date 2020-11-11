@@ -46,13 +46,10 @@ public class asl2xml implements Serializable {
     Agent loadAg(String file)  throws Exception {
         Agent ag = new Agent();
         ag.initAg();
-        if (ag.parseAS(new File(file))) {
-            ag.setASLSrc(file);
-            ag.addInitialBelsInBB();
-            return ag;
-        } else {
-            return null;
-        }
+        ag.parseAS(new File(file));
+        ag.setASLSrc(file);
+        ag.addInitialBelsInBB();
+        return ag;
     }
 
     public String transform(String agCode) throws Exception {

@@ -1,6 +1,5 @@
 package jason.infra.repl;
 
-import jason.JasonException;
 import jason.asSemantics.Agent;
 import jason.asSemantics.IntendedMeans;
 import jason.asSemantics.Intention;
@@ -27,7 +26,7 @@ public abstract class ReplAg extends Agent {
     }
 
     @Override
-    public void load(String asSrc) throws JasonException {
+    public void load(String asSrc) throws Exception {
         super.load("");
         /*try {
             getPL().add(ASSyntax.parsePlan("+!run_repl_expr(Cmd__TR) <- Cmd__TR; jason.infra.repl.print_unifier."));

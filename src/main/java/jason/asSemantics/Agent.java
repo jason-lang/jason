@@ -2,8 +2,6 @@ package jason.asSemantics;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.io.Serializable;
@@ -106,8 +104,8 @@ public class Agent implements Serializable {
      * Creates the TS for the agent.
      * Creates the belief base for the agent.
      */
-    public static Agent create(AgArch arch, String agClass, ClassParameters bbPars, String asSrc, Settings stts) throws JasonException {
-        try {
+    public static Agent create(AgArch arch, String agClass, ClassParameters bbPars, String asSrc, Settings stts) throws Exception {
+        //try {
             Agent ag = (Agent) Class.forName(agClass).getConstructor().newInstance();
 
             new TransitionSystem(ag, null, stts, arch);
@@ -125,9 +123,9 @@ public class Agent implements Serializable {
                 bb.init(ag, bbPars.getParametersArray());
             ag.load(asSrc); // load the source code of the agent
             return ag;
-        } catch (Exception e) {
-            throw new JasonException("as2j: error creating the customised Agent class! - "+agClass, e);
-        }
+        //} catch (Exception e) {
+        //    throw new JasonException("as2j: error creating the customised Agent class! - "+agClass, e);
+        //}
     }
 
     /** Initialises the TS and other components of the agent */
@@ -152,16 +150,16 @@ public class Agent implements Serializable {
 
     /** parse and load the agent code, asSrc may be null */
     @Deprecated
-    public void initAg(String asSrc) throws JasonException {
+    public void initAg(String asSrc) throws Exception {
         initAg();
         load(asSrc);
     }
 
     /** parse and load the initial agent code, asSrc may be null */
-    public void load(String asSrc) throws JasonException {
+    public void load(String asSrc) throws Exception {
         // set the agent
-        try {
-            boolean parsingOk = true;
+        //try {
+            //boolean parsingOk = true;
             if (asSrc != null && !asSrc.isEmpty()) {
                 asSrc = asSrc.replaceAll("\\\\", "/");
                 setASLSrc(asSrc);
@@ -172,15 +170,17 @@ public class Agent implements Serializable {
                 } else {
                     // check whether source is an URL string
                     try {
-                        parsingOk = parseAS(new URL(asSrc));
+                        //parsingOk =
+                        parseAS(new URL(asSrc));
                     } catch (MalformedURLException e) {
-                        parsingOk = parseAS(new File(asSrc));
+                        //parsingOk =
+                        parseAS(new File(asSrc));
                     }
                 }
             }
 
 
-            if (parsingOk) {
+            //if (parsingOk) {
                 if (getPL().hasMetaEventPlans())
                     getTS().addGoalListener(new GoalListenerForMetaEvents(getTS()));
 
@@ -189,22 +189,25 @@ public class Agent implements Serializable {
                 addInitialGoalsFromProjectInBB();
                 addInitialGoalsInTS();
                 fixAgInIAandFunctions(this); // used to fix agent reference in functions used inside includes
-            } else {
-                throw new JasonException("Error loading code from "+asSrc);
-            }
+            //} else {
+            //    throw new JasonException("Error loading code from "+asSrc);
+            //}
 
             loadKqmlPlans();
             addInitialBelsInBB(); // in case kqml plan file has some belief
 
+        /*} catch (jason.asSyntax.parser.ParseException e) {
+            //logger.log(Level.SEVERE, "Error loading code from "+asSrc , e);
+            throw e;
         } catch (Exception e) {
             logger.log(Level.SEVERE, "Error loading code from "+asSrc, e);
             throw new JasonException("Error loading code from "+asSrc + " ---- " + e);
-        }
+        }*/
     }
 
     /** parse and load asl code */
-    public void load(InputStream in, String sourceId) throws JasonException {
-        try {
+    public void load(InputStream in, String sourceId) throws Exception {
+        //try {
             parseAS(in, sourceId);
 
             if (getPL().hasMetaEventPlans())
@@ -213,10 +216,10 @@ public class Agent implements Serializable {
             addInitialBelsInBB();
             addInitialGoalsInTS();
             fixAgInIAandFunctions(this); // used to fix agent reference in functions used inside includes
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new JasonException("Error loading plans from stream " + e);
-        }
+        //} catch (Exception e) {
+         //   e.printStackTrace();
+        //    throw new JasonException("Error loading plans from stream " + e);
+        //}
     }
 
     /**
@@ -231,10 +234,10 @@ public class Agent implements Serializable {
      * only parse and load the initial agent code, asSrc may be null
      * it does not load kqml default plans and do not trigger initial beliefs and goals
      */
-    public void loadAgSrc(String asSrc) throws JasonException {
+    public void loadAgSrc(String asSrc) throws Exception {
         // set the agent
-        try {
-            boolean parsingOk = true;
+        //try {
+            //boolean parsingOk = true;
             if (asSrc != null && !asSrc.isEmpty()) {
                 asSrc = asSrc.replaceAll("\\\\", "/");
 
@@ -244,26 +247,28 @@ public class Agent implements Serializable {
                 } else {
                     // check whether source is an URL string
                     try {
-                        parsingOk = parseAS(new URL(asSrc));
+                        //parsingOk =
+                        parseAS(new URL(asSrc));
                     } catch (MalformedURLException e) {
-                        parsingOk = parseAS(new File(asSrc));
+                        //parsingOk =
+                        parseAS(new File(asSrc));
                     }
                 }
             }
 
-            if (parsingOk) {
+            //if (parsingOk) {
                 if (getPL().hasMetaEventPlans())
                     getTS().addGoalListener(new GoalListenerForMetaEvents(getTS()));
-            }
+            //}
 
             setASLSrc(asSrc);
-        } catch (Exception e) {
+        /*} catch (Exception e) {
             logger.log(Level.SEVERE, "Error loading code from "+asSrc, e);
             throw new JasonException("Error loading code from "+asSrc + " ---- " + e);
-        }
+        }*/
     }
 
-    public void loadKqmlPlans() {
+    public void loadKqmlPlans() throws Exception {
         // load kqml plans at the end of the ag PL
         Config c = Config.get();
         if (c.getKqmlPlansFile().equals(Message.kqmlDefaultPlans)) {
@@ -446,14 +451,14 @@ public class Agent implements Serializable {
     }
 
     /** Adds beliefs and plans form an URL */
-    public boolean parseAS(URL asURL) {
-        return parseAS(asURL, asURL.toString());
+    public void parseAS(URL asURL) throws Exception {
+        parseAS(asURL, asURL.toString());
     }
-    public boolean parseAS(URL asURL, String sourceId) {
-        try {
+    public void parseAS(URL asURL, String sourceId) throws Exception {
+        //try {
             parseAS(asURL.openStream(), sourceId);
             logger.fine("as2j: AgentSpeak program '" + asURL + "' parsed successfully!");
-            return true;
+        /*    return true;
         } catch (IOException e) {
             logger.log(Level.SEVERE, "as2j: the AgentSpeak source file '"+asURL+"' was not found!");
         } catch (ParseException e) {
@@ -461,15 +466,15 @@ public class Agent implements Serializable {
         } catch (Exception e) {
             logger.log(Level.SEVERE, "as2j: parsing error: \"" + asURL + "\"", e);
         }
-        return false;
+        return false;*/
     }
 
     /** Adds beliefs and plans form a file */
-    public boolean parseAS(File asFile) {
-        try {
+    public void parseAS(File asFile) throws Exception {
+        //try {
             parseAS(new FileInputStream(asFile), asFile.getName());
             logger.fine("as2j: AgentSpeak program '" + asFile + "' parsed successfully!");
-            return true;
+        /*    return true;
         } catch (FileNotFoundException e) {
             logger.log(Level.SEVERE, "as2j: the AgentSpeak source file '"+asFile+"' was not found!");
         } catch (ParseException e) {
@@ -477,7 +482,7 @@ public class Agent implements Serializable {
         } catch (Exception e) {
             logger.log(Level.SEVERE, "as2j: error parsing \"" + asFile + "\"", e);
         }
-        return false;
+        return false;*/
     }
 
     public void parseAS(InputStream asIn, String sourceId) throws ParseException, JasonException {
