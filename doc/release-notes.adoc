@@ -94,7 +94,7 @@ java -cp "$JASON_HOME/libs/*" jason.infra.centralised.RunCentralisedMAS \
 .length(S,X);                  // X = 4
 .set.difference(S,[1,a]);      // S = {5,p(2)}
 .findall(K, .member(K,S), LL)  // LL = [5,p(2)]
-.set.add(V,5);
+.set.add(S,5);
 .set.intersection(S,V);        // S = {5}
 .set.clear(S);                 // S = {}
 // iteration
