@@ -46,9 +46,9 @@ public class TestPlanbodyAsTerm {
             "+!show_body({})    <-  jason.asunit.print(\".\"). " +
             "+!show_body({H;T}) <-  jason.asunit.print(H); !show_body(T). "+
 
-			//"tree_for(action(A)) :- A =.. [_, _, Annots] & jason.asunit.print(Annots). "+
-			"tree_for(action(A[|Annots])) :- jason.asunit.print(Annots). "+
-			"+!an1(A) : tree_for(action(A))<- jason.asunit.print(end). "
+            //"tree_for(action(A)) :- A =.. [_, _, Annots] & jason.asunit.print(Annots). "+
+            "tree_for(action(A[|Annots])) :- jason.asunit.print(Annots). "+
+            "+!an1(A) : tree_for(action(A))<- jason.asunit.print(end). "
 
         );
     }
