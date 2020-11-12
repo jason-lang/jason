@@ -44,9 +44,19 @@ public class TestPlanbodyAsTerm {
 
             "+!testPTUnLitBuild <- .relevant_plans({+!plan1(_)}, [Plan|_]); Plan =.. [L,T,C,B]; jason.asunit.print(L,T,C,B); !show_body(B). " +
             "+!show_body({})    <-  jason.asunit.print(\".\"). " +
-            "+!show_body({H;T}) <-  jason.asunit.print(H); !show_body(T). "
+            "+!show_body({H;T}) <-  jason.asunit.print(H); !show_body(T). "+
+
+            //"tree_for(action(A)) :- A =.. [_, _, Annots] & jason.asunit.print(Annots). "+
+            "tree_for(action(A[|Annots])) :- jason.asunit.print(Annots). "+
+            "+!an1(A) : tree_for(action(A))<- jason.asunit.print(end). "
 
         );
+    }
+
+    @Test(timeout=2000)
+    public void testAnnots1() {
+        ag.addGoal("an1(p[a,b,c])");
+        ag.assertPrint("[a,b,c]", 5);
     }
 
     @Test(timeout=2000)

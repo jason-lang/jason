@@ -62,7 +62,7 @@ Internal actions of Jason.
 </ul>
 
 
-<h2>Lists and Sets</h2>
+<h2>Lists, Sets and other collections</h2>
 <ul>
   <li>{@link jason.stdlib.member member}: list members. </li>
   <li>{@link jason.stdlib.length length}: size of lists. </li>
@@ -85,9 +85,79 @@ Internal actions of Jason.
   <li>{@link jason.stdlib.difference difference}: difference of sets. </li>
   <li>{@link jason.stdlib.intersection intersection}: intersection of sets. </li>
   <li>{@link jason.stdlib.union union}: union of sets. </li>
-
 </ul>
 
+<blockquote>
+<h3>Java Sets</h3>
+Java Sets can be manipulated in Jason by some internal actions (these sets are represented by a variable). Example:
+<pre>
+.set.create(S);                // S = {}
+.set.add(S,a);                 // S = {a}
+.set.add_all(S,[5,b,p(2),a]);  // S = {5,a,b,p(2)}
+.set.remove(S,b);              // S = {5,a,p(2)}
+.set.union(S,[a,1]);           // S = {1,5,a,p(2)}
+.length(S,X);                  // X = 4
+.type(S,T);                    // T = set
+.set.difference(S,[1,a]);      // S = {5,p(2)}
+.findall(K, .member(K,S), LL)  // LL = [5,p(2)]
+.set.add(S,5);
+.set.intersection(S,V);        // S = {5}
+for ( .member(V,S) ) {         // iteration
+   .print(K,V);
+}.
+.set.clear(S);                 // S = {}
+</pre>
+
+<h3>Java Queues</h3>
+Java Queues can be manipulated in Jason by some internal actions (these queues are represented by a variable). Example:
+<pre>
+.queue.create(Q);                // Q = []
+.queue.add(Q,a);                 // Q = [a]
+.queue.add(Q,b);                 // Q = [a, b]
+.queue.add_all(Q,[c,d,e]);       // Q = [a, b, c, d, e]
+.queue.head(Q,H);                // H = a
+.queue.remove(Q,H);              // H = a, Q = [b, c, d, e]
+.length(Q,X);                    // X = 4
+.type(Q,T);                      // T = queue
+for ( .member(V,Q) ) {           // iteration
+   .print(V);
+}.
+.queue.clear(Q);
+
+.queue.create(Q,priority);       // Q = [] queue with priority (the queue is kept sorted)
+.queue.add(Q,d);                 // Q = [d]
+.queue.add(Q,c);                 // Q = [c, d]
+.queue.add_all(Q,[b,d,a]);       // Q = [a, b, c, d, e]
+.queue.head(Q,H);                // H = a
+</pre>
+
+<h3>Java Maps</h3>
+Java Maps can be manipulated in Jason by some internal actions (these maps are represented by a variable). Example:
+<pre>
+.map.create(M);                  // M = {}
+.map.put(M,a,10);                // M = {a->10}
+.map.put(M,b,ok);                // M = {a->10, b->ok}
+.map.put(M,a,20);                // M = {a->20, b->ok}
+.length(M,X);                    // X = 2
+.type(M,T);                      // T = map
+.map.key(M,a)                    // true
+.map.key(M,V)                    // unifies V with all keys of M
+.map.value(M,10)                 // true
+.map.value(M,V)                  // unifies V with all values of M
+.findall(K, .map.key(M,K), LL)   // LL = [a,b]
+.findall(V, .map.value(M,V), LL) // LL = [20,ok]
+.findall([K,V], .map.key(M,K) & .map.get(M,K,V), LL)
+                                 // LL = [[a,30],[d,ok(3)]]
+.map.get(M,a,V);                 // V = 20
+.map.get(M,c,V);                 // fail
+.map.get(M,c,V,0);               // V = 0
+.map.remove(M,a,V);              // M = {b->ok} V = 20
+for ( .map.key(M,K) & .map.get(M,K,V) ) { // iteration
+   .print(K,V);
+}.
+.map.clear(M);                   // M = {}
+</pre>
+</blockquote>
 
 <h2>String</h2>
 <ul>

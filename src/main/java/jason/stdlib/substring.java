@@ -25,9 +25,9 @@ import jason.asSyntax.Term;
   <p>Parameters:<ul>
   <li>+ substring (any term).<br/>
   <li>+/- string (any term).<br/>
-  <li>+/- position (optional -- integer): the initial position of
+  <li>+/- start position (optional -- integer): the initial position of
   the string where the sub-string occurs.
-  <li>+/- position (optional -- integer): the position in the string where the sub-string ends.
+  <li>+/- end position (optional -- integer): the position in the string where the sub-string ends.
   </ul>
 
   <p>Examples:<ul>
@@ -38,8 +38,8 @@ import jason.asSyntax.Term;
   <li> <code>.substring("a","bbacc",0)</code>: false. When the third argument is 0, .substring works like a java <b>startsWith</b> method.
   <li> <code>.substring(a(10),b(t1,a(10)),X)</code>: true and <code>X</code> unifies with 5.
   <li> <code>.substring(a(10),b("t1,a(10),kk"),X)</code>: true and <code>X</code> unifies with 6.
-  <li> <code>.substring(a(10,20),R,5)</code>: true and <code>R</code> unifies with "20)".
-  <li> <code>.substring(a(10,20),R,5,7)</code>: true and <code>R</code> unifies with "20".
+  <li> <code>.substring(R,a(10,20),5)</code>: true and <code>R</code> unifies with "20)".
+  <li> <code>.substring(R,a(10,20),5,7)</code>: true and <code>R</code> unifies with "20".
   </ul>
 
   @see jason.stdlib.concat
@@ -48,39 +48,6 @@ import jason.asSyntax.Term;
   @see jason.stdlib.reverse
 
 */
-@Manual(
-        literal=".substring(substring,string[,begin,end])",
-        hint="checks if a string is sub-string of another",
-        argsHint= {
-                "the substring to be checked",
-                "the string where the substring may occurs",
-                "the initial position of the string where the sub-string occurs [optional]",
-                "the last position of the string where the sub-string occurs [optional]"
-        },
-        argsType= {
-                "term",
-                "term",
-                "integer",
-                "integer"
-        },
-        examples= {
-                ".substring(\"b\",\"aaa\"): false",
-                ".substring(\"b\",\"aaa\",X): false",
-                ".substring(\"a\",\"bbacc\"): true",
-                ".substring(\"a\",\"abbacca\",X): true and X unifies with 0, 3, and 6",
-                ".substring(\"a\",\"bbacc\",0): false",
-                ".substring(a(10),b(t1,a(10)),X): true and X unifies with 5",
-                ".substring(a(10),b(\"t1,a(10),kk\"),X): true and X unifies with 6",
-                ".substring(a(10,20),R,5): true and R unifies with \"20)\"",
-                ".substring(a(10,20),R,5,7): true and R unifies with \"20\""
-        },
-        seeAlso= {
-                "jason.stdlib.concat",
-                "jason.stdlib.delete",
-                "jason.stdlib.length",
-                "jason.stdlib.reverse"
-        }
-    )
 @SuppressWarnings("serial")
 public class substring extends DefaultInternalAction {
 
@@ -117,9 +84,18 @@ public class substring extends DefaultInternalAction {
         if (args.length == 2) {
             // no backtracking utilisation
             return s1.indexOf(s0) >= 0;
-        } else if (args[2].isGround() && args[2].isNumeric() && args[1].isVar()) {
+        } else if (args[2].isGround() && args[2].isNumeric() && args[0].isVar()) {
+            // case of .substring(X,"a(10,20)",5,7)
             // no backtracking utilisation
             // unifies the var with the substring
+            int start = (int)((NumberTerm)(args[2])).solve();
+            int end   = s1.length();
+            if (args.length == 4 && args[3].isNumeric())
+                end = (int)((NumberTerm)(args[3])).solve();
+            return un.unifies(args[0], new StringTermImpl( s1.substring(start,end)));
+        } else if (args[2].isGround() && args[2].isNumeric() && args[1].isVar()) {
+            // case of .substring("a(10,20)",X,5,7) ==> which is wrong X ("20") is not substring of "a(10,20)"
+            // however this option is kept for compatibility reasons
             int start = (int)((NumberTerm)(args[2])).solve();
             int end   = s0.length();
             if (args.length == 4 && args[3].isNumeric())
