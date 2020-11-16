@@ -3,7 +3,9 @@ package jason.asSyntax;
 import jason.asSemantics.Agent;
 import jason.asSemantics.Unifier;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -184,6 +186,14 @@ public class PlanBodyImpl extends Structure implements PlanBody, Iterable<PlanBo
             return next;
         }
         return null;
+    }
+
+    @Override
+    public List<Term> getTerms() {
+        List<Term> terms = new ArrayList<>(getArity());
+        for(int i=0; i<getArity(); i++)
+            terms.add( getTerm(i) );
+        return terms;
     }
 
     @Override
