@@ -17,6 +17,7 @@ import jason.asSyntax.ListTermImpl;
 import jason.asSyntax.Literal;
 import jason.asSyntax.LiteralImpl;
 import jason.asSyntax.PlanBody;
+import jason.asSyntax.PlanBody.BodyType;
 import jason.asSyntax.PlanBodyImpl;
 import jason.asSyntax.Pred;
 import jason.asSyntax.Structure;
@@ -264,21 +265,26 @@ public class Unifier implements Cloneable, Iterable<VarTerm>, Serializable {
             }
 
             if (pb1.getBodyTerm().isVar()) {
-                if (pb1.getBodyNext() == null) { // last var (unifies the remaining plan body)
+                //System.out.println("** 1 "+pb1+" = "+pb2+" "+pb1.getBodyType().name() + " / "+pb2.getBodyType().name());
+                // single vars (as in "B") are consider as type action
+                if (pb1.getBodyType() != BodyType.action && pb1.getBodyType() != pb2.getBodyType()) // if not action, must have the same type
+                    return false;
+                if (pb1.getBodyType() == BodyType.action && pb1.getBodyNext() == null) // last var (unifies the remaining plan body)
+                    // case {A} = {!a,b,c} ===> A = {!a,b,c}
                     return unifiesNoUndo(pb1.getBodyTerm(), pb2);
-                } else {
-                    if (pb2.getBodyTerm() == null)
-                        return false;
-                    if (unifiesNoUndo(pb1.getBodyTerm(), pb2.getHead())) {
-                        if (pb2.getBodyNext() == null) {
-                            // case of {A;T} = {a}, A => a T => {}
-                            if (pb1.getBodyNext() != null && pb1.getBodyNext().getBodyTerm().isVar() && pb1.getBodyNext().getBodyNext() == null) {
-                                return unifiesNoUndo(pb1.getBodyNext().getBodyTerm(), new PlanBodyImpl());
-                            }
-                            return false;
-                        } else {
-                            return unifiesNoUndo(pb1.getBodyNext(), pb2.getBodyNext());
-                        }
+                if (pb2.getBodyTerm() == null)
+                    return false;
+
+                //System.out.println("  -- 2 "+pb1.getBodyTerm()+" = "+pb2.getBodyTerm()+" "+pb2.getPlanSize());
+                //System.out.println("  -- 2 "+pb1.getBodyTerm()+ "="+ pb2.getHead());
+                if ( (pb1.getBodyType() == BodyType.action && unifiesNoUndo(pb1.getBodyTerm(), pb2.getHead())) ||
+                     (pb1.getBodyType() != BodyType.action && unifiesNoUndo(pb1.getBodyTerm(), pb2.getBodyTerm()))) {
+                    if (pb1.getBodyNext() != null && pb2.getBodyNext() == null && pb1.getBodyNext().getBodyTerm().isVar() && pb1.getBodyNext().getBodyNext() == null) {
+                        // case of {A;T} = {a}, A => a T => {}
+                        return unifiesNoUndo(pb1.getBodyNext().getBodyTerm(), new PlanBodyImpl());
+                    } else {
+                        // keep testing the remaining of the plan body
+                        return unifiesNoUndo(pb1.getBodyNext(), pb2.getBodyNext());
                     }
                 }
             } else if (pb2.getBodyTerm().isVar()) {

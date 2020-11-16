@@ -446,4 +446,8 @@ public class ASParserTest extends TestCase {
         assertEquals("([a,b,c] = [a,b,c])", ASSyntax.parseFormula("[a,b,c] = [a,b,c]").toString());
     }
 
+    public void testVarAnnots() throws ParseException, JasonException {
+        Term v = ASSyntax.parseTerm("achieve(_[H|Annots1])");
+        assertTrue(v.toString().contains("[H|Annots1])"));
+    }
 }
