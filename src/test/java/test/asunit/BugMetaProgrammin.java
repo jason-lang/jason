@@ -6,9 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 /** bugs reported by Stephen (by email)
- *
- * https://github.com/jason-lang/jason/issues/12
- */
+  */
 public class BugMetaProgrammin {
 
     TestAgent ag;
@@ -31,11 +29,16 @@ public class BugMetaProgrammin {
 
             "+!b2 <- " +
             "    PB = {!g(a)[b]}; " +
-            //"    PB = achieve(G); " +
-            //"    G =.. [_,_,Annots2]; " +
-            //"    jason.asunit.print(Annots2); "+
             "    PB = achieve(_[|Annots1]); " +
-            "    jason.asunit.print(Annots1). "
+            "    jason.asunit.print(Annots1). " +
+
+            "+!b3 <- " +
+            "    PB = {!g(a)[b]}; " +
+            "    PB = { !G }; " +
+            "    jason.asunit.print(k,G,k); "+
+            "    G =.. [_,_,Annots2]; " +
+            "    jason.asunit.print(i,Annots2,i). "
+
         );
     }
 
@@ -50,5 +53,12 @@ public class BugMetaProgrammin {
     public void bug2() {
         ag.addGoal("b2");
         ag.assertPrint("[b]", 10);
+    }
+
+    @Test(timeout=2000)
+    public void bug3() {
+        ag.addGoal("b3");
+        ag.assertPrint("kg(a)[b]k", 10);
+        ag.assertPrint("i[b]i", 10);
     }
 }
