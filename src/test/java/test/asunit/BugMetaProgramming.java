@@ -18,26 +18,26 @@ public class BugMetaProgramming {
 
         // defines the agent's AgentSpeak code
         ag.parseAScode(
-        		"+!b1 <-\n" +
-        	            "    PlanBody = { !g(a)[b] }; " +
-        	            "    {BT;_} = PlanBody; " +
-        	            "    jason.asunit.print(BT); " +
-        	            "    BT = {!Arg};" +
-        	            "    jason.asunit.print(Arg); " +
-        	            "    BT =.. [achieve, Arg2, _];" +
-        	            "    jason.asunit.print(Arg2). " +
+                "+!b1 <-\n" +
+                        "    PlanBody = { !g(a)[b] }; " +
+                        "    {BT;_} = PlanBody; " +
+                        "    jason.asunit.print(BT); " +
+                        "    BT = {!Arg};" +
+                        "    jason.asunit.print(Arg); " +
+                        "    BT =.. [achieve, Arg2, _];" +
+                        "    jason.asunit.print(Arg2). " +
 
-        	            "+!b2 <- " +
-        	            "    PB = {!g(a)[b]}; " +
-        	            "    PB = { !G[|Annots1] }; " +
-        	            "    jason.asunit.print(Annots1). " +
+                        "+!b2 <- " +
+                        "    PB = {!g(a)[b]}; " +
+                        "    PB = { !G[|Annots1] }; " +
+                        "    jason.asunit.print(Annots1). " +
 
-        	            "+!b3 <- " +
-        	            "    PB = {!g(a)[b]}; " +
-        	            "    PB = { !G }; " +
-        	            "    jason.asunit.print(k,G,k); "+
-        	            "    G =.. [_,_,Annots2]; " +
-        	            "    jason.asunit.print(i,Annots2,i). "
+                        "+!b3 <- " +
+                        "    PB = {!g(a)[b]}; " +
+                        "    PB = { !G }; " +
+                        "    jason.asunit.print(k,G,k); "+
+                        "    G =.. [_,_,Annots2]; " +
+                        "    jason.asunit.print(i,Annots2,i). "
         );
     }
 
