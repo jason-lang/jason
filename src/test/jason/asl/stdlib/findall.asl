@@ -35,3 +35,30 @@
     .findall(X,c(X),L1);
     !assert_equals([100,200,100],L1);
 .
+
+@[test]
++!test_against_setof
+    <-
+    +c(100);
+    +c(200);
+    +c(100);
+
+    .findall(X,c(X),L1);
+    !assert_equals([100,200,100],L1);
+.
+
+/**
+ * This test is a clone of a test in test/java/test/StdLibTest.java file
+ */
+@[test]
++!test_clone_of_junit
+    <-
+    +a(10,x);
+    +a(20,y);
+    +a(30,x);
+    .count(a(_,_),C);
+    !assert_equals(3,C);
+
+    .findall(X,a(X,x),L);
+    !assert_equals(2,.length(L));
+.
