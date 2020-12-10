@@ -3,12 +3,14 @@ package jason.stdlib;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Queue;
 
 import jason.asSemantics.DefaultInternalAction;
 import jason.asSemantics.InternalAction;
 import jason.asSemantics.TransitionSystem;
 import jason.asSemantics.Unifier;
 import jason.asSyntax.ASSyntax;
+import jason.asSyntax.ObjectTerm;
 import jason.asSyntax.Term;
 
 /**
@@ -97,9 +99,13 @@ public class type extends DefaultInternalAction {
         if (args[0].isStructure())  types.add(ASSyntax.createAtom("structure"));
         if (args[0].isRule())       types.add(ASSyntax.createAtom("rule"));
         if (args[0].isPlanBody())   types.add(ASSyntax.createAtom("plan"));
+        if (args[0] instanceof ObjectTerm && ((ObjectTerm)args[0]).getObject() instanceof Queue) {
+            types.add(ASSyntax.createAtom("queue"));
+        }
 
         if (args[0].isGround())     types.add(ASSyntax.createAtom("ground"));
         if (args[0].isVar())        types.add(ASSyntax.createAtom("free"));
+
 
         // if it just wants to check whether args[0] is of type args[1]
         if (!args[1].isVar()) {

@@ -71,7 +71,7 @@ public class UnnamedVar extends VarTerm {
         newv.myId = this.myId;
         newv.hashCodeCache = this.hashCodeCache;
         if (hasAnnot())
-            newv.addAnnots(this.getAnnots().cloneLT());
+            newv.setAnnots(this.getAnnots().cloneLT());
         return newv;
     }
 
