@@ -16,7 +16,7 @@ apply plugin: 'maven'
 apply plugin: 'maven-publish'
 apply plugin: 'signing'
 
-version '2.6.2'
+version '2.6.3'
 group   'org.jason'
 
 compileJava {
@@ -28,7 +28,7 @@ compileJava {
 repositories {
     mavenCentral()
 
-    //maven { url "https://raw.github.com/jacamo-lang/mvn-repo/master" }
+    maven { url "https://raw.github.com/jacamo-lang/mvn-repo/master" }
     //maven { url "http://jacamo.sourceforge.net/maven2"  }
     //maven { url "http://jade.tilab.com/maven"  //}
     flatDir {
@@ -45,8 +45,8 @@ dependencies {
     compile group: 'net.sf.ingenias', name: 'jade', version: '4.3'
     //compile group: 'com.tilab.jade', name: 'jade', version: '4.4.0'
 
-    //compile group: 'org.jacamo',     name: 'cartago', version: '2.5'
-    //compile group: 'org.jacamo',     name: 'jaca',    version: '2.5'
+    compile group: 'org.jacamo',     name: 'cartago', version: '2.5'
+    compile group: 'org.jacamo',     name: 'jaca',    version: '2.5'
 
     // from jEdit
     compile fileTree(dir: 'jedit', include: '*.jar') // using fileTree, jedit jars are not included as a dependency in the pom file
