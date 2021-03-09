@@ -31,7 +31,7 @@
      .min(LD,d(BestGoldDist,BestGold)) &    // the distance of best gold
      jia.path_length(AgX,AgY,GX,GY,GDist)   // my distance to gold to bid
      //.print("G=",gold(GX,GY),"/",GDist," Best=",BestGold,"/",BestGoldDist);
-  <- ?(GDist <= BestGoldDist); // should fail in this case
+  <- GDist <= BestGoldDist; // should fail in this case
      //!worthwhile(gold(GX,GY));
      jia.add_fatigue(GDist,Bid).
 

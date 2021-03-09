@@ -16,20 +16,20 @@ public class BugListReturnUnification {
 
         // defines the agent's AgentSpeak code
         ag.parseAScode(
-            "+!test1 <- ?(L=[A,B]); ?bundle(L); jason.asunit.print(L). "+
+            "+!test1 <- L=[A,B]; ?bundle(L); jason.asunit.print(L). "+
             "+?bundle([]). "+
             "+?bundle([a|T]) <- ?bundle(T). "+
 
-            "+!test2 <- ?(L=[A,B,C,D]); !bundle(L); jason.asunit.print(L). "+
+            "+!test2 <- L=[A,B,C,D]; !bundle(L); jason.asunit.print(L). "+
             "+!bundle([]). "+
             "+!bundle([a|T]) <- !bundle(T). "+
 
             "+!test3 <- !a(Y)[x(Z), y]; jason.asunit.print(Y, Z). "+
-            "+!a(Y)[x(Z),kk]           <- ?(Y=3); ?(Z=4). "+
-            "+!a(Y)[x(Z),source(self)] <- ?(Y=1); ?(Z=2). "+
+            "+!a(Y)[x(Z),kk]           <- Y=3; Z=4. "+
+            "+!a(Y)[x(Z),source(self)] <- Y=1; Z=2. "+
 
-            "+!test4 <- ?(X = [a,b,c,b,b,d]); !deleteb(X,Y); jason.asunit.print(Y)."+
-            "+!test5 <- ?(X = [a,b,c,b,b,d]); !deleteb2(X,Y); jason.asunit.print(Y)."+
+            "+!test4 <- X = [a,b,c,b,b,d]; !deleteb(X,Y); jason.asunit.print(Y)."+
+            "+!test5 <- X = [a,b,c,b,b,d]; !deleteb2(X,Y); jason.asunit.print(Y)."+
 
             "+!deleteb([], [])."+
             "+!deleteb([b|L1], L2)"+
@@ -42,7 +42,7 @@ public class BugListReturnUnification {
             "  <- !deleteb2(L1, L2)."+
             "+!deleteb2([H|L1], R)"+
             "  <- !deleteb2(L1, L2);"+
-            "     ?(R = [H|L2])."
+            "     R = [H|L2]."
 
         );
     }

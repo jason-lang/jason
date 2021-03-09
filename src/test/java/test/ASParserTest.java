@@ -138,6 +138,7 @@ public class ASParserTest extends TestCase {
         solve = ((LogExpr) t1).logicalConsequence(null, new Unifier());
         assertTrue(solve.hasNext());
 
+        // Teste antigo - Não faz sentido na estrutura atual do Jason
         // t1 = LogExpr.parseExpr("not not (not 3 > 5)");
         // assertTrue(t1 != null);
         // solve = ((LogExpr) t1).logicalConsequence(null, new Unifier());

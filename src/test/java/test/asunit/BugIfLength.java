@@ -19,7 +19,7 @@ public class BugIfLength {
             "b(b). "+
             "+!start <- .my_name(Me); "+
             "if (Me == a) { "+
-            ".findall(A,b(A),AS); ?(L = [Me|AS]); jason.asunit.print(L,.length(L)) "+
+            ".findall(A,b(A),AS); L = [Me|AS]; jason.asunit.print(L,.length(L)) "+
             "}."
         );
     }

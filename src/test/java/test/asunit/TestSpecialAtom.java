@@ -21,7 +21,7 @@ public class TestSpecialAtom {
             "      jason.asunit.print(S); " +
             "      .term2string(T,S); " +
             "      .type(T,TOT); jason.asunit.print(TOT); " +
-            "      ?(T =.. [F,[Term|_],Annots]); " +
+            "      T =.. [F,[Term|_],Annots]; " +
             "      jason.asunit.print(F,\" \",Term,\" \"); " +
             "      .type(Term,TTerm); jason.asunit.print(TTerm)."
         );

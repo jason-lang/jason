@@ -16,7 +16,7 @@ public class BugList1 {
 
         // defines the agent's AgentSpeak code
         ag.parseAScode(
-            "+!start <- ?(L=\"[a]\"); !g(L). "+
+            "+!start <- L=\"[a]\"; !g(L). "+
             "+!g([]) <- jason.asunit.print(no)."+
             "+!g(_) <- jason.asunit.print(yes)."
         );

@@ -42,7 +42,7 @@ public class BugInference2 {
             "    !gg(build_walls, [noop[role(foundation_digger)], build_walls[role(wall_builder)], noop[role(overseer)]]).\n" +
             "+!test <-\n" +
             "    .relevant_plans({+!house_built[template]}, [RPlan|_]);\n" +
-            "    ?(RPlan = plan(_,_,_,PlanBody));\n" +
+            "    RPlan = plan(_,_,_,PlanBody);\n" +
             "    if (plan_body_roles(PlanBody, Roles)) {\n" +
             "        jason.asunit.print(Roles);\n" +
             "    } else {\n" +

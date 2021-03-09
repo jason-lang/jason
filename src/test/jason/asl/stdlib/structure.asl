@@ -10,9 +10,6 @@
 +!test_structure
     <-
     !assert_true( .structure(b(10)) );
-    // Antigo
-    // .log(warning,"TODO: .structure(b) is supposed to be true!")
-    // Novo
     .log(warning,"TODO: .structure(b) is supposed to be true!");
     //!assert_true( .structure(b) );
     !assert_false( .structure(10) );

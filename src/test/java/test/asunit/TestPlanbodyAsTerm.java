@@ -19,30 +19,30 @@ public class TestPlanbodyAsTerm {
             "+!start <- +g( {a(1); b; c}); ?g(X); !g(X). " +
             "+!test2 <- !g( {!g2(1)}). "+
             "+!test3 <- !g2(-1 + 2)."+
-            "+!test4 <- ?(X = {a(1); b; c}); !g(X)."+
+            "+!test4 <- X = {a(1); b; c}; !g(X)."+
 
             "+!test5 <- !g5(R); jason.asunit.print(R). "+
-            "+!g5(X) <- C; .print(errrrrror). "+ // Dúvida C
-            "-!g5(X)[error(I),error_msg(M)] <- jason.asunit.print(I,M); ?(X = ok). "+
+            "+!g5(X) <- C; .print(errrrrror). "+
+            "-!g5(X)[error(I),error_msg(M)] <- jason.asunit.print(I,M); X = ok. "+
 
-            "+!test6 <- ?(A = { a }); ?(B = { A }); ?(C = { B }); C; jason.asunit.print(end). "+ // C
+            "+!test6 <- A = { a }; B = { A }; C = { B }; C; jason.asunit.print(end). "+
 
-            "+!test7(X) <- ?(A = { jason.asunit.print(a,X); jason.asunit.print(b,X*2) }); A; jason.asunit.print(end,X/2). "+ // A
+            "+!test7(X) <- A = { jason.asunit.print(a,X); jason.asunit.print(b,X*2) }; A; jason.asunit.print(end,X/2). "+
 
-            "+!g({A; R}) <- A; !g(R). "+ // A
-            "+!g(A)    <- A." + // A
+            "+!g({A; R}) <- A; !g(R). "+
+            "+!g(A)    <- A." +
             "+!g2(A)     <- jason.asunit.print(p,A,p)."+
 
             "+!trl <- !myadd( { jason.asunit.print(a); jason.asunit.print(b) } ); !grl. "+
             "+!myadd(Action) <- +>{+!grl : c <- Action}; +>{+!grl <- jason.asunit.print(ops) }. \n" +
 
             "+!trl2 <- !myadd2( { jason.asunit.print(c2); jason.asunit.print(d2) } ); !grl2(20). "+
-            "+!myadd2(Action) <- ?(Plan =.. [ mynewlabel2, {+!grl2(C)}, {?(C > 10)}, Action]); .add_plan(Plan). \n" +
+            "+!myadd2(Action) <- Plan =.. [ mynewlabel2, {+!grl2(C)}, {C > 10}, Action]; .add_plan(Plan). \n" +
 
             "@mylabel +!plan1(1) : 1 > 10 <- .print(a); c(1); !g2(bob). \n"+
-            "+!testPTUn <- .relevant_plans({+!plan1(_)}, [Plan|_]); ?(Plan = {@L +!T : C <- B}); ?(B={BH;BT}); jason.asunit.print(L,T,C,BH,BT). \n"+ // B
+            "+!testPTUn <- .relevant_plans({+!plan1(_)}, [Plan|_]); Plan = {@L +!T : C <- B}; B={BH;BT}; jason.asunit.print(L,T,C,BH,BT). \n"+
 
-            "+!testPTUnLitBuild <- .relevant_plans({+!plan1(_)}, [Plan|_]); ?(Plan =.. [L,T,C,B]); jason.asunit.print(L,T,C,B); !show_body(B). " +
+            "+!testPTUnLitBuild <- .relevant_plans({+!plan1(_)}, [Plan|_]); Plan =.. [L,T,C,B]; jason.asunit.print(L,T,C,B); !show_body(B). " +
             "+!show_body({})    <-  jason.asunit.print(\".\"). " +
             "+!show_body({H;T}) <-  jason.asunit.print(H); !show_body(T). "+
 

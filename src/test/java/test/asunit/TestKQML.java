@@ -54,7 +54,7 @@ public class TestKQML {
         maria.parseAScode(
             "vl(1). vl(2). " +
             "+!goto(X,Y)[source(Ag)] <- act(X,Y,Ag). "+
-            "+?t2(X)[source(A)] : vl(Y) <- ?(X = 10 + Y); jason.asunit.print(A)."+
+            "+?t2(X)[source(A)] : vl(Y) <- X = 10 + Y; jason.asunit.print(A)."+
             "+!kqml_received(Sender, askOne, fullname, ReplyWith)  <- .send(Sender,tell,\"Maria dos Santos\", ReplyWith). "
         );
 

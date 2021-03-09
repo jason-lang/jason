@@ -39,7 +39,7 @@ priv::all_proposals_received
         <-  -+state(contract); // updates the state of CNP
             .findall(offer(Price,A), Ns::propose(Price)[source(A)], L);
             .print("Offers in CNP taking place in ", Ns," are ",L);
-            ?(L \== []); // constraint the plan execution to at least one offer
+            L \== []; // constraint the plan execution to at least one offer
             .min(L,offer(WOf,WAg)); // sort offers , the first is the best
             +Ns::winner(WAg);
             !announce_result(Ns,L);

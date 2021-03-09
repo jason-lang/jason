@@ -62,7 +62,7 @@
 +!allocate_miner(Gold)
   <- .findall(op(Dist,A),bid(Gold,Dist,A),LD);
      .min(LD,op(DistCloser,Closer));
-     ?(DistCloser < 10000);
+     DistCloser < 10000;
      .print("Gold ",Gold," was allocated to ",Closer, " options were ",LD);
      .broadcast(tell,allocated(Gold,Closer)).
      //-Gold[source(_)].
