@@ -17,7 +17,7 @@ public class BugVarsAsGoal {
 
         // defines the agent's AgentSpeak code
         ag.parseAScode(
-            "+!g <- +p(ggg); !gg; Y={!ggg}; Y. " +
+            "+!g <- +p(ggg); !gg; ?(Y={!ggg}); Y. " +
             "+!gg : p(X) <- +X; !!X. " +
             "+!ggg[source(A)] <- jason.asunit.print(A). "+
             "+!jig[scheme(S)]  <- jason.asunit.print(S)." +

@@ -38,7 +38,7 @@ t(x).
 /* Plans */
 
 +!show_predef_function
-   <- X = math.max(4, math.abs(-10));
+   <- ?(X = math.max(4, math.abs(-10)));
       .print("Max=",X);
       .print("Max=",math.max(4, math.abs(-10)));
       .print("Number of b/1 beliefs=", .count(b(_))).

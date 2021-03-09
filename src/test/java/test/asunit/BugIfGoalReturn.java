@@ -37,7 +37,7 @@ public class BugIfGoalReturn {
             "       jason.asunit.print(asking_porter); "+
             "       .send(Oag, askOne, play(_,gatekeeper2,_), play(Porter2,_,_)); "+
             "       jason.asunit.print(Porter2); "+
-            "       PassSch = Sch"+
+            "       ?(PassSch = Sch)"+
             "    }; "+
             "    jason.asunit.print(endofind)."
         );

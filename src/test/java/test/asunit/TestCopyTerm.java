@@ -14,7 +14,7 @@ public class TestCopyTerm {
         ag.parseAScode(
             "copy_term(T,T). "+
             "+!test1 : copy_term(a(B),Y) <- jason.asunit.print(Y). "+
-            "+!test2 : copy_term(a(B),Y) <- B=10; jason.asunit.print(Y). "
+            "+!test2 : copy_term(a(B),Y) <- ?(B=10); jason.asunit.print(Y). "
         );
         ag.addGoal("test1");
         ag.assertPrint("a(_", 10); // cannot print(a(3)

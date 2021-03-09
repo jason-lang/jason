@@ -62,7 +62,7 @@
 +!allocate_miner(Gold)
   <- .findall(op(Dist,A),bid(Gold,Dist,A),LD);
      .min(LD,op(DistCloser,Closer));
-     DistCloser < 10000;
+     ?(DistCloser < 10000);
      .print("Gold ",Gold," was allocated to ",Closer, " options were ",LD);
      .broadcast(tell,allocated(Gold,Closer)).
      //-Gold[source(_)].
@@ -72,7 +72,7 @@
 
 /* end of simulation plans */
 
-@end[atomic]
+@end_of_simulation[atomic]
 +end_of_simulation(S,_) : true
   <- .print("-- END ",S," --");
      .abolish(init_pos(S,_,_)).

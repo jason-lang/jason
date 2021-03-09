@@ -50,11 +50,11 @@ public class TestNS {
             "   jason.asunit.print(L); "+
             ". " +
             "+!builder  <- "+
-            "   X =.. [p,[10,20],[a1]]; "+
+            "   ?(X =.. [p,[10,20],[a1]]); "+
             "   jason.asunit.print(X); "+
-            "   nn::p(10,20)[a1] =.. V; "+
+            "   ?(nn::p(10,20)[a1] =.. V); "+
             "   jason.asunit.print(V); "+
-            "   N::Y =.. [ns,p,[10,20],[a1]]; "+
+            "   ?(N::Y =.. [ns,p,[10,20],[a1]]); "+
             "   jason.asunit.print(N,\"::\",Y); "+
             "   jason.asunit.print(N::Y). "+
             "{ begin namespace(k2,local) }" +

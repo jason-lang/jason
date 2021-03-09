@@ -27,15 +27,15 @@ public class TestLoop {
             "        +b(N+1);" +
             "    }."+
 
-            "+!test2 <- L=4; while( .count(b(_)) < L) { ?b(X); +b(X+1) }; jason.asunit.print(end).\n "+ // old syntax, for compatibility test
+            "+!test2 <- ?(L=4); while( .count(b(_)) < L) { ?b(X); +b(X+1) }; jason.asunit.print(end).\n "+ // old syntax, for compatibility test
 
-            "+!test2p <- L=4; " +
+            "+!test2p <- ?(L=4); " +
             "     while( .count(b(_),LL) & LL < (L+3)) { " +
             "         ?b(X); +b(X+1);" +
             "      }" +
             "      jason.asunit.print(end).\n "+
 
-            "+!test3 <- L=4; for( p(N,a) & N < L) { jason.asunit.print(N) }; jason.asunit.print(end).\n "+
+            "+!test3 <- ?(L=4); for( p(N,a) & N < L) { jason.asunit.print(N) }; jason.asunit.print(end).\n "+
 
             "+!test4 <- for( .member(N, [1,3,4]) ) { jason.asunit.print(N) }; jason.asunit.print(end).\n " + // old syntax, for compatibility test
 

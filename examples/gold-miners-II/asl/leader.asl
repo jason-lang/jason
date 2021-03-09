@@ -7,7 +7,7 @@
   <- // calculates the area of each quadrant and remembers them
      .print("Defining quadrants for simulation ",S," : ",W,"x",H);
 
-     CellH = H div 2;
+     ?(CellH = H div 2);
      +quad(S,1, 0,       0,       W div 2 - 1, CellH - 1);
      +quad(S,2, W div 2, 0,       W - 1,       CellH - 1);
      +quad(S,3, 0,       CellH,   W div 2 - 1, (CellH * 2)-1);
@@ -82,7 +82,7 @@
 +!allocate_miner(Gold)
   <- .findall(op(Dist,A),bid(Gold,Dist,A),LD);
      .min(LD,op(DistCloser,Closer));
-     DistCloser < 10000;
+     ?(DistCloser < 10000);
      .print("Gold ",Gold," was allocated to ",Closer, " options ware ",LD);
      .broadcast(tell,allocated(Gold,Closer)).
      //-Gold[source(_)].

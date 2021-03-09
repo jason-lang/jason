@@ -13,5 +13,5 @@ comm::acceptable(build(_)).
 
 +N::cnp_started[source(bob)]
      : .member(N,[hall,comm])
-    <- + {+?N::price(build(T),P) : supp::gain(N,G) <- ?supp::price(T,M); P = M*(1+G)};
+    <- + {+?N::price(build(T),P) : supp::gain(N,G) <- ?supp::price(T,M); ?(P = M*(1+G))};
        .include("participant.asl",N).

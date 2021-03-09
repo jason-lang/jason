@@ -57,7 +57,10 @@ public class PlanTest extends TestCase {
     }
 
     public void testParser1() {
-        Plan p = Plan.parse("+te : a & b <- a1; a2; .print(a); !g1; !!g2; ?test1; 10 > 3; +b1; -b2; -+b3.");
+        // Antigo
+        // Plan p = Plan.parse("+te : a & b <- a1; a2; .print(a); !g1; !!g2; ?test1; 10 > 3; +b1; -b2; -+b3.");
+        // Novo
+        Plan p = Plan.parse("+te : a & b <- a1; a2; .print(a); !g1; !!g2; ?test1; ?(10 > 3); +b1; -b2; -+b3.");
         p = (Plan)p.clone();
         Iterator<PlanBody> i = ((PlanBodyImpl)p.getBody()).iterator();
         assertEquals( PlanBody.BodyType.action, ((PlanBody)i.next()).getBodyType());
@@ -66,7 +69,8 @@ public class PlanTest extends TestCase {
         assertEquals( PlanBody.BodyType.achieve, ((PlanBody)i.next()).getBodyType());
         assertEquals( PlanBody.BodyType.achieveNF, ((PlanBody)i.next()).getBodyType());
         assertEquals( PlanBody.BodyType.test, ((PlanBody)i.next()).getBodyType());
-        assertEquals( PlanBody.BodyType.constraint, ((PlanBody)i.next()).getBodyType());
+        // Novo
+        assertEquals( PlanBody.BodyType.test, ((PlanBody)i.next()).getBodyType());
         assertEquals( PlanBody.BodyType.addBel, ((PlanBody)i.next()).getBodyType());
         assertEquals( PlanBody.BodyType.delBel, ((PlanBody)i.next()).getBodyType());
         assertTrue(i.hasNext());

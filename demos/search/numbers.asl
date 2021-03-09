@@ -1,6 +1,6 @@
 !test.
 +!test
-   <- InitRule = system.time;
+   <- ?(InitRule = system.time);
       ?a_star( 0, 9, Solution, Cost);
       .print("solution A* =", Solution, " with cost ",Cost," in ", (system.time - InitRule), " ms.");
    .

@@ -17,7 +17,7 @@ public class BugEval {
 
         // defines the agent's AgentSpeak code
         ag.parseAScode(
-            "+!start  <- A1 = false;     B1 = true;     .eval(X1, A1 | B1);     jason.asunit.print(X1); "+
+            "+!start  <- ?(A1 = false);     ?(B1 = true);     .eval(X1, A1 | B1);     jason.asunit.print(X1); "+
             "            !a2(A2);     !b2(B2);   .eval(X2, A2 | B2);     jason.asunit.print(X2). "+
             "+!a2(false). +!b2(true). "
         );

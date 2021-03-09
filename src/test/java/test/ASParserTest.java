@@ -138,10 +138,10 @@ public class ASParserTest extends TestCase {
         solve = ((LogExpr) t1).logicalConsequence(null, new Unifier());
         assertTrue(solve.hasNext());
 
-        t1 = LogExpr.parseExpr("not not (not 3 > 5)");
-        assertTrue(t1 != null);
-        solve = ((LogExpr) t1).logicalConsequence(null, new Unifier());
-        assertTrue(solve.hasNext());
+        // t1 = LogExpr.parseExpr("not not (not 3 > 5)");
+        // assertTrue(t1 != null);
+        // solve = ((LogExpr) t1).logicalConsequence(null, new Unifier());
+        // assertTrue(solve.hasNext());
 
         as2j parser = new as2j(new StringReader("E+1"));
         parser.getNextToken();
@@ -406,8 +406,8 @@ public class ASParserTest extends TestCase {
     }
 
     public void testBugSC() throws Exception {
-        String source = "@foo(1) +!g <- .print(foo(1)).\n" +
-                        "@foo(2) +!g <- .print(foo(2)).\n";
+        String source = "@foo1 +!g <- .print(foo1).\n" +
+                        "@foo2 +!g <- .print(foo2).\n";
 
         as2j parser = new as2j(new StringReader(source));
         Agent a = new Agent();

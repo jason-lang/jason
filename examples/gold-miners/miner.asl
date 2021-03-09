@@ -244,7 +244,7 @@ calc_new_y(AgY,_,Y) :- Y = AgY+2.
   :  gold(_,_)
   <- .findall(gold(X,Y),gold(X,Y),LG);
      !calc_gold_distance(LG,LD);
-     .length(LD,LLD); LLD > 0;
+     .length(LD,LLD); ?(LLD > 0);
      .print("Uncommitted gold distances: ",LD,LLD);
      .min(LD,d(_,NewG));
      .print("Next gold is ",NewG);
