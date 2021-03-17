@@ -812,7 +812,12 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
 
         // stop the agents
         for (CentralisedAgArch ag : new ArrayList<>(ags.values())) {
-            ag.stopAg();
+            try {
+                ag.stopAg();
+            } catch (Throwable e) {
+                // ignore, the stop of agent should handled that
+                // here, just keep stopping the system
+            }
             delAg(ag.getAgName());
         }
     }
