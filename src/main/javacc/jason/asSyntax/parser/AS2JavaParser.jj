@@ -678,77 +678,6 @@ Object body_formula() :
 }
 
 
-// Term rule_plan_term() :
-// {
-//   Trigger T = null; Object C = null; PlanBody B = null, B1 = null; Plan P = null;
-//   boolean pb = true; // pb = "only plan body"
-//   Pred L = null; Token K; ListTerm lt;
-//   Literal h = null; Object t = null;
-//   Boolean isRule = false; Token S = null;
-// }
-// {
-//   "{" 
-//     [ LOOKAHEAD(2)
-//       [ <TK_LABEL_AT> ( L=pred() | L=var(Literal.DefaultNS) )   { pb = false; } ] 
-//           T = trigger()                                         { if (T.getType() != TEType.belief) pb = false; }
-//             [ ":" C = log_expr()                                { pb = false; } ] 
-//             [      
-//               ( 
-//                 ";" [ B = plan_body() ]                         { if (!pb) throw new ParseException(getSourceRef(T)+" Wrong place for ';'"); }
-//                 | "<-" B = plan_body()                          { pb = false; } 
-//               )                           
-//             ] 
-//       |
-//         B = plan_body() 
-//           [ 
-//             S = ":-" t = log_expr()                             { isRule = true; }
-//           ] 
-//     ]
-//   "}"
-//                                                                 {   if (isRule) {
-//                                                                       // TODO checar se B é literal e transformar B em literal 
-//                                                                       Object li = B.getBodyTerm();
-//                                                                       if (!(li instanceof Literal) || B.getBodyNext() != null)
-//                                                                         throw new ParseException(getSourceRef(S)+" Wrong place for Rule");
-//                                                                       Rule r = new Rule((Literal)li,(LogicalFormula)t);
-//                                                                       r.setAsTerm(true);
-//                                                                       return r;
-//                                                                     }
-//                                                                     // the plan body case
-//                                                                     if (T != null) {
-//                                                                       // handle the case of "+a1", parsed as TE, need to be changed to plan's body
-//                                                                       // handle the case of "+a1; +a2", parsed as "TE; Body"
-//                                                                       if (pb && L == null) {
-//                                                                         if (T.isAddition())
-//                                                                           B1 = new PlanBodyImpl(BodyType.addBel, T.getLiteral(), true);
-//                                                                         else
-//                                                                           B1 = new PlanBodyImpl(BodyType.delBel, T.getLiteral(), true);
-//                                                                         if (B != null)
-//                                                                           B1.setBodyNext(B);
-//                                                                         return B1;
-//                                                                       }
-//                                                                       if (C == null && B == null && L == null) {
-//                                                                         // handle the case of a single trigger
-//                                                                         T.setAsTriggerTerm(true);
-//                                                                         return T;
-//                                                                       } else {
-//                                                                         // handle the case of a entire plan
-//                                                                         Plan p = new Plan(L,T,(LogicalFormula)C, B);
-//                                                                         p.setSrcInfo(T.getSrcInfo());
-//                                                                         p.setAsPlanTerm(true);
-//                                                                         return p;
-//                                                                       }
-//                                                                     }
-
-//                                                                     // the case of a simple plan body term
-//                                                                     if (B == null)
-//                                                                       B = new PlanBodyImpl();
-//                                                                     B.setAsBodyTerm(true);
-//                                                                     return B;
-//                                                                 }
-// }
-
-
 Term rule_plan_term() :
 {
   Trigger T = null; Object C = null; PlanBody B = null, B1 = null; Plan P = null;
@@ -777,7 +706,6 @@ Term rule_plan_term() :
     ]
   "}"
                                                                 {   if (isRule) {
-                                                                      // TODO checar se B é literal e transformar B em literal 
                                                                       Object li = B.getBodyTerm();
                                                                       if (!(li instanceof Literal) || B.getBodyNext() != null)
                                                                         throw new ParseException(getSourceRef(S)+" Wrong place for Rule");
@@ -1149,7 +1077,7 @@ Object arithm_expr_factor():
 
 Object arithm_expr_simple() :
 {
-  Token K; Object t = null; VarTerm v; ArithmeticOp op = ArithmeticOp.none;
+  Token K; Object t = null; ArithmeticOp op = ArithmeticOp.none;
 }
 {
   [ 
@@ -1170,7 +1098,7 @@ Object arithm_expr_simple() :
                                   {
                                     if (op != ArithmeticOp.none) {
                                       if (!(t instanceof NumberTerm)) {
-                                        throw new ParseException(getSourceRef(t)+" The argument '"+t+"' of operator '-' is not numeric or variable.");
+                                        throw new ParseException(getSourceRef(t)+" The argument '"+t+"' of operator '"+op.toString()+"' is not numeric or variable.");
                                       }
                                       return new ArithExpr(op, (NumberTerm)t);
                                     }
