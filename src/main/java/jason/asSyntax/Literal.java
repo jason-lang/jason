@@ -7,6 +7,11 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.json.Json;
+import javax.json.JsonArrayBuilder;
+import javax.json.JsonObjectBuilder;
+import javax.json.JsonValue;
+
 import jason.JasonException;
 import jason.architecture.AgArch;
 import jason.asSemantics.Agent;
@@ -608,7 +613,26 @@ public abstract class Literal extends DefaultTerm implements LogicalFormula {
     	return this;
     }
 
-    public String getAsJSON(String identation) {
+    public JsonValue getAsJson() {
+    	JsonObjectBuilder builder = Json.createObjectBuilder()
+    			.add("functor", getFunctor());
+    	if (negated())
+    		builder.add("negated", Json.createValue( "true" ));
+    	if (hasTerm()) {
+    		JsonArrayBuilder bterms = Json.createArrayBuilder();
+    		for (Term t: getTerms())
+    			bterms.add( t.getAsJson());
+    		builder.add("terms", bterms.build());
+    	}
+    	if (hasAnnot()) {
+    		JsonArrayBuilder bannots = Json.createArrayBuilder();
+    		for (Term t: getAnnots())
+    			bannots.add( t.getAsJson());
+    		builder.add("annotations", bannots.build());
+    	}
+    	return builder.build();
+    }
+    /*public String getAsJSON(String identation) {
     	StringBuilder json = new StringBuilder(identation+"{\n");
     	json.append(identation+"   \"functor\" : \""+ getFunctor() + "\"");
     	if (negated()) {
@@ -634,7 +658,7 @@ public abstract class Literal extends DefaultTerm implements LogicalFormula {
     	}
     	json.append("\n"+identation+"}");
     	return json.toString();
-    }
+    }*/
 
 	static final class TrueLiteral extends Atom {
         public TrueLiteral() {

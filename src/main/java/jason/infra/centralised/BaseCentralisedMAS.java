@@ -58,6 +58,7 @@ public abstract class BaseCentralisedMAS extends NotificationBroadcasterSupport 
     /**
      * @deprecated use RuntimeServicesFactory.get() instead.
      */
+    @Deprecated
     public RuntimeServices getRuntimeServices() {
         return RuntimeServicesFactory.get();
     }

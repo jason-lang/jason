@@ -6,6 +6,9 @@ import java.io.StringReader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.json.Json;
+import javax.json.JsonValue;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -109,7 +112,7 @@ public final class StringTermImpl extends DefaultTerm implements StringTerm {
     }
 
     @Override
-    public String getAsJSON(String identation) {
-        return identation+toString();
+    public JsonValue getAsJson() {
+        return Json.createValue( value );
     }
 }

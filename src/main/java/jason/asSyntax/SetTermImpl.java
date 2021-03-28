@@ -5,6 +5,10 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
 
+import javax.json.Json;
+import javax.json.JsonArrayBuilder;
+import javax.json.JsonValue;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -136,7 +140,7 @@ public class SetTermImpl extends DefaultTerm implements SetTerm {
         return u;
     }
 
-    @Override
+    /*@Override
     public String getAsJSON(String identation) {
         StringBuilder json = new StringBuilder("[\n");
         String c = "";
@@ -146,8 +150,15 @@ public class SetTermImpl extends DefaultTerm implements SetTerm {
         }
         json.append("\n]");
         return json.toString();
-    }
+    }*/
 
+    @Override
+    public JsonValue getAsJson() {
+        JsonArrayBuilder bterms = Json.createArrayBuilder();
+        for (Term t: this)
+            bterms.add( t.getAsJson());
+        return bterms.build();
+    }
 
     @Override
     public boolean isEmpty() {

@@ -12,6 +12,10 @@ import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.json.Json;
+import javax.json.JsonArrayBuilder;
+import javax.json.JsonValue;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -886,7 +890,7 @@ public class ListTermImpl extends Structure implements ListTerm {
         return u;
     }
 
-    @Override
+    /*@Override
     public String getAsJSON(String identation) {
         StringBuilder json = new StringBuilder(identation+"[\n");
         String c = "";
@@ -896,6 +900,14 @@ public class ListTermImpl extends Structure implements ListTerm {
         }
         json.append("\n"+identation+"]");
         return json.toString();
+    }*/
+
+    @Override
+    public JsonValue getAsJson() {
+        JsonArrayBuilder bterms = Json.createArrayBuilder();
+        for (Term t: this)
+            bterms.add( t.getAsJson());
+        return bterms.build();
     }
 
 }

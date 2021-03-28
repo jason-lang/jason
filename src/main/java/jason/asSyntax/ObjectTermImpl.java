@@ -2,8 +2,13 @@ package jason.asSyntax;
 
 import java.lang.reflect.Method;
 
+import javax.json.Json;
+import javax.json.JsonValue;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+
+import jason.util.ToJson;
 
 public class ObjectTermImpl extends DefaultTerm implements ObjectTerm {
     private static final long serialVersionUID = 1L;
@@ -73,8 +78,11 @@ public class ObjectTermImpl extends DefaultTerm implements ObjectTerm {
     }
 
     @Override
-    public String getAsJSON(String identation) {
-        return "\""+o.toString()+"\"";
+    public JsonValue getAsJson() {
+        if (o instanceof ToJson)
+            return ((ToJson)o).getAsJson();
+        else
+            return Json.createValue( o.toString() );
     }
 
 }

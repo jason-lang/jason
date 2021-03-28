@@ -1198,82 +1198,85 @@ public class TermTest extends TestCase {
 
     public void testJSON() throws ParseException, TokenMgrError {
         Term t1 = ASSyntax.parseLiteral("alice");
-
-        assertEquals("{\n" +
-                "   \"functor\" : \"alice\"\n" +
-                "}", t1.getAsJSON(""));
+        assertEquals("\n"
+                + "{\n"
+                + "    \"functor\": \"alice\"\n"
+                + "}", t1.getAsJsonStr());
 
         t1 = ASSyntax.parseLiteral("~alice(female,10)");
-        assertEquals("{\n" +
-                "   \"functor\" : \"alice\",\n" +
-                "   \"negated\" : true,\n" +
-                "   \"terms\"   : [\n" +
-                "      {\n" +
-                "         \"functor\" : \"female\"\n" +
-                "      },\n" +
-                "      10\n" +
-                "   ]\n" +
-                "}", t1.getAsJSON(""));
+        assertEquals("\n"
+                + "{\n"
+                + "    \"functor\": \"alice\",\n"
+                + "    \"negated\": \"true\",\n"
+                + "    \"terms\": [\n"
+                + "        {\n"
+                + "            \"functor\": \"female\"\n"
+                + "        },\n"
+                + "        10.0\n"
+                + "    ]\n"
+                + "}", t1.getAsJsonStr());
 
         t1 = ASSyntax.parseLiteral("~alice(person(female),10,[a,\"10\",p(10)])[source(bob),43]");
-        assertEquals("{\n" +
-                "   \"functor\" : \"alice\",\n" +
-                "   \"negated\" : true,\n" +
-                "   \"terms\"   : [\n" +
-                "      {\n" +
-                "         \"functor\" : \"person\",\n" +
-                "         \"terms\"   : [\n" +
-                "            {\n" +
-                "               \"functor\" : \"female\"\n" +
-                "            }\n" +
-                "         ]\n" +
-                "      },\n" +
-                "      10,\n" +
-                "      [\n" +
-                "         {\n" +
-                "            \"functor\" : \"a\"\n" +
-                "         },\n" +
-                "         \"10\",\n" +
-                "         {\n" +
-                "            \"functor\" : \"p\",\n" +
-                "            \"terms\"   : [\n" +
-                "               10\n" +
-                "            ]\n" +
-                "         }\n" +
-                "      ]\n" +
-                "   ],\n" +
-                "   \"annotations\"   : [\n" +
-                "      43,\n" +
-                "      {\n" +
-                "         \"functor\" : \"source\",\n" +
-                "         \"terms\"   : [\n" +
-                "            {\n" +
-                "               \"functor\" : \"bob\"\n" +
-                "            }\n" +
-                "         ]\n" +
-                "      }\n" +
-                "   ]\n" +
-                "}", t1.getAsJSON(""));
+        assertEquals("\n"
+                + "{\n"
+                + "    \"functor\": \"alice\",\n"
+                + "    \"negated\": \"true\",\n"
+                + "    \"terms\": [\n"
+                + "        {\n"
+                + "            \"functor\": \"person\",\n"
+                + "            \"terms\": [\n"
+                + "                {\n"
+                + "                    \"functor\": \"female\"\n"
+                + "                }\n"
+                + "            ]\n"
+                + "        },\n"
+                + "        10.0,\n"
+                + "        [\n"
+                + "            {\n"
+                + "                \"functor\": \"a\"\n"
+                + "            },\n"
+                + "            \"10\",\n"
+                + "            {\n"
+                + "                \"functor\": \"p\",\n"
+                + "                \"terms\": [\n"
+                + "                    10.0\n"
+                + "                ]\n"
+                + "            }\n"
+                + "        ]\n"
+                + "    ],\n"
+                + "    \"annotations\": [\n"
+                + "        43.0,\n"
+                + "        {\n"
+                + "            \"functor\": \"source\",\n"
+                + "            \"terms\": [\n"
+                + "                {\n"
+                + "                    \"functor\": \"bob\"\n"
+                + "                }\n"
+                + "            ]\n"
+                + "        }\n"
+                + "    ]\n"
+                + "}", t1.getAsJsonStr());
 
         Message m = new Message("tell", "bob", "karlos", ASSyntax.parseLiteral("b(a,[2,1])"), "myuniqueid");
-        assertEquals("{\n" +
-                "   \"performative\" : \"tell\",\n" +
-                "   \"sender\" : \"bob\",\n" +
-                "   \"receiver\" : \"karlos\",\n" +
-                "   \"msgId\" : \"myuniqueid\",\n" +
-                "   \"predicate\" :    {\n" +
-                "      \"functor\" : \"b\",\n" +
-                "      \"terms\"   : [\n" +
-                "         {\n" +
-                "            \"functor\" : \"a\"\n" +
-                "         },\n" +
-                "         [\n" +
-                "            2,\n" +
-                "            1\n" +
-                "         ]\n" +
-                "      ]\n" +
-                "   },\n" +
-                "   \"content\" : \"b(a,[2,1])\"\n" +
-                "}", m.getAsJSON(""));
+        assertEquals("\n"
+                + "{\n"
+                + "    \"performative\": \"tell\",\n"
+                + "    \"sender\": \"bob\",\n"
+                + "    \"receiver\": \"karlos\",\n"
+                + "    \"msgId\": \"myuniqueid\",\n"
+                + "    \"content\": \"b(a,[2,1])\",\n"
+                + "    \"predicate\": {\n"
+                + "        \"functor\": \"b\",\n"
+                + "        \"terms\": [\n"
+                + "            {\n"
+                + "                \"functor\": \"a\"\n"
+                + "            },\n"
+                + "            [\n"
+                + "                2.0,\n"
+                + "                1.0\n"
+                + "            ]\n"
+                + "        ]\n"
+                + "    }\n"
+                + "}", m.getAsJsonStr());
     }
 }

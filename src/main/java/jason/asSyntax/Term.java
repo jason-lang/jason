@@ -2,7 +2,7 @@ package jason.asSyntax;
 
 import jason.asSemantics.Unifier;
 import jason.util.ToDOM;
-import jason.util.ToJSON;
+import jason.util.ToJson;
 
 import java.io.Serializable;
 import java.util.Map;
@@ -12,7 +12,7 @@ import java.util.Map;
  *
  * @opt nodefillcolor lightgoldenrodyellow
  */
-public interface Term extends Cloneable, Comparable<Term>, Serializable, ToDOM, ToJSON {
+public interface Term extends Cloneable, Comparable<Term>, Serializable, ToDOM, ToJson {
 
     public boolean isVar();
     public boolean isUnnamedVar();

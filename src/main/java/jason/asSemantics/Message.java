@@ -3,13 +3,18 @@ package jason.asSemantics;
 import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
+import javax.json.JsonValue;
+
 import jason.asSyntax.ASSyntax;
 import jason.asSyntax.Literal;
 import jason.asSyntax.parser.ParseException;
-import jason.util.ToJSON;
+import jason.util.ToJson;
 
 
-public class Message implements Serializable, ToJSON {
+public class Message implements Serializable, ToJson {
 
     private static final long serialVersionUID = 7914409028691033870L;
 
@@ -132,22 +137,18 @@ public class Message implements Serializable, ToJSON {
     }
 
     @Override
-    public String getAsJSON(String identation) {
-        StringBuilder json = new StringBuilder(identation+"{\n");
-
-        json.append(identation+"   \"performative\" : \""+ getIlForce() + "\",\n");
-        json.append(identation+"   \"sender\" : \""+ getSender() + "\",\n");
-        json.append(identation+"   \"receiver\" : \""+ getReceiver() + "\",\n");
-        json.append(identation+"   \"msgId\" : \""+ getMsgId() + "\",\n");
+    public JsonValue getAsJson() {
+        JsonObjectBuilder json = Json.createObjectBuilder()
+                .add("performative", getIlForce())
+                .add("sender", getSender())
+                .add("receiver", getReceiver())
+                .add("msgId", getMsgId())
+                .add("content", Json.createValue(getPropCont().toString()));
         if (getInReplyTo() != null)
-            json.append(identation+"   \"inReplyTo\" : \""+ getInReplyTo() + "\",\n");
+            json.add("inReplyTo", Json.createValue(getInReplyTo()));
         if (getPropCont() instanceof Literal)
-            json.append(identation+"   \"predicate\" : "+ ((Literal)getPropCont()).getAsJSON(identation+"   ") + ",\n");
-        String content = getPropCont().toString().replaceAll("\"", "\\\\\"");
-        json.append(identation+"   \"content\" : \""+ content + "\"\n");
-
-        json.append(identation+"}");
-        return json.toString();
+            json.add("predicate", ((Literal)getPropCont()).getAsJson());
+        return json.build();
     }
 
     /**

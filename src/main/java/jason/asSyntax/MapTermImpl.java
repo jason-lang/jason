@@ -5,6 +5,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import javax.json.Json;
+import javax.json.JsonObjectBuilder;
+import javax.json.JsonValue;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -137,7 +141,7 @@ public class MapTermImpl extends DefaultTerm implements MapTerm {
         return u;
     }
 
-    @Override
+    /*@Override
     public String getAsJSON(String identation) {
         StringBuilder json = new StringBuilder(identation+"{\n");
         String c = "";
@@ -147,5 +151,14 @@ public class MapTermImpl extends DefaultTerm implements MapTerm {
         }
         json.append("\n"+identation+"}");
         return json.toString();
+    }*/
+
+    @Override
+    public JsonValue getAsJson() {
+        JsonObjectBuilder json = Json.createObjectBuilder();
+        for (Term k: map.keySet()) {
+            json.add(k.toString(), map.get(k).getAsJson() );
+        }
+        return json.build();
     }
 }
