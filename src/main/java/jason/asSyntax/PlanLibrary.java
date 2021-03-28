@@ -104,6 +104,7 @@ public class PlanLibrary implements Iterable<Plan>, Serializable {
      *  @returns the plan just added
      *  @deprecated parse the plan before (ASSyntax methods) and call add(Plan, ...) methods
      */
+    @Deprecated
     public Plan add(StringTerm stPlan, Term tSource) throws ParseException, JasonException {
         return add(stPlan, tSource, false);
     }
@@ -121,6 +122,7 @@ public class PlanLibrary implements Iterable<Plan>, Serializable {
      *  @returns the plan just added
      *  @deprecated parse the plan before (ASSyntax methods) and call add(Plan, ...) methods
      */
+    @Deprecated
     public Plan add(StringTerm stPlan, Term tSource, boolean before) throws ParseException, JasonException {
         String sPlan = stPlan.getString();
         // remove quotes \" -> "
@@ -401,6 +403,7 @@ public class PlanLibrary implements Iterable<Plan>, Serializable {
     }
 
     /** @deprecated use hasCandidatePlan(te) instead */
+    @Deprecated
     public boolean isRelevant(Trigger te) {
         return hasCandidatePlan(te);
     }
@@ -414,6 +417,7 @@ public class PlanLibrary implements Iterable<Plan>, Serializable {
 
 
     /** @deprecated use getCandidatePlans(te) instead */
+    @Deprecated
     public List<Plan> getAllRelevant(Trigger te) {
         return getCandidatePlans(te);
     }

@@ -29,6 +29,7 @@ public final class Location implements Serializable {
         return Math.max( Math.abs(this.x - l.x), Math.abs(this.y - l.y));
     }
     /** @deprecated renamed to distanceChessboard */
+    @Deprecated
     public int maxBorder(Location l) {
         return Math.max( Math.abs(this.x - l.x), Math.abs(this.y - l.y));
     }

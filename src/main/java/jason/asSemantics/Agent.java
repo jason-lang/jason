@@ -306,6 +306,7 @@ public class Agent implements Serializable {
      *     TransitionSystem ts = ag.getTS();
      *     </pre>
      */
+    @Deprecated
     public TransitionSystem initAg(AgArch arch, BeliefBase bb, String asSrc, Settings stts) throws JasonException {
         try {
             if (bb != null)

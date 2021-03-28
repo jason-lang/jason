@@ -23,6 +23,7 @@ public final class NumberTermImpl extends DefaultTerm implements NumberTerm {
     }
 
     /** @deprecated prefer to use ASSyntax.parseNumber */
+    @Deprecated
     public NumberTermImpl(String sn) {
         double t = 0;
         try {

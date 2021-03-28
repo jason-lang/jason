@@ -220,6 +220,7 @@ public class AgArch implements Comparable<AgArch>, Serializable {
     /**
      * @deprecated use RuntimeServicesFactory.get instead
      */
+    @Deprecated
     public RuntimeServices getRuntimeServices() {
         if (successor == null)
             return null;

@@ -29,6 +29,7 @@ public abstract class DefaultTerm implements Term, Serializable {
     protected SourceInfo srcInfo       = null;
 
     /** @deprecated it is preferable to use ASSyntax.parseTerm */
+    @Deprecated
     public static Term parse(String sTerm) {
         as2j parser = new as2j(new StringReader(sTerm));
         try {

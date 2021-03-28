@@ -24,6 +24,7 @@ public final class Area implements Serializable {
     }
 
     /** @deprecated renamed to chebyshevDistanceToBorder */
+    @Deprecated
     public int distanceMaxBorder(Location l) {
         return chebyshevDistanceToBorder(l);
     }

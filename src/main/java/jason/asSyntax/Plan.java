@@ -199,6 +199,7 @@ public class Plan extends Structure implements Cloneable, Serializable {
     }
 
     /** @deprecated use getTrigger */
+    @Deprecated
     public Trigger getTriggerEvent() {
         return tevent;
     }

@@ -10,6 +10,7 @@ import jason.asSyntax.Term;
 /**
 @deprecated use function mean instead
 */
+@Deprecated
 public class Average extends DefaultArithFunction  {
 
     public String getName() {

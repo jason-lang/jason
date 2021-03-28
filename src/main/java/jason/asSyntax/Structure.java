@@ -277,6 +277,7 @@ public class Structure extends Atom {
     }
 
     /** @deprecated use getArity */
+    @Deprecated
     public int getTermsSize() {
         return getArity();
     }

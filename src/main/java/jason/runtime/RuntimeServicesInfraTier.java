@@ -7,9 +7,7 @@ import jason.architecture.AgArch;
 import jason.asSemantics.Agent;
 import jason.mas2j.ClassParameters;
 
-/**
- * @deprecated
- */
+@Deprecated
 public interface RuntimeServicesInfraTier extends RuntimeServices {
 
     default public String createAgent(String agName, String agSource, String agClass, Collection<String> archClasses, ClassParameters bbPars, Settings stts, Agent father) throws Exception {

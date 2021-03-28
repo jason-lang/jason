@@ -1815,6 +1815,7 @@ public class TransitionSystem implements Serializable {
      *
      * @deprecated use getAgArch
      */
+    @Deprecated
     public AgArch getUserAgArch() {
         return agArch;
     }

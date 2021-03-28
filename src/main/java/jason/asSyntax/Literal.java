@@ -9,7 +9,6 @@ import java.util.logging.Logger;
 
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
-import javax.json.JsonObjectBuilder;
 import javax.json.JsonValue;
 
 import jason.JasonException;
@@ -614,7 +613,7 @@ public abstract class Literal extends DefaultTerm implements LogicalFormula {
     }
 
     public JsonValue getAsJson() {
-    	JsonObjectBuilder builder = Json.createObjectBuilder()
+    	var builder = Json.createObjectBuilder()
     			.add("functor", getFunctor());
     	if (negated())
     		builder.add("negated", Json.createValue( "true" ));

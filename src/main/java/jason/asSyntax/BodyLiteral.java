@@ -6,9 +6,11 @@ package jason.asSyntax;
  *
  * @hidden
  */
+@Deprecated
 public class BodyLiteral extends PlanBodyImpl {
 
     /** @deprecated Use BodyType of PlanBody instead */
+    @Deprecated
     public enum BodyType {
         none {            public String toString() {
                 return "";

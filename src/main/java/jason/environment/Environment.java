@@ -101,6 +101,7 @@ public class Environment {
     /**
      * @deprecated use version with String... parameter
      */
+    @Deprecated
     public void informAgsEnvironmentChanged(Collection<String> agents) {
         if (environmentInfraTier != null) {
             environmentInfraTier.informAgsEnvironmentChanged((String[])agents.toArray());

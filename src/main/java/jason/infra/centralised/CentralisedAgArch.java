@@ -167,6 +167,7 @@ public class CentralisedAgArch extends AgArch implements Runnable, Serializable 
      *
      * @deprecated use getFirstAgArch instead
      */
+    @Deprecated
     public AgArch getUserAgArch() {
         return getFirstAgArch();
     }

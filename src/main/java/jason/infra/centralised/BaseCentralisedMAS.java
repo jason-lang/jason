@@ -66,6 +66,7 @@ public abstract class BaseCentralisedMAS extends NotificationBroadcasterSupport 
     /**
      * @deprecated use RuntimeServicesFactory.set() instead.
      */
+    @Deprecated
     public void setRuntimeServives(RuntimeServices rts) {
         RuntimeServicesFactory.set(rts);
     }
