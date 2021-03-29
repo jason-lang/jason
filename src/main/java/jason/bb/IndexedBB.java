@@ -1,16 +1,14 @@
 package jason.bb;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
 import jason.asSemantics.Agent;
 import jason.asSemantics.Unifier;
 import jason.asSyntax.Literal;
 import jason.asSyntax.Structure;
 import jason.asSyntax.Term;
-import jason.bb.BeliefBase;
-import jason.bb.ChainBBAdapter;
-
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 
 /**
  * Customised version of Belief Base where some beliefs are unique (with primary keys) and

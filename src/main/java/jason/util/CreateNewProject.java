@@ -32,7 +32,7 @@ public class CreateNewProject {
 
 
     public static void main(String[] args) throws Exception {
-        boolean consoleApp = false;
+        var consoleApp = false;
         for (int i=0; i<args.length; i++)
             if ("--console".equals(args[i]))
                 consoleApp = true;
@@ -41,10 +41,12 @@ public class CreateNewProject {
         if (args.length == 0 || (args.length == 1 && consoleApp)) {
             System.out.println(Config.get().getPresentation()+"\n");
             System.out.print("\n\nEnter the identification of the new application: ");
-            pId = new Scanner(System.in).nextLine();
-            if (pId.length() == 0) {
-                System.out.println("      you should enter a project id!");
-                return;
+            try (var sin = new Scanner(System.in)) {
+            	pId = sin.nextLine();
+	            if (pId.length() == 0) {
+	                System.out.println("      you should enter a project id!");
+	                return;
+	            }
             }
 
             //System.out.println("usage must be:");
@@ -59,7 +61,7 @@ public class CreateNewProject {
             Config.get().fix();
         }
 
-        CreateNewProject p = new CreateNewProject(new File(pId));
+        var p = new CreateNewProject(new File(pId));
         p.consoleApp = consoleApp;
         p.createDirs();
         p.copyFiles();
@@ -94,9 +96,8 @@ public class CreateNewProject {
     }
 
     void copyFile(String source, File target) {
-        try {
-            BufferedReader in  = new BufferedReader(new InputStreamReader( Config.get().getDetaultResource(source) ));
-            BufferedWriter out = new BufferedWriter(new FileWriter(target));
+        try (var in  = new BufferedReader(new InputStreamReader( Config.get().getDetaultResource(source) ));
+             var out = new BufferedWriter(new FileWriter(target))) {
             String l = in.readLine();
             while (l != null) {
                 l = l.replace("<PROJECT_NAME>", id);
@@ -117,7 +118,6 @@ public class CreateNewProject {
                 out.append(l+"\n");
                 l = in.readLine();
             }
-            out.close();
         } catch (IOException e) {
             e.printStackTrace();
         }

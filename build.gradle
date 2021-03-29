@@ -25,6 +25,10 @@ java {
     }
 }
 
+compileJava {
+    options.compilerArgs += ['--enable-preview']
+}
+
 /*compileJava {
     sourceCompatibility = JavaVersion.VERSION_1_15
     targetCompatibility = JavaVersion.VERSION_1_15

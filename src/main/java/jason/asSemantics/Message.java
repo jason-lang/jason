@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.json.Json;
-import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 import javax.json.JsonValue;
 
@@ -146,8 +145,8 @@ public class Message implements Serializable, ToJson {
                 .add("content", Json.createValue(getPropCont().toString()));
         if (getInReplyTo() != null)
             json.add("inReplyTo", Json.createValue(getInReplyTo()));
-        if (getPropCont() instanceof Literal)
-            json.add("predicate", ((Literal)getPropCont()).getAsJson());
+        if (getPropCont() instanceof Literal l)
+            json.add("predicate", l.getAsJson());
         return json.build();
     }
 

@@ -14,7 +14,6 @@ import jason.functions.Abs;
 import jason.functions.Average;
 import jason.functions.Length;
 import jason.functions.Max;
-import jason.functions.median;
 import jason.functions.Min;
 import jason.functions.Random;
 import jason.functions.Round;
@@ -26,6 +25,7 @@ import jason.functions.e;
 import jason.functions.floor;
 import jason.functions.log;
 import jason.functions.mean;
+import jason.functions.median;
 import jason.functions.pi;
 import jason.functions.time;
 

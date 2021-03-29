@@ -16,8 +16,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
-import jason.util.Config;
-
 public class CheckVersion extends Thread {
 
     public static final String JasonSite = "http://jason.sf.net";

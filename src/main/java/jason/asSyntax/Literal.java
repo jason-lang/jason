@@ -45,7 +45,6 @@ import jason.asSyntax.parser.as2j;
  @see LiteralImpl
 
  */
-@SuppressWarnings("serial")
 public abstract class Literal extends DefaultTerm implements LogicalFormula {
 
     private static final long serialVersionUID = 1L;
@@ -514,10 +513,9 @@ public abstract class Literal extends DefaultTerm implements LogicalFormula {
 
 
     private void useDerefVars(Term p, Unifier un) {
-        if (p instanceof Literal) {
-            Literal l = (Literal)p;
-            for (int i=0; i<l.getArity(); i++) {
-                Term t = l.getTerm(i);
+        if (p instanceof Literal l) {
+        	for (int i=0; i<l.getArity(); i++) {
+                var t = l.getTerm(i);
                 if (t.isVar()) {
                     l.setTerm(i, un.deref( (VarTerm)t));
                 } else {
@@ -711,8 +709,7 @@ public abstract class Literal extends DefaultTerm implements LogicalFormula {
         public boolean equals(Object o) {
             if (o == null) return false;
             if (o == this) return true;
-            if (o instanceof Atom) {
-                Atom a = (Atom)o;
+            if (o instanceof Atom a) {
                 return a.isAtom() && getFunctor().equals(a.getFunctor());
             }
             return false;
