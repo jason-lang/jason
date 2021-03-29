@@ -1,6 +1,7 @@
 package jason.asSemantics;
 
 import jason.asSyntax.Plan;
+import jason.util.ToDOM;
 
 import java.io.Serializable;
 
@@ -11,7 +12,7 @@ import org.w3c.dom.Element;
  * An Option is a Plan and the Unifier that has made it relevant and applicable
  */
 
-public class Option implements Serializable {
+public class Option implements Serializable, ToDOM {
 
     private static final long serialVersionUID = 1L;
 

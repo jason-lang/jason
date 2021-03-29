@@ -15,13 +15,14 @@ import jason.asSyntax.Literal;
 import jason.asSyntax.Pred;
 import jason.asSyntax.PredicateIndicator;
 import jason.asSyntax.Term;
+import jason.util.ToDOM;
 
 
 /**
  * Common interface for all kinds of Jason Belief bases, even those
  * customised by the user.
  */
-public abstract class BeliefBase implements Iterable<Literal>, Cloneable {
+public abstract class BeliefBase implements Iterable<Literal>, Cloneable, ToDOM {
 
     public static final Term ASelf    = new Atom("self");
     public static final Term APercept = new Atom("percept");

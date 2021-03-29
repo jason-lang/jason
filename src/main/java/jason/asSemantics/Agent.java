@@ -59,6 +59,7 @@ import jason.mas2j.ClassParameters;
 import jason.runtime.Settings;
 import jason.runtime.SourcePath;
 import jason.util.Config;
+import jason.util.ToDOM;
 
 
 
@@ -67,7 +68,7 @@ import jason.util.Config;
  * AgentSpeak agent. It also implements the default selection
  * functions of the AgentSpeak semantics.
  */
-public class Agent implements Serializable {
+public class Agent implements Serializable, ToDOM {
 
     private static final long serialVersionUID = -2628324957954474455L;
 

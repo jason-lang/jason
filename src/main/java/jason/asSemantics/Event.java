@@ -6,8 +6,9 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import jason.asSyntax.Trigger;
+import jason.util.ToDOM;
 
-public class Event implements Serializable {
+public class Event implements Serializable, ToDOM {
 
     private static final long serialVersionUID = 1L;
 

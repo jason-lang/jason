@@ -23,8 +23,9 @@ import jason.asSyntax.Trigger;
 import jason.asSyntax.Trigger.TEOperator;
 import jason.asSyntax.Trigger.TEType;
 import jason.infra.centralised.CentralisedAgArch;
+import jason.util.ToDOM;
 
-public class Circumstance implements Serializable {
+public class Circumstance implements Serializable, ToDOM {
 
     private static final long serialVersionUID = 1L;
 

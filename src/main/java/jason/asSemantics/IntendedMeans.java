@@ -14,8 +14,9 @@ import jason.asSyntax.PlanBody;
 import jason.asSyntax.PlanBodyImpl;
 import jason.asSyntax.Term;
 import jason.asSyntax.Trigger;
+import jason.util.ToDOM;
 
-public class IntendedMeans implements Serializable {
+public class IntendedMeans implements Serializable, ToDOM {
 
     private static final long serialVersionUID = 1L;
 

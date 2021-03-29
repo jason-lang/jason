@@ -3,6 +3,7 @@ package jason.asSemantics;
 import jason.asSyntax.Literal;
 import jason.asSyntax.Pred;
 import jason.asSyntax.Structure;
+import jason.util.ToDOM;
 
 import java.io.Serializable;
 
@@ -10,7 +11,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 
-public class ActionExec implements Serializable {
+public class ActionExec implements Serializable, ToDOM {
 
     private static final long serialVersionUID = 1L;
 

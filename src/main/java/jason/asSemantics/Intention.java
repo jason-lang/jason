@@ -21,6 +21,7 @@ import jason.asSyntax.Term;
 import jason.asSyntax.Trigger;
 import jason.asSyntax.Trigger.TEOperator;
 import jason.util.Pair;
+import jason.util.ToDOM;
 
 /**
  * Represents and Intention (a stack of IntendedMeans).
@@ -30,7 +31,7 @@ import jason.util.Pair;
  *
  * @author Jomi and Rafael
  */
-public class Intention implements Serializable, Comparable<Intention>, Iterable<IntendedMeans> {
+public class Intention implements Serializable, Comparable<Intention>, Iterable<IntendedMeans>, ToDOM {
 
     public enum State { running, waiting, suspended, undefined }
 

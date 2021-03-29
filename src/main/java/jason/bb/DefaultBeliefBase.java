@@ -369,7 +369,6 @@ public class DefaultBeliefBase extends BeliefBase implements Serializable {
     public Element getAsDOM(Document document) {
         Element eDOMbels = (Element) document.createElement("beliefs");
         int tries = 0;
-        //List<Literal> allBels;
         while (tries < 10) { // max 10 tries
             try {
                 synchronized (getLock()) {

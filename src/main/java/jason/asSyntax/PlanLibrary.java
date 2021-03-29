@@ -21,12 +21,13 @@ import jason.asSyntax.Trigger.TEType;
 import jason.asSyntax.parser.ParseException;
 import jason.bb.BeliefBase;
 import jason.util.Config;
+import jason.util.ToDOM;
 
 /** Represents a set of plans used by an agent
 
     @has - plans 0..* Plan
 */
-public class PlanLibrary implements Iterable<Plan>, Serializable {
+public class PlanLibrary implements Iterable<Plan>, Serializable, ToDOM {
 
     private static final long serialVersionUID = 1913142118716665555L;
 

@@ -26,8 +26,9 @@ import jason.asSyntax.Trigger;
 import jason.asSyntax.UnnamedVar;
 import jason.asSyntax.VarTerm;
 import jason.asSyntax.directives.NameSpace;
+import jason.util.ToDOM;
 
-public class Unifier implements Cloneable, Iterable<VarTerm>, Serializable {
+public class Unifier implements Cloneable, Iterable<VarTerm>, Serializable, ToDOM {
 
     private static final long serialVersionUID = -4975512704582790850L;
 

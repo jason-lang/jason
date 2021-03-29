@@ -615,6 +615,8 @@ public abstract class Literal extends DefaultTerm implements LogicalFormula {
     public JsonValue getAsJson() {
     	var builder = Json.createObjectBuilder()
     			.add("functor", getFunctor());
+    	if (getNS() != DefaultNS)
+    		builder.add("name-space", Json.createValue(getNS().toString()));
     	if (negated())
     		builder.add("negated", Json.createValue( "true" ));
     	if (hasTerm()) {
