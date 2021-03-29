@@ -145,8 +145,8 @@ public class Message implements Serializable, ToJson {
                 .add("content", Json.createValue(getPropCont().toString()));
         if (getInReplyTo() != null)
             json.add("inReplyTo", Json.createValue(getInReplyTo()));
-        if (getPropCont() instanceof Literal l)
-            json.add("predicate", l.getAsJson());
+        if (getPropCont() instanceof Literal)
+            json.add("predicate", ((Literal)getPropCont()).getAsJson());
         return json.build();
     }
 

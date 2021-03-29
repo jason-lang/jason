@@ -513,7 +513,8 @@ public abstract class Literal extends DefaultTerm implements LogicalFormula {
 
 
     private void useDerefVars(Term p, Unifier un) {
-        if (p instanceof Literal l) {
+        if (p instanceof Literal) {
+        	Literal l = (Literal)p;
         	for (int i=0; i<l.getArity(); i++) {
                 var t = l.getTerm(i);
                 if (t.isVar()) {
@@ -709,7 +710,8 @@ public abstract class Literal extends DefaultTerm implements LogicalFormula {
         public boolean equals(Object o) {
             if (o == null) return false;
             if (o == this) return true;
-            if (o instanceof Atom a) {
+            if (o instanceof Atom) {
+            	Atom a = (Atom)o;
                 return a.isAtom() && getFunctor().equals(a.getFunctor());
             }
             return false;

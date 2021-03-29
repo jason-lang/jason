@@ -428,8 +428,8 @@ public class Unifier implements Cloneable, Iterable<VarTerm>, Serializable, ToDO
         ListTerm tail = lf;
         for (VarTerm k: function.keySet()) {
             Term vl = function.get(k).clone();
-            if (vl instanceof Literal l)
-                l.makeVarsAnnon();
+            if (vl instanceof Literal)
+                ((Literal)vl).makeVarsAnnon();
             Structure pair = ASSyntax.createStructure("map", UnnamedVar.create(k.toString()), vl); // the var must be changed to avoid cyclic references latter
             tail = tail.append(pair);
         }
@@ -477,7 +477,7 @@ public class Unifier implements Cloneable, Iterable<VarTerm>, Serializable, ToDO
     public boolean equals(Object o) {
         if (o == null) return false;
         if (o == this) return true;
-        if (o instanceof Unifier u) return function.equals( u.function );
+        if (o instanceof Unifier) return function.equals( ((Unifier)o).function );
         return false;
     }
 

@@ -25,7 +25,7 @@ java {
     }
 }
 
-compileJava {
+/*compileJava {
     options.compilerArgs += ['--enable-preview']
 }
 tasks.withType(Test).all {
@@ -41,6 +41,7 @@ javadoc.options {
     addBooleanOption('-enable-preview', true)
     addStringOption('-release', '15')
 }
+*/
 
 /*compileJava {
     sourceCompatibility = JavaVersion.VERSION_1_15
