@@ -19,10 +19,16 @@ apply plugin: 'signing'
 version '3.0-SNAPSHOT'
 group   'org.jason'
 
-compileJava {
-    sourceCompatibility = JavaVersion.VERSION_1_10
-    targetCompatibility = JavaVersion.VERSION_1_10
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(15)
+    }
 }
+
+/*compileJava {
+    sourceCompatibility = JavaVersion.VERSION_1_15
+    targetCompatibility = JavaVersion.VERSION_1_15
+}*/
 
 
 repositories {
