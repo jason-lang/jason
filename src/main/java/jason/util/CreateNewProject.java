@@ -42,11 +42,11 @@ public class CreateNewProject {
             System.out.println(Config.get().getPresentation()+"\n");
             System.out.print("\n\nEnter the identification of the new application: ");
             try (var sin = new Scanner(System.in)) {
-            	pId = sin.nextLine();
-	            if (pId.length() == 0) {
-	                System.out.println("      you should enter a project id!");
-	                return;
-	            }
+                pId = sin.nextLine();
+                if (pId.length() == 0) {
+                    System.out.println("      you should enter a project id!");
+                    return;
+                }
             }
 
             //System.out.println("usage must be:");

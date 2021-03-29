@@ -28,6 +28,19 @@ java {
 compileJava {
     options.compilerArgs += ['--enable-preview']
 }
+tasks.withType(Test).all {
+    jvmArgs += '--enable-preview'
+}
+tasks.withType(JavaCompile).all {
+    options.compilerArgs += ['--enable-preview']
+}
+tasks.withType(JavaExec) {
+    jvmArgs += '--enable-preview'
+}
+javadoc.options {
+    addBooleanOption('-enable-preview', true)
+    addStringOption('-release', '15')
+}
 
 /*compileJava {
     sourceCompatibility = JavaVersion.VERSION_1_15
@@ -451,7 +464,7 @@ task plugin(type: Jar, dependsOn: 'jar') {
 
 
 // transfer local maven artifact to our maven2 repository at sourceforge
-task publishMavenSF(dependsOn: [ 'build', 'publishToMavenLocal']) {
+/*task publishMavenSF(dependsOn: [ 'build', 'publishToMavenLocal']) {
   doLast {
     def wdir = System.getProperty("user.home")+'/.m2/repository/org/jason/jason'
     def tdir = System.getenv('USERSF')+',jacamo@web.sf.net:/home/project-web/jacamo/htdocs/maven2/org/jason/jason'
@@ -468,7 +481,7 @@ task publishMavenSF(dependsOn: [ 'build', 'publishToMavenLocal']) {
         workingDir wdir
     }
   }
-}
+}*/
 
 task publishMavenGitHub(dependsOn: [ 'build', 'publishToMavenLocal']) {
   doLast {
@@ -581,6 +594,7 @@ task testJason(dependsOn: 'config') {
     doFirst {
         try {
             javaexec {
+                jvmArgs += '--enable-preview'
                 main = 'jason.infra.centralised.RunCentralisedMAS'
                 if (gradle.startParameter.logLevel.toString().equals("DEBUG")) {
                     args = ['src/test/jason/unit_tests.mas2j', '--log-conf', 'src/main/resources/templates/console-debug-logging.properties']
