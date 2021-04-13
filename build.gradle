@@ -69,16 +69,16 @@ dependencies {
     compile group: 'net.sf.ingenias', name: 'jade', version: '4.3'
     //compile group: 'com.tilab.jade', name: 'jade', version: '4.4.0'
 
-    compile group: 'org.jacamo',     name: 'cartago', version: '2.5'
-    compile group: 'org.jacamo',     name: 'jaca',    version: '2.5'
+    //compile group: 'org.jacamo',     name: 'cartago', version: '2.5'
+    //compile group: 'org.jacamo',     name: 'jaca',    version: '2.5'
 
     // from jEdit
     compile fileTree(dir: 'jedit', include: '*.jar') // using fileTree, jedit jars are not included as a dependency in the pom file
 
     runtime group: 'org.apache.ant',  name: 'ant',  version: '1.10.5'
 
-    implementation group: 'javax.json', name: 'javax.json-api', version: '1.1.4'
-    implementation group: 'org.glassfish', name: 'javax.json', version: '1.1.4'
+    compile group: 'javax.json', name: 'javax.json-api', version: '1.1.4'
+    compile group: 'org.glassfish', name: 'javax.json', version: '1.1.4'
 
     testImplementation group: 'junit', name: 'junit', version: '4.12'
     testImplementation name: 'hsqldb'

@@ -230,6 +230,10 @@ public class CentralisedMASLauncherAnt implements MASLauncherInfraTier {
         if (new File(dDir + File.separator + "libs").exists()) {
             lib += "        <fileset dir=\"${basedir}/libs\" >  <include name=\"*.jar\" /> </fileset>\n";
         }
+        String jasonHomeLibs = Config.get().getJasonHome() + File.separator + "libs";
+        if (new File(jasonHomeLibs).exists()) {
+            lib += "        <fileset dir=\""+jasonHomeLibs+"\" >  <include name=\"*.jar\" /> </fileset>\n";
+        }
 
         // add classpath defined in the project .mas2j
         for (String cp: project.getClassPaths()) {

@@ -13,8 +13,11 @@ apply plugin: 'eclipse'
 version '1.0'
 group   'org.jason'
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(15)
+    }
+}
 
 repositories {
     mavenCentral()
