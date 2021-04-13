@@ -150,9 +150,9 @@ public class Pred extends Structure {
     public boolean addAnnot(Term t) {
         if (annots == null)
             annots = new ListTermImpl();
-        Iterator<ListTerm> i = annots.listTermIterator();
+        var i = annots.listTermIterator();
         while (i.hasNext()) {
-            ListTerm lt = i.next();
+            var lt = i.next();
             int c = t.compareTo(lt.getTerm());
             if (c == 0) { // equals
                 return false;
@@ -213,9 +213,9 @@ public class Pred extends Structure {
         if (annots == null)
             return false;
         // annots are ordered
-        Iterator<ListTerm> i = annots.listTermIterator();
+        var i = annots.listTermIterator();
         while (i.hasNext()) {
-            ListTerm lt = i.next();
+            var lt = i.next();
             int c = t.compareTo(lt.getTerm());
             if (c < 0)
                 return false;

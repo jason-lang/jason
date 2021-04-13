@@ -788,14 +788,14 @@ public class Agent implements Serializable, ToDOM {
      */
     public int buf(Collection<Literal> percepts) {
         /*
-        // complexity 3n
+        // complexity: 2n + n*m (n = number of percepts; m = number of beliefs)
 
         HashSet percepts = clone from the list of current environment percepts // 1n
 
-        for b in BBPercept (the set of perceptions already in BB) // 1n
+        for b in BBPercept (the set of perceptions already in BB) // 1n * m
             if b not in percepts // constant time test
                 remove b in BBPercept // constant time
-                remove b in percept
+                remove b in percept   // linear time
 
         for p still in percepts // 1n
             add p in BBPercepts
