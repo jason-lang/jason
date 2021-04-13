@@ -242,6 +242,8 @@ public class Config extends Properties {
                 al += File.separator;
             }
             put(ANT_LIB, al);
+            if (showFixMsgs)
+                System.out.println("Config of "+ANT_LIB+" set to "+al);
         }
     }
 
@@ -299,9 +301,19 @@ public class Config extends Properties {
         // fix ant lib
         if (get(ANT_LIB) == null || !checkAntLib(getAntLib())) {
             try {
+                if (tryToFixJarFileConf("AntJar",  "ant-launcher")) {
+                    if (showFixMsgs)
+                        System.out.println("Ant Jar found at "+ get("AntJar"));
+                    String antlib = new File(get("AntJar").toString()).getParentFile().getAbsolutePath();
+                    if (checkAntLib(antlib))
+                        setAntLib(antlib);
+                }
+
                 String jjar = getJasonJar();
-                if (jjar != null) {
+                if (get(ANT_LIB) == null && jjar != null) {
                     String antlib = new File(jjar).getParentFile().getParentFile().getAbsolutePath() + File.separator + "libs";
+                    if (showFixMsgs)
+                        System.out.println("trying to fix ant by jason jar, look at "+antlib);
                     if (checkAntLib(antlib)) {
                         setAntLib(antlib);
                     } else {

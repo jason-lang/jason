@@ -1,0 +1,56 @@
+/*
+   Project to illustrate the basic use of Cartago as the
+   Environment
+
+   Gradle build file for Jason Application
+   April 13, 2021 - 12:58:25
+*/
+
+defaultTasks 'run'
+
+apply plugin: 'java'
+
+version '1.0'
+group   'org.jason'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+
+    maven { url "https://raw.github.com/jacamo-lang/mvn-repo/master" }
+    maven { url "https://jade.tilab.com/maven/" }
+
+    flatDir { dirs 'lib' }
+}
+
+dependencies {
+    implementation group: 'org.jason',     name: 'jason' ,   version: '2.6.3-SNAPSHOT'
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir 'src/main/java'
+        }
+        resources {
+            srcDir 'src/main/resources'
+        }
+    }
+}
+
+task run (type: JavaExec, dependsOn: 'classes') {
+    description 'runs the application'
+    main = 'jason.infra.centralised.RunCentralisedMAS'
+    args 'basic_cartago.mas2j'
+	// options:
+	//     args = ['basic_cartago.mas2j', '--debug']
+	//     args = ['basic_cartago.mas2j', '--log-conf', 'l.p'] // to use file l.p to configure logging
+    classpath sourceSets.main.runtimeClasspath
+}
+
+clean {
+    delete 'bin'
+    delete 'build'
+}

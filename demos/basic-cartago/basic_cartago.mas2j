@@ -1,0 +1,22 @@
+/*
+    Project to illustrate the basic use of Cartago as the
+    Environment
+    ---------------------------
+
+    Jason Project File
+
+    This file defines the initial state of the MAS
+
+    Jason 2.6.3
+    April 13, 2021 - 12:58:25
+*/
+
+MAS basic_cartago {
+
+    environment: jaca.CartagoEnvironment
+
+    agents:
+
+        bob   agentArchClass jaca.CAgentArch;
+        alice agentArchClass jaca.CAgentArch;
+}
