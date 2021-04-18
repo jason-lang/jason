@@ -1,5 +1,7 @@
 package jason.asSemantics;
 
+import java.io.Serializable;
+
 import jason.asSyntax.Trigger;
 
 /**
@@ -7,7 +9,7 @@ import jason.asSyntax.Trigger;
  *
  * @author jomi
  */
-public abstract class IMCondition {
+public abstract class IMCondition implements Serializable {
     public boolean test(IntendedMeans im, Unifier u) {
         return test(im.getTrigger(),u);
     }

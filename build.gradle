@@ -652,4 +652,4 @@ task testJason(dependsOn: 'config') {
         }
     }
 }
-tasks.test.finalizedBy testJason
+tasks.build.finalizedBy testJason
