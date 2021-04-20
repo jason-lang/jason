@@ -196,7 +196,8 @@ public class CentralisedAgArch extends AgArch implements Runnable, Serializable 
         return myThread;
     }
     public void startThread() {
-        myThread.start();
+        if (!myThread.isAlive())
+            myThread.start();
     }
 
     public boolean isRunning() {
