@@ -12,7 +12,6 @@ import java.util.logging.Logger;
 
 import javax.management.NotificationBroadcasterSupport;
 
-import jason.RevisionFailedException;
 import jason.architecture.AgArch;
 import jason.asSemantics.Agent;
 import jason.asSemantics.Message;
@@ -91,16 +90,12 @@ public abstract class BaseCentralisedMAS extends NotificationBroadcasterSupport 
         ag.setMASRunner(this);
     }
     public CentralisedAgArch delAg(String agName) {
-        //df.remove(agName);
         try {
-            if (RunCentralisedMAS.getRunner().getAg("df") != null) { // if DF is running
-                Agent df = getDFAg();
-                if (df != null) {
-                    getDFAg().abolish(ASSyntax.createLiteral("provider",  new Atom(agName), new UnnamedVar()), null);
-                    getDFAg().abolish(ASSyntax.createLiteral("subscribe", new Atom(agName), new UnnamedVar()), null);
-                }
+            if (dfAgExists()) {
+                getDFAg().abolish(ASSyntax.createLiteral("provider",  new Atom(agName), new UnnamedVar()), null);
+                getDFAg().abolish(ASSyntax.createLiteral("subscribe", new Atom(agName), new UnnamedVar()), null);
             }
-        } catch (RevisionFailedException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return ags.remove(agName);
@@ -130,29 +125,31 @@ public abstract class BaseCentralisedMAS extends NotificationBroadcasterSupport 
     public abstract boolean isRunning();
 
 
-    protected synchronized AgArch getDFAgArch() {
+    protected synchronized AgArch getDFAgArch() throws Exception {
         if (dfAg == null) {
-            try {
-                String name = RuntimeServicesFactory.get().createAgent("df", null, null, null, null, null, null);
-                RuntimeServicesFactory.get().startAgent(name);
-                dfAg = getAg(name).getFirstAgArch();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            String name = RuntimeServicesFactory.get().createAgent("df", null, null, null, null, null, null);
+            RuntimeServicesFactory.get().startAgent(name);
+            dfAg = getAg(name).getFirstAgArch();
         }
         return dfAg;
     }
 
-    protected Agent getDFAg() {
+    protected Agent getDFAg() throws Exception {
         return getDFAgArch().getTS().getAg();
     }
 
-    protected Collection<Literal> getSubscribers() {
+    protected synchronized boolean dfAgExists() {
+        return dfAg != null;
+    }
+
+    protected Collection<Literal> getSubscribers() throws Exception {
         Collection<Literal> a = new ArrayList<>();
-        Iterator<Literal> ibb = getDFAg().getBB().getCandidateBeliefs(new PredicateIndicator("subscribe", 2));
-        if (ibb != null) {
-            while (ibb.hasNext()) {
-                a.add(ibb.next());
+        if (dfAgExists()) {
+            Iterator<Literal> ibb = getDFAg().getBB().getCandidateBeliefs(new PredicateIndicator("subscribe", 2));
+            if (ibb != null) {
+                while (ibb.hasNext()) {
+                    a.add(ibb.next());
+                }
             }
         }
         return a;
@@ -169,15 +166,16 @@ public abstract class BaseCentralisedMAS extends NotificationBroadcasterSupport 
                 if (p.getTerm(1).toString().equals(service))
                     sendProvider(p.getTerm(0).toString(), agName, service);
             }
-        } catch (RevisionFailedException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     public void dfDeRegister(String agName, String service) {
         try {
-            getDFAg().delBel( ASSyntax.createLiteral("provider", new Atom(agName), new Atom(service)));
-        } catch (RevisionFailedException e) {
+            if (dfAgExists())
+                getDFAg().delBel( ASSyntax.createLiteral("provider", new Atom(agName), new Atom(service)));
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -201,7 +199,7 @@ public abstract class BaseCentralisedMAS extends NotificationBroadcasterSupport 
             // sends it all current providers
             for (String a: dfSearch(service))
                 sendProvider(agName,a,service);
-        } catch (RevisionFailedException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -217,18 +215,22 @@ public abstract class BaseCentralisedMAS extends NotificationBroadcasterSupport 
 
     public Map<String, Set<String>> getDF() {
         Map<String, Set<String>> a = new HashMap<>();
-
-        Iterator<Literal> ibb = getDFAg().getBB().getCandidateBeliefs(new PredicateIndicator("provider", 2));
-        if (ibb != null) {
-            while (ibb.hasNext()) {
-                Literal p = ibb.next();
-                String ag = p.getTerm(0).toString();
-                Set<String> services = a.computeIfAbsent(ag, k -> new HashSet<>());
-                services.add(p.getTerm(1).toString());
-                a.put(ag, services);
+        if (dfAgExists()) {
+            try {
+                Iterator<Literal> ibb = getDFAg().getBB().getCandidateBeliefs(new PredicateIndicator("provider", 2));
+                if (ibb != null) {
+                    while (ibb.hasNext()) {
+                        Literal p = ibb.next();
+                        String ag = p.getTerm(0).toString();
+                        Set<String> services = a.computeIfAbsent(ag, k -> new HashSet<>());
+                        services.add(p.getTerm(1).toString());
+                        a.put(ag, services);
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
-
         return a;
     }
 }

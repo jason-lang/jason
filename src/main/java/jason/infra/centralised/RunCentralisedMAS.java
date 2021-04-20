@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
@@ -67,6 +68,8 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
 
     private JButton  btDebug;
     protected boolean  isRunning = false;
+
+    protected List<CentralisedAgArch> createdAgents = new ArrayList<>();
 
     public RunCentralisedMAS() {
         super();
@@ -236,9 +239,9 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
 
     /** start agents, .... */
     protected void start() {
+        isRunning = true;
         startAgs();
         startSyncMode();
-        isRunning = true;
     }
 
     public boolean isRunning() {
@@ -538,6 +541,7 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
                         agArch.createArchs(ap.getAgArchClasses(), ap.agClass.getClassName(), ap.getBBClass(), ap.getSource().toString(), ap.getAsSetts(debug, project.getControlClass() != null));
                     }
                     addAg(agArch);
+                    createdAgents.add(agArch); // used latter to start
 
                     pag = agArch.getTS().getAg();
                 }
@@ -592,7 +596,7 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
             //logger.info("Creating a threaded agents." + "Cycles: " + cyclesSense + ", " + cyclesDeliberate + ", " + cyclesAct);
         }
 
-        for (CentralisedAgArch ag : ags.values()) {
+        for (CentralisedAgArch ag : createdAgents) { //  ags.values()) { <<< removed, since agent can be created meanwhile and re-started here
             ag.setControlInfraTier(control);
 
             // if the agent hasn't override the values for cycles, use the platform values
@@ -601,13 +605,13 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
             if (ag.getCyclesAct() == -1)              ag.setCyclesAct(cyclesAct);
 
             // create the agent thread
-            Thread agThread = new Thread(ag);
-            ag.setThread(agThread);
+            if (ag.getThread() == null)
+                ag.setThread(new Thread(ag));
         }
 
         //logger.info("Creating threaded agents. Cycles: " + agTemp.getCyclesSense() + ", " + agTemp.getCyclesDeliberate() + ", " + agTemp.getCyclesAct());
 
-        for (CentralisedAgArch ag : ags.values()) {
+        for (CentralisedAgArch ag : createdAgents) {
             ag.startThread();
         }
     }
@@ -693,7 +697,7 @@ public class RunCentralisedMAS extends BaseCentralisedMAS implements RunCentrali
         }
 
         // initially, add all agents in the tasks
-        for (CentralisedAgArch ag : ags.values()) {
+        for (CentralisedAgArch ag : createdAgents) { //  ags.values()) { <<< removed, since agent can be created meanwhile and re-started here
             if (ag.getCycles() == -1)           ag.setCycles(cycles);
             if (ag.getCyclesSense() == -1)      ag.setCyclesSense(cyclesSense);
             if (ag.getCyclesDeliberate() == -1) ag.setCyclesDeliberate(cyclesDeliberate);

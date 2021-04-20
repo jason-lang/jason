@@ -91,11 +91,11 @@ public class CentralisedRuntimeServices extends BaseRuntimeServices {
 
     @Override
     public void startAgent(String agName) {
+        // TODO: implement the proper start in case of using pool of threads
         // create the agent thread
         CentralisedAgArch agArch = masRunner.getAg(agName);
-        Thread agThread = new Thread(agArch);
-        agArch.setThread(agThread);
-        agThread.start();
+        agArch.setThread(new Thread(agArch));
+        agArch.startThread();
     }
 
     @Override
