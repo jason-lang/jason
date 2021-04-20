@@ -5,7 +5,7 @@ ifdef::env-github[:outfilesuffix: .adoc]
 
 == version 3.0
 
-- This version major contribution is the inclusion of Jason(ER), see papers https://link.springer.com/chapter/10.1007%2F978-3-030-25693-7_3[AgentSpeak(ER): Enhanced Encapsulation in Agent Plans] and http://lamas20.ipipan.waw.pl/assets/proceedings/paper-12.pdf[Encapsulating Reactive Behaviour in Goal-based Plans for Programming BDI Agents].
+- The major contribution of this version is the inclusion of Jason(ER), see papers https://link.springer.com/chapter/10.1007%2F978-3-030-25693-7_3[AgentSpeak(ER): Enhanced Encapsulation in Agent Plans] and http://lamas20.ipipan.waw.pl/assets/proceedings/paper-12.pdf[Encapsulating Reactive Behaviour in Goal-based Plans for Programming BDI Agents].
   * improved encapsulation (sub-plans)
   * goal condition (to be dropped)
   * see examples/contract-net-protocol-er for an example
