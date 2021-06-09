@@ -880,6 +880,14 @@ public class TransitionSystem implements Serializable {
             // translate var into appropriate body
             if (bTerm.isInternalAction())
                 h = new PlanBodyImpl(BodyType.internalAction, bTerm);
+
+            if (! (bTerm instanceof Literal) && h.getBodyType() != BodyType.constraint && h.getBodyType() != BodyType.test) {
+                // var is not literal, so can not be used for most of the deeds
+                String msg = h.getSrcInfo()+": "+ "Variable '"+h.getBodyTerm()+"' must be a Literal and not '"+bTerm+"' to be used in '"+h+"'.";
+                if (!generateGoalDeletion(curInt, JasonException.createBasicErrorAnnots("body_var_not_literal", msg), null))
+                    logger.log(Level.SEVERE, msg);
+                return;
+            }
         }
 
         if (bTerm.isPlanBody()) {
