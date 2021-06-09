@@ -1,6 +1,6 @@
 /* A* implementation */
 
-{ register_function("search.h",2,"h") }
+{ register_function("search.h",2,"h") } // register the predicate h/3 as a function search.h(state s, goal g) = heuristic of s (for g)
 
 a_star( InitialState, Goal, Solution, Cost) :-
   .set.add_all(Closed,[InitialState]) &
@@ -9,9 +9,11 @@ a_star( InitialState, Goal, Solution, Cost) :-
   a_star_l( Open, Goal, s(_,Cost,SolutionR), Closed) &
   .reverse(SolutionR,Solution).
 
+// goal found in the first state of the open queue, stop searching
 a_star_l( Open, GoalState, s(F,G,[op(Op,GoalState)|Path]), Closed) :-
     .queue.head(Open,s(F,G,[op(Op,GoalState)|Path])).
 
+// first state in open queue is not a goal, explore it
 a_star_l( Open, GoalState, Solution, Closed) :-
     .queue.remove(Open,s(F,G,[op(Op,State)|Path])) &
     //.print("exploring ",State," to be explored ", .length(Open)) &

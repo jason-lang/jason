@@ -10,7 +10,8 @@
       .print("solution A* =", Solution, " with ",Cost," liters of water.");
    .
 
-/* The following two rules are domain dependent and have to be redefined accordingly */
+/* The following two rules (suc/4 and h3) are domain dependent
+   and have to be redefined for this problem */
 
 // sucessor definition: suc(CurrentState,NewState,Cost,Operation)
 suc([J4,J3],[4,J3],4,fill4j). // cost is based on spent water
@@ -26,7 +27,7 @@ suc([J4,J3],[NJ4,NJ3],0,pour3to4) :-
     V = math.min(4-J4,J3) &
     NJ4 = J4 + V & NJ3 = J3 - V.
 
-// heutistic definition: h(CurrentState,Goal,H)
+// heuristic definition: h(CurrentState,Goal,H)
 h(State,Goal,0). // no heuristic indeed!
 
 { include("a_star.asl") }
