@@ -1,0 +1,23 @@
+/**
+ * This is a mas2j project to be launched from a jason project
+ * It includes some extra aslSourcePath which is expected to find asl files
+ */
+
+MAS tdd {
+
+    infrastructure: Centralised
+
+    agents:
+        test_manager [
+            goals="create_tester_agents(\"./src/test/jason\",\".*.asl\")",
+            beliefs="shutdown_delay(600)"
+        ];
+
+    aslSourcePath:  "src/test/jason/inc";
+                    "src/test/jason/asl";
+                    "src/asl";
+                    "src/agt";
+                    "inc";
+                    "$jasonJar/test/jason/inc";
+}
+
