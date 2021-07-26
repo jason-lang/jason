@@ -108,9 +108,8 @@ in this case).
 === Execution
 
 * Create a new project (you can use either
-http://jason.sourceforge.net/mini-tutorial/getting-started/[Jason jEdit],
-http://jason.sourceforge.net/mini-tutorial/eclipse-plugin/[Jason Eclipse],  http://jacamo.sourceforge.net/doc/install.html#_eclipse_plugin[JaCaMo Eclipse], or  http://jacamo.sourceforge.net/doc/install.html#_shell_command[JaCaMo shell based commands] to create and run the programs of this tutorial).
-* Create agent Bob with the source code above. The project should
+http://jason.sourceforge.net/mini-tutorial/getting-started/[Jason jEdit], http://jason.sourceforge.net/mini-tutorial/eclipse-plugin/[Jason Eclipse],  http://jacamo.sourceforge.net/doc/install.html#_eclipse_plugin[JaCaMo Eclipse], or  http://jacamo.sourceforge.net/doc/install.html#_gradle[*JaCaMo gradle commands*] to create and run the programs of this tutorial).
+* Create agent Bob with the source code above (file `bob.asl`). The project should
 look like:
 +
 [cols="2",frame=topbot]
@@ -123,6 +122,7 @@ a|
 MAS bdi_hw {
 
     agents: bob;
+    // file bob.asl at project directory
 
 }
 ----------------
@@ -133,6 +133,7 @@ a|
 mas bdi_hw {
 
     agent bob
+    // file bob.asl at src/agt under the project directory
 
 }
 ----------------
@@ -140,6 +141,20 @@ mas bdi_hw {
 |===
 
 * Run the project.
+
+=== Exercises A
+
+1. Add a new goal for Bob: `say(bonjour)`.
+2. Add the following beliefs for Bob:
++
+[source,jasonagent]
+----------------
+msg(en,"Hello").
+msg(fr,"Bonjour").
+msg(pt,"Ola").
+----------------
+and change the plan for the goal `say` so that the argument is the language and the message is based on the above beliefs. For instance the goal `!say(fr)` prints out `Bonjour`.
+
 
 == Bob (the believer)
 
@@ -173,8 +188,8 @@ where the programmer defines a sequence of operations, in Jason the
 programmer _declares_ plans and the order of execution depends on the
 order of the events that take place on a particular environment.
 
-To interact with Bob, we will create another agent at runtime and inform
-them about some facts.
+To interact with Bob, we will create another agent at runtime that informs him
+about new facts.
 
 1.  Run the project.
 2.  In the MAS Console, click on the button "New REPL agent" and fill
@@ -203,7 +218,7 @@ consider only those beliefs that come from trustable sources:
 ---------------------------------------------------------------
 sincere(alice).
 
-+happy(bob)[source(A)] : sincere(A) <- !say(hello).
++happy(bob)[source(A)] : sincere(A) <- !say(hello(A)).
 
 +!say(X) : not today(monday) <- .print(X); .wait(500); !say(X).
 ---------------------------------------------------------------
@@ -216,10 +231,19 @@ of the `sincere` belief should be Bob itself (and not another agent):
 -----------------------------------------------------------------
 sincere(alice).
 
-+happy(bob)[source(A)] : sincere(A)[source(self)] <- !say(hello).
++happy(bob)[source(A)] : sincere(A)[source(self)] <- !say(hello(A)).
 
 +!say(X) : not today(monday) <- .print(X); .wait(500); !say(X).
 -----------------------------------------------------------------
+
+=== Exercises B
+
+Using the REPL interface, create a third agent called `marcos` that runs `.send(bob,tell,happy(bob))`.
+
+1. How is the belief base of Bob?
+2. How many intentions Bob has? Why?
+3. Add the belief `sincere(marcos)` for Bob and run the exercises 1 and 2 again.
+4. Create a fourth agent, called `john` that runs `.send(bob,achieve,say(kkk))`. What can you infer from the `achieve` performative used in this message?
 
 === Perception
 
@@ -295,6 +319,10 @@ Bob's belief base and intentions. For example, if you change the day to
 Monday, the intention will finish. In this case, the intention finishes
 with failure, since the agent has a desire without a suitable plan.
 
+=== Exercises C
+
+1. Change the Bob's program so that no failure is produced on Mondays, but a proper message is printed.
+
 == Bob (the vigilant)
 
 The following program for Bob includes alternative plans for the events
@@ -303,9 +331,6 @@ The following program for Bob includes alternative plans for the events
 [source,jasonagent]
 -----
 sincere(alice).
-
-!create_calendar.
-+!create_calendar <- makeArtifact("c","Calendar",[],AId); focus(AId).
 
 +happy(H)[source(A)] : sincere(A)[source(self)] & .my_name(H) <- !say(hello(A)).
 +happy(H)            : not .my_name(H)                        <- !say(i_envy(H)).
@@ -327,11 +352,11 @@ internal action). The second plan is used otherwise. The first plan for
 `+!say(X)` is used on Fridays and the second on days other than Monday.
 (Notice that there is a plan for Mondays that does not actually say anything
 but just keeps the intention alive. Without it Bob would find no plan for
-`say(X)` on Monday and the intention for `say(X)` would not be re-added. Thus, Bob
+`say(X)` on Monday and the goal for `say(X)` would not be re-added. Thus, Bob
 would remain mute thereafter.)
 
 Instead of using REPL, we will add a new agent, called Alice, to run
-this system:
+this system. The program for Alice is bellow (in a file named `alice.asl`).
 
 [source,jasonagent]
 -------------------------------------
@@ -344,7 +369,45 @@ this system:
       .send(bob,tell,happy(morgana)).
 -------------------------------------
 
-It is important to notice how many intentions Bob has:
+The project file has to be updated:
+[cols="2",frame=topbot]
+|===
+|Jason .mas2j project|JaCaMo .jcm project
+
+a|
+[source,jasonproject]
+--------------------------
+MAS bdi_hw {
+
+  environment: jaca.CartagoEnvironment
+
+  agents:
+     bob agentArchClass jaca.CAgentArch;
+
+     alice; // new agent
+}
+--------------------------
+
+a|
+[source,jacamoproject]
+--------------------------
+mas bdi_hw {
+
+   agent bob
+
+   agent alice // new agent
+
+   workspace world {
+      artifact cal: Calendar {
+         focused-by: bob
+      }
+   }
+}
+--------------------------
+|===
+
+
+When running this new application, we can notice how many intentions Bob has now:
 
 image:./screens/mind-2.png[image]
 
@@ -373,7 +436,13 @@ To really stress Bob, we can change Alice's program as follows:
 At this point of the tutorial, you could try to imagine how to program
 this application using conventional languages like Java and C. Even
 actor-based languages, which are also oriented to events and great tools
-for concurrency, will not be so reactive as Jason.
+for concurrency, may not be as simple as Jason.
+
+=== Exercises D
+
+1. Add the agent Carlos from previous exercise in the project.
+2. Write a plan for Bob so that as soon as it realises that someone is happy, he shares this information with Carlos.
+3. What happens in the application when Carlos executes `.send(bob,tell,happy(thales))`?
 
 == Bob (the revisionist)
 
@@ -408,6 +477,11 @@ We can test this with the following program for Alice:
 The `untell` message removes the corresponding belief in the receiver
 (only for the belief with that same source, of course).
 
+=== Exercises E
+
+1. Write a new plan for Bob so that on Saturdays he drops all his intentions. The internal action http://jason.sourceforge.net/api/jason/stdlib/drop_all_intentions.html[`.drop_all_intentions`] may help for that.
+2. Write a plan for Bob so that as soon as it realises that someone is happy, he shares this information with Carlos *only* if Bob intends to `say(hello(carlos))`. The internal action http://jason.sourceforge.net/api/jason/stdlib/intend.html[`.intend`] may help for that.
+
 == Bob (the lazy -- finally)
 
 This last code for Bob implements the following:
@@ -420,9 +494,6 @@ be suspended.
 [source,jasonagent]
 -----
 sincere(alice).
-
-!create_calendar.
-+!create_calendar <- makeArtifact("c","Calendar",[],AId); focus(AId).
 
 +happy(H)[source(A)] : sincere(A)[source(self)] & .my_name(H) <- !say(hello(A)).
 +happy(H)            : not .my_name(H)                        <- !say(i_envy(H)).
