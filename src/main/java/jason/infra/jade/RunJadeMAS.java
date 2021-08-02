@@ -28,10 +28,12 @@ import jason.asSyntax.StringTerm;
 import jason.asSyntax.directives.DirectiveProcessor;
 import jason.asSyntax.directives.Include;
 import jason.control.ExecutionControlGUI;
+import jason.infra.centralised.CentralisedRuntimeServices;
 import jason.infra.centralised.RunCentralisedMAS;
 import jason.mas2j.AgentParameters;
 import jason.mas2j.ClassParameters;
 import jason.runtime.MASConsoleGUI;
+import jason.runtime.RuntimeServicesFactory;
 import jason.util.Config;
 
 
@@ -69,8 +71,6 @@ public class RunJadeMAS extends RunCentralisedMAS {
         r.finish();
     }
 
-
-
     public int init(String[] args) {
         // test if a container is informed
         for (int i=1; i<args.length; i++) {
@@ -84,6 +84,7 @@ public class RunJadeMAS extends RunCentralisedMAS {
 
     public void create() throws JasonException {
         if (startContainer()) {
+            RuntimeServicesFactory.set( new JadeRuntimeServices(cc,null) );
             if (profile.getBooleanProperty(Profile.MAIN, true)) {
                 createEnvironment();
                 createController();
