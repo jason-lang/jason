@@ -107,8 +107,9 @@ in this case).
 
 === Execution
 
-* Create a new project (you can use either
-http://jason.sourceforge.net/mini-tutorial/getting-started/[Jason jEdit], http://jason.sourceforge.net/mini-tutorial/eclipse-plugin/[Jason Eclipse],  http://jacamo.sourceforge.net/doc/install.html#_eclipse_plugin[JaCaMo Eclipse], or  http://jacamo.sourceforge.net/doc/install.html#_gradle[*JaCaMo gradle commands*] to create and run the programs of this tutorial).
+* Create a new project: you can link:./hello-bdi-code.zip[download] and initial JaCaMo project;
+  or use
+http://jason.sourceforge.net/mini-tutorial/getting-started/[Jason jEdit], http://jason.sourceforge.net/mini-tutorial/eclipse-plugin/[Jason Eclipse],  http://jacamo.sourceforge.net/doc/install.html#_eclipse_plugin[JaCaMo Eclipse], or  http://jacamo.sourceforge.net/doc/install.html#_gradle[*JaCaMo gradle commands*] to create and run the programs of this tutorial.
 * Create agent Bob with the source code above (file `bob.asl`). The project should
 look like:
 +
@@ -140,7 +141,7 @@ mas bdi_hw {
 
 |===
 
-* Run the project.
+* Run the project. In the case of JaCaMo, run the script `./gradlew`.
 
 === Exercises A
 
