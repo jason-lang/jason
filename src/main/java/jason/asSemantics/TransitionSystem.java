@@ -51,6 +51,7 @@ import jason.stdlib.desire;
 import jason.stdlib.fail_goal;
 import jason.stdlib.succeed_goal;
 import jason.util.Config;
+import jason.util.RunnableSerializable;
 
 
 public class TransitionSystem implements Serializable {
@@ -78,7 +79,7 @@ public class TransitionSystem implements Serializable {
 
     private List<GoalListener>  goalListeners = null;
 
-    private Queue<Runnable> taskForBeginOfCycle = new ConcurrentLinkedQueue<>();
+    private Queue<RunnableSerializable> taskForBeginOfCycle = new ConcurrentLinkedQueue<>();
 
     public TransitionSystem(Agent a, Circumstance c, Settings s, AgArch ar) {
         ag     = a;
@@ -1589,7 +1590,7 @@ public class TransitionSystem implements Serializable {
      * Schedule a task to be executed in the begin of the next reasoning cycle.
      * It is used mostly to change the C only by the TS thread (e.g. by .wait)
      */
-    public void runAtBeginOfNextCycle(Runnable r) {
+    public void runAtBeginOfNextCycle(RunnableSerializable r) {
         taskForBeginOfCycle.offer(r);
         getAgArch().wake();
     }

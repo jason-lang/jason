@@ -217,7 +217,7 @@ public class wait extends DefaultInternalAction {
             c.removeEventListener(this);
 
             // invoke changes in C latter, so to avoid concurrent changes in C
-            ts.runAtBeginOfNextCycle((Runnable & Serializable) () -> {
+            ts.runAtBeginOfNextCycle(() -> {
                     try {
                         // add SI again in C.I if (1) it was not removed (2) is is not running (by some other reason) -- but this test does not apply to atomic intentions --, and (3) this wait was not dropped
                         if (c.removePendingIntention(tEvt) == si && (si.isAtomic() || !c.hasRunningIntention(si)) && !dropped) {

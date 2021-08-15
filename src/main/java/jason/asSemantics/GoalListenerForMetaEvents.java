@@ -57,8 +57,7 @@ public class GoalListenerForMetaEvents implements GoalListener {
     }
 
     private void generateGoalStateEvent(final Literal goal, final TEType type, final GoalStates state, final Term reason) {
-        ts.runAtBeginOfNextCycle(new Runnable() {
-            public void run() {
+        ts.runAtBeginOfNextCycle(() -> {
                 Literal newGoal = goal.forceFullLiteralImpl().copy();
                 Literal stateAnnot = ASSyntax.createLiteral("state", new Atom(state.toString()));
                 stateAnnot.addAnnot( ASSyntax.createStructure("reason", (reason == null ? new StringTermImpl("") : reason)));
@@ -67,7 +66,6 @@ public class GoalListenerForMetaEvents implements GoalListener {
                 if (ts.getAg().getPL().hasCandidatePlan(eEnd))
                     ts.getC().insertMetaEvent(new Event(eEnd, null));
 
-            }
         });
         ts.getAgArch().wakeUpDeliberate();
     }

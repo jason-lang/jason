@@ -128,8 +128,7 @@ public abstract class ConcurrentInternalAction implements InternalAction {
 
     synchronized public static void resume(final TransitionSystem ts, final String intentionKey, final boolean abort, final List<Term> failAnnots) {
         // invoke changes in C latter, so to avoid concurrent changes in C
-        ts.runAtBeginOfNextCycle(new Runnable() {
-            public void run() {
+        ts.runAtBeginOfNextCycle(() -> {
                 Circumstance C = ts.getC();
                 Intention pi = C.removePendingIntention(intentionKey);
                 if (pi != null) {
@@ -147,7 +146,6 @@ public abstract class ConcurrentInternalAction implements InternalAction {
                         ts.getLogger().log(Level.SEVERE, "Error resuming intention", e);
                     }
                 }
-            }
         });
         ts.getAgArch().wakeUpDeliberate();
     }
