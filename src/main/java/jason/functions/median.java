@@ -39,20 +39,17 @@ public class median extends DefaultArithFunction  {
             List<Term> l = ((ListTerm) args[0]).getAsList();
 
             for (Term t: l)
-                if (!t.isNumeric()) {
+                if (!t.isNumeric())
                     throw new JasonException(getName()+" needs '"+args[0]+"' made of numeric elements.");
-                }
+
+            if (l.size() == 0)
+                throw new JasonException(getName()+" could not define a median for the empty set '"+args[0]+"'.");
 
             Collections.sort(l);
-
-            if (l.size() > 0) {
-                if (l.size() % 2 == 0) { // if it is a even number
-                    return (((NumberTerm) l.get(l.size() / 2 - 1)).solve() + ((NumberTerm) l.get(l.size() / 2)).solve()) / 2;
-                } else {
-                    return ((NumberTerm) l.get((int) l.size() / 2)).solve();
-                }
+            if (l.size() % 2 == 0) { // if it is a even number
+                return (((NumberTerm) l.get(l.size() / 2 - 1)).solve() + ((NumberTerm) l.get(l.size() / 2)).solve()) / 2;
             } else {
-                throw new JasonException(getName()+" could not define a median for the empty set '"+args[0]+"'.");
+                return ((NumberTerm) l.get((int) l.size() / 2)).solve();
             }
         }
         throw new JasonException(getName()+" is not implemented for type '"+args[0]+"'.");

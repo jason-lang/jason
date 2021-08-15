@@ -33,11 +33,13 @@ public class mean extends DefaultArithFunction  {
         if (args[0].isList()) {
             double sum = 0;
             int    n = 0;
-            for (Term t: (ListTerm)args[0])
+            for (Term t: (ListTerm) args[0])
                 if (t.isNumeric()) {
                     sum += ((NumberTerm)t).solve();
                     n++;
                 }
+            if (n == 0)
+                throw new JasonException(getName()+" could not define a median for the empty set '"+args[0]+"'.");
             return sum  / n;
         }
         throw new JasonException(getName()+" is not implemented for type '"+args[0]+"'.");

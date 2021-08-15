@@ -94,7 +94,7 @@ public class ArithFunctionTerm extends Structure implements NumberTerm {
                 } catch (NoValueException e) {
                     // ignore and return this;
                 } catch (Exception e) {
-                    logger.log(Level.SEVERE, getErrorMsg()+ " -- error in evaluate!", e);
+                    logger.log(Level.SEVERE, getErrorMsg()+ " -- "+e.getMessage()+" -- error while evaluating function, unifier = "+u);
                 }
                 //} else {
                 //    logger.warning(getErrorMsg()+ " -- this function has unground arguments and can not be evaluated! Unifier is "+u);
@@ -118,7 +118,7 @@ public class ArithFunctionTerm extends Structure implements NumberTerm {
 
     @Override
     public Iterator<Unifier> logicalConsequence(Agent ag, Unifier un)  {
-        logger.log(Level.WARNING, "Arithmetic term cannot be used for logical consequence!", new Exception());
+        logger.log(Level.WARNING, "Arithmetic term cannot be used for logical consequence! "+getErrorMsg());
         return LogExpr.EMPTY_UNIF_LIST.iterator();
     }
 
