@@ -9,12 +9,11 @@ apply plugin: 'java'
 
 repositories {
     mavenCentral()
-    maven { url "http://jacamo.sourceforge.net/maven2" }
-    maven { url "https://jade.tilab.com/maven/" }
+    maven { url "https://raw.github.com/jacamo-lang/mvn-repo/master" }
 }
 
 dependencies {
-    compile group: 'org.jason-lang', name: 'jason', version: '2.5-SNAPSHOT'
+    compile group: 'org.jason', name: 'jason', version: '3.0-SNAPSHOT'
 }
 
 task run (type: JavaExec, dependsOn: 'classes') {

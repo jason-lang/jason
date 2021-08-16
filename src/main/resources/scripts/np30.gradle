@@ -1,7 +1,6 @@
-
 /*
    Gradle build file to create new Jason Applications
-   based on Jason 2.6
+   based on Jason 3.0
 */
 
 defaultTasks 'run'
@@ -11,11 +10,10 @@ apply plugin: 'java'
 repositories {
     mavenCentral()
     maven { url "https://raw.github.com/jacamo-lang/mvn-repo/master" }
-    //maven { url "https://jade.tilab.com/maven/" }
 }
 
 dependencies {
-    compile group: 'org.jason', name: 'jason', version: '2.6.3'
+    compile group: 'org.jason', name: 'jason', version: '3.0-SNAPSHOT'
 }
 
 task run (type: JavaExec, dependsOn: 'classes') {

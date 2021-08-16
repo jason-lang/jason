@@ -8,7 +8,7 @@ Requirements:
 - Java >= 8
 - Gradle
 
-You have to install https://gradle.org[Gradle] on your computer and then run the following commands to create a new application (the first time you run them, it takes a while to finish since it downloads Jason first):
+You have to install https://gradle.org[Gradle] on your computer and then run the following commands to create a new application (the first time you run, it takes a while to finish since it downloads Jason):
 -----
 curl -s -O http://jason.sourceforge.net/np/np30.gradle
 gradle -b np30.gradle --console=plain

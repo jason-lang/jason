@@ -1,6 +1,6 @@
 /*
    Gradle build file to create new Jason Applications
-   based on Jason SNAPSHOT version
+   based on Jason 2.4
 */
 
 defaultTasks 'run'
