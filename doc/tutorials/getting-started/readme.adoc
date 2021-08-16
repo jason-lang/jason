@@ -65,7 +65,7 @@ image:./figures/JasonEx-CR-ss1.png[align:center]
 image:./figures/screen-mars.png[]
 +
 The project file defines the underlying infrastructure that has been
-  chosen for that project (Centralised, Jade, ...), the Java
+  chosen for that project (Local, Jade, ...), the Java
   class that implements the environment (MarsEnv), and the agents that
   belong to this application (agent `r1` searches for pieces of garbage and
   `r2` incinerates them).

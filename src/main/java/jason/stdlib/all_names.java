@@ -14,7 +14,7 @@ import jason.runtime.RuntimeServicesFactory;
 
   <p>Description: get the names of all agents in the system.
   This identification is given by the runtime
-  infrastructure of the system (centralised, saci, jade, ...)
+  infrastructure of the system (local, saci, jade, ...)
 
   <p>Parameters:<ul>
   <li>+/- names (list): this argument unifies with a list of all agents in the system.<br/>

@@ -1,6 +1,6 @@
-package jason.infra.centralised;
+package jason.infra.local;
 
-public interface RunCentralisedMASMBean {
+public interface RunLocalMASMBean {
     public int     getNbAgents();
     public boolean killAg(String agName);
     public void    finish(int deadline, boolean stopJVM, int exitValue);

@@ -22,7 +22,7 @@ import jason.asSyntax.Term;
 import jason.asSyntax.Trigger;
 import jason.asSyntax.Trigger.TEOperator;
 import jason.asSyntax.Trigger.TEType;
-import jason.infra.centralised.CentralisedAgArch;
+import jason.infra.local.LocalAgArch;
 import jason.util.ToDOM;
 
 public class Circumstance implements Serializable, ToDOM {
@@ -944,7 +944,7 @@ public class Circumstance implements Serializable, ToDOM {
         }
         if (ts != null) {
             try {
-                for (Message m: ((CentralisedAgArch)ts.getAgArch()).getMBox()) {
+                for (Message m: ((LocalAgArch)ts.getAgArch()).getMBox()) {
                     add = true;
                     e = (Element) document.createElement("message");
                     e.appendChild(document.createTextNode(m.toString() + " in arch inbox."));

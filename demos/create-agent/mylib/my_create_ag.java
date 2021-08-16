@@ -16,8 +16,8 @@ public class my_create_ag extends DefaultInternalAction {
         s.addOption(Settings.INIT_BELS, "b(10),b(20)");
         s.addOption(Settings.INIT_GOALS, "a");
 
-        // RuntimeServices provides services to create agents in the current platform (Centralised, JADE, JaCaMo, ...)
-        RuntimeServices rs = ts.getUserAgArch().getRuntimeServices();
+        // RuntimeServices provides services to create agents in the current platform (Local, JADE, JaCaMo, ...)
+        RuntimeServices rs = RuntimeServicesFactory.get();
         String name = "anotherBob";
         name = rs.createAgent(name, "bob.asl", null, null, null, s, ts.getAg());
         rs.startAgent(name);

@@ -25,5 +25,5 @@
   <jar href="<PROJECT-ID>.jar" />
 <OTHER-JARS>
 </resources>
-<application-desc main-class="jason.infra.centralised.RunCentralisedMAS" />
+<application-desc main-class="jason.infra.local.RunLocalMAS" />
 </jnlp>

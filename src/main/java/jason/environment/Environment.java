@@ -39,7 +39,7 @@ public class Environment {
 
     private boolean isRunning = true;
 
-    /** the infrastructure tier for environment (Centralised, Saci, ...) */
+    /** the infrastructure tier for environment (Local, Jade, ...) */
     private EnvironmentInfraTier environmentInfraTier = null;
 
     // set of agents that already received the last version of perception
@@ -85,7 +85,7 @@ public class Environment {
     }
 
     /**
-     * Sets the infrastructure tier of the environment (saci, jade, centralised, ...)
+     * Sets the infrastructure tier of the environment (saci, jade, local, ...)
      */
     public void setEnvironmentInfraTier(EnvironmentInfraTier je) {
         environmentInfraTier = je;

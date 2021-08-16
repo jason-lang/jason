@@ -1,11 +1,11 @@
 package jason.infra.components;
 
-import jason.infra.centralised.CentralisedAgArchAsynchronous;
+import jason.infra.local.LocalAgArchAsynchronous;
 
 public class SenseComponent extends AgentComponent {
 
-    public SenseComponent(CentralisedAgArchAsynchronous centralisedAgArchAsynchronous) {
-        super(centralisedAgArchAsynchronous);
+    public SenseComponent(LocalAgArchAsynchronous arch) {
+        super(arch);
     }
 
     public boolean canSleep() {

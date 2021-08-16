@@ -20,7 +20,6 @@ project file (see the end of this file).
 */
 
 MAS directive_demo {
-    infrastructure: Centralised
     environment: myp.Env
     agents:
         a;

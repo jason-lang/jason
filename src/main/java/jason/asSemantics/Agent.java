@@ -149,7 +149,9 @@ public class Agent implements Serializable, ToDOM {
         if (! "false".equals(Config.get().getProperty(Config.START_WEB_MI))) MindInspectorWeb.get().registerAg(this);
     }
 
-    /** parse and load the agent code, asSrc may be null */
+    /** parse and load the agent code, asSrc may be null
+     * @deprecated use initAg() and load(src)
+     */
     @Deprecated
     public void initAg(String asSrc) throws Exception {
         initAg();

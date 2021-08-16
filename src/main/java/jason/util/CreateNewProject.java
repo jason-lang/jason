@@ -102,10 +102,10 @@ public class CreateNewProject {
             while (l != null) {
                 l = l.replace("<PROJECT_NAME>", id);
                 l = l.replace("<PLATFORM>", "");
-                l = l.replace("<INFRA>", "Centralised");
+                l = l.replace("<INFRA>", "Local");
                 l = l.replace("<VERSION>", Config.get().getJasonVersion());
                 l = l.replace("<DATE>", new SimpleDateFormat("MMMM dd, yyyy - HH:mm:ss").format(new Date()));
-                l = l.replace("<PROJECT-RUNNER-CLASS>", jason.infra.centralised.RunCentralisedMAS.class.getName());
+                l = l.replace("<PROJECT-RUNNER-CLASS>", jason.infra.local.RunLocalMAS.class.getName());
                 l = l.replace("<PROJECT-FILE>", id+".mas2j");
 
                 l = l.replace("agents:", "agents: sample_agent;");

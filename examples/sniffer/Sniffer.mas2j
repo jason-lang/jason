@@ -9,10 +9,10 @@ working as a Sniffer (see comm/Sniffer*.java)
 
 MAS sniffer {
 
-    infrastructure: Centralised
+    infrastructure: Local
 
     agents:
-       // Monitor for Centralised infrastructure,
+       // Monitor for local infrastructure,
        //
        // the architecture gets all exchanged messages and add them as beliefs
        // the customised belief base store these beliefs (i.e., the messages) in a data base
@@ -31,4 +31,3 @@ MAS sniffer {
 
     classpath: "../../demos/persistent-belief-base/lib/hsqldb.jar";
 }
-

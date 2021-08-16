@@ -1,4 +1,4 @@
-package jason.infra.centralised;
+package jason.infra.local;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -13,18 +13,18 @@ import jason.runtime.RuntimeServices;
 
 
 /**
- * This class implements the centralised version of the environment infrastructure tier.
+ * This class implements the Local version of the environment infrastructure tier.
  */
-public class CentralisedEnvironment implements EnvironmentInfraTier {
+public class LocalEnvironment implements EnvironmentInfraTier {
 
     /** the user customisation class for the environment */
     private Environment userEnv;
-    private BaseCentralisedMAS masRunner = BaseCentralisedMAS.getRunner();
+    private BaseLocalMAS masRunner = BaseLocalMAS.getRunner();
     private boolean running = true;
 
-    private static Logger logger = Logger.getLogger(CentralisedEnvironment.class.getName());
+    private static Logger logger = Logger.getLogger(LocalEnvironment.class.getName());
 
-    public CentralisedEnvironment(ClassParameters userEnvArgs, BaseCentralisedMAS masRunner) throws JasonException {
+    public LocalEnvironment(ClassParameters userEnvArgs, BaseLocalMAS masRunner) throws JasonException {
         this.masRunner = masRunner;
         if (userEnvArgs != null) {
             try {
@@ -32,7 +32,7 @@ public class CentralisedEnvironment implements EnvironmentInfraTier {
                 userEnv.setEnvironmentInfraTier(this);
                 userEnv.init(userEnvArgs.getParametersArray());
             } catch (Exception e) {
-                logger.log(Level.SEVERE,"Error in Centralised MAS environment creation",e);
+                logger.log(Level.SEVERE,"Error in Local MAS environment creation",e);
                 throw new JasonException("The user environment class instantiation '"+userEnvArgs+"' has failed!"+e.getMessage());
             }
         }
@@ -65,7 +65,7 @@ public class CentralisedEnvironment implements EnvironmentInfraTier {
     public void actionExecuted(String agName, Structure actTerm, boolean success, Object infraData) {
         ActionExec action = (ActionExec)infraData;
         action.setResult(success);
-        CentralisedAgArch ag = masRunner.getAg(agName);
+        LocalAgArch ag = masRunner.getAg(agName);
         if (ag != null) // the agent may was killed
             ag.actionExecuted(action);
     }
@@ -73,15 +73,15 @@ public class CentralisedEnvironment implements EnvironmentInfraTier {
 
     public void informAgsEnvironmentChanged(String... agents) {
         if (agents.length == 0) {
-            for (CentralisedAgArch ag: masRunner.getAgs().values()) {
+            for (LocalAgArch ag: masRunner.getAgs().values()) {
                 ag.getTS().getAgArch().wakeUpSense();
             }
         } else {
             for (String agName: agents) {
-                CentralisedAgArch ag = masRunner.getAg(agName);
+                LocalAgArch ag = masRunner.getAg(agName);
                 if (ag != null) {
-                    if (ag instanceof CentralisedAgArchAsynchronous) {
-                        ((CentralisedAgArchAsynchronous) ag.getTS().getAgArch()).wakeUpSense();
+                    if (ag instanceof LocalAgArchAsynchronous) {
+                        ((LocalAgArchAsynchronous) ag.getTS().getAgArch()).wakeUpSense();
                     } else {
                         ag.wakeUpSense();
                     }
@@ -94,6 +94,6 @@ public class CentralisedEnvironment implements EnvironmentInfraTier {
     }
 
     public RuntimeServices getRuntimeServices() {
-        return new CentralisedRuntimeServices(masRunner);
+        return new LocalRuntimeServices(masRunner);
     }
 }

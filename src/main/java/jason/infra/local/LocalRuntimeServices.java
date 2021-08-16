@@ -1,4 +1,4 @@
-package jason.infra.centralised;
+package jason.infra.local;
 
 import java.util.Collection;
 import java.util.logging.Level;
@@ -16,12 +16,12 @@ import jason.runtime.RuntimeServicesFactory;
 import jason.runtime.Settings;
 import jason.runtime.SourcePath;
 
-/** This class implements the centralised version of the runtime services. */
-public class CentralisedRuntimeServices extends BaseRuntimeServices {
+/** This class implements the Local version of the runtime services. */
+public class LocalRuntimeServices extends BaseRuntimeServices {
 
-    private static Logger logger = Logger.getLogger(CentralisedRuntimeServices.class.getName());
+    private static Logger logger = Logger.getLogger(LocalRuntimeServices.class.getName());
 
-    public CentralisedRuntimeServices(BaseCentralisedMAS masRunner) {
+    public LocalRuntimeServices(BaseLocalMAS masRunner) {
         super(masRunner);
     }
 
@@ -29,8 +29,8 @@ public class CentralisedRuntimeServices extends BaseRuntimeServices {
         return masRunner.isRunning();
     }
 
-    protected CentralisedAgArch newAgInstance() {
-        return new CentralisedAgArch();
+    protected LocalAgArch newAgInstance() {
+        return new LocalAgArch();
     }
 
     @Override
@@ -39,7 +39,7 @@ public class CentralisedRuntimeServices extends BaseRuntimeServices {
             return "system.not.running";
 
         if (logger.isLoggable(Level.FINE))
-            logger.fine("Creating centralised agent " + agName + " from source " + agSource + " (agClass=" + agClass + ", archClass=" + archClasses + ", settings=" + stts);
+            logger.fine("Creating local agent " + agName + " from source " + agSource + " (agClass=" + agClass + ", archClass=" + archClasses + ", settings=" + stts);
 
         AgentParameters ap = new AgentParameters();
         ap.setAgClass(agClass);
@@ -67,7 +67,7 @@ public class CentralisedRuntimeServices extends BaseRuntimeServices {
         synchronized (logger) { // to avoid problems related to concurrent executions of .create_agent
             agName = getNewAgentName(agName);
 
-            CentralisedAgArch agArch = newAgInstance();
+            LocalAgArch agArch = newAgInstance();
             agArch.setAgName(agName);
             agArch.createArchs(ap.getAgArchClasses(), ap.agClass.getClassName(), ap.getBBClass(), agSource, stts);
             agArch.setEnvInfraTier(masRunner.getEnvironmentInfraTier());
@@ -93,7 +93,7 @@ public class CentralisedRuntimeServices extends BaseRuntimeServices {
     public void startAgent(String agName) {
         // TODO: implement the proper start in case of using pool of threads
         // create the agent thread
-        CentralisedAgArch agArch = masRunner.getAg(agName);
+        LocalAgArch agArch = masRunner.getAg(agName);
         agArch.setThread(new Thread(agArch));
         agArch.startThread();
     }
@@ -101,7 +101,7 @@ public class CentralisedRuntimeServices extends BaseRuntimeServices {
     @Override
     public AgArch clone(Agent source, Collection<String> archClasses, String agName) throws JasonException {
         // create a new infra arch
-        CentralisedAgArch agArch = newAgInstance();
+        LocalAgArch agArch = newAgInstance();
         agArch.setAgName(agName);
         agArch.setEnvInfraTier(masRunner.getEnvironmentInfraTier());
         agArch.setControlInfraTier(masRunner.getControllerInfraTier());
@@ -115,8 +115,8 @@ public class CentralisedRuntimeServices extends BaseRuntimeServices {
 
     @Override
     public boolean killAgent(String agName, String byAg, int deadline) {
-        logger.fine("Killing centralised agent " + agName);
-        CentralisedAgArch ag = masRunner.getAg(agName);
+        logger.fine("Killing local agent " + agName);
+        LocalAgArch ag = masRunner.getAg(agName);
         if (ag != null && ag.getTS().getAg().killAcc(byAg)) {
             new Thread() {
                 public void run() {

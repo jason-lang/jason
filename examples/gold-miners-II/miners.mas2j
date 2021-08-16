@@ -9,8 +9,6 @@
  */
 
 MAS miners {
-    infrastructure: Centralised
-
     environment: env.MiningEnvironment(11, 100, yes, "dummy", "miner", 1000)
         // parameters: 1. environment configuration id (from 1 to 13)
         //                   11 is Fence in 2007 Contest

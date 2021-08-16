@@ -17,8 +17,6 @@
 
 MAS chainBB {
 
-    infrastructure: Centralised
-
     agents:
         bob beliefBaseClass jason.bb.ChainBB(
               jason.bb.TextPersistentBB,

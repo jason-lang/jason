@@ -1,11 +1,11 @@
 package jason.infra.components;
 
-import jason.infra.centralised.CentralisedAgArchAsynchronous;
+import jason.infra.local.LocalAgArchAsynchronous;
 
 public class DeliberateComponent extends AgentComponent {
 
-    public DeliberateComponent(CentralisedAgArchAsynchronous centralisedAgArchAsynchronous) {
-        super(centralisedAgArchAsynchronous);
+    public DeliberateComponent(LocalAgArchAsynchronous arch) {
+        super(arch);
     }
 
     public boolean canSleep() {

@@ -1,4 +1,4 @@
-package jason.infra.centralised;
+package jason.infra.local;
 
 import jason.JasonException;
 import jason.architecture.AgArch;
@@ -15,20 +15,20 @@ import java.util.logging.Logger;
 import org.w3c.dom.Document;
 
 /**
- * Concrete implementation of the controller for centralised infrastructure
+ * Concrete implementation of the controller for Local infrastructure
  * tier.
  */
-public class CentralisedExecutionControl implements ExecutionControlInfraTier {
+public class LocalExecutionControl implements ExecutionControlInfraTier {
 
     private ExecutionControl userController;
 
-    private BaseCentralisedMAS masRunner = null;
+    private BaseLocalMAS masRunner = null;
 
-    private static Logger logger = Logger.getLogger(CentralisedExecutionControl.class.getName());
+    private static Logger logger = Logger.getLogger(LocalExecutionControl.class.getName());
 
     protected ExecutorService executor = Executors.newSingleThreadExecutor();
 
-    public CentralisedExecutionControl(ClassParameters userControlClass, BaseCentralisedMAS masRunner) throws JasonException {
+    public LocalExecutionControl(ClassParameters userControlClass, BaseLocalMAS masRunner) throws JasonException {
         this.masRunner = masRunner;
         try {
             userController = (ExecutionControl) Class.forName(userControlClass.getClassName()).getConstructor().newInstance();
@@ -55,7 +55,7 @@ public class CentralisedExecutionControl implements ExecutionControlInfraTier {
 
     public void informAgToPerformCycle(String agName, int cycle) {
         // call the agent method to "go on"
-        CentralisedAgArch infraArch = masRunner.getAg(agName);
+        LocalAgArch infraArch = masRunner.getAg(agName);
         AgArch arch = infraArch.getFirstAgArch();
         arch.setCycleNumber(cycle);
         infraArch.receiveSyncSignal();
@@ -64,7 +64,7 @@ public class CentralisedExecutionControl implements ExecutionControlInfraTier {
     public void informAllAgsToPerformCycle(final int cycle) {
         executor.execute(() -> {
                 synchronized (masRunner.getAgs()) {
-                    for (CentralisedAgArch ag: masRunner.getAgs().values()) {
+                    for (LocalAgArch ag: masRunner.getAgs().values()) {
                         ag.getFirstAgArch().setCycleNumber(cycle);
                         ag.receiveSyncSignal();
                     }
@@ -82,6 +82,6 @@ public class CentralisedExecutionControl implements ExecutionControlInfraTier {
     }
 
     public RuntimeServices getRuntimeServices() {
-        return new CentralisedRuntimeServices(masRunner);
+        return new LocalRuntimeServices(masRunner);
     }
 }

@@ -4,7 +4,7 @@ import jason.asSyntax.Structure;
 import jason.runtime.RuntimeServices;
 
 /**
- * This interface is implemented by the infrastructure tier (Saci/Centralised/...) to provide concrete implementation of the environment.
+ * This interface is implemented by the infrastructure tier (Jade/Local/...) to provide concrete implementation of the environment.
  */
 public interface EnvironmentInfraTier {
 

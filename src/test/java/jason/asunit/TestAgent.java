@@ -19,14 +19,14 @@ import jason.asSyntax.Structure;
 import jason.asSyntax.Trigger;
 import jason.asSyntax.parser.ParseException;
 import jason.bb.BeliefBase;
-import jason.infra.centralised.RunCentralisedMAS;
+import jason.infra.local.RunLocalMAS;
 import jason.util.Config;
 
 public class TestAgent extends Agent {
 
     // creates the masRunner
     static {
-        new RunCentralisedMAS();
+        new RunLocalMAS();
         Config.get().setProperty(Config.START_WEB_MI,  "false");
     }
 

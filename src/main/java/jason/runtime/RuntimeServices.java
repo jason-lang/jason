@@ -12,7 +12,7 @@ import jason.mas2j.ClassParameters;
 
 /**
  * This interface is implemented by the infrastructure
- * (Jade/Centralised/...) to provide concrete runtime services.
+ * (Jade/Local/...) to provide concrete runtime services.
  */
 public interface RuntimeServices {
 

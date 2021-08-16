@@ -1,4 +1,4 @@
-package jason.infra.centralised;
+package jason.infra.local;
 
 import java.io.File;
 import java.io.PrintWriter;
@@ -16,11 +16,11 @@ public class CreateJNLP {
             PrintWriter out = new PrintWriter(new File(file));
 
             String script = Config.get().getTemplate("jnlp-template.xml");
-            script = CentralisedMASLauncherAnt.replace(script, "<PROJECT-ID>", projectName);
-            script = CentralisedMASLauncherAnt.replace(script, "<PROJECT-ID>", projectName);
-            script = CentralisedMASLauncherAnt.replace(script, "<PROJECT-ID>", projectName);
-            script = CentralisedMASLauncherAnt.replace(script, "<PROJECT-ID>", projectName);
-            script = CentralisedMASLauncherAnt.replace(script, "<PROJECT-ID>", projectName);
+            script = LocalMASLauncherAnt.replace(script, "<PROJECT-ID>", projectName);
+            script = LocalMASLauncherAnt.replace(script, "<PROJECT-ID>", projectName);
+            script = LocalMASLauncherAnt.replace(script, "<PROJECT-ID>", projectName);
+            script = LocalMASLauncherAnt.replace(script, "<PROJECT-ID>", projectName);
+            script = LocalMASLauncherAnt.replace(script, "<PROJECT-ID>", projectName);
 
             String defCodebase = "http://localhost";
             try {
@@ -29,7 +29,7 @@ public class CreateJNLP {
                 e.printStackTrace();
             }
 
-            script = CentralisedMASLauncherAnt.replace(script, "<DEFAULT-CODEBASE>", defCodebase);
+            script = LocalMASLauncherAnt.replace(script, "<DEFAULT-CODEBASE>", defCodebase);
 
             String jars = "";
             File lib = new File("../lib");
@@ -41,7 +41,7 @@ public class CreateJNLP {
                     }
                 }
             }
-            script = CentralisedMASLauncherAnt.replace(script, "<OTHER-JARS>", jars);
+            script = LocalMASLauncherAnt.replace(script, "<OTHER-JARS>", jars);
             out.write(script);
 
             out.close();

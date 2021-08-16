@@ -2,8 +2,6 @@
 
 MAS auction {
 
-    infrastructure: Centralised
-
     agents: ag1;
             ag2;
             ag3        [mindinspector="gui(cycle,html,history)"]; // this agent has a GUI mind inspector

@@ -8,8 +8,6 @@
 
 MAS function {
 
-    infrastructure: Centralised
-
     agents:
         a;
 

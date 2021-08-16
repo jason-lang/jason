@@ -62,7 +62,7 @@
             <zipgroupfileset dir="${basedir}/lib" includes="**/*.jar" />
             <zipgroupfileset dir="${jasonJar}/../../libs" includes="*.jar" />
             <manifest>
-                  <attribute name="Main-Class" value="jason.infra.centralised.RunCentralisedMAS"/>
+                  <attribute name="Main-Class" value="jason.infra.local.RunLocalMAS"/>
             </manifest>
         </jar>
         <delete file="default.mas2j" />
@@ -71,7 +71,7 @@
 
     <target name="jnlp" depends="jar" >
         <mkdir dir="${basedir}/${ant.project.name}-jws"/>
-        <java classname="jason.infra.centralised.CreateJNLP"
+        <java classname="jason.infra.local.CreateJNLP"
               failonerror="true" fork="yes" dir="${basedir}/${ant.project.name}-jws" >
             <classpath refid="project.classpath"/>
             <arg line="${ant.project.name} ${mas2j.project.file}"/>

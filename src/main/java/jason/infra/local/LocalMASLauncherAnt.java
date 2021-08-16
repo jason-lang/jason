@@ -1,4 +1,4 @@
-package jason.infra.centralised;
+package jason.infra.local;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -14,12 +14,12 @@ import jason.mas2j.MAS2JProject;
 import jason.util.Config;
 
 /**
- * Write the Ant script to run the MAS in centralised infrastructure and
+ * Write the Ant script to run the MAS in Local infrastructure and
  * start this script.
  *
  * @author Jomi
  */
-public class CentralisedMASLauncherAnt implements MASLauncherInfraTier {
+public class LocalMASLauncherAnt implements MASLauncherInfraTier {
 
     protected MAS2JProject       project;
     protected RunProjectListener listener;
@@ -33,12 +33,12 @@ public class CentralisedMASLauncherAnt implements MASLauncherInfraTier {
 
     private String task;
 
-    public CentralisedMASLauncherAnt() {
+    public LocalMASLauncherAnt() {
         task = "run";
     }
 
     /** create the launcher for a specific ant task */
-    public CentralisedMASLauncherAnt(String task) {
+    public LocalMASLauncherAnt(String task) {
         this.task = task;
     }
 
@@ -117,7 +117,7 @@ public class CentralisedMASLauncherAnt implements MASLauncherInfraTier {
     public void stopMAS() {
         try {
             // creating this file will stop the MAS, the runner checks for this file creation
-            File stop = new File(project.getDirectory()+File.separator+BaseCentralisedMAS.stopMASFileName);
+            File stop = new File(project.getDirectory()+File.separator+BaseLocalMAS.stopMASFileName);
             stop.createNewFile();
         } catch (Exception e) {
             System.err.println("Error stoping RunCentMAS: " + e);
@@ -262,7 +262,7 @@ public class CentralisedMASLauncherAnt implements MASLauncherInfraTier {
 
         script = replace(script, "<PATH-LIB>", lib);
 
-        script = replace(script, "<PROJECT-RUNNER-CLASS>", jason.infra.centralised.RunCentralisedMAS.class.getName());
+        script = replace(script, "<PROJECT-RUNNER-CLASS>", jason.infra.local.RunLocalMAS.class.getName());
         String sDebug = "";
         if (debug) {
             sDebug = " -d";

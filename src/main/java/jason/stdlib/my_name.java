@@ -12,7 +12,7 @@ import jason.asSyntax.Term;
 
   <p>Description: gets the agent's unique identification in the
   multi-agent system. This identification is given by the runtime
-  infrastructure of the system (centralised, saci, jade, ...).
+  infrastructure of the system (local, saci, jade, ...).
 
   <p>Parameter:<ul>
 

@@ -2,7 +2,7 @@
 
 MAS greeting {
 
-    infrastructure: Centralised
+    infrastructure: Local
 
     agents:
         bob;

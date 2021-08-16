@@ -44,7 +44,7 @@ sourceSets {
 
 task run (type: JavaExec, dependsOn: 'classes') {
     description 'runs the application'
-    main = 'jason.infra.centralised.RunCentralisedMAS'
+    main = 'jason.infra.local.RunLocalMAS'
     args 'meta_programming.mas2j'
     classpath sourceSets.main.runtimeClasspath
 }

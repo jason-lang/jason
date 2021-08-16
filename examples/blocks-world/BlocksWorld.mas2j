@@ -1,8 +1,6 @@
 /* Jason Blocks World Project */
 MAS blocksWorld {
 
-    infrastructure: Centralised
-
     environment: BlocksEnv.BlocksWorld(1,500,yes)  // change 500 to 0 to speed up
                                                    // yes to use GUI
 

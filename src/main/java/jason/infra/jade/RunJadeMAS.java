@@ -28,8 +28,8 @@ import jason.asSyntax.StringTerm;
 import jason.asSyntax.directives.DirectiveProcessor;
 import jason.asSyntax.directives.Include;
 import jason.control.ExecutionControlGUI;
-import jason.infra.centralised.CentralisedRuntimeServices;
-import jason.infra.centralised.RunCentralisedMAS;
+import jason.infra.local.LocalRuntimeServices;
+import jason.infra.local.RunLocalMAS;
 import jason.mas2j.AgentParameters;
 import jason.mas2j.ClassParameters;
 import jason.runtime.MASConsoleGUI;
@@ -45,7 +45,7 @@ import jason.util.Config;
  *
  * @author Jomi
  */
-public class RunJadeMAS extends RunCentralisedMAS {
+public class RunJadeMAS extends RunLocalMAS {
 
     public static String controllerName  = "j_controller";
     public static String environmentName = "j_environment";

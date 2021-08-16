@@ -1,15 +1,15 @@
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import jason.architecture.AgArch;
 import jason.asSemantics.ActionExec;
 import jason.asSemantics.Agent;
 import jason.asSemantics.TransitionSystem;
 import jason.asSyntax.Literal;
-import jason.infra.centralised.*;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import jason.infra.local.RunLocalMAS;
 
 /**
  * Example of an agent that only uses Jason BDI engine. It runs without all
@@ -22,7 +22,7 @@ public class SimpleJasonAgent extends AgArch {
     private static Logger logger = Logger.getLogger(SimpleJasonAgent.class.getName());
 
     public static void main(String[] a) {
-        new RunCentralisedMAS().setupLogger();
+        new RunLocalMAS().setupLogger();
         SimpleJasonAgent ag = new SimpleJasonAgent();
         ag.run();
     }
@@ -32,7 +32,8 @@ public class SimpleJasonAgent extends AgArch {
         try {
             Agent ag = new Agent();
             new TransitionSystem(ag, null, null, this);
-            ag.initAg("demo.asl");
+            ag.initAg();
+            ag.load("demo.asl");
         } catch (Exception e) {
             logger.log(Level.SEVERE, "Init error", e);
         }

@@ -242,7 +242,7 @@ public class myEnv extends Environment {
 -----------------------------------------------------------
 
 The interface, used in the code above, provides useful services
-transparently from the underlying infrastructure (Centralised, Jade,
+transparently from the underlying infrastructure (Local, Jade,
 ...). The interface’s methods include agent creation, agent killing, and
 halting the system (see the API documentation for more information).
 
@@ -317,7 +317,7 @@ To use this execution mode, you have to set up a controller class in the
 [source,jasonproject]
 ----------------------------------------------------
 MAS test {
-    infrastructure: Centralised
+    infrastructure: Local
     environment: testEnv
 
     executionControl: jason.control.ExecutionControl
@@ -339,7 +339,7 @@ controller class in the .mas2j configuration, for example:
 [source,jasonproject]
 -------------------------------------------------------
 MAS test {
-    infrastructure: Centralised
+    infrastructure: Local
     environment: testEnv
 
     executionControl: jason.control.ExecutionControlGUI
@@ -370,7 +370,7 @@ You can also run it as a normal Java application:
 --------------------------------------------------------------------------
    cd <the directory of you application>
    export CLASSPATH=<your jars, jason.jar,...>
-   java jason.infra.centralised.RunCentralisedMAS <yourproject.mas2j file>
+   java jason.infra.local.RunLocalMAS <yourproject.mas2j file>
 --------------------------------------------------------------------------
 
 You find more details about the environment (e.g. classpath) on the
@@ -628,7 +628,7 @@ files with suitable style sheets to be viewed in browsers.
 
 An infrastructure provides the following services for the MAS:
 
-* communication (e.g., the centralised infrastructure implements
+* communication (e.g., the local infrastructure implements
 communication based on KQML whilst JADE implements it using FIPA-ACL),
 * control of the agent life cycle (creation, running, destruction).
 
@@ -636,11 +636,11 @@ communication based on KQML whilst JADE implements it using FIPA-ACL),
 
 The current distribution has the following infrastructures:
 
-Centralised:::
+Local:::
   this infrastructure runs all agents in the same host. It provides fast
   startup and high performance for systems that can be executed in a
   single computer. It is also useful to test and develop (prototype)
-  systems. Centralised is the default infrastructure.
+  systems. Local is the default infrastructure.
 Jade:::
   provides distribution and communication using http://jade.tilab.com[Jade],
   which is based on FIPA-ACL. With this infrastructure, all tools
@@ -666,12 +666,12 @@ You can find more information about this infrastructure in the http://jason.sour
 === How to select an infrastructure?
 
 In the `.mas2j` project file, use the `infrastructure` entry to select
-an infrastructure, for example to use Centralised:
+an infrastructure, for example to use Local:
 
 [source,jasonproject]
 -------------------------------
 MAS auction {
-    infrastructure: Centralised
+    infrastructure: Local
     agents: ag1; ag2; ag3;
 }
 -------------------------------
@@ -693,7 +693,7 @@ infrastructure.
 [[sec:whyjade]]
 === When should I use the JADE infrastructures?
 
-The centralised infrastructure does not support:
+The local infrastructure does not support:
 
 * execution of the agents at distributed hosts, and
 * interoperability with non-Jason agents.

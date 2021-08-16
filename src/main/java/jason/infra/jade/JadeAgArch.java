@@ -18,7 +18,7 @@ import jade.lang.acl.MessageTemplate;
 import jason.asSemantics.TransitionSystem;
 import jason.asSyntax.directives.DirectiveProcessor;
 import jason.asSyntax.directives.Include;
-import jason.infra.centralised.BaseCentralisedMAS;
+import jason.infra.local.BaseLocalMAS;
 import jason.mas2j.AgentParameters;
 import jason.mas2j.ClassParameters;
 import jason.mas2j.MAS2JProject;
@@ -53,8 +53,8 @@ public class JadeAgArch extends JadeAg {
     @SuppressWarnings("serial")
     @Override
     protected void setup() {
-        if (BaseCentralisedMAS.getRunner() != null)
-            BaseCentralisedMAS.getRunner().setupLogger();
+        if (BaseLocalMAS.getRunner() != null)
+            BaseLocalMAS.getRunner().setupLogger();
         logger = jade.util.Logger.getMyLogger(this.getClass().getName() + "." + getLocalName());
         logger.info("starting "+getLocalName());
         try {

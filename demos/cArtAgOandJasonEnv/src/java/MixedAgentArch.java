@@ -1,11 +1,9 @@
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
 import jason.architecture.AgArch;
 import jason.asSemantics.ActionExec;
-import jason.asSyntax.Literal;
-import jason.infra.centralised.CentralisedAgArch;
+import jason.infra.local.LocalAgArch;
 
 public class MixedAgentArch extends AgArch {
 
@@ -21,17 +19,17 @@ public class MixedAgentArch extends AgArch {
     @Override
     public void act(ActionExec act) {
         if (jasonEnvActions.contains(act.getActionTerm().getFunctor())) {
-            getCentArch().act(act); // uses the centralised ag arch
+            getCentArch().act(act); // uses the local ag arch
         } else {
             super.act(act); // uses cartago ag arch
         }
     }
 
-    protected CentralisedAgArch getCentArch() {
+    protected LocalAgArch getCentArch() {
         AgArch arch = getTS().getAgArch().getFirstAgArch();
         while (arch != null) {
-            if (arch instanceof CentralisedAgArch) {
-                return (CentralisedAgArch)arch;
+            if (arch instanceof LocalAgArch) {
+                return (LocalAgArch)arch;
             }
             arch = arch.getNextAgArch();
         }

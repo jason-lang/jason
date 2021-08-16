@@ -1,11 +1,11 @@
 package jason.infra.components;
 
-import jason.infra.centralised.CentralisedAgArchAsynchronous;
+import jason.infra.local.LocalAgArchAsynchronous;
 
 public class ActComponent extends AgentComponent {
 
-    public ActComponent(CentralisedAgArchAsynchronous centralisedAgArchAsynchronous) {
-        super(centralisedAgArchAsynchronous);
+    public ActComponent(LocalAgArchAsynchronous arch) {
+        super(arch);
     }
 
     public void wakeUp() {

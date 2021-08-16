@@ -1,13 +1,13 @@
 package jason.infra.components;
 
-import jason.infra.centralised.CentralisedAgArchAsynchronous;
+import jason.infra.local.LocalAgArchAsynchronous;
 
 public abstract class AgentComponent implements Runnable {
-    protected CentralisedAgArchAsynchronous ag;
+    protected LocalAgArchAsynchronous ag;
     protected boolean inQueue = true;
     protected boolean sleeping = false;
 
-    public AgentComponent(CentralisedAgArchAsynchronous ag) {
+    public AgentComponent(LocalAgArchAsynchronous ag) {
         this.ag = ag;
     }
 

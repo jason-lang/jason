@@ -12,7 +12,7 @@ import jason.asSemantics.ActionExec;
 import jason.asSemantics.Message;
 import jason.asSemantics.TransitionSystem;
 import jason.asSyntax.Literal;
-import jason.infra.centralised.CentralisedAgArch;
+import jason.infra.local.LocalAgArch;
 import jason.runtime.RuntimeServices;
 
 /**
@@ -26,7 +26,7 @@ import jason.runtime.RuntimeServices;
  *
  * <p>
  * This class implements a Chain of Responsibilities design pattern.
- * Each member of the chain is a subclass of AgArch. The last arch in the chain is the infrastructure tier (Centralised, JADE, Saci, ...).
+ * Each member of the chain is a subclass of AgArch. The last arch in the chain is the infrastructure tier (Local, JADE, Saci, ...).
  * The getUserAgArch method returns the first arch in the chain.
  *
  * Users can customise the architecture by overriding some methods of this class.
@@ -101,7 +101,7 @@ public class AgArch implements Comparable<AgArch>, Serializable {
             return;
         for (String agArchClass: archs) {
             // user custom arch
-            if (!agArchClass.equals(AgArch.class.getName()) && !agArchClass.equals(CentralisedAgArch.class.getName())) {
+            if (!agArchClass.equals(AgArch.class.getName()) && !agArchClass.equals(LocalAgArch.class.getName())) {
                 try {
                     AgArch a = (AgArch) Class.forName(agArchClass).getConstructor().newInstance();
                     a.setTS(ts); // so a.init() can use TS

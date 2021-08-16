@@ -12,6 +12,8 @@ ifdef::env-github[:outfilesuffix: .adoc]
 
 - Cartago is not included in the distribution anymore. Use JaCaMo for a proper integration of Jason and Cartago.
 
+- `Centralised` infrastructure was renamed to `Local`. Classes as `RunCentralisedMAS` was renamed to `RunLocalMAS`.
+
 == version 2.6  (2020-09-28)
 
 - the functor of plan labels can be omitted, as in `@[atomic] +!g <- a`. In this case, as usual, a new unique label functor is defined by the interpreter.

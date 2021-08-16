@@ -9,7 +9,7 @@ import jason.asSemantics.TransitionSystem;
 import jason.asSemantics.Unifier;
 import jason.asSyntax.StringTerm;
 import jason.asSyntax.Term;
-import jason.infra.centralised.RunCentralisedMAS;
+import jason.infra.local.RunLocalMAS;
 
 @SuppressWarnings("serial")
 public class snapshot extends DefaultInternalAction {
@@ -23,7 +23,7 @@ public class snapshot extends DefaultInternalAction {
             String agName = args[0].toString();
             if (args[0].isString())
                 agName = ((StringTerm)args[0]).getString();
-            ts = RunCentralisedMAS.getRunner().getAg(agName).getTS();
+            ts = RunLocalMAS.getRunner().getAg(agName).getTS();
             fname = ((StringTerm)args[1]).getString();
         }
         final Agent ag = ts.getAg();

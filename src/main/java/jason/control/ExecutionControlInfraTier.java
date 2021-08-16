@@ -6,7 +6,7 @@ import org.w3c.dom.Document;
 
 
 /**
- *  This interface is implemented in the infrastructure tier (distributed/centralised)
+ *  This interface is implemented in the infrastructure tier (distributed/local)
  *  to provide methods that the <b>user</b> controller may call.
  */
 public interface ExecutionControlInfraTier {

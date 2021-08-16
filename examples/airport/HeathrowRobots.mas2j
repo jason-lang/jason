@@ -12,8 +12,6 @@ For more information about this example, see
 
 MAS heathrow {
 
-    infrastructure: Centralised
-
     environment:
          HeathrowEnv
 

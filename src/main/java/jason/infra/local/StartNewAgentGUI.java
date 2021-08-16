@@ -1,4 +1,4 @@
-package jason.infra.centralised;
+package jason.infra.local;
 
 import java.awt.BorderLayout;
 import java.awt.Frame;
@@ -115,8 +115,8 @@ public class StartNewAgentGUI extends BaseDialogGUI {
         }*/
         new Thread() {
             public void run() {
-                boolean debug = BaseCentralisedMAS.getRunner().isDebug();
-                boolean fs = BaseCentralisedMAS.getRunner().getControllerInfraTier() != null;
+                boolean debug = BaseLocalMAS.getRunner().isDebug();
+                boolean fs = BaseLocalMAS.getRunner().getControllerInfraTier() != null;
                 RuntimeServices services = RuntimeServicesFactory.get();
                 try {
                     String agClass = null;

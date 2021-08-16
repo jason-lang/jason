@@ -16,8 +16,8 @@ import java.util.StringTokenizer;
 
 import jason.asSemantics.Message;
 import jason.asSemantics.TransitionSystem;
-import jason.infra.centralised.CentralisedFactory;
 import jason.infra.jade.JadeFactory;
+import jason.infra.local.LocalFactory;
 
 /**
  * Jason configuration (used by JasonID to generate the project's scripts)
@@ -49,7 +49,7 @@ public class Config extends Properties {
     /** path to java home */
     public static final String JAVA_HOME     = "javaHome";
 
-    public static final String RUN_AS_THREAD = "runCentralisedInsideJIDE";
+    public static final String RUN_AS_THREAD = "runLocalInsideJIDE";
     public static final String SHELL_CMD     = "shellCommand";
     public static final String CLOSEALL      = "closeAllBeforeOpenMAS2J";
     public static final String CHECK_VERSION = "checkLatestVersion";
@@ -397,7 +397,7 @@ public class Config extends Properties {
     }
 
     private void setDefaultInfra() {
-        put("infrastructure.Centralised", CentralisedFactory.class.getName());
+        put("infrastructure.Local", LocalFactory.class.getName());
         put("infrastructure.Jade", JadeFactory.class.getName());
     }
 
@@ -421,7 +421,7 @@ public class Config extends Properties {
     public String[] getAvailableInfrastructures() {
         try {
             List<String> infras = new ArrayList<>();
-            infras.add("Centralised"); // set Centralised as the first
+            infras.add("Local"); // set Local as the first
             for (Object k: keySet()) {
                 String sk = k.toString();
                 int p = sk.indexOf(".");
@@ -443,10 +443,15 @@ public class Config extends Properties {
         } catch (Exception e) {
             System.err.println("Error getting user infrastructures.");
         }
-        return new String[] {"Centralised","Jade" }; //,"JaCaMo"};
+        return new String[] {"Local","Jade" }; //,"JaCaMo"};
     }
 
     public String getInfrastructureFactoryClass(String infraId) {
+        if (infraId.equals("Centralised")) { // to keep backward compatibility
+            System.err.println("Centralised infrastructure was renamed to Local");
+            infraId = "Local";
+        }
+
         Object oClass = get("infrastructure." + infraId);
         if (oClass == null) {
             // try to fix using default configuration

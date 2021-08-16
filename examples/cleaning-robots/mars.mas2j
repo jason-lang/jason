@@ -3,8 +3,6 @@
 
 MAS mars {
 
-    infrastructure: Centralised
-
     environment: MarsEnv
 
     agents: r1; r2;

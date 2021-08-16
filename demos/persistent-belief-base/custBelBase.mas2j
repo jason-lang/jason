@@ -19,7 +19,6 @@ tables or to persiste the agent belief base.
 */
 
 MAS custom_BB {
-    infrastructure: Centralised
     agents:
         a beliefBaseClass jason.bb.TextPersistentBB;
         b beliefBaseClass VoidBB;

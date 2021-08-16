@@ -3,8 +3,6 @@
 
 MAS unit_tests {
 
-    infrastructure: Centralised
-
     agents:
         test_manager [
             goals="create_tester_agents(\"./asl\",\"queueplan.asl\")",

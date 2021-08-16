@@ -1,6 +1,4 @@
 MAS resourceCollection {
-    infrastructure: Centralised
-
     environment: env.planetEnv
 
     agents:

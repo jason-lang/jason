@@ -5,7 +5,7 @@ import javax.swing.JOptionPane;
 import org.gjt.sp.jedit.Buffer;
 import org.gjt.sp.jedit.View;
 
-import jason.infra.centralised.StartNewAgentGUI;
+import jason.infra.local.StartNewAgentGUI;
 import jason.mas2j.AgentParameters;
 import jason.mas2j.MAS2JProject;
 import jason.util.Config;

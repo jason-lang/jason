@@ -10,18 +10,18 @@ Requirements:
 
 You have to install https://gradle.org[Gradle] on your computer and then run the following commands to create a new application (the first time you run them, it takes a while to finish since it downloads Jason first):
 -----
-curl -s -O http://jason.sourceforge.net/np/np26.gradle
-gradle -b np26.gradle --console=plain
+curl -s -O http://jason.sourceforge.net/np/np30.gradle
+gradle -b np30.gradle --console=plain
 -----
 
-NOTE: `np26.gradle` creates an application based on Jason 2.6. You can replace it by `npss.gradle` to create a Jason application based on the current snap shot version. https://curl.haxx.se[`curl`] is a program that simply downloads the `np24.gradle` file from http://jason.sourceforge.net/np/np24.gradle.
+NOTE: `np30.gradle` creates an application based on Jason 3.0. You can replace it by `npss.gradle` to create a Jason application based on the current snap shot version. https://curl.haxx.se[`curl`] is a program that simply downloads the `np30.gradle` file from http://jason.sourceforge.net/np/np30.gradle.
 
 You will be asked to enter the identification of the application and then instructions about how to run it will be shown.
 
 Example of output:
 ----
 > Task :run
-Jason 2.6.3
+Jason 3.0
 
 Enter the identification of the new application: bobob
 Creating path /Users/jomi/tmp/bobob
@@ -36,9 +36,9 @@ option 'Existing Gradle Project'.
 
 If you want to run a Jason application that was not created with a `build.gradle` file, you can download a template from https://raw.githubusercontent.com/jason-lang/jason/master/src/main/resources/templates/build.gradle[here] and replace
 
-- `<VERSION>` by the required Jason release (e.g. `2.6`)
+- `<VERSION>` by the required Jason release (e.g. `3.0`)
 - `<PROJECT-FILE>` by your .mas2j file (e.g. `hello.mas2j`).
-- `<PROJECT-RUNNER-CLASS>` by `jason.infra.centralised.RunCentralisedMAS`
+- `<PROJECT-RUNNER-CLASS>` by `jason.infra.local.RunLocalMAS`
 
 == with Scripts
 
@@ -48,7 +48,7 @@ Requirements:
 
 The first step is to download Jason https://sourceforge.net/projects/jason/files/jason/[here] and unzip it. Then configure some environment variables: `JASON_HOME` should be the directory where you unzip the downloaded file (it should have the directories `libs` and `scripts` inside) and `PATH`. For example;
 
-    export JASON_HOME=$HOME/pro/jason-2.6
+    export JASON_HOME=$HOME/pro/jason-3.0
     export PATH=$JASON_HOME/scripts:$PATH
 
 . New applications can be created with

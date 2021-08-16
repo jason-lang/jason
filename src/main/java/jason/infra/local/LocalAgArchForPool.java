@@ -1,9 +1,9 @@
-package jason.infra.centralised;
+package jason.infra.local;
 
 import java.util.concurrent.ExecutorService;
 
 /** an agent architecture for the infra based on thread pool */
-public final class CentralisedAgArchForPool extends CentralisedAgArch {
+public final class LocalAgArchForPool extends LocalAgArch {
     private volatile boolean isSleeping  = false;
     private ExecutorService executor;
 

@@ -19,7 +19,7 @@ This example also illustrates the use of the
 
 MAS cnp {
 
-    infrastructure: Centralised
+    infrastructure: Local
 
     agents:
         c;     // the CNP initiator

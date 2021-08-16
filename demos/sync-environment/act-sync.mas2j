@@ -15,8 +15,6 @@ environment class "Env" and after run it again with the EnvSync.
 
 MAS act_sync {
 
-    infrastructure: Centralised
-
     //environment: Env
     environment: EnvSync(1000) // timeout in miliseconds
 

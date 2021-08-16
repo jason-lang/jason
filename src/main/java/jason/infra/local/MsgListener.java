@@ -1,10 +1,10 @@
-package jason.infra.centralised;
+package jason.infra.local;
 
 import jason.asSemantics.*;
 
 /**
  * Interface for objects that want to listen sent messages in
- * centralised architecture.
+ * Local architecture.
  *
  * @author Jomi
  */

@@ -48,8 +48,8 @@ import errorlist.ErrorSource;
 import jason.architecture.MindInspectorWeb;
 import jason.infra.MASLauncherInfraTier;
 import jason.infra.RunProjectListener;
-import jason.infra.centralised.BaseCentralisedMAS;
-import jason.infra.centralised.CentralisedMASLauncherAnt;
+import jason.infra.local.BaseLocalMAS;
+import jason.infra.local.LocalMASLauncherAnt;
 import jason.mas2j.AgentParameters;
 import jason.mas2j.MAS2JProject;
 import jason.mas2j.parser.ParseException;
@@ -586,11 +586,11 @@ public class JasonID extends JPanel implements EBComponent, RunProjectListener {
             return;
         }
         try {
-            File f = new File(curBuf.getDirectory() + File.separator + BaseCentralisedMAS.logPropFile);
+            File f = new File(curBuf.getDirectory() + File.separator + BaseLocalMAS.logPropFile);
             if (f.exists()) {
                 org.gjt.sp.jedit.jEdit.openFile(view, f.getAbsolutePath());
             } else {
-                String logText = Config.get().getTemplate(BaseCentralisedMAS.logPropFile);
+                String logText = Config.get().getTemplate(BaseLocalMAS.logPropFile);
                 Buffer b = org.gjt.sp.jedit.jEdit.openFile(view, f.getAbsolutePath());
                 try {
                     b.writeLock();
@@ -653,7 +653,7 @@ public class JasonID extends JPanel implements EBComponent, RunProjectListener {
         MAS2JProject project = parseProject(b);
         if (project == null) // || !parseProjectAS(project)) {
             return;
-        CentralisedMASLauncherAnt script = new CentralisedMASLauncherAnt(task);
+        LocalMASLauncherAnt script = new LocalMASLauncherAnt(task);
         script.setProject(project);
         if (script.writeScripts(false, true)) {
             new Thread(script, "Ant-Task").start();

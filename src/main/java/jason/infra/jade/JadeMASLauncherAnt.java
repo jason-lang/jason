@@ -15,14 +15,14 @@ import jason.asSyntax.Literal;
 import jason.asSyntax.StringTerm;
 import jason.asSyntax.parser.ParseException;
 import jason.infra.MASLauncherInfraTier;
-import jason.infra.centralised.CentralisedMASLauncherAnt;
+import jason.infra.local.LocalMASLauncherAnt;
 import jason.mas2j.AgentParameters;
 import jason.util.Config;
 
 /**
  * Creates the script build.xml to launch the MAS using JADE.
  */
-public class JadeMASLauncherAnt extends CentralisedMASLauncherAnt implements MASLauncherInfraTier {
+public class JadeMASLauncherAnt extends LocalMASLauncherAnt implements MASLauncherInfraTier {
 
     public static String snifferConfFile       = "sniffer.properties";
     public static String customSnifferConfFile = "c-sniffer.properties";

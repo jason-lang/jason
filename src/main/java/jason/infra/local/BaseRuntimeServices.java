@@ -1,4 +1,4 @@
-package jason.infra.centralised;
+package jason.infra.local;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -6,13 +6,13 @@ import java.util.Map;
 import java.util.Set;
 
 import jason.runtime.RuntimeServices;
-/** implement services that are based on BaseCentralisedMAS */
+/** implement services that are based on BaseLocalMAS */
 public abstract class BaseRuntimeServices implements RuntimeServices {
 
-    protected BaseCentralisedMAS masRunner;
+    protected BaseLocalMAS masRunner;
     private Collection<String> defaultAgArchs = new ArrayList<>();
 
-    public BaseRuntimeServices(BaseCentralisedMAS masRunner) {
+    public BaseRuntimeServices(BaseLocalMAS masRunner) {
         this.masRunner = masRunner;
     }
 

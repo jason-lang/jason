@@ -269,10 +269,10 @@ public class ConfigGUI {
         pop.add(shellPanel);
         */
 
-        // run centralised inside jIDE
+        // run local inside jIDE
         /*
         JPanel insideJIDEPanel = new JPanel();
-        insideJIDEPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Centralised MAS execution mode", TitledBorder.LEFT, TitledBorder.TOP));
+        insideJIDEPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Local MAS execution mode", TitledBorder.LEFT, TitledBorder.TOP));
         insideJIDEPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
         insideJIDECBox = new JCheckBox("Run MAS as a JasonIDE internal thread instead of another process.");
         insideJIDEPanel.add(insideJIDECBox);

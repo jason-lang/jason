@@ -1,4 +1,4 @@
-package jason.infra.centralised;
+package jason.infra.local;
 
 public enum RConf {
     THREADED("threaded"),

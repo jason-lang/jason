@@ -136,7 +136,7 @@ Some internal actions are useful for concurrent programming in Jason:
 
 == Configuration
 
-Different concurrency configurations can be set for the *Centralised* infrastructure in Jason.
+Different concurrency configurations can be set for the *Local* infrastructure in Jason.
 
 The Jason agent reasoning cycle is executed considering three main stages: *sense*, *deliberate*, and *act*. Such stages can be executed in two different configurations:
 
@@ -154,7 +154,7 @@ Each agent has its own thread, which means that if the MAS is composed of 100 ag
 In the default configuration of the *.mas2j* project file
 
 ----
-infrastructure: Centralised
+infrastructure: Local
 ----
 
 the agent's thread runs each stage every reasoning cycle:
@@ -170,7 +170,7 @@ loop
 When some stages must be executed more than once, the number of cycles for each stage must be informed. The parameters in the *.mas2j* for this configuration are presented below.
 
 ----
-infrastructure: Centralised(threaded,
+infrastructure: Local(threaded,
     <NUMBER-CYCLES-SENSE>, <NUMBER-CYCLES-DELIBERATE>, <NUMBER-CYCLES-ACT>)
 ----
 
@@ -192,7 +192,7 @@ loop
 In the example below, the sense and deliberate stages will be executed only `once`, while the act stage will be executed at most `5` times.
 
 ----
-infrastructure: Centralised(threaded, 1, 1, 5)
+infrastructure: Local(threaded, 1, 1, 5)
 ----
 
 ==== Thread pool
@@ -200,13 +200,13 @@ infrastructure: Centralised(threaded, 1, 1, 5)
 When the number of agents in the MAS is significantly higher than the number of computer cores, it makes more sense to use thread pools in order to minimize the overhead caused by managing many threads. In this configuration, a limited number of threads is used to execute all agents in the MAS. The parameters for this configuration are detailed below.
 
 ----
-infrastructure: Centralised(pool, <NUMBER-THREADS>, [NUMBER-REASONING-CYCLES])
+infrastructure: Local(pool, <NUMBER-THREADS>, [NUMBER-REASONING-CYCLES])
 ----
 
 or
 
 ----
-infrastructure: Centralised(pool, <NUMBER-THREADS>,
+infrastructure: Local(pool, <NUMBER-THREADS>,
     <NUMBER-CYCLES-SENSE>, <NUMBER-CYCLES-DELIBERATE>, <NUMBER-CYCLES-ACT>,
     [NUMBER-REASONING-CYCLES])
 ----
@@ -228,26 +228,26 @@ do <NUMBER-REASONING-CYCLES> times:
 In the example below, a thread pool with `4` threads is created and each stage will be executed just `once`.
 
 ----
-infrastructure: Centralised(pool,4)
+infrastructure: Local(pool,4)
 ----
 
 In the example below, a thread pool with `4` threads is created and the sequence sense-deliberate-act is executed at most `5` times.
 
 ----
-infrastructure: Centralised(pool,4,5)
+infrastructure: Local(pool,4,5)
 ----
 
 In the example below, a thread pool with `4` threads is created, and the sense and deliberate stages are configured to execute just `once`, while the act stage will be executed at most `5` times.
 
 ----
-infrastructure: Centralised(pool,4,1,1,5)
+infrastructure: Local(pool,4,1,1,5)
 ----
 
 Finally, in the example below, the parameter `[NUMBER-REASONING-CYCLES]` is used. A thread pool with `4` threads is created, the sense and deliberate stages are configured to execute just `once`, while in the first case, the act stage executes at most `5` times, and in the second case, at least one action of each intention will be executed. In both cases, the sense-deliberate-act sequence will be repeated `10` times.
 
 ----
-infrastructure: Centralised(pool,4,1,1,5,10)
-infrastructure: Centralised(pool,4,1,1,9999,10)
+infrastructure: Local(pool,4,1,1,5,10)
+infrastructure: Local(pool,4,1,1,9999,10)
 ----
 
 A further configuration for pools is to execute only one stage every time that a thread selects an agent. Thus, the thread, for example, will execute the sense stage and put the agent back to the queue, then, the next time that this agent is selected, the thread will execute the deliberate stage, and finally the act stage.
@@ -275,25 +275,25 @@ The parameters are almost the same as before, however, the first parameter must 
 Using 4 threads, each stage will be executed `once`:
 
 ----
-infrastructure: Centralised(synch_scheduled,4)
+infrastructure: Local(synch_scheduled,4)
 ----
 
 Each stage is executed at most `5` times:
 
 ----
-infrastructure: Centralised(synch_scheduled,4,5)
+infrastructure: Local(synch_scheduled,4,5)
 ----
 
 The sense and deliberate stages are executed `once`, while the act stage is executed at most `5` times:
 
 ----
-infrastructure: Centralised(synch_scheduled,4,1,1,5)
+infrastructure: Local(synch_scheduled,4,1,1,5)
 ----
 
 The sense and deliberate stages are executed `once`, and at least one action of each intention will be executed in the act stage:
 
 ----
-infrastructure: Centralised(synch_scheduled,4,1,1,9999)
+infrastructure: Local(synch_scheduled,4,1,1,9999)
 ----
 
 === Asynchronous Reasoning Cycle
@@ -318,7 +318,7 @@ switch (task.stage)
 The parameters to use a single thread pool are presented below:
 
 ----
-infrastructure: Centralised(asynch_shared, <NUMBER-THREADS>,
+infrastructure: Local(asynch_shared, <NUMBER-THREADS>,
     <NUMBER-CYCLES-SENSE>, <NUMBER-CYCLES-DELIBERATE>, <NUMBER-CYCLES-ACT>)
 ----
 
@@ -327,26 +327,26 @@ As in the pool case, the keyword *asynch_shared* makes the execution platform to
 In the example below, a thread pool with `4` threads is created and each stage will be executed just `once`.
 
 ----
-infrastructure: Centralised(asynch_shared,4)
+infrastructure: Local(asynch_shared,4)
 ----
 
 In the example below, a thread pool with `4` threads is created, the sense and deliberate stages are configured to execute at most `15` times, and the act stage will be executed at most `20` times.
 
 ----
-infrastructure: Centralised(asynch_shared,4,15,15,20)
+infrastructure: Local(asynch_shared,4,15,15,20)
 ----
 
 In another configuration, each stage can be executed by a different thread pool. The parameters for this configuration are presented below.
 
 ----
-infrastructure: Centralised(asynch,
+infrastructure: Local(asynch,
     <NUMBER-THREADS-SENSE>, <NUMBER-THREADS-DELIBERATE>, <NUMBER-THREADS-ACT>)
 ----
 
 or
 
 ----
-infrastructure: Centralised(asynch,
+infrastructure: Local(asynch,
     <NUMBER-THREADS-SENSE>, <NUMBER-THREADS-DELIBERATE>, <NUMBER-THREADS-ACT>,
     <NUMBER-CYCLES-SENSE>, <NUMBER-CYCLES-DELIBERATE>, <NUMBER-CYCLES-ACT>)
 ----
@@ -356,13 +356,13 @@ The keyword *asynch* makes the execution platform to create `three` thread pools
 In the example below, `three` thread pools with `4` threads each are created:
 
 ----
-infrastructure: Centralised(asynch,4,4,4)
+infrastructure: Local(asynch,4,4,4)
 ----
 
 In the example below, `three` thread pools with `4` threads each are created, the sense and deliberate stages are configured to execute at most `15` times, and the act stage will be executed at most `20` times.
 
 ----
-infrastructure: Centralised(asynch,4,4,4,15,15,20)
+infrastructure: Local(asynch,4,4,4,15,15,20)
 ----
 
 

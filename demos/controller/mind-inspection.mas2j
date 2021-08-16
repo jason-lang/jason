@@ -17,7 +17,6 @@
 */
 
 MAS mindinspection {
-   infrastructure: Centralised
 
    executionControl: MyController
 

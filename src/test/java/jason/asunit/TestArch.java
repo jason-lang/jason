@@ -8,11 +8,11 @@ import jason.JasonException;
 import jason.asSemantics.ActionExec;
 import jason.asSyntax.Literal;
 import jason.environment.Environment;
-import jason.infra.centralised.CentralisedAgArch;
-import jason.infra.centralised.CentralisedEnvironment;
-import jason.infra.centralised.BaseCentralisedMAS;
+import jason.infra.local.BaseLocalMAS;
+import jason.infra.local.LocalAgArch;
+import jason.infra.local.LocalEnvironment;
 
-public class TestArch extends CentralisedAgArch implements Runnable {
+public class TestArch extends LocalAgArch implements Runnable {
 
     private static int nameCount = 0;
 
@@ -30,7 +30,7 @@ public class TestArch extends CentralisedAgArch implements Runnable {
     public TestArch(String agName) {
         try {
             setAgName(agName);
-            BaseCentralisedMAS.getRunner().addAg(this);
+            BaseLocalMAS.getRunner().addAg(this);
         } catch (JasonException e) {
             e.printStackTrace();
         }
@@ -70,7 +70,7 @@ public class TestArch extends CentralisedAgArch implements Runnable {
 
     public void setEnv(Environment env) {
         try {
-            CentralisedEnvironment infraEnv = new CentralisedEnvironment(null, BaseCentralisedMAS.getRunner());
+            LocalEnvironment infraEnv = new LocalEnvironment(null, BaseLocalMAS.getRunner());
             infraEnv.setUserEnvironment(env);
             env.setEnvironmentInfraTier(infraEnv);
             setEnvInfraTier(infraEnv);

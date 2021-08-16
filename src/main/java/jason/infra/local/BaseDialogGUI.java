@@ -1,4 +1,4 @@
-package jason.infra.centralised;
+package jason.infra.local;
 
 import java.awt.Dimension;
 import java.awt.FlowLayout;

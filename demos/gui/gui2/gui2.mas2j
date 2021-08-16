@@ -9,8 +9,6 @@
 
 
 MAS gui2 {
-   infrastructure: Centralised
-
    agents:
        sample;
 }

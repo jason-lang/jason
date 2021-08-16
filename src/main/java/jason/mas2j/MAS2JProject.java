@@ -37,7 +37,7 @@ public class MAS2JProject implements Serializable {
     private String soc = "default";
     private ClassParameters envClass = null;
     private ClassParameters controlClass = null;
-    private ClassParameters infrastructure = new ClassParameters("Centralised");
+    private ClassParameters infrastructure = new ClassParameters("Local");
     private String projectDir = ".";
     private File   projectFile = null;
     private List<AgentParameters> agents = new ArrayList<AgentParameters>();

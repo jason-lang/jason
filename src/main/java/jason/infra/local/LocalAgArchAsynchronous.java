@@ -1,4 +1,4 @@
-package jason.infra.centralised;
+package jason.infra.local;
 
 import java.util.concurrent.ExecutorService;
 
@@ -9,7 +9,7 @@ import jason.infra.components.ActComponent;
 import jason.infra.components.DeliberateComponent;
 import jason.infra.components.SenseComponent;
 
-public class CentralisedAgArchAsynchronous extends CentralisedAgArch implements Runnable {
+public class LocalAgArchAsynchronous extends LocalAgArch implements Runnable {
     private static final long serialVersionUID = 4841705575938535647L;
 
     private SenseComponent senseComponent;
@@ -24,7 +24,7 @@ public class CentralisedAgArchAsynchronous extends CentralisedAgArch implements 
     public transient Object objDeliberate = new Object();
     public transient Object objAct = new Object();
 
-    public CentralisedAgArchAsynchronous() {
+    public LocalAgArchAsynchronous() {
         super();
 
         senseComponent = new SenseComponent(this);

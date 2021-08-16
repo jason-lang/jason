@@ -1,4 +1,4 @@
-package jason.infra.centralised;
+package jason.infra.local;
 
 import java.awt.BorderLayout;
 import java.awt.Frame;

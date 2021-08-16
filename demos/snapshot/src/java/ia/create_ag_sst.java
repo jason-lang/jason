@@ -10,8 +10,8 @@ import jason.asSemantics.TransitionSystem;
 import jason.asSemantics.Unifier;
 import jason.asSyntax.StringTerm;
 import jason.asSyntax.Term;
-import jason.infra.centralised.CentralisedAgArch;
-import jason.infra.centralised.RunCentralisedMAS;
+import jason.infra.local.LocalAgArch;
+import jason.infra.local.RunLocalMAS;
 
 @SuppressWarnings("serial")
 public class create_ag_sst extends DefaultInternalAction {
@@ -26,11 +26,11 @@ public class create_ag_sst extends DefaultInternalAction {
             Agent ag = (Agent)in.readObject();
 
             // find cent ag arch
-            AgArch arch =  ag.getTS().getUserAgArch().getFirstAgArch();
-            while (arch != null && !(arch instanceof CentralisedAgArch)) {
+            AgArch arch =  ag.getTS().getAgArch().getFirstAgArch();
+            while (arch != null && !(arch instanceof LocalAgArch)) {
                 arch = arch.getNextAgArch();
             }
-            CentralisedAgArch carch = (CentralisedAgArch)arch;
+            LocalAgArch carch = (LocalAgArch)arch;
             carch.setTS(ag.getTS());
 
             carch.setAgName(agName);
@@ -38,7 +38,7 @@ public class create_ag_sst extends DefaultInternalAction {
             carch.setLogger();
             ag.setLogger(carch);
             
-            RunCentralisedMAS.getRunner().addAg(carch);
+            RunLocalMAS.getRunner().addAg(carch);
             
             // TODO: create a thread for the agent, ideally it should use the platform way to run the agent (pool, jade, ....)
             Thread agThread = new Thread(carch);

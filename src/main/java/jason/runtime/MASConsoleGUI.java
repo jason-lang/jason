@@ -1,7 +1,5 @@
 package jason.runtime;
 
-import jason.infra.centralised.BaseCentralisedMAS;
-
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
@@ -24,6 +22,8 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 import javax.swing.text.DefaultCaret;
+
+import jason.infra.local.BaseLocalMAS;
 
 /** the GUI console to output log messages */
 public class MASConsoleGUI {
@@ -108,7 +108,7 @@ public class MASConsoleGUI {
 
         frame.getContentPane().add(BorderLayout.SOUTH, pBt);
 
-        JButton btClean = new JButton("Clean", new ImageIcon(BaseCentralisedMAS.class.getResource("/images/clear.gif")));
+        JButton btClean = new JButton("Clean", new ImageIcon(BaseLocalMAS.class.getResource("/images/clear.gif")));
         btClean.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 cleanConsole();
@@ -218,8 +218,8 @@ public class MASConsoleGUI {
         if (out != null)
             out.restoreOriginalOut();
         try {
-            if (BaseCentralisedMAS.getRunner() != null) {
-                FileWriter f = new FileWriter(BaseCentralisedMAS.stopMASFileName);
+            if (BaseLocalMAS.getRunner() != null) {
+                FileWriter f = new FileWriter(BaseLocalMAS.stopMASFileName);
                 f.write(32);
                 f.close();
             }

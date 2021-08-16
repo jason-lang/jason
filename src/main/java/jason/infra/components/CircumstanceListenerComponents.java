@@ -5,12 +5,12 @@ import jason.asSemantics.Event;
 import jason.asSemantics.Intention;
 import jason.asSyntax.Term;
 import jason.asSyntax.Trigger;
-import jason.infra.centralised.CentralisedAgArchAsynchronous;
+import jason.infra.local.LocalAgArchAsynchronous;
 
 public class CircumstanceListenerComponents implements CircumstanceListener {
-    private CentralisedAgArchAsynchronous ag;
+    private LocalAgArchAsynchronous ag;
 
-    public CircumstanceListenerComponents(CentralisedAgArchAsynchronous ag) {
+    public CircumstanceListenerComponents(LocalAgArchAsynchronous ag) {
         this.ag = ag;
     }
 

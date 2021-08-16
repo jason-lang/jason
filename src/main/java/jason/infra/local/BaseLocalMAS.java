@@ -1,4 +1,4 @@
-package jason.infra.centralised;
+package jason.infra.local;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -26,23 +26,23 @@ import jason.runtime.RuntimeServices;
 import jason.runtime.RuntimeServicesFactory;
 
 /**
- * Runs MASProject using centralised infrastructure.
+ * Runs MASProject using local infrastructure.
  */
-public abstract class BaseCentralisedMAS extends NotificationBroadcasterSupport {
+public abstract class BaseLocalMAS extends NotificationBroadcasterSupport {
 
     public final static String       logPropFile     = "logging.properties";
     public final static String       stopMASFileName = ".stop___MAS";
     public final static String       defaultProjectFileName = "default.mas2j";
 
-    protected static Logger             logger        = Logger.getLogger(BaseCentralisedMAS.class.getName());
-    protected static BaseCentralisedMAS runner        = null;
+    protected static Logger             logger        = Logger.getLogger(BaseLocalMAS.class.getName());
+    protected static BaseLocalMAS runner        = null;
     protected static boolean            appFromClassPath = false;
     protected static MAS2JProject       project;
     protected static boolean            debug         = false;
 
-    protected CentralisedEnvironment        env         = null;
-    protected CentralisedExecutionControl   control     = null;
-    protected Map<String,CentralisedAgArch> ags         = new ConcurrentHashMap<>();
+    protected LocalEnvironment        env         = null;
+    protected LocalExecutionControl   control     = null;
+    protected Map<String,LocalAgArch> ags         = new ConcurrentHashMap<>();
 
     protected AgArch dfAg = null;
 
@@ -50,7 +50,7 @@ public abstract class BaseCentralisedMAS extends NotificationBroadcasterSupport 
         return debug;
     }
 
-    public static BaseCentralisedMAS getRunner() {
+    public static BaseLocalMAS getRunner() {
         return runner;
     }
 
@@ -70,11 +70,11 @@ public abstract class BaseCentralisedMAS extends NotificationBroadcasterSupport 
         RuntimeServicesFactory.set(rts);
     }
 
-    public CentralisedExecutionControl getControllerInfraTier() {
+    public LocalExecutionControl getControllerInfraTier() {
         return control;
     }
 
-    public CentralisedEnvironment getEnvironmentInfraTier() {
+    public LocalEnvironment getEnvironmentInfraTier() {
         return env;
     }
 
@@ -85,11 +85,11 @@ public abstract class BaseCentralisedMAS extends NotificationBroadcasterSupport 
         project = p;
     }
 
-    public void addAg(CentralisedAgArch ag) {
+    public void addAg(LocalAgArch ag) {
         ags.put(ag.getAgName(), ag);
         ag.setMASRunner(this);
     }
-    public CentralisedAgArch delAg(String agName) {
+    public LocalAgArch delAg(String agName) {
         try {
             if (dfAgExists()) {
                 getDFAg().abolish(ASSyntax.createLiteral("provider",  new Atom(agName), new UnnamedVar()), null);
@@ -101,11 +101,11 @@ public abstract class BaseCentralisedMAS extends NotificationBroadcasterSupport 
         return ags.remove(agName);
     }
 
-    public CentralisedAgArch getAg(String agName) {
+    public LocalAgArch getAg(String agName) {
         return ags.get(agName);
     }
 
-    public Map<String,CentralisedAgArch> getAgs() {
+    public Map<String,LocalAgArch> getAgs() {
         return ags;
     }
 

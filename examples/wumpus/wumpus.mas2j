@@ -16,8 +16,6 @@ TODOs.
 
 MAS wumpus {
 
-    infrastructure: Centralised
-
     environment: jason.eis.EISAdapter(
                          "lib/wumpusenv.jar",    // EIS environment
                          agent_entity(ag,agent), // entities

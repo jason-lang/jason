@@ -9,12 +9,12 @@ that sends messages to another agent (maria)
 
 MAS communication {
 
-    infrastructure: Centralised
-          /* to use Jade, replace Centralised above by Jade
+    infrastructure: Local
+          /* to use Jade, replace Local above by Jade
              and run as usual by the "play" button
 
              to run on several machines (A,B,C):
-               1. replace Centralised by Jade(main_container_host("localhost"))
+               1. replace Local by Jade(main_container_host("localhost"))
                2. go to host A, cd <project dir>/bin, ant main-container
                3. go to host B, cd <project dir>/bin, ant c1
                4. go to host C, cd <project dir>/bin, ant c2

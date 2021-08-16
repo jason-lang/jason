@@ -1,17 +1,17 @@
-package jason.infra.centralised;
+package jason.infra.local;
 
 import jason.infra.InfrastructureFactory;
 import jason.infra.MASLauncherInfraTier;
 import jason.runtime.RuntimeServices;
 
-public class CentralisedFactory implements InfrastructureFactory {
+public class LocalFactory implements InfrastructureFactory {
 
     public MASLauncherInfraTier createMASLauncher() {
-        return new CentralisedMASLauncherAnt();
+        return new LocalMASLauncherAnt();
     }
 
     public RuntimeServices createRuntimeServices() {
-        return new CentralisedRuntimeServices(BaseCentralisedMAS.getRunner());
+        return new LocalRuntimeServices(BaseLocalMAS.getRunner());
     }
 
 }

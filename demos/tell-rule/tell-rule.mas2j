@@ -10,8 +10,6 @@ agent.
 
 MAS tell_rule {
 
-    infrastructure: Centralised
-
     agents:
         sender;    // the agent that sends the rules
         receiver;  // the agent that receives them
