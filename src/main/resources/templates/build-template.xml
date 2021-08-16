@@ -55,6 +55,7 @@
             <fileset dir="${basedir}">
                 <include name="**/*.asl" />
                 <include name="**/*.mas2j" />
+                <include name="logging.properties" />
             </fileset>
             <fileset dir="${build.dir}">
                 <include name="**/*.class" />
