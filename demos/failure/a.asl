@@ -9,9 +9,8 @@
 
 -!g3(failure)[error(ErrorId), error_msg(Msg), code(CodeBody), code_src(CodeSrc), code_line(CodeLine)] : true // get annotations related to the failure (these annotations are optional)
    <- .print("Error ", ErrorId, " '",Msg,"' by ",CodeBody," in ",CodeSrc,":",CodeLine);
-      .current_intention(I);
-      .print("current intention is: ",I);
-      I = intention(Id,[_|IntendedMeans]);
+      .intention(Id,S,IntendedMeans,current);
+      .print("current intention state is: ",S);
       .println;
       .println("*  Intention #",Id, ", IM stack:");
       !print_im(IntendedMeans);

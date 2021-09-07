@@ -18,10 +18,10 @@ public class PlanERTest extends TestCase {
 
     @Before
     public void setup() {
-        code = "+!p(X) : X > 0 <: X > 100 | .done { <- .print(a). "
+        code = "+!p(X) : X > 0 <: X > 100 | .done  <- .print(a). {"
                 + " +e <- x. "
                 + " +!sg : a <: false <- k. "
-                + " +!sg { <- k. +x <- l. +e <- m.} "
+                + " +!sg <- k. { +x <- l. +e <- m.} "
                 +" } ";
     }
 
@@ -35,10 +35,10 @@ public class PlanERTest extends TestCase {
             // ok
         }
 
-        p = Plan.parse("+!p(X) : X > 0 { <- .print(a). } ");
+        p = Plan.parse("+!p(X) : X > 0 <- .print(a). ");
         assertEquals("+!p(X) : (X > 0) <- .print(a).", p.toString());
 
-        p = Plan.parse("+!p(X) : X > 0 <: X > 100 | .done { <- .print(a). } ");
+        p = Plan.parse("+!p(X) : X > 0 <: X > 100 | .done <- .print(a). ");
         assertEquals("+!p(X) : (X > 0) <: ((X > 100) | .done) <- .print(a).", p.toString());
 
     }

@@ -26,7 +26,7 @@ public class MyAgArch extends AgArch {
                             if (k.startsWith("wack")) {
                                 Intention intention = getTS().getC().removePendingIntention(k);
                                 intention.peek().removeCurrentStep();
-                                getTS().getC().resumeIntention(intention);
+                                getTS().getC().resumeIntention(intention, null);
                                 wakeUpAct();
                                 System.out.println("done!");
                             }

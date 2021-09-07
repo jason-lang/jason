@@ -23,7 +23,7 @@
 
 +!test_median_non_numeric
     <-
-    .log(warning,"TODO: Although there is a -! plan, log is still printing many error messages")
+    .log(warning,"TODO: Although there is a -! plan, log is still printing many error messages");
     math.median([1,1,3,a]);
 .
 -!test_median_non_numeric.

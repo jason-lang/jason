@@ -40,6 +40,7 @@
 
       // Ask maria plans for goto
       .send(A, askHow, {+!goto(_,_)});
+
       .wait(500); // wait the answer
       .print("Received plans:");
       .list_plans( {+!goto(_,_)} );

@@ -23,14 +23,14 @@ public class TestPlanER {
 
             "+a(X) <- aroot(X)." +
             "+c(X) <- croot(X)." +
-            "+d(X) <- droot(X)." +
+            "+d(X) <- droot(X).\n" +
 
-            "+!g1(X) <: g1(X) { <- inig1. "+
+            "+!g1(X) <: g1(X) <- inig1. { \n"+
             "    +a(X) : X > 2 <- a1ing1; +g1(X); .print(a); a2ing1; .print(b)." +
             "} " +
 
-            "+!g2(X) { <- +a(X); !sg2(X+1). "+
-            "    +!sg2(Y) { <- !ssg2(4). "+
+            "+!g2(X) <- +a(X); !sg2(X+1). { "+
+            "    +!sg2(Y) <- !ssg2(4). { "+
             "       +!ssg2(Z) <- +a(Y+Z); +b(10); +c(33); +c(0). "+
             "       +b(A)  <- binsg2(A+X). "+   // use var from scope
             "    }"+

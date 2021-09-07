@@ -172,6 +172,11 @@ TOKEN : {
 | <TK_PAND:  "|&|" >
 | <TK_POR:   "|||" >
 
+| <TK_LEFT_ARROW: "<-" >
+| <TK_GOAL_CONDITION: "<:" >
+| <TK_RULE_SEP: ":-" >
+| <TK_NS_SEP: "::" >
+
 // Numbers
 |  <NUMBER: ["0"-"9"] (["0"-"9"])*
           | (["0"-"9"])* "." (["0"-"9"])+ (["e","E"] (["+","-"])? (["0"-"9"])+)?
@@ -308,7 +313,8 @@ Literal belief() : { Literal h; Object t; }
                                }
                              }
     [
-      ":-" t = log_expr()    { h = new Rule(h,(LogicalFormula)t);
+      <TK_RULE_SEP> t = log_expr()
+                             { h = new Rule(h,(LogicalFormula)t);
                                // warning only not parsed files
                                if (config.getBoolean(Config.WARN_SING_VAR) && !parsedFiles.contains(asSource)) {
                                   List<VarTerm> singletonVars = h.getSingletonVars();
@@ -336,12 +342,14 @@ Literal initial_goal() : { Literal g; }
 /* Plan */
 Plan plan() :
 {
-  Token k;
+  Token k = null;
   Pred L = null; Literal L2;
   Trigger T;
   Object C = null;
+  Object GC = null;
   PlanBody B = null;
-  int start = -1, end;
+  List sps = null; Plan sp;
+  int start = -1, end = -1;
 }
 {
   [
@@ -351,11 +359,22 @@ Plan plan() :
                               }
   ]
   T = trigger()
-  [ k = ":" C = log_expr()    { if (start == -1) start = k.beginLine; } ]
-  [ k = "<-" B = plan_body()  { if (start == -1) start = k.beginLine; } ]
-  k = "."                     { if (start == -1) start = k.beginLine; }
+  [ k = ":" C = log_expr()                   { if (start == -1) start = k.beginLine; } ]
+  [ k = <TK_GOAL_CONDITION> GC = log_expr()  { if (start == -1) start = k.beginLine; } ] // NEW ER syntax for goal condition
+  [ k = <TK_LEFT_ARROW> B = plan_body()      { if (start == -1) start = k.beginLine; } ]
+  k = "."                                    { if (start == -1) start = k.beginLine; }
 
-                    { end = k.beginLine;
+  [ LOOKAHEAD(4) // to avoid conflict with directive "{ begin ... }
+    "{" // NEW ER syntax for sub plans
+	                               { sps = new ArrayList(); }
+	    (
+	        sp = plan()            { sps.add(sp); }
+	    )*
+	"}"
+   ]
+
+                    {
+                      if (k != null) end = k.beginLine;
                       InternalActionLiteral ial = null;
                       try { ial = checkInternalActionsInContext((LogicalFormula)C, curAg); } catch (Exception e) {}
                       if (ial != null)
@@ -364,6 +383,17 @@ Plan plan() :
                         B = (PlanBody)B.getBodyNext();
                       Plan p = new Plan(L,T,(LogicalFormula)C, B);
                       p.setSrcInfo(new SourceInfo(asSource,start,end));
+
+					  // NEW ER syntax
+                      p.setGoalCondition((LogicalFormula)GC);
+                      if (sps != null)
+                     	for (Object o: sps)
+                     		try {
+                     		    p.addSubPlan((Plan)o);
+                     		} catch (Exception e) {
+                     			e.printStackTrace();
+                     		}
+
                       return p;
                     }
 }
@@ -695,13 +725,13 @@ Term rule_plan_term() :
             [
               (
                 ";" [ B = plan_body() ]                         { if (!pb) throw new ParseException(getSourceRef(T)+" Wrong place for ';'"); }
-                | "<-" B = plan_body()                          { pb = false; }
+                | <TK_LEFT_ARROW> B = plan_body()               { pb = false; }
               )
             ]
       |
         B = plan_body()
           [
-            S = ":-" t = log_expr()                             { isRule = true; }
+            S = <TK_RULE_SEP> t = log_expr()                    { isRule = true; }
           ]
     ]
   "}"
@@ -841,7 +871,7 @@ Atom namespace() :
                                       explicitAbstractNS = false;
                                     }
   ]
-  "::"                              { if (explicitAbstractNS)
+  <TK_NS_SEP>                       { if (explicitAbstractNS)
                                         NS = thisnamespace;
                                       return NS;
                                     }

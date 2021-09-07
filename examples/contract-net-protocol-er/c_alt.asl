@@ -20,8 +20,7 @@ all_proposals_received(CNPId, NP)                // NP: number of participants
       !!cnp(2,banana);
    .
 
-+!cnp(Id,Task) {
-    <- !call(LP); !bids(LP); !winner(LO,W); !result(LO,W).
++!cnp(Id,Task) <- !call(LP); !bids(LP); !winner(LO,W); !result(LO,W). {
 
     +!call(LP)
        <- .df_search("participant",LP);
@@ -29,11 +28,12 @@ all_proposals_received(CNPId, NP)                // NP: number of participants
           .send(LP,tell,cfp(Id,Task)).
 
     +!bids(LP) : all_proposals_received(Id, .length(LP)). // all proposals received already!
-    +!bids(LP) : NP = .length(LP) <: false {
+    +!bids(LP) : NP = .length(LP) <: false
        <- .wait(4000); .done.
-       +propose(Id,_) : all_proposals_received(Id, NP) <- .done.
-       +refuse(Id)    : all_proposals_received(Id, NP) <- .done.
-    }
+       {
+          +propose(Id,_) : all_proposals_received(Id, NP) <- .done.
+          +refuse(Id)    : all_proposals_received(Id, NP) <- .done.
+       }
 
     +!winner(LO,WAg)
         : .findall(offer(O,A),propose(Id,O)[source(A)],LO) & LO \== []

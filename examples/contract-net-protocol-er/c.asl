@@ -15,9 +15,9 @@ all_proposals_received(CNPId, NP)                // NP: number of participants
 
 /* Plans */
 
-+!cnp(Id,Task) {
++!cnp(Id,Task)
     <- !call(LP); !bids(LP); !winner(LO,W); !result(LO,W).
-
+    {
     +!call(LP)
        <- .print("Waiting participants for task ",Task,"...");
           .wait(2000);  // wait participants introduction
@@ -44,4 +44,4 @@ all_proposals_received(CNPId, NP)                // NP: number of participants
                .send(Ag,tell,reject_proposal(Id));
              }
           }.
-}
+    }

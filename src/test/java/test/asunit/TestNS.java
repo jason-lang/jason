@@ -56,7 +56,7 @@ public class TestNS {
             "   jason.asunit.print(V); "+
             "   N::Y =.. [ns,p,[10,20],[a1]]; "+
             "   jason.asunit.print(N,\"::\",Y); "+
-            "   jason.asunit.print(N::Y). "+
+            "   jason.asunit.print(N::Y). \n "+
             "{ begin namespace(k2,local) }" +
             "    b(550, ink2). "+
             "{ end }"

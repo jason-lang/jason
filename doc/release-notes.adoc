@@ -14,6 +14,9 @@ ifdef::env-github[:outfilesuffix: .adoc]
 
 - `Centralised` infrastructure was renamed to `Local`. Classes as `RunCentralisedMAS` was renamed to `RunLocalMAS`.
 
+- The Jason Grammar was refactored and improved by Jan Pierry Coelho dos Santos
+
+
 == version 2.6  (2020-09-28)
 
 - the functor of plan labels can be omitted, as in `@[atomic] +!g <- a`. In this case, as usual, a new unique label functor is defined by the interpreter.
