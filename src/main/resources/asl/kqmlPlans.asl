@@ -103,11 +103,11 @@
    <- .findall(Ans, kqml::bel_no_source_self(NS::Content, Ans), List);
       .send(Sender, tell, List, MsgId).
 
-kqml::clear_source_self([],[]).
-kqml::clear_source_self([source(self)|T],NT)     :- kqml::clear_source_self(T,NT).
-kqml::clear_source_self([A|T],           [A|NT]) :- A \== source(self) & kqml::clear_source_self(T,NT).
+kqml::clear_source_self([],[])[hide_in_mind_inspector].
+kqml::clear_source_self([source(self)|T],NT)[hide_in_mind_inspector]     :- kqml::clear_source_self(T,NT).
+kqml::clear_source_self([A|T],           [A|NT])[hide_in_mind_inspector] :- A \== source(self) & kqml::clear_source_self(T,NT).
 
-kqml::bel_no_source_self(NS::Content, Ans) :-
+kqml::bel_no_source_self(NS::Content, Ans)[hide_in_mind_inspector] :-
    NS::Content[|LA] &
    kqml::clear_source_self(LA, NLA) &
    Content =.. [F,T,_] &

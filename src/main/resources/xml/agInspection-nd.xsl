@@ -111,17 +111,19 @@
 			                    <xsl:for-each select="namespaces/namespace">
     		                        <xsl:variable name="nsId" select="@id" />
 		                            <xsl:for-each select="../../literal[@namespace=$nsId] | ../../rule[@namespace=$nsId]">
-		                                <!-- xsl:sort select="structure/@functor" / -->
-		                                <tr style="{$trh-style}">
-		                                    <td style="text-align: left">
-			                                    <xsl:if test="@namespace != 'default' and position()=1">
-			                                       <br/><b><xsl:value-of select="@namespace" /><xsl:text>::</xsl:text></b> <br/>
-			                                    </xsl:if>
-		                                        <span style="color: {$bc}">
-		                                            <xsl:apply-templates select="." />
-		                                        </span>
-		                                    </td>
-		                                </tr>
+        								<xsl:if test="count(.//structure[@functor = 'hide_in_mind_inspector']) = 0">
+			                                <!-- xsl:sort select="structure/@functor" / -->
+			                                <tr style="{$trh-style}">
+			                                    <td style="text-align: left">
+				                                    <xsl:if test="@namespace != 'default' and position()=1">
+				                                       <br/><b><xsl:value-of select="@namespace" /><xsl:text>::</xsl:text></b> <br/>
+				                                    </xsl:if>
+			                                        <span style="color: {$bc}">
+			                                            <xsl:apply-templates select="." />
+			                                        </span>
+			                                    </td>
+			                                </tr>
+		                                </xsl:if>
 		                            </xsl:for-each>
                                 </xsl:for-each>
 	                        </table>
@@ -531,6 +533,7 @@
         <xsl:value-of select="@type"/>
         <xsl:apply-templates />
     </xsl:template>
+
 
     <xsl:template match="rule">
         <xsl:apply-templates select="head"/>
