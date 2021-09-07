@@ -21,17 +21,20 @@ all_proposals_received(CNPId, NP)                // NP: number of participants
    .
 
 +!cnp(Id,Task) <- !call(LP); !bids(LP); !winner(LO,W); !result(LO,W). {
+    // the plans below are !cnp sub-plans and
+    // are relevant only while !cnp is being pursued
 
     +!call(LP)
        <- .df_search("participant",LP);
           .print("Sending CFP to ",LP);
           .send(LP,tell,cfp(Id,Task)).
 
-    +!bids(LP) : all_proposals_received(Id, .length(LP)). // all proposals received already!
-    +!bids(LP) : NP = .length(LP) <: false
-       <- .wait(4000); .done.
-       {
-          +propose(Id,_) : all_proposals_received(Id, NP) <- .done.
+    +!bids(LP) : all_proposals_received(Id, .length(LP)). // all proposals received already! goal bids is thus achieved
+    +!bids(LP) : NP = .length(LP) // wait either for all proposals/refuses or a timeout
+       <: false // this intention is finished only by the internal action .done, since the goal condition ('false') will never hold
+       <- .wait(4000); .done. // wait for 4 seconds and then finish the intention
+       {  // the two plans below are relevant only while !bids is being pursued
+          +propose(Id,_) : all_proposals_received(Id, NP) <- .done. // if a propose is received, test if all are, if so, finish the intention
           +refuse(Id)    : all_proposals_received(Id, NP) <- .done.
        }
 

@@ -9,8 +9,9 @@ price(_Service,X) :- .random(R) & X = (10*R)+100.
 // answer to Call For Proposal
 +cfp(CNPId,Task)[source(A)]
     : provider(A,"initiator") & price(Task,Offer)
-   <: false
+   <: false // this intention is finished only by the internal action .done, since the goal condition ('false') will never hold
    <- .send(A,tell,propose(CNPId,Offer)).
+   // the plans below are relevant only while the intention for +cfp is 'running'
    {
      +accept_proposal(CNPId)
        <- .print("My proposal '",Offer,"' won CNP ",CNPId, " for ",Task,"!");
