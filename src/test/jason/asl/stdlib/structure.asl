@@ -10,7 +10,7 @@
 +!test_structure
     <-
     !assert_true( .structure(b(10)) );
-    .log(warning,"TODO: .structure(b) is supposed to be true!")
+    .log(warning,"TODO: .structure(b) is supposed to be true!");
     //!assert_true( .structure(b) );
     !assert_false( .structure(10) );
     !assert_false( .structure("home page") );

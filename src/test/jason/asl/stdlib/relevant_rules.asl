@@ -10,13 +10,13 @@
 +!test_relevant_rules
     <-
     .relevant_rules(p(_,_),LP0);
-    .length(LP0, L0)
+    .length(LP0, L0);
     !assert_equals(0, L0);
 
     +{p(X,Y):-Y=X+1};
 
     .relevant_rules(p(_,_),LP1);
-    .length(LP1, L1)
+    .length(LP1, L1);
     !assert_equals(1, L1);
 
     ?p(10,Y1);

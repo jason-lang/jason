@@ -73,7 +73,7 @@ tests_passed(0).
     !assert_equals(1,1,0);  //should pass
     !assert_equals(1,2,0);  //should fail
 
-    +this_is_a_belief
+    +this_is_a_belief;
     !assert_true(this_is_a_belief);     //should pass
     !assert_true(this_is_NOT_a_belief); //should fail
 

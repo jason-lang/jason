@@ -225,7 +225,7 @@
     .findall(T7, .type(Z,T7) ,L7);
     !assert_contains(L7,ground);
 
-    .type(a(X),T8)
+    .type(a(X),T8);
     !assert_not_equals(ground,T8);
     .type(a[X],T9);
     !assert_not_equals(ground,T9);
@@ -267,13 +267,13 @@
     .type(X,T5);
     !assert_not_equals(number,T5);
 
-    .type(Y,T6)
+    .type(Y,T6);
     !assert_not_equals(number,T6);
 
     .type(Z,T7);
     !assert_equals(number,T7);
 
-    .type(a(X),T8)
+    .type(a(X),T8);
     !assert_not_equals(number,T8);
     .type([1,2],T9);
     !assert_not_equals(number,T9);

@@ -72,7 +72,7 @@
 
 /* end of simulation plans */
 
-@end[atomic]
+@end_of_simulation[atomic]
 +end_of_simulation(S,_) : true
   <- .print("-- END ",S," --");
      .abolish(init_pos(S,_,_)).
