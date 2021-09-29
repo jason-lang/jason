@@ -8,6 +8,7 @@ import jason.infra.local.RunLocalMAS;
  *
  * @deprecated use RunLocalMas instead
  */
+@Deprecated
 public class RunCentralisedMAS extends RunLocalMAS {
 
     public static void main(String[] args) throws JasonException {

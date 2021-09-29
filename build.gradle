@@ -1,22 +1,18 @@
 /*
    Jason Gradle build file
-
 */
 
 plugins {
-  id "ca.coglinc.javacc" version "2.3.1"
+  id "ca.coglinc.javacc" version "2.4.0"
   // see https://github.com/johnmartel/javaccPlugin
 }
 
 defaultTasks 'jar'
 
 apply plugin: 'java'
-//apply plugin: 'eclipse'
-apply plugin: 'maven'
 apply plugin: 'maven-publish'
-apply plugin: 'signing'
 
-version '3.0'
+version '3.1-SNAPSHOT'
 group   'org.jason'
 
 java {
@@ -24,30 +20,6 @@ java {
         languageVersion = JavaLanguageVersion.of(15)
     }
 }
-
-/*compileJava {
-    options.compilerArgs += ['--enable-preview']
-}
-tasks.withType(Test).all {
-    jvmArgs += '--enable-preview'
-}
-tasks.withType(JavaCompile).all {
-    options.compilerArgs += ['--enable-preview']
-}
-tasks.withType(JavaExec) {
-    jvmArgs += '--enable-preview'
-}
-javadoc.options {
-    addBooleanOption('-enable-preview', true)
-    addStringOption('-release', '15')
-}
-*/
-
-/*compileJava {
-    sourceCompatibility = JavaVersion.VERSION_1_15
-    targetCompatibility = JavaVersion.VERSION_1_15
-}*/
-
 
 repositories {
     mavenCentral()
@@ -60,41 +32,29 @@ repositories {
     }
 }
 
-/*configurations {
-    umljavadoc  // see http://www.umlgraph.org/doc/indexw.html
-}*/
-
-
 dependencies {
-    compile group: 'net.sf.ingenias', name: 'jade', version: '4.3'
-    //compile group: 'com.tilab.jade', name: 'jade', version: '4.4.0'
+    implementation group: 'net.sf.ingenias', name: 'jade', version: '4.3'
 
-    //compile group: 'org.jacamo',     name: 'cartago', version: '2.5'
-    //compile group: 'org.jacamo',     name: 'jaca',    version: '2.5'
+    implementation fileTree(dir: 'jedit', include: '*.jar') // using fileTree, jedit jars are not included as a dependency in the pom file
 
-    // from jEdit
-    compile fileTree(dir: 'jedit', include: '*.jar') // using fileTree, jedit jars are not included as a dependency in the pom file
+    implementation group: 'org.apache.ant',  name: 'ant',  version: '1.10.5'
 
-    runtime group: 'org.apache.ant',  name: 'ant',  version: '1.10.5'
-
-    compile group: 'javax.json', name: 'javax.json-api', version: '1.1.4'
-    compile group: 'org.glassfish', name: 'javax.json', version: '1.1.4'
+    implementation group: 'javax.json', name: 'javax.json-api', version: '1.1.4'
+    implementation group: 'org.glassfish', name: 'javax.json', version: '1.1.4'
 
     testImplementation group: 'junit', name: 'junit', version: '4.12'
     testImplementation name: 'hsqldb'
-
-    //umljavadoc 'org.umlgraph:umlgraph:5.6'
 }
 
 // copy dep jars and scritps into build directory
 task copyJarsToBuild {
-    inputs.files configurations.runtime.files
+    inputs.files configurations.runtimeClasspath.files
     inputs.dir   'scripts'
     outputs.dir  'build/libs'
     outputs.dir  'build/scripts'
     doLast {
         copy {
-            from configurations.runtime
+            from configurations.runtimeClasspath
             into 'build/libs'
         }
         copy {
@@ -105,14 +65,14 @@ task copyJarsToBuild {
                 String line -> line.replaceAll("JasonREL=[0-9]+\\.[0-9]+", "JasonREL="+project.version)
             }
             filter {
-                String line -> line.replaceAll("JadeJar", file(project.configurations.compile.find { it.name.startsWith("jade-") }).name)
+                String line -> line.replaceAll("JadeJar", file(configurations.compileClasspath.find { it.name.startsWith("jade-") }).name)
             }
         }
     }
 }
 
 jar {
-    baseName 'jason'
+    archiveBaseName = 'jason'
     manifest {
         attributes 'Main-Class': 'jason.util.ConfigGUI',
                    'Specification-Title': 'Jason Language',
@@ -123,33 +83,8 @@ jar {
         include '/test/jason/inc/**/*.asl'
         include '/test/jason/**/*.mas2j'
     }
-    /*doFirst {
-        Properties props = new Properties()
-        props.put('version', '')
-        props.put('release', project.version)
-        props.store(new File(project.buildDir.absolutePath +'/classes/main/dist.properties').newWriter(), null)
-    }*/
 }
 jar.dependsOn(copyJarsToBuild)
-
-task jarCore(type: Jar, dependsOn: 'classes') {
-    baseName 'jason-core'
-    from 'build/classes/main'
-    from 'build/resources/main'
-
-    exclude '**/MindInspectorAgArch*'
-    exclude '**/MindInspectorWebImpl*'
-    exclude 'jason/environment/grid/**/*'
-    exclude 'jason/jeditplugin/**/*'
-    exclude 'jason/runtime/MASConsole*'
-    exclude 'jason/runtime/OutputStreamAdapter*'
-    exclude 'jason/util/ConfigGUI*'
-    exclude 'jason/util/CheckVersion*'
-    exclude 'jason/control/ExecutionControlGUI*'
-    exclude 'jason/infra/local/*GUI*'
-    exclude 'jason/infra/jade/Run*'
-    exclude 'jason/infra/repl/**/*'
-}
 
 clean {
     delete 'bin'
@@ -219,36 +154,6 @@ task config (type: JavaExec, dependsOn: ['jar', 'plugin']) {
     }
 }
 
-/*
-eclipse {
-    classpath {
-        downloadJavadoc = true
-        file.whenMerged { cp ->
-            cp.entries.add( new org.gradle.plugins.ide.eclipse.model.SourceFolder('build/generated/javacc', null) )
-        }
-        file.whenMerged { cp ->
-            logger.lifecycle "Removing duplicate classpath entries from eclipse for project '${project.name}'"
-
-            Map entryByPath = cp.entries.groupBy { entry -> entry.path }
-            entryByPath.each { key, values ->
-              if (values.size() > 1) {
-                def entry = values.first()
-                if (entry.kind == 'src') {
-                  entry.includes = []
-                  entry.excludes = []
-                }
-                int index = cp.entries.indexOf entry
-                logger.lifecycle "Removing ${values.collect { it.path }}"
-                cp.entries.removeAll values
-                logger.lifecycle "Adding ${entry.path}"
-                cp.entries.add index, entry
-              }
-            }
-       }
-    }
-}
-*/
-
 javadoc {
     options.showAll()
     options.encoding('UTF-8')
@@ -275,44 +180,14 @@ if (JavaVersion.current().isJava8Compatible()) {
 }
 
 
-/*
-task javadoc(overwrite: true, dependsOn: compileJava) {
-    setDescription('Generates Javadoc API documentation with UMLGraph diagrams')
-    setGroup(JavaBasePlugin.DOCUMENTATION_GROUP)
-
-    doLast {
-        ant.javadoc(classpath: (configurations.runtime + configurations.compile).asPath,
-                    sourcepath: file('src/main/java'),
-                    packagenames: '*',
-                    destdir: "${docsDir}/../../doc/api",
-                    private: 'true' ,
-                    docletpath: configurations.umljavadoc.asPath) {
-            doclet(name: 'org.umlgraph.doclet.UmlGraphDoc') {
-                //param(name: '-inferrel')
-                //param(name: '-inferdep')
-                param(name: '-qualify')
-                //param(name: '-T', value: 'svg')
-                param(name: '-postfixpackage')
-                param(name: '-hide', value: 'java.*')
-                //param(name: '-collpackages', value: 'java.util.*')
-                //param(name: '-nodefontsize', value: '9')
-                //param(name: '-nodefontpackagesize', value: '7')
-                //param(name: '-link', value: 'http://java.sun.com/j2se/1.5.0/docs/guide/javadoc/doclet/spec')
-                //param(name: '-link', value: 'http://java.sun.com/j2se/1.5/docs/api')
-            }
-        }
-    }
-}
-*/
-
 task javadocJar (type: Jar, dependsOn: javadoc) {
-    baseName 'jason'
+    archiveBaseName = 'jason'
     classifier = 'javadoc'
     from '${docsDir}/../../doc/api'
 }
 
 task sourceJar (type : Jar) {
-    baseName 'jason'
+    archiveBaseName = 'jason'
     classifier = 'sources'
     from sourceSets.main.allSource
 }
@@ -326,91 +201,12 @@ publishing {
     publications {
         maven(MavenPublication) {
             from components.java
-			      artifact sourceJar
-			      artifact javadocJar
+                  artifact sourceJar
+                  artifact javadocJar
             artifactId 'jason'
         }
     }
 }
-
-// from http://central.sonatype.org/pages/gradle.html
-
-// see http://central.sonatype.org/pages/releasing-the-deployment.html
-// comment cartago and jaca dependencies
-// check gradle.properties for
-//    signing.keyId=
-//    signing.password=
-//    signing.secretKeyRingFile=
-//    ossrhUsername=
-//    ossrhPassword=
-//
-// run gradle uploadArchives
-// login https://oss.sonatype.org/
-// select Staging Repositories
-// search jason, close, refresh, release
-
-// uncomment to produce maven jar
-
-/*
-signing {
-    sign configurations.archives
-}
-
-uploadArchives {
-    group = 'net.sf.jason'
-    repositories {
-        mavenDeployer {
-
-            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-
-            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
-                authentication(userName: ossrhUsername, password: ossrhPassword)
-            }
-
-            snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
-                authentication(userName: ossrhUsername, password: ossrhPassword)
-            }
-
-            pom*.whenConfigured { pom -> pom.dependencies.clear() }
-
-            pom.project {
-                name 'Jason'
-                packaging 'jar'
-                groupId 'net.sf.jason'
-
-                // optionally artifactId can be defined here
-                description 'Jason is a fully-fledged interpreter for an extended version of AgentSpeak, a BDI agent-oriented logic programming language.'
-                url 'http://jason.sf.net'
-
-                scm {
-                    connection 'scm:git:https://github.com/jason-lang/jason.git'
-                    developerConnection 'scm:git:https://github.com/jason-lang/jason.git'
-                    url 'https://github.com/jason-lang/jason.git'
-                }
-
-                licenses {
-                    license {
-                        name 'GNU Library or Lesser General Public License version 2.0 (LGPLv2)'
-                        url 'http://www.gnu.org/licenses/gpl-2.0.html'
-                    }
-                }
-                developers {
-                    developer {
-                        id 'jomi'
-                        name 'Jomi F.  Hubner'
-                        email 'jomifred@gmail.com'
-                    }
-                    developer {
-                        id 'rafael'
-                        name 'Rafael H. Bordini'
-                        email 'rafael.h.bordini@gmail.com'
-                    }
-                }
-            }
-        }
-    }
-}
-*/
 
 compileJavacc {
     inputDirectory = file('src/main/javacc')
@@ -425,8 +221,8 @@ jjdoc {
 
 // Builds jEdit plugin
 task plugin(type: Jar, dependsOn: 'jar') {
-    archiveName 'jason-jedit-plugin.jar'
-    destinationDir file('build/jedit/jars')
+    archiveFileName = 'jason-jedit-plugin.jar'
+    destinationDirectory = file('build/jedit/jars')
     from 'build/classes/java/main'
     from 'build/resources/main'
     from 'build/resources/main/jeditPlugin'
@@ -437,7 +233,7 @@ task plugin(type: Jar, dependsOn: 'jar') {
                    'Implementation-Version': new Date().toString()
     }
 
-    from ( configurations.compile.collect { zipTree(it) } ) {
+    from ( configurations.compileClasspath.collect { zipTree(it) } ) {
         include 'jade/**/*.class'
     }
 
@@ -459,27 +255,6 @@ task plugin(type: Jar, dependsOn: 'jar') {
         }
     }
 }
-
-
-// transfer local maven artifact to our maven2 repository at sourceforge
-/*task publishMavenSF(dependsOn: [ 'build', 'publishToMavenLocal']) {
-  doLast {
-    def wdir = System.getProperty("user.home")+'/.m2/repository/org/jason/jason'
-    def tdir = System.getenv('USERSF')+',jacamo@web.sf.net:/home/project-web/jacamo/htdocs/maven2/org/jason/jason'
-    exec {
-        commandLine 'scp', '-r', project.version, tdir
-        workingDir wdir
-    }
-    exec {
-        commandLine 'cp', 'maven-metadata-local.xml', 'maven-metadata.xml'
-        workingDir wdir
-    }
-    exec {
-        commandLine 'scp', 'maven-metadata.xml', tdir
-        workingDir wdir
-    }
-  }
-}*/
 
 task publishMavenGitHub(dependsOn: [ 'build', 'publishToMavenLocal']) {
   doLast {
@@ -575,7 +350,7 @@ task copyRel (dependsOn: ['plugin', 'jar']) {
 // creates a zip file for a release
 task zipRel(type: Zip, dependsOn: copyRel) {
     from 'build/jason-'+project.version
-    baseName 'jason'
+    archiveBaseName = 'jason'
 }
 
 /**
