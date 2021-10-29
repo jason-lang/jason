@@ -44,7 +44,7 @@ the output should be
 [java] INFO: hello world.
 ----------------------------------------------
 
-3. Run the container c2
+4. Run the container c2
 
     ant -f bin/demo_distributed_jade.xml c2
 
@@ -63,3 +63,15 @@ and in the console from step 3:
 [java] INFO: I received a hello from c1
 [java] INFO: I received a hello from b
 ----------------------------------------------
+
+NB.: if Ant cannot be used, the JVM can be started as follows
+
+Main Container with agents a and d:
+
+  java -cp "$JASON_HOME/libs/*:bin/classes" jade.Boot -agents "a:jason.infra.jade.JadeAgArch(j-project,demo-case1.mas2j,a);d:jason.infra.jade.JadeAgArch(j-project,demo-case1.mas2j,d)"
+
+Other Container with agents b and c:
+
+  java -cp "$JASON_HOME/libs/*:bin/classes" jade.Boot -container -host localhost -agents "b:jason.infra.jade.JadeAgArch(j-project,demo-case1.mas2j,b);c1:jason.infra.jade.JadeAgArch(j-project,demo-case1.mas2j,c)"
+
+...
