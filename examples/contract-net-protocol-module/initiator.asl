@@ -9,7 +9,6 @@ priv::all_proposals_received
         NP = NO + NR. // participants = proposals + refusals
 
 // starts a CNP
-@p1
 +!startCNP(Task)
     <-  .print("Waiting participants for task ",Task," in ",this_ns ," ... ");
         .wait(1000); // wait participants register
@@ -30,8 +29,8 @@ priv::all_proposals_received
         !priv::contract(this_ns).
 
 // to let the agent to query the current state of the CNP
-@p2 +?cnp_state(S) <- ?priv::state(S).
-@p3 +?cnp_state(none).
++?cnp_state(S) <- ?priv::state(S).
++?cnp_state(none).
 
 {begin namespace(priv)}
     // .intend (g) is true if the agent is currently intending !g
