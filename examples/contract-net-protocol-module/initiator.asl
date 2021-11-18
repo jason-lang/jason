@@ -9,7 +9,7 @@ priv::all_proposals_received
         NP = NO + NR. // participants = proposals + refusals
 
 // starts a CNP
-+!startCNP(Task)
+@p1 +!startCNP(Task)
     <-  .print("Waiting participants for task ",Task," in ",this_ns ," ... ");
         .wait(1000); // wait participants register
         .df_search("participant",LP);

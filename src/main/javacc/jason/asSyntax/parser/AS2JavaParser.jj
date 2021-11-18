@@ -414,11 +414,11 @@ Literal plan_annotation() :
                                     L = new Pred("undefined");
                                   }
                                 } else {
-                                  L = new Pred(at.image);
+                                  L = new Pred(namespace, at.image);
                                   L.setSrcInfo(new SourceInfo(asSource, at.beginLine));
                                 }
                                 if (annots != null) {
-                                  L.addAnnots( annots.getAsList());
+                                  L.addAnnots( annots.getAsList() );
                                 }
                                 annotationBeginLine = k.beginLine;
                                 return L;
