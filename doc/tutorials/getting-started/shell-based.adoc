@@ -5,7 +5,7 @@
 
 Requirements:
 
-- Java >= 8
+- Java >= 15
 - Gradle
 
 You have to install https://gradle.org[Gradle] on your computer and then run the following commands to create a new application (the first time you run, it takes a while to finish since it downloads Jason):
@@ -44,7 +44,7 @@ If you want to run a Jason application that was not created with a `build.gradle
 
 Requirements:
 
-- Java >= 8
+- Java >= 15
 
 The first step is to download Jason https://sourceforge.net/projects/jason/files/jason/[here] and unzip it. Then configure some environment variables: `JASON_HOME` should be the directory where you unzip the downloaded file (it should have the directories `libs` and `scripts` inside) and `PATH`. For example;
 

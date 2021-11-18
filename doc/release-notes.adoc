@@ -16,6 +16,7 @@ ifdef::env-github[:outfilesuffix: .adoc]
 
 - The Jason Grammar was refactored and improved by Jan Pierry Coelho dos Santos
 
+- Java 15 is used
 
 == version 2.6  (2020-09-28)
 
