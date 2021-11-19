@@ -1,0 +1,23 @@
+/*
+    This demo illustrates the use of .current_intention
+    ---------------------------
+expected output
+
+[sample_agent] a
+[sample_agent] b
+[sample_agent] c
+[sample_agent] d
+[sample_agent] Current intention number is 3 and its state is running
+[sample_agent]      current goal is inspect(c)[source(self)] being pursued by plan p__2[code_line(14),code_src("file:sample_agent.asl"),source(self),url("file:sample_agent.asl")]
+[sample_agent]      its functor is 'inspect' and terms are [c]
+[sample_agent]
+[sample_agent]      another goal is start(b)[source(self)] in state waiting[reason(wait(2)[time(1802)])]
+[sample_agent]      another goal is start(d)[source(self)] in state waiting[reason(wait(4)[time(1965)])]
+[sample_agent]      another goal is start(a)[source(self)] in state waiting[reason(wait(1)[time(1667)])]
+[sample_agent] c
+
+*/
+
+MAS current_intention {
+    agents: sample_agent;
+}

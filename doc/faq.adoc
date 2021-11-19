@@ -1183,6 +1183,62 @@ The internal actions defined by the user can add new annotations to
   indicate particular types of errors (see the API documentation of http://jason.sourceforge.net/api/jason/JasonException.html[JasonException] for
   more information about that).
 
+=== How can an agent know (and reason about) its own goals?
+
+Jason provides a set of internal actions to help agents to reason about their intentional state (the list of these internal actions is available http://jason.sourceforge.net/api/jason/stdlib/package-summary.html#package.description[here]). This topic is also discussed in the http://jason.sourceforge.net/mini-tutorial/hello-bdi/[BDI Hello World] tutorial.
+
+As a simple example, the following code allows the agent to discover the identifier of the current goal and the state of others.
+
+[source,jasonagent]
+--------------------------------------------------------------------------------
+// creates 4 intentions
+!start(a).
+!start(b).
+!start(c).
+!start(d).
+
++!start(X) // simple loop printing X
+   <- .print(X);
+      .wait( math.random(1000)+1000 );
+      !inspect(X);
+      !start(X).
+
+// this plan uses BDI internal actions to discover the current goal
++!inspect(X)
+   <- .intention(Id,State,Stack,current); // gets the state of the current intention
+      .print("current intention number is ",Id," and its state is ",State);
+      Stack = [Top|_]; // get the intended means in the top of current intention
+      Top   = im(Label, { +!Goal },PlanBody,Unifier);
+      .print("current goal is ",Goal," being pursued by plan ",Label);
+      Goal  =.. [NameSpace,Functor,Terms,Annots];
+      .print("its functor is '",Functor,"' and terms are ",Terms);
+
+      // prints out all other intentions
+      for ( .intention(_,OtherState,[ im(_, { +!OtherGoal },_,_) |_]) & OtherGoal \== Goal) {
+          .print("another goal of mine is ",OtherGoal," in state ",OtherState);
+      }.
+--------------------------------------------------------------------------------
+
+The most important internal action used in the example is http://jason.sourceforge.net/api/jason/stdlib/intention.html[`.intention`].
+
+
+The output is:
+
+--------------------------------------------------------------------------------
+a
+b
+c
+d
+current intention number is 3 and its state is running
+current goal is inspect(c)[source(self)] being pursued by plan p__2[code_line(14),code_src("file:sample_agent.asl"),source(self)]
+      its functor is 'inspect' and terms are [c]
+
+another goal of mine is start(b)[source(self)] in state waiting[reason(wait(2)[time(1802)])]
+another goal of mine is start(d)[source(self)] in state waiting[reason(wait(4)[time(1965)])]
+another goal of mine is start(a)[source(self)] in state waiting[reason(wait(1)[time(1667)])]
+--------------------------------------------------------------------------------
+
+
 == Developing Jason
 
 See https://github.com/jason-lang/jason
