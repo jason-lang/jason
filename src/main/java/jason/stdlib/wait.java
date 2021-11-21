@@ -254,7 +254,11 @@ public class wait extends DefaultInternalAction {
         @Override public void eventAdded(Event e) {
             if (dropped)
                 return;
-            if (te != null && un.unifies(te, e.getTrigger())) {
+            testResumeCondition(e);
+        }
+
+        private void testResumeCondition(Event e) {
+            if (e != null && te != null && un.unifies(te, e.getTrigger())) {
                 resume(false);
             } else if (formula != null && ts.getAg().believes(formula, un)) { // each new event, just test the formula being waited
                 resume(false);
@@ -265,7 +269,29 @@ public class wait extends DefaultInternalAction {
             if (i.equals(si)) {
                 dropped = true;
                 resume(false);
+            } else {
+                testResumeCondition(null);
             }
+        }
+
+        @Override public void intentionSuspended(Trigger t, Intention i, Term reason) {
+            testResumeCondition(null);
+        }
+
+        @Override public void intentionAdded(Intention i) {
+            testResumeCondition(null);
+        }
+
+        @Override public void intentionExecuting(Intention i, Term reason) {
+           testResumeCondition(null);
+        }
+
+        @Override public void intentionResumed(Intention i, Term reason) {
+            testResumeCondition(null);
+        }
+
+        @Override public void intentionWaiting(Intention i, Term reason) {
+            testResumeCondition(null);
         }
 
         public String toString() {

@@ -150,7 +150,7 @@ Prints:
 
 NOTE: There are two `20` printed out since the query has 3 answers: { X=10, Y=5 }; { X=20, Y=5 }; and { X=20,Y=15}.
 
-== Concurrency
+== Plans execution interleaving
 
 Regarding concurrent execution in Jason, we recommend the reading of this https://github.com/jason-lang/jason/blob/master/doc/tech/concurrency.adoc[doc].
 
@@ -249,6 +249,51 @@ Prints:
 NOTE: There is no interleaving among the execution of the intentions.
 
 This pattern is used in the Santa Claus example that comes with Jason.
+
+=== Plan dependency (synchronisation)
+
+Suppose you have two plans:
+
+----
++!a <- action1.
++!b <- action2.
+----
+
+and you need that the second plan is executed only when the first is already finished. However, you are not able to define the order of events `+!a` and `+!b` (their are externally determined).
+
+An initial tentative is:
+
+----
++!a <- action1; .resume(b).
++!b <- .suspend; action2.
+----
+
+the second plan suspends itself and the first resumes the second when finished. It works often, but some very particular interleaving executions can break it: when the `.resume(b)` is executed and the second plan hasn't executed `.suspend` yet. The following example creates this situation (`.wait` is used to force the delay in the execution of `.suspend`):
+
+----
+!a.
+!b.
+
++!a <- .print(a); .resume(b).
++!b <- .wait(1000); .suspend; .print(b).
+----
+
+The first plan should wait for the second to be suspended by the internal action `.suspend` before resuming it:
+
+----
++!a <- action1; .wait( .suspended(b,suspend_ia) ); .resume(b).
++!b <- .suspend; action2.
+----
+
+If by some reason you do not want to change the two intitial plans, meta-events can be used:
+
+----
++!a <- action1.
++!b <- action2.
+
+^!b[state(pending)]  <- .suspend(b). // suspend b when starting
+^!a[state(finished)] <- .resume(b).  // resume b when a finishes
+----
 
 == Commitment
 
