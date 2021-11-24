@@ -261,6 +261,8 @@ Suppose you have two plans:
 
 and you need that the second plan is executed only when the first is already finished. However, you are not able to define the order of events `+!a` and `+!b` (their are externally determined).
 
+==== Procedural goals
+
 An initial tentative is:
 
 ----
@@ -294,6 +296,19 @@ If by some reason you do not want to change the two intitial plans, meta-events 
 ^!b[state(pending)]  <- .suspend(b). // suspend b when starting
 ^!a[state(finished)] <- .resume(b).  // resume b when a finishes
 ----
+
+==== Declarative goals
+
+If the first plan is for a *declarative goal* (i.e., the goal `!a` refers to a fact that the agent initially believes `a` is not true, and if the goal is achieved, the agent will believe that `a` has become true), another solution is possible: the second plan can simply wait for the agent to believe in `a`.
+
+----
++!a <- action1.
++!b <- .wait(a); action2.
+----
+
+In this case, of course, we should ensure that `action1` will change the environment so that the agent will perceive `a` later.
+
+Indeed we can relax a bit this pattern, and replace the `a` in `.wait(a)` by any belief we know that will hold after the first plan execution.
 
 == Commitment
 
