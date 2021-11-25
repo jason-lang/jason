@@ -83,5 +83,6 @@ public interface RuntimeServices {
     default public void               dfSubscribe(String agName, String service, String type) {}
 
     default public Map<String, Set<String>> getDF() { return null; }
+    default public Map<String,Map<String,Object>> getWP() { return null; }
 
 }

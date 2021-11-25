@@ -83,5 +83,10 @@ public class DelegatedRuntimeServices implements RuntimeServices {
     public Map<String, Set<String>> getDF() {
         return delegate.getDF();
     }
+
+    @Override
+    public Map<String, Map<String, Object>> getWP() {
+        return delegate.getWP();
+    }
 }
 
