@@ -159,13 +159,15 @@ public class MindInspectorWebImpl extends MindInspectorWeb {
                         }
                         if (runner != null) {
                             var wp = runner.getWP();
-                            for (String a: wp.keySet()) {
-                                if (! allAgs.contains(a)) {
-                                    var uri = "";
-                                    try {
-                                        uri = wp.get(a).get("uri").toString();
-                                    } catch (Exception e) {}
-                                    responseBody.write( (". <a href=\""+uri+"\" target=\"am\" style=\"font-family: arial; text-decoration: none\">"+a+"</a><br/>").getBytes());
+                            if (wp != null) {
+                                for (String a: wp.keySet()) {
+                                    if (! allAgs.contains(a)) {
+                                        var uri = "";
+                                        try {
+                                            uri = wp.get(a).get("uri").toString();
+                                        } catch (Exception e) {}
+                                        responseBody.write( (". <a href=\""+uri+"\" target=\"am\" style=\"font-family: arial; text-decoration: none\">"+a+"</a><br/>").getBytes());
+                                    }
                                 }
                             }
                             if (!runner.getDF().isEmpty()) {

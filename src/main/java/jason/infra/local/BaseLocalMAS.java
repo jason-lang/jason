@@ -233,4 +233,19 @@ public abstract class BaseLocalMAS extends NotificationBroadcasterSupport {
         }
         return a;
     }
+
+    public Map<String,Map<String,Object>> getWP() {
+        return null; // it is faster to return null than creating a map with nothing new every call (in the future, if we have meta info for jason agents, we can implement this method)
+    }
+
+    /*public Map<String,Map<String,Object>> getWP() {
+        var res = new HashMap<String,Map<String,Object>>();
+        for (String a: getAgs().keySet()) {
+            var md = new HashMap<String,Object>();
+            md.putIfAbsent("type", "JasonAgent");
+            res.put(a, md);
+        }
+        return res;
+    }*/
+
 }

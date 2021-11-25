@@ -71,5 +71,10 @@ public abstract class BaseRuntimeServices implements RuntimeServices {
     public Map<String, Set<String>> getDF() {
         return masRunner.getDF();
     }
+
+    @Override
+    public Map<String, Map<String, Object>> getWP() {
+        return masRunner.getWP();
+    }
 }
 
