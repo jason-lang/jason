@@ -158,11 +158,12 @@ public class MindInspectorWebImpl extends MindInspectorWeb {
                             responseBody.write( ("- <a href=\"/agent-mind/"+a+"/latest\" target=\"am\" style=\"font-family: arial; text-decoration: none\">"+a+"</a><br/>").getBytes());
                         }
                         if (runner != null) {
-                            for (String a: runner.getAgentsNames()) {
+                            var wp = runner.getWP();
+                            for (String a: wp.keySet()) {
                                 if (! allAgs.contains(a)) {
                                     var uri = "";
                                     try {
-                                        uri = runner.getWP().get(a).get("uri").toString();
+                                        uri = wp.get(a).get("uri").toString();
                                     } catch (Exception e) {}
                                     responseBody.write( (". <a href=\""+uri+"\" target=\"am\" style=\"font-family: arial; text-decoration: none\">"+a+"</a><br/>").getBytes());
                                 }
