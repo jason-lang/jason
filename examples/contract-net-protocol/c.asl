@@ -31,7 +31,7 @@ all_proposals_received(CNPId,NP) :-              // NP = number of participants
 +!bid(Id,LP) // the deadline of the CNP is now + 4 seconds (or all proposals received)
    <- .wait(all_proposals_received(Id,.length(LP)), 4000, _).
 +!winner(Id,LO,WAg)
-   :  .findall(offer(O,A),propose(CNPId,O)[source(A)],LO) & LO \== [] // there is a offer
+   :  .findall(offer(O,A),propose(Id,O)[source(A)],LO) & LO \== [] // there is a offer
    <- .print("Offers are ",LO);
       .min(LO,offer(WOf,WAg)); // the first offer is the best
       .print("Winner is ",WAg," with ",WOf).
