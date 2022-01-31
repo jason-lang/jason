@@ -41,11 +41,11 @@ public class TSTest extends TestCase {
         Trigger te1 = ASSyntax.parseTrigger("+a(10)");
 
         try {
-            List<Option> rp = ts.relevantPlans(te1);
+            List<Option> rp = ts.relevantPlans(te1, null);
             // System.out.println("RP="+rp);
             assertEquals(rp.size(), 2);
 
-            rp = ts.applicablePlans(rp);
+            rp = ts.applicablePlans(rp, null);
             // System.out.println("AP="+rp);
             assertEquals(rp.size(), 1);
 
@@ -59,11 +59,11 @@ public class TSTest extends TestCase {
         Trigger te2 = ASSyntax.parseTrigger("+a(20)");
 
         try {
-            List<Option> rp = ts.relevantPlans(te2);
+            List<Option> rp = ts.relevantPlans(te2, null);
             // System.out.println("RP="+rp);
             assertEquals(rp.size(), 2);
 
-            rp = ts.applicablePlans(rp);
+            rp = ts.applicablePlans(rp, null);
             // System.out.println("AP="+rp);
             assertEquals(rp.size(), 1);
 

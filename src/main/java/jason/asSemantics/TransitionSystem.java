@@ -484,12 +484,10 @@ public class TransitionSystem implements Serializable {
                     }
                 }
 
-                /*if (ag.hasCustomSelectOption() || setts.verbose() == 2) // verbose == 2 means debug mode
+                if (ag.hasCustomSelectOption() || setts.verbose() == 2) // verbose == 2 means debug mode
                     stepDeliberate = State.RelPl;
                 else
-                    stepDeliberate = State.FindOp;*/
-
-                stepDeliberate = State.FindOp; // TODO: JasonER does not support custom selectOption yet (TBD)
+                    stepDeliberate = State.FindOp;
             }
         } else {
             // Rule SelEv2
@@ -532,26 +530,34 @@ public class TransitionSystem implements Serializable {
     }
 
     private void applyRelPl() throws JasonException {
-        // get all relevant plans for the selected event
-        C.RP = relevantPlans(C.SE.trigger);
+        if (C.SE.getOption() == null) { // no option yet
+            // get all relevant plans for the selected event
+            C.RP = relevantPlans(C.SE.trigger, C.SE);
 
-        // Rule Rel1
-        if (C.RP != null || setts.retrieve())
-            // retrieve is mainly for Coo-AgentSpeak
+            // Rule Rel1
+            if (C.RP != null || setts.retrieve())
+                // retrieve is mainly for Coo-AgentSpeak
+                stepDeliberate = State.ApplPl;
+            else
+                applyRelApplPlRule2("relevant");
+        } else {
             stepDeliberate = State.ApplPl;
-        else
-            applyRelApplPlRule2("relevant");
+        }
     }
 
     private void applyApplPl() throws JasonException {
-        C.AP = applicablePlans(C.RP);
+        if (C.SE.getOption() == null) { // no option yet
+            C.AP = applicablePlans(C.RP, C.SE);
 
-        // Rule Appl1
-        if (C.AP != null || setts.retrieve())
-            // retrieve is mainly for Coo-AgentSpeak
+            // Rule Appl1
+            if (C.AP != null || setts.retrieve())
+                // retrieve is mainly for Coo-AgentSpeak
+                stepDeliberate = State.SelAppl;
+            else
+                applyRelApplPlRule2("applicable");
+        } else {
             stepDeliberate = State.SelAppl;
-        else
-            applyRelApplPlRule2("applicable");
+        }
     }
 
     /** generates goal deletion event */
@@ -614,7 +620,11 @@ public class TransitionSystem implements Serializable {
 
     private void applySelAppl() throws JasonException {
         // Rule SelAppl
-        C.SO = ag.selectOption(C.AP);
+        if (C.SE.getOption() == null) { // no option yet (an option could be set by selEvt JasonER part)
+            C.SO = ag.selectOption(C.AP);
+        } else {
+            C.SO = C.SE.getOption();
+        }
 
         if (C.SO != null) {
             stepDeliberate = State.AddIM;
@@ -639,7 +649,7 @@ public class TransitionSystem implements Serializable {
 
         // consider scope (new in JasonER)
         // TODO: implement Scope for RelPl ApplPl SelAppl (besides the fast track of applyFindOp)
-        C.SO = C.SE.getOption();
+        C.SO = C.SE.getOption(); // set by selEvt (JasonER part)
         if (C.SO != null) { // an option was previously computed
             return;
         }
@@ -677,7 +687,7 @@ public class TransitionSystem implements Serializable {
     private Option getOption(Event evt, Plan pl, Unifier relUn) {
         if (evt.isInternal()) {
             // use IM vars in the context for sub-plans (new in JasonER)
-            for (IntendedMeans im: C.SE.getIntention()) {
+            for (IntendedMeans im: evt.getIntention()) {
                 if (im.getPlan().hasSubPlans() && im.getPlan().getSubPlans().get(pl.getLabel()) != null) {
                     relUn = im.triggerUnif.clone();
                     break;
@@ -1264,9 +1274,36 @@ public class TransitionSystem implements Serializable {
     /* auxiliary functions for the semantic rules */
     /**********************************************/
 
-    public List<Option> relevantPlans(Trigger teP) throws JasonException {
+    public List<Option> relevantPlans(Trigger teP, Event evt) throws JasonException {
         Trigger te = teP.clone();
         List<Option> rp = null;
+
+        // gets the proper plan library (root, inner scope, ...)
+        PlanLibrary plib = ag.getPL();
+        if (evt != null && evt.isInternal() && !evt.getIntention().isFinished()) {
+            Plan p = evt.getIntention().peek().getPlan();
+            if (p.hasSubPlans()) {
+                plib = p.getSubPlans();
+            } else {
+                plib = p.getScope();
+            }
+        }
+
+        while (plib != null) {
+            List<Plan> candidateRPs = plib.getCandidatePlans(te);
+            if (candidateRPs != null) {
+                for (Plan pl : candidateRPs) {
+                    Unifier relUn = pl.isRelevant(te, null);
+                    if (relUn != null) {
+                        if (rp == null) rp = new LinkedList<>();
+                        rp.add(new Option(pl, relUn));
+                    }
+                }
+            }
+            plib = plib.getFather();
+        }
+
+        /* (previous to JasonER)
         List<Plan> candidateRPs = ag.pl.getCandidatePlans(te);
         if (candidateRPs != null) {
             for (Plan pl : candidateRPs) {
@@ -1276,11 +1313,11 @@ public class TransitionSystem implements Serializable {
                     rp.add(new Option(pl, relUn));
                 }
             }
-        }
+        }*/
         return rp;
     }
 
-    public List<Option> applicablePlans(List<Option> rp) throws JasonException {
+    public List<Option> applicablePlans(List<Option> rp, Event evt) throws JasonException {
         synchronized (C.syncApPlanSense) {
             List<Option> ap = null;
             if (rp != null) {
@@ -1291,14 +1328,29 @@ public class TransitionSystem implements Serializable {
                     if (getLogger().isLoggable(Level.FINE))
                         getLogger().log(Level.FINE, "option for "+C.SE.getTrigger()+" is plan "+opt.getPlan().getLabel() + " " + opt.getPlan().getTrigger() + " : " + context + " -- with unification "+opt.getUnifier());
 
+                    Unifier relUn = opt.getUnifier().clone();
+
+                    if (evt != null && evt.isInternal()) {
+                        // use IM vars in the context for sub-plans (new in JasonER)
+                        for (IntendedMeans im: evt.getIntention()) {
+                            if (im.getPlan().hasSubPlans() && im.getPlan().getSubPlans().get(opt.getPlan().getLabel()) != null) {
+                                relUn.compose(im.triggerUnif);
+                                break;
+                            }
+                        }
+                    }
+
                     if (context == null) { // context is true
                         if (ap == null) ap = new LinkedList<>();
                         ap.add(opt);
+                        opt.setUnifier(relUn);
                         if (getLogger().isLoggable(Level.FINE))
                             getLogger().log(Level.FINE, "     "+opt.getPlan().getLabel() + " is applicable with unification "+opt.getUnifier());
                     } else {
                         boolean allUnifs = opt.getPlan().isAllUnifs();
-                        Iterator<Unifier> r = context.logicalConsequence(ag, opt.getUnifier());
+
+
+                        Iterator<Unifier> r = context.logicalConsequence(ag, relUn);
                         boolean isApplicable = false;
                         if (r != null) {
                             while (r.hasNext()) {
