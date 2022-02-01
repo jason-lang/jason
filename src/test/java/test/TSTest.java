@@ -45,7 +45,7 @@ public class TSTest extends TestCase {
             // System.out.println("RP="+rp);
             assertEquals(rp.size(), 2);
 
-            rp = ts.applicablePlans(rp, null);
+            rp = ts.applicablePlans(rp);
             // System.out.println("AP="+rp);
             assertEquals(rp.size(), 1);
 
@@ -63,7 +63,7 @@ public class TSTest extends TestCase {
             // System.out.println("RP="+rp);
             assertEquals(rp.size(), 2);
 
-            rp = ts.applicablePlans(rp, null);
+            rp = ts.applicablePlans(rp);
             // System.out.println("AP="+rp);
             assertEquals(rp.size(), 1);
 
