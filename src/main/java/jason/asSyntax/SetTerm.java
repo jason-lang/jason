@@ -13,4 +13,5 @@ public interface SetTerm extends Term, Collection<Term>, Iterable<Term> {
     public void difference(Collection<Term> lt);
 
     public ListTerm getAsListTerm();
+    public SetTerm deepClone();
 }

@@ -33,9 +33,13 @@ public class SetTermImpl extends DefaultTerm implements SetTerm {
     }
 
 
-    /** make a hard copy of the terms */
     @Override
     public SetTerm clone() {
+        return this;
+    }
+
+    @Override
+    public SetTerm deepClone() {
         SetTermImpl t = new SetTermImpl();
         for (Term a: this.set)
             t.set.add(a.clone());
@@ -43,7 +47,6 @@ public class SetTermImpl extends DefaultTerm implements SetTerm {
         return t;
     }
 
-    /** make a hard copy of the terms */
     @Override
     public SetTerm capply(Unifier u) {
         return this; // TODO: think about this!

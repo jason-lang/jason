@@ -16,4 +16,5 @@ public interface MapTerm extends Term {
     public Term remove(Term k);
     public Set<Term> keys();
     public Collection<Term> values();
+    public MapTerm deepClone();
 }
