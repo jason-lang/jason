@@ -34,8 +34,9 @@ ifdef::env-github[:outfilesuffix: .adoc]
 .queue.add(Q,a);                 // Q = [a]
 .queue.add(Q,b);                 // Q = [a, b]
 .queue.add_all(Q,[c,d,e]);       // Q = [a, b, c, d, e]
+.queue.copy(Q,Bak);              // Bak = [a, b, c, d, e]
 .queue.head(Q,H);                // H = a
-.queue.remove(Q,H);              // H = a, Q = [b, c, d, e]
+.queue.remove(Q,H);              // H = a, Q = [b, c, d, e]; Bak = [a, b, c, d, e]
 .length(Q,X);                    // X = 4
 // iteration
 for ( .member(V,Q) ) {
@@ -111,7 +112,8 @@ java -cp "$JASON_HOME/libs/*" jason.infra.centralised.RunCentralisedMAS \
 .findall(K, .member(K,S), LL)  // LL = [5,p(2)]
 .set.add(S,5);
 .set.intersection(S,V);        // S = {5}
-.set.clear(S);                 // S = {}
+.set.copy(S,Bak);              // Bak = {5}
+.set.clear(S);                 // S = {}; Bak = {5}
 // iteration
 for ( .member(V,S) ) {
    .print(K,V);
@@ -138,7 +140,8 @@ for ( .member(V,S) ) {
 .map.get(M,c,V);                 // fail
 .map.get(M,c,V,0);               // V = 0
 .map.remove(M,a,V);              // M = {b->ok} V = 20
-.map.clear(M);                   // M = {}
+.map.copy(M,Bak);                // Bak = {b->ok}
+.map.clear(M);                   // M = {}; Bak = {b->ok}
 // iteration
 for ( .map.key(M,K) & .map.get(M,K,V) ) {
    .print(K,V);

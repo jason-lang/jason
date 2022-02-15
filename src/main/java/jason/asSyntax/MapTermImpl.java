@@ -32,10 +32,21 @@ public class MapTermImpl extends DefaultTerm implements MapTerm {
         map = new TreeMap<>();
     }
 
-
-    /** make a hard copy of the terms */
     @Override
     public MapTerm clone() {
+        return this;
+        /* deep clone causes a problem for "for each" loops. so this code is commented.
+         * and an internal action is used to create a copy of maps. (idem for sets and queues)
+
+        MapTermImpl t = new MapTermImpl();
+        for (Term k: this.map.keySet())
+            t.map.put(k.clone(), map.get(k).clone());
+        t.hashCodeCache = this.hashCodeCache;
+        return t;*/
+    }
+
+    @Override
+    public MapTerm deepClone() {
         MapTermImpl t = new MapTermImpl();
         for (Term k: this.map.keySet())
             t.map.put(k.clone(), map.get(k).clone());
@@ -43,7 +54,6 @@ public class MapTermImpl extends DefaultTerm implements MapTerm {
         return t;
     }
 
-    /** make a hard copy of the terms */
     @Override
     public MapTerm capply(Unifier u) {
         return this; // TODO: think about this!
