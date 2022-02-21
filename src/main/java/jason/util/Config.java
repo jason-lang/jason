@@ -539,11 +539,11 @@ public class Config extends Properties {
 
 
     public boolean tryToFixJarFileConf(String jarEntry, String jarFilePrefix) {
-        String jarFile = getProperty(jarEntry);
+        String jarFile   = getProperty(jarEntry);
         String fileInJar = getJarFileForFixTest(jarEntry);
         if (jarFile == null || !checkJar(jarFile, fileInJar)) {
-            if (showFixMsgs)
-                System.out.println("Wrong configuration for " + jarFilePrefix + ", current is " + jarFile);
+            //if (showFixMsgs)
+            //    System.out.println("Wrong configuration for " + jarFilePrefix + ", current is " + jarFile);
 
             // try to get by class loader
             try {
@@ -552,7 +552,7 @@ public class Config extends Properties {
                     fromLoader = fromLoader.substring(5);
                 if (new File(fromLoader).getName().startsWith(jarFilePrefix) && checkJar(fromLoader, fileInJar)) {
                     if (showFixMsgs)
-                        System.out.println("found at " + fromLoader+" by class loader");
+                        System.out.println("Configuration of '"+jarEntry+"' found at " + fromLoader+", based on class loader");
                     put(jarEntry, fromLoader);
                     return true;
                 }
@@ -563,7 +563,7 @@ public class Config extends Properties {
             if (checkJar(jarFile, fileInJar)) {
                 put(jarEntry, jarFile);
                 if (showFixMsgs)
-                    System.out.println("found at " + jarFile+" by classpath");
+                    System.out.println("Configuration of '"+jarEntry+"' found at " + jarFile+", based on classpath");
                 return true;
             }
 
@@ -572,7 +572,7 @@ public class Config extends Properties {
             if (checkJar(jarFile, fileInJar)) {
                 put(jarEntry, jarFile);
                 if (showFixMsgs)
-                    System.out.println("found at " + jarFile+" in eclipse installation");
+                    System.out.println("Configuration of '"+jarEntry+"' found at " + jarFile+" in eclipse installation");
                 return true;
             }
 
@@ -611,7 +611,7 @@ public class Config extends Properties {
                     try {
                         put(jarEntry, new File(jarFile).getCanonicalFile().getAbsolutePath());
                         if (showFixMsgs)
-                            System.out.println("found at " + jarFile + " based on JACAMO_HOME");
+                            System.out.println("Configuration of '"+jarEntry+"' found at " + jarFile + ", based on JASON_HOME");
                         return true;
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -625,7 +625,7 @@ public class Config extends Properties {
                 try {
                     put(jarEntry, new File(jarFile).getCanonicalFile().getAbsolutePath());
                     if (showFixMsgs)
-                        System.out.println("found at " + jarFile);
+                        System.out.println("Configuration of '"+jarEntry+"' found at " + jarFile);
                     return true;
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -674,7 +674,7 @@ public class Config extends Properties {
                     System.out.print("Searching " + jarFilePrefix + " in " + jwsDir + " ... ");
                 if (jarFile != null && checkJar(jarFile)) {
                     if (showFixMsgs)
-                        System.out.println("found at " + jarFile);
+                        System.out.println("Configuration of '"+jarEntry+"' found at " + jarFile);
                     put(jarEntry, jarFile);
                     return true;
                 } else {
