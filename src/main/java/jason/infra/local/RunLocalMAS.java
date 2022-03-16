@@ -73,7 +73,8 @@ public class RunLocalMAS extends BaseLocalMAS implements RunLocalMASMBean {
 
     public RunLocalMAS() {
         super();
-        RuntimeServicesFactory.set( new LocalRuntimeServices(this) );
+        if (RuntimeServicesFactory.get() == null)
+            RuntimeServicesFactory.set( new LocalRuntimeServices(this) );
         runner = this;
     }
 

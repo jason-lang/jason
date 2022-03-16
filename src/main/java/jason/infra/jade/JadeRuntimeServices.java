@@ -250,4 +250,15 @@ public class JadeRuntimeServices implements RuntimeServices {
             e.printStackTrace();
         }
     }
+
+    private Collection<String> defaultAgArchs = new ArrayList<>();
+    @Override
+    public void registerDefaultAgArch(String agArch) {
+        defaultAgArchs.add(agArch);
+    }
+    @Override
+    public Collection<String> getDefaultAgArchs() {
+        return defaultAgArchs;
+    }
+
 }

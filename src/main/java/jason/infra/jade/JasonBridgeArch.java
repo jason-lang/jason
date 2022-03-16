@@ -1,5 +1,6 @@
 package jason.infra.jade;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -78,11 +79,13 @@ public class JasonBridgeArch extends AgArch {
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<Literal> perceive() {
-        super.perceive();
-
+    public Collection<Literal> perceive() {
+        var fromSuper = super.perceive();
         if (!isRunning()) return null;
-        if (getEnvironmentAg() == null) return null;
+
+        if (getEnvironmentAg() == null) {
+            return fromSuper;
+        }
 
         @SuppressWarnings("rawtypes")
         List percepts = null;
@@ -213,7 +216,10 @@ public class JasonBridgeArch extends AgArch {
     @Override
     public void act(ActionExec action) {
         if (!isRunning()) return;
-        if (getEnvironmentAg() == null) return;
+        if (getEnvironmentAg() == null) {
+            super.act(action);
+            return;
+        }
 
         try {
             Term acTerm = action.getActionTerm();

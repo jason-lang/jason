@@ -28,7 +28,6 @@ import jason.asSyntax.StringTerm;
 import jason.asSyntax.directives.DirectiveProcessor;
 import jason.asSyntax.directives.Include;
 import jason.control.ExecutionControlGUI;
-import jason.infra.local.LocalRuntimeServices;
 import jason.infra.local.RunLocalMAS;
 import jason.mas2j.AgentParameters;
 import jason.mas2j.ClassParameters;
@@ -231,6 +230,7 @@ public class RunJadeMAS extends RunLocalMAS {
                         if (ap.getNbInstances() > 1)
                             numberedAg += (cAg + 1); //String.format("%0"+String.valueOf(ap.qty).length()+"d", cAg + 1);
                         logger.info("Creating agent " + numberedAg + " (" + (cAg + 1) + "/" + ap.getNbInstances() + ")");
+                        ap.addArchClass(RuntimeServicesFactory.get().getDefaultAgArchs());
                         AgentController ac = cc.createNewAgent(numberedAg, JadeAgArch.class.getName(), new Object[] { ap, isDebug(), getProject().getControlClass() != null });
                         ags.put(numberedAg,ac);
                     }
