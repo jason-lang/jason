@@ -1,0 +1,30 @@
+/*
+   Gradle build file to create new Jason Applications
+   based on Jason 3.0
+*/
+
+defaultTasks 'run'
+
+apply plugin: 'java'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(15)
+    }
+}
+
+repositories {
+    mavenCentral()
+    maven { url "https://raw.githubusercontent.com/jacamo-lang/mvn-repo/master" }
+}
+
+dependencies {
+    implementation('org.jason:jason:3.1-SNAPSHOT')
+}
+
+task run (type: JavaExec, dependsOn: 'classes') {
+    standardInput = System.in
+    main = 'jason.util.CreateNewProject'
+    args System.getProperty("exec.args", "").split()
+    classpath sourceSets.main.runtimeClasspath
+}

@@ -32,7 +32,10 @@ public class NewAgentGUI extends StartNewAgentGUI {
         }
         if (agDecl.getSource() == null) {
             try {
-                agDecl.setSource(buffer.getDirectory() + agDecl.name + "." + MAS2JProject.AS_EXT);
+                var dir = buffer.getDirectory();
+                if (dir.startsWith("file:"))
+                    dir = dir.substring(5);
+                agDecl.setSource(dir + agDecl.name + "." + MAS2JProject.AS_EXT);
             } catch (Exception e) {
                 e.printStackTrace();
             }
