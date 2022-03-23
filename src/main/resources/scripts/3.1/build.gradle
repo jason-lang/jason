@@ -19,7 +19,7 @@ repositories {
 }
 
 dependencies {
-    implementation('org.jason:jason:3.1-SNAPSHOT')
+    implementation('org.jason:jason:3.1')
 }
 
 task run (type: JavaExec, dependsOn: 'classes') {
