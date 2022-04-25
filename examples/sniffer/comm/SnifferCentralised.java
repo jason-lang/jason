@@ -3,14 +3,8 @@ package comm;
 import jason.RevisionFailedException;
 import jason.architecture.AgArch;
 import jason.asSemantics.Message;
-import jason.asSyntax.ASSyntax;
-import jason.asSyntax.Atom;
-import jason.asSyntax.Literal;
-import jason.asSyntax.StringTermImpl;
-import jason.asSyntax.Structure;
-import jason.infra.centralised.CentralisedAgArch;
-import jason.infra.centralised.MsgListener;
-import jason.infra.centralised.RunCentralisedMAS;
+import jason.asSyntax.*;
+import jason.infra.local.*;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -25,8 +19,8 @@ public class SnifferCentralised extends AgArch implements MsgListener {
 
     @Override
     public void init() {
-        if (RunCentralisedMAS.getRunner() != null) // is it the case of centralised platform being used
-            CentralisedAgArch.addMsgListener(this);
+        if (RunLocalMAS.getRunner() != null) // is it the case of Local platform being used
+            LocalAgArch.addMsgListener(this);
     }
 
     // method called-back when some message is exchanged
