@@ -10,8 +10,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 /**
- * Customisation of an agent architecture to sniff the MAS with
- * Centralised infrastructure.
+ * Customisation of an agent architecture to sniff the MAS running locally
  *
  * @author Jomi
  */

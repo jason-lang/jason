@@ -20,7 +20,7 @@ MAS sniffer {
            agentArchClass comm.SnifferCentralised
            beliefBaseClass jason.bb.JDBCPersistentBB(
             "org.hsqldb.jdbcDriver", // driver for HSQLDB
-            "jdbc:hsqldb:log", // URL connection
+            "jdbc:hsqldb:file:sniff", // URL connection
             "sa", // user
             "", // password
             "[msgSent(7,log)]");

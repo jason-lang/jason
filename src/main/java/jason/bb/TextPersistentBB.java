@@ -7,6 +7,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import jason.asSemantics.Agent;
+import jason.asSyntax.Atom;
 import jason.asSyntax.Literal;
 
 /**
@@ -19,17 +20,20 @@ public class TextPersistentBB extends ChainBBAdapter {
     private static Logger logger = Logger.getLogger(TextPersistentBB.class.getName());
 
     private File file = null;
+    private Agent ag  = null;
 
     public TextPersistentBB() { }
     public TextPersistentBB(BeliefBase next) {
         super(next);
     }
 
+    @Override
     public void init(Agent ag, String[] args) {
+        this.ag = ag;
         if (ag != null) {
             try {
                 file = new File(ag.getTS().getAgArch().getAgName() + ".bb");
-                logger.fine("reading from file " + file);
+                logger.info("reading BB from file " + file);
                 if (file.exists()) {
                     ag.parseAS(file.getAbsoluteFile());
                     ag.addInitialBelsInBB();
@@ -40,13 +44,14 @@ public class TextPersistentBB extends ChainBBAdapter {
         }
     }
 
+    @Override
     public void stop() {
         try {
-            logger.fine("writting to file " + file);
+            logger.info("storing BB in file " + file);
             PrintWriter out = new PrintWriter(new FileWriter(file));
-            out.println("// BB stored by TextPersistentBB\n");
+            out.println("// BB stored by TextPersistentBB for agent '"+ag.getTS().getAgArch().getAgName()+"'\n");
             for (Literal b: this) {
-                if (! b.isRule() && !b.hasAnnot(BeliefBase.TPercept)) {
+                if (! b.isRule() && !b.hasAnnot(BeliefBase.TPercept) && !b.getNS().equals(new Atom("kqml"))) {
                     out.println(b.toString()+".");
                 }
             }
