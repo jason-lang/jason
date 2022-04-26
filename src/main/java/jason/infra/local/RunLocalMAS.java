@@ -888,16 +888,17 @@ public class RunLocalMAS extends BaseLocalMAS implements RunLocalMASMBean {
 
         isRunning = false;
         try {
-            // creates a thread that guarantees system.exit(.) in deadline seconds
+            // creates a thread that guarantees system.exit(.) in 3*deadline seconds
             // (the stop of agents can block, for instance)
+        	// we need to wait more than deadline, otherwise stopAg does not have time to finish
             if (stopJVM) {
                 new Thread() {
                     public void run() {
                         try {
                             if (deadline == 0)
-                                sleep(5000);
+                                sleep(15000);
                             else
-                                sleep(deadline);
+                                sleep(3*deadline);
                         } catch (InterruptedException e) {}
                         System.exit(exitValue);
                     }

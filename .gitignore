@@ -43,3 +43,5 @@ doc/tech/patterns.html
 doc/tutorials/getting-started/index.html
 src/main/resources/np31.zip
 src/main/resources/scripts/np31.zip
+examples/sniffer/sniff.script
+examples/sniffer/sniff.properties
