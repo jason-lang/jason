@@ -9,7 +9,7 @@
 
 /* ---- tell performatives ---- */
 
-@kqmlReceivedTellStructure
+@kqmlReceivedTellStructure[atomic]
 +!kqml_received(Sender, tell, NS::Content, _)
    :  .literal(Content) &
       .ground(Content) &
@@ -36,10 +36,10 @@
 +!add_all_kqml_received(Sender,[_|T])
    <- !add_all_kqml_received(Sender,T).
 
-@kqmlReceivedUnTell
+@kqmlReceivedUnTell[atomic]
 +!kqml_received(Sender, untell, NS::Content, _)
-   <- .add_nested_source(Content, Sender, CA);
-      --NS::CA.
+    : .add_nested_source(Content, Sender, CA)
+   <- --NS::CA.
 
 
 /* ---- achieve performatives ---- */
