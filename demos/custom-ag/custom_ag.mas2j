@@ -1,0 +1,19 @@
+/*
+    custom_ag
+    ---------------------------
+
+    Jason Project File
+
+    example of custom agent (initAg method)
+
+    the initAg method gets the myarg value (a number) and creates
+    `myarg` goals `do(.)`
+    
+*/
+
+MAS custom_ag {
+
+    agents:
+      sample_agent [myarg=5]
+         agentClass MyAg;
+}
