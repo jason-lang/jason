@@ -202,6 +202,8 @@ task sourceJar (type : Jar) {
     archiveBaseName = 'jason'
     classifier = 'sources'
     from sourceSets.main.allSource
+    duplicatesStrategy = 'include'
+    
 }
 
 artifacts {
