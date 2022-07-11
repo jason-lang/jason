@@ -74,8 +74,13 @@ public class ReplAgGUI extends ReplAg {
         output = new JTextArea(5,50);
         output.setFont(font);
         output.setEditable(false);
-        output.setText("Example of operations you can type:\n   +bel; !goal; .add_plan({+!goal <- .print(ok) }); !!goal; \n   .send(bob,tell,hello);\n");
-        output.append("   ?bel(A); .findall(X,bel(X),L); \n");
+        output.setText("Example of operations you can type:\n");
+        output.append("   +bel(a)\n");
+        output.append("   ?bel(A)\n");
+        output.append("   .send(bob,tell,hello)\n");
+        output.append("   .findall(X,bel(X),L); \n");
+        output.append("   .add_plan({+!goal <- .print(ok) })\n");
+        output.append("   !goal\n");
         output.append("   .mi // to open mind inspector\n");
         output.append("   .verbose(2) // to show debug messages\n");
         output.append("   .clear // clean console\n");
