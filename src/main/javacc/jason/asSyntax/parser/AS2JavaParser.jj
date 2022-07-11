@@ -502,10 +502,7 @@ PlanBody plan_body_factor() :
 {
   Object F; PlanBody R = null;
 }
-{
-  F = body_formula()    {
-                          if (!(F instanceof PlanBody)) throw new ParseException(getSourceRef(F)+" "+F+" is not a body literal!"); // Dúvida: Existe algum controle aqui que envolvia os if/for/while?
-                        }
+{ F = body_formula()   { if (!(F instanceof PlanBody)) throw new ParseException(getSourceRef(F)+" "+F+" is not a body literal!"); } // Dúvida: Existe algum controle aqui que envolvia os if/for/while?
   [ <TK_PAND> R = plan_body_factor() ]
                         {
                           if (R == null)
@@ -644,7 +641,7 @@ Object body_formula() :
       B = literal()
     )
     |
-      (
+    (
         [
           "?"             { formType = BodyType.test; }
           |
@@ -661,9 +658,17 @@ Object body_formula() :
               | "-"       { formType = BodyType.delBelNewFocus; }
             ]
         ]
-        B = log_expr()
-      )
+
+        // look for "(!g3 ||| !g4)" against "(X > 2)" / plan body agains log expression
+        ( LOOKAHEAD(log_expr())
+          B = log_expr()
+        |
+          LOOKAHEAD("(" plan_body())
+          "(" B = plan_body() ")"
+        )
+    )
   )
+
 
                         {
                           if (formType == BodyType.action && B instanceof RelExpr) {

@@ -1,0 +1,13 @@
+/*
+    concurrent_goals
+    ---------------------------
+
+    demo of concurrent goals, see sample_agent.asl
+
+    Jason 3.1
+    June 28, 2022 - 20:17:25
+*/
+
+MAS concurrent_goals {
+    agents: sample_agent;
+}

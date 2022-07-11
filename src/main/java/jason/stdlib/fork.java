@@ -27,40 +27,18 @@ import jason.asSyntax.Trigger;
 import jason.util.Pair;
 
 /**
-Implementation of <b>.fork</b> (used for |& and || operators).
+Implementation of <b>.fork</b> (used for |&| and ||| operators).
 
 <p>Syntax:
 <pre>
-  <i>plan_body1</i> "|&" | "||" <i>plan_body2</i> ....
+  <i>plan_body1</i> "|&|" | "|||" <i>plan_body2</i> ....
 </pre>
 </p>
 
-|& is concurrent and: both   plan_body1 and plan_body2 have to finishes successfully
-|| is concurrent or : either plan_body1 or  plan_body2 have to finishes successfully
-
-
-<p>Example:
-<pre>
-</pre>
-</p>
+|&| is concurrent and: both   plan_body1 and plan_body2 have to finishes successfully
+||| is concurrent or : either plan_body1 or  plan_body2 have to finishes successfully
 
 */
-@Manual(
-        literal=".fork",
-        hint="Implementation of .fork (occurring when |& and || operators are used)",
-        argsHint= {
-                ""
-        },
-        argsType= {
-                ""
-        },
-        examples= {
-                ""
-        },
-        seeAlso= {
-                ""
-        }
-    )
 @SuppressWarnings("serial")
 public class fork extends DefaultInternalAction {
 
