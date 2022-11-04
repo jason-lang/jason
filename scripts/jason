@@ -1,5 +1,6 @@
 #!/bin/bash
 
-source "`dirname "$0"`/jason-setup"
+P=`which "$0"`
+source "`dirname $P`/jason-setup"
 
 java -cp "$JASON_HOME/libs/*" jason.runtime.RunJasonProject $*

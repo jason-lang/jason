@@ -14,7 +14,7 @@ NOTE: The first time you run takes longer since it downloads Jason.
 Unix::
 +
 ----------------
-curl -s -O http://jason.sourceforge.net/np/np31.zip
+curl -LO http://jason.sourceforge.net/np/np31.zip
 unzip np31.zip
 ./gradlew --console=plain
 ----------------

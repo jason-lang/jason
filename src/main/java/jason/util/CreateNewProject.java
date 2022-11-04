@@ -10,6 +10,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Scanner;
 
+import org.gradle.tooling.GradleConnector;
+import org.gradle.tooling.ProjectConnection;
+
 /**
  * class used to create an initial jason project:
  *
@@ -65,7 +68,9 @@ public class CreateNewProject {
         p.consoleApp = consoleApp;
         p.createDirs();
         p.copyFiles();
+        p.runGradleWrapper();
         p.usage();
+        //System.err.println(p.path.toString());
     }
 
     void usage() {
@@ -73,10 +78,10 @@ public class CreateNewProject {
         System.out.println("   $ jason "+path+"/"+id+".mas2j");
         System.out.println("or");
         System.out.println("   $ cd "+path);
-        System.out.println("   $ gradle -q --console=plain\n");
-        System.out.println("an eclipse project can be created with");
-        System.out.println("   $ gradle eclipse");
-        System.out.println("or 'Gradle Import Project' from Eclipse menu File/Import\n");
+        System.out.println("   $ ./gradlew -q --console=plain\n");
+        //System.out.println("an eclipse project can be created with");
+        //System.out.println("   $ gradle eclipse");
+        System.out.println("You can import the project in Eclipse with File/Import/'Gradle Import Project'\n");
     }
 
     void createDirs() {
@@ -87,6 +92,22 @@ public class CreateNewProject {
 
         //new File(path + "/lib").mkdirs();
     }
+
+    void runGradleWrapper() {
+        try {
+            ProjectConnection connection = GradleConnector
+                    .newConnector()
+                    .forProjectDirectory(path)
+                    .connect();
+            connection.newBuild()
+                .forTasks("wrapper")
+                .run();
+            connection.close();
+        } catch (Exception e) {
+            System.err.println("Error creating gradle wrapper "+e);
+        }
+    }
+
 
     void copyFiles() {
         copyFile("project", new File( path+"/"+id+".mas2j"));

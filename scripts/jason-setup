@@ -1,14 +1,15 @@
 #!/bin/bash
 
-JasonREL=3.0
+JasonREL=3.1
 
 if [ -z "$JASON_HOME" ] ; then
     CURDIR="`pwd`"
-    JASON_HOME="`dirname "$0"`"
+    P=`which "$0"`
+    JASON_HOME="`dirname $P`"
     cd "$JASON_HOME/.."
     JASON_HOME="`pwd`"
+    echo "JASON_HOME set to $JASON_HOME"
     cd "$CURDIR"
-    echo "Jason home is $JASON_HOME"
 fi
 
 if [ -z "$JDK_HOME" ] ; then
