@@ -235,7 +235,7 @@ public class Agent implements Serializable, ToDOM {
 
     /**
      * only parse and load the initial agent code, asSrc may be null
-     * it does not load kqml default plans and do not trigger initial beliefs and goals
+     * it does not load kqml default plans and does not trigger initial beliefs and goals
      */
     public void loadAgSrc(String asSrc) throws Exception {
         // set the agent
