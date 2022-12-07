@@ -73,8 +73,8 @@
 
 @kqmlReceivedAskOne1d
 +!kqml_received(Sender, askOne, NS::Content, MsgId)
-    : kqml::bel_no_source_self(NS::Content, Ans)
-   <- .send(Sender, tell, Ans, MsgId).
+    : kqml::bel_no_source_self(NS, Content, Ans)
+   <- .send(Sender, tell, NS::Ans, MsgId).
 
 //@kqmlReceivedAskOne1a // (self belief, do not send back the source)
 //+!kqml_received(Sender, askOne, NS::Content, MsgId)
@@ -100,18 +100,18 @@
 
 @kqmlReceivedAskAll2
 +!kqml_received(Sender, askAll, NS::Content, MsgId)
-   <- .findall(Ans, kqml::bel_no_source_self(NS::Content, Ans), List);
+   <- .findall(NS::Ans, kqml::bel_no_source_self(NS, Content, Ans), List);
       .send(Sender, tell, List, MsgId).
 
 kqml::clear_source_self([],[])[hide_in_mind_inspector].
 kqml::clear_source_self([source(self)|T],NT)[hide_in_mind_inspector]     :- kqml::clear_source_self(T,NT).
 kqml::clear_source_self([A|T],           [A|NT])[hide_in_mind_inspector] :- A \== source(self) & kqml::clear_source_self(T,NT).
 
-kqml::bel_no_source_self(NS::Content, Ans)[hide_in_mind_inspector] :-
+kqml::bel_no_source_self(NS, Content, Ans)[hide_in_mind_inspector] :-
    NS::Content[|LA] &
    kqml::clear_source_self(LA, NLA) &
    Content =.. [F,T,_] &
-   Ans     =.. [NS,F,T,NLA].
+   NS::Ans =.. [NS,F,T,NLA].
 
 /* ---- know-how performatives ---- */
 
