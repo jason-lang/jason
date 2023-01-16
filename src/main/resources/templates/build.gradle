@@ -8,7 +8,6 @@
 defaultTasks 'run'
 
 apply plugin: 'java'
-apply plugin: 'eclipse'
 
 version '1.0'
 group   'org.jason'
@@ -46,7 +45,7 @@ sourceSets {
 
 task run (type: JavaExec, dependsOn: 'classes') {
     description 'runs the application'
-    main = '<PROJECT-RUNNER-CLASS>'
+    mainClass = '<PROJECT-RUNNER-CLASS>'
     args '<PROJECT-FILE>'
 	// options:
 	//     args = ['<PROJECT-FILE>', '--debug']

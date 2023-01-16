@@ -1,14 +1,6 @@
-/*
-   Project bdih
-
-   Gradle build file for JaCaMo Applications
-   July 26, 2021 - 16:00:06
-*/
-
 defaultTasks 'run'
 
 apply plugin: 'java'
-apply plugin: 'eclipse'
 
 version '1.0'
 group   'org.jacamo'
@@ -57,7 +49,7 @@ task run (type: JavaExec, dependsOn: 'classes') {
     doFirst {
         mkdir 'log'
     }
-    main 'jacamo.infra.JaCaMoLauncher'
+    mainClass = 'jacamo.infra.JaCaMoLauncher'
     args 'bdih.jcm'
     // jvmArgs '-Xss15m'
     classpath sourceSets.main.runtimeClasspath

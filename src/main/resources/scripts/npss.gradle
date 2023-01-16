@@ -18,7 +18,7 @@ dependencies {
 
 task run (type: JavaExec, dependsOn: 'classes') {
     standardInput = System.in
-    main = 'jason.util.CreateNewProject'
+    mainClass = 'jason.util.CreateNewProject'
     args System.getProperty("exec.args", "").split()
     classpath sourceSets.main.runtimeClasspath
 }
