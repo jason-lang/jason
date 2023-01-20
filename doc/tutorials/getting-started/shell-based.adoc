@@ -5,7 +5,7 @@
 
 Requirements:
 
-- Java >= 15
+- Java >= 17
 
 Follow the steps below to create a new application:
 

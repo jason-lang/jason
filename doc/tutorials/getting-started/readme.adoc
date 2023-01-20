@@ -14,7 +14,7 @@ developing a simple multi-agent system using Jason.
 
 == Installation and Configuration
 
-- Java http://java.sun.com[JDK] >= 15 is required.
+- Java http://java.sun.com[JDK] >= 17 is required.
 - Download Jason from https://sourceforge.net/projects/jason/files/jason/[here] and unzip it.
 - You can now execute the Jason IDE by going to the folder `jedit` and double-clicking on `jedit.jar`.footnote:[Eclipse can also be used as the IDE, see http://jason.sourceforge.net/mini-tutorial/eclipse-plugin[here].] For Linux and MacOS, the script `jason-ide` can be also used (see more instructions link:./shell-based{outfilesuffix}[here]).
 

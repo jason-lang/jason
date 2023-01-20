@@ -3,6 +3,10 @@
 
 ifdef::env-github[:outfilesuffix: .adoc]
 
+== version 3.2
+
+- Java17 is used
+
 == version 3.1
 
 - This release only contains bug fixes
