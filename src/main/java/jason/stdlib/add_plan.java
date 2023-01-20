@@ -146,8 +146,8 @@ public class add_plan extends DefaultInternalAction {
             }
             sPlan  = sTemp.toString();
             p = ASSyntax.parsePlan(sPlan);
-        } else if (t instanceof Plan) {
-            p = (Plan)t;
+        } else if (t instanceof Plan tp) {
+            p = tp;
         } /*else if (t instanceof VarTerm && ((VarTerm)t).hasValue() && ((VarTerm)t).getValue() instanceof Plan) {
             p = (Plan)((VarTerm)t).getValue();
         } */else {

@@ -5,6 +5,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import jason.asSyntax.ASSyntax;
+import jason.asSyntax.Atom;
+import jason.asSyntax.Plan;
 import jason.asSyntax.parser.ParseException;
 import jason.asunit.TestAgent;
 
@@ -46,7 +48,7 @@ public class TestKQML {
             "                    .send(maria,tellHow,Plan); "+
             "                    .send(maria,achieve, hello(bob)). "+
             "+!send_untellHow <- .send(maria,untellHow,hp). "+
-            "+!send_askHow    <- .send(maria,askHow,{+!goto(_,_)},LP); .add_plan(LP); jason.asunit.print(LP). "+
+            "+!send_askHow    <- .send(maria,askHow,{+!goto(_,_)},LP); .add_plan(LP, maria); jason.asunit.print(LP). "+
 
             "@hp +!hello(Who)  <- jason.asunit.print(\"Hello \",Who)."
         );
@@ -130,7 +132,7 @@ public class TestKQML {
         bob.addGoal("send_tellHow");
         bob.assertIdle(10);
         maria.assertPrint("Hello bob", 20);
-        org.junit.Assert.assertTrue(maria.getPL().get("hp").getLabel().toString().contains("source(bob)"));
+        org.junit.Assert.assertTrue(maria.getPL().get("hp").hasSource(new Atom("bob")));
 
         bob.addGoal("send_untellHow");
         bob.assertIdle(10);
@@ -144,7 +146,13 @@ public class TestKQML {
         bob.assertIdle(10);
         maria.assertIdle(10);
         bob.assertPrint("+!goto(", 20);
+
         Assert.assertEquals(1,bob.getPL().getCandidatePlans(ASSyntax.parseTrigger("+!goto(_,_)")).size());
+        Plan p  = bob.getPL().getCandidatePlans(ASSyntax.parseTrigger("+!goto(_,_)")).get(0);
+
+        Assert.assertEquals(1,p.getSources().size());
+        org.junit.Assert.assertTrue(p.getLabel().getSources().toString().contains("maria"));
+
     }
 
 }

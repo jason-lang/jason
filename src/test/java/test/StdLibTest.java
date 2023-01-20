@@ -136,7 +136,7 @@ public class StdLibTest extends TestCase {
         assertEquals("@t1[source(self)] +a : g(10) <- .print(\"ok 10\").", pa.toASString());
 
         ag.getPL().add(ASSyntax.parsePlan("@t2 +a : g(20) <- .print(\"ok 20\")."), new Structure("nosource"), false);
-        ((Plan) ag.getPL().getPlans().get(1)).getLabel().addSource(new Structure("ag1"));
+        ((Plan) ag.getPL().getPlans().get(1)).addSource(new Structure("ag1"));
         ag.getPL().add(ASSyntax.parsePlan("@t3 +b : true <- true."), null, false);
         //System.out.println(ag.getPL());
         TransitionSystem ts = new TransitionSystem(ag, null, null, null);
@@ -172,10 +172,10 @@ public class StdLibTest extends TestCase {
         new add_plan().execute(ts, new Unifier(), new Term[] { plans, new Structure("fromLT") });
 
         // the plan t2 (first plan now) must have 4 sources
-        assertEquals(4, ag.getPL().get("t2").getLabel().getSources().size());
+        assertEquals(4, ag.getPL().get("t2").getSources().size());
 
         // the plan t1 (third plan now) must have 2 sources
-        assertEquals(3, ag.getPL().get("t1").getLabel().getSources().size());
+        assertEquals(3, ag.getPL().get("t1").getSources().size());
 
         // remove plan t2,t3 (source = nosource) from PS
         ListTerm llt = ListTermImpl.parseList("[t2,t3]");
@@ -188,7 +188,7 @@ public class StdLibTest extends TestCase {
         assertEquals(2, ag.getPL().getPlans().size());
 
         // the plan t2 (first plan now) must have 3 sources
-        assertEquals(3, ag.getPL().get("t2").getLabel().getSources().size());
+        assertEquals(3, ag.getPL().get("t2").getSources().size());
 
     }
 

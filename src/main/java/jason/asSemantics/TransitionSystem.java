@@ -326,6 +326,15 @@ public class TransitionSystem implements Serializable {
                         tail.append(t);
                     }
                     content = tail;
+                } else if (send.getTerm(1).toString().equals("askHow") && content.isList()) {  // adds source in each answer if possible
+                    ListTerm tail = new ListTermImpl();
+                    for (Term t: ((ListTerm)content)) {
+                        if (t instanceof Plan p) {
+                            p.addSource(new Atom(m.getSender()));
+                            tail.append(p);
+                        }
+                    }
+                    content = tail;
                 }
 
                 // test the case of sync ask with many receivers

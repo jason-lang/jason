@@ -158,11 +158,11 @@ public class PlanLibrary implements Iterable<Plan>, Serializable, ToDOM {
                 // add label, if necessary
                 if (p.getLabel() == null)
                     p.setLabel(getUniqueLabel());
-                p.getLabel().addSource(source);
+                p.addSource(source);
                 add(p, before);
             } else {
                 p = plans.get(i);
-                p.getLabel().addSource(source);
+                p.addSource(source);
             }
             return p;
         }
@@ -190,7 +190,7 @@ public class PlanLibrary implements Iterable<Plan>, Serializable, ToDOM {
                 // test if the new plan is equal, in this case, just add a source
                 Plan planInPL = get(p.getLabel());
                 if (p.equals(planInPL)) {
-                    planInPL.getLabel().addSource(p.getLabel().getSources().get(0));
+                    planInPL.addSource(p.getLabel().getSources().get(0));
                     return planInPL;
                 } else {
                     throw new JasonException("There already is a plan with label " + p.getLabel());
@@ -202,7 +202,7 @@ public class PlanLibrary implements Iterable<Plan>, Serializable, ToDOM {
                 p.setLabel(getUniqueLabel());
 
             // add self source
-            if (!p.getLabel().hasSource())
+            if (!p.hasSource())
                 p.getLabel().addAnnot(BeliefBase.TSelf);
 
             // add source file
@@ -358,10 +358,10 @@ public class PlanLibrary implements Iterable<Plan>, Serializable, ToDOM {
         if (p != null) {
         	eDOMPlans = null;
 
-        	boolean hasSource = p.getLabel().delSource(source);
+        	boolean hasSource = p.delSource(source);
 
             // if no source anymore, remove the plan
-            if (hasSource && !p.getLabel().hasSource()) {
+            if (hasSource && !p.hasSource()) {
                 remove(pLabel);
             }
             return true;

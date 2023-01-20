@@ -415,4 +415,35 @@ public class Plan extends Structure implements Cloneable, Serializable {
     public boolean hasGoalCondition() {
         return goalCondition != null;
     }
+    
+    @Override
+    public boolean hasSource() {
+        return getLabel().hasSource();
+    }
+    @Override
+    public boolean hasSource(Term agName) {
+        return getLabel().hasSource(agName);
+    }
+    
+    @Override
+    public ListTerm getSources() {
+        return getLabel().getSources();
+    }
+    
+    @Override
+    public Literal addSource(Term agName) {
+        getLabel().addSource(agName);
+        return this;
+    }
+    
+    @Override
+    public boolean delSource(Term agName) {
+        return getLabel().delSource(agName);
+    }
+
+    @Override
+    public void delSources() {
+        getLabel().delSources();
+    }
+
 }

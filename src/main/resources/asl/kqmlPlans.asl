@@ -129,12 +129,12 @@ kqml::bel_no_source_self(NS, Content, Ans)[hide_in_mind_inspector] :-
 +!kqml_received(Sender, untellHow, Content, _)
    <- .remove_plan(Content, Sender).
 
-// In askHow, content must be a string representing
+// In askHow, content must be a string or plan term representing
 // the triggering event
 @kqmlReceivedAskHow
 +!kqml_received(Sender, askHow, Content, MsgId)
    <- .relevant_plans(Content, ListOfPlans);
-      .remove_source_annot(ListOfPlans, ListOfPlansAn);
+      .remove_source_annot(ListOfPlans, ListOfPlansAn); // remove "source(self)" 
       .send(Sender, tellHow, ListOfPlansAn, MsgId).
 
 
