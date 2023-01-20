@@ -513,8 +513,7 @@ public abstract class Literal extends DefaultTerm implements LogicalFormula {
 
 
     private void useDerefVars(Term p, Unifier un) {
-        if (p instanceof Literal) {
-        	Literal l = (Literal)p;
+        if (p instanceof Literal l) {
         	for (int i=0; i<l.getArity(); i++) {
                 var t = l.getTerm(i);
                 if (t.isVar()) {

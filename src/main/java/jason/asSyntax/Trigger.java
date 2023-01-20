@@ -132,8 +132,7 @@ public class Trigger extends Structure implements Cloneable {
 
     @Override
     public boolean equals(Object o) {
-        if (o != null && o instanceof Trigger) {
-            Trigger t = (Trigger) o;
+        if (o != null && o instanceof Trigger t) {
             return (operator == t.operator && type == t.type && literal.equals(t.getLiteral()));
         }
         return false;

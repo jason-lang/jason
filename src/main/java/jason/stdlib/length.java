@@ -121,8 +121,7 @@ public class length extends DefaultInternalAction {
             return new NumberTermImpl(((SetTerm) arg).size());
         } else if (arg.isMap()) {
             return new NumberTermImpl(((MapTerm) arg).size());
-        } else if (arg instanceof ObjectTerm) {
-            ObjectTerm o = (ObjectTerm)arg;
+        } else if (arg instanceof ObjectTerm o) {
             if (o.getObject() instanceof Collection) {
                 return new NumberTermImpl(((Collection) o.getObject()).size());
             }

@@ -767,7 +767,7 @@ public class TransitionSystem implements Serializable {
                             Term t = top.unif.get(vvl);
                             if (t != null) { // if v has got a value in top unif, put the value in the unifier
                                 if (t instanceof Literal) {
-                                    Literal l= (Literal)t.capply(top.unif);
+                                    Literal l = (Literal)t.capply(top.unif);
                                     l.makeVarsAnnon(top.renamedVars);
                                     im.unif.function.put(vvl, l);
                                 } else {

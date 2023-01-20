@@ -79,7 +79,7 @@ public class UnnamedVar extends VarTerm {
     public boolean equals(Object t) {
         if (t == null) return false;
         if (t == this) return true;
-        if (t instanceof UnnamedVar) return ((UnnamedVar)t).myId == this.myId;
+        if (t instanceof UnnamedVar uv) return uv.myId == this.myId;
         return false;
     }
 

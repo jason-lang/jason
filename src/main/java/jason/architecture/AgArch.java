@@ -283,7 +283,7 @@ public class AgArch implements Comparable<AgArch>, Serializable {
     public boolean equals(Object obj) {
         if (obj == null) return false;
         if (obj == this) return true;
-        if (obj instanceof AgArch) return this.getAgName().equals( ((AgArch)obj).getAgName());
+        if (obj instanceof AgArch arch) return this.getAgName().equals( arch.getAgName());
         return false;
     }
 

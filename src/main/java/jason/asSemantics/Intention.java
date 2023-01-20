@@ -273,7 +273,7 @@ public class Intention implements Serializable, Comparable<Intention>, Iterable<
     public boolean equals(Object o) {
         if (o == null) return false;
         if (o == this) return true;
-        if (o instanceof Intention) return ((Intention)o).id == this.id;
+        if (o instanceof Intention i) return i.id == this.id;
         return false;
     }
 

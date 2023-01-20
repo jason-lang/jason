@@ -72,8 +72,7 @@ public final class StringTermImpl extends DefaultTerm implements StringTerm {
     public boolean equals(Object t) {
         if (t == this) return true;
 
-        if (t != null && t instanceof StringTerm) {
-            StringTerm st = (StringTerm)t;
+        if (t != null && t instanceof StringTerm st) {
             if (value == null)
                 return st.getString() == null;
             else

@@ -111,8 +111,7 @@ public class Structure extends Atom {
         if (t == null) return false;
         if (t == this) return true;
 
-        if (t instanceof Structure) {
-            Structure tAsStruct = (Structure)t;
+        if (t instanceof Structure tAsStruct) {
 
             // if t is a VarTerm, uses var's equals
             if (tAsStruct.isVar())

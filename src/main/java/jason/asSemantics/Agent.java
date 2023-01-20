@@ -390,33 +390,33 @@ public class Agent implements Serializable, ToDOM {
         synchronized (getPL().getLock()) {
             for (Plan p: a.getPL()) {
                 // search context
-                if (p.getContext() instanceof Literal)
-                    fixAgInIAandFunctions(a, (Literal)p.getContext());
+                if (p.getContext() instanceof Literal l)
+                    fixAgInIAandFunctions(a, l);
 
                 // search body
-                if (p.getBody() instanceof Literal)
-                    fixAgInIAandFunctions(a, (Literal)p.getBody());
+                if (p.getBody() instanceof Literal l)
+                    fixAgInIAandFunctions(a, l);
             }
         }
     }
 
     private void fixAgInIAandFunctions(Agent a, Literal l) throws Exception {
         // if l is internal action/function
-        if (l instanceof InternalActionLiteral) {
-            ((InternalActionLiteral)l).setIA(null); // reset the IA in the literal, the IA there will be updated next getIA call
+        if (l instanceof InternalActionLiteral ia) {
+            ia.setIA(null); // reset the IA in the literal, the IA there will be updated next getIA call
         }
-        if (l instanceof ArithFunctionTerm) {
-            ((ArithFunctionTerm)l).setAgent(a);
+        if (l instanceof ArithFunctionTerm af) {
+            af.setAgent(a);
         }
-        if (l instanceof Rule) {
-            LogicalFormula f = ((Rule)l).getBody();
-            if (f instanceof Literal) {
-                fixAgInIAandFunctions(a, (Literal)f);
+        if (l instanceof Rule r) {
+            LogicalFormula f = r.getBody();
+            if (f instanceof Literal fl) {
+                fixAgInIAandFunctions(a, fl);
             }
         }
         for (int i=0; i<l.getArity(); i++) {
-            if (l.getTerm(i) instanceof Literal)
-                fixAgInIAandFunctions(a, (Literal)l.getTerm(i));
+            if (l.getTerm(i) instanceof Literal tl)
+                fixAgInIAandFunctions(a, tl);
         }
     }
 

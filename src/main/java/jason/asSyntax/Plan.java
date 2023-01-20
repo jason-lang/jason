@@ -246,8 +246,7 @@ public class Plan extends Structure implements Cloneable, Serializable {
     public boolean equals(Object o) {
         if (o == this) return true;
 
-        if (o != null && o instanceof Plan) {
-            Plan p = (Plan) o;
+        if (o != null && o instanceof Plan p) {
             if (context == null && p.context != null) return false;
             if (context != null && p.context != null && !context.equals(p.context)) return false;
             return tevent.equals(p.tevent) && body.equals(p.body);

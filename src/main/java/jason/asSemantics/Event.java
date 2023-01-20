@@ -65,8 +65,7 @@ public class Event implements Serializable, ToDOM {
     public boolean equals(Object o) {
         if (o == null) return false;
         if (o == this) return true;
-        if (o instanceof Event) {
-            Event oe = (Event)o;
+        if (o instanceof Event oe) {
             if (this.intention == null && oe.intention != null) return false;
             if (this.intention != null && !this.intention.equals(oe.intention)) return false;
 

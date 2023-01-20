@@ -108,8 +108,7 @@ public class ListTermImpl extends Structure implements ListTerm {
         if (t == this) return true;
 
         if (t instanceof Term &&  ((Term)t).isVar() ) return false; // unground var is not equals a list
-        if (t instanceof ListTerm) {
-            ListTerm tAsList = (ListTerm)t;
+        if (t instanceof ListTerm tAsList) {
             if (term == null && tAsList.getTerm() != null) return false;
             if (term != null && !term.equals(tAsList.getTerm())) return false;
             if (next == null && tAsList.getNext() != null) return false;
