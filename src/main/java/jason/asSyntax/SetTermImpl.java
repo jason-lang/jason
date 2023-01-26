@@ -1,5 +1,6 @@
 package jason.asSyntax;
 
+import java.io.Serial;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Set;
@@ -23,13 +24,14 @@ import jason.asSemantics.Unifier;
  */
 public class SetTermImpl extends DefaultTerm implements SetTerm {
 
+    @Serial
     private static final long serialVersionUID = 1L;
     //private static Logger logger = Logger.getLogger(SetTermImpl.class.getName());
 
     private Set<Term> set;
 
     public SetTermImpl() {
-        set = new TreeSet<Term>();
+        set = new TreeSet<>();
     }
 
 
@@ -124,7 +126,7 @@ public class SetTermImpl extends DefaultTerm implements SetTerm {
         StringBuilder s = new StringBuilder("{");
         String v = "";
         for (Term t: this) {
-            s.append(v+t);
+            s.append(v).append(t);
             v = ",";
         }
         s.append('}');
@@ -132,7 +134,7 @@ public class SetTermImpl extends DefaultTerm implements SetTerm {
     }
 
     public Element getAsDOM(Document document) {
-        Element u = (Element) document.createElement("set-term");
+        Element u = document.createElement("set-term");
         String c = "";
         for (Term t: this) {
             Element et = t.getAsDOM(document);

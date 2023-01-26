@@ -1,5 +1,6 @@
 package jason.asSyntax;
 
+import java.io.Serial;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -47,8 +48,9 @@ import jason.asSyntax.parser.as2j;
  */
 public abstract class Literal extends DefaultTerm implements LogicalFormula {
 
+    @Serial
     private static final long serialVersionUID = 1L;
-    private static Logger logger = Logger.getLogger(Literal.class.getName());
+    private static final Logger logger = Logger.getLogger(Literal.class.getName());
 
     public static final boolean LPos   = true;
     public static final boolean LNeg   = false;
@@ -495,7 +497,7 @@ public abstract class Literal extends DefaultTerm implements LogicalFormula {
 	                            	if (isInDebug) ag.getLogger().log(Level.FINE, "     | for "+Literal.this+", belief "+belInBB+" is an option -- "+u);
 	                                current = u;
 	                                return;
-	                            } else {
+	                            //} else {
 	                            	//if (isInDebug) ag.getLogger().log(Level.FINE, "     | belief "+belInBB+" is NOT an option for "+ Literal.this+ " -- "+u);
 	                            }
 	                        }
@@ -688,7 +690,7 @@ public abstract class Literal extends DefaultTerm implements LogicalFormula {
         }
         protected int calcHashCode() {
             return getFunctor().hashCode();
-        };
+        }
 
         @Override
         public Term capply(Unifier u) {
@@ -709,10 +711,8 @@ public abstract class Literal extends DefaultTerm implements LogicalFormula {
         public boolean equals(Object o) {
             if (o == null) return false;
             if (o == this) return true;
-            if (o instanceof Atom) {
-            	Atom a = (Atom)o;
+            if (o instanceof Atom a)
                 return a.isAtom() && getFunctor().equals(a.getFunctor());
-            }
             return false;
         }
 

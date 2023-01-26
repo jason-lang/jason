@@ -69,7 +69,6 @@ import jason.asSyntax.Term;
                 "jason.stdlib.ground"
         }
     )
-@SuppressWarnings("serial")
 public class atom extends DefaultInternalAction {
 
     private static InternalAction singleton = null;

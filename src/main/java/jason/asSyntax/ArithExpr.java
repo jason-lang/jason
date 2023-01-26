@@ -204,18 +204,18 @@ public class ArithExpr extends ArithFunctionTerm implements NumberTerm {
 
     /** get as XML */
     public Element getAsDOM(Document document) {
-        Element u = (Element) document.createElement("expression");
+        Element u = document.createElement("expression");
         u.setAttribute("type", "arithmetic");
         u.setAttribute("operator", op.toString());
         if (isUnary()) {
-            Element r = (Element) document.createElement("right");
+            Element r = document.createElement("right");
             r.appendChild(getTerm(0).getAsDOM(document)); // put the left argument indeed!
             u.appendChild(r);
         } else {
-            Element l = (Element) document.createElement("left");
+            Element l = document.createElement("left");
             l.appendChild(getTerm(0).getAsDOM(document));
             u.appendChild(l);
-            Element r = (Element) document.createElement("right");
+            Element r = document.createElement("right");
             r.appendChild(getTerm(1).getAsDOM(document));
             u.appendChild(r);
         }
