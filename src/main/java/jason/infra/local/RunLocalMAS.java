@@ -1,41 +1,5 @@
 package jason.infra.local;
 
-import java.awt.FlowLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.management.ManagementFactory;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.logging.ConsoleHandler;
-import java.util.logging.Handler;
-import java.util.logging.Level;
-import java.util.logging.LogManager;
-import java.util.logging.Logger;
-
-import javax.management.ObjectName;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-
 import jason.JasonException;
 import jason.architecture.AgArch;
 import jason.asSemantics.Agent;
@@ -52,14 +16,22 @@ import jason.mas2j.AgentParameters;
 import jason.mas2j.ClassParameters;
 import jason.mas2j.MAS2JProject;
 import jason.mas2j.parser.ParseException;
-import jason.runtime.MASConsoleGUI;
-import jason.runtime.MASConsoleLogFormatter;
-import jason.runtime.MASConsoleLogHandler;
-import jason.runtime.RuntimeServices;
-import jason.runtime.RuntimeServicesFactory;
-import jason.runtime.Settings;
-import jason.runtime.SourcePath;
+import jason.runtime.*;
 import jason.util.Config;
+
+import javax.management.ObjectName;
+import javax.swing.*;
+import java.awt.*;
+import java.io.*;
+import java.lang.management.ManagementFactory;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.List;
+import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.logging.*;
 
 /**
  * Runs MASProject using Local infrastructure.
@@ -157,7 +129,7 @@ public class RunLocalMAS extends BaseLocalMAS implements RunLocalMASMBean {
                     urlPrefix = SourcePath.CRPrefix;
                 } else {
                     URL file;
-                    // test if the argument is an URL
+                    // test if the argument is a URL
                     try {
                         projectFileName = new SourcePath().fixPath(projectFileName); // replace $jasonJar, if necessary
                         file = new URL(projectFileName);
@@ -178,7 +150,7 @@ public class RunLocalMAS extends BaseLocalMAS implements RunLocalMASMBean {
             project.setupDefault();
             project.getSourcePaths().addPath(urlPrefix);
             project.registerDirectives();
-            // set the aslSrcPath in the include
+            // set the aslSrcPath in the 'include'
             ((Include)DirectiveProcessor.getDirective("include")).setSourcePath(project.getSourcePaths());
 
             project.fixAgentsSrc();
@@ -260,8 +232,8 @@ public class RunLocalMAS extends BaseLocalMAS implements RunLocalMASMBean {
                         RunLocalMAS.class.getResource("/"+logPropFile).openStream());
             } catch (Exception e) {
                 Handler[] hs = Logger.getLogger("").getHandlers();
-                for (int i = 0; i < hs.length; i++) {
-                    Logger.getLogger("").removeHandler(hs[i]);
+                for (Handler handler : hs) {
+                    Logger.getLogger("").removeHandler(handler);
                 }
                 Handler h = new MASConsoleLogHandler();
                 h.setFormatter(new MASConsoleLogFormatter());
@@ -315,8 +287,8 @@ public class RunLocalMAS extends BaseLocalMAS implements RunLocalMASMBean {
 
     protected void setupDefaultConsoleLogger() {
         Handler[] hs = Logger.getLogger("").getHandlers();
-        for (int i = 0; i < hs.length; i++) {
-            Logger.getLogger("").removeHandler(hs[i]);
+        for (Handler handler : hs) {
+            Logger.getLogger("").removeHandler(handler);
         }
         Handler h = new ConsoleHandler();
         h.setFormatter(new MASConsoleLogFormatter());
@@ -332,15 +304,13 @@ public class RunLocalMAS extends BaseLocalMAS implements RunLocalMASMBean {
 
         // add Button debug
         btDebug = new JButton("Debug", new ImageIcon(RunLocalMAS.class.getResource("/images/debug.gif")));
-        btDebug.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                changeToDebugMode();
-                btDebug.setEnabled(false);
-                if (runner.control != null) {
-                    try {
-                        runner.control.getUserControl().setRunningCycle(false);
-                    } catch (Exception e) { }
-                }
+        btDebug.addActionListener(evt -> {
+            changeToDebugMode();
+            btDebug.setEnabled(false);
+            if (runner.control != null) {
+                try {
+                    runner.control.getUserControl().setRunningCycle(false);
+                } catch (Exception e) { }
             }
         });
         if (debug) {
@@ -350,48 +320,36 @@ public class RunLocalMAS extends BaseLocalMAS implements RunLocalMASMBean {
 
         // add Button start
         final JButton btStartAg = new JButton("New agent", new ImageIcon(RunLocalMAS.class.getResource("/images/newAgent.gif")));
-        btStartAg.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                new StartNewAgentGUI(MASConsoleGUI.get().getFrame(), "Start a new agent to run in current MAS", System.getProperty("user.dir"));
-            }
-        });
+        btStartAg.addActionListener(
+                evt -> new StartNewAgentGUI(MASConsoleGUI.get().getFrame(), "Start a new agent to run in current MAS", System.getProperty("user.dir")));
         MASConsoleGUI.get().addButton(btStartAg);
 
         // add Button kill
         final JButton btKillAg = new JButton("Kill agent", new ImageIcon(RunLocalMAS.class.getResource("/images/killAgent.gif")));
-        btKillAg.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                new KillAgentGUI(MASConsoleGUI.get().getFrame(), "Kill an agent of the current MAS");
-            }
-        });
+        btKillAg.addActionListener(
+                evt -> new KillAgentGUI(MASConsoleGUI.get().getFrame(), "Kill an agent of the current MAS"));
         MASConsoleGUI.get().addButton(btKillAg);
 
         createNewReplAgButton();
 
         // add show sources button
         final JButton btShowSrc = new JButton("Sources", new ImageIcon(RunLocalMAS.class.getResource("/images/list.gif")));
-        btShowSrc.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                showProjectSources(project);
-            }
-        });
+        btShowSrc.addActionListener(evt -> showProjectSources(project));
         MASConsoleGUI.get().addButton(btShowSrc);
 
     }
 
     protected void createPauseButton() {
         final JButton btPause = new JButton("Pause", new ImageIcon(RunLocalMAS.class.getResource("/images/resume_co.gif")));
-        btPause.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                if (MASConsoleGUI.get().isPause()) {
-                    btPause.setText("Pause");
-                    MASConsoleGUI.get().setPause(false);
-                } else {
-                    btPause.setText("Continue");
-                    MASConsoleGUI.get().setPause(true);
-                }
-
+        btPause.addActionListener(evt -> {
+            if (MASConsoleGUI.get().isPause()) {
+                btPause.setText("Pause");
+                MASConsoleGUI.get().setPause(false);
+            } else {
+                btPause.setText("Continue");
+                MASConsoleGUI.get().setPause(true);
             }
+
         });
         MASConsoleGUI.get().addButton(btPause);
     }
@@ -399,11 +357,9 @@ public class RunLocalMAS extends BaseLocalMAS implements RunLocalMASMBean {
     protected void createStopButton() {
         // add Button
         JButton btStop = new JButton("Stop", new ImageIcon(RunLocalMAS.class.getResource("/images/suspend.gif")));
-        btStop.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                MASConsoleGUI.get().setPause(false);
-                runner.finish(0, true, 0);
-            }
+        btStop.addActionListener(evt -> {
+            MASConsoleGUI.get().setPause(false);
+            runner.finish(0, true, 0);
         });
         MASConsoleGUI.get().addButton(btStop);
     }
@@ -411,25 +367,21 @@ public class RunLocalMAS extends BaseLocalMAS implements RunLocalMASMBean {
     protected void createNewReplAgButton() {
         // add Button debug
         final JButton btStartAg = new JButton("New REPL agent", new ImageIcon(RunLocalMAS.class.getResource("/images/newAgent.gif")));
-        btStartAg.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                final JFrame f = new JFrame("New REPL Agent, give it a name");
-                //f.getContentPane().setLayout(new BorderLayout());
-                //f.getContentPane().add(BorderLayout.NORTH,command);
-                //f.getContentPane().add(BorderLayout.CENTER,mindPanel);
-                final JTextField n = new JTextField(30);
-                n.addActionListener(new ActionListener() {
-                    public void actionPerformed(ActionEvent e) {
-                        f.setVisible(false);
-                        createReplAg(n.getText());
-                    }
-                });
-                f.setLayout(new FlowLayout());
-                f.add(n);
-                f.pack();
-                f.setLocation((int)btStartAg.getLocationOnScreen().x, (int)btStartAg.getLocationOnScreen().y+30);
-                f.setVisible(true);
-            }
+        btStartAg.addActionListener(evt -> {
+            final JFrame f = new JFrame("New REPL Agent, give it a name");
+            //f.getContentPane().setLayout(new BorderLayout());
+            //f.getContentPane().add(BorderLayout.NORTH,command);
+            //f.getContentPane().add(BorderLayout.CENTER,mindPanel);
+            final JTextField n = new JTextField(30);
+            n.addActionListener(e -> {
+                f.setVisible(false);
+                createReplAg(n.getText());
+            });
+            f.setLayout(new FlowLayout());
+            f.add(n);
+            f.pack();
+            f.setLocation((int)btStartAg.getLocationOnScreen().x, (int)btStartAg.getLocationOnScreen().y+30);
+            f.setVisible(true);
         });
         MASConsoleGUI.get().addButton(btStartAg);
     }
@@ -627,7 +579,7 @@ public class RunLocalMAS extends BaseLocalMAS implements RunLocalMASMBean {
 
     /** creates a pool of threads shared by all agents */
     private void createThreadPool() {
-        sleepingAgs = Collections.synchronizedSet(new HashSet<LocalAgArch>());
+        sleepingAgs = Collections.synchronizedSet(new HashSet<>());
 
         int maxthreads = 10;
 
@@ -705,12 +657,10 @@ public class RunLocalMAS extends BaseLocalMAS implements RunLocalMASMBean {
             if (ag.getCyclesAct() == -1)        ag.setCyclesAct(cyclesAct);
 
             if (executor != null) {
-                if (ag instanceof LocalAgArchForPool)
-                    ((LocalAgArchForPool)ag).setExecutor(executor);
+                if (ag instanceof LocalAgArchForPool agp)
+                    agp.setExecutor(executor);
                 executor.execute(ag);
-            } else if (ag instanceof LocalAgArchAsynchronous) {
-                LocalAgArchAsynchronous ag2 = (LocalAgArchAsynchronous) ag;
-
+            } else if (ag instanceof LocalAgArchAsynchronous ag2) {
                 ag2.addListenerToC(new CircumstanceListenerComponents(ag2));
 
                 ag2.setExecutorAct(executorAct);
@@ -727,6 +677,7 @@ public class RunLocalMAS extends BaseLocalMAS implements RunLocalMASMBean {
 
     /** an agent architecture for the infra based on thread pool */
     protected final class LocalAgArchSynchronousScheduled extends LocalAgArch {
+        @Serial
         private static final long serialVersionUID = 2752327732263465482L;
 
         private volatile boolean runWakeAfterTS = false;
@@ -820,7 +771,7 @@ public class RunLocalMAS extends BaseLocalMAS implements RunLocalMASMBean {
             try {
                 ag.stopAg();
             } catch (Throwable e) {
-                // ignore, the stop of agent should handled that
+                // ignore, the stop of agent should handle that
                 // here, just keep stopping the system
             }
             delAg(ag.getAgName());
@@ -906,44 +857,42 @@ public class RunLocalMAS extends BaseLocalMAS implements RunLocalMASMBean {
             }
 
             // use a thread to not block the caller
-            new Thread() {
-                public void run() {
-                    System.out.flush();
-                    System.err.flush();
+            new Thread(() -> {
+                System.out.flush();
+                System.err.flush();
 
-                    if (MASConsoleGUI.hasConsole()) { // should close first! (case where console is in pause)
-                        MASConsoleGUI.get().close();
-                    }
+                if (MASConsoleGUI.hasConsole()) { // should close first! (case where console is in pause)
+                    MASConsoleGUI.get().close();
+                }
 
-                    stopAgs(deadline);
+                stopAgs(deadline);
 
-                    if (control != null) {
-                        control.stop();
-                        control = null;
-                    }
-                    if (env != null) {
-                        env.stop();
-                        env = null;
-                    }
+                if (control != null) {
+                    control.stop();
+                    control = null;
+                }
+                if (env != null) {
+                    env.stop();
+                    env = null;
+                }
 
-                    // remove the .stop___MAS file  (note that GUI console.close(), above, creates this file)
-                    File stop = new File(stopMASFileName);
-                    if (stop.exists()) {
-                        stop.delete();
-                    }
+                // remove the .stop___MAS file  (note that GUI console.close(), above, creates this file)
+                File stop = new File(stopMASFileName);
+                if (stop.exists()) {
+                    stop.delete();
+                }
 
-                    try {
-                        ManagementFactory.getPlatformMBeanServer().unregisterMBean(new ObjectName("jason.sf.net:type=runner"));
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                try {
+                    ManagementFactory.getPlatformMBeanServer().unregisterMBean(new ObjectName("jason.sf.net:type=runner"));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 
-                    if (stopJVM) {
-                        System.exit(exitValue);
-                    }
-                    isRunningFinish.set(false);
-                };
-            }.start();
+                if (stopJVM) {
+                    System.exit(exitValue);
+                }
+                isRunningFinish.set(false);
+            }).start();
 
         } catch (Exception e) {
             e.printStackTrace();

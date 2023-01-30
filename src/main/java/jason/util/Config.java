@@ -1,13 +1,6 @@
 package jason.util;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +19,7 @@ import jason.infra.local.LocalFactory;
  */
 public class Config extends Properties {
 
+    @Serial
     private static final long  serialVersionUID = 1L;
 
     /** path to jason.jar */
@@ -568,13 +562,13 @@ public class Config extends Properties {
             }
 
             // try eclipse installation
-            jarFile = getJarFromEclipseInstallation(jarFilePrefix);
+            /*jarFile = getJarFromEclipseInstallation(jarFilePrefix);
             if (checkJar(jarFile, fileInJar)) {
                 put(jarEntry, jarFile);
                 if (showFixMsgs)
                     System.out.println("Configuration of '"+jarEntry+"' found at " + jarFile+" in eclipse installation");
                 return true;
-            }
+            }*/
 
             /*
             // try current dir
@@ -691,15 +685,15 @@ public class Config extends Properties {
     static String findFile(File p, String file) {
         if (p.isDirectory()) {
             File[] files = p.listFiles();
-            for (int i = 0; i < files.length; i++) {
-                if (files[i].isDirectory()) {
-                    String r = findFile(files[i], file);
+            for (File f : files) {
+                if (f.isDirectory()) {
+                    String r = findFile(f, file);
                     if (r != null) {
                         return r;
                     }
                 } else {
-                    if (files[i].getName().endsWith(file)) { // && files[i].length() > minSize) {
-                        return files[i].getAbsolutePath();
+                    if (f.getName().endsWith(file)) {
+                        return f.getAbsolutePath();
                     }
                 }
             }
@@ -811,7 +805,7 @@ public class Config extends Properties {
         return "jason";
     }
 
-    private String getJarFromEclipseInstallation(String file) {
+    /*private String getJarFromEclipseInstallation(String file) {
         String eclipse = System.getProperty("eclipse.launcher");
         //eclipse = "/Applications/eclipse/eclipse";
         if (eclipse != null) {
@@ -821,7 +815,7 @@ public class Config extends Properties {
             return findJarInDirectory(new File(f+"/"+getEclipseInstallationDirectory()+"/libs"), file);
         }
         return null;
-    }
+    }*/
 
     public String getTemplate(String templateName) {
         try {
@@ -860,7 +854,7 @@ public class Config extends Properties {
             StringBuilder scriptBuf = new StringBuilder();
             String line = in.readLine();
             while (line != null) {
-                scriptBuf.append(line + nl);
+                scriptBuf.append(line).append(nl);
                 line = in.readLine();
             }
             return scriptBuf.toString();
