@@ -473,7 +473,7 @@ public class Config extends Properties {
             return j.getSpecificationVersion();
         }
 
-        return "2.5.1";
+        return "undefined version";
         /*
         try {
             Properties p = new Properties();
@@ -505,7 +505,7 @@ public class Config extends Properties {
         if (j != null) {
             return j.getImplementationVersion();
         }
-        return "?";
+        return "undefined build";
         /*
         try {
             Properties p = new Properties();

@@ -1,5 +1,7 @@
 package jason.jeditplugin;
 
+import jason.util.Config;
+
 import java.io.FileReader;
 import java.util.Properties;
 
@@ -15,22 +17,9 @@ public class AboutGUI {
     static String build   = "unknown build";
 
     static void setVersion() {
-        Properties p = new Properties();
-        try {
-            p.load(JasonID.class.getResource("/dist.properties").openStream());
-        } catch (Exception e1) {
-            try {
-                p.load(new FileReader("bin/dist.properties"));
-            } catch (Exception e2) {
-                try {
-                    p.load(new FileReader("../bin/dist.properties"));
-                } catch (Exception e3) {
-                    return;
-                }
-            }
-        }
-        version = "Jason " + p.get("version") + "." + p.get("release");
-        build = " built on " + p.get("build.date") + "\n\n";
+        version = "Jason " + Config.get().getJasonVersion();
+        build = " built on " + Config.get().getJasonBuiltDate() + "\n\n";
+
     }
 
     public static void main(String[] args) {
@@ -59,8 +48,8 @@ public class AboutGUI {
                                       "Copyright Photo RMN (Agence Photographique de la Reunion des\n"+
                                       "Musees Nationaux, France). Photograph by Herve Lewandowski.\n\n"+
                                       "To contact the authors:\n"+
-                                      "http://www.inf.ufrgs.br/~bordini\n"+
-                                      "http://www.das.ufsc.br/~jomi",
+                                      "https://www.inf.pucrs.br/r.bordini\n"+
+                                      "https://jomifred.github.io",
                                       "JasonID - About",
                                       JOptionPane.INFORMATION_MESSAGE,
                                       new ImageIcon(JasonID.class.getResource("/images/Jason-GMoreau-Small.jpg")));
