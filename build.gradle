@@ -205,11 +205,11 @@ task sourceJar (type : Jar) {
     classifier = 'sources'
     from sourceSets.main.allSource
     duplicatesStrategy = 'include'
-    
+
 }
 
 artifacts {
-    archives sourceJar, javadocJar
+    archives jar, sourceJar, javadocJar
 }
 
 

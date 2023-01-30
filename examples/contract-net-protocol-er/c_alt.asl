@@ -29,7 +29,7 @@ all_proposals_received(CNPId, NP)                // NP: number of participants
           .print("Sending CFP to ",LP);
           .send(LP,tell,cfp(Id,Task)).
 
-    +!bids(LP) : all_proposals_received(Id, .length(LP)). // all proposals received already! goal bids is thus achieved
+    +!bids(LP) : all_proposals_received(Id, .length(LP)). // all proposals received already! bids is thus achieved
     +!bids(LP) : NP = .length(LP) // wait either for all proposals/refuses or a timeout
        <: false // this intention is finished only by the internal action .done, since the goal condition ('false') will never hold
        <- .wait(4000); .done. // wait for 4 seconds and then finish the intention

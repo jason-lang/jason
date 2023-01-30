@@ -1,8 +1,10 @@
 /* Jason(ER) Project
 
 This project shows how the Contract Net Protocol (CNP)
-can be implemented with Jason. It exemplifies only the
-communication no actions are actually performed.
+can be implemented with features of Jason(ER):
+  - sub-plans
+  - goal conditions
+(see c_alt.asl and p.las for more details)
 
 The agent c plays the initiator (who need a service)
 and the agents p* play participant (who provide a service).
