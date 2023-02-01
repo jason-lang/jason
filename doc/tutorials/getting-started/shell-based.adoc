@@ -59,16 +59,16 @@ If you want to run a Jason application that was not created with a `build.gradle
 
 Requirements:
 
-- Java >= 15
+- Java >= 17
 
 The first step is to download Jason https://sourceforge.net/projects/jason/files/jason/[here] and unzip it. Then configure some environment variables: `JASON_HOME` should be the directory where you unzip the downloaded file (it should have the directories `libs` and `scripts` inside) and `PATH`. For example;
 
-    export JASON_HOME=$HOME/pro/jason-3.0
+    export JASON_HOME=$HOME/pro/jason-3.1
     export PATH=$JASON_HOME/scripts:$PATH
 
 . New applications can be created with
 
-     jason-new-project nameofapplication
+     jason-new-project name_of_application
 
 . The Jason IDE based on jEdit can be run with
 +
