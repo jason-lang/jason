@@ -41,10 +41,11 @@ ifndef::env-github[]
 endif::[]
 
 
+* link:./tech/patterns{outfilesuffix}[Some useful programming Patterns]
 * link:./tech/modules-namespaces.pdf[Modules and Namespace manual]
 * link:./tech/concurrency{outfilesuffix}[Concurrency]
+* link:./tech/unit-tests{outfilesuffix}[Testing]
 * link:./tech/annotations{outfilesuffix}[Unification with Annotations]
-* link:./tech/patterns{outfilesuffix}[Some useful programming Patterns]
 
 == Other Links
 
