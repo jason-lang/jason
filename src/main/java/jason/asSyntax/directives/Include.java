@@ -12,6 +12,7 @@ import jason.asSyntax.Pred;
 import jason.asSyntax.StringTerm;
 import jason.asSyntax.parser.as2j;
 import jason.runtime.SourcePath;
+import jason.util.Config;
 
 /** Implementation of the <code>include</code> directive. */
 public class Include extends DefaultDirective implements Directive {
@@ -28,6 +29,7 @@ public class Include extends DefaultDirective implements Directive {
         String file = ((StringTerm)directive.getTerm(0)).getString().replaceAll("\\\\", "/");
         try {
             file = aslSourcePath.fixPath(file);
+Config.get().setProperty("cnp","/Users/jomi/tmp/cnp/build/libs/cnp-1.0.0.jar");
 
             InputStream in = null;
             String outerPrefix = outerContent.getASLSrc(); // the source file that has the include directive
