@@ -15,7 +15,7 @@ import jason.stdlib.length;
   <li> <code>.length([a,b,c])</code>: returns 3.</li>
   </ul>
 
-  @see jason.stdlib.length internal action version
+  @see jason.stdlib.length internal action version of length
 
   @author Jomi
 */

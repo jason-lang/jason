@@ -1,10 +1,6 @@
 package jason.asSemantics;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.io.Reader;
-import java.io.Serializable;
+import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
@@ -27,6 +23,7 @@ import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import jason.functions.sin;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -70,6 +67,7 @@ import jason.util.ToDOM;
  */
 public class Agent implements Serializable, ToDOM {
 
+    @Serial
     private static final long serialVersionUID = -2628324957954474455L;
 
     // Members
@@ -99,7 +97,7 @@ public class Agent implements Serializable, ToDOM {
     }
 
     /**
-     * Setup the default agent configuration.
+     * Set up the default agent configuration.
      *
      * Creates the agent class defined by <i>agClass</i>, default is jason.asSemantics.Agent.
      * Creates the TS for the agent.
@@ -171,7 +169,7 @@ public class Agent implements Serializable, ToDOM {
                     // loads the class from a jar file (for example)
                     parseAS(Agent.class.getResource(asSrc.substring(SourcePath.CRPrefix.length())).openStream() , asSrc);
                 } else {
-                    // check whether source is an URL string
+                    // check whether source is a URL string
                     try {
                         //parsingOk =
                         parseAS(new URL(asSrc));
@@ -248,7 +246,7 @@ public class Agent implements Serializable, ToDOM {
                     // loads the class from a jar file (for example)
                     parseAS(Agent.class.getResource(asSrc.substring(SourcePath.CRPrefix.length())).openStream() , asSrc);
                 } else {
-                    // check whether source is an URL string
+                    // check whether source is a URL string
                     try {
                         //parsingOk =
                         parseAS(new URL(asSrc));
@@ -433,7 +431,7 @@ public class Agent implements Serializable, ToDOM {
         if (scheduler == null) {
             int n;
             try {
-                n = Integer.valueOf( Config.get().get(Config.NB_TH_SCH).toString() );
+                n = Integer.parseInt( Config.get().get(Config.NB_TH_SCH).toString() );
             } catch (Exception e) {
                 n = 2;
             }
@@ -830,7 +828,7 @@ public class Agent implements Serializable, ToDOM {
                 dels++;
                 perceptsInBB.remove(); // remove l as perception from BB
 
-                // new version (it is sure that l is in BB, only clone l when the event is relevant)
+                // new version (it is certain that l is in BB, only clone l when the event is relevant)
                 Trigger te = new Trigger(TEOperator.del, TEType.belief, l);
                 if (ts.getC().hasListener() || pl.hasCandidatePlan(te)) {
                     l = ASSyntax.createLiteral(l.getFunctor(), l.getTermsArray());
@@ -863,7 +861,7 @@ public class Agent implements Serializable, ToDOM {
             }
             if (!wasPerceived) {
                 dels++;
-                // new version (it is sure that l is in BB, only clone l when the event is relevant)
+                // new version (it is certain that l is in BB, only clone l when the event is relevant)
                 perceptsInBB.remove(); // remove l as perception from BB
 
                 Trigger te = new Trigger(TEOperator.del, TEType.belief, l);
@@ -987,9 +985,9 @@ public class Agent implements Serializable, ToDOM {
     public List<Literal>[] brf(Literal beliefToAdd, Literal beliefToDel,  Intention i, boolean addEnd) throws RevisionFailedException {
         // This class does not implement belief revision! It
         // is supposed that a subclass will do it.
-        // It simply add/del the belief.
+        // It simply adds/dels the belief.
 
-        int position = 0; // add in the begin
+        int position = 0; // add in the begining
         if (addEnd)
             position = 1;
 
