@@ -4,6 +4,7 @@ import jason.asSyntax.*;
 import jason.environment.*;
 import jason.stdlib.map.create;
 import jason.asSyntax.parser.*;
+import jason.environment.grid.*;
 
 import java.util.logging.*;
 
@@ -14,11 +15,17 @@ public class Jugs extends Environment {
     int j5 = 0; // water in jug 5l
     int j3 = 0; // water in jug 3l
 
+    GridWorldView view = null;
+
     /** Called before the MAS execution with the args informed in .mas2j */
     @Override
     public void init(String[] args) {
         super.init(args);
         createPerpects();
+        if  (args.length == 1 && args[0].equals("view")) {
+            view = new GridWorldView(new JugsModel(),"Water Jugs", 600);
+            view.setVisible(true);
+        }
     }
 
     @Override
@@ -53,6 +60,12 @@ public class Jugs extends Environment {
             }
             createPerpects();
             informAgsEnvironmentChanged();
+            if (view != null)  {
+                ((JugsModel)view.getModel()).modelToGrid(j5,j3);
+                view.update();
+                Thread.sleep(500);
+            }
+
             return true; // the action was executed with success
         } catch (Exception e) {
             e.printStackTrace();
@@ -77,3 +90,23 @@ public class Jugs extends Environment {
     }
 }
 
+// class used by the GUI
+class JugsModel extends GridWorldModel {
+
+    public static int         GHeight = 10;
+    public static int         GWidth  = 5;
+
+    public JugsModel() {
+        super(GWidth, GHeight, 0);
+    }
+
+    void modelToGrid(int j5, int j3) {
+        for (int j=0; j<GHeight-1; j++) {
+            remove(OBSTACLE,1,j);
+            remove(OBSTACLE,3,j);
+        }
+
+        addWall(1,GHeight-j5-1,1,GHeight-1);
+        addWall(3,GHeight-j3-1,3,GHeight-1);
+    }
+}

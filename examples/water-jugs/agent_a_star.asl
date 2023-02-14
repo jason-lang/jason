@@ -14,7 +14,7 @@
       for ( .member( op(Op,St),Solution)) {
          Op; // execute the actions
       }
-      .stopMAS;
+      //.stopMAS;
    .
 
 +jug(_,_) : jug(5,J5) & jug(3,J3) <- .print("           State: (",J5,",",J3,")").

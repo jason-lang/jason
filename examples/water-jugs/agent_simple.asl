@@ -6,7 +6,8 @@ steps(0). // store the number of actions executed
 // goal achievement condition
 +!jugs(J5,J3) : jug(5,J5) & jug(3,J3) & steps(C)
     <- .print("Problem solved with ",C," actions");
-       .stopMAS.
+       //.stopMAS;
+    .
 
 +!jugs(J5,J3) 
     <- // select a random operation
