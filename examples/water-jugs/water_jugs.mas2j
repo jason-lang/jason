@@ -1,0 +1,7 @@
+MAS water_jugs {
+
+    environment: Jugs
+
+    agents: agent_simple;
+    //agents: agent_a_star;
+}
