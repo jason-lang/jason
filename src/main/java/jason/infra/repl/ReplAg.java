@@ -26,8 +26,8 @@ public abstract class ReplAg extends Agent {
     }
 
     @Override
-    public void load(String asSrc) throws Exception {
-        super.load("");
+    public void loadInitialAS(String asSrc) throws Exception {
+        super.loadInitialAS("");
         /*try {
             getPL().add(ASSyntax.parsePlan("+!run_repl_expr(Cmd__TR) <- Cmd__TR; jason.infra.repl.print_unifier."));
         } catch (ParseException e) {

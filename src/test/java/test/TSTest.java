@@ -126,7 +126,7 @@ public class TSTest extends TestCase {
         Agent a = new Agent();
 
         a.initAg();
-        a.load("examples/auction/ag3.asl");
+        a.loadInitialAS("examples/auction/ag3.asl");
         String p1 = a.getPL().toString();
         String b1 = a.getBB().toString();
         InternalAction ia1 = ((InternalActionLiteral)a.getPL().get("prop_alliance").getBody().getBodyTerm()).getIA(a);

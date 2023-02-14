@@ -1,47 +1,10 @@
 package jason.asSemantics;
 
-import java.io.*;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Queue;
-import java.util.Set;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-
-import jason.functions.sin;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-
 import jason.JasonException;
 import jason.RevisionFailedException;
 import jason.architecture.AgArch;
 import jason.architecture.MindInspectorWeb;
-import jason.asSyntax.ASSyntax;
-import jason.asSyntax.ArithFunctionTerm;
-import jason.asSyntax.InternalActionLiteral;
-import jason.asSyntax.Literal;
-import jason.asSyntax.LogicalFormula;
-import jason.asSyntax.Plan;
-import jason.asSyntax.PlanLibrary;
-import jason.asSyntax.Rule;
-import jason.asSyntax.Term;
-import jason.asSyntax.Trigger;
+import jason.asSyntax.*;
 import jason.asSyntax.Trigger.TEOperator;
 import jason.asSyntax.Trigger.TEType;
 import jason.asSyntax.directives.FunctionRegister;
@@ -57,6 +20,22 @@ import jason.runtime.Settings;
 import jason.runtime.SourcePath;
 import jason.util.Config;
 import jason.util.ToDOM;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import java.io.*;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 
@@ -120,7 +99,7 @@ public class Agent implements Serializable, ToDOM {
 
             if (bbPars != null)
                 bb.init(ag, bbPars.getParametersArray());
-            ag.load(asSrc); // load the source code of the agent
+            ag.loadInitialAS(asSrc); // load the source code of the agent
             return ag;
         //} catch (Exception e) {
         //    throw new JasonException("as2j: error creating the customised Agent class! - "+agClass, e);
@@ -147,127 +126,60 @@ public class Agent implements Serializable, ToDOM {
         if (! "false".equals(Config.get().getProperty(Config.START_WEB_MI))) MindInspectorWeb.get().registerAg(this);
     }
 
-    /** parse and load the agent code, asSrc may be null
-     * @deprecated use initAg() and load(src)
-     */
-    @Deprecated
-    public void initAg(String asSrc) throws Exception {
-        initAg();
-        load(asSrc);
+
+    /** parse and load the initial agent code + kqml plans + project bels and goals, asSrc may be null */
+    public void loadInitialAS(String asSrc) throws Exception {
+        loadAS(asSrc);
+
+        addInitialBelsFromProjectInBB();
+        addInitialBelsInBB();
+        addInitialGoalsFromProjectInBB();
+        addInitialGoalsInTS();
+        fixAgInIAandFunctions(this); // used to fix agent reference in functions used inside includes
+
+        loadKqmlPlans();
+        addInitialBelsInBB(); // in case kqml plan file has some belief
     }
 
-    /** parse and load the initial agent code, asSrc may be null */
-    public void load(String asSrc) throws Exception {
-        // set the agent
-        //try {
-            //boolean parsingOk = true;
-            if (asSrc != null && !asSrc.isEmpty()) {
-                asSrc = asSrc.replaceAll("\\\\", "/");
-                setASLSrc(asSrc);
+    /**
+     * parse and load some agent code, asSrc may be null
+     * it does not load kqml default plans and does not trigger initial beliefs and goals
+     */
+    public void loadAS(String asSrc) throws Exception {
+        if (asSrc != null && !asSrc.isEmpty()) {
+            asSrc = asSrc.replaceAll("\\\\", "/");
 
-                if (asSrc.startsWith(SourcePath.CRPrefix)) {
-                    // loads the class from a jar file (for example)
-                    parseAS(Agent.class.getResource(asSrc.substring(SourcePath.CRPrefix.length())).openStream() , asSrc);
-                } else {
-                    // check whether source is a URL string
-                    try {
-                        //parsingOk =
-                        parseAS(new URL(asSrc));
-                    } catch (MalformedURLException e) {
-                        //parsingOk =
-                        parseAS(new File(asSrc));
-                    }
+            if (asSrc.startsWith(SourcePath.CRPrefix)) {
+                // loads the class from a jar file (for example)
+                parseAS(Agent.class.getResource(asSrc.substring(SourcePath.CRPrefix.length())).openStream() , asSrc);
+            } else {
+                // check whether source is a URL string
+                try {
+                    parseAS(new URL(asSrc));
+                } catch (MalformedURLException e) {
+                    parseAS(new File(asSrc));
                 }
             }
+        }
 
+        if (getPL().hasMetaEventPlans())
+            getTS().addGoalListener(new GoalListenerForMetaEvents(getTS()));
 
-            //if (parsingOk) {
-                if (getPL().hasMetaEventPlans())
-                    getTS().addGoalListener(new GoalListenerForMetaEvents(getTS()));
-
-                addInitialBelsFromProjectInBB();
-                addInitialBelsInBB();
-                addInitialGoalsFromProjectInBB();
-                addInitialGoalsInTS();
-                fixAgInIAandFunctions(this); // used to fix agent reference in functions used inside includes
-            //} else {
-            //    throw new JasonException("Error loading code from "+asSrc);
-            //}
-
-            loadKqmlPlans();
-            addInitialBelsInBB(); // in case kqml plan file has some belief
-
-        /*} catch (jason.asSyntax.parser.ParseException e) {
-            //logger.log(Level.SEVERE, "Error loading code from "+asSrc , e);
-            throw e;
-        } catch (Exception e) {
-            logger.log(Level.SEVERE, "Error loading code from "+asSrc, e);
-            throw new JasonException("Error loading code from "+asSrc + " ---- " + e);
-        }*/
+        setASLSrc(asSrc);
     }
 
     /** parse and load asl code */
-    public void load(InputStream in, String sourceId) throws Exception {
-        //try {
-            parseAS(in, sourceId);
+    /*public void load(InputStream in, String sourceId) throws Exception {
+        parseAS(in, sourceId);
 
-            if (getPL().hasMetaEventPlans())
-                getTS().addGoalListener(new GoalListenerForMetaEvents(getTS()));
+        if (getPL().hasMetaEventPlans())
+            getTS().addGoalListener(new GoalListenerForMetaEvents(getTS()));
 
-            addInitialBelsInBB();
-            addInitialGoalsInTS();
-            fixAgInIAandFunctions(this); // used to fix agent reference in functions used inside includes
-        //} catch (Exception e) {
-         //   e.printStackTrace();
-        //    throw new JasonException("Error loading plans from stream " + e);
-        //}
-    }
+        addInitialBelsInBB();
+        addInitialGoalsInTS();
+        fixAgInIAandFunctions(this); // used to fix agent reference in functions used inside includes
+    }*/
 
-    /**
-     * Clear Agent's Beliefs and Plan Library
-     */
-    public void clearAg() {
-        if (bb != null) bb.clear();
-        if (pl != null) pl.clear();
-    }
-
-    /**
-     * only parse and load the initial agent code, asSrc may be null
-     * it does not load kqml default plans and does not trigger initial beliefs and goals
-     */
-    public void loadAgSrc(String asSrc) throws Exception {
-        // set the agent
-        //try {
-            //boolean parsingOk = true;
-            if (asSrc != null && !asSrc.isEmpty()) {
-                asSrc = asSrc.replaceAll("\\\\", "/");
-
-                if (asSrc.startsWith(SourcePath.CRPrefix)) {
-                    // loads the class from a jar file (for example)
-                    parseAS(Agent.class.getResource(asSrc.substring(SourcePath.CRPrefix.length())).openStream() , asSrc);
-                } else {
-                    // check whether source is a URL string
-                    try {
-                        //parsingOk =
-                        parseAS(new URL(asSrc));
-                    } catch (MalformedURLException e) {
-                        //parsingOk =
-                        parseAS(new File(asSrc));
-                    }
-                }
-            }
-
-            //if (parsingOk) {
-                if (getPL().hasMetaEventPlans())
-                    getTS().addGoalListener(new GoalListenerForMetaEvents(getTS()));
-            //}
-
-            setASLSrc(asSrc);
-        /*} catch (Exception e) {
-            logger.log(Level.SEVERE, "Error loading code from "+asSrc, e);
-            throw new JasonException("Error loading code from "+asSrc + " ---- " + e);
-        }*/
-    }
 
     public void loadKqmlPlans() throws Exception {
         // load kqml plans at the end of the ag PL
@@ -293,32 +205,12 @@ public class Agent implements Serializable, ToDOM {
         }
     }
 
-    /** @deprecated Prefer the initAg method with only the source code of the agent as parameter.
-     *
-     *  A call of this method like
-     *     <pre>
-     *     TransitionSystem ts = ag.initAg(arch, bb, asSrc, stts)
-     *     </pre>
-     *  can be replaced by
-     *     <pre>
-     *     new TransitionSystem(ag, new Circumstance(), stts, arch);
-     *     ag.setBB(bb); // only if you use a custom BB
-     *     ag.initAg(asSrc);
-     *     TransitionSystem ts = ag.getTS();
-     *     </pre>
+    /**
+     * Clear Agent's Beliefs and Plan Library
      */
-    @Deprecated
-    public TransitionSystem initAg(AgArch arch, BeliefBase bb, String asSrc, Settings stts) throws JasonException {
-        try {
-            if (bb != null)
-                setBB(bb);
-            new TransitionSystem(this, null, stts, arch);
-            initAg(asSrc);
-            return ts;
-        } catch (Exception e) {
-            logger.log(Level.SEVERE, "Error creating the agent class!", e);
-            throw new JasonException("Error creating the agent class! - " + e);
-        }
+    public void clearAgMemory() {
+        if (bb != null) bb.clear();
+        if (pl != null) pl.clear();
     }
 
     public void stopAg() {
@@ -457,34 +349,14 @@ public class Agent implements Serializable, ToDOM {
         parseAS(asURL, asURL.toString());
     }
     public void parseAS(URL asURL, String sourceId) throws Exception {
-        //try {
-            parseAS(asURL.openStream(), sourceId);
-            logger.fine("as2j: AgentSpeak program '" + asURL + "' parsed successfully!");
-        /*    return true;
-        } catch (IOException e) {
-            logger.log(Level.SEVERE, "as2j: the AgentSpeak source file '"+asURL+"' was not found!");
-        } catch (ParseException e) {
-            logger.log(Level.SEVERE, "as2j: parsing error: " + e.getMessage());
-        } catch (Exception e) {
-            logger.log(Level.SEVERE, "as2j: parsing error: \"" + asURL + "\"", e);
-        }
-        return false;*/
+        parseAS(asURL.openStream(), sourceId);
+        logger.fine("as2j: AgentSpeak program '" + asURL + "' parsed successfully!");
     }
 
     /** Adds beliefs and plans form a file */
     public void parseAS(File asFile) throws Exception {
-        //try {
-            parseAS(new FileInputStream(asFile), asFile.getName());
-            logger.fine("as2j: AgentSpeak program '" + asFile + "' parsed successfully!");
-        /*    return true;
-        } catch (FileNotFoundException e) {
-            logger.log(Level.SEVERE, "as2j: the AgentSpeak source file '"+asFile+"' was not found!");
-        } catch (ParseException e) {
-            logger.log(Level.SEVERE, "as2j: parsing error:" + e.getMessage());
-        } catch (Exception e) {
-            logger.log(Level.SEVERE, "as2j: error parsing \"" + asFile + "\"", e);
-        }
-        return false;*/
+        parseAS(new FileInputStream(asFile), asFile.getName());
+        logger.fine("as2j: AgentSpeak program '" + asFile + "' parsed successfully!");
     }
 
     public void parseAS(InputStream asIn, String sourceId) throws ParseException, JasonException {
@@ -525,7 +397,7 @@ public class Agent implements Serializable, ToDOM {
     public void initDefaultFunctions() {
         if (functions == null)
             functions = new HashMap<>();
-        addFunction(Count.class, false);
+        addFunction(Count.class, false); // the  Count function depends on the agent class (its BB)
     }
 
     /** register an arithmetic function implemented in Java */
@@ -1154,7 +1026,7 @@ public class Agent implements Serializable, ToDOM {
 
     /** Gets the agent "mind" as XML */
     public Element getAsDOM(Document document) {
-        Element ag = (Element) document.createElement("agent");
+        Element ag = document.createElement("agent");
         ag.setAttribute("name", ts.getAgArch().getAgName());
         ag.setAttribute("cycle", ""+ts.getAgArch().getCycleNumber());
 
@@ -1164,11 +1036,11 @@ public class Agent implements Serializable, ToDOM {
         ag.appendChild(importedNodePL);
 
         // agent status
-        Element ess = (Element) document.createElement("status");
+        Element ess = document.createElement("status");
         ag.appendChild(ess);
         Map<String,Object> status = getTS().getAgArch().getStatus();
         for (String k: status.keySet()) {
-            Element es = (Element) document.createElement("entry");
+            Element es = document.createElement("entry");
             es.setAttribute("key", k);
             es.setAttribute("value", status.get(k).toString());
             ess.appendChild(es);
@@ -1187,7 +1059,7 @@ public class Agent implements Serializable, ToDOM {
             }
         }
         Document document = builder.newDocument();
-        Element ag = (Element) document.createElement("agent");
+        Element ag = document.createElement("agent");
         if (getASLSrc() != null && getASLSrc().length() > 0) {
             ag.setAttribute("source", getASLSrc());
         }
@@ -1198,4 +1070,51 @@ public class Agent implements Serializable, ToDOM {
         return document;
     }
 
+    /** parse and load the agent code, asSrc may be null
+     * @deprecated use initAg() and load(src)
+     */
+    @Deprecated
+    public void initAg(String asSrc) throws Exception {
+        initAg();
+        loadInitialAS(asSrc);
+    }
+
+    /* @deprecated use loadInitialASL */
+    @Deprecated
+    public void load(String asSrc) throws Exception {
+        loadInitialAS(asSrc);
+    }
+
+    /* @deprecated use loadASL */
+    @Deprecated
+    public void loadAgSrc(String asSrc) throws Exception {
+        loadAS(asSrc);
+    }
+    /** @deprecated Prefer the initAg method with only the source code of the agent as parameter.
+     *
+     *  A call of this method like
+     *     <pre>
+     *     TransitionSystem ts = ag.initAg(arch, bb, asSrc, stts)
+     *     </pre>
+     *  can be replaced by
+     *     <pre>
+     *     new TransitionSystem(ag, new Circumstance(), stts, arch);
+     *     ag.setBB(bb); // only if you use a custom BB
+     *     ag.initAg(asSrc);
+     *     TransitionSystem ts = ag.getTS();
+     *     </pre>
+     */
+    @Deprecated
+    public TransitionSystem initAg(AgArch arch, BeliefBase bb, String asSrc, Settings stts) throws JasonException {
+        try {
+            if (bb != null)
+                setBB(bb);
+            new TransitionSystem(this, null, stts, arch);
+            initAg(asSrc);
+            return ts;
+        } catch (Exception e) {
+            logger.log(Level.SEVERE, "Error creating the agent class!", e);
+            throw new JasonException("Error creating the agent class! - " + e);
+        }
+    }
 }
