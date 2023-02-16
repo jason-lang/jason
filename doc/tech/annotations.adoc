@@ -119,11 +119,13 @@ Y = p[a1,a3];
 X[a4] = Y[a2,a4,a5]; // unifies
 ----
 
+Since `X` is unified with `p[a1,a2]`, the result from the substitutions of `X[a4]` is `p[a1,a2][a4]`, that is equals  to `p[a1,a2,a4]`.
+
 *Only X is ground*
 
 ----
 X     = p[Cs]
-X[As] = Y[Bs]  // unifies if (Cs union As) in Bs
+X[As] = Y[Bs]  // unifies if (Cs union As) subset Bs
                // and Y unifies with p
 ----
 
@@ -140,18 +142,18 @@ X[a3] = Y[a1,a2,a4,a5];    // does not unify
 
 ----
 Y     = p[Ds]
-X[As] = Y[Bs]  // unifies if As in (Ds union Bs)
+X[As] = Y[Bs]  // unifies if As subset (Ds union Bs)
                // and unifies X with p
 ----
 
-NOTE: the annotations of X is an issue to discuss (what X should unify with). It could be `[]`, since `[]` is a subset of anything. It could be: `X = p[(Ds + Bs) - As]`. A minimal subset approach or a maximal subset approach. The current implementation is like above (minimal subset approach). The problem is that `X = p[a,b,c]` unifies X with `p[a,b,c]`, i.e., the maximal approach. So the current implementation is somewhat inconsistent. Proposal: use always the maximal approach when Y is ground and the minimal when X is ground.
+NOTE: the annotations of X is an issue to discuss (what X should unify with?). It could be `[]`, since `[]` is a subset of anything. It could be: `X = p[(Ds + Bs) - As]`. A minimal subset approach or a maximal subset approach. The current implementation is like above (minimal subset approach). The problem is that `X = p[a,b,c]` unifies X with `p[a,b,c]`, i.e., the maximal approach. So the current implementation is somewhat inconsistent. Proposal: use always the maximal approach when Y is ground and the minimal when `X` is ground.  Another option is to consider that `X = p[a,b,c]` is not equal to `X[] = p[a,b,c]`; the  first unifies `X` to `p[a,b,c]`; the second  `X` unifies with `p`. Thus `X` is not the same thing as `X[]` (!!); what seems worst, since  it implies that `p[]` is not equal  to `p`.
 
 
 Example:
 
 ----
 Y     = p[a1,a3];
-X[a1] = Y[a4,a5]; // unifies X with p
+X[a1] = Y[a4,a5]; // unifies X with p; in maximal approach X value would be X[a3,a4,a5]
 X[a6] = Y[a4,a5]; // does not unify
 ----
 
@@ -164,7 +166,7 @@ X[As] = Y[Bs]  // unifies if As is a subset of Bs
 
 == Annotated Variables in a Plan Body
 
-The annotations of the variable and the annotations of its instantiated are combined (using set union) to produce the corresponding event:
+The annotations of the variable and the annotations of its value are combined (using set union) to produce the corresponding event:
 
 ----
 X=g[a];
