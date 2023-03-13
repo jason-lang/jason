@@ -88,7 +88,7 @@ MAS ex1 {
 ----
 java -cp "$JASON_HOME/libs/*" jason.infra.centralised.RunCentralisedMAS \
     x.mas2j \
-    --log-conf mylog..properties
+    --log-conf mylog.properties
 ----
 +
 ----

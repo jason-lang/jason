@@ -190,6 +190,7 @@ public class RunLocalMAS extends BaseLocalMAS implements RunLocalMASMBean {
         if (args.length > 0) {
             String la = "";
             for (String arg: args) {
+                arg = arg.trim();
                 if (la.equals("--log-conf")) {
                     margs.put("log-conf", arg);
                 }
