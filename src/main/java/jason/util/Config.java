@@ -2,10 +2,7 @@ package jason.util;
 
 import java.io.*;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
-import java.util.StringTokenizer;
+import java.util.*;
 
 import jason.asSemantics.Message;
 import jason.asSemantics.TransitionSystem;
@@ -24,6 +21,7 @@ public class Config extends Properties {
 
     /** path to jason.jar */
     public static final String JASON_JAR     = "jasonJar";
+    public static final String JASON_PKG     = "jason";
 
     /** path to ant home (jar directory) */
     public static final String ANT_LIB       = "antLib";
@@ -69,6 +67,8 @@ public class Config extends Properties {
     protected static String    configFactory = null;
 
     protected static boolean   showFixMsgs = true;
+
+    protected Map<String,File> packages = new HashMap<>(); // a map from 'jason' -> 'jar:file:/..../jason.jar' and other packages
 
     public static void setClassFactory(String f) {
         singleton = null;
@@ -143,6 +143,15 @@ public class Config extends Properties {
 
     public boolean getBoolean(String key) {
         return "true".equals(get(key));
+    }
+
+    @Override
+    public synchronized Object put(Object key, Object value) {
+        if (JASON_JAR.equals(key)) {
+            addPackage(JASON_PKG, new File((String) value));
+            addPackage(JASON_JAR, new File((String)value)); // for compatibility reasons
+        }
+        return super.put(key, value);
     }
 
     /** Returns the full path to the jason.jar file */
@@ -890,6 +899,21 @@ public class Config extends Properties {
         return "Jason "+getJasonVersion()+"\n"+
                "     built on "+getJasonBuiltDate()+"\n"+
                "     installed at "+getHome();
+    }
+
+    public void addPackage(String key, File value) {
+        packages.put(key, value);
+    }
+
+    public File getPackage(String key) {
+        return packages.get(key);
+    }
+    public Map<String, File> getPackages() {
+        return packages;
+    }
+
+    public void clearPackages() {
+        packages.clear();
     }
 
 }

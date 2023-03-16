@@ -112,13 +112,12 @@ public class SourcePath implements Serializable {
     		return f;
         if (new File(f).exists())
             return "file:"+f;
-        if (f.startsWith("$")) { // the case of "$jasonJar/src/a.asl"
+        if (f.startsWith("$")) { // the case of "$jason/src/a.asl"
             String jar = f.substring(1,f.indexOf("/"));
-            if (Config.get().get(jar) == null) {
+            if (Config.get().getPackage(jar) == null) {
             	System.err.println("The included file '"+jar+"' is not configured");
             } else {
-                String path = Config.get().get(jar).toString();
-                String nf = "jar:file:" + path + "!" + f.substring(f.indexOf("/"));
+                var nf = "jar:file:" + Config.get().getPackage(jar).getAbsolutePath() + "!" + f.substring(f.indexOf("/"));
                 if (testURLSrc(nf))
                 	return nf;
             }
