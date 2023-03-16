@@ -235,74 +235,86 @@ public class MindInspectorWebImpl extends MindInspectorWeb {
 
                             // test if the url is for this agent
                             String path = exchange.getRequestURI().getPath();
-                            if (!getAgNameFromPath(path).equals(agName)) {
-                                if (tryToIncludeMindInspectorForAg(path))
-                                    so.append("<meta http-equiv=\"refresh\" content=0>");
-                                else
-                                    so.append("unknown agent!");
-                            } else {
-
-                                List<Document> h = histories.get(agName);
-                                if (h != null && h.size() > 0) {
-                                    Document agState;
-                                    int i = -1;
-                                    exchange.getRemoteAddress();
-
-                                    String query = exchange.getRequestURI().getRawQuery(); // what follows ?
-                                    String remote = exchange.getRemoteAddress().toString();
-
-                                    if (path.endsWith("hide")) {
-                                        show.put(query,false);
-                                        Integer ii = lastStepSeenByUser.get(remote);
-                                        if (ii != null)
-                                            i = ii;
-                                    } else if (path.endsWith("show")) {
-                                        show.put(query,true);
-                                        Integer ii = lastStepSeenByUser.get(remote);
-                                        if (ii != null)
-                                            i = ii;
-                                    } else if (path.endsWith("clear")) {
-                                        agState = h.get(h.size()-1);
-                                        h.clear();
-                                        h.add(agState);
-                                    } else {
-                                        // see if ends with a number
-                                        try {
-                                            int pos = path.lastIndexOf("/");
-                                            String n = path.substring(pos+1).trim();
-                                            i = Integer.valueOf(n);
-                                        } catch (Exception e) {}
-                                    }
-                                    if (i == -1) {
-                                        //so.append("<meta http-equiv=\"refresh\" content=\""+refreshInterval+"\">");
-                                        agState = h.get(h.size()-1);
-                                    } else {
-                                        agState = h.get(i-1);
-                                    }
-                                    try {
-                                        lastStepSeenByUser.put(remote, i);
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                    }
-                                    so.append("</head><body>");
-                                    if (h.size() > 1) {
-                                        //so.append("history: ");
-                                        so.append("<a href=/agent-mind/"+agName+"/latest>latest state</a> ");
-                                        for (i=h.size()-1; i>0; i--) {
-                                            so.append("<a href=\"/agent-mind/"+agName+"/"+i+"\" style=\"text-decoration: none\">"+i+"</a> ");
-                                        }
-                                        so.append("<a href=\"/agent-mind/"+agName+"/clear\">clear history</a> ");
-                                        so.append("<hr/>");
-                                    }
-                                    so.append(getAgStateAsString(agState));
-                                    if (show.get("annots")) {
-                                        so.append("<hr/><a href='hide?annots'> hide annotations </a> ");
-                                    } else {
-                                        so.append("<hr/><a href='show?annots'> show annotations </a> ");
-                                    }
-                                    //so.append("<hr/><a href=\"/\"> list of agents</a> ");
+                            if (path.endsWith("/plans")) {
+                                Agent ag = registeredAgents.get(agName);
+                                if (ag != null) {
+                                    so.append("<pre>");
+                                    so.append(ag.getPL().getAsTxt(false));
+                                    so.append("</pre>");
+                                }
+                            }  else {
+                                if (!getAgNameFromPath(path).equals(agName)) {
+                                    if (tryToIncludeMindInspectorForAg(path))
+                                        so.append("<meta http-equiv=\"refresh\" content=0>");
+                                    else
+                                        so.append("unknown agent!");
                                 } else {
-                                    so.append("select an agent");
+
+                                    List<Document> h = histories.get(agName);
+                                    if (h != null && h.size() > 0) {
+                                        Document agState;
+                                        int i = -1;
+                                        exchange.getRemoteAddress();
+
+                                        String query = exchange.getRequestURI().getRawQuery(); // what follows ?
+                                        String remote = exchange.getRemoteAddress().toString();
+
+                                        if (path.endsWith("hide")) {
+                                            show.put(query, false);
+                                            Integer ii = lastStepSeenByUser.get(remote);
+                                            if (ii != null)
+                                                i = ii;
+                                        } else if (path.endsWith("show")) {
+                                            show.put(query, true);
+                                            Integer ii = lastStepSeenByUser.get(remote);
+                                            if (ii != null)
+                                                i = ii;
+                                        } else if (path.endsWith("clear")) {
+                                            agState = h.get(h.size() - 1);
+                                            h.clear();
+                                            h.add(agState);
+                                        } else {
+                                            // see if ends with a number
+                                            try {
+                                                int pos = path.lastIndexOf("/");
+                                                String n = path.substring(pos + 1).trim();
+                                                i = Integer.valueOf(n);
+                                            } catch (Exception e) {
+                                            }
+                                        }
+                                        if (i == -1) {
+                                            //so.append("<meta http-equiv=\"refresh\" content=\""+refreshInterval+"\">");
+                                            agState = h.get(h.size() - 1);
+                                        } else {
+                                            agState = h.get(i - 1);
+                                        }
+                                        try {
+                                            lastStepSeenByUser.put(remote, i);
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
+                                        so.append("</head><body>");
+                                        if (h.size() > 1) {
+                                            //so.append("history: ");
+                                            so.append("<a href=/agent-mind/" + agName + "/latest>latest state</a> ");
+                                            for (i = h.size() - 1; i > 0; i--) {
+                                                so.append("<a href=\"/agent-mind/" + agName + "/" + i + "\" style=\"text-decoration: none\">" + i + "</a> ");
+                                            }
+                                            so.append("<a href=\"/agent-mind/" + agName + "/clear\">clear history</a> ");
+                                            so.append("<hr/>");
+                                        }
+                                        so.append(getAgStateAsString(agState));
+                                        if (show.get("annots")) {
+                                            so.append("<hr/><a href='hide?annots'> hide annotations </a>");
+                                        } else {
+                                            so.append("<hr/><a href='show?annots'> show annotations </a>");
+                                        }
+                                        so.append("  |  <a href='plans'> plan library </a>");
+
+                                        //so.append("<hr/><a href=\"/\"> list of agents</a> ");
+                                    } else {
+                                        so.append("select an agent");
+                                    }
                                 }
                             }
                             responseBody.write(so.toString().getBytes());
