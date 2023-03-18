@@ -63,7 +63,7 @@ dependencies {
 // copy dep jars and scritps into build directory
 task copyJarsToBuild {
     inputs.files configurations.runtimeClasspath.files
-    inputs.dir   'scripts'
+    inputs.dir   'src/main/resources/scripts'
     outputs.dir  'build/libs'
     outputs.dir  'build/scripts'
     doLast {
@@ -72,7 +72,7 @@ task copyJarsToBuild {
             into 'build/libs'
         }
         copy {
-            from 'scripts'
+            from 'src/main/resources/scripts'
             into 'build/scripts'
             include '**'
             filter {
@@ -307,7 +307,7 @@ task doc(dependsOn: [ 'jjdoc', 'javadoc', 'renderAsciiDocs']) {
 }
 
 task renderAsciiDocs(type: Exec) {
-    commandLine 'find', '.', '-name', '*.adoc', '-exec', 'scripts/asciidoc-docker', '{}', ';'
+    commandLine 'find', '.', '-name', '*.adoc', '-exec', 'doc/asciidoc-docker', '{}', ';'
     //commandLine 'find', '.', '-name', '*.adoc', '-exec', 'asciidoctor', '{}', ';'
 }
 
