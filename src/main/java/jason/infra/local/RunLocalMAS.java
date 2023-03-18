@@ -38,6 +38,8 @@ import java.util.logging.*;
  */
 public class RunLocalMAS extends BaseLocalMAS implements RunLocalMASMBean {
 
+    protected static Logger logger = Logger.getLogger(RunLocalMAS.class.getName());
+
     private JButton  btDebug;
     protected boolean  isRunning = false;
 
@@ -78,6 +80,8 @@ public class RunLocalMAS extends BaseLocalMAS implements RunLocalMASMBean {
     }
 
     protected int init(String[] args) {
+        Map<String,Object> mArgs = parseArgs(args);
+
         String projectFileName = null;
         if (args.length < 1) {
             if (RunLocalMAS.class.getResource("/"+defaultProjectFileName) != null) {
@@ -85,12 +89,14 @@ public class RunLocalMAS extends BaseLocalMAS implements RunLocalMASMBean {
                 appFromClassPath = true;
                 Config.get(false); // to void to call fix/store the configuration in this case everything is read from a jar/jnlp file
             } else {
-                System.out.println("Jason "+Config.get().getJasonVersion());
-                System.err.println("You should inform the MAS project file.");
-                //JOptionPane.showMessageDialog(null,"You should inform the project file as a parameter.\n\nJason version "+Config.get().getJasonVersion()+" library built on "+Config.get().getJasonBuiltDate(),"Jason", JOptionPane.INFORMATION_MESSAGE);
-                System.exit(0);
+                if (!(boolean)(mArgs.getOrDefault("empty-mas", false))) {
+                    System.out.println("Jason " + Config.get().getJasonVersion());
+                    System.err.println("You should inform the MAS project file.");
+                    //JOptionPane.showMessageDialog(null,"You should inform the project file as a parameter.\n\nJason version "+Config.get().getJasonVersion()+" library built on "+Config.get().getJasonBuiltDate(),"Jason", JOptionPane.INFORMATION_MESSAGE);
+                    System.exit(1);
+                }
             }
-        } else {
+        } else if (!args[0].startsWith("-")) {
             projectFileName = args[0];
         }
 
@@ -100,7 +106,11 @@ public class RunLocalMAS extends BaseLocalMAS implements RunLocalMASMBean {
             Config.get().fix();
         }
 
-        Map<String,Object> mArgs = parseArgs(args);
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
 
         setupLogger((String)mArgs.get("log-conf"));
 
@@ -194,6 +204,9 @@ public class RunLocalMAS extends BaseLocalMAS implements RunLocalMASMBean {
                 if (la.equals("--log-conf")) {
                     margs.put("log-conf", arg);
                 }
+                if (la.equals("--empty-mas")) {
+                    margs.put("empty-mas", true);
+                }
                 if (arg.equals("--debug") || arg.equals("-d"))
                     margs.put("debug", true);
 
@@ -246,7 +259,7 @@ public class RunLocalMAS extends BaseLocalMAS implements RunLocalMASMBean {
                 confFile = new SourcePath().fixPath(confFile);
                 URL logurl = new URL(confFile);
                 LogManager.getLogManager().readConfiguration( logurl.openStream() );
-                System.out.println("logging configuration was loaded from "+logurl);
+                logger.fine("logging configuration was loaded from "+logurl);
             } catch (Exception e) {
                 System.err.println("Error setting up logger:" + e);
                 e.printStackTrace();

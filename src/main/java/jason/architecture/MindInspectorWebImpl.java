@@ -48,7 +48,7 @@ public class MindInspectorWebImpl extends MindInspectorWeb {
 
             httpServer.start();
             httpServerURL = "http://"+InetAddress.getLocalHost().getHostAddress()+":"+httpServerPort;
-            System.out.println("Jason Http Server running on "+httpServerURL);
+            System.out.println("Agent mind inspector is running at "+httpServerURL);
             registerRootBrowserView();
             registerAgentsBrowserView();
             registerAgView("no_ag");
