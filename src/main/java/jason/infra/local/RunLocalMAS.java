@@ -34,7 +34,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.*;
 
 /**
- * Runs MASProject using Local infrastructure.
+ * Runs MASProject using *Local* infrastructure.
  */
 public class RunLocalMAS extends BaseLocalMAS implements RunLocalMASMBean {
 
@@ -47,8 +47,9 @@ public class RunLocalMAS extends BaseLocalMAS implements RunLocalMASMBean {
 
     public RunLocalMAS() {
         super();
-        if (RuntimeServicesFactory.get() == null)
-            RuntimeServicesFactory.set( new LocalRuntimeServices(this) );
+        if (RuntimeServicesFactory.get() == null || !RuntimeServicesFactory.get().isRunning()) {
+            RuntimeServicesFactory.set(new LocalRuntimeServices(this));
+        }
         runner = this;
     }
 
@@ -104,12 +105,6 @@ public class RunLocalMAS extends BaseLocalMAS implements RunLocalMASMBean {
             //System.out.println("Jason is not configured, creating a default configuration");
             Config.get().setShowFixMsgs(false);
             Config.get().fix();
-        }
-
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
         }
 
         setupLogger((String)mArgs.get("log-conf"));

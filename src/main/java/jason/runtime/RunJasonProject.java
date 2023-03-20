@@ -9,6 +9,7 @@ import jason.util.Config;
 
 /**
  * Run a Jason mas2j project
+ * (creates Ant script and executes it)
  *
  * parameters:
  *    /Jason mas2j Project File/
@@ -29,7 +30,7 @@ public class RunJasonProject {
 
         if (args.length == 0) {
             System.out.println(Config.get().getPresentation()+"\n");
-            System.out.println("usage must be:");
+            System.out.println("usage:");
             System.out.println("      java "+RunJasonProject.class.getName()+" <MAS2j Project File>");
             return;
         } else {

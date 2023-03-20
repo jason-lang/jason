@@ -19,7 +19,7 @@ import jason.runtime.SourcePath;
 /** This class implements the Local version of the runtime services. */
 public class LocalRuntimeServices extends BaseRuntimeServices {
 
-    private static Logger logger = Logger.getLogger(LocalRuntimeServices.class.getName());
+    private static final Logger logger = Logger.getLogger(LocalRuntimeServices.class.getName());
 
     public LocalRuntimeServices(BaseLocalMAS masRunner) {
         super(masRunner);
@@ -118,22 +118,20 @@ public class LocalRuntimeServices extends BaseRuntimeServices {
         logger.fine("Killing local agent " + agName);
         LocalAgArch ag = masRunner.getAg(agName);
         if (ag != null && ag.getTS().getAg().killAcc(byAg)) {
-            new Thread() {
-                public void run() {
-                    if (deadline != 0) {
-                        // gives some time for the agent
-                        Trigger te = PlanLibrary.TE_JAG_SHUTTING_DOWN.clone();
-                        te.getLiteral().addTerm(new NumberTermImpl(deadline));
-                        ag.getTS().getC().addExternalEv(te);
+            new Thread(() -> {
+                if (deadline != 0) {
+                    // gives some time for the agent
+                    Trigger te = PlanLibrary.TE_JAG_SHUTTING_DOWN.clone();
+                    te.getLiteral().addTerm(new NumberTermImpl(deadline));
+                    ag.getTS().getC().addExternalEv(te);
 
-                        try {
-                            sleep(deadline);
-                        } catch (InterruptedException e) {                      }
-                    }
-                    ag.stopAg();
-                    masRunner.delAg(agName);
-                };
-            }.start();
+                    try {
+                        Thread.sleep(deadline);
+                    } catch (InterruptedException e) {                      }
+                }
+                ag.stopAg();
+                masRunner.delAg(agName);
+            }).start();
             return true;
         }
         return false;

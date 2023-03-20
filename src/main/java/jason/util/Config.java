@@ -276,6 +276,18 @@ public class Config extends Properties {
     public void fix() {
         tryToFixJarFileConf(JASON_JAR,  "jason");
 
+        // check inconsistencies for jason.jar
+        String jasonJarFile = getJarFromClassPath("jason", getJarFileForFixTest(JASON_JAR));
+        if (checkJar(jasonJarFile, getJarFileForFixTest(JASON_JAR))) {
+            if (getJasonJar() != null && !getJasonJar().equals(jasonJarFile)) {
+                System.out.println("\n\n*** The jason.jar from classpath is different than jason.jar from configuration, consider to delete the configuration (file ~/.jason/user.properties) or 'unset JASON_HOME'.");
+                System.out.println("Classpath is\n   "+jasonJarFile+
+                        "\nConfig    is\n   "+getJasonJar()+"\n\n");
+                System.out.println("Using the jason.jar from classpath\n");
+            }
+            put(JASON_JAR, jasonJarFile); // always prefer classpath jar
+        }
+
         // fix java home
         if (get(JAVA_HOME) == null || !checkJavaHomePath(getProperty(JAVA_HOME))) {
             String javaHome = System.getProperty("java.home");
@@ -623,7 +635,7 @@ public class Config extends Properties {
             }
 
             // try current build/libs (from gradle build)
-            jarFile = findJarInDirectory(new File("build/libs"), jarFilePrefix);
+            /*jarFile = findJarInDirectory(new File("build/libs"), jarFilePrefix);
             if (checkJar(jarFile, fileInJar)) {
                 try {
                     put(jarEntry, new File(jarFile).getCanonicalFile().getAbsolutePath());
@@ -633,7 +645,7 @@ public class Config extends Properties {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-            }
+            }*/
 
             /*
             jarFile = findJarInDirectory(new File("libs"), jarFilePrefix);
