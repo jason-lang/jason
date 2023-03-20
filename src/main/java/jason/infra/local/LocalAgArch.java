@@ -512,10 +512,20 @@ public class LocalAgArch extends AgArch implements Runnable, Serializable {
         status.put("cycle", getCycleNumber());
         status.put("idle", getTS().canSleep());
 
-        // put intentions
         Circumstance c = getTS().getC();
 
-        status.put("nbIntentions", c.getNbRunningIntentions() + c.getPendingIntentions().size());
+        status.put("nbBeliefs", getTS().getAg().getBB().size());
+        status.put("nbMails", getMBox().size());
+        status.put("nbEvents", c.getEvents().size());
+
+        // put intentions
+
+        var ri = c.getNbRunningIntentions();
+        if (c.getSelectedIntention()!=null && c.getPendingIntentions().values().contains(c.getSelectedIntention())) // case of selected intention just being pending
+            ri--;
+        status.put("nbIntentions", ri + c.getPendingIntentions().size());
+        status.put("nbRunningIntentions", ri);
+        status.put("nbPendingIntentions", c.getPendingIntentions().size());
 
         List<Map<String, Object>> ints = new ArrayList<>();
         Iterator<Intention> ii = c.getAllIntentions();
@@ -527,7 +537,12 @@ public class LocalAgArch extends AgArch implements Runnable, Serializable {
             //iprops.put("suspended", i.isSuspended());
             iprops.put("state", i.getStateBasedOnPlace());
             if (i.isSuspended()) {
-                iprops.put("suspendedReason", i.getSuspendedReason().toString());
+                iprops.put("suspended_reason", i.getSuspendedReason().toString());
+            }
+            // the case of SI in Pending
+            if (c.getSelectedIntention() ==  i && c.getPendingIntentions().values().contains(i)) {
+                iprops.put("state", Intention.State.waiting);
+                iprops.put("waiting_for", c.getPendingIntentionKey(i));
             }
             iprops.put("size", i.size());
             ints.add(iprops);

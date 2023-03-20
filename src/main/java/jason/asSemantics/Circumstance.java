@@ -415,6 +415,13 @@ public class Circumstance implements Serializable, ToDOM {
         return PI;
     }
 
+    public String getPendingIntentionKey(Intention i) {
+        for (var k: PI.keySet())
+            if (PI.get(k).equals(i))
+                return k;
+        return null;
+    }
+
     public boolean hasPendingIntention() {
         return PI != null && !PI.isEmpty();
     }
