@@ -1,11 +1,7 @@
 package jason.architecture;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Level;
 
 import jason.asSemantics.ActionExec;
@@ -295,6 +291,6 @@ public class AgArch implements Comparable<AgArch>, Serializable {
         if (successor != null)
             return successor.getStatus();
         else
-            return new HashMap<String, Object>();
+            return new TreeMap<>();
     }
 }
