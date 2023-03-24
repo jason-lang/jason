@@ -1,6 +1,8 @@
 package jason.infra.local;
 
+import java.io.StringReader;
 import java.util.Collection;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -135,6 +137,42 @@ public class LocalRuntimeServices extends BaseRuntimeServices {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public Map<String, Object> getAgStatus(String agName) {
+        LocalAgArch ag = masRunner.getAg(agName);
+        if (ag != null) {
+            return ag.getStatus();
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public Agent getAgentSnapshot(String agName) {
+        LocalAgArch ag = masRunner.getAg(agName);
+        if (ag == null)
+            return null;
+
+        return ag.getTS().getAg().clone(ag);
+    }
+
+    @Override
+    public String loadASL(String agName, String code, String sourceId) {
+        LocalAgArch agArch = masRunner.getAg(agName);
+        if (agArch == null)
+            return "no agent named "+agName;
+
+        try {
+            var ag = agArch.getTS().getAg();
+            ag.parseAS(new StringReader(code), sourceId);
+            ag.addInitialBelsInBB();
+            ag.addInitialGoalsInTS();
+            return "ok";
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }
 

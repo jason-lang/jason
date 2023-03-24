@@ -1,9 +1,6 @@
 package jason.runtime;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import jason.JasonException;
 import jason.architecture.AgArch;
@@ -49,7 +46,7 @@ public interface RuntimeServices {
     public void startAgent(String agName);
 
     /**
-     * Clones an agent
+     * Clones an agent and starts it
      *
      * @param source: the agent used as source for beliefs, plans, ...
      * @param archClassName: agent architectures that will be used
@@ -72,6 +69,14 @@ public interface RuntimeServices {
     public int getAgentsQty();
 
     public boolean isRunning();
+
+    default public Map<String, Object> getAgStatus(String agName) { return new HashMap<>(); }
+
+    /** gets a copy of some agent (BB, PL, ...) */
+    default public Agent getAgentSnapshot(String agName) { return null; }
+
+    /** loads some ASL code into some agent */
+    default public String loadASL(String agName, String code, String sourceId) { return "not implemented"; }
 
     /** Stops all MAS (the agents, the environment, the controller, ...) */
     public void stopMAS(int deadline, boolean stopJVM, int exitValue) throws Exception;

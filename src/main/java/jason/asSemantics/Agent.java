@@ -271,7 +271,7 @@ public class Agent implements Serializable, ToDOM {
         if (a.getPL().hasMetaEventPlans())
             a.getTS().addGoalListener(new GoalListenerForMetaEvents(a.getTS()));
 
-        a.initAg(); //for initDefaultFunctions() and for overridden/custom agent
+        a.initAg(); // for initDefaultFunctions() and for overridden/custom agent
         return a;
     }
 
