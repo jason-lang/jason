@@ -74,10 +74,6 @@ public class JadeRuntimeServices implements RuntimeServices {
         // nothing to do, the jade create new agent is enough
     }
 
-    public AgArch clone(jason.asSemantics.Agent source, Collection<String> archClasses, String agName) throws JasonException {
-        throw new JasonException("clone for JADE is not implemented!");
-    }
-
     public Collection<String> getAgentsNames() {
         // TODO: make a cache list and update it when a new agent enters the system
         if (jadeAgent == null) return null;

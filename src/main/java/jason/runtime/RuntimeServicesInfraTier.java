@@ -18,7 +18,6 @@ public interface RuntimeServicesInfraTier extends RuntimeServices {
 
     default public void startAgent(String agName) {};
 
-    default public AgArch clone(Agent source, Collection<String> archClasses, String agName) throws JasonException { return null; }
     default public boolean killAgent(String agName, String byAg, int deadline) { return false; }
 
     default public Collection<String> getAgentsNames() {return null; }

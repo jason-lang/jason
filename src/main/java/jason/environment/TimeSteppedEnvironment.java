@@ -1,5 +1,6 @@
 package jason.environment;
 
+import java.rmi.RemoteException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -115,7 +116,11 @@ public class TimeSteppedEnvironment extends Environment {
      *  environment.
      */
     protected void updateNumberOfAgents() {
-        setNbAgs(getEnvironmentInfraTier().getRuntimeServices().getAgentsNames().size());
+        try {
+            setNbAgs(getEnvironmentInfraTier().getRuntimeServices().getAgentsNames().size());
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /** Returns the number of agents in the MAS (used to test the end of a cycle) */

@@ -1,13 +1,6 @@
 package jason.infra.local;
 
-import java.io.StringReader;
-import java.util.Collection;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import jason.JasonException;
-import jason.architecture.AgArch;
 import jason.asSemantics.Agent;
 import jason.asSyntax.NumberTermImpl;
 import jason.asSyntax.PlanLibrary;
@@ -17,6 +10,12 @@ import jason.mas2j.ClassParameters;
 import jason.runtime.RuntimeServicesFactory;
 import jason.runtime.Settings;
 import jason.runtime.SourcePath;
+
+import java.io.StringReader;
+import java.util.Collection;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /** This class implements the Local version of the runtime services. */
 public class LocalRuntimeServices extends BaseRuntimeServices {
@@ -101,7 +100,7 @@ public class LocalRuntimeServices extends BaseRuntimeServices {
     }
 
     @Override
-    public AgArch clone(Agent source, Collection<String> archClasses, String agName) throws JasonException {
+    public void clone(Agent source, Collection<String> archClasses, String agName) throws JasonException {
         // create a new infra arch
         LocalAgArch agArch = newAgInstance();
         agArch.setAgName(agName);
@@ -112,7 +111,7 @@ public class LocalRuntimeServices extends BaseRuntimeServices {
         agArch.createArchs(archClasses, source);
 
         startAgent(agName);
-        return agArch.getFirstAgArch();
+        //return agArch.getFirstAgArch();
     }
 
     @Override
@@ -137,6 +136,15 @@ public class LocalRuntimeServices extends BaseRuntimeServices {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public String getMASName() {
+        try {
+            return masRunner.getProject().getSocName();
+        } catch (Exception e) {
+            return "";
+        }
     }
 
     @Override

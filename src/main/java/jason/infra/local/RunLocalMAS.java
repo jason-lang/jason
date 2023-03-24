@@ -26,6 +26,10 @@ import java.io.*;
 import java.lang.management.ManagementFactory;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.List;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
@@ -47,8 +51,12 @@ public class RunLocalMAS extends BaseLocalMAS implements RunLocalMASMBean {
 
     public RunLocalMAS() {
         super();
-        if (RuntimeServicesFactory.get() == null || !RuntimeServicesFactory.get().isRunning()) {
-            RuntimeServicesFactory.set(new LocalRuntimeServices(this));
+        try {
+            if (RuntimeServicesFactory.get() == null || !RuntimeServicesFactory.get().isRunning()) {
+                RuntimeServicesFactory.set(new LocalRuntimeServices(this));
+            }
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
         }
         runner = this;
     }
@@ -66,6 +74,7 @@ public class RunLocalMAS extends BaseLocalMAS implements RunLocalMASMBean {
         runner = r;
         r.init(args);
         r.registerMBean();
+        r.registerInRMI();
         r.create();
         r.start();
         r.waitEnd();
@@ -80,8 +89,10 @@ public class RunLocalMAS extends BaseLocalMAS implements RunLocalMASMBean {
         }
     }
 
+    protected Map<String,Object> initArgs = new HashMap<>();
+
     protected int init(String[] args) {
-        Map<String,Object> mArgs = parseArgs(args);
+        parseArgs(args);
 
         String projectFileName = null;
         if (args.length < 1) {
@@ -90,7 +101,7 @@ public class RunLocalMAS extends BaseLocalMAS implements RunLocalMASMBean {
                 appFromClassPath = true;
                 Config.get(false); // to void to call fix/store the configuration in this case everything is read from a jar/jnlp file
             } else {
-                if (!(boolean)(mArgs.getOrDefault("empty-mas", false))) {
+                if (!(boolean)(initArgs.getOrDefault("empty-mas", false))) {
                     System.out.println("Jason " + Config.get().getJasonVersion());
                     System.err.println("You should inform the MAS project file.");
                     //JOptionPane.showMessageDialog(null,"You should inform the project file as a parameter.\n\nJason version "+Config.get().getJasonVersion()+" library built on "+Config.get().getJasonBuiltDate(),"Jason", JOptionPane.INFORMATION_MESSAGE);
@@ -107,9 +118,9 @@ public class RunLocalMAS extends BaseLocalMAS implements RunLocalMASMBean {
             Config.get().fix();
         }
 
-        setupLogger((String)mArgs.get("log-conf"));
+        setupLogger((String) initArgs.get("log-conf"));
 
-        if ((boolean)(mArgs.getOrDefault("debug", false))) {
+        if ((boolean)(initArgs.getOrDefault("debug", false))) {
             debug = true;
             Logger.getLogger("").setLevel(Level.FINE);
         }
@@ -189,27 +200,56 @@ public class RunLocalMAS extends BaseLocalMAS implements RunLocalMASMBean {
         return errorCode;
     }
 
-    protected Map<String,Object> parseArgs(String[] args) {
-        Map<String, Object> margs = new HashMap<>();
-
+    protected void parseArgs(String[] args) {
         if (args.length > 0) {
             String la = "";
             for (String arg: args) {
                 arg = arg.trim();
                 if (la.equals("--log-conf")) {
-                    margs.put("log-conf", arg);
+                    initArgs.put("log-conf", arg);
                 }
                 if (la.equals("--empty-mas")) {
-                    margs.put("empty-mas", true);
+                    initArgs.put("empty-mas", true);
+                }
+                if (la.equals("--no-rmi")) {
+                    initArgs.put("no-rmi", true);
                 }
                 if (arg.equals("--debug") || arg.equals("-d"))
-                    margs.put("debug", true);
+                    initArgs.put("debug", true);
 
                 la = arg;
             }
         }
+    }
 
-        return margs;
+    public static final String RMI_PREFIX_RTS = "jason-rst-";
+    protected void registerInRMI() {
+        if ((boolean)(initArgs.getOrDefault("no-rmi", false))) {
+            return;
+        }
+
+        try {
+            var server = RuntimeServicesFactory.get();
+            if (server == null)
+                return;
+
+            RuntimeServices rtStub = (RuntimeServices) UnicastRemoteObject.exportObject((RuntimeServices) server, 0);
+            String name = RMI_PREFIX_RTS + project.getSocName();
+            Registry registry = null;
+            try {
+                registry = LocateRegistry.getRegistry();
+                registry.rebind(name, rtStub);
+            } catch (Exception e) {
+                registry = LocateRegistry.createRegistry(1099);
+                registry.rebind(name, rtStub);
+            }
+
+            //logger.info("MAS "+server.getMASName()+" registered in RMI");
+        } catch (java.rmi.server.ExportException e) {
+            // ignore object already exported
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /** create environment, agents, controller */
@@ -788,7 +828,11 @@ public class RunLocalMAS extends BaseLocalMAS implements RunLocalMASMBean {
     }
 
     public boolean killAg(String agName) {
-        return RuntimeServicesFactory.get().killAgent(agName, "??", 0);
+        try {
+            return RuntimeServicesFactory.get().killAgent(agName, "??", 0);
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /** change the current running MAS to debug mode */
@@ -893,6 +937,13 @@ public class RunLocalMAS extends BaseLocalMAS implements RunLocalMASMBean {
 
                 try {
                     ManagementFactory.getPlatformMBeanServer().unregisterMBean(new ObjectName("jason.sf.net:type=runner"));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                try {
+                    var reg = LocateRegistry.getRegistry();
+                    reg.unbind( RMI_PREFIX_RTS+getProject().getSocName());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

@@ -2,6 +2,7 @@ package jason.infra.local;
 
 import java.awt.BorderLayout;
 import java.awt.Frame;
+import java.rmi.RemoteException;
 import java.util.Collections;
 import java.util.Vector;
 
@@ -27,12 +28,17 @@ public class KillAgentGUI extends BaseDialogGUI {
     }
 
     @SuppressWarnings("unchecked")
-    protected void initComponents() {
+    protected void initComponents()  {
         services = RuntimeServicesFactory.get();
         getContentPane().setLayout(new BorderLayout());
 
         // Fields
-        Vector<String> agNames = new Vector<String>(services.getAgentsNames());
+        Vector<String> agNames = null;
+        try {
+            agNames = new Vector<String>(services.getAgentsNames());
+        } catch (RemoteException e) {
+            agNames = new Vector<>();
+        }
         Collections.sort(agNames);
         lAgs = new JList(agNames);
         lAgs.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
@@ -52,7 +58,11 @@ public class KillAgentGUI extends BaseDialogGUI {
                 Object[] sls = lAgs.getSelectedValues();
                 for (int i = 0; i < sls.length; i++) {
                     String agName = sls[i].toString();
-                    services.killAgent(agName, "KillAgGUI", 0);
+                    try {
+                        services.killAgent(agName, "KillAgGUI", 0);
+                    } catch (RemoteException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
             }
         } .start();

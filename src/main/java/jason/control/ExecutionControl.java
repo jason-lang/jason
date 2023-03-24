@@ -2,6 +2,7 @@ package jason.control;
 
 import jason.runtime.RuntimeServices;
 
+import java.rmi.RemoteException;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -93,7 +94,11 @@ public class ExecutionControl {
      *  implementation, considers all agents in the MAS as actors .
      */
     public void updateNumberOfAgents() {
-        setNbAgs(runtime.getAgentsQty());
+        try {
+            setNbAgs(runtime.getAgentsQty());
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /** Returns the number of agents in the MAS (used to test the end of a cycle) */
