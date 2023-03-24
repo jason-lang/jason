@@ -24,11 +24,13 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.*;
 import java.lang.management.ManagementFactory;
+import java.net.InetAddress;
 import java.net.MalformedURLException;
+import java.net.ServerSocket;
 import java.net.URL;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
+import java.rmi.server.ExportException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.List;
 import java.util.*;
@@ -223,6 +225,8 @@ public class RunLocalMAS extends BaseLocalMAS implements RunLocalMASMBean {
     }
 
     public static final String RMI_PREFIX_RTS = "jason-rst-";
+    public static final String RUNNING_MAS_FILE_NAME = "jason-cmd-server";
+
     protected void registerInRMI() {
         if ((boolean)(initArgs.getOrDefault("no-rmi", false))) {
             return;
@@ -235,18 +239,43 @@ public class RunLocalMAS extends BaseLocalMAS implements RunLocalMASMBean {
 
             RuntimeServices rtStub = (RuntimeServices) UnicastRemoteObject.exportObject((RuntimeServices) server, 0);
             String name = RMI_PREFIX_RTS + project.getSocName();
-            Registry registry = null;
-            try {
-                registry = LocateRegistry.getRegistry();
-                registry.rebind(name, rtStub);
-            } catch (Exception e) {
-                registry = LocateRegistry.createRegistry(1099);
-                registry.rebind(name, rtStub);
+
+            // find a free port
+            int port = 0;
+            try (var serverSocket = new ServerSocket(0)) {
+                port = serverSocket.getLocalPort();
+            } catch (IOException e) {
+                port = 1099;
             }
 
+            var registry = LocateRegistry.createRegistry(port);
+            registry.rebind(name, rtStub);
+            storeRunningMASInCommonFile(project.getSocName(), InetAddress.getLocalHost().getHostAddress()+":"+port);
+
             //logger.info("MAS "+server.getMASName()+" registered in RMI");
-        } catch (java.rmi.server.ExportException e) {
+        } catch (ExportException e) {
             // ignore object already exported
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static File getRunningMASFile() {
+        return new File(System.getProperty("java.io.tmpdir") + RUNNING_MAS_FILE_NAME);
+    }
+
+    public void storeRunningMASInCommonFile(String masName, String address) {
+        try {
+            var props = new Properties();
+
+            var f = getRunningMASFile();
+            if (f.exists()) {
+                props.load(new FileReader(f));
+            }
+            props.put("latest___mas", masName);
+            props.put(masName, address);
+            props.store(new FileWriter(f),"running mas in jason");
+            // System.out.println("store server data in "+f.getAbsolutePath());
         } catch (Exception e) {
             e.printStackTrace();
         }
