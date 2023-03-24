@@ -970,12 +970,6 @@ public class RunLocalMAS extends BaseLocalMAS implements RunLocalMASMBean {
                     e.printStackTrace();
                 }
 
-                try {
-                    var reg = LocateRegistry.getRegistry();
-                    reg.unbind( RMI_PREFIX_RTS+getProject().getSocName());
-                } catch (Exception e) {
-                }
-
                 if (stopJVM) {
                     System.exit(exitValue);
                 }
