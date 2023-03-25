@@ -286,7 +286,7 @@ public class RunLocalMAS extends BaseLocalMAS implements RunLocalMASMBean {
             var addr = InetAddress.getLocalHost().getHostAddress()+":"+port;
             storeRunningMASInCommonFile(project.getSocName(), addr);
 
-            System.out.println("Runtime Services (RTS) running at "+addr);
+            System.out.println("Runtime Services (RTS) is running at "+addr);
         } catch (ExportException e) {
             // ignore object already exported
         } catch (Exception e) {

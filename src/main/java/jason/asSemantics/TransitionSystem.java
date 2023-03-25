@@ -669,7 +669,7 @@ public class TransitionSystem implements Serializable {
             Plan p = C.SE.getIntention().peek().getPlan();
             if (p.hasSubPlans()) {
                 plib = p.getSubPlans();
-            } else {
+            } else if (p.getScope() != null) {
                 plib = p.getScope();
             }
         }

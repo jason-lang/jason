@@ -314,6 +314,7 @@ public class Plan extends Structure implements Cloneable, Serializable {
         p.tevent  = tevent.clone();
         p.context = context;
         p.body    = body.clonePB();
+        p.scope   = this.scope;
 
         p.setSrcInfo(srcInfo);
         p.isTerm = isTerm;
