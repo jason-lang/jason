@@ -2,6 +2,7 @@ package jason.infra.local;
 
 import jason.JasonException;
 import jason.architecture.AgArch;
+import jason.architecture.MindInspectorWeb;
 import jason.asSemantics.Agent;
 import jason.asSyntax.NumberTermImpl;
 import jason.asSyntax.PlanLibrary;
@@ -77,6 +78,7 @@ public class RunLocalMAS extends BaseLocalMAS implements RunLocalMASMBean {
         r.init(args);
         r.registerMBean();
         r.registerInRMI();
+        r.registerWebMindInspector();
         r.create();
         r.start();
         r.waitEnd();
@@ -84,8 +86,24 @@ public class RunLocalMAS extends BaseLocalMAS implements RunLocalMASMBean {
     }
 
     protected void registerMBean() {
+        if ((boolean)(initArgs.getOrDefault("no-mbean", false))) {
+            return;
+        }
+
         try {
             ManagementFactory.getPlatformMBeanServer().registerMBean(this, new ObjectName("jason.sf.net:type=runner"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    protected void registerWebMindInspector() {
+        if ((boolean)(initArgs.getOrDefault("no-mindinspector", false))) {
+            return;
+        }
+
+        try {
+            MindInspectorWeb.get(); // to start http server for jason
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -210,11 +228,26 @@ public class RunLocalMAS extends BaseLocalMAS implements RunLocalMASMBean {
                 if (la.equals("--log-conf")) {
                     initArgs.put("log-conf", arg);
                 }
-                if (la.equals("--empty-mas")) {
+
+                if (arg.equals("--empty-mas")) {
                     initArgs.put("empty-mas", true);
                 }
-                if (la.equals("--no-rmi")) {
+
+                if (arg.equals("--no-rmi")) {
                     initArgs.put("no-rmi", true);
+                }
+                if (arg.equals("--no-mbean")) {
+                    initArgs.put("no-mbean", true);
+                }
+                if (arg.equals("--no-mindinspector")) {
+                    initArgs.put("no-mindinspector", true);
+                    Config.get().put( Config.START_WEB_MI, "false");
+                }
+                if (arg.equals("--no-net")) {
+                    initArgs.put("no-mbean", true);
+                    initArgs.put("no-rmi", true);
+                    initArgs.put("no-mindinspector", true);
+                    Config.get().put( Config.START_WEB_MI, "false");
                 }
                 if (arg.equals("--debug") || arg.equals("-d"))
                     initArgs.put("debug", true);
@@ -250,9 +283,10 @@ public class RunLocalMAS extends BaseLocalMAS implements RunLocalMASMBean {
 
             var registry = LocateRegistry.createRegistry(port);
             registry.rebind(name, rtStub);
-            storeRunningMASInCommonFile(project.getSocName(), InetAddress.getLocalHost().getHostAddress()+":"+port);
+            var addr = InetAddress.getLocalHost().getHostAddress()+":"+port;
+            storeRunningMASInCommonFile(project.getSocName(), addr);
 
-            //logger.info("MAS "+server.getMASName()+" registered in RMI");
+            System.out.println("Runtime Services (RTS) running at "+addr);
         } catch (ExportException e) {
             // ignore object already exported
         } catch (Exception e) {
@@ -489,7 +523,6 @@ public class RunLocalMAS extends BaseLocalMAS implements RunLocalMASMBean {
 
 
     protected void createAgs() throws JasonException {
-
         RConf generalConf = RConf.fromString(project.getInfrastructure().getParameter(0));
 
         int nbAg = 0;
@@ -585,8 +618,6 @@ public class RunLocalMAS extends BaseLocalMAS implements RunLocalMASMBean {
 
         if (generalConf != RConf.THREADED) logger.info("Created "+nbAg+" agents.");
     }
-
-
 
     protected void createController() throws JasonException {
         ClassParameters controlClass = project.getControlClass();

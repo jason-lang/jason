@@ -107,7 +107,7 @@ public class MindInspectorAgArch extends AgArch {
         try {
             sConf = ASSyntax.parseStructure(configuration);
         } catch (Exception e) {
-            getTS().getLogger().warning("The mindinspector argument does not parse as a predicate! "+configuration+" --  (see Jason FAQ) -- error: "+e);
+            getTS().getLogger().warning("The mind inspector argument does not parse as a predicate! "+configuration+" --  (see Jason FAQ) -- error: "+e);
             return;
         }
 
