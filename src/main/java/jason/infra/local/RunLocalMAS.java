@@ -112,7 +112,11 @@ public class RunLocalMAS extends BaseLocalMAS implements RunLocalMASMBean {
 
     protected Map<String,Object> initArgs = new HashMap<>();
 
-    protected int init(String[] args) {
+    public void addInitArg(String k, Object v) {
+        initArgs.put(k,v);
+    }
+
+    public int init(String[] args) {
         parseArgs(args);
 
         String projectFileName = null;
@@ -317,14 +321,14 @@ public class RunLocalMAS extends BaseLocalMAS implements RunLocalMASMBean {
     }
 
     /** create environment, agents, controller */
-    protected void create() throws JasonException {
+    public void create() throws JasonException {
         createEnvironment();
         createAgs();
         createController();
     }
 
     /** start agents, .... */
-    protected void start() {
+    public void start() {
         isRunning = true;
         startAgs();
         startSyncMode();
@@ -940,7 +944,7 @@ public class RunLocalMAS extends BaseLocalMAS implements RunLocalMASMBean {
         }
     }
 
-    protected void waitEnd() {
+    public void waitEnd() {
         try {
             // wait a file called .stop___MAS to be created!
             File stop = new File(stopMASFileName);

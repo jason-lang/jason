@@ -28,7 +28,7 @@ public class LocalEnvironment implements EnvironmentInfraTier {
         this.masRunner = masRunner;
         if (userEnvArgs != null) {
             try {
-                userEnv = (Environment) getClass().getClassLoader().loadClass(userEnvArgs.getClassName()).getConstructor().newInstance();
+                userEnv = (Environment) masRunner.getClass().getClassLoader().loadClass(userEnvArgs.getClassName()).getConstructor().newInstance();
                 userEnv.setEnvironmentInfraTier(this);
                 userEnv.init(userEnvArgs.getParametersArray());
             } catch (Exception e) {
