@@ -1,4 +1,4 @@
-package jason.infra.repl;
+package jason.stdlib;
 
 import jason.asSemantics.DefaultInternalAction;
 import jason.asSemantics.TransitionSystem;

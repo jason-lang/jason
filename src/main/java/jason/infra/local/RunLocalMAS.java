@@ -12,7 +12,6 @@ import jason.asSyntax.directives.Include;
 import jason.bb.DefaultBeliefBase;
 import jason.control.ExecutionControlGUI;
 import jason.infra.components.CircumstanceListenerComponents;
-import jason.infra.repl.ReplAgGUI;
 import jason.mas2j.AgentParameters;
 import jason.mas2j.ClassParameters;
 import jason.mas2j.MAS2JProject;
@@ -22,6 +21,8 @@ import jason.util.Config;
 
 import javax.management.ObjectName;
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.io.*;
 import java.lang.management.ManagementFactory;
@@ -478,19 +479,30 @@ public class RunLocalMAS extends BaseLocalMAS implements RunLocalMASMBean {
 
     protected void createNewReplAgButton() {
         // add Button debug
-        final JButton btStartAg = new JButton("New REPL agent", new ImageIcon(RunLocalMAS.class.getResource("/images/newAgent.gif")));
+        final JButton btStartAg = new JButton("REPL agent", new ImageIcon(RunLocalMAS.class.getResource("/images/newAgent.gif")));
         btStartAg.addActionListener(evt -> {
-            final JFrame f = new JFrame("New REPL Agent, give it a name");
-            //f.getContentPane().setLayout(new BorderLayout());
-            //f.getContentPane().add(BorderLayout.NORTH,command);
-            //f.getContentPane().add(BorderLayout.CENTER,mindPanel);
-            final JTextField n = new JTextField(30);
-            n.addActionListener(e -> {
-                f.setVisible(false);
-                createReplAg(n.getText());
-            });
+            final JFrame f = new JFrame("select the agent");
             f.setLayout(new FlowLayout());
-            f.add(n);
+            try {
+                var agNames = new Vector( ags.keySet() );
+                Collections.sort(agNames);
+                var lAgs = new JList(agNames);
+                f.getContentPane().add(lAgs);
+                lAgs.addListSelectionListener(new ListSelectionListener() {
+                    boolean done = false;
+                    @Override
+                    public void valueChanged(ListSelectionEvent e) {
+                        if (done) return;
+                        done = true;
+                        //System.out.println("****" + e.getFirstIndex() + " "+agNames.get(e.getFirstIndex()));
+                        f.setVisible(false);
+                        //setReplAg(agNames.get(e.getFirstIndex()).toString().trim());
+                        new ReplAgGUI().init( ags.get(agNames.get(e.getFirstIndex())).getTS().getAg());
+                    }
+                });
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             f.pack();
             f.setLocation((int)btStartAg.getLocationOnScreen().x, (int)btStartAg.getLocationOnScreen().y+30);
             f.setVisible(true);
@@ -498,7 +510,7 @@ public class RunLocalMAS extends BaseLocalMAS implements RunLocalMASMBean {
         MASConsoleGUI.get().addButton(btStartAg);
     }
 
-    protected void createReplAg(String n) {
+    /*protected void createReplAg(String n) {
         LocalAgArch agArch = new LocalAgArch();
         try {
             agArch.setAgName(n);
@@ -511,7 +523,7 @@ public class RunLocalMAS extends BaseLocalMAS implements RunLocalMASMBean {
             e1.printStackTrace();
         }
         addAg(agArch);
-    }
+    }*/
 
 
     protected void createEnvironment() throws JasonException {

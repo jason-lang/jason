@@ -12,7 +12,8 @@
 
 MAS <PROJECT_NAME> {
 
-    infrastructure: <INFRA>
-
-    agents:
+    <INFRA>
+    <ENV>
+    <AGENT>
+    <PATH>
 }
