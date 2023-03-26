@@ -55,7 +55,7 @@ public class ConfigGUI {
             //userProperties.load(new FileInputStream(jasonConfFile));
             if (!userProperties.getProperty("version").equals(currJasonVersion) && !currJasonVersion.equals("?")) {
                 // new version, set all values to default
-                System.out.println("This is a new version of Jason, reseting configuration...");
+                System.out.println("This is a new version of Jason, resetting configuration...");
                 //userProperties.clear();
                 userProperties.remove(Config.JADE_JAR);
                 userProperties.remove(Config.JASON_JAR);
@@ -65,7 +65,7 @@ public class ConfigGUI {
         }
 
         userProperties.fix();
-        userProperties.store();
+        //userProperties.store();
     }
 
     public static void main(String[] args) {

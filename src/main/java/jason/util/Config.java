@@ -76,7 +76,6 @@ public class Config extends Properties {
     }
 
     public static Config get() {
-        // return get(true);
         return get(false);
     }
     public static Config get(boolean tryToFixConfig) {
@@ -92,7 +91,7 @@ public class Config extends Properties {
             if (!singleton.load()) {
                 if (tryToFixConfig) {
                     singleton.fix();
-                    singleton.store();
+                    //singleton.store();
                 }
             }
         }
@@ -129,7 +128,7 @@ public class Config extends Properties {
             } else {
                 f = getUserConfFile();
                 if (f.exists()) {
-                    //System.out.println("User config file not found, loading master: "+f.getAbsolutePath());
+                    //System.out.println("User config file not found, loading: "+f.getAbsolutePath());
                     super.load(new FileInputStream(f));
                     return true;
                 }
