@@ -13,6 +13,7 @@ import jason.runtime.SourcePath;
 
 import java.io.StringReader;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -35,7 +36,7 @@ public class LocalRuntimeServices extends BaseRuntimeServices {
     }
 
     @Override
-    public String createAgent(String agName, String agSource, String agClass, Collection<String> archClasses, ClassParameters bbPars, Settings stts, Agent father) throws Exception {
+    public String createAgent(String agName, String agSource, String agClass, List<String> archClasses, ClassParameters bbPars, Settings stts, Agent father) throws Exception {
         if (!isRunning())
             return "system.not.running";
 
@@ -100,7 +101,7 @@ public class LocalRuntimeServices extends BaseRuntimeServices {
     }
 
     @Override
-    public void clone(Agent source, Collection<String> archClasses, String agName) throws JasonException {
+    public void clone(Agent source, List<String> archClasses, String agName) throws JasonException {
         // create a new infra arch
         LocalAgArch agArch = newAgInstance();
         agArch.setAgName(agName);

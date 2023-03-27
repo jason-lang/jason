@@ -132,7 +132,7 @@ public class AgentParameters implements Serializable {
     }
 
     /** gets a list of all custom arch classes defined in the jason project */
-    public Collection<String> getAgArchClasses() {
+    public List<String> getAgArchClasses() {
         List<String> all = new ArrayList<>();
         for (ClassParameters c: archClasses) {
             all.add(c.getClassName());

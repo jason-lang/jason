@@ -81,10 +81,10 @@ public class LocalAgArch extends AgArch implements Runnable, Serializable {
 
     /**
      * Creates the user agent architecture, default architecture is
-     * jason.architecture.AgArch. The arch will create the agent that creates
+     * jason.architecture.AgArch. The arch will create the agent that then creates
      * the TS.
      */
-    public void createArchs(Collection<String> agArchClasses, String agClass, ClassParameters bbPars, String asSrc, Settings stts) throws Exception {
+    public void createArchs(List<String> agArchClasses, String agClass, ClassParameters bbPars, String asSrc, Settings stts) throws Exception {
         try {
             Agent.create(this, agClass, bbPars, asSrc, stts);
             insertAgArch(this);
@@ -105,7 +105,7 @@ public class LocalAgArch extends AgArch implements Runnable, Serializable {
     }
 
     /** init the agent architecture based on another agent */
-    public void createArchs(Collection<String> agArchClasses, Agent ag) throws JasonException {
+    public void createArchs(List<String> agArchClasses, Agent ag) throws JasonException {
         try {
             setMASRunner(masRunner); // TODO: remove
             setTS(ag.clone(this).getTS());

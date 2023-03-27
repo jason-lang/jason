@@ -2,6 +2,7 @@ package jason.runtime;
 
 import java.rmi.RemoteException;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -29,7 +30,7 @@ public class DelegatedRuntimeServices implements RuntimeServices {
         return delegate.getNewAgentName(baseName);
     }
 
-    public String createAgent(String agName, String agSource, String agClass, Collection<String> archClasses, ClassParameters bbPars, Settings stts, Agent father) throws Exception, RemoteException {
+    public String createAgent(String agName, String agSource, String agClass, List<String> archClasses, ClassParameters bbPars, Settings stts, Agent father) throws Exception, RemoteException {
         return delegate.createAgent(agName, agSource, agClass, archClasses, bbPars, stts, father);
     }
 
@@ -40,7 +41,7 @@ public class DelegatedRuntimeServices implements RuntimeServices {
         delegate.startAgent(agName);
     }
 
-    public void clone(Agent source, Collection<String> archClasses, String agName) throws RemoteException, JasonException {
+    public void clone(Agent source, List<String> archClasses, String agName) throws RemoteException, JasonException {
         delegate.clone(source, archClasses, agName);
     }
 

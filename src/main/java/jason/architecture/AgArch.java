@@ -71,7 +71,7 @@ public class AgArch implements Comparable<AgArch>, Serializable {
         List<String> all = new ArrayList<>();
         AgArch a = getFirstAgArch();
         while (a != null) {
-            all.add(0,a.getClass().getName());
+            all.add(a.getClass().getName());
             a = a.getNextAgArch();
         }
         return all;
@@ -92,10 +92,11 @@ public class AgArch implements Comparable<AgArch>, Serializable {
             successor.setFirstAgArch(arch);
     }
 
-    public void createCustomArchs(Collection<String> archs) throws Exception {
+    public void createCustomArchs(List<String> archs) throws Exception {
         if (archs == null)
             return;
-        for (String agArchClass: archs) {
+        for (int i=archs.size()-1; i>=0; i--) {
+            var agArchClass = archs.get(i);
             // user custom arch
             if (!agArchClass.equals(AgArch.class.getName()) && !agArchClass.equals(LocalAgArch.class.getName())) {
                 try {
@@ -103,8 +104,9 @@ public class AgArch implements Comparable<AgArch>, Serializable {
                     a.setTS(ts); // so a.init() can use TS
                     insertAgArch(a);
                     a.init();
+                    //System.out.println("creating arch "+agArchClass+ " "+getTS().getAgArch().getAgArchClassesChain());
                 } catch (Exception e) {
-                    System.out.println("Error creating custom agent aarchitecture."+e);
+                    System.out.println("Error creating custom agent architecture."+e);
                     e.printStackTrace();
                     ts.getLogger().log(Level.SEVERE,"Error creating custom agent architecture.", e);
                 }

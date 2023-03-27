@@ -498,9 +498,7 @@ public class RunLocalMAS extends BaseLocalMAS implements RunLocalMASMBean {
                     public void valueChanged(ListSelectionEvent e) {
                         if (done) return;
                         done = true;
-                        //System.out.println("****" + e.getFirstIndex() + " "+agNames.get(e.getFirstIndex()));
                         f.setVisible(false);
-                        //setReplAg(agNames.get(e.getFirstIndex()).toString().trim());
                         new ReplAgGUI().init( ags.get(agNames.get(e.getFirstIndex())).getTS().getAg());
                     }
                 });
@@ -621,7 +619,7 @@ public class RunLocalMAS extends BaseLocalMAS implements RunLocalMASMBean {
                         agArch.createArchs(ap.getAgArchClasses(), ap.agClass.getClassName(), ap.getBBClass(), ap.getSource().toString(), ap.getAsSetts(debug, project.getControlClass() != null));
                     }
                     addAg(agArch);
-                    createdAgents.add(agArch); // used latter to start
+                    createdAgents.add(agArch); // used later to start
 
                     pag = agArch.getTS().getAg();
                 }

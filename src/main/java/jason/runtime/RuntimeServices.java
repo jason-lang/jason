@@ -36,7 +36,7 @@ public interface RuntimeServices extends Remote {
      *
      * Returns the name of the agent
      */
-    public String createAgent(String agName, String agSource, String agClass, Collection<String> archClasses, ClassParameters bbPars, Settings stts, Agent father) throws Exception, RemoteException;
+    public String createAgent(String agName, String agSource, String agClass, List<String> archClasses, ClassParameters bbPars, Settings stts, Agent father) throws Exception, RemoteException;
 
     public String getNewAgentName(String baseName) throws RemoteException;
 
@@ -57,7 +57,7 @@ public interface RuntimeServices extends Remote {
      * @return the agent arch created
      * @throws JasonException
      */
-    default public void clone(Agent source, Collection<String> archClasses, String agName) throws RemoteException, JasonException { }
+    default public void clone(Agent source, List<String> archClasses, String agName) throws RemoteException, JasonException { }
 
     /**
      * Kills the agent named <i>agName</i> as a requested by <i>byAg</i>.
