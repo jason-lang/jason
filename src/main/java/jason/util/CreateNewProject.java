@@ -89,8 +89,6 @@ public class CreateNewProject {
             System.out.println("Creating path "+path);
             path.mkdirs();
         }
-
-        //new File(path + "/lib").mkdirs();
     }
 
     void runGradleWrapper() {

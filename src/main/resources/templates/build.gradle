@@ -23,13 +23,14 @@ repositories {
 }
 
 dependencies {
-    implementation('org.jason:jason:<VERSION>')
+    implementation 'org.jason:jason:<VERSION>'
 }
 
 sourceSets {
     main {
         java {
             srcDir 'src/java'
+            srcDir 'src/env'
         }
         resources {
             srcDir 'src/resources'

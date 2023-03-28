@@ -12,8 +12,12 @@
 
 MAS <PROJECT_NAME> {
 
-    <INFRA>
-    <ENV>
-    <AGENT>
-    <PATH>
+    infrastructure: Local // other possible value is Jade
+
+    environment: example.Env(10)
+
+    agents: bob;
+            alice;
+
+    aslSourcePath: "src/agt";
 }
