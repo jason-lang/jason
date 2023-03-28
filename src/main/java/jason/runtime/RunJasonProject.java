@@ -26,7 +26,7 @@ public class RunJasonProject {
 
         String name;
         mas2j parser;
-        MAS2JProject project = new MAS2JProject();
+        var project = new MAS2JProject();
 
         if (args.length == 0) {
             System.out.println(Config.get().getPresentation()+"\n");

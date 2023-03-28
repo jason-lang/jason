@@ -39,4 +39,7 @@ public interface MASLauncherInfraTier extends Runnable {
      * Stops the MAS execution.
      */
     public void stopMAS();
+
+    default public void setTask(String t) {  }
+
 }
