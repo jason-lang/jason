@@ -41,11 +41,22 @@ sourceSets {
 
 task run (type: JavaExec, dependsOn: 'classes') {
     description 'runs the application'
-    mainClass = '<PROJECT-RUNNER-CLASS>'
+    mainClass = 'jason.infra.local.RunLocalMAS'
+    //mainClass = 'jason.infra.jade.RunJadeMAS' //  run it with Jade
     args '<PROJECT-FILE>'
 	// options:
 	//     args = ['<PROJECT-FILE>', '--debug']
 	//     args = ['<PROJECT-FILE>', '--log-conf', 'l.p'] // to use file l.p to configure logging
+    classpath sourceSets.main.runtimeClasspath
+}
+
+task runJade (type: JavaExec, dependsOn: 'classes') {
+    description 'runs the application with Jade infrastructure'
+    mainClass = 'jason.infra.jade.RunJadeMAS'
+    args '<PROJECT-FILE>'
+    // options:
+    //     args = ['<PROJECT-FILE>', '--debug']
+    //     args = ['<PROJECT-FILE>', '--log-conf', 'l.p'] // to use file l.p to configure logging
     classpath sourceSets.main.runtimeClasspath
 }
 

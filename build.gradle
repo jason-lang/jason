@@ -41,14 +41,12 @@ repositories {
     //maven { url "http://jacamo.sourceforge.net/maven2"  }
     //maven { url "http://jade.tilab.com/maven"  //}
     flatDir {
-       dirs 'jedit', 'demos/persistent-belief-base/lib'
+       dirs 'demos/persistent-belief-base/lib'
     }
 }
 
 dependencies {
     implementation group: 'net.sf.ingenias', name: 'jade', version: '4.3'
-
-    implementation fileTree(dir: 'jedit', include: '*.jar') // using fileTree, jedit jars are not included as a dependency in the pom file
 
     implementation('org.apache.ant:ant:1.10.5')
     implementation('org.gradle:gradle-tooling-api:7.4.2')
@@ -235,45 +233,6 @@ jjdoc {
     //arguments = [text: 'true']
 }
 
-// Builds jEdit plugin
-task plugin(type: Jar, dependsOn: 'jar') {
-    archiveFileName = 'jason-jedit-plugin.jar'
-    destinationDirectory = file('build/jedit/jars')
-    from 'build/classes/java/main'
-    from 'build/resources/main'
-    from 'build/resources/main/jeditPlugin'
-    manifest {
-        attributes 'Main-Class': 'jason.util.ConfigGUI',
-                   'Specification-Title': 'Jason Language',
-                   'Specification-Version': project.version,
-                   'Implementation-Version': new Date().toString()
-    }
-    duplicatesStrategy = 'include'
-
-    from ( configurations.runtimeClasspath.collect { zipTree(it) } ) {
-        include 'jade/**/*.class'
-        include 'javax/**/*.class'
-    }
-
-
-    doFirst {
-        ant.untar(compression: 'gzip', dest: 'build', src: 'jedit/jedit.tgz')
-    }
-
-    doLast {
-        copy {
-            from 'src/main/resources/jeditPlugin'
-            into 'build/jedit/modes'
-            include 'agentSpeak.xml', 'jasonProject.xml', 'catalog'
-        }
-        copy {
-            from 'src/main/resources/jeditPlugin'
-            into 'build/jedit/properties'
-            include 'jedit-initial.props'
-        }
-    }
-}
-
 task publishMavenGitHub(dependsOn: [ 'build', 'publishToMavenLocal']) {
   doLast {
     def wdir = System.getProperty("user.home")+'/.m2/repository/org/jason/jason'
@@ -346,10 +305,6 @@ task copyRel (dependsOn: ['plugin', 'jar']) {
         from configurations.runtimeClasspath
         into 'build/jason-'+project.version+'/libs'
         include '**/*.jar'
-    }
-    copy {
-        from 'build/jedit'
-        into 'build/jason-'+project.version+'/jedit'
     }
     copy {
         from 'examples'

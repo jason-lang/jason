@@ -6,6 +6,14 @@ ifdef::env-github[:outfilesuffix: .adoc]
 == version 3.2
 
 - Java17 is used
+- some bugs were fixed
+- preliminary support for packages (used by JaCaMo)
+- support for JasonCLI
+
+The project is cleaned a bit:
+
+- jEdit is removed (JasonCLI and third party IDEs are proposed)
+- Ant is replaced by Gradle
 
 == version 3.1
 
