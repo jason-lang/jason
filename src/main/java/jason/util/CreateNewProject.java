@@ -119,7 +119,7 @@ public class CreateNewProject {
     }
 
     public static void copyFile(String id, String source, File target, boolean consoleApp) {
-        try (var in  = new BufferedReader(new InputStreamReader( Config.get().getDetaultResource(source) ));
+        try (var in  = new BufferedReader(new InputStreamReader( Config.get().getDefaultResource(source) ));
              var out = new BufferedWriter(new FileWriter(target))) {
             String l = in.readLine();
             while (l != null) {

@@ -86,10 +86,10 @@ task copyJarsToBuild {
 jar {
     archiveBaseName = 'jason'
     manifest {
-        attributes 'Main-Class': 'jason.util.ConfigGUI',
-                   'Specification-Title': 'Jason Language',
+        attributes 'Specification-Title': 'Jason Language',
                    'Specification-Version': project.version,
                    'Implementation-Version': new Date().toString()
+        //'Main-Class': 'jason.util.ConfigGUI',
     }
     from('src') {
         include '/test/jason/inc/**/*.asl'
@@ -144,15 +144,18 @@ clean {
     emptyDirs.reverseEach { it.delete() }
 }
 
-task config (type: JavaExec, dependsOn: ['jar', 'plugin']) {
-    main = 'jason.util.Config'
-    classpath project.buildDir.absolutePath + '/libs/jason-' +project.version+'.jar'
-    workingDir project.buildDir.absolutePath + '/libs'
+task createBin (dependsOn: ['jar']) {
+    // TODO: implement it based on JasonCLI (copy jason to build/bin)
+}
 
-    doFirst {
-        delete System.getProperty("user.home")+'/.jason'
-    }
-
+task config (dependsOn: ['jar']) {
+//    main = 'jason.util.Config'
+//    classpath project.buildDir.absolutePath + '/libs/jason-' +project.version+'.jar'
+//    workingDir project.buildDir.absolutePath + '/libs'
+//
+//    doFirst {
+//        delete System.getProperty("user.home")+'/.jason'
+//    }
     doLast {
         println '------'
         println ''
@@ -160,7 +163,7 @@ task config (type: JavaExec, dependsOn: ['jar', 'plugin']) {
         println '     export JASON_HOME='+project.buildDir.absolutePath
         println ''
         println 'and also change your PATH with:'
-        println '     export PATH=$JASON_HOME/scripts:$PATH'
+        println '     export PATH=$JASON_HOME/bin:$PATH'
         println ''
         println '-----'
     }
@@ -280,11 +283,11 @@ task fixTab {
 }
 
 // Builds the distribution, documentation and a new release
-task release(dependsOn: [ 'build', 'doc', 'fixTab', 'plugin', 'zipRel' ]) {
+task release(dependsOn: [ 'build', 'doc', 'fixTab', 'zipRel' ]) {
 }
 
 // copy files used to build a release
-task copyRel (dependsOn: ['plugin', 'jar']) {
+task copyRel (dependsOn: ['jar']) {
   doLast {
     copy {
         from '.'

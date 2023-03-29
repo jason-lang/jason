@@ -41,10 +41,7 @@ public class Config extends Properties {
     /** path to java home */
     public static final String JAVA_HOME     = "javaHome";
 
-    public static final String RUN_AS_THREAD = "runLocalInsideJIDE";
     public static final String SHELL_CMD     = "shellCommand";
-    public static final String CLOSEALL      = "closeAllBeforeOpenMAS2J";
-    public static final String CHECK_VERSION = "checkLatestVersion";
     public static final String WARN_SING_VAR = "warnSingletonVars";
 
     public static final String SHOW_ANNOTS   = "showAnnots";
@@ -348,14 +345,6 @@ public class Config extends Properties {
             }
         }
 
-        // font
-        if (get("font") == null) {
-            put("font", "Monospaced");
-        }
-        if (get("fontSize") == null) {
-            put("fontSize", "14");
-        }
-
         // shell command
         if (get(SHELL_CMD) == null) {
             if (System.getProperty("os.name").startsWith("Windows 9")) {
@@ -365,15 +354,6 @@ public class Config extends Properties {
             } else {
                 put(SHELL_CMD, "/bin/sh ");
             }
-        }
-
-        // close all
-        if (get(CLOSEALL) == null) {
-            put(CLOSEALL, "true");
-        }
-
-        if (get(CHECK_VERSION) == null) {
-            put(CHECK_VERSION, "true");
         }
 
         // jade args
@@ -865,7 +845,7 @@ public class Config extends Properties {
                         if (bt.exists()) {
                             in = new BufferedReader(new FileReader(bt));
                         } else {
-                            in = new BufferedReader(new InputStreamReader(getDetaultResource(templateName)));
+                            in = new BufferedReader(new InputStreamReader(getDefaultResource(templateName)));
                         }
                     }
                 }
@@ -889,13 +869,13 @@ public class Config extends Properties {
         return getJasonHome();
     }
 
-    public InputStream getDetaultResource(String templateName) throws IOException {
+    public InputStream getDefaultResource(String templateName) throws IOException {
         return TransitionSystem.class.getResource("/templates/"+templateName).openStream();
     }
 
     public static void main(String[] args) {
-        Config.get().fix();
-        Config.get().store();
+        showFixMsgs = true;
+        Config.get(true);
     }
 
     public String getMindInspectorArchClassName() {
