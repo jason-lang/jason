@@ -16,7 +16,7 @@ import java.util.logging.Logger;
 /**
  * Base class for the user implementation of execution control.
  *
- * <p>This default implementation synchronise the agents execution, i.e.,
+ * <p>This default implementation synchronise agents execution, i.e.,
  * each agent will perform its next reasoning cycle only when all agents have
  * finished its reasoning cycle.
  *
