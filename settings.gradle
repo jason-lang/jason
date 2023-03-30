@@ -1,0 +1,2 @@
+rootProject.name = 'jason'
+include('jason-cli')

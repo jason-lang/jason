@@ -1,0 +1,3 @@
+[submodule "jason-cli"]
+	path = jason-cli
+	url = https://github.com/jason-lang/jason-cli.git

@@ -136,11 +136,12 @@ clean {
     emptyDirs.reverseEach { it.delete() }
 }
 
-task createBin (dependsOn: ['jar']) {
+task createCLIBin (dependsOn: ['jar', ':jason-cli:createBin']) { //project('jason-cli').task('createBin') ]) {
     // TODO: implement it based on JasonCLI (copy jason to build/bin)
+    println(project('jason-cli')) //.task('release')
 }
 
-task config (dependsOn: ['jar', 'createBin']) {
+task config (dependsOn: ['jar', 'createCLIBin']) {
 //    main = 'jason.util.Config'
 //    classpath project.buildDir.absolutePath + '/libs/jason-' +project.version+'.jar'
 //    workingDir project.buildDir.absolutePath + '/libs'
