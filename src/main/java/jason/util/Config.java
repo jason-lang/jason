@@ -144,7 +144,7 @@ public class Config extends Properties {
     @Override
     public synchronized Object put(Object key, Object value) {
         if (JASON_JAR.equals(key)) {
-            addPackage(JASON_PKG, new File((String) value));
+            addPackage(JASON_PKG, new File((String)value));
             addPackage(JASON_JAR, new File((String)value)); // for compatibility reasons
         }
         return super.put(key, value);
@@ -591,8 +591,8 @@ public class Config extends Properties {
                 }
             }
 
-            // try current build/libs (from gradle build)
-            /*jarFile = findJarInDirectory(new File("build/libs"), jarFilePrefix);
+            // try current build/libs (from gradle build), required for task testJasons
+            jarFile = findJarInDirectory(new File("build/libs"), jarFilePrefix);
             if (checkJar(jarFile, fileInJar)) {
                 try {
                     put(jarEntry, new File(jarFile).getCanonicalFile().getAbsolutePath());
@@ -602,7 +602,7 @@ public class Config extends Properties {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-            }*/
+            }
 
             return false;
         }
