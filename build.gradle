@@ -37,9 +37,7 @@ repositories {
     mavenCentral()
 
     maven { url "https://raw.githubusercontent.com/jacamo-lang/mvn-repo/master" }
-    maven { url 'https://repo.gradle.org/gradle/libs-releases' }
-    //maven { url "http://jacamo.sourceforge.net/maven2"  }
-    //maven { url "http://jade.tilab.com/maven"  //}
+    //maven { url 'https://repo.gradle.org/gradle/libs-releases' }
     flatDir {
        dirs 'demos/persistent-belief-base/lib'
     }
@@ -49,7 +47,7 @@ dependencies {
     implementation group: 'net.sf.ingenias', name: 'jade', version: '4.3'
 
     implementation('org.apache.ant:ant:1.10.5')
-    implementation('org.gradle:gradle-tooling-api:7.4.2')
+    //implementation('org.gradle:gradle-tooling-api:7.4.2')
 
     implementation group: 'javax.json', name: 'javax.json-api', version: '1.1.4'
     implementation group: 'org.glassfish', name: 'javax.json', version: '1.1.4'

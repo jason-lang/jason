@@ -31,7 +31,7 @@ sourceSets {
         java {
             srcDir 'src/java'
             srcDir 'src/env'
-            srcDIr '.' // some old jason apps store .java files in project root
+            srcDir '.' // some old jason apps store .java files in project root
         }
         resources {
             srcDir 'src/resources'

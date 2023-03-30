@@ -10,9 +10,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Scanner;
 
-import org.gradle.tooling.GradleConnector;
-import org.gradle.tooling.ProjectConnection;
-
 /**
  * class used to create an initial jason project:
  *
@@ -68,7 +65,7 @@ public class CreateNewProject {
         p.consoleApp = consoleApp;
         p.createDirs();
         p.copyFiles();
-        p.runGradleWrapper();
+        //p.runGradleWrapper();
         p.usage();
         //System.err.println(p.path.toString());
     }
@@ -76,9 +73,9 @@ public class CreateNewProject {
     void usage() {
         System.out.println("\n\nYou can run your application with:");
         System.out.println("   $ jason "+path+"/"+id+".mas2j");
-        System.out.println("or");
-        System.out.println("   $ cd "+path);
-        System.out.println("   $ ./gradlew -q --console=plain\n");
+        //System.out.println("or");
+        //System.out.println("   $ cd "+path);
+        //System.out.println("   $ ./gradlew -q --console=plain\n");
         //System.out.println("an eclipse project can be created with");
         //System.out.println("   $ gradle eclipse");
         System.out.println("You can import the project in Eclipse with File/Import/'Gradle Import Project'\n");
@@ -91,21 +88,20 @@ public class CreateNewProject {
         }
     }
 
-    void runGradleWrapper() {
-        try {
-            ProjectConnection connection = GradleConnector
-                    .newConnector()
-                    .forProjectDirectory(path)
-                    .connect();
-            connection.newBuild()
-                .forTasks("wrapper")
-                .run();
-            connection.close();
-        } catch (Exception e) {
-            System.err.println("Error creating gradle wrapper "+e);
-        }
-    }
-
+//    void runGradleWrapper() {
+//        try {
+//            ProjectConnection connection = GradleConnector
+//                    .newConnector()
+//                    .forProjectDirectory(path)
+//                    .connect();
+//            connection.newBuild()
+//                .forTasks("wrapper")
+//                .run();
+//            connection.close();
+//        } catch (Exception e) {
+//            System.err.println("Error creating gradle wrapper "+e);
+//        }
+//    }
 
     void copyFiles() {
         copyFile("project", new File( path+"/"+id+".mas2j"));
