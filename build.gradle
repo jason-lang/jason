@@ -137,9 +137,11 @@ clean {
 }
 
 task createCLIBin (dependsOn: ['jar', ':jason-cli:createBin']) {
-    copy {
-        from 'jason-cli/build/bin'
-        into 'build/bin'
+    doLast {
+        copy {
+            from 'jason-cli/build/bin'
+            into 'build/bin'
+        }
     }
 }
 
