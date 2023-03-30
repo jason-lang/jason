@@ -45,7 +45,8 @@ git submodule update --init --recursive	// <3>
 
 Examples can be run using the `jason` command, for example:
 
-	jason examples/gold-miners-II/miners.mas2j
+	cd examples/domestic-robot
+	jason DomesticRobot.mas2j 
 
 Other useful gradle tasks:
 
