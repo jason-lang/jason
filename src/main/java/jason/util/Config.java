@@ -591,7 +591,7 @@ public class Config extends Properties {
                 }
             }
 
-            // try current build/libs (from gradle build), required for task testJasons
+            // try current build/libs (from gradle build), required for task testJason
             jarFile = findJarInDirectory(new File("build/libs"), jarFilePrefix);
             if (checkJar(jarFile, fileInJar)) {
                 try {

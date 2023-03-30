@@ -138,7 +138,7 @@ public class RunLocalMAS extends BaseLocalMAS implements RunLocalMASMBean {
         }
 
         if (Config.get().getJasonJar() == null) {
-            //System.out.println("Jason is not configured, creating a default configuration");
+            //System.out.println("Jason is not configured");
             Config.get().setShowFixMsgs(false);
             Config.get().fix();
         }
