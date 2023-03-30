@@ -455,6 +455,7 @@ public class BeliefBaseTest extends TestCase {
     }
 
 
+    /* it  adds too much constrains in build.gradle. test running the application
     public void testJDBCBB() {
         BeliefBase bb = new JDBCPersistentBB();
         bb.init(null, new String[] {
@@ -564,7 +565,7 @@ public class BeliefBaseTest extends TestCase {
         assertEquals(iteratorSize(bb.getCandidateBeliefs(Literal.parseLiteral("book_author(_,_)"),null)),5);
 
         bb.stop();
-    }
+    }*/
 
 
     public void testBelBRF() throws RevisionFailedException {

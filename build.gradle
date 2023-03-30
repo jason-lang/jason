@@ -37,26 +37,20 @@ repositories {
     mavenCentral()
 
     maven { url "https://raw.githubusercontent.com/jacamo-lang/mvn-repo/master" }
-    //maven { url 'https://repo.gradle.org/gradle/libs-releases' }
-    flatDir {
-       dirs 'demos/persistent-belief-base/lib'
-    }
 }
 
 dependencies {
-    implementation group: 'net.sf.ingenias', name: 'jade', version: '4.3'
-
+    implementation 'net.sf.ingenias:jade:4.3'
     implementation('org.apache.ant:ant:1.10.5')
-    //implementation('org.gradle:gradle-tooling-api:7.4.2')
 
     implementation group: 'javax.json', name: 'javax.json-api', version: '1.1.4'
     implementation group: 'org.glassfish', name: 'javax.json', version: '1.1.4'
 
     testImplementation group: 'junit', name: 'junit', version: '4.12'
-    testImplementation name: 'hsqldb'
 }
 
 // copy dep jars and scritps into build directory
+/*
 task copyJarsToBuild {
     inputs.files configurations.runtimeClasspath.files
     inputs.dir   'src/main/resources/scripts'
@@ -79,7 +73,7 @@ task copyJarsToBuild {
             }
         }
     }
-}
+}*/
 
 jar {
     archiveBaseName = 'jason'
@@ -94,7 +88,7 @@ jar {
         include '/test/jason/**/*.mas2j'
     }
 }
-jar.dependsOn(copyJarsToBuild)
+//jar.dependsOn(copyJarsToBuild)
 
 clean {
     delete 'bin'
@@ -146,7 +140,7 @@ task createBin (dependsOn: ['jar']) {
     // TODO: implement it based on JasonCLI (copy jason to build/bin)
 }
 
-task config (dependsOn: ['jar']) {
+task config (dependsOn: ['jar', 'createBin']) {
 //    main = 'jason.util.Config'
 //    classpath project.buildDir.absolutePath + '/libs/jason-' +project.version+'.jar'
 //    workingDir project.buildDir.absolutePath + '/libs'
@@ -268,7 +262,6 @@ task doc(dependsOn: [ 'jjdoc', 'javadoc', 'renderAsciiDocs']) {
 
 task renderAsciiDocs(type: Exec) {
     commandLine 'find', '.', '-name', '*.adoc', '-exec', 'doc/asciidoc-docker', '{}', ';'
-    //commandLine 'find', '.', '-name', '*.adoc', '-exec', 'asciidoctor', '{}', ';'
 }
 
 task fixTab {
