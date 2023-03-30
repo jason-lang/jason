@@ -325,7 +325,7 @@ task zipRel(type: Zip, dependsOn: copyRel) {
  * $ docker volume create --name gradle-cache
  * $ docker run -ti --rm -u gradle -v gradle-cache:/home/gradle/.gradle -v "$PWD":/home/gradle/project -w /home/gradle/project -p 8000:8000 gradle:6.3.0-jdk11 bash -c "./gradlew config test -i"
  */
-task testJason(dependsOn: 'config') {
+task testJason(dependsOn: 'jar') {
     description 'runs Jason unit tests: tests.mas2j'
     def errorOnTests = false
     outputs.upToDateWhen { false } // disable cache
