@@ -13,7 +13,7 @@ ifdef::env-github[:outfilesuffix: .adoc]
 
 Jason is an interpreter for an extended version of AgentSpeak. It implements the operational semantics of that language, and provides a platform for the development of multi-agent systems, with many user-customisable features. Jason is available as Open Source, and is distributed under GNU LGPL.
 
-Jason is developed by http://jomi.das.ufsc.br[Jomi F. Hübner] and http://www.inf.pucrs.br/r.bordini[Rafael H. Bordini], based on previous work done with many colleagues, in particular Michael Fisher, Joyce Martins, Álvaro Moreira, Renata Vieira, Willem Visser, Mike Wooldridge, but also many others, as acknowledged in the manual (see the http://jason.sourceforge.net/wp/documents/[documents] page).
+Jason is developed by http://https://jomifred.github.io[Jomi F. Hübner] and http://www.inf.pucrs.br/r.bordini[Rafael H. Bordini], based on previous work done with many colleagues, in particular Michael Fisher, Joyce Martins, Álvaro Moreira, Renata Vieira, Willem Visser, Mike Wooldridge, but also many others, as acknowledged in the manual (see the http://jason.sourceforge.net/wp/documents/[documents] page).
 
 == Documentation
 
@@ -28,23 +28,24 @@ Most of the Jason documentation is available link:doc/readme{outfilesuffix}[in t
 - follow the link:doc/tutorials/getting-started/readme{outfilesuffix}[getting started tutorial]
 - more documentation http://jason.sourceforge.net/wp/documents[here]
 
-NOTE: In Jason 2.0 the way to run the Jason IDE (based on jEdit) has changed. Rather than running an application (`Jason.exe` or `Jason.app`), the IDE is now run by double clicking the `jedit/jedit.jar` file or using the script files in the `scripts` folder.
+NOTE: In Jason 3.2 no IDE is included in Jason distribution. A command line interpreter is now provided.
 
 === For Jason developers
 
 ----
-git clone https://github.com/jason-lang/jason.git
+git clone --recursive https://github.com/jason-lang/jason.git
 cd jason
+git checkout develop  // <3>
+git submodule update --init --recursive	// <3>
 ./gradlew config // <1> <2>
 ----
-<1> the config task builds the jason jar, configure jason properties file, and place all jars in `build/libs`.
+<1> the config task builds the JasonCLI (Jason Command Line Interface).
 <2> this task also prints out the commands to set up the `JASON_HOME` and `PATH` variables.
+<3> optional if you want to use the develop branch.
 
-Examples can be run using the `jason` shell script, for example:
+Examples can be run using the `jason` command, for example:
 
 	jason examples/gold-miners-II/miners.mas2j
-
-The Jason IDE based on jEdit can be launched by the `jason-ide` script or `java -jar build/jedit/jedit.jar`.
 
 Other useful gradle tasks:
 
@@ -59,4 +60,4 @@ Other useful gradle tasks:
 <3> cleans all generated files.
 <4> produces a zip file in `build/distributions` to be distributed to users.
 
-An _eclipse_ project to change the Jason implementation can be created form menu "File/Import/Existing Gradle Project".
+You can use your IDE to change the Jason implementation by importing the Gradle project.
