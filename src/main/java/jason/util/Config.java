@@ -561,29 +561,7 @@ public class Config extends Properties {
                 return true;
             }
 
-            // try eclipse installation
-            /*jarFile = getJarFromEclipseInstallation(jarFilePrefix);
-            if (checkJar(jarFile, fileInJar)) {
-                put(jarEntry, jarFile);
-                if (showFixMsgs)
-                    System.out.println("Configuration of '"+jarEntry+"' found at " + jarFile+" in eclipse installation");
-                return true;
-            }*/
-
             /*
-            // try current dir
-            jarFile = findJarInDirectory(new File("."), jarFilePrefix);
-            if (checkJar(jarFile, minSize)) {
-                try {
-                    put(jarEntry, new File(jarFile).getCanonicalFile().getAbsolutePath());
-                    if (showFixMsgs)
-                        System.out.println("found at " + jarFile);
-                    return;
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-
             try {
                 // try jason jar
                 File jasonjardir = new File(getJasonJar()).getAbsoluteFile().getCanonicalFile().getParentFile();
@@ -626,57 +604,6 @@ public class Config extends Properties {
                 }
             }*/
 
-            /*
-            jarFile = findJarInDirectory(new File("libs"), jarFilePrefix);
-            if (checkJar(jarFile, minSize)) {
-                try {
-                    put(jarEntry, new File(jarFile).getCanonicalFile().getAbsolutePath());
-                    if (showFixMsgs)
-                        System.out.println("found at " + jarFile);
-                    return;
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            // try current dir + bin
-            jarFile = findJarInDirectory(new File("bin"), jarFilePrefix);
-            if (checkJar(jarFile, minSize)) {
-                try {
-                    put(jarEntry, new File(jarFile).getCanonicalFile().getAbsolutePath());
-                    if (showFixMsgs)
-                        System.out.println("found at " + jarFile);
-                    return;
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            */
-            // try from java web start
-            String jwsDir = System.getProperty("jnlpx.deployment.user.home");
-            if (jwsDir == null) {
-                // try another property (windows)
-                try {
-                    jwsDir = System.getProperty("deployment.user.security.trusted.certs");
-                    jwsDir = new File(jwsDir).getParentFile().getParent();
-                } catch (Exception e) {
-                }
-            }
-            if (jwsDir != null) {
-                jarFile = findFile(new File(jwsDir), jarFilePrefix);
-                if (showFixMsgs)
-                    System.out.print("Searching " + jarFilePrefix + " in " + jwsDir + " ... ");
-                if (jarFile != null && checkJar(jarFile)) {
-                    if (showFixMsgs)
-                        System.out.println("Configuration of '"+jarEntry+"' found at " + jarFile);
-                    put(jarEntry, jarFile);
-                    return true;
-                } else {
-                    put(jarEntry, File.separator);
-                }
-            }
-            //if (showFixMsgs)
-            //    System.out.println(jarFilePrefix+" not found");
             return false;
         }
         return true;

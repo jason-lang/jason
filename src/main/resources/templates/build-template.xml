@@ -70,28 +70,6 @@
     </target>
 
 
-    <target name="jnlp" depends="jar" >
-        <mkdir dir="${basedir}/${ant.project.name}-jws"/>
-        <java classname="jason.infra.local.CreateJNLP"
-              failonerror="true" fork="yes" dir="${basedir}/${ant.project.name}-jws" >
-            <classpath refid="project.classpath"/>
-            <arg line="${ant.project.name} ${mas2j.project.file}"/>
-        </java>
-        <copy todir="${basedir}/${ant.project.name}-jws" failonerror="no">
-            <fileset dir="${basedir}/lib" includes="**/*.jar" />
-            <fileset dir="${basedir}" includes="${ant.project.name}.jar" />
-            <fileset dir="<JASON-HOME>/src/images" includes="Jason-GMoreau-Icon.jpg" />
-        </copy>
-        <signjar jar="${basedir}/${ant.project.name}-jws/${ant.project.name}.jar" alias="jason"
-            storepass="rbjhja" keypass="rbjhja" keystore="<JASON-HOME>/src/jasonKeystore" />
-        <echo message="**" />
-        <echo message="** Java Web Start application created in directory ${ant.project.name}-jws" />
-        <echo message="** Update the codebase (in the second line of the .jnlp file)" />
-        <echo message="** with the URL where you will upload the application." />
-        <echo message="**" />
-    </target>
-
-
     <target name="run" depends="compile" >
         <echo message="Running project ${ant.project.name}" />
         <java classname="<PROJECT-RUNNER-CLASS>"

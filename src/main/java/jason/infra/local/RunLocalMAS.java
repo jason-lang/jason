@@ -124,7 +124,7 @@ public class RunLocalMAS extends BaseLocalMAS implements RunLocalMASMBean {
             if (RunLocalMAS.class.getResource("/"+defaultProjectFileName) != null) {
                 projectFileName = defaultProjectFileName;
                 appFromClassPath = true;
-                Config.get(false); // to void to call fix/store the configuration in this case everything is read from a jar/jnlp file
+                Config.get(false); // to void to call fix/store the configuration in this case everything is read from a jar file
             } else {
                 if (!(boolean)(initArgs.getOrDefault("empty-mas", false))) {
                     System.out.println("Jason " + Config.get().getJasonVersion());
