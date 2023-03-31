@@ -34,7 +34,8 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.jason:jason:3.2-SNAPSHOT'
+    implementation project(':interpreter')
+    //implementation 'org.jason:jason:3.2-SNAPSHOT'
     // implementation 'info.picocli:picocli:4.7.1'
     implementation 'info.picocli:picocli-shell-jline3:4.7.0'
     //annotationProcessor 'info.picocli:picocli-codegen:4.7.0'
@@ -69,7 +70,7 @@ clean {
     delete 'build'
 }
 
-task uberJar(type: Jar, dependsOn: 'classes') {
+task uberJar(type: Jar, dependsOn: ['classes', ':interpreter:jar']) {
     description 'creates a single runnable jar file with all dependencies'
     duplicatesStrategy 'exclude'
 
@@ -102,6 +103,7 @@ task createBin (dependsOn: 'uberJar') {
         }
     }
 }
+
 task release (type: Zip, dependsOn: 'createBin') {
     def wdir = 'build/jason-' + project.version
     from wdir

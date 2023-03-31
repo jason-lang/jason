@@ -1,2 +1,3 @@
 rootProject.name = 'jason'
 include('jason-cli')
+include('interpreter')

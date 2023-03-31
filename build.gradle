@@ -2,52 +2,33 @@
    Jason Gradle build file
 */
 
-plugins {
-  id "ca.coglinc.javacc" version "2.4.0"
-  // see https://github.com/johnmartel/javaccPlugin
-}
+apply plugin: 'application'
 
-defaultTasks 'jar'
 
-apply plugin: 'java-library'
-apply plugin: 'maven-publish'
+// version '3.2-SNAPSHOT'
+// group   'org.jason'
 
-version '3.2-SNAPSHOT'
-group   'org.jason'
+// java {
+//     toolchain {
+//         languageVersion = JavaLanguageVersion.of(17)
+//     }
+// }
 
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
-    }
-}
+// repositories {
+//     mavenCentral()
 
-sourceSets {
-    main {
-        java {
-            srcDir 'src/main/java'
-            srcDir 'build/generated/javacc'
-        }
-        resources {
-            srcDir 'src/resources'
-        }
-    }
-}
+//     maven { url "https://raw.githubusercontent.com/jacamo-lang/mvn-repo/master" }
+// }
 
-repositories {
-    mavenCentral()
+// dependencies {
+//     implementation 'net.sf.ingenias:jade:4.3'
+//     //implementation('org.apache.ant:ant:1.10.5')
 
-    maven { url "https://raw.githubusercontent.com/jacamo-lang/mvn-repo/master" }
-}
+//     implementation group: 'javax.json', name: 'javax.json-api', version: '1.1.4'
+//     implementation group: 'org.glassfish', name: 'javax.json', version: '1.1.4'
 
-dependencies {
-    implementation 'net.sf.ingenias:jade:4.3'
-    //implementation('org.apache.ant:ant:1.10.5')
-
-    implementation group: 'javax.json', name: 'javax.json-api', version: '1.1.4'
-    implementation group: 'org.glassfish', name: 'javax.json', version: '1.1.4'
-
-    testImplementation group: 'junit', name: 'junit', version: '4.12'
-}
+//     testImplementation group: 'junit', name: 'junit', version: '4.12'
+// }
 
 // copy dep jars and scritps into build directory
 /*
@@ -75,19 +56,19 @@ task copyJarsToBuild {
     }
 }*/
 
-jar {
-    archiveBaseName = 'jason'
-    manifest {
-        attributes 'Specification-Title': 'Jason Language',
-                   'Specification-Version': project.version,
-                   'Implementation-Version': new Date().toString(),
-                   'Main-Class': 'jason.infra.local.RunLocalMAS'
-    }
-    from('src') {
-        include '/test/jason/inc/**/*.asl'
-        include '/test/jason/**/*.mas2j'
-    }
-}
+// jar {
+//     archiveBaseName = 'jason'
+//     manifest {
+//         attributes 'Specification-Title': 'Jason Language',
+//                    'Specification-Version': project.version,
+//                    'Implementation-Version': new Date().toString(),
+//                    'Main-Class': 'jason.infra.local.RunLocalMAS'
+//     }
+//     from('src') {
+//         include '/test/jason/inc/**/*.asl'
+//         include '/test/jason/**/*.mas2j'
+//     }
+// }
 //jar.dependsOn(copyJarsToBuild)
 
 clean {
@@ -136,16 +117,16 @@ clean {
     emptyDirs.reverseEach { it.delete() }
 }
 
-task createCLIBin (dependsOn: ['jar', ':jason-cli:createBin']) {
+task createCLIBin (dependsOn: [':jason-cli:createBin']) {
     doLast {
         copy {
             from 'jason-cli/build/bin'
-            into 'build/bin'
+            into 'bin'
         }
     }
 }
 
-task config (dependsOn: ['jar', 'createCLIBin']) {
+task config (dependsOn: ['createCLIBin']) {
     doLast {
         println '------'
         println ''
@@ -159,120 +140,120 @@ task config (dependsOn: ['jar', 'createCLIBin']) {
     }
 }
 
-javadoc {
-    options.showAll()
-    options.encoding('UTF-8')
-    options.setUse(true)
-    options.author(true)
-    options.version(true)
-    options.windowTitle('Jason API')
-    options.docTitle('Jason API')
-    options.footer('<a href=http://jason.sf.net>Jason Site</a>')
-    destinationDir = file("${buildDir}/../doc/api")
-    doFirst {
-        javadoc.title = 'Jason API'
-        javadoc.options.docTitle = javadoc.title
-    }
-}
+// javadoc {
+//     options.showAll()
+//     options.encoding('UTF-8')
+//     options.setUse(true)
+//     options.author(true)
+//     options.version(true)
+//     options.windowTitle('Jason API')
+//     options.docTitle('Jason API')
+//     options.footer('<a href=http://jason.sf.net>Jason Site</a>')
+//     destinationDir = file("${buildDir}/../doc/api")
+//     doFirst {
+//         javadoc.title = 'Jason API'
+//         javadoc.options.docTitle = javadoc.title
+//     }
+// }
 
 // the following lines is used to avoid errors while generating javadoc
-if (JavaVersion.current().isJava8Compatible()) {
-    allprojects {
-      tasks.withType(Javadoc) {
-        options.addStringOption('Xdoclint:none', '-quiet')
-      }
-    }
-}
+// if (JavaVersion.current().isJava8Compatible()) {
+//     allprojects {
+//       tasks.withType(Javadoc) {
+//         options.addStringOption('Xdoclint:none', '-quiet')
+//       }
+//     }
+// }
 
 
-task javadocJar (type: Jar, dependsOn: javadoc) {
-    archiveBaseName = 'jason'
-    classifier = 'javadoc'
-    from '${docsDir}/../../doc/api'
-}
+// task javadocJar (type: Jar, dependsOn: javadoc) {
+//     archiveBaseName = 'jason'
+//     classifier = 'javadoc'
+//     from '${docsDir}/../../doc/api'
+// }
 
-task sourceJar (type : Jar) {
-    archiveBaseName = 'jason'
-    classifier = 'sources'
-    from sourceSets.main.allSource
-    duplicatesStrategy = 'include'
+// task sourceJar (type : Jar) {
+//     archiveBaseName = 'jason'
+//     classifier = 'sources'
+//     from sourceSets.main.allSource
+//     duplicatesStrategy = 'include'
 
-}
+// }
 
-artifacts {
-    archives jar, sourceJar, javadocJar
-}
-
-
-publishing {
-    publications {
-        maven(MavenPublication) {
-            from components.java
-                  artifact sourceJar
-                  artifact javadocJar
-            artifactId 'jason'
-        }
-    }
-}
-
-compileJavacc {
-    inputDirectory = file('src/main/javacc')
-    outputDirectory = file(project.buildDir.absolutePath + '/generated/javacc')
-}
+// artifacts {
+//     archives jar, sourceJar, javadocJar
+// }
 
 
-jjdoc {
-    outputDirectory = file(project.projectDir.absolutePath + '/doc/tech')
-    //arguments = [text: 'true']
-}
+// publishing {
+//     publications {
+//         maven(MavenPublication) {
+//             from components.java
+//                   artifact sourceJar
+//                   artifact javadocJar
+//             artifactId 'jason'
+//         }
+//     }
+// }
 
-task publishMavenGitHub(dependsOn: [ 'build', 'publishToMavenLocal']) {
-  doLast {
-    def wdir = System.getProperty("user.home")+'/.m2/repository/org/jason/jason'
-    def rdir = '../jacamo-mvn-repo'
-    exec {
-        commandLine 'git', 'pull'
-        workingDir rdir
-    }
-    copy {
-        from wdir
-        into rdir + '/org/jason/jason'
-    }
-    exec {
-        commandLine 'git', 'add', '*'
-        workingDir rdir
-    }
-    exec {
-        commandLine 'git', 'commit', '-a', '-m', 'new version of jason '+project.version
-        workingDir rdir
-    }
-    exec {
-        commandLine 'git', 'push'
-        workingDir rdir
-    }
-  }
-}
+// compileJavacc {
+//     inputDirectory = file('src/main/javacc')
+//     outputDirectory = file(project.buildDir.absolutePath + '/generated/javacc')
+// }
+
+
+// jjdoc {
+//     outputDirectory = file(project.projectDir.absolutePath + '/doc/tech')
+//     //arguments = [text: 'true']
+// }
+
+// task publishMavenGitHub(dependsOn: [ 'build', 'publishToMavenLocal']) {
+//   doLast {
+//     def wdir = System.getProperty("user.home")+'/.m2/repository/org/jason/jason'
+//     def rdir = '../jacamo-mvn-repo'
+//     exec {
+//         commandLine 'git', 'pull'
+//         workingDir rdir
+//     }
+//     copy {
+//         from wdir
+//         into rdir + '/org/jason/jason'
+//     }
+//     exec {
+//         commandLine 'git', 'add', '*'
+//         workingDir rdir
+//     }
+//     exec {
+//         commandLine 'git', 'commit', '-a', '-m', 'new version of jason '+project.version
+//         workingDir rdir
+//     }
+//     exec {
+//         commandLine 'git', 'push'
+//         workingDir rdir
+//     }
+//   }
+// }
 
 
 // Builds the distribution, documentation and a new release
-task doc(dependsOn: [ 'jjdoc', 'javadoc', 'renderAsciiDocs']) {
+task doc(dependsOn: [ ':interpreter:jjdoc', ':interpreter:javadoc', 'renderAsciiDocs']) {
 }
 
 task renderAsciiDocs(type: Exec) {
     commandLine 'find', '.', '-name', '*.adoc', '-exec', 'doc/asciidoc-docker', '{}', ';'
 }
 
-task fixTab {
-    ant.fixcrlf(eol: 'lf',  includes: '**/*.txt,**/*.bat, **/*.adoc', srcdir: '.')
-    ant.fixcrlf(tab: 'remove', tablength: '4', javafiles: 'true', includes: '**/*.java,**/*.xml,**/*.asl,**/*.mas2j,**/*.txt', srcdir: 'src')
-    ant.fixcrlf(tab: 'remove', tablength: '4', javafiles: 'true', includes: '**/*.java,**/*.xml,**/*.asl,**/*.mas2j,**/*.txt', srcdir: 'examples')
-    ant.fixcrlf(tab: 'remove', tablength: '4', javafiles: 'true', includes: '**/*.java,**/*.xml,**/*.asl,**/*.mas2j,**/*.txt', srcdir: 'demos')
-    ant.fixcrlf(tab: 'remove', tablength: '4', javafiles: 'true', includes: '**/*.java,**/*.xml,**/*.asl,**/*.mas2j,**/*.txt', srcdir: 'doc')
-    ant.fixcrlf(tab: 'remove', tablength: '4', javafiles: 'true', includes: '*.gradle', srcdir: '.')
-}
+// task fixTab {
+//     ant.fixcrlf(eol: 'lf',  includes: '**/*.txt,**/*.bat, **/*.adoc', srcdir: '.')
+//     ant.fixcrlf(tab: 'remove', tablength: '4', javafiles: 'true', includes: '**/*.java,**/*.xml,**/*.asl,**/*.mas2j,**/*.txt', srcdir: 'src')
+//     ant.fixcrlf(tab: 'remove', tablength: '4', javafiles: 'true', includes: '**/*.java,**/*.xml,**/*.asl,**/*.mas2j,**/*.txt', srcdir: 'examples')
+//     ant.fixcrlf(tab: 'remove', tablength: '4', javafiles: 'true', includes: '**/*.java,**/*.xml,**/*.asl,**/*.mas2j,**/*.txt', srcdir: 'demos')
+//     ant.fixcrlf(tab: 'remove', tablength: '4', javafiles: 'true', includes: '**/*.java,**/*.xml,**/*.asl,**/*.mas2j,**/*.txt', srcdir: 'doc')
+//     ant.fixcrlf(tab: 'remove', tablength: '4', javafiles: 'true', includes: '*.gradle', srcdir: '.')
+// }
 
 // Builds the distribution, documentation and a new release
-task release(dependsOn: [ 'build', 'doc', 'fixTab', 'zipRel' ]) {
+task release(dependsOn: [ 'build', 'doc', 'zipRel' ]) {
 }
 
 // copy files used to build a release
@@ -319,75 +300,3 @@ task zipRel(type: Zip, dependsOn: copyRel) {
     archiveBaseName = 'jason'
 }
 
-/**
- * Gradle task to execute unit tests for Jason agents
- * To run this script in a virtual machine to simulate a CI environment type:
- * $ docker volume create --name gradle-cache
- * $ docker run -ti --rm -u gradle -v gradle-cache:/home/gradle/.gradle -v "$PWD":/home/gradle/project -w /home/gradle/project -p 8000:8000 gradle:6.3.0-jdk11 bash -c "./gradlew config test -i"
- */
-task testJason(dependsOn: 'jar') {
-    description 'runs Jason unit tests: tests.mas2j'
-    def errorOnTests = false
-    outputs.upToDateWhen { false } // disable cache
-
-    doFirst {
-        try {
-            javaexec {
-                jvmArgs += '--enable-preview'
-                main = 'jason.infra.local.RunLocalMAS'
-                if (gradle.startParameter.logLevel.toString().equals("DEBUG")) {
-                    args = ['src/test/jason/unit_tests.mas2j', '--log-conf', 'src/main/resources/templates/console-debug-logging.properties']
-                } else if (gradle.startParameter.logLevel.toString().equals("INFO")) {
-                    args = ['src/test/jason/unit_tests.mas2j', '--log-conf', 'src/main/resources/templates/console-info-logging.properties']
-                } else {
-                    args = ['src/test/jason/unit_tests.mas2j', '--log-conf', 'src/main/resources/templates/console-lifecycle-logging.properties']
-                }
-                classpath sourceSets.main.runtimeClasspath
-                sourceSets.test.java.srcDirs += ['src/test/jason/jia']
-
-                errorOutput = new ByteArrayOutputStream()
-                standardOutput = new ByteArrayOutputStream()
-
-                ext.stdout = {
-                    return standardOutput.toString()
-                }
-                ext.errout = {
-                    return errorOutput.toString()
-                }
-            }
-        } catch (Exception e) {
-            errorOnTests = true
-        }
-    }
-
-    doLast {
-        def styler = 'black red green yellow blue magenta cyan white'
-            .split().toList().withIndex(30)
-            .collectEntries { key, val -> [(key) : { "\033[${val}m${it}\033[0m" }] }
-
-        def std = stdout()
-        std.splitEachLine('\n') { String line ->
-            line = line.replace("TESTING","${styler['yellow']('TESTING')}")
-            line = line.replace("PASSED","${styler['green']('PASSED')}")
-            line = line.replace("FAILED","${styler['red']('FAILED')}")
-            line = line.replace("TODO","${styler['magenta']('TODO')}")
-            line = line.replace("LAUNCHING","${styler['blue']('LAUNCHING')}")
-            println line
-        }
-
-        def err = errout()
-        err.splitEachLine('\n') { String line ->
-            line = line.replace("TESTING","${styler['yellow']('TESTING')}")
-            line = line.replace("PASSED","${styler['green']('PASSED')}")
-            line = line.replace("FAILED","${styler['red']('FAILED')}")
-            line = line.replace("TODO","${styler['magenta']('TODO')}")
-            line = line.replace("LAUNCHING","${styler['blue']('LAUNCHING')}")
-            println line
-        }
-
-        if (errorOnTests) {
-            throw new GradleException('Jason unit tests: ERROR!')
-        }
-    }
-}
-tasks.build.finalizedBy testJason
