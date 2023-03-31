@@ -99,7 +99,7 @@ javadoc {
     options.windowTitle('Jason API')
     options.docTitle('Jason API')
     options.footer('<a href=http://jason.sf.net>Jason Site</a>')
-    destinationDir = file("${buildDir}/../doc/api")
+    destinationDir = file("${buildDir}/../../doc/api")
     doFirst {
         javadoc.title = 'Jason API'
         javadoc.options.docTitle = javadoc.title
@@ -119,7 +119,7 @@ if (JavaVersion.current().isJava8Compatible()) {
 task javadocJar (type: Jar, dependsOn: javadoc) {
     archiveBaseName = 'jason'
     //classifier = 'javadoc'
-    from '${docsDir}/../../doc/api'
+    from '${docsDir}/../../../doc/api'
 }
 
 task sourceJar (type : Jar) {
@@ -127,7 +127,6 @@ task sourceJar (type : Jar) {
     //classifier = 'sources'
     from sourceSets.main.allSource
     duplicatesStrategy = 'include'
-
 }
 
 artifacts {
@@ -153,8 +152,7 @@ compileJavacc {
 
 
 jjdoc {
-    outputDirectory = file(project.projectDir.absolutePath + '/doc/tech')
-    //arguments = [text: 'true']
+    outputDirectory = file(project.projectDir.absolutePath + '/../doc/tech')
 }
 
 task publishMavenGitHub(dependsOn: [ 'build', 'publishToMavenLocal']) {

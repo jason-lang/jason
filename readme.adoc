@@ -54,11 +54,11 @@ Other useful gradle tasks:
 ./gradlew jar     // <1>
 ./gradlew doc     // <2>
 ./gradlew clean   // <3>
-./gradlew release // <4>
+./gradlew :jason-cli:release // <4>
 -----
 <1> generates a new jason jar.
 <2> generates the javadoc and transforms asciidoc files into html (Docker must be running for the latter).
 <3> cleans all generated files.
-<4> produces a zip file in `build/distributions` to be distributed to users.
+<4> produces a zip file in `jason-cli/build/distributions` to be distributed to users (the executable of JasonCLI).
 
 You can use your IDE to change the Jason implementation by importing the Gradle project.

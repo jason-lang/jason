@@ -78,9 +78,10 @@ clean {
     delete 'doc/index.html'
     delete 'doc/readme.html'
     delete 'readme.html'
-    delete 'release-notes.html'
+    delete 'doc/release-notes.html'
 
     delete fileTree('doc/tutorials')  { include '**/*.html'  }
+    delete fileTree('doc/tech')       { include '**/*.html'  }
     delete fileTree('doc/tutorials')  { include '**/bin/**/*'  }
 
     delete fileTree('.')  { include '**/*~'  }
@@ -253,50 +254,50 @@ task renderAsciiDocs(type: Exec) {
 // }
 
 // Builds the distribution, documentation and a new release
-task release(dependsOn: [ 'build', 'doc', 'zipRel' ]) {
-}
+// task release(dependsOn: [ 'build', 'doc', 'zipRel' ]) {
+// }
 
-// copy files used to build a release
-task copyRel (dependsOn: ['jar']) {
-  doLast {
-    copy {
-        from '.'
-        into 'build/jason-'+project.version
-        include '*.html'
-        include 'LICENSE'
-        include 'doc/**'
-    }
-    delete fileTree('build/jason-'+project.version+'/doc')  { include '**/*.adoc', '**/Makefile'  }
+// // copy files used to build a release
+// task copyRel (dependsOn: ['jar']) {
+//   doLast {
+//     copy {
+//         from '.'
+//         into 'build/jason-'+project.version
+//         include '*.html'
+//         include 'LICENSE'
+//         include 'doc/**'
+//     }
+//     delete fileTree('build/jason-'+project.version+'/doc')  { include '**/*.adoc', '**/Makefile'  }
 
-    copy {
-        from 'build/scripts'
-        into 'build/jason-'+project.version+'/scripts'
-    }
-    copy {
-        duplicatesStrategy = 'include'
-        from 'build/libs'
-        from configurations.runtimeClasspath
-        into 'build/jason-'+project.version+'/libs'
-        include '**/*.jar'
-    }
-    copy {
-        from 'examples'
-        into 'build/jason-'+project.version+'/examples'
-    }
-    copy {
-        from 'demos'
-        into 'build/jason-'+project.version+'/demos'
-    }
-    copy {
-        from 'src'
-        into 'build/jason-'+project.version+'/src'
-    }
-  }
-}
+//     copy {
+//         from 'build/scripts'
+//         into 'build/jason-'+project.version+'/scripts'
+//     }
+//     copy {
+//         duplicatesStrategy = 'include'
+//         from 'build/libs'
+//         from configurations.runtimeClasspath
+//         into 'build/jason-'+project.version+'/libs'
+//         include '**/*.jar'
+//     }
+//     copy {
+//         from 'examples'
+//         into 'build/jason-'+project.version+'/examples'
+//     }
+//     copy {
+//         from 'demos'
+//         into 'build/jason-'+project.version+'/demos'
+//     }
+//     copy {
+//         from 'src'
+//         into 'build/jason-'+project.version+'/src'
+//     }
+//   }
+// }
 
-// creates a zip file for a release
-task zipRel(type: Zip, dependsOn: copyRel) {
-    from 'build/jason-'+project.version
-    archiveBaseName = 'jason'
-}
+// // creates a zip file for a release
+// task zipRel(type: Zip, dependsOn: copyRel) {
+//     from 'build/jason-'+project.version
+//     archiveBaseName = 'jason'
+// }
 
