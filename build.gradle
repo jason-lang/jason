@@ -41,7 +41,7 @@ repositories {
 
 dependencies {
     implementation 'net.sf.ingenias:jade:4.3'
-    implementation('org.apache.ant:ant:1.10.5')
+    //implementation('org.apache.ant:ant:1.10.5')
 
     implementation group: 'javax.json', name: 'javax.json-api', version: '1.1.4'
     implementation group: 'org.glassfish', name: 'javax.json', version: '1.1.4'
@@ -80,8 +80,8 @@ jar {
     manifest {
         attributes 'Specification-Title': 'Jason Language',
                    'Specification-Version': project.version,
-                   'Implementation-Version': new Date().toString()
-        //'Main-Class': 'jason.util.ConfigGUI',
+                   'Implementation-Version': new Date().toString(),
+                   'Main-Class': 'jason.infra.local.RunLocalMAS'
     }
     from('src') {
         include '/test/jason/inc/**/*.asl'

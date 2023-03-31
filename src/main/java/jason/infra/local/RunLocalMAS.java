@@ -300,7 +300,10 @@ public class RunLocalMAS extends BaseLocalMAS implements RunLocalMASMBean {
     }
 
     public static File getRunningMASFile() {
-        return new File(System.getProperty("java.io.tmpdir") + RUNNING_MAS_FILE_NAME);
+        var  tmp = System.getProperty("java.io.tmpdir");
+        if (!tmp.endsWith(File.separator))
+            tmp  += File.separator;
+        return new File(tmp + RUNNING_MAS_FILE_NAME);
     }
 
     public void storeRunningMASInCommonFile(String masName, String address) {
