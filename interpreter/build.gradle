@@ -98,7 +98,6 @@ javadoc {
     options.version(true)
     options.windowTitle('Jason API')
     options.docTitle('Jason API')
-    options.footer('<a href=http://jason.sf.net>Jason Site</a>')
     destinationDir = file("${buildDir}/../../doc/api")
     doFirst {
         javadoc.title = 'Jason API'
@@ -111,6 +110,7 @@ if (JavaVersion.current().isJava8Compatible()) {
     allprojects {
       tasks.withType(Javadoc) {
         options.addStringOption('Xdoclint:none', '-quiet')
+        options.addStringOption("Xmaxwarns", "1")
       }
     }
 }
@@ -122,7 +122,7 @@ task javadocJar (type: Jar, dependsOn: javadoc) {
     from '${docsDir}/../../../doc/api'
 }
 
-task sourceJar (type : Jar) {
+task sourceJar (type : Jar, dependsOn: ['compileJavacc']) {
     archiveBaseName = 'jason'
     //classifier = 'sources'
     from sourceSets.main.allSource
