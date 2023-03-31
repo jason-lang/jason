@@ -5,6 +5,7 @@ import jason.runtime.RuntimeServices;
 import jason.runtime.RuntimeServicesFactory;
 
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -108,6 +109,7 @@ public class RunningMASs {
                 }
             }
         } catch (java.rmi.ConnectException e) {
+        } catch (java.rmi.ConnectIOException e) {
             // no rmi running, ok
         } catch (Exception e) {
             e.printStackTrace();
@@ -152,7 +154,7 @@ public class RunningMASs {
 
             if (changed) {
                 try {
-                    // TODO uncomment props.store(new FileWriter(f),"running mas in jason");
+                    props.store(new FileWriter(f),"running mas in jason");
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

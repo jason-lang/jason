@@ -1014,9 +1014,7 @@ public class RunLocalMAS extends BaseLocalMAS implements RunLocalMASMBean {
 
                 try {
                     ManagementFactory.getPlatformMBeanServer().unregisterMBean(new ObjectName("jason.sf.net:type=runner"));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                } catch (Exception e) {}
 
                 if (stopJVM) {
                     System.exit(exitValue);

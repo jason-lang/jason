@@ -64,6 +64,8 @@ public class RunJadeMAS extends RunLocalMAS {
         RunJadeMAS r = new RunJadeMAS();
         runner = r;
         r.init(args);
+        r.registerInRMI();
+        r.registerWebMindInspector();
         r.create();
         r.start();
         r.waitEnd();
