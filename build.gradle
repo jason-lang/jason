@@ -2,8 +2,9 @@
    Jason Gradle build file
 */
 
-apply plugin: 'application'
+apply plugin: 'java'
 
+defaultTasks 'config'
 
 // version '3.2-SNAPSHOT'
 // group   'org.jason'

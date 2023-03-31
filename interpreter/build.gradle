@@ -253,4 +253,4 @@ task testJason(dependsOn: 'jar') {
         }
     }
 }
-tasks.build.finalizedBy testJason
+//tasks.build.finalizedBy testJason

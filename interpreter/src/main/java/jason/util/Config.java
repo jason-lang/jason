@@ -560,6 +560,8 @@ public class Config extends Properties {
                     System.out.println("Configuration of '"+jarEntry+"' found at " + jarFile+", based on classpath");
                 return true;
             }
+            if (showFixMsgs)
+                System.out.println("Configuration of '"+jarEntry+"' NOT found, based on class loader");
 
             /*
             try {
@@ -578,7 +580,7 @@ public class Config extends Properties {
             // try with $JASON_HOME
             String jh = System.getenv().get("JASON_HOME");
             if (jh != null) {
-                jarFile = findJarInDirectory(new File(jh+"/libs"), jarFilePrefix);
+                jarFile = findJarInDirectory(new File(jh+"/interpreter/build/libs"), jarFilePrefix);
                 if (checkJar(jarFile, fileInJar)) {
                     try {
                         put(jarEntry, new File(jarFile).getCanonicalFile().getAbsolutePath());
@@ -590,9 +592,12 @@ public class Config extends Properties {
                     }
                 }
             }
+            if (showFixMsgs)
+                System.out.println("Configuration of '"+jarEntry+"' NOT found, based on JAVA_HOME="+jh);
 
             // try current build/libs (from gradle build), required for task testJason
-            jarFile = findJarInDirectory(new File("build/libs"), jarFilePrefix);
+            var localBuild = new File("build/libs").getAbsoluteFile();
+            jarFile = findJarInDirectory( localBuild, jarFilePrefix);
             if (checkJar(jarFile, fileInJar)) {
                 try {
                     put(jarEntry, new File(jarFile).getCanonicalFile().getAbsolutePath());
@@ -603,6 +608,8 @@ public class Config extends Properties {
                     e.printStackTrace();
                 }
             }
+            if (showFixMsgs)
+                System.out.println("Configuration of '"+jarEntry+"' NOT found in "+localBuild);
 
             return false;
         }
