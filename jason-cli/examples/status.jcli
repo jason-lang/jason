@@ -1,0 +1,12 @@
+mas start --console --no-net
+agent start bob {
+    p(1). p(2).
+    !g.
+    +!g <- .wait(1000); !g.
+
+    +hello[source(A)] <- .print("hello from ",A).
+}
+echo
+echo "status of Bob:"
+agent status bob
+mas stop --exit

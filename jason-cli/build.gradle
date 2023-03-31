@@ -1,0 +1,109 @@
+/*
+   Jason Command Line Interpreter build file
+*/
+
+defaultTasks 'build'
+
+apply plugin: 'java'
+
+version '3.2-SNAPSHOT' // use the jason version
+group   'org.jason'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir 'src/main/java'
+        }
+        resources {
+            srcDir 'src/resources'
+        }
+    }
+}
+
+repositories {
+    mavenCentral()
+
+    maven { url "https://raw.githubusercontent.com/jacamo-lang/mvn-repo/master" }
+    maven { url 'https://repo.gradle.org/gradle/libs-releases' }
+}
+
+dependencies {
+    implementation 'org.jason:jason:3.2-SNAPSHOT'
+    // implementation 'info.picocli:picocli:4.7.1'
+    implementation 'info.picocli:picocli-shell-jline3:4.7.0'
+    //annotationProcessor 'info.picocli:picocli-codegen:4.7.0'
+
+    implementation 'org.jline:jline:3.22.0'
+    implementation 'org.fusesource.jansi:jansi:2.4.0'
+
+    implementation 'org.gradle:gradle-tooling-api:7.6'
+    //testImplementation group: 'junit', name: 'junit', version: '4.12'
+
+    implementation 'org.slf4j:slf4j-nop:1.7.21' // to avoid warning msgs of SLF4J
+}
+
+jar {
+    archiveBaseName = 'jason-cli'
+    manifest {
+        attributes 'Main-Class': 'jason.cli.JasonCLI',
+                   'Specification-Title': 'Jason CLI',
+                   'Specification-Version': project.version,
+                   'Implementation-Version': new Date().toString()
+    }
+}
+
+task run (type: JavaExec, dependsOn: 'build') {
+    mainClass = 'jason.cli.JasonCLI'
+    standardInput = System.in
+    classpath sourceSets.main.runtimeClasspath
+}
+
+clean {
+    delete 'bin'
+    delete 'build'
+}
+
+task uberJar(type: Jar, dependsOn: 'classes') {
+    description 'creates a single runnable jar file with all dependencies'
+    duplicatesStrategy 'exclude'
+
+    manifest {
+        attributes 'Main-Class': 'jason.cli.JasonCLI',
+                   'Specification-Title': 'Jason CLI',
+                   'Specification-Version': project.version,
+                   'Implementation-Version': new Date().toString()
+    }
+    archiveBaseName = 'jason-cli-all'
+    destinationDirectory = file('build/bin')
+    from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
+
+task createBin (dependsOn: 'uberJar') {
+    def wdir = 'build/bin'
+    doFirst {
+        exec {
+            commandLine '../../src/main/resources/scripts/create-bin.sh', 'jason-cli-all-' + project.version + '.jar'
+            workingDir wdir
+        }
+    }
+    doLast {
+        delete fileTree(wdir) { include 'jason-cli-all-*' }
+        delete fileTree(wdir) { include '*.sh' }
+        copy {
+            from 'build/bin'
+            into 'build/jason-' + project.version
+        }
+    }
+}
+task release (type: Zip, dependsOn: 'createBin') {
+    def wdir = 'build/jason-' + project.version
+    from wdir
+    archiveBaseName = 'jason-bin'
+}
