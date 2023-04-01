@@ -22,7 +22,7 @@ You can test the installation running VSCode, opening a terminal and executing `
 
 image:./figs/inst.png[vscode and java installation]
 
-You can now install Jason from link:https://github.com/jason-lang/jason-cli/releases[here]. Download the `jason-bin-.....zip` file and decompress it. It creates a directory with Jason documentation, examples, and a sub-directory `bin` with the file *`jason`*. It is a unix executable file, if not, change its properties with `chmod +x jason`. Finally, link:https://www.computerhope.com/issues/ch000549.htm[adds the directory `bin` in your machine `PATH`] so that the command `jason` can be executed in a terminal. 
+You can now install Jason from link:https://github.com/jason-lang/jason/releases[here]. Download the `jason-bin-.....zip` file and decompress it. It creates a directory with Jason documentation, examples, and a sub-directory `bin` with the file *`jason`*. It is a unix executable file, if not, change its properties with `chmod +x jason`. Finally, link:https://www.computerhope.com/issues/ch000549.htm[adds the directory `bin` in your machine `PATH`] so that the command `jason` can be executed in a terminal. 
 
 You may need to close and open VSCode again, then in its terminal type `jason --version`:
 
