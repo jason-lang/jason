@@ -114,21 +114,21 @@ if (JavaVersion.current().isJava8Compatible()) {
 }
 
 
-task javadocJar (type: Jar, dependsOn: javadoc) {
-    archiveBaseName = 'jason'
-    //classifier = 'javadoc'
-    from '${docsDir}/../../../doc/api'
-}
-
-task sourceJar (type : Jar, dependsOn: ['compileJavacc']) {
-    archiveBaseName = 'jason'
-    //classifier = 'sources'
-    from sourceSets.main.allSource
-    duplicatesStrategy = 'include'
-}
+//task javadocJar (type: Jar, dependsOn: javadoc) {
+//    archiveBaseName = 'jason'
+//    //classifier = 'javadoc'
+//    from '${docsDir}/../../../doc/api'
+//}
+//
+//task sourceJar (type : Jar, dependsOn: ['compileJavacc']) {
+//    archiveBaseName = 'jason'
+//    //classifier = 'sources'
+//    from sourceSets.main.allSource
+//    duplicatesStrategy = 'include'
+//}
 
 artifacts {
-    archives jar, sourceJar, javadocJar
+    archives jar //, sourceJar, javadocJar
 }
 
 
@@ -136,8 +136,8 @@ publishing {
     publications {
         maven(MavenPublication) {
             from components.java
-                  artifact sourceJar
-                  artifact javadocJar
+//                  artifact sourceJar
+//                  artifact javadocJar
             artifactId 'jason'
         }
     }
@@ -155,15 +155,15 @@ jjdoc {
 
 task publishMavenGitHub(dependsOn: [ 'build', 'publishToMavenLocal']) {
   doLast {
-    def wdir = System.getProperty("user.home")+'/.m2/repository/org/jason/jason'
-    def rdir = '../jacamo-mvn-repo'
+    def wdir = System.getProperty("user.home")+'/.m2/repository/io/github/jason-lang/jason' //org/jason/jason'
+    def rdir = project.projectDir.absolutePath+'/../../jacamo-mvn-repo'
     exec {
         commandLine 'git', 'pull'
         workingDir rdir
     }
     copy {
         from wdir
-        into rdir + '/org/jason/jason'
+        into rdir + '/io/github/jason-lang/jason'
     }
     exec {
         commandLine 'git', 'add', '*'

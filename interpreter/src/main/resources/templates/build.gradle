@@ -19,7 +19,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.jason:jason:<VERSION>'
+    implementation 'io.github.jason-lang:jason:<VERSION>'
 
     // to use locally installed jars:
     //implementation fileTree(dir: 'libs', include: '*.jar')

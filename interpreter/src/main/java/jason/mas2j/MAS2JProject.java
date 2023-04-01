@@ -83,6 +83,7 @@ public class MAS2JProject implements Serializable {
     }
 
     public void setInfrastructure(ClassParameters infra) {
+        System.out.println("Since Jason 3.2, infrastructures are not managed by .mas2j files, but by build.gradle! So remove 'infrastructure' from your .mas2j file.");
         infrastructure = infra;
     }
     public ClassParameters getInfrastructure() {
@@ -159,6 +160,8 @@ public class MAS2JProject implements Serializable {
     }
 
     public void addClassPath(String cp) {
+        System.out.println("Since Jason 3.2, classpath is not managed by .mas2j files, but by build.gradle! So remove 'classpath' from your .mas2j file.");
+
         if (cp.startsWith("\"")) {
             cp = cp.substring(1,cp.length()-1);
         }

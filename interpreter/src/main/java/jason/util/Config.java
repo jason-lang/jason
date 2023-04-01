@@ -822,8 +822,7 @@ public class Config extends Properties {
 
     public String getPresentation() {
         return "Jason "+getJasonVersion()+"\n"+
-               "     built on "+getJasonBuiltDate()+"\n"+
-               "     installed at "+getHome();
+               "     built on "+getJasonBuiltDate();
     }
 
     public void addPackage(String key, File value) {

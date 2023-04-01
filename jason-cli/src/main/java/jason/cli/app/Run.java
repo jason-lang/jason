@@ -1,5 +1,7 @@
 package jason.cli.app;
 
+import jason.util.Config;
+
 import java.io.File;
 
 
@@ -16,6 +18,9 @@ public class Run extends  Common {
 
         var created = getOrCreateGradleFile( mas2j );
 
+        if (verbose) {
+            System.out.println(Config.get().getPresentation());
+        }
         try (var connection = getGradleConnection(projectDir)) {
             getGradleBuild(connection, verbose, true)
                     .forTasks("run")
