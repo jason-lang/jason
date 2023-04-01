@@ -255,50 +255,50 @@ task renderAsciiDocs(type: Exec) {
 // }
 
 // Builds the distribution, documentation and a new release
-// task release(dependsOn: [ 'build', 'doc', 'zipRel' ]) {
-// }
+task release(dependsOn: [ 'doc', 'zipRel' ]) {
+}
 
-// // copy files used to build a release
-// task copyRel (dependsOn: ['jar']) {
-//   doLast {
-//     copy {
-//         from '.'
-//         into 'build/jason-'+project.version
-//         include '*.html'
-//         include 'LICENSE'
-//         include 'doc/**'
-//     }
-//     delete fileTree('build/jason-'+project.version+'/doc')  { include '**/*.adoc', '**/Makefile'  }
+// copy files used to build a release
+task copyRel (dependsOn: ['jar', 'createCLIBin']) {
+  doLast {
+    copy {
+        from '.'
+        into "build/jason-${jasonVersion}"
+        include '*.html'
+        include 'LICENSE'
+        include 'doc/**'
+    }
+    // delete fileTree('build/jason-'+project.version+'/doc')  { include '**/*.adoc', '**/Makefile'  }
 
-//     copy {
-//         from 'build/scripts'
-//         into 'build/jason-'+project.version+'/scripts'
-//     }
-//     copy {
-//         duplicatesStrategy = 'include'
-//         from 'build/libs'
-//         from configurations.runtimeClasspath
-//         into 'build/jason-'+project.version+'/libs'
-//         include '**/*.jar'
-//     }
-//     copy {
-//         from 'examples'
-//         into 'build/jason-'+project.version+'/examples'
-//     }
-//     copy {
-//         from 'demos'
-//         into 'build/jason-'+project.version+'/demos'
-//     }
-//     copy {
-//         from 'src'
-//         into 'build/jason-'+project.version+'/src'
-//     }
-//   }
-// }
+    copy {
+        from 'bin'
+        into "build/jason-${jasonVersion}/bin"
+    }
+    // copy {
+    //     duplicatesStrategy = 'include'
+    //     from 'build/libs'
+    //     from configurations.runtimeClasspath
+    //     into 'build/jason-'+project.version+'/libs'
+    //     include '**/*.jar'
+    // }
+    copy {
+        from 'examples'
+        into "build/jason-${jasonVersion}/examples"
+    }
+    copy {
+        from 'demos'
+        into "build/jason-${jasonVersion}/demos"
+    }
+    // copy {
+    //     from 'src'
+    //     into 'build/jason-'+project.version+'/src'
+    // }
+  }
+}
 
 // // creates a zip file for a release
-// task zipRel(type: Zip, dependsOn: copyRel) {
-//     from 'build/jason-'+project.version
-//     archiveBaseName = 'jason'
-// }
+task zipRel(type: Zip, dependsOn: copyRel) {
+    from "build/jason-${jasonVersion}"
+    archiveBaseName = "jason-bin-${jasonVersion}"
+}
 
