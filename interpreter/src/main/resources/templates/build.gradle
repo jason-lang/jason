@@ -23,7 +23,7 @@ dependencies {
     implementation 'io.github.jason-lang:jason:<VERSION>'
 
     // to use locally installed jars:
-    //implementation fileTree(dir: 'libs', include: '*.jar')
+    implementation fileTree(dir: 'lib', include: '*.jar')
 }
 
 sourceSets {
