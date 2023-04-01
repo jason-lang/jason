@@ -14,25 +14,8 @@ developing a simple multi-agent system using Jason.
 
 == Installation and Configuration
 
-- Java http://java.sun.com[JDK] >= 17 is required.
-- Download Jason from https://sourceforge.net/projects/jason/files/jason/[here] and unzip it.
-- You can now execute the Jason IDE by going to the folder `jedit` and double-clicking on `jedit.jar`.footnote:[Eclipse can also be used as the IDE, see http://jason.sourceforge.net/mini-tutorial/eclipse-plugin[here].] For Linux and MacOS, the script `jason-ide` can be also used (see more instructions link:./shell-based{outfilesuffix}[here]).
+This tutorial uses VSCode + Jason. See xref:../vscode/readme.adoc[here] how to configure them.
 
-image:./figures/screen-initial.png[]
-
-As you can see, Jason runs as a plugin of http://www.jedit.org[jEdit] (a text editor developed in Java). This is useful because, although in Jason agents are  programmed in a variant of AgentSpeak, in most cases you'll need to do some Java programming (e.g., if you want to create an environment  where the agents are situated).
-
-In some cases, it might be necessary to configure the directory where Java JDK is installed. This can be done in the menu Plugins -> Plugins Options -> Jason:
-
-image:./figures/screen-conf.png[]
-
-You can also change the Jason configuration by double clicking the
-  jason jar file located in the libs directory.
-
-Done! It's that simple!
-
-You are now ready to run a Jason multi-agent system, as we explain
-next.
 
 == Execution of an example
 
@@ -57,66 +40,64 @@ This is a very simple example, showing a robot that searches the
 image:./figures/JasonEx-CR-ss1.png[align:center]
 
 
-- All Jason projects have a configuration file that ends with
+All Jason projects have a configuration file that ends with
   `.mas2j`, so to open the cleaning robots example, open the
-  file `examples/cleaning-robots/mars.mas2j` that you'll find
+  folder `examples/cleaning-robots` in VSCode. You'll find
   in the folder where you installed Jason.
-+
+
 image:./figures/screen-mars.png[]
-+
-The project file defines the underlying infrastructure that has been
-  chosen for that project (Local, Jade, ...), the Java
+
+The project file defines the Java
   class that implements the environment (MarsEnv), and the agents that
   belong to this application (agent `r1` searches for pieces of garbage and
   `r2` incinerates them).
 
-- To execute this application, click on the
-  icon image:./figures/run.png[]. Two windows are opened, the
+To execute this application, in the VSCode terminal, type 
+
+----
+jason mars.mas2j
+----
+
+Two windows are opened, the
   first is the application GUI and the second is the Jason MAS
   Console where all print messages are shown (MAS is a common
   abbreviation of _Multi-Agent Systems_).
-+
+
 image:./figures/screen-masconsole.png[]
 
-- To stop the MAS execution, click
-  on image:./figures/suspend.png[], either in the MAS Console
-  or in jEdit.
+To stop the MAS execution, click
+  on image:./figures/suspend.png[] in the MAS Console.
 
 == Creation of a simple example
 
 In this section we will create a new and simple example where two
-agents, `bob` and `tom`, exchange greeting messages.
+agents, `bob` and `alice`, exchange greeting messages.
 
-- Click on the image:./figures/newProject.gif[] icon and
-  fill in the project name field with `greeting`.
+- Create a new application called `greeting` with the command:
 +
-image:./figures/screen-newproject.png[]
-+
-(Don't worry about the syntax error in the project, it is caused
-  because there are no agents in the system.)
+----
+jason app create greeting
+----
 
-- Add a new agent called `bob` by clicking
-  on image:./figures/newAgent.gif[] and filling in only the
-  agent name field. Note that the agent name has to be an
-  AgentSpeak term, so it cannot start with an uppercase letter.
+- Open the folder `greeting` in VSCode and you you notice the initial project is created with two agents already. 
 +
-image:./figures/screen-newagent.png[]
+image:./figures/greeting.png[]
 
-- Do the same for `tom`.
 
 - As you can see, there is a skeleton for the agent's code: the
   agent has no beliefs, but an initial goal `start` and one
   plan to achieve this goal. The plan simply prints something when
   triggered.
 +
-We will now change `tom` 's code so that it sends a "`hello`"
+image:./figures/bob-ini-code.png[]
+
+- We will now change agent `alice` 's code so that it sends a "`hello`"
   message to `bob`. To send messages, an *internal action*
   called `.send` is used:
 +
 [source,jasonagent]
+.src/agt/alice.asl
 ----
-// Agent tom in project greeting.mas2j
-
 !start.
 
 +!start : true <- .send(bob,tell,hello).
@@ -126,12 +107,13 @@ In `bob` code, we remove the `start` goal (and its
   related plan), leaving its program empty:
 +
 [source,jasonagent]
+.src/agt/bob.asl
 ----
 // Agent bob in project greeting.mas2j
 ----
 
 
-- You can now run the project.  There is no output! However, in
+- You can now run the application.  There is no output! However, in
   the MAS Console, click on the debug
   button image:./figures/debug.gif[] and then select, in a new
   windows named _Jason Mind Inspector_ (also available at http://localhost:3272) the agent bob (if the
@@ -140,15 +122,16 @@ In `bob` code, we remove the `start` goal (and its
 +
 image:./figures/screen-mindinsp.png[]
 +
-Note the `bob` has a belief `hello[source(tom)]`,
-  which means that it received tom`'s message.
+Note the `bob` has a belief `hello[source(alice)]`,
+  which means that it received alice's message.
 
 - Suppose now that we want `bob` to react to this
   message. Since the received message implies a belief addition, an
-  event like `+hello[source(tom)]` is produced and may trigger
+  event like `+hello[source(alice)]` is produced and may trigger
   the execution of the following plan:
 +
 [source,jasonagent]
+.src/agt/bob.asl
 ----
 // Agent bob in project greeting.mas2j
 
@@ -161,26 +144,26 @@ In the plan, `A` is a variable that contains the name of the
 +
 When you run the new version, the output will be:
 +
-image:./figures/screen-hello.png[]
+----
+[bob] I received a 'hello' from alice
+----
 
 - Since `bob` is a polite agent, we will now make it send a
-  hello back to `tom`:
+  hello back to `alice`:
 +
 [source,jasonagent]
+.src/agt/bob.asl
 ----
-// Agent bob in project greeting.mas2j
-
 +hello[source(A)]
   <- .print("I received a 'hello' from ",A);
      .send(A,tell,hello).
 ----
 +
-and `tom` does the same:
+and `alice` does the same:
 +
 [source,jasonagent]
+.src/agt/alice.asl
 ----
-// Agent tom in project greeting.mas2j
-
 !start.
 
 +!start : true <- .send(bob,tell,hello).
@@ -198,28 +181,12 @@ Before running the system, think what you would expect to happen.
   this belief in its belief base (BB). Since nothing changed in the
   BB, no event was produced, and thus no plan triggered.
 
-- If you want to use JADE as the infrastructure, change the
-  project as follows:
+- If you want to use JADE as the infrastructure, execute the following commands:
 +
-[source,jasonproject]
 ----
-MAS greeting {
-    infrastructure: Jade
-
-    agents:
-        bob;
-        tom;
-}
+jason app add-gradle
+./gradlew runJade
 ----
-+
-Also change the configuration of the Jason Plugin to start the JADE
-  Sniffer agent as well:
-+
-image:./figures/screen-confjade.png[]
-+
-The windows created when you run the system are shown below:
-
-image:./figures/screen-runjade.png[]
 
 
 == An example with environment
@@ -227,10 +194,16 @@ image:./figures/screen-runjade.png[]
 In this section we will create a system where one agent will perform
 one action in a simulated environment.
 
-- Create a new project called `testenv`.
-- Add one agent called `liz` with the following code:
+- In the previous application, add one agent called `liz` with the following code:
++
+----
+jason app add-agent liz
+----
++ 
+then edit the code of the agent to:
 +
 [source,jasonagent]
+.src/agt/liz.asl
 ----
 // Agent liz in project testeenv.mas2j
 
@@ -245,24 +218,23 @@ The plan's body has only the action, `burn`. Action here is
   which starts with a dot, or have a dot anywhere in their name).
 
 - The implementation of the `burn` action is done in an environment
-  class. To create this class, click on the
-  image:./figures/createEnv.gif[] icon and fill in the environment name
-  field with `TestEnv`.
+  class. The project has an initial implementation of the environment in `src/env/example/Env.java`.
 +
 A skeleton for this class is added by Jason. Change it to be
   exactly as follows:
 +
-[[app-listing]]
 [source,java]
-.TestEnv.java
+.src/env/example/Env.java
 ----
+package example;
+
 import jason.asSyntax.*;
 import jason.environment.*;
 import java.util.logging.*;
 
-public class TestEnv extends jason.environment.Environment {
+public class Env extends Environment {
 
-  private Logger logger = Logger.getLogger("testenv.mas2j."+TestEnv.class.getName());
+  private Logger logger = Logger.getLogger("testenv.mas2j."+Env.class.getName());
 
   /** Called before the MAS execution with the args informed in .mas2j */
   @Override
@@ -287,6 +259,7 @@ public class TestEnv extends jason.environment.Environment {
 }
 ----
 +
+
 When an agent attempts to execute an environment action, the method
   `executeAction` of this class is executed. In this
   implementation, if the action `burn` is executed, a new
@@ -395,13 +368,3 @@ link:./exercise-answers.txt[here].
 This document has shown a very limited range of Jason's features; the
 next section contains references where you can find further
 information.
-
-== More information
-
-You can find more information about Jason at:
-
-- Jason website: http://jason.sf.net (mailing lists,
-  publications, etc.)
-- Jason book: http://jason.sf.net/jBook
-- The documentation included in the `doc` directory of the
-  distribution (manual, FAQ, API, etc.)

@@ -2,17 +2,17 @@
 
 ifdef::env-github[:outfilesuffix: .adoc]
 
-Jason is an interpreter for an extended version of AgentSpeak. It implements the operational semantics of that language, and provides a platform for the development of multi-agent systems, with many user-customisable features. Jason is available as Open Source, and is distributed under GNU LGPL.
+ason is an interpreter for an extended version of AgentSpeak. It implements the operational semantics of that language, and provides a platform for the development of multi-agent systems, with many user-customisable features. Jason is available as Open Source, and is distributed under GNU LGPL.
 
-Jason is developed by http://jomi.das.ufsc.br[Jomi F. Hübner] and http://www.inf.pucrs.br/r.bordini[Rafael H. Bordini], based on previous work done with many colleagues, in particular Michael Fisher, Joyce Martins, Álvaro Moreira, Renata Vieira, Willem Visser, Mike Wooldridge, but also many others, as acknowledged in the manual (see the http://jason.sourceforge.net/wp/documents/[documents] page).
-
+Jason is developed by http://https://jomifred.github.io[Jomi F. Hübner] and http://www.inf.pucrs.br/r.bordini[Rafael H. Bordini], based on previous work done with many colleagues, in particular Michael Fisher, Joyce Martins, Álvaro Moreira, Renata Vieira, Willem Visser, Mike Wooldridge, but also many others, as acknowledged in the manual (see the http://jason.sourceforge.net/wp/documents/[documents] page).
 
 == Documentation
 
 - Installation
-* link:./tutorials/getting-started/readme{outfilesuffix}[using jEdit]
-* http://jason.sourceforge.net/mini-tutorial/eclipse-plugin[using eclipse]
-* link:./tutorials/getting-started/shell-based{outfilesuffix}[using a command shell]
+//* link:./tutorials/getting-started/readme{outfilesuffix}[using jEdit]
+//* http://jason.sourceforge.net/mini-tutorial/eclipse-plugin[using eclipse]
+* link:./tutorials/jasonCLI{outfilesuffix}[using a command shell]
+* link:./tutorials/vscode{outfilesuffix}[using Visual Studio Code]
 
 - Tutorials
 * link:./tutorials/getting-started/readme{outfilesuffix}[Getting Started tutorial]
@@ -21,7 +21,7 @@ Jason is developed by http://jomi.das.ufsc.br[Jomi F. Hübner] and http://www.in
 
 
 - link:./faq{outfilesuffix}[FAQ]
-- link:./Jason.pdf[First Jason Manual]
+- link:./Jason.pdf[First Jason Manual] (outdated)
 
 - link:./release-notes{outfilesuffix}[Release Notes]
 
@@ -50,7 +50,7 @@ endif::[]
 == Other Links
 
 - https://github.com/jason-lang/jason[GitHub]
-- http://sourceforge.net/news/?group_id=98417[News]
+//- http://sourceforge.net/news/?group_id=98417[News]
 - http://sourceforge.net/mail/?group_id=98417[Mailing lists]
 - https://github.com/jason-lang/jason/tree/master/examples[Examples]
 - https://github.com/jason-lang/jason/tree/master/demos[Demos]

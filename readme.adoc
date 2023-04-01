@@ -23,7 +23,7 @@ Most of the Jason documentation is available link:doc/readme{outfilesuffix}[in t
 
 === For Jason users
 
-- get a release https://sourceforge.net/projects/jason/files/jason/[here]
+//- get a release https://sourceforge.net/projects/jason/files/jason/[here]
 // - install the eclipse plugin as described http://jacamo.sourceforge.net/eclipseplugin/tutorial[here] or configure your shell command as described http://jacamo.sourceforge.net/tutorial/hello-world/shell-based.html[here]
 - follow the link:doc/tutorials/getting-started/readme{outfilesuffix}[getting started tutorial]
 - more documentation http://jason.sourceforge.net/wp/documents[here]
