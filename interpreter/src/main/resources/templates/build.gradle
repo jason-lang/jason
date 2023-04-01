@@ -9,8 +9,9 @@ defaultTasks 'run'
 
 apply plugin: 'java'
 
-version '1.0'
-group   'org.jason'
+// set version of group for your project
+//version '1.0'
+//group   'io.github.jason-lang'
 
 repositories {
     mavenCentral()
@@ -53,9 +54,4 @@ task runJade (type: JavaExec, dependsOn: 'classes') {
     mainClass = 'jason.infra.jade.RunJadeMAS'
     args = [ '<PROJECT-FILE>' ]
     classpath sourceSets.main.runtimeClasspath
-}
-
-clean {
-    delete 'bin'
-    delete 'build'
 }
