@@ -1,15 +1,7 @@
 = Jason
+:toc: right
 :icons: font
-
-ifdef::env-github[]
-:tip-caption: :bulb:
-:note-caption: :information_source:
-:important-caption: :heavy_exclamation_mark:
-:caution-caption: :fire:
-:warning-caption: :warning:
-endif::[]
-
-ifdef::env-github[:outfilesuffix: .adoc]
+:prewrap!:
 
 Jason is an interpreter for an extended version of AgentSpeak. It implements the operational semantics of that language, and provides a platform for the development of multi-agent systems, with many user-customisable features. Jason is available as Open Source, and is distributed under GNU LGPL.
 
@@ -17,16 +9,13 @@ Jason is developed by http://https://jomifred.github.io[Jomi F. Hübner] and htt
 
 == Documentation
 
-Most of the Jason documentation is available link:doc/readme{outfilesuffix}[in the doc folder].
+Most of the Jason documentation is available xref:doc/readme.adoc[in the doc folder] and at the http://jason.sourceforge.net/wp/documents[Jason web site].
 
 == Installation
 
 === For Jason users
 
-//- get a release https://sourceforge.net/projects/jason/files/jason/[here]
-// - install the eclipse plugin as described http://jacamo.sourceforge.net/eclipseplugin/tutorial[here] or configure your shell command as described http://jacamo.sourceforge.net/tutorial/hello-world/shell-based.html[here]
-- follow the link:doc/tutorials/getting-started/readme{outfilesuffix}[getting started tutorial]
-- more documentation http://jason.sourceforge.net/wp/documents[here]
+Follow the xref:doc/tutorials/getting-started/readme.adoc[getting started tutorial].
 
 NOTE: In Jason 3.2 no IDE is included in Jason distribution. A link:jason-cli[command line interpreter] is now provided.
 
@@ -59,3 +48,13 @@ Other useful gradle tasks:
 <4> produces a zip file in `jason-cli/build/distributions` to be distributed to users (the executable of JasonCLI).
 
 You can use your IDE to change the Jason implementation by importing the Gradle project.
+
+== Jason as a Library
+
+You can add Jason in your Gradle project with:
+
+----
+dependencies {
+    implementation 'io.github.jason-lang:jason:3.2.0'
+}
+----

@@ -8,7 +8,6 @@ Jomi F. Hubner (with Rafael H. Bordini support)
 :icons: font
 :prewrap!:
 
-ifdef::env-github[:outfilesuffix: .adoc]
 
 == Introduction
 
@@ -108,8 +107,7 @@ in this case).
 === Execution
 
 * Create a new project: you can link:./hello-bdi-code.zip[download] and initial JaCaMo project;
-  or use
-http://jason.sourceforge.net/mini-tutorial/getting-started/[Jason jEdit], http://jason.sourceforge.net/mini-tutorial/eclipse-plugin/[Jason Eclipse],  http://jacamo.sourceforge.net/doc/install.html#_eclipse_plugin[JaCaMo Eclipse], or  http://jacamo.sourceforge.net/doc/install.html#_gradle[*JaCaMo gradle commands*] to create and run the programs of this tutorial.
+  or create a new one Jason application with JasonCLI: `jason app create bdi_hw`.
 * Create agent Bob with the source code above (file `bob.asl`). The project should
 look like:
 +
@@ -123,7 +121,6 @@ a|
 MAS bdi_hw {
 
     agents: bob;
-    // file bob.asl at project directory
 
 }
 ----------------
@@ -141,7 +138,7 @@ mas bdi_hw {
 
 |===
 
-* Run the project. In the case of JaCaMo, run the script `./gradlew`.
+* Run the project. In the case of JaCaMo, run the script `./gradlew`; in case of Jason `jason bdi_hw.mas2j`.
 
 === Exercises A
 

@@ -6,8 +6,6 @@
 :icons: font
 :prewrap!:
 
-ifdef::env-github[:outfilesuffix: .adoc]
-
 This document aims to help you install and run Jason, as well as
 developing a simple multi-agent system using Jason.
 

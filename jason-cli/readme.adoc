@@ -1,4 +1,5 @@
-# Command Line Interface (CLI) for Jason
+= Command Line Interface (CLI) for Jason
+:toc: right
 
 The Jason CLI is a command-line interface tool that you use to initialize, develop, and maintain Jason applications directly from a command shell at design and run time.
 
@@ -123,7 +124,7 @@ In this example,
 
 The shell provides completion and suggestions (using `<TAB>`).
 
-![screen show](docs/figs/s1.png)
+image:./docs/figs/s1.png[screen show]
 
 
 ## Scripts
@@ -167,4 +168,4 @@ beliefs of Bob:
 <end of script>
 ```
 
-(the list of all commands is [here](docs/commands.md).)
+(the list of all commands is xref:./docs/commands.adoc[here].)
