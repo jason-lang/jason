@@ -1,0 +1,241 @@
+/*
+   Jason Gradle build file to publish jason.jar into Maven Central
+
+   based on
+        https://weibeld.net/java/publish-to-maven-central.html
+   and
+        https://github.com/DanySK/publish-on-central
+
+   for signing:
+        https://docs.gradle.org/current/userguide/signing_plugin.html
+
+   add MAVEN_CENTRAL_USERNAME and MAVEN_CENTRAL_PASSWORD to your environment
+
+   run with
+       //gradle -b maven-central.gradle signMavenPublication
+       //gradle -b maven-central.gradle uploadAllPublicationsToMavenCentralNexus
+       gradle -b maven-central.gradle releaseStagingRepositoryOnMavenCentral
+       //gradle -b maven-central.gradle dropStagingRepositoryOnMavenCentral
+
+   go to
+       https://oss.sonatype.org/#welcome
+
+       and monitor the steps
+*/
+
+plugins {
+    id "ca.coglinc.javacc" version "2.4.0"
+    // see https://github.com/johnmartel/javaccPlugin
+    id "org.danilopianini.publish-on-central" version "3.4.0"
+}
+
+
+apply plugin: 'java'
+apply plugin: 'maven-publish'
+apply plugin: 'signing'
+
+version '3.1.0'
+//group   'net.sf.jason'
+group 'io.github.jason-lang'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(15)
+    }
+}
+
+repositories {
+    mavenCentral()
+
+    maven { url "https://raw.githubusercontent.com/jacamo-lang/mvn-repo/master" }
+    //maven { url "http://jacamo.sourceforge.net/maven2"  }
+    //maven { url "http://jade.tilab.com/maven"  //}
+    flatDir {
+       dirs 'jedit', 'demos/persistent-belief-base/lib'
+    }
+}
+
+dependencies {
+    implementation group: 'net.sf.ingenias', name: 'jade', version: '4.3'
+
+    implementation fileTree(dir: 'jedit', include: '*.jar') // using fileTree, jedit jars are not included as a dependency in the pom file
+
+    implementation group: 'org.apache.ant',  name: 'ant',  version: '1.10.5'
+
+    implementation group: 'javax.json', name: 'javax.json-api', version: '1.1.4'
+    implementation group: 'org.glassfish', name: 'javax.json', version: '1.1.4'
+
+    testImplementation group: 'junit', name: 'junit', version: '4.12'
+    testImplementation name: 'hsqldb'
+}
+
+
+jar {
+    archiveBaseName = 'jason'
+    manifest {
+        attributes 'Main-Class': 'jason.util.ConfigGUI',
+                   'Specification-Title': 'Jason Language',
+                   'Specification-Version': project.version,
+                   'Implementation-Version': new Date().toString()
+    }
+    from('src') {
+        include '/test/jason/inc/**/*.asl'
+        include '/test/jason/**/*.mas2j'
+    }
+}
+
+//signing {
+//    sign configurations.archives
+//}
+
+
+//javadoc {
+//    options.showAll()
+//    options.encoding('UTF-8')
+//    options.setUse(true)
+//    options.author(true)
+//    options.version(true)
+//    options.windowTitle('Jason API')
+//    options.docTitle('Jason API')
+//    options.footer('<a href=http://jason.sf.net>Jason Site</a>')
+//    destinationDir = file("${buildDir}/../doc/api")
+//    doFirst {
+//        javadoc.title = 'Jason API'
+//        javadoc.options.docTitle = javadoc.title
+//    }
+//}
+
+// the following lines is used to avoid errors while generating javadoc
+if (JavaVersion.current().isJava8Compatible()) {
+    allprojects {
+      tasks.withType(Javadoc) {
+        options.addStringOption('Xdoclint:none', '-quiet')
+      }
+    }
+}
+
+
+//task javadocJar (type: Jar, dependsOn: javadoc) {
+//    archiveBaseName = 'jason'
+//    classifier = 'javadoc'
+//    from '${docsDir}/../../doc/api'
+//}
+//
+//task sourceJar (type : Jar) {
+//    archiveBaseName = 'jason'
+//    classifier = 'sources'
+//    from sourceSets.main.allSource
+//}
+//
+//artifacts {
+//    archives sourceJar, javadocJar
+//}
+
+compileJavacc {
+    inputDirectory = file('src/main/javacc')
+    outputDirectory = file(project.buildDir.absolutePath + '/generated/javacc')
+}
+
+
+//publishing {
+//    publications {
+//        maven(MavenPublication) {
+//            from components.java
+//                  artifact sourceJar
+//                  artifact javadocJar
+//            artifactId 'jason'
+//        }
+//    }
+//}
+
+
+//uploadArchives {
+//    repositories {
+//        mavenDeployer {
+//
+//            // Sign POM
+//            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+//
+//            // Destination
+//            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+//                authentication(userName: ossrhUsername, password: ossrhPassword)
+//            }
+//            snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+//                authentication(userName: ossrhUsername, password: ossrhPassword)
+//            }
+//
+//            // Add required metadata to POM
+//            pom.project {
+//                name 'Jason'
+//                packaging 'jar'
+//                description 'AgentSpeak Interpreter, a language to program cognitive/BDI agents.'
+//                url 'https://github.com/jason-lang/jason'
+//
+//                scm {
+//                    connection 'scm:git:https://github.com/jason-lang/jason.git'
+//                    developerConnection 'scm:git:ssh://github.com/jason-lang/jason.git'
+//                    //url 'http://github.com/weibeld/RabbitMQ-Manager/tree/master'
+//                }
+//
+//                licenses {
+//                    license {
+//                        name 'The Apache License, Version 2.0'
+//                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+//                    }
+//                }
+//
+//                developers {
+//                    developer {
+//                        id 'jomifred'
+//                        name 'Jomi Fred Hubner'
+//                        email 'jomifred@gmail.com'
+//                        organization 'UFSC'
+//                        organizationUrl 'https://jomifred.github.io'
+//                    }
+//                    developer {
+//                        id 'bordini'
+//                        name 'Rafael Heitor Bordini'
+//                        email 'rafael.bordini@pucrs.br'
+//                        organization 'PUCRS'
+//                        organizationUrl 'http://www.inf.pucrs.br/r.bordini'
+//                    }
+//                }
+//            }
+//        }
+//    }
+//}
+
+publishOnCentral {
+    projectUrl.set("https://jason.sf.net")
+    //scmConnection.set("git:git@github.com:DanySK/${project.name}")
+    scmConnection.set("git:git@github.com:jason-lang/jason")
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+        //withType<MavenPublication> {
+            pom {
+                developers {
+                    developer {
+                        name.set('Jomi Fred Hubner')
+                        email.set('jomifred@gmail.com')
+                        url.set('https://jomifred.github.io')
+                    }
+                    developer {
+                        name.set('Rafael Heitor Bordini')
+                        email.set('rafael.bordini@pucrs.br')
+                        url.set('http://www.inf.pucrs.br/r.bordini')
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+//signing {
+//    val signingKey: String? by project
+//    val signingPassword: String? by project
+//    useInMemoryPgpKeys(signingKey, signingPassword)
+//}
