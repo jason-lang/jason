@@ -24,10 +24,10 @@ image:./figs/inst.png[vscode and java installation]
 
 You can now install Jason from link:https://github.com/jason-lang/jason-cli/releases[here]. Download the `jason-bin-.....zip` file and decompress it. There is just one file inside the zip and its name is `jason`. It is a unix executable file, if not, change its properties with `chmod +x jason`. Finally, link:https://www.computerhope.com/issues/ch000549.htm[adds this file in your machine `PATH`]. 
 
-You may need to close and open VSCode again, then in its terminal type `jason -V`:
+You may need to close and open VSCode again, then in its terminal type `jason --version`:
 
 ----
-~ jason -V
+~ jason --version
 Jason CLI 3.2
 ----
 
@@ -53,10 +53,12 @@ You can execute the application with
 
 ----
 cd app1
-jason app1.mas2j
+jason app1.mas2j -v
 ----
 
-The two agents print a hello world message.
+The two agents print a hello world message. 
+
+NOTE: The first time you run a Jason application, it may take a while to start, since Gradle is being used and it downloads all dependencies.
 
 You can now change the code of your application and evolve the code of your agents.
 
@@ -89,3 +91,5 @@ and commands to monitor/control running applications with
 ----
 jason mas
 ----
+
+More about JasonCLI link:https://github.com/jason-lang/jason/tree/develop/jason-cli[here].

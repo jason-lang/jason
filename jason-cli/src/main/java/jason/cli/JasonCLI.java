@@ -41,9 +41,9 @@ public class JasonCLI {
 
         if (args.length == 0) {
             startTerminal();
-        } else if (args.length == 1 && args[0].endsWith(".mas2j")) {
+        } else if (args.length >= 1 && args[0].endsWith(".mas2j")) {
             // case of .mas2j
-            new Run().run(args[0]);
+            new Run().run(args[0], args.length == 2 && args[1].equals("-v"));
         } else {
             int exitCode = new CommandLine(new JasonCommands()).execute(args);
             if (!RunningMASs.hasLocalRunningMAS())

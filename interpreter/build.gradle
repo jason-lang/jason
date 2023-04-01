@@ -12,8 +12,8 @@ defaultTasks 'jar'
 apply plugin: 'java-library'
 apply plugin: 'maven-publish'
 
-version '3.2-SNAPSHOT'
-group   'org.jason'
+version "${jasonVersion}"
+group   "${groupId}"
 
 java {
     toolchain {
@@ -41,7 +41,6 @@ repositories {
 
 dependencies {
     implementation 'net.sf.ingenias:jade:4.3'
-    //implementation('org.apache.ant:ant:1.10.5')
 
     implementation group: 'javax.json', name: 'javax.json-api', version: '1.1.4'
     implementation group: 'org.glassfish', name: 'javax.json', version: '1.1.4'

@@ -6,9 +6,6 @@ defaultTasks 'build'
 
 apply plugin: 'java'
 
-version '3.2-SNAPSHOT' // use the jason version
-group   'org.jason'
-
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(17)
@@ -35,11 +32,8 @@ repositories {
 
 dependencies {
     implementation project(':interpreter')
-    //implementation 'org.jason:jason:3.2-SNAPSHOT'
-    // implementation 'info.picocli:picocli:4.7.1'
-    implementation 'info.picocli:picocli-shell-jline3:4.7.0'
-    //annotationProcessor 'info.picocli:picocli-codegen:4.7.0'
 
+    implementation 'info.picocli:picocli-shell-jline3:4.7.0'
     implementation 'org.jline:jline:3.22.0'
     implementation 'org.fusesource.jansi:jansi:2.4.0'
 
@@ -50,11 +44,11 @@ dependencies {
 }
 
 jar {
-    archiveBaseName = 'jason-cli'
+    archiveBaseName = "jason-cli-${jasonVersion}"
     manifest {
         attributes 'Main-Class': 'jason.cli.JasonCLI',
                    'Specification-Title': 'Jason CLI',
-                   'Specification-Version': project.version,
+                   'Specification-Version': "${jasonVersion}",
                    'Implementation-Version': new Date().toString()
     }
 }
@@ -65,11 +59,6 @@ task run (type: JavaExec, dependsOn: 'build') {
     classpath sourceSets.main.runtimeClasspath
 }
 
-clean {
-    delete 'bin'
-    delete 'build'
-}
-
 task uberJar(type: Jar, dependsOn: ['classes', ':interpreter:jar']) {
     description 'creates a single runnable jar file with all dependencies'
     duplicatesStrategy 'exclude'
@@ -77,10 +66,10 @@ task uberJar(type: Jar, dependsOn: ['classes', ':interpreter:jar']) {
     manifest {
         attributes 'Main-Class': 'jason.cli.JasonCLI',
                    'Specification-Title': 'Jason CLI',
-                   'Specification-Version': project.version,
+                   'Specification-Version': "${jasonVersion}",
                    'Implementation-Version': new Date().toString()
     }
-    archiveBaseName = 'jason-cli-all'
+    archiveBaseName = "jason-cli-all-${jasonVersion}"
     destinationDirectory = file('build/bin')
     from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
     with jar
@@ -90,7 +79,7 @@ task createBin (dependsOn: 'uberJar') {
     def wdir = 'build/bin'
     doFirst {
         exec {
-            commandLine '../../src/main/resources/scripts/create-bin.sh', 'jason-cli-all-' + project.version + '.jar'
+            commandLine '../../src/main/resources/scripts/create-bin.sh', 'jason-cli-all-' + "${jasonVersion}" + '.jar'
             workingDir wdir
         }
     }
@@ -99,13 +88,13 @@ task createBin (dependsOn: 'uberJar') {
         delete fileTree(wdir) { include '*.sh' }
         copy {
             from 'build/bin'
-            into 'build/jason-' + project.version
+            into 'build/jason-' + "${jasonVersion}"
         }
     }
 }
 
 task release (type: Zip, dependsOn: 'createBin') {
-    def wdir = 'build/jason-' + project.version
+    def wdir = 'build/jason-' + "${jasonVersion}"
     from wdir
-    archiveBaseName = 'jason-bin'
+    archiveBaseName = 'jason-bin-'+ "${jasonVersion}"
 }

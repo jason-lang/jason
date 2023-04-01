@@ -5,7 +5,7 @@ import java.io.File;
 
 public class Run extends  Common {
 
-    public void run(String mas2j) {
+    public void run(String mas2j, boolean verbose) {
         // use gradle to run
         var mas2jFile = new File(mas2j);
         if (!mas2jFile.exists()) {
@@ -17,7 +17,7 @@ public class Run extends  Common {
         var created = getOrCreateGradleFile( mas2j );
 
         try (var connection = getGradleConnection(projectDir)) {
-            getGradleBuild(connection, false, true)
+            getGradleBuild(connection, verbose, true)
                     .forTasks("run")
                     .run();
 

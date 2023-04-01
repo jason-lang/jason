@@ -133,7 +133,7 @@ task config (dependsOn: ['createCLIBin']) {
         println '------'
         println ''
         println 'you can set the Jason home directory with the following command:'
-        println '     export JASON_HOME='+project.buildDir.absolutePath
+        println '     export JASON_HOME='+project.projectDir.absolutePath
         println ''
         println 'and also change your PATH with:'
         println '     export PATH=$JASON_HOME/bin:$PATH'
