@@ -124,7 +124,7 @@ In this example,
 
 The shell provides completion and suggestions (using `<TAB>`).
 
-image:./docs/figs/s1.png[screen show]
+image:./figs/s1.png[screen show]
 
 
 ## Scripts
@@ -168,4 +168,4 @@ beliefs of Bob:
 <end of script>
 ```
 
-(the list of all commands is xref:./docs/commands.adoc[here].)
+(the list of all commands is xref:./commands.adoc[here].)

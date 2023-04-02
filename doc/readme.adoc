@@ -9,7 +9,7 @@ Jason is developed by http://https://jomifred.github.io[Jomi F. Hübner] and htt
 - Installation
 
 * xref:./tutorials/vscode/readme.adoc[using Visual Studio Code]
-* xref:../jason-cli/readme.adoc[using a command shell]
+* xref:./jason-cli/readme.adoc[using a command shell]
 
 - Tutorials
 * xref:./tutorials/getting-started/readme.adoc[Getting Started tutorial]
