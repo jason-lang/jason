@@ -91,4 +91,4 @@ and commands to monitor/control running applications with
 jason mas
 ----
 
-More about JasonCLI link:https://github.com/jason-lang/jason/tree/develop/jason-cli[here].
+More about JasonCLI xref:../../jason-cli/readme.adoc[here].
