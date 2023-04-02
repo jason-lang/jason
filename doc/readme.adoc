@@ -2,20 +2,23 @@
 
 Jason is an interpreter for an extended version of AgentSpeak. It implements the operational semantics of that language, and provides a platform for the development of multi-agent systems, with many user-customisable features. Jason is available as Open Source, and is distributed under GNU LGPL.
 
-Jason is developed by http://https://jomifred.github.io[Jomi F. Hübner] and http://www.inf.pucrs.br/r.bordini[Rafael H. Bordini], based on previous work done with many colleagues, in particular Michael Fisher, Joyce Martins, Álvaro Moreira, Renata Vieira, Willem Visser, Mike Wooldridge, but also many others, as acknowledged in the manual (see the http://jason.sourceforge.net/wp/documents/[documents] page).
+Jason is developed by http://https://jomifred.github.io[Jomi F. Hübner] and http://www.inf.pucrs.br/r.bordini[Rafael H. Bordini], based on previous work done with many colleagues, in particular Michael Fisher, Joyce Martins, Álvaro Moreira, Renata Vieira, Willem Visser, Mike Wooldridge, but also many others, as acknowledged in the manual (see the http://jason.sourceforge.net/wp/documents/[Jason web site]).
 
-== Documentation
+ifdef::env-github[]
+NOTE: The documentation of is also available (and better rendered) at http://jason-lang.github.io/jason/.
+endif::[]
 
-- Installation
+== Installation
 
 * xref:./tutorials/vscode/readme.adoc[using Visual Studio Code]
 * xref:./jason-cli/readme.adoc[using a command shell]
 
-- Tutorials
+== Tutorials
 * xref:./tutorials/getting-started/readme.adoc[Getting Started tutorial]
 //* xref:./tutorials/jason-jade/readme.adoc[Interoperating with JADE]
 * xref:./tutorials/hello-bdi/readme.adoc[BDI concepts]
 
+== Others
 
 - xref:./faq.adoc[FAQ]
 - link:./Jason.pdf[First Jason Manual] (outdated)
