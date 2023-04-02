@@ -1,6 +1,5 @@
 # VSCode as an IDE for Jason
 :toc: right
-:author: Jomi
 :date: March 2023
 :source-highlighter: coderay
 :coderay-linenums-mode: inline
