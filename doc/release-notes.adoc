@@ -3,7 +3,7 @@
 
 == version 3.2
 
-The main new feature of Jason 3.2 is the Jason Command Line Interface (*JasonCLI*). This tools is created to support the creation and monitoring of Jason application independently of IDEs. More information xref:../jason-cli/readme.adoc[here].
+The main new feature of Jason 3.2 is the Jason Command Line Interface (*JasonCLI*). This tool is created to support the creation and monitoring of Jason application independently of IDEs. More information xref:../jason-cli/readme.adoc[here].
 
 - Java17 is used
 - some bugs were fixed
