@@ -12,10 +12,16 @@
    add MAVEN_CENTRAL_USERNAME and MAVEN_CENTRAL_PASSWORD to your environment
 
    run with
+
+       touch settings.gradle                                                  
+       cp ../gradle.properties .
+
        //gradle -b maven-central.gradle signMavenPublication
        gradle -b maven-central.gradle uploadAllPublicationsToMavenCentralNexus
        //gradle -b maven-central.gradle releaseStagingRepositoryOnMavenCentral
        //gradle -b maven-central.gradle dropStagingRepositoryOnMavenCentral
+
+       rm settings.gradle gradle.properties
 
    go to
        https://s01.oss.sonatype.org/#stagingProfiles
@@ -34,6 +40,9 @@ apply plugin: 'java-library'
 apply plugin: 'maven-publish'
 apply plugin: 'signing'
 
+version "3.2.0"
+group   "${groupId}"
+
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(17)
@@ -47,25 +56,20 @@ repositories {
 dependencies {
     api 'net.sf.ingenias:jade:4.3'
 
-    implementation fileTree(dir: 'jedit', include: '*.jar') // using fileTree, jedit jars are not included as a dependency in the pom file
-
-    implementation 'org.apache.ant:ant:1.10.5'
-
     api 'javax.json:javax.json-api:1.1.4'
     api 'org.glassfish:javax.json:1.1.4'
 
-    testImplementation group: 'junit', name: 'junit', version: '4.12'
-    testImplementation name: 'hsqldb'
+    testImplementation 'junit:junit:4.12'
 }
 
 
 jar {
     archiveBaseName = 'jason'
     manifest {
-        attributes 'Main-Class': 'jason.util.ConfigGUI',
-                   'Specification-Title': 'Jason Language',
+        attributes 'Specification-Title': 'Jason Language',
                    'Specification-Version': project.version,
-                   'Implementation-Version': new Date().toString()
+                   'Implementation-Version': new Date().toString(),
+                   'Main-Class': 'jason.infra.local.RunLocalMAS'
     }
     from('src') {
         include '/test/jason/inc/**/*.asl'
@@ -73,11 +77,13 @@ jar {
     }
 }
 
+
 // the following lines is used to avoid errors while generating javadoc
 if (JavaVersion.current().isJava8Compatible()) {
     allprojects {
       tasks.withType(Javadoc) {
         options.addStringOption('Xdoclint:none', '-quiet')
+        options.addStringOption("Xmaxwarns", "1")
       }
     }
 }

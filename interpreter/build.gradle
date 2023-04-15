@@ -3,8 +3,8 @@
 */
 
 plugins {
-  id "ca.coglinc.javacc" version "2.4.0"
   // see https://github.com/johnmartel/javaccPlugin
+  id "ca.coglinc.javacc" version "2.4.0"
 }
 
 defaultTasks 'jar'
@@ -40,12 +40,12 @@ repositories {
 }
 
 dependencies {
-    implementation 'net.sf.ingenias:jade:4.3'
+    api 'net.sf.ingenias:jade:4.3'
 
-    implementation group: 'javax.json', name: 'javax.json-api', version: '1.1.4'
-    implementation group: 'org.glassfish', name: 'javax.json', version: '1.1.4'
+    api 'javax.json:javax.json-api:1.1.4'
+    api 'org.glassfish:javax.json:1.1.4'
 
-    testImplementation group: 'junit', name: 'junit', version: '4.12'
+    testImplementation 'junit:junit:4.12'
 }
 
 // copy dep jars into build directory (maybe useful for running without management of gradle)
@@ -86,21 +86,14 @@ jar {
         include '/test/jason/**/*.mas2j'
     }
 }
-//jar.dependsOn(copyJarsToBuild)
 
-javadoc {
-    options.showAll()
-    options.encoding('UTF-8')
-    options.setUse(true)
-    options.author(true)
-    options.version(true)
-    options.windowTitle('Jason API')
-    options.docTitle('Jason API')
-    destinationDir = file("${buildDir}/../../doc/api")
-    doFirst {
-        javadoc.title = 'Jason API'
-        javadoc.options.docTitle = javadoc.title
-    }
+compileJavacc {
+    inputDirectory = file('src/main/javacc')
+    outputDirectory = file(project.buildDir.absolutePath + '/generated/javacc')
+}
+
+jjdoc {
+    outputDirectory = file(project.projectDir.absolutePath + '/../doc/tech')
 }
 
 // the following lines is used to avoid errors while generating javadoc
@@ -113,24 +106,9 @@ if (JavaVersion.current().isJava8Compatible()) {
     }
 }
 
-
-//task javadocJar (type: Jar, dependsOn: javadoc) {
-//    archiveBaseName = 'jason'
-//    //classifier = 'javadoc'
-//    from '${docsDir}/../../../doc/api'
-//}
-//
-//task sourceJar (type : Jar, dependsOn: ['compileJavacc']) {
-//    archiveBaseName = 'jason'
-//    //classifier = 'sources'
-//    from sourceSets.main.allSource
-//    duplicatesStrategy = 'include'
-//}
-
 artifacts {
     archives jar //, sourceJar, javadocJar
 }
-
 
 publishing {
     publications {
@@ -143,15 +121,6 @@ publishing {
     }
 }
 
-compileJavacc {
-    inputDirectory = file('src/main/javacc')
-    outputDirectory = file(project.buildDir.absolutePath + '/generated/javacc')
-}
-
-
-jjdoc {
-    outputDirectory = file(project.projectDir.absolutePath + '/../doc/tech')
-}
 
 task publishMavenGitHub(dependsOn: [ 'build', 'publishToMavenLocal']) {
   doLast {
