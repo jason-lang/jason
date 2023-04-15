@@ -34,7 +34,7 @@ apply plugin: 'java-library'
 apply plugin: 'maven-publish'
 apply plugin: 'signing'
 
-version '3.1.1'
+version '3.1.2'
 //group   'net.sf.jason'
 group 'io.github.jason-lang'
 
@@ -53,7 +53,7 @@ dependencies {
 
     implementation fileTree(dir: 'jedit', include: '*.jar') // using fileTree, jedit jars are not included as a dependency in the pom file
 
-    api 'org.apache.ant:ant:1.10.5'
+    implementation 'org.apache.ant:ant:1.10.5'
 
     api 'javax.json:javax.json-api:1.1.4'
     api 'org.glassfish:javax.json:1.1.4'
@@ -86,13 +86,13 @@ if (JavaVersion.current().isJava8Compatible()) {
     }
 }
 
-// compileJavacc {
-//     inputDirectory = file('src/main/javacc')
-//     outputDirectory = file(project.buildDir.absolutePath + '/generated/javacc')
-// }
+compileJavacc {
+    inputDirectory = file('src/main/javacc')
+    outputDirectory = file(project.buildDir.absolutePath + '/generated/javacc')
+}
 
 publishOnCentral {
-    projectUrl.set("https://jason.sf.net")
+    projectUrl.set("https://github.com/jason-lang/jason")
     projectDescription.set("Jason is a programming language to develop BDI/cognitive agents")
     scmConnection.set("scm:git:https://github.com/jason-lang/jason")
 }
@@ -100,6 +100,7 @@ publishOnCentral {
 publishing {
     publications {
         maven(MavenPublication) {
+            from components.java
             pom {
                 developers {
                     developer {
