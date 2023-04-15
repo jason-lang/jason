@@ -74,7 +74,7 @@ task copyJarsToBuild (dependsOn: jar) {
 }
 
 jar {
-    archiveBaseName = 'jason'
+    // archiveBaseName = 'jason'
     manifest {
         attributes 'Specification-Title': 'Jason Language',
                    'Specification-Version': project.version,

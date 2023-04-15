@@ -13,7 +13,7 @@
 
    run with
 
-       echo  "rootProject.name='jason-interpreter'" > settings.gradle
+       touch settings.gradle
        cp ../gradle.properties .
 
        //gradle -b maven-central.gradle signMavenPublication

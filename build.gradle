@@ -77,7 +77,7 @@ task config (dependsOn: ['createCLIBin']) {
 }
 
 // Builds the distribution, documentation and a new release
-task doc(dependsOn: [ ':interpreter:jjdoc', ':interpreter:javadoc', 'renderAsciiDocs']) {
+task doc(dependsOn: [ ':jason-interpreter:jjdoc', ':jason-interpreter:javadoc', 'renderAsciiDocs']) {
 }
 
 task renderAsciiDocs(type: Exec) {

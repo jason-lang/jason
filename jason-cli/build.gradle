@@ -31,7 +31,7 @@ repositories {
 }
 
 dependencies {
-    api project(':interpreter')
+    api project(':jason-interpreter')
 
     api 'info.picocli:picocli-shell-jline3:4.7.0'
     api 'org.jline:jline:3.22.0'
