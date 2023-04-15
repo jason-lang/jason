@@ -13,7 +13,7 @@
 
    run with
 
-       touch settings.gradle                                                  
+       echo  "rootProject.name='jason-interpreter'" > settings.gradle
        cp ../gradle.properties .
 
        //gradle -b maven-central.gradle signMavenPublication
@@ -40,7 +40,7 @@ apply plugin: 'java-library'
 apply plugin: 'maven-publish'
 apply plugin: 'signing'
 
-version "3.2.0"
+version "${jasonVersion}"
 group   "${groupId}"
 
 java {
@@ -64,7 +64,7 @@ dependencies {
 
 
 jar {
-    archiveBaseName = 'jason'
+    // archiveBaseName = 'jason'
     manifest {
         attributes 'Specification-Title': 'Jason Language',
                    'Specification-Version': project.version,

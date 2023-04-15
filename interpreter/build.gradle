@@ -116,7 +116,7 @@ publishing {
             from components.java
 //                  artifact sourceJar
 //                  artifact javadocJar
-            artifactId 'jason'
+            artifactId 'jason-interpreter'
         }
     }
 }
@@ -124,7 +124,7 @@ publishing {
 
 task publishMavenGitHub(dependsOn: [ 'build', 'publishToMavenLocal']) {
   doLast {
-    def wdir = System.getProperty("user.home")+'/.m2/repository/io/github/jason-lang/jason' //org/jason/jason'
+    def wdir = System.getProperty("user.home")+'/.m2/repository/io/github/jason-lang/jason-interpreter' //org/jason/jason'
     def rdir = project.projectDir.absolutePath+'/../../jacamo-mvn-repo'
     exec {
         commandLine 'git', 'pull'
@@ -132,7 +132,7 @@ task publishMavenGitHub(dependsOn: [ 'build', 'publishToMavenLocal']) {
     }
     copy {
         from wdir
-        into rdir + '/io/github/jason-lang/jason'
+        into rdir + '/io/github/jason-lang/jason-interpreter'
     }
     exec {
         commandLine 'git', 'add', '*'
