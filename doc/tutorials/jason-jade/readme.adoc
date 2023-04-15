@@ -8,6 +8,9 @@
 
 ifdef::env-github[:outfilesuffix: .adoc]
 
+NOTE: This tutorial is not update for Jason 3.2, where Gradle is used to run Jade and not `.mas2j`. But the general idea remains. If you would like to see this tutorial updated, add an issue at GitHub.
+
+
 This document aims to show how to create Jason agents that
 participate in a multi-agent system (MAS) formed by "`normal`" JADE
 agents (by normal we mean being not developed considering

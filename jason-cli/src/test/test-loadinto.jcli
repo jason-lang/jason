@@ -1,0 +1,11 @@
+mas start --console --no-net
+
+agent start bob
+agent load-into bob --source=src/test/jason/plan.asl { +c <- +d; .print("new belief c!"). }
+agent run-as bob { +c; !a; }
+
+wait 2000
+echo "Bob beliefs and plans:"
+agent mind --intentions --plans bob
+
+mas stop --exit

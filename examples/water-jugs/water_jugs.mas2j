@@ -1,0 +1,8 @@
+MAS water_jugs {
+
+    environment: Jugs
+    //environment: Jugs(view) // version with a simple animation of the operations
+
+    agents: agent_simple;
+    //agents: agent_a_star;
+}

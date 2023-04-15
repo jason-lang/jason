@@ -1,0 +1,11 @@
+mas start
+
+# starts bob with a plan
+agent start bob    { +hello[source(A)] <- .print("hello from ",A). }
+
+agent start alice
+agent run-as alice { .send(bob,tell,hello) }  # alice executes the .send...
+
+echo
+echo "beliefs of Bob:"
+agent mind bob         # show beliefs of bob

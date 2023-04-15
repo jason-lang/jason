@@ -1,9 +1,0 @@
-<?xml version="1.0"?>
-
-<!DOCTYPE DOCKABLES SYSTEM "dockables.dtd">
-
-<DOCKABLES>
-    <DOCKABLE NAME="jason">
-        new jason.jeditplugin.JasonID(view, position);
-    </DOCKABLE>
-</DOCKABLES>

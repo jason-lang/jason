@@ -1,0 +1,15 @@
+mas start --console
+agent start bob {
+    p(1). p(2).
+    !g.
+    !g.
+    +!g <- .wait(1000); !g.
+
+    +hello[source(A)] <- .print("hello from ",A).
+}
+
+agent mind bob
+agent mind --no-beliefs --plans bob
+agent mind --no-beliefs --intentions bob
+
+mas stop --exit

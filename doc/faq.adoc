@@ -7,7 +7,8 @@
 :icons: font
 :prewrap!:
 
-ifdef::env-github[:outfilesuffix: .adoc]
+
+NOTE: This FAQ is not update for Jason 3.2, where (1) Gradle is used to handle classpath and Jade (previously these aspects were handled in the `.mas2j`); (2) jEdit is not supported. If you would like to see this FAQ updated in some question, add an issue at GitHub.
 
 == General
 
@@ -22,16 +23,16 @@ for the interpreter.
 The name is also somehow inspired by in Greek mythology. Click http://www.perseus.tufts.edu/hopper/text?doc=Perseus%3Atext%3A1999.04.0004%3Aalphabetic+letter%3DJ%3Aentry+group%3D1%3Aentry%3Djason[here] for an entry on Jason in the Perseus Encyclopaedia (Perseus is an
 excellent source of Classics, maintained by Tufts University).
 
-=== How to configure Jason?
+// === How to configure Jason?
 
-Jason requires some information about your local configuration, for example,
-the location of the Java installation. You can change the configuration
-by double clicking the jason jar file that is located in the `libs`
-directory. Alternatively, in a command shell you can run
+// Jason requires some information about your local configuration, for example,
+// the location of the Java installation. You can change the configuration
+// by double clicking the jason jar file that is located in the `libs`
+// directory. Alternatively, in a command shell you can run
 
------------------------------
-$ java -jar libs/jason.jar
------------------------------
+// -----------------------------
+// $ java -jar libs/jason.jar
+// -----------------------------
 
 == Internal Actions
 
@@ -354,36 +355,36 @@ Jason’s Mind Inspector, as it allows users to observe all changes in
 agents’ mental attitudes after a (number of) reasoning cycle(s). This
 also applies to distributed agents (using JADE).
 
-=== How to run my application without Jason IDE
+// === How to run my application without Jason IDE
 
-The Jason IDE (jEdit plugin) creates an Ant script (in the bin sub-directory
-of your application directory) and then simply runs this script to start
-your application. You can thus run it in a command prompt as follows:
+// The Jason IDE (jEdit plugin) creates an Ant script (in the bin sub-directory
+// of your application directory) and then simply runs this script to start
+// your application. You can thus run it in a command prompt as follows:
 
---------------------------------------------
-   cd <the directory of you application>/bin
-   ant
---------------------------------------------
+// --------------------------------------------
+//    cd <the directory of you application>/bin
+//    ant
+// --------------------------------------------
 
-You can also run it as a normal Java application:
+// You can also run it as a normal Java application:
 
---------------------------------------------------------------------------
-   cd <the directory of you application>
-   export CLASSPATH=<your jars, jason.jar,...>
-   java jason.infra.local.RunLocalMAS <yourproject.mas2j file>
---------------------------------------------------------------------------
+// --------------------------------------------------------------------------
+//    cd <the directory of you application>
+//    export CLASSPATH=<your jars, jason.jar,...>
+//    java jason.infra.local.RunLocalMAS <yourproject.mas2j file>
+// --------------------------------------------------------------------------
 
-You find more details about the environment (e.g. classpath) on the
-generated `bin/build.xml` file of your application.
+// You find more details about the environment (e.g. classpath) on the
+// generated `bin/build.xml` file of your application.
 
-A third way to run your application is to create a jar file for it.
-There is an option for that in the menu Plugins-Jason, or
+// A third way to run your application is to create a jar file for it.
+// There is an option for that in the menu Plugins-Jason, or
 
-----------------------------------------
-   cd <the directory of you application>
-   ant -f bin/build.xml jar
-   java -jar <your application>.jar
-----------------------------------------
+// ----------------------------------------
+//    cd <the directory of you application>
+//    ant -f bin/build.xml jar
+//    java -jar <your application>.jar
+// ----------------------------------------
 
 [[sec:controlclass]]
 === How can I control agents’ execution?

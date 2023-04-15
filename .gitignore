@@ -1,5 +1,6 @@
 .vscode
 .idea
+
 .DS_Store
 bin
 build
@@ -14,6 +15,7 @@ build
 
 doc/faq.html
 doc/api
+interpreter/doc/api
 doc/tech/*Parser.html
 readme.html
 release-notes.html
@@ -47,3 +49,8 @@ src/main/resources/np31.zip
 src/main/resources/scripts/np31.zip
 examples/sniffer/sniff.script
 examples/sniffer/sniff.properties
+interpreter/doc/tech/jason/asSyntax/parser/AS2JavaParser.html
+interpreter/doc/tech/jason/mas2j/parser/MAS2JavaParser.html
+jason-cli/docs/vscode/index.html
+doc/tech/jason/asSyntax/parser/AS2JavaParser.html
+doc/tech/jason/mas2j/parser/MAS2JavaParser.html

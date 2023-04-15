@@ -1,0 +1,94 @@
+# VSCode as an IDE for Jason
+:toc: right
+:date: March 2023
+:source-highlighter: coderay
+:coderay-linenums-mode: inline
+:icons: font
+:prewrap!:
+
+
+= What You Will Build
+
+In this document, you will build an environment to develop agent-based system with link:https://github.com/jason-lang/jason[Jason] language.
+
+= Installation
+
+1. Install link:https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html[Java 17]
+1. Install link:https://code.visualstudio.com/download[Visual Sudio Code]
+1. [windows] Install a terminal & shell tool like link:https://gitforwindows.org/[GitBash]
+
+You can test the installation running VSCode, opening a terminal and executing `java --version`. The screen should look as follows.
+
+image:./figs/inst.png[vscode and java installation]
+
+You can now install Jason from link:https://github.com/jason-lang/jason/releases[here]. Download the `jason-bin-.....zip` file and decompress it. It creates a directory with Jason documentation, examples, and a sub-directory `bin` with the file *`jason`*. It is a unix executable file, if not, change its properties with `chmod +x jason`. Finally, link:https://www.computerhope.com/issues/ch000549.htm[adds the directory `bin` in your machine `PATH`] so that the command `jason` can be executed in a terminal. 
+
+You may need to close and open VSCode again, then in its terminal type `jason --version`:
+
+----
+~ jason --version
+Jason CLI 3.2
+----
+
+It means your installation is fine!
+
+= Create and run a new application
+
+In the terminal, you can create a new Jason application, named `app1`, with the following command:
+
+----
+jason app create app1
+----
+
+A folder `app1` is created for the application. Now you  can open it with VSCode:
+
+image:./figs/app-files.png[application]
+
+It has two agents (bob and alice) sharing a common environment. The code of the agents are in `src/agt`. The code of the environment is in `src/env`.
+
+It would be useful to install a VSCode plugin that provides link:https://marketplace.visualstudio.com/items?itemName=tabajara-krausburg.jacamo4code[syntax highlight] for Jason.
+
+You can execute the application with
+
+----
+cd app1
+jason app1.mas2j -v
+----
+
+The two agents print a hello world message. 
+
+NOTE: The first time you run a Jason application, it may take a while to start, since Gradle is being used and it downloads all dependencies.
+
+You can now change the code of your application and evolve the code of your agents.
+
+Just as an example, change the code of `alice.asl` to
+
+----
+!start.
+
++!start <- .send(bob,tell,hello).
+----
+
+executes the system again, open the link:http://127.0.0.1:3272[mind inspector], and see bob's beliefs.
+
+= More on Jason CLI
+
+To add more agents in your project:
+
+----
+jason app add-agent karlos
+----
+
+More commands for the application are shown with
+
+----
+jason app 
+----
+
+and commands to monitor/control running applications with 
+
+----
+jason mas
+----
+
+More about JasonCLI xref:../../jason-cli/readme.adoc[here].

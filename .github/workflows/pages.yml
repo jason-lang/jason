@@ -1,0 +1,31 @@
+name: GitHub Pages Publish
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the master branch
+on:
+  push:
+    branches: [ master, main, develop ]
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+    - uses: actions/checkout@v3
+      
+    # Includes the AsciiDoctor GitHub Pages Action to convert adoc files to html and publish to gh-pages branch
+    - name: asciidoctor-ghpages
+      uses: manoelcampos/asciidoctor-ghpages-action@v2
+      with:
+        pdf_build: false
+        # asciidoctor_params: --attribute=nofooter
+        # adoc_file_ext: .ascii # default is .adoc
+        source_dir: doc/ # default is .
+        # slides_build: true
+        # pre_build:
+        post_build: 'find . -name readme.html -execdir cp readme.html index.html \;'

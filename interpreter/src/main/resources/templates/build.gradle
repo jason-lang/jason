@@ -1,0 +1,57 @@
+/*
+   Project <PROJECT_NAME>
+
+   Gradle build file for Jason Application
+   <DATE>
+*/
+
+defaultTasks 'run'
+
+apply plugin: 'java'
+
+// set version of group for your project
+//version '1.0'
+//group   'io.github.jason-lang'
+
+repositories {
+    mavenCentral()
+    maven { url "https://raw.githubusercontent.com/jacamo-lang/mvn-repo/master" }
+    maven { url "https://jade.tilab.com/maven/" }
+}
+
+dependencies {
+    implementation 'io.github.jason-lang:jason:<VERSION>'
+
+    // to use locally installed jars:
+    implementation fileTree(dir: 'lib', include: '*.jar')
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir 'src/java'
+            srcDir 'src/env'
+            srcDir '.' // some old jason apps store .java files in project root
+        }
+        resources {
+            srcDir 'src/resources'
+        }
+    }
+}
+
+task run (type: JavaExec, dependsOn: 'classes') {
+    description 'runs the application'
+    mainClass = 'jason.infra.local.RunLocalMAS'
+    args = ['<PROJECT-FILE>']
+	// options:
+	//     args = ['<PROJECT-FILE>', '--debug', '--no-net', '--empty-mas']
+	//     args = ['<PROJECT-FILE>', '--log-conf', 'l.p'] // to use file l.p to configure logging
+    classpath sourceSets.main.runtimeClasspath
+}
+
+task runJade (type: JavaExec, dependsOn: 'classes') {
+    description 'runs the application with Jade infrastructure'
+    mainClass = 'jason.infra.jade.RunJadeMAS'
+    args = [ '<PROJECT-FILE>' ]
+    classpath sourceSets.main.runtimeClasspath
+}

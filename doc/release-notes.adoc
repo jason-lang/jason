@@ -1,7 +1,19 @@
 = Jason release notes
 :toc: right
 
-ifdef::env-github[:outfilesuffix: .adoc]
+== version 3.2
+
+The main new feature of Jason 3.2 is the Jason Command Line Interface (*JasonCLI*). This tool is created to support the creation and monitoring of Jason application independently of IDEs. More information xref:../jason-cli/readme.adoc[here].
+
+- Java17 is used
+- some bugs were fixed
+- preliminary support for packages (used by JaCaMo)
+
+The project is cleaned a bit:
+
+- jEdit is removed (JasonCLI and third party IDEs are proposed)
+- Ant is replaced by Gradle
+- Java Web Start is not used anymore
 
 == version 3.1
 
@@ -84,7 +96,7 @@ MAS ex1 {
 ----
 java -cp "$JASON_HOME/libs/*" jason.infra.centralised.RunCentralisedMAS \
     x.mas2j \
-    --log-conf mylog..properties
+    --log-conf mylog.properties
 ----
 +
 ----
@@ -250,7 +262,7 @@ else        { .print(d); }
 
 - modules and namespaces, see link:doc/tech/modules-namespaces.pdf[]
 
-- concurrent courses of actions within a single plan and advanced concurrent agent architectures, see link:doc/tech/concurrency{outfilesuffix}[]
+- concurrent courses of actions within a single plan and advanced concurrent agent architectures, see xref:doc/tech/concurrency.adoc[]
 
 - operator `+` works with plans and rules enclosed by { and }. For instance:
 +
@@ -288,7 +300,7 @@ else        { .print(d); }
 NOTE: In Jason 2.0 the way to run the Jason IDE (based on jEdit) has changed. Rather than running an application (`Jason.exe` or `Jason.app`), the IDE is now run by double clicking the `jedit/jedit.jar` file or using the script files in the `scripts` folder.
 
 
-*New Tutorial* on BDI (see link:doc/tutorials/hello-bdi/readme{outfilesuffix}[]).
+*New Tutorial* on BDI (see xref:doc/tutorials/hello-bdi/readme.adoc[]).
 
 == version 1.4.2 (2015-03-03)
 

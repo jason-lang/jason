@@ -1,21 +1,13 @@
-/*
-   Project bdih
-
-   Gradle build file for JaCaMo Applications
-   July 26, 2021 - 16:00:06
-*/
-
 defaultTasks 'run'
 
 apply plugin: 'java'
-apply plugin: 'eclipse'
 
 version '1.0'
 group   'org.jacamo'
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(15)
+        languageVersion = JavaLanguageVersion.of(17)
     }
 }
 
@@ -24,7 +16,7 @@ repositories {
     maven { url "https://raw.githubusercontent.com/jacamo-lang/mvn-repo/master" }
 
     //maven { url "http://jacamo.sourceforge.net/maven2" }
-    maven { url "https://repo.gradle.org/gradle/libs-releases-local" }
+    maven { url "https://repo.gradle.org/gradle/libs-releases" }
     //maven { url "https://jade.tilab.com/maven/" }
 
     flatDir { dirs 'lib' }
@@ -57,7 +49,7 @@ task run (type: JavaExec, dependsOn: 'classes') {
     doFirst {
         mkdir 'log'
     }
-    main 'jacamo.infra.JaCaMoLauncher'
+    mainClass = 'jacamo.infra.JaCaMoLauncher'
     args 'bdih.jcm'
     // jvmArgs '-Xss15m'
     classpath sourceSets.main.runtimeClasspath

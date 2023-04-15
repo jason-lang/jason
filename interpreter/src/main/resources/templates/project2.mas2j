@@ -1,0 +1,21 @@
+/*
+    <PROJECT_NAME>
+    ---------------------------
+
+    Jason Application File
+
+    This file defines the initial state of the MAS
+
+    Jason <VERSION>
+    <DATE>
+*/
+
+MAS <PROJECT_NAME> {
+
+    environment: example.Env(10)
+
+    agents: bob;
+            alice;
+
+    aslSourcePath: "src/agt";
+}

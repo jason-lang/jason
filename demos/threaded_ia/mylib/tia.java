@@ -4,6 +4,7 @@ import jason.*;
 import jason.asSemantics.*;
 import jason.asSyntax.*;
 
+/** old verions, see tiac.java for the newer version */
 public class tia extends DefaultInternalAction {
 
     // the intention is suspended by the execution of this internal action
@@ -53,7 +54,7 @@ public class tia extends DefaultInternalAction {
                 if (i.isSuspended() && C.removePendingIntention(pendingId) != null) {  // if still suspended
                     i.setSuspended(false);
                     i.peek().removeCurrentStep(); // removes the tia call in the plan
-                    C.resumeIntention(i); // puts the intention back to the set of active intentions
+                    C.resumeIntention(i, null); // puts the intention back to the set of active intentions
 
                     // changes the Unifier with the value for the var
                     un.unifies(result, ASSyntax.createNumber(arg*1.618));
