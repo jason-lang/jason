@@ -2,75 +2,9 @@
    Jason Gradle build file
 */
 
-apply plugin: 'java'
+apply plugin: 'java-library'
 
 defaultTasks 'config'
-
-// version '3.2-SNAPSHOT'
-// group   'org.jason'
-
-// java {
-//     toolchain {
-//         languageVersion = JavaLanguageVersion.of(17)
-//     }
-// }
-
-// repositories {
-//     mavenCentral()
-
-//     maven { url "https://raw.githubusercontent.com/jacamo-lang/mvn-repo/master" }
-// }
-
-// dependencies {
-//     implementation 'net.sf.ingenias:jade:4.3'
-//     //implementation('org.apache.ant:ant:1.10.5')
-
-//     implementation group: 'javax.json', name: 'javax.json-api', version: '1.1.4'
-//     implementation group: 'org.glassfish', name: 'javax.json', version: '1.1.4'
-
-//     testImplementation group: 'junit', name: 'junit', version: '4.12'
-// }
-
-// copy dep jars and scritps into build directory
-/*
-task copyJarsToBuild {
-    inputs.files configurations.runtimeClasspath.files
-    inputs.dir   'src/main/resources/scripts'
-    outputs.dir  'build/libs'
-    outputs.dir  'build/scripts'
-    doLast {
-        copy {
-            from configurations.runtimeClasspath
-            into 'build/libs'
-        }
-        copy {
-            from 'src/main/resources/scripts'
-            into 'build/scripts'
-            include '**'
-            filter {
-                String line -> line.replaceAll("JasonREL=[0-9]+\\.[0-9]+", "JasonREL="+project.version)
-            }
-            filter {
-                String line -> line.replaceAll("JadeJar", file(configurations.compileClasspath.find { it.name.startsWith("jade-") }).name)
-            }
-        }
-    }
-}*/
-
-// jar {
-//     archiveBaseName = 'jason'
-//     manifest {
-//         attributes 'Specification-Title': 'Jason Language',
-//                    'Specification-Version': project.version,
-//                    'Implementation-Version': new Date().toString(),
-//                    'Main-Class': 'jason.infra.local.RunLocalMAS'
-//     }
-//     from('src') {
-//         include '/test/jason/inc/**/*.asl'
-//         include '/test/jason/**/*.mas2j'
-//     }
-// }
-//jar.dependsOn(copyJarsToBuild)
 
 clean {
     delete 'bin'
@@ -142,101 +76,6 @@ task config (dependsOn: ['createCLIBin']) {
     }
 }
 
-// javadoc {
-//     options.showAll()
-//     options.encoding('UTF-8')
-//     options.setUse(true)
-//     options.author(true)
-//     options.version(true)
-//     options.windowTitle('Jason API')
-//     options.docTitle('Jason API')
-//     options.footer('<a href=http://jason.sf.net>Jason Site</a>')
-//     destinationDir = file("${buildDir}/../doc/api")
-//     doFirst {
-//         javadoc.title = 'Jason API'
-//         javadoc.options.docTitle = javadoc.title
-//     }
-// }
-
-// the following lines is used to avoid errors while generating javadoc
-// if (JavaVersion.current().isJava8Compatible()) {
-//     allprojects {
-//       tasks.withType(Javadoc) {
-//         options.addStringOption('Xdoclint:none', '-quiet')
-//       }
-//     }
-// }
-
-
-// task javadocJar (type: Jar, dependsOn: javadoc) {
-//     archiveBaseName = 'jason'
-//     classifier = 'javadoc'
-//     from '${docsDir}/../../doc/api'
-// }
-
-// task sourceJar (type : Jar) {
-//     archiveBaseName = 'jason'
-//     classifier = 'sources'
-//     from sourceSets.main.allSource
-//     duplicatesStrategy = 'include'
-
-// }
-
-// artifacts {
-//     archives jar, sourceJar, javadocJar
-// }
-
-
-// publishing {
-//     publications {
-//         maven(MavenPublication) {
-//             from components.java
-//                   artifact sourceJar
-//                   artifact javadocJar
-//             artifactId 'jason'
-//         }
-//     }
-// }
-
-// compileJavacc {
-//     inputDirectory = file('src/main/javacc')
-//     outputDirectory = file(project.buildDir.absolutePath + '/generated/javacc')
-// }
-
-
-// jjdoc {
-//     outputDirectory = file(project.projectDir.absolutePath + '/doc/tech')
-//     //arguments = [text: 'true']
-// }
-
-// task publishMavenGitHub(dependsOn: [ 'build', 'publishToMavenLocal']) {
-//   doLast {
-//     def wdir = System.getProperty("user.home")+'/.m2/repository/org/jason/jason'
-//     def rdir = '../jacamo-mvn-repo'
-//     exec {
-//         commandLine 'git', 'pull'
-//         workingDir rdir
-//     }
-//     copy {
-//         from wdir
-//         into rdir + '/org/jason/jason'
-//     }
-//     exec {
-//         commandLine 'git', 'add', '*'
-//         workingDir rdir
-//     }
-//     exec {
-//         commandLine 'git', 'commit', '-a', '-m', 'new version of jason '+project.version
-//         workingDir rdir
-//     }
-//     exec {
-//         commandLine 'git', 'push'
-//         workingDir rdir
-//     }
-//   }
-// }
-
-
 // Builds the distribution, documentation and a new release
 task doc(dependsOn: [ ':interpreter:jjdoc', ':interpreter:javadoc', 'renderAsciiDocs']) {
 }
@@ -244,15 +83,6 @@ task doc(dependsOn: [ ':interpreter:jjdoc', ':interpreter:javadoc', 'renderAscii
 task renderAsciiDocs(type: Exec) {
     commandLine 'find', '.', '-name', '*.adoc', '-exec', 'doc/asciidoc-docker', '{}', ';'
 }
-
-// task fixTab {
-//     ant.fixcrlf(eol: 'lf',  includes: '**/*.txt,**/*.bat, **/*.adoc', srcdir: '.')
-//     ant.fixcrlf(tab: 'remove', tablength: '4', javafiles: 'true', includes: '**/*.java,**/*.xml,**/*.asl,**/*.mas2j,**/*.txt', srcdir: 'src')
-//     ant.fixcrlf(tab: 'remove', tablength: '4', javafiles: 'true', includes: '**/*.java,**/*.xml,**/*.asl,**/*.mas2j,**/*.txt', srcdir: 'examples')
-//     ant.fixcrlf(tab: 'remove', tablength: '4', javafiles: 'true', includes: '**/*.java,**/*.xml,**/*.asl,**/*.mas2j,**/*.txt', srcdir: 'demos')
-//     ant.fixcrlf(tab: 'remove', tablength: '4', javafiles: 'true', includes: '**/*.java,**/*.xml,**/*.asl,**/*.mas2j,**/*.txt', srcdir: 'doc')
-//     ant.fixcrlf(tab: 'remove', tablength: '4', javafiles: 'true', includes: '*.gradle', srcdir: '.')
-// }
 
 // Builds the distribution, documentation and a new release
 task release(dependsOn: [ 'doc', 'zipRel' ]) {
