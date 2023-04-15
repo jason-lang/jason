@@ -18,7 +18,7 @@
        //gradle -b maven-central.gradle dropStagingRepositoryOnMavenCentral
 
    go to
-       https://oss.sonatype.org/#welcome
+       https://s01.oss.sonatype.org/#stagingProfiles
 
        and monitor the steps
 */
@@ -47,12 +47,12 @@ java {
 repositories {
     mavenCentral()
 
-    maven { url "https://raw.githubusercontent.com/jacamo-lang/mvn-repo/master" }
+    //maven { url "https://raw.githubusercontent.com/jacamo-lang/mvn-repo/master" }
     //maven { url "http://jacamo.sourceforge.net/maven2"  }
     //maven { url "http://jade.tilab.com/maven"  //}
-    flatDir {
-       dirs 'jedit', 'demos/persistent-belief-base/lib'
-    }
+    //flatDir {
+    //   dirs 'jedit', 'demos/persistent-belief-base/lib'
+    //}
 }
 
 dependencies {
@@ -207,8 +207,10 @@ compileJavacc {
 
 publishOnCentral {
     projectUrl.set("https://jason.sf.net")
+    projectDescription.set("Jason is a cognitive agent programming language")
     //scmConnection.set("git:git@github.com:DanySK/${project.name}")
-    scmConnection.set("git:git@github.com:jason-lang/jason")
+    //scmConnection.set("git:git@github.com:jason-lang/jason")
+    scmConnection.set("scm:git:https://github.com/jason-lang/jason")
 }
 
 publishing {
