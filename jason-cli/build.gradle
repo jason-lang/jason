@@ -59,7 +59,7 @@ task run (type: JavaExec, dependsOn: 'build') {
     classpath sourceSets.main.runtimeClasspath
 }
 
-task uberJar(type: Jar, dependsOn: ['classes', ':interpreter:jar']) {
+task uberJar(type: Jar, dependsOn: ['classes', ':jason-interpreter:jar']) {
     description 'creates a single runnable jar file with all dependencies'
     duplicatesStrategy 'exclude'
 
