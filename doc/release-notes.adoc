@@ -9,6 +9,8 @@ The main new feature of Jason 3.2 is the Jason Command Line Interface (*JasonCLI
 - some bugs were fixed
 - preliminary support for packages (used by JaCaMo)
 - Jason is available in https://central.sonatype.com/artifact/io.github.jason-lang/jason-interpreter[Maven Central]
+- `mas2j` files do not handle java class path  anymore. Gradle should be used for that. The command `jason app add-gradle` turn a Jason project into a Gradle project. It also helps your IDE to find Jason dependencies when programming Java classes for the environment, internal actions, ...
+- to use JADE, the Jason project should have a Gradle script. Then `./gradlew runJade` can be  used to start the MAS on top of JADE.  
 
 The project is cleaned a bit:
 
