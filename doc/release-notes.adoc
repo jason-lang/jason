@@ -1,13 +1,14 @@
 = Jason release notes
 :toc: right
 
-== version 3.2
+== version 3.2 (2023-04-15)
 
 The main new feature of Jason 3.2 is the Jason Command Line Interface (*JasonCLI*). This tool is created to support the creation and monitoring of Jason application independently of IDEs. More information xref:./jason-cli/readme.adoc[here].
 
 - Java17 is used
 - some bugs were fixed
 - preliminary support for packages (used by JaCaMo)
+- Jason is available in https://central.sonatype.com/artifact/io.github.jason-lang/jason-interpreter[Maven Central]
 
 The project is cleaned a bit:
 
@@ -15,11 +16,11 @@ The project is cleaned a bit:
 - Ant is replaced by Gradle
 - Java Web Start is not used anymore
 
-== version 3.1
+== version 3.1 (2022-03-23)
 
 - This release only contains bug fixes
 
-== version 3.0
+== version 3.0 (2021-09-07)
 
 - The major contribution of this version is the inclusion of Jason(ER), see papers https://link.springer.com/chapter/10.1007%2F978-3-030-25693-7_3[AgentSpeak(ER): Enhanced Encapsulation in Agent Plans] and http://lamas20.ipipan.waw.pl/assets/proceedings/paper-12.pdf[Encapsulating Reactive Behaviour in Goal-based Plans for Programming BDI Agents].
   * improved encapsulation (sub-plans)
