@@ -33,7 +33,7 @@
      */
     .findall(X5, .random(X5,50), L5);
     !assert_equals(50,.length(L5));
-    MEAN = math.average(L5);
+    MEAN = math.mean(L5);
     MEDIAN = math.median(L5);
     STD = math.std_dev(L5);
     !assert_equals(0.5,MEAN,STD);

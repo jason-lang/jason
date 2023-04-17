@@ -21,9 +21,6 @@ public class Config extends Properties {
     public static final String JASON_JAR     = "jasonJar";
     public static final String JASON_PKG     = "jason";
 
-    /** path to jade.jar */
-    public static final String JADE_JAR      = "jadeJar";
-
     /** runtime jade arguments (the same used in jade.Boot) */
     public static final String JADE_ARGS     = "jadeArgs";
 
@@ -153,16 +150,6 @@ public class Config extends Properties {
         return "";
     }
 
-    /** Returns the full path to the jade.jar file */
-    public String getJadeJar() {
-        String r = getProperty(JADE_JAR);
-        if (r == null) {
-            tryToFixJarFileConf(JADE_JAR,   "jade");
-            r = getProperty(JADE_JAR);
-        }
-        return r;
-    }
-
     /** Return the jade args (those used in jade.Boot) */
     public String getJadeArgs() {
         String a = getProperty(JADE_ARGS);
@@ -191,15 +178,6 @@ public class Config extends Properties {
     public String getKqmlPlansFile() {
         return getProperty(KQML_PLANS_FILE, Message.kqmlDefaultPlans);
     }
-
-    public void resetSomeProps() {
-        //System.out.println("Reseting configuration of "+Config.JASON_JAR);
-        remove(Config.JASON_JAR);
-        //System.out.println("Reseting configuration of "+Config.JADE_JAR);
-        remove(Config.JADE_JAR);
-        put(Config.SHOW_ANNOTS, "false");
-    }
-
 
     /** Set most important parameters with default values */
     public void fix() {
@@ -325,25 +303,23 @@ public class Config extends Properties {
     public String getJarFileForFixTest(String jarEntry) {
         if (jarEntry == JASON_JAR)
             return "jason/asSyntax/CyclicTerm.class";
-        if (jarEntry == JADE_JAR)
-            return "jade/Boot.class";
         return null;
     }
 
 
-    public boolean tryToFixJarFileConf(String jarEntry, String jarFilePrefix) {
+    public boolean tryToFixJarFileConf(String jarEntry, String jarFileNamePrefix) {
         String jarFile   = getProperty(jarEntry);
         String fileInJar = getJarFileForFixTest(jarEntry);
         if (jarFile == null || !checkJar(jarFile, fileInJar)) {
             //if (showFixMsgs)
-            //    System.out.println("Wrong configuration for " + jarFilePrefix + ", current is " + jarFile);
+            //    System.out.println("Wrong configuration for " + jarFileNamePrefix + ", current is " + jarFile);
 
             // try to get by class loader
             try {
                 String fromLoader = getClassForClassLoaderTest(jarEntry).getProtectionDomain().getCodeSource().getLocation().toString();
                 if (fromLoader.startsWith("file:"))
                     fromLoader = fromLoader.substring(5);
-                if (new File(fromLoader).getName().startsWith(jarFilePrefix) && checkJar(fromLoader, fileInJar)) {
+                if (new File(fromLoader).getName().startsWith(jarFileNamePrefix) && checkJar(fromLoader, fileInJar)) {
                     if (showFixMsgs)
                         System.out.println("Configuration of '"+jarEntry+"' found at " + fromLoader+", based on class loader");
                     put(jarEntry, fromLoader);
@@ -352,7 +328,7 @@ public class Config extends Properties {
             } catch (Exception e) {}
 
             // try to get from classpath (the most common case)
-            jarFile = getJarFromClassPath(jarFilePrefix, fileInJar);
+            jarFile = getJarFromClassPath(jarFileNamePrefix, fileInJar);
             if (checkJar(jarFile, fileInJar)) {
                 put(jarEntry, jarFile);
                 if (showFixMsgs)
@@ -362,24 +338,10 @@ public class Config extends Properties {
             if (showFixMsgs)
                 System.out.println("Configuration of '"+jarEntry+"' NOT found, based on class loader");
 
-            /*
-            try {
-                // try jason jar
-                File jasonjardir = new File(getJasonJar()).getAbsoluteFile().getCanonicalFile().getParentFile();
-                jarFile = findJarInDirectory(jasonjardir, jarFilePrefix);
-                if (checkJar(jarFile, minSize)) {
-                    put(jarEntry, jarFile);
-                    if (showFixMsgs)
-                        System.out.println("found at " + jarFile+" by jason.jar directory");
-                    return;
-                }
-            } catch (Exception e) {}
-            */
-
             // try with $JASON_HOME
             String jh = System.getenv().get("JASON_HOME");
             if (jh != null) {
-                jarFile = findJarInDirectory(new File(jh+"/interpreter/build/libs"), jarFilePrefix);
+                jarFile = findJarInDirectory(new File(jh+"/interpreter/build/libs"), jarFileNamePrefix);
                 if (checkJar(jarFile, fileInJar)) {
                     try {
                         put(jarEntry, new File(jarFile).getCanonicalFile().getAbsolutePath());
@@ -396,7 +358,7 @@ public class Config extends Properties {
 
             // try current build/libs (from gradle build), required for task testJason
             var localBuild = new File("build/libs").getAbsoluteFile();
-            jarFile = findJarInDirectory( localBuild, jarFilePrefix);
+            jarFile = findJarInDirectory( localBuild, jarFileNamePrefix);
             if (checkJar(jarFile, fileInJar)) {
                 try {
                     put(jarEntry, new File(jarFile).getCanonicalFile().getAbsolutePath());
@@ -455,7 +417,7 @@ public class Config extends Properties {
 
     public boolean checkJar(String jar, String file) {
         try {
-            return checkJar(jar) && checkJarHasFile(jar,file); //new File(jar).length() > minSize;
+            return checkJar(jar) && checkJarHasFile(jar,file);
         } catch (Exception e) {
         }
         return false;
@@ -469,8 +431,7 @@ public class Config extends Properties {
         try {
             new URL(jarFile).openStream().close();
             return true;
-        } catch (Exception e) {
-        }
+        } catch (Exception e) { }
         return false;
     }
 

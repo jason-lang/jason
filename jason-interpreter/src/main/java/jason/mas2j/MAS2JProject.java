@@ -242,7 +242,7 @@ public class MAS2JProject implements Serializable {
             s.append("\n");
         }
 
-        // sourcepath
+        // source path
         if (!aslSourcepaths.isEmpty()) {
             s.append("   aslSourcePath: ");
             for (String cp: aslSourcepaths.getPaths()) {

@@ -18,8 +18,7 @@ public interface ToJson {
         var sw = new StringWriter();
 
         try (var jsonWriter = jwf.createWriter(sw)) {
-
-            jsonWriter.writeObject( (JsonObject)getAsJson());
+            jsonWriter.write(getAsJson());
             return sw.toString();
         }
     }
