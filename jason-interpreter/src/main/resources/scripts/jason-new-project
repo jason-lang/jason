@@ -1,8 +1,0 @@
-#!/bin/bash
-
-P=`which "$0"`
-source "`dirname $P`/jason-setup"
-
-echo Creating new Jason project: $1
-
-java -cp "$JASON_HOME/libs/*" jason.util.CreateNewProject $1 --console
