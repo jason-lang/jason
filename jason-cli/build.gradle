@@ -53,6 +53,31 @@ jar {
     }
 }
 
+//// copy dep jars into build directory (maybe useful for running without the management of gradle)
+//task copyJarsToBuild (dependsOn: jar) {
+//    inputs.files configurations.runtimeClasspath.files
+//    //inputs.dir   'src/main/resources/scripts'
+//    outputs.dir  'build/libs'
+//    //outputs.dir  'build/scripts'
+//    doLast {
+//        copy {
+//            from configurations.runtimeClasspath
+//            into 'build/libs'
+//        }
+////        copy {
+////            from 'src/main/resources/scripts'
+////            into 'build/scripts'
+////            include '**'
+////            filter {
+////                String line -> line.replaceAll("JasonREL=[0-9]+\\.[0-9]+", "JasonREL="+project.version)
+////            }
+////            filter {
+////                String line -> line.replaceAll("JadeJar", file(configurations.compileClasspath.find { it.name.startsWith("jade-") }).name)
+////            }
+////        }
+//    }
+//}
+
 task run (type: JavaExec, dependsOn: 'build') {
     mainClass = 'jason.cli.JasonCLI'
     standardInput = System.in
@@ -75,7 +100,7 @@ task uberJar(type: Jar, dependsOn: ['classes', ':jason-interpreter:jar']) {
     with jar
 }
 
-task createBin (dependsOn: 'uberJar') {
+task createBin (dependsOn: ['uberJar']) {
     def wdir = 'build/bin'
     doFirst {
         exec {
@@ -84,17 +109,21 @@ task createBin (dependsOn: 'uberJar') {
         }
     }
     doLast {
-        delete fileTree(wdir) { include 'jason-cli-all-*' }
-        delete fileTree(wdir) { include '*.sh' }
+        //delete fileTree(wdir) { include 'jason-cli-all-*' }
+        //delete fileTree(wdir) { include '*.sh' }
+//        copy {
+//            from wdir
+//            into 'build/jason-' + "${jasonVersion}"
+//        }
         copy {
-            from 'build/bin'
-            into 'build/jason-' + "${jasonVersion}"
+            from 'src/main/resources/scripts/jason.sh'
+            into wdir
         }
     }
 }
 
-task release (type: Zip, dependsOn: 'createBin') {
-    def wdir = 'build/jason-' + "${jasonVersion}"
-    from wdir
-    archiveBaseName = 'jason-bin-'+ "${jasonVersion}"
-}
+//task release (type: Zip, dependsOn: 'createBin') {
+//    def wdir = 'build/jason-' + "${jasonVersion}"
+//    from wdir
+//    archiveBaseName = 'jason-bin-'+ "${jasonVersion}"
+//}

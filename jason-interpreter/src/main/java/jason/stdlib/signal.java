@@ -6,8 +6,10 @@ import jason.asSemantics.Intention;
 import jason.asSemantics.InternalAction;
 import jason.asSemantics.TransitionSystem;
 import jason.asSemantics.Unifier;
+import jason.asSyntax.Atom;
 import jason.asSyntax.Term;
 import jason.asSyntax.Trigger;
+import jason.bb.BeliefBase;
 
 /**
   <p>Internal action: <b><code>.signal</code></b>.
@@ -33,15 +35,23 @@ public class signal extends DefaultInternalAction {
         return 1;
     }
     @Override public int getMaxArgs() {
-        return 1;
+        return 2;
     }
 
     @Override
     public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {
         checkArguments(args);
+        var te = Trigger.tryToGetTrigger(args[0]);
+        if  (args.length == 2 && args[1].equals(new Atom("type_signal"))) {
+            te.setType(Trigger.TEType.signal);
+            te.getLiteral().addAnnot(new Atom("signal"));
+        }
+        if (!te.getLiteral().hasSource()) {
+            te.getLiteral().addSource(BeliefBase.ASelf);
+        }
         ts.updateEvents(
                 new Event(
-                        Trigger.tryToGetTrigger(args[0]),
+                        te,
                         Intention.EmptyInt));
         return true;
     }

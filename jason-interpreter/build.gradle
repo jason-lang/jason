@@ -48,31 +48,6 @@ dependencies {
     testImplementation 'junit:junit:4.12'
 }
 
-// copy dep jars into build directory (maybe useful for running without management of gradle)
-task copyJarsToBuild (dependsOn: jar) {
-    inputs.files configurations.runtimeClasspath.files
-    inputs.dir   'src/main/resources/scripts'
-    outputs.dir  'build/libs'
-    outputs.dir  'build/scripts'
-    doLast {
-        copy {
-            from configurations.runtimeClasspath
-            into 'build/libs'
-        }
-//        copy {
-//            from 'src/main/resources/scripts'
-//            into 'build/scripts'
-//            include '**'
-//            filter {
-//                String line -> line.replaceAll("JasonREL=[0-9]+\\.[0-9]+", "JasonREL="+project.version)
-//            }
-//            filter {
-//                String line -> line.replaceAll("JadeJar", file(configurations.compileClasspath.find { it.name.startsWith("jade-") }).name)
-//            }
-//        }
-    }
-}
-
 jar {
     // archiveBaseName = 'jason'
     manifest {
