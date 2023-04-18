@@ -321,7 +321,7 @@ public class ListTermTest extends TestCase {
         assertEquals(l2.union(l3), l3.union(l2));
     }
 
-    public void testIntersectoin() {
+    public void testIntersection() {
         ListTerm l1 = ListTermImpl.parseList("[]");
         ListTerm l2 = ListTermImpl.parseList("[c,a,b,c]");
         ListTerm l3 = ListTermImpl.parseList("[b,a,d,e]");
@@ -391,6 +391,16 @@ public class ListTermTest extends TestCase {
         assertEquals("[a,b,c]", u.get("T").toString());
 
         u = new Unifier();
+        assertTrue(u.unifies(ASSyntax.parseList("[]"), l));
+        assertEquals("[]", u.get("T").toString());
+        u = new Unifier();
+        assertTrue(u.unifies(l, ASSyntax.parseList("[]")));
+        assertEquals("[]", u.get("T").toString());
+
+        assertFalse(new Unifier().
+                unifies(ASSyntax.parseTerm("a"), l));
+
+        u = new Unifier();
         assertTrue(u.unifies(ASSyntax.parseList("[a,b,c]"), l));
         assertEquals("[a,b,c]", u.get("T").toString());
 
@@ -407,6 +417,17 @@ public class ListTermTest extends TestCase {
         assertTrue(l2.hasSubsetAnnot(l1,u));
         assertEquals("[a,b,c]", u.get("T").toString());
         assertEquals("b(10)[a,b,c]", l2.capply(u).toString());
+    }
+    public void testOnlyTailListSubSetAnnot() throws ParseException, TokenMgrError {
+        Literal l1 = ASSyntax.parseLiteral("b(10)");
+        Literal l2 = ASSyntax.parseLiteral("b(10)[|T]");
+        assertFalse(l1.hasAnnot());
+        assertTrue(l2.hasAnnot());
+
+        assertTrue(l1.hasSubsetAnnot(l2,new Unifier()));
+        var u = new Unifier();
+        assertTrue(l2.hasSubsetAnnot(l1,u));
+        assertEquals("[]", u.get("T").toString());
     }
 
 

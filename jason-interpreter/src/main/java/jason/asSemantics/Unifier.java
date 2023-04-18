@@ -298,6 +298,16 @@ public class Unifier implements Cloneable, Iterable<VarTerm>, Serializable, ToDO
         Literal t1s = (Literal)t1g;
         Literal t2s = (Literal)t2g;
 
+        // different functor
+        if (!t1s.getFunctor().equals(t2s.getFunctor()))
+            return false;
+
+        // the special case of [|T]=[a,b,c] and [|T]=[]
+        if (t1s.isList() && t1s.getTerm(0) == null && ((ListTerm) t1s).isTail())
+            return unifiesNoUndo(t1s.getTerm(1), t2s);
+        if (t2s.isList() && t2s.getTerm(0) == null && ((ListTerm) t2s).isTail())
+            return unifiesNoUndo(t1s, t2s.getTerm(1));
+
         // different arities
         final int ts = t1s.getArity();
         if (ts != t2s.getArity())
@@ -307,19 +317,9 @@ public class Unifier implements Cloneable, Iterable<VarTerm>, Serializable, ToDO
         if (t1s.negated() != t2s.negated())
             return false;
 
-        // different functor
-        if (!t1s.getFunctor().equals(t2s.getFunctor()))
-            return false;
-
         // different name space
         if (!unifiesNamespace(t1s, t2s))
             return false;
-
-        // the special case of [|T]=[a,b,c]
-        if (t1s.isList() && t1s.getTerm(0) == null && ((ListTerm)t1s).isTail())
-            return unifiesNoUndo(t1s.getTerm(1), t2s);
-        if (t2s.isList() && t2s.getTerm(0) == null && ((ListTerm)t2s).isTail())
-            return unifiesNoUndo(t1s, t2s.getTerm(1));
 
         // unify inner terms
         // do not use iterator! (see ListTermImpl class)
