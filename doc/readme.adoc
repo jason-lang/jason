@@ -12,6 +12,7 @@ endif::[]
 
 * xref:./tutorials/vscode/readme.adoc[using Visual Studio Code]
 * xref:./jason-cli/readme.adoc[using a command shell]
+* xref:./tutorials/vscode-browser/readme.adoc[using Visual Studio Browser (via GitPod)]
 
 == Tutorials
 * xref:./tutorials/getting-started/readme.adoc[Getting Started tutorial]

@@ -1,0 +1,30 @@
+# VSCode Browser (Web) as an IDE for Jason
+:toc: right
+:date: April 2023
+:source-highlighter: coderay
+:coderay-linenums-mode: inline
+:icons: font
+:prewrap!:
+
+
+= What You Will Build
+
+In this document, you will build a *web* environment to develop agent-based system with link:https://github.com/jason-lang/jason[Jason] language.
+
+= Requirements
+
+- A GitHub account
+
+= Steps
+
+This IDE uses https://gitpod.io[GitPod], so you will be asked to allow it to access your GitHub account.
+
+1. Open GitPod with the following https://gitpod.io/#https://github.com/jason-lang/template[link]. It copies a Jason application template to your GitPod workspace.
+
+2. Wait the initialization.
+
+image:figs/vscweb1.png[]
+
+Run the MAS with the command `./gradlew run` in the terminal.
+
+image:figs/vscweb2.png[]
