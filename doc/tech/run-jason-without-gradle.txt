@@ -1,0 +1,22 @@
+
+if you want to run/test changes in Jason sources without publishing jars on maven/gradle repositories:
+
+1. compile the changes
+    ./gradlew  :jason-cli:uberJar
+
+2. set a var with UBERJAR
+    export JASON_UJ=<pathto>/jason-cli/build/
+
+3. go to an application directory
+
+4. compile java sources of the application
+     jason app compile
+   or
+     ./gradlew build
+
+4. run with local infra:
+    java -cp ".:build/classes/java/main:JASON_UJ/*" jason.infra.local.RunLocalMAS xx.mas2j
+
+5. run with jade infra:
+    java -cp ".:build/classes/java/main:JASON_UJ/*" jason.infra.jade.RunJadeMAS  xx.mas2j
+

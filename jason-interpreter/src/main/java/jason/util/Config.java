@@ -195,11 +195,6 @@ public class Config extends Properties {
             put(JASON_JAR, jasonJarFile); // always prefer classpath jar
         }
 
-        // jade args
-        if (getProperty(JADE_RMA) == null) {
-            put(JADE_RMA, "true");
-        }
-
         // show annots
         if (getProperty(SHOW_ANNOTS) == null) {
             put(SHOW_ANNOTS, "true");

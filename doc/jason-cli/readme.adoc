@@ -49,14 +49,14 @@ jason app
 ```
 
 
-Then use your preferred IDE to edit the sources of the application in  the `src` folder.
+Then use your preferred IDE to edit the sources of the application, which are in the `src` folder.
 
 The commands of this section are used to help change the source code of some application. To change or monitor the state of running applications, see the commands below.
 
 
-## Command Line
+## Manage (running) MAS
 
-In your preferred terminal, you can start a new empty MAS with:
+In your preferred terminal, you can start a new *empty* MAS with:
 
     $ jason mas start --console
 
@@ -68,7 +68,7 @@ If you have an application with a `.mas2j` file, you can start it with:
 
     $ jason app.mas2j
 
-Yet in another terminal:
+Yet in another terminal we can list currently running MAS and stop them:
 
     $ jason mas list
     $ jason mas stop m1 --exit
@@ -80,15 +80,14 @@ Agent commands:
     $ jason agent start  alice --mas-name=mas_1 --source=x.asl
     $ jason agent list         --mas-name=mas_1
     $ jason agent status bob   --mas-name=mas_1
-    $ jason agent mind   bob   --mas-name=mas_1
-    
+    $ jason agent mind   bob   --mas-name=mas_1    
     $ echo "+b <- .print(perceived(b))." > y.asl
     $ jason agent load-into alice --mas-name=mas_1 --source=y.asl
     $ jason agent mind alice   --mas-name=mas_1 --plans
 
 ## Interactive Shell
 
-To open the Jason shell, simply executes `jason`: 
+To open the Jason shell, simply execute `jason`: 
 
     $ jason
     Jason interactive shell with completion and autosuggestions.
@@ -145,7 +144,7 @@ echo "beliefs of Bob:"
 agent mind bob         # show beliefs of bob
 ```
 
-then  run it with
+then run the script with
 
     $ jason < hello.jcli
 
