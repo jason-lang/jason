@@ -15,8 +15,8 @@ apply plugin: 'java'
 
 repositories {
     mavenCentral()
-    maven { url "https://raw.githubusercontent.com/jacamo-lang/mvn-repo/master" }
-    maven { url "https://jade.tilab.com/maven/" }
+    //maven { url "https://raw.githubusercontent.com/jacamo-lang/mvn-repo/master" }
+    //maven { url "https://jade.tilab.com/maven/" }
 }
 
 dependencies {
@@ -57,6 +57,6 @@ task runJade (type: JavaExec, dependsOn: 'classes') {
     args = [ '<PROJECT-FILE>', '-gui' ]
     // options:
     //     args = ['<PROJECT-FILE>', '-gui', '-sniffer' ]
-    // and all usual JASE options for jade.Boot
+    // and all usual JADE options for jade.Boot
     classpath sourceSets.main.runtimeClasspath
 }
