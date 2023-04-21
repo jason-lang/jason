@@ -1197,7 +1197,7 @@ public class TransitionSystem implements Serializable {
             }
 
             // new JasonER
-            if (i.hasGoalCondition()) {
+            if (im.getPlan().hasGoalCondition()) { // old test (bug): i.hasGoalCondition() &&
                 // move to PI
                 C.dropIntention(i);
                 C.addPendingIntention(""+i.getId(), ASSyntax.createAtom("wait_goal_condition"), i, false);
