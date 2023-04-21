@@ -5,6 +5,7 @@ import java.io.ObjectInputStream;
 import java.util.Iterator;
 import java.util.Set;
 
+import jason.JasonException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -57,12 +58,12 @@ public abstract class BeliefBase implements Iterable<Literal>, Cloneable, ToDOM 
      *  for example, if l is p[a,b] in a BB with p[a], l will be changed to
      *  p[b] to produce the event +p[b], since only the annotation b is changed
      *  in the BB. */
-    public boolean add(Literal l) {
+    public boolean add(Literal l) throws JasonException {
         return false;
     }
 
     /** Adds a belief in the BB at <i>index</i> position, returns true if succeed */
-    public boolean add(int index, Literal l) {
+    public boolean add(int index, Literal l) throws JasonException {
         return false;
     }
 

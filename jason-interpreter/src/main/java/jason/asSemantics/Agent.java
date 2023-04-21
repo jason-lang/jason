@@ -460,7 +460,7 @@ public class Agent implements Serializable, ToDOM {
     }
 
     /** add the initial beliefs in BB and produce the corresponding events */
-    public void addInitialBelsInBB() throws RevisionFailedException {
+    public void addInitialBelsInBB() throws JasonException {
         // Once beliefs are stored in a Stack in the BB, insert them in inverse order
         for (int i=initialBels.size()-1; i >=0; i--)
             addInitBel(initialBels.get(i));
@@ -478,7 +478,7 @@ public class Agent implements Serializable, ToDOM {
             }
     }
 
-    private void addInitBel(Literal b) throws RevisionFailedException {
+    private void addInitBel(Literal b) throws JasonException {
         // if l is not a rule and has free vars (like l(X)), convert it into a rule like "l(X) :- true."
         if (!b.isRule() && !b.isGround())
             b = new Rule(b,Literal.LTrue);
