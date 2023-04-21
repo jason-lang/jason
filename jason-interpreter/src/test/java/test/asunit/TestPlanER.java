@@ -36,8 +36,23 @@ public class TestPlanER {
             "    }"+
             "    +b(A)  <- bing2(A). "+
             "    +c(A) : A < X <- cing2(A). "+
-            "}"
+            "}\n"+
+
+            "+!subgoalreturn " +
+            "   <: false" +
+            "   <- !sg1(X);" +
+            "      inig1. " +
+            "   {" +
+            "      +!sg1(X) <- X = 10 + 3. " +
+            "   }"
+
         );
+    }
+
+    @Test(timeout=2000)
+    public void testReturnFromSubGoal() {
+        ag.addGoal("subgoalreturn");
+        ag.assertAct("inig1", 10);
     }
 
     @Test(timeout=2000)
