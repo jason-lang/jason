@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import jason.JasonException;
 import jason.asSemantics.Message;
 import jason.asSemantics.Unifier;
 import jason.asSyntax.ASSyntax;
@@ -1038,7 +1039,7 @@ public class TermTest extends TestCase {
     }
 
     // Tests sent by Tim Cleaver (in jason-bugs list)
-    public void testObTerm() {
+    public void testObTerm() throws JasonException {
         ObjectTerm term = new ObjectTermImpl("test");
         assertTrue(term.equals(term));
 
