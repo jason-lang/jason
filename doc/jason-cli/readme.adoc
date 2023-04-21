@@ -3,19 +3,6 @@
 
 The Jason CLI is a command-line interface tool that you use to initialize, develop, and maintain Jason applications directly from a command shell at design and run time.
 
-## Installation
-
-1. Install link:https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html[Java 17]
-
-2. Install Jason from link:https://github.com/jason-lang/jason/releases[here]. Download the `jason-bin-.....zip` file and decompress it. It creates a directory with Jason documentation, examples, and a sub-directory `bin` with the file *`jason`*. It is a unix executable file, if not, change its properties with `chmod +x jason`. Finally, link:https://www.computerhope.com/issues/ch000549.htm[adds the directory `bin` in your machine `PATH`] so that the command `jason` can be executed in a terminal. 
-
-In a terminal, you can test your installation with:
-
-----
-$ jason --version
-Jason CLI 3.2
-----
-
 
 
 ## Create Applications
@@ -62,14 +49,14 @@ jason app
 ```
 
 
-Then use your preferred IDE to edit the sources of the application in  the `src` folder.
+Then use your preferred IDE to edit the sources of the application, which are in the `src` folder.
 
 The commands of this section are used to help change the source code of some application. To change or monitor the state of running applications, see the commands below.
 
 
-## Command Line
+## Manage (running) MAS
 
-In your preferred terminal, you can start a new empty MAS with:
+In your preferred terminal, you can start a new *empty* MAS with:
 
     $ jason mas start --console
 
@@ -81,7 +68,7 @@ If you have an application with a `.mas2j` file, you can start it with:
 
     $ jason app.mas2j
 
-Yet in another terminal:
+Yet in another terminal we can list currently running MAS and stop them:
 
     $ jason mas list
     $ jason mas stop m1 --exit
@@ -93,15 +80,14 @@ Agent commands:
     $ jason agent start  alice --mas-name=mas_1 --source=x.asl
     $ jason agent list         --mas-name=mas_1
     $ jason agent status bob   --mas-name=mas_1
-    $ jason agent mind   bob   --mas-name=mas_1
-    
+    $ jason agent mind   bob   --mas-name=mas_1    
     $ echo "+b <- .print(perceived(b))." > y.asl
     $ jason agent load-into alice --mas-name=mas_1 --source=y.asl
     $ jason agent mind alice   --mas-name=mas_1 --plans
 
 ## Interactive Shell
 
-To open the Jason shell, simply executes `jason`: 
+To open the Jason shell, simply execute `jason`: 
 
     $ jason
     Jason interactive shell with completion and autosuggestions.
@@ -158,7 +144,7 @@ echo "beliefs of Bob:"
 agent mind bob         # show beliefs of bob
 ```
 
-then  run it with
+then run the script with
 
     $ jason < hello.jcli
 
