@@ -14,14 +14,16 @@ In this document, you will build a *web* environment to develop agent-based syst
 = Requirements
 
 - A GitHub account
+- A browser (Chrome, and Safari works fine) 
 
 = Steps
 
 This IDE uses https://gitpod.io[GitPod], so you will be asked to allow it to access your GitHub account.
 
-1. Open GitPod with the following https://gitpod.io/#https://github.com/jason-lang/template[link]. It copies a Jason application template to your GitPod workspace.
-
-2. Wait the initialization.
+1. Open GitPod with the following https://gitpod.io/#https://github.com/jason-lang/template[link]. 
+2. Register (or login) and then create a new workspace with the recommended settings.
+3. Wait the initialization.
+4. Open the `main.mas2j` file and you will get the same result as in the picture below
 
 image:figs/vscweb1.png[]
 
