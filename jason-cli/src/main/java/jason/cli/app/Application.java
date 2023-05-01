@@ -6,7 +6,7 @@ import picocli.CommandLine.Command;
 
 @Command(
     name = "app",
-    description = "commands to handle applications",
+    description = "commands to handle (the sources of an) applications",
     subcommands = { Create.class, Compile.class, AddAgent.class, Gradle.class },
     synopsisSubcommandLabel = "(create | compile | add-agent | add-gradle )"
 )

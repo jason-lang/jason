@@ -245,13 +245,16 @@ public class Agent implements Serializable, ToDOM {
         try {
             a = this.getClass().getConstructor().newInstance();
         } catch (InstantiationException e1) {
-            logger.severe(" cannot create derived class" +e1);
+            logger.severe(" cannot create derived class" + e1);
             return null;
         } catch (Exception e2) {
-            logger.severe(" cannot create derived class" +e2);
+            logger.severe(" cannot create derived class" + e2);
             return null;
         }
+        return cloneInto(arch, a);
+    }
 
+    public Agent cloneInto(AgArch arch, Agent a) {
         a.setLogger(arch);
         if (this.getTS().getSettings().verbose() >= 0)
             a.logger.setLevel(this.getTS().getSettings().logLevel());
@@ -267,7 +270,11 @@ public class Agent implements Serializable, ToDOM {
         }
         a.aslSource = this.aslSource;
         a.internalActions = new HashMap<>();
-        a.setTS(new TransitionSystem(a, this.getTS().getC().clone(), this.getTS().getSettings(), arch));
+        a.setTS(new TransitionSystem(a,
+                this.getTS().getC().clone(),
+                this.getTS().getSettings(),
+                arch));
+        a.getTS().setLogger(arch);
         if (a.getPL().hasMetaEventPlans())
             a.getTS().addGoalListener(new GoalListenerForMetaEvents(a.getTS()));
 
