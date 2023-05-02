@@ -123,9 +123,13 @@ public class Agent implements Serializable, ToDOM {
         //if (ts.getSettings().hasQueryProfiling()) qProfiling = new QueryProfiling(this);
         //if (ts.getSettings().hasQueryCache())     qCache = new QueryCacheSimple(this, qProfiling);
 
-        if (! "false".equals(Config.get().getProperty(Config.START_WEB_MI))) MindInspectorWeb.get().registerAg(this);
+        addToMindInspectorWeb();
     }
 
+    public void addToMindInspectorWeb() {
+        if (! "false".equals(Config.get().getProperty(Config.START_WEB_MI)))
+            MindInspectorWeb.get().registerAg(this);
+    }
 
     /** parse and load the initial agent code + kqml plans + project bels and goals, asSrc may be null */
     public void loadInitialAS(String asSrc) throws Exception {
