@@ -193,6 +193,22 @@ public class Circumstance implements Serializable, ToDOM {
     }
 
     public void clearEvents() {
+        clearEvents(false);
+        // notify listeners
+        /*if (hasListener())
+            for (CircumstanceListener el : listeners) {
+                for (Event ev: E)
+                    if (ev.getIntention() != null)
+                        el.intentionDropped(ev.getIntention());
+                if (AE != null && AE.getIntention() != null)
+                    el.intentionDropped(AE.getIntention());
+            }
+
+        E.clear();
+        AE = null;*/
+    }
+
+    public void clearEvents(boolean onlyInternal) {
         // notify listeners
         if (hasListener())
             for (CircumstanceListener el : listeners) {
@@ -203,7 +219,16 @@ public class Circumstance implements Serializable, ToDOM {
                     el.intentionDropped(AE.getIntention());
             }
 
-        E.clear();
+        if (onlyInternal) {
+            var ie = E.iterator();
+            while (ie.hasNext()) {
+                Event e = ie.next();
+                if (e.isInternal())
+                    ie.remove();
+            }
+        } else {
+            E.clear();
+        }
         AE = null;
     }
 
