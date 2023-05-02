@@ -208,7 +208,7 @@ public class Circumstance implements Serializable, ToDOM {
         AE = null;*/
     }
 
-    public void clearEvents(boolean onlyInternal) {
+    public void clearEvents(boolean onlyGoals) {
         // notify listeners
         if (hasListener())
             for (CircumstanceListener el : listeners) {
@@ -219,11 +219,11 @@ public class Circumstance implements Serializable, ToDOM {
                     el.intentionDropped(AE.getIntention());
             }
 
-        if (onlyInternal) {
+        if (onlyGoals) {
             var ie = E.iterator();
             while (ie.hasNext()) {
                 Event e = ie.next();
-                if (e.isInternal())
+                if (e.getTrigger().isGoal())
                     ie.remove();
             }
         } else {

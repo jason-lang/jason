@@ -11,9 +11,10 @@ import jason.asSyntax.Term;
   <p>Description: removes all desires of the agent. No event is
   produced.
 
-  <p>This action changes the agent's circumstance structure by removing
-  from set of events (E) all internal events and then calling
-  <code>.drop_all_intentions</code>. It does not remove external events (which are not considered as a desire)
+  <p>This action changes the agent's circumstance structure (1) by removing
+  from set of events (E) all events for goals (like +!g -!g +?g) and then (2) calling
+  <code>.drop_all_intentions</code>.
+  It does not remove external events (which are not considered as a desire)
 
   <p>Example:<ul>
 
