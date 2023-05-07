@@ -20,7 +20,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'io.github.jason-lang:jason-interpreter:3.2.2'
+    implementation 'io.github.jason-lang:jason-interpreter:3.2.0'
 
     // to use locally installed jars:
     implementation fileTree(dir: 'lib', include: '*.jar')
@@ -31,10 +31,6 @@ sourceSets {
         java {
             srcDir 'src/java'
             srcDir 'src/env'
-            srcDir '.' // some old jason apps store .java files in project root
-        }
-        resources {
-            srcDir 'src/resources'
         }
     }
 }

@@ -2,10 +2,9 @@
 
 MAS book_trading {
 
-    infrastructure: Jade
-
     agents:
         john;
 
+    aslSourcePath: "src/agt";
 }
 
