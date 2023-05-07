@@ -14,9 +14,9 @@ In this document, you will build a *web* environment to develop agent-based syst
 = Requirements
 
 - A GitHub account
-- A browser (Chrome, and Safari works fine) 
+- A browser (Chrome and Safari works fine) 
 
-= Steps
+= Steps for GitPod
 
 This IDE uses https://gitpod.io[GitPod], so you will be asked to allow it to access your GitHub account.
 
@@ -30,3 +30,15 @@ image:figs/vscweb1.png[]
 Run the MAS with the command `./gradlew run` in the terminal.
 
 image:figs/vscweb2.png[]
+
+= Steps for GitHub CodeSpace
+
+1. Go the link:https://github.com/jason-lang/template[Jason Template project]
+
+2. Click on "use this template" and then "open in a codespace":
+
+image:figs/codespace1.png[]
+
+Run the MAS with the command `./gradlew run` in the terminal.
+
+image:figs/codespace2.png[]
