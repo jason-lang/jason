@@ -1,5 +1,5 @@
 = Jason FAQ
-(for Jason 2.0)
+(for Jason 3.2)
 :toc:
 :source-highlighter: pygments
 :pygments-style: jacamo
@@ -8,7 +8,7 @@
 :prewrap!:
 
 
-NOTE: This FAQ is not update for Jason 3.2, where (1) Gradle is used to handle classpath and Jade (previously these aspects were handled in the `.mas2j`); (2) jEdit is not supported. If you would like to see this FAQ updated in some question, add an issue at GitHub.
+NOTE: This FAQ is not completely update for Jason 3.2, where (1) Gradle is used to handle classpath and Jade (previously these aspects were handled in the `.mas2j`); (2) jEdit is not supported. If you would like to see this FAQ updated in some question, add an issue at GitHub.
 
 == General
 
@@ -243,61 +243,59 @@ public class myEnv extends Environment {
 -----------------------------------------------------------
 
 The interface, used in the code above, provides useful services
-transparently from the underlying infrastructure (Local, Jade,
-...). The interface’s methods include agent creation, agent killing, and
+transparently from the underlying infrastructure. The interface’s methods include agent creation, agent killing, and
 halting the system (see the API documentation for more information).
 
-Note that if you’re using the JADE infrastructure, new agents (possibly not
-Jason agents, see <<sec:whyjade,Jade>>) can enter the MAS using JADE features for open
-MAS.
+// Note that if you’re using the JADE infrastructure, new agents (possibly not
+// Jason agents, see <<sec:whyjade,Jade>>) can enter the MAS using JADE features for openMAS.
 
-[[how-to-set-the-classpath-for-running-a-system]]
-How to set the classpath for running a system?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// [[how-to-set-the-classpath-for-running-a-system]]
+// How to set the classpath for running a system?
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-There are three ways to set the classpath of a project:
+// There are three ways to set the classpath of a project:
 
-1.  Create a lib directory in the project and include the jar files
-there. The ant script created by Jason to run the project (`bin/build.xml`)
-includes `lib/*.jar` in the classpath. This approach is used in
-examples/gold-miners.
-2.  In case you do not want to copy files into the project, the
-`classpath` entry in the .mas2j file can be used:
-+
-[source,jasonproject]
----------------------------------------------------------------
-MAS masid {
-   agents: .......
-   classpath: "../../jdom.jar";
-              "../../otherproject/classes";
-              "/apache/**/*.jar"; // all jar files below /apache
-}
----------------------------------------------------------------
-+
-Several items can be added as strings separated by `;`. This approach
-is used in examples/sniffer.
-3.  If a more customised startup is required for your system, create a
-file named `bin/c-build.xml` with the template below:
-+
-[source,xml]
----------------------------------------------------------------
-<project name ="mybuild" basedir="..">
-    <import file="build.xml"/>
+// 1.  Create a lib directory in the project and include the jar files
+// there. The ant script created by Jason to run the project (`bin/build.xml`)
+// includes `lib/*.jar` in the classpath. This approach is used in
+// examples/gold-miners.
+// 2.  In case you do not want to copy files into the project, the
+// `classpath` entry in the .mas2j file can be used:
+// +
+// [source,jasonproject]
+// ---------------------------------------------------------------
+// MAS masid {
+//    agents: .......
+//    classpath: "../../jdom.jar";
+//               "../../otherproject/classes";
+//               "/apache/**/*.jar"; // all jar files below /apache
+// }
+// ---------------------------------------------------------------
+// +
+// Several items can be added as strings separated by `;`. This approach
+// is used in examples/sniffer.
+// 3.  If a more customised startup is required for your system, create a
+// file named `bin/c-build.xml` with the template below:
+// +
+// [source,xml]
+// ---------------------------------------------------------------
+// <project name ="mybuild" basedir="..">
+//     <import file="build.xml"/>
 
-    <target name="user-init">
-        <!-- add here all your custom initialisation -->
-    </target>
+//     <target name="user-init">
+//         <!-- add here all your custom initialisation -->
+//     </target>
 
-    <target name="user-end">
-        <!-- add here all your custom termination -->
-    </target>
+//     <target name="user-end">
+//         <!-- add here all your custom termination -->
+//     </target>
 
-    <!-- you can also "override" other tasks from build.xml -->
-</project>
----------------------------------------------------------------
-+
-If a `c-build.xml` file exists, it is used to run your application instead
-of the `build.xml` that is automatically created by Jason.
+//     <!-- you can also "override" other tasks from build.xml -->
+// </project>
+// ---------------------------------------------------------------
+// +
+// If a `c-build.xml` file exists, it is used to run your application instead
+// of the `build.xml` that is automatically created by Jason.
 
 === Which execution modes are available?
 
@@ -352,8 +350,8 @@ MAS test {
 The `jason.control.ExecutionControlGUI` class implements the Jason
 controlle with a GUI for debugging. This graphical tool is called
 Jason’s Mind Inspector, as it allows users to observe all changes in
-agents’ mental attitudes after a (number of) reasoning cycle(s). This
-also applies to distributed agents (using JADE).
+agents’ mental attitudes after a (number of) reasoning cycle(s). 
+// This also applies to distributed agents (using JADE).
 
 // === How to run my application without Jason IDE
 
@@ -555,10 +553,9 @@ level FINE).
 === How to log the overall execution?
 
 Jason uses the http://java.sun.com/j2se/1.5.0/docs/guide/logging/overview.html[Java logging API] to output messages into the console (the default console is
-called MASConsole). To change the log level or device, select the menu
-Plugins -> Jason -> Edit Log properties in the jEdit plugin. If you
-are not using jEdit, you can copy the default configuration file from https://github.com/jason-lang/jason/blob/master/src/main/resources/templates/logging.properties[here] to your
-application directory. The default configuration file has comments that
+called MASConsole). To change the log level or device, edit the file `logging.properties`.
+// select the menu Plugins -> Jason -> Edit Log properties in the jEdit plugin. If you are not using jEdit, you can copy the default configuration file from https://github.com/jason-lang/jason/blob/master/src/main/resources/templates/logging.properties[here] to your application directory. 
+The default configuration file has comments that
 helps you customise your log. For instance, to output messages both into
 an XML file and in the console, you only need to set the log handler as
 in the following line:
@@ -661,7 +658,7 @@ Since Jason agents use KQML and JADE uses FIPA-ACL, we opted to translate the
 |request |achieve
 |=================
 +
-You can find more information about this infrastructure in the http://jason.sourceforge.net/mini-tutorial/jason-jade[Jason-JADE tutorial].
+You can find more information about this infrastructure in the xref:./tutorials/jason-jade/readme.adoc[Jason-JADE tutorial].
 
 
 === How to select an infrastructure?
@@ -687,6 +684,8 @@ MAS auction {
 }
 ---------------------------
 
+JADE applications only work with Gradle and must be executed with `./gradlew runJade`.
+
 Note that the agents do not need to be changed for different
 infrastructures. The Jason Agent Architecture binds them to the available
 infrastructure.
@@ -708,21 +707,21 @@ communication.
 
 === How to customise the JADE container?
 
-All parameters normally used to start a JADE container can be set in the menu
-Plugins -> Plugins Options -> Jason -> jade.Boot arguments. For
-instance, to start a non-main container when running the project, the
-following arguments can be used (supposing the main container is running
-at x.com):
+All parameters normally used to start a JADE container can be set in the task `runJade` of file `build.gradle`.
 
----------------------------
--gui -container -host x.com
----------------------------
+// in the menu
+// Plugins -> Plugins Options -> Jason -> jade.Boot arguments. For
+// instance, to start a non-main container when running the project, the
+// following arguments can be used (supposing the main container is running
+// at x.com):
+
+// ---------------------------
+// -gui -container -host x.com
+// ---------------------------
 
 === How to start a Jason agent with `jade.Boot`?
 
-The JADE agent wrapper should be used to start a Jason agent using `jade.Boot`,
-rather than doing it from the Jason IDE. For example, to start a Jason agent called
-`bob` based on the AgentSpeak source code in file `auctioneer.asl`,
+The JADE agent wrapper should be used to start a Jason agent using `jade.Boot`. For example, to start a Jason agent called `bob` based on the AgentSpeak source code in file `auctioneer.asl`,
 execute the following command in a shell:
 
 ----------------------------------------------------------------
@@ -763,130 +762,130 @@ The same approach can be used for the environment:
 jade.Boot -agents "j_environment:jason.infra.jade.JadeEnvironment(j-project,test.mas2j)"
 -----------------------------------------------------------------------------------------
 
-[[how-can-i-customise-the-jade-sniffer]]
-How can I customise the Jade sniffer?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// [[how-can-i-customise-the-jade-sniffer]]
+// How can I customise the Jade sniffer?
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-In the project directory, create a file called `c-sniffer.properties`
-with your preferences (see
-http://www.cs.uta.fi/kurssit/AgO/harj/jade_harkat/doc/tools/sniffer/html/jdoc/jade/tools/sniffer/Sniffer.html
-for more details). Once started, Jason will copy this file to
-`sniffer.properties` to be used by the Jade’s sniffer. If no
-customisation is provided, Jason creates a default properties file with
-the names of the agents.
+// In the project directory, create a file called `c-sniffer.properties`
+// with your preferences (see
+// http://www.cs.uta.fi/kurssit/AgO/harj/jade_harkat/doc/tools/sniffer/html/jdoc/jade/tools/sniffer/Sniffer.html
+// for more details). Once started, Jason will copy this file to
+// `sniffer.properties` to be used by the Jade’s sniffer. If no
+// customisation is provided, Jason creates a default properties file with
+// the names of the agents.
 
-=== How to run my agents on several machines with JADE?
+// === How to run my agents on several machines with JADE?
 
-The play button of jEdit plugin always run all the agents in the
-current host even using JADE infrastructure. To run them on several
-machines there are two mechanisms.
+// The play button of jEdit plugin always run all the agents in the
+// current host even using JADE infrastructure. To run them on several
+// machines there are two mechanisms.
 
-[[defining-a-container-for-each-agent]]
-Defining a container for each agent
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+// [[defining-a-container-for-each-agent]]
+// Defining a container for each agent
+// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-In the project file, you have to setup the host’s name where the main
-container will run and the container where agents will run, as in the
-following example (this example is available in the demos directory):
+// In the project file, you have to setup the host’s name where the main
+// container will run and the container where agents will run, as in the
+// following example (this example is available in the demos directory):
 
-[source,jasonproject]
-----------------------------------------------------------------------------------------
-MAS demo_distributed_jade {
+// [source,jasonproject]
+// ----------------------------------------------------------------------------------------
+// MAS demo_distributed_jade {
 
-    infrastructure: Jade(main_container_host("localhost"))
-    // replace localhost by the name or IP of the host where the main container will run
+//     infrastructure: Jade(main_container_host("localhost"))
+//     // replace localhost by the name or IP of the host where the main container will run
 
-    agents:
-        a at "c1";    // agent a will run on the hots where container c1 will run
-        b at "c1";    // agent b will run on the host where container c1 will run
-        c at "c2" #3; // ....
-        d at "c1";
-}
-----------------------------------------------------------------------------------------
+//     agents:
+//         a at "c1";    // agent a will run on the hots where container c1 will run
+//         b at "c1";    // agent b will run on the host where container c1 will run
+//         c at "c2" #3; // ....
+//         d at "c1";
+// }
+// ----------------------------------------------------------------------------------------
 
-Steps to run the system:
+// Steps to run the system:
 
-1.  Create the Ant script to run the agents by either pressing play in
-the jEdit plugin or typing
-+
------------------------------------------------
-   $ cd <your project directory>
-   $ <jason dir>/scripts/mas2j <the .mas2j file>
------------------------------------------------
-+
-The script has the task `Main-Container` to run the JADE main container
-and tasks to start each container defined in the project (`c1` and `c2`,
-in the example above).
-2.  Go to host X and run the main container there by starting the main
-container task of the script:
-+
------------------------
-   $ cd bin
-   $ ant Main-Container
------------------------
-3.  Go to host Y and start container c1 there
-+
------------
-   $ ant c1
------------
-4.  Go to host Z and start container c2 there
-+
------------
-   $ ant c2
------------
+// 1.  Create the Ant script to run the agents by either pressing play in
+// the jEdit plugin or typing
+// +
+// -----------------------------------------------
+//    $ cd <your project directory>
+//    $ <jason dir>/scripts/mas2j <the .mas2j file>
+// -----------------------------------------------
+// +
+// The script has the task `Main-Container` to run the JADE main container
+// and tasks to start each container defined in the project (`c1` and `c2`,
+// in the example above).
+// 2.  Go to host X and run the main container there by starting the main
+// container task of the script:
+// +
+// -----------------------
+//    $ cd bin
+//    $ ant Main-Container
+// -----------------------
+// 3.  Go to host Y and start container c1 there
+// +
+// -----------
+//    $ ant c1
+// -----------
+// 4.  Go to host Z and start container c2 there
+// +
+// -----------
+//    $ ant c2
+// -----------
 
-[[defining-a-class-that-allocates-the-agents-to-containers]]
-Defining a class that allocates the agents to containers
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+// [[defining-a-class-that-allocates-the-agents-to-containers]]
+// Defining a class that allocates the agents to containers
+// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-In the second mechanism the `at` primitive of the project isn’t used, in
-its place a Java class is provided to indicate which containers have to
-be created and how agents are distributed on to them. The project
-definition is thus like the following (`myAllocator` is the name of the
-Java class and `[c1,c2]` is the list of containers).
+// In the second mechanism the `at` primitive of the project isn’t used, in
+// its place a Java class is provided to indicate which containers have to
+// be created and how agents are distributed on to them. The project
+// definition is thus like the following (`myAllocator` is the name of the
+// Java class and `[c1,c2]` is the list of containers).
 
-[source,jasonproject]
-----
-MAS demo_distributed_jade {
+// [source,jasonproject]
+// ----
+// MAS demo_distributed_jade {
 
-    infrastructure: Jade(
-        main_container_host("localhost"),    // replace localhost by the name or IP of the host where the main container will run
-        container_allocation("myAllocator",  // the name of the class that will allocate the agents to containers
-                             "[c1,c2]")      // the name and number of containers
-    )
+//     infrastructure: Jade(
+//         main_container_host("localhost"),    // replace localhost by the name or IP of the host where the main container will run
+//         container_allocation("myAllocator",  // the name of the class that will allocate the agents to containers
+//                              "[c1,c2]")      // the name and number of containers
+//     )
 
 
-    agents:
-        a;
-        b;
-        c #3;
-        d #5;
-}
-----
+//     agents:
+//         a;
+//         b;
+//         c #3;
+//         d #5;
+// }
+// ----
 
-In the above example (available in the demos/distributed-jade/case2
-directory), the class `myAllocator` allocates the same number of agents
-to each container. You can see the code of this class for details.
+// In the above example (available in the demos/distributed-jade/case2
+// directory), the class `myAllocator` allocates the same number of agents
+// to each container. You can see the code of this class for details.
 
-To run this system, replace the commands of step 1 of the previous
-section as follows (the other steps remain the same).
+// To run this system, replace the commands of step 1 of the previous
+// section as follows (the other steps remain the same).
 
-For Unix:
+// For Unix:
 
------------------------------------------------
-   $ cd <your project directory>
-   $ ant -f bin/build.xml compile
-   $ <jason dir>/scripts/mas2j <the .mas2j file>
------------------------------------------------
+// -----------------------------------------------
+//    $ cd <your project directory>
+//    $ ant -f bin/build.xml compile
+//    $ <jason dir>/scripts/mas2j <the .mas2j file>
+// -----------------------------------------------
 
-For Windows and other plaforms:
+// For Windows and other plaforms:
 
--------
-   > cd <your project directory>
-   > ant -f bin/build.xml compile
-   > set JASONLIB=<the Jason lib directory>
-   > java -classpath bin\classes;%JASONLIB%\jason.jar jason.mas2j.parser.mas2j  <the .mas2j file>
--------
+// -------
+//    > cd <your project directory>
+//    > ant -f bin/build.xml compile
+//    > set JASONLIB=<the Jason lib directory>
+//    > java -classpath bin\classes;%JASONLIB%\jason.jar jason.mas2j.parser.mas2j  <the .mas2j file>
+// -------
 
 [[agentspeak-language]]
 == AgentSpeak Language
