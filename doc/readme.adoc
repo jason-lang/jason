@@ -11,8 +11,8 @@ endif::[]
 == Installation
 
 * xref:./tutorials/vscode/readme.adoc[using Visual Studio Code]
-* xref:./jason-cli/readme.adoc[using a command shell]
-* xref:./tutorials/vscode-browser/readme.adoc[using Visual Studio Browser (via GitPod)]
+* xref:./jason-cli/readme.adoc[using a command shell] (no IDE)
+* xref:./tutorials/vscode-browser/readme.adoc[using Visual Studio Code in a Browser (via GitPod or Codespace)]
 
 == Tutorials
 * xref:./tutorials/getting-started/readme.adoc[Getting Started tutorial]
