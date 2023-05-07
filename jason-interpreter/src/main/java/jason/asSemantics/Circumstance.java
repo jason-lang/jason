@@ -33,7 +33,7 @@ public class Circumstance implements Serializable, ToDOM {
     private   Queue<Intention>         I;
     protected ActionExec               A;
     private   Queue<Message>           MB;
-    protected List<Option>             RP;
+    protected List<Option>             RP; // relevant plans
     protected List<Option>             AP;
     protected Event                    SE;
     protected Option                   SO;
@@ -48,6 +48,8 @@ public class Circumstance implements Serializable, ToDOM {
 
     private Map<String, Intention>     PI; // pending intentions, intentions suspended by any other reason
     private Map<String, Event>         PE; // pending events, events suspended by .suspend
+
+    private Term                       lastDeed; // last executed deed of an intention
 
     private Queue<CircumstanceListener> listeners = new ConcurrentLinkedQueue<>();
 
@@ -113,6 +115,7 @@ public class Circumstance implements Serializable, ToDOM {
     public void resetAct() {
         A  = null;
         SI = null;
+        lastDeed = null;
     }
 
     public Event addAchvGoal(Literal l, Intention i) {
@@ -923,6 +926,9 @@ public class Circumstance implements Serializable, ToDOM {
     public Option getSelectedOption() {
         return SO;
     }
+
+    protected void setLastDeed(Term d) { lastDeed = d; }
+    public Term getLastDeed() { return lastDeed; }
 
     /** clone E, I, MB, PA, PI, FA, and AI */
     public Circumstance clone() {

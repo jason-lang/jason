@@ -1,5 +1,6 @@
 package jason.asSemantics;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -56,16 +57,17 @@ import jason.util.RunnableSerializable;
 
 public class TransitionSystem implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = -5166620620196199391L;
 
     public enum State { StartRC, SelEv, RelPl, ApplPl, SelAppl, FindOp, AddIM, ProcAct, SelInt, ExecInt, ClrInt }
 
-    private transient Logger logger     = null;
+    private transient Logger logger  = null;
 
-    private Agent         ag         = null;
-    private AgArch        agArch     = null;
-    private Circumstance  C          = null;
-    private Settings      setts      = null;
+    private Agent         ag;
+    private AgArch        agArch;
+    private Circumstance  C;
+    private Settings      setts;
     //private State         step       = State.StartRC; // first step of the SOS
 
     private State         stepSense       = State.StartRC;
@@ -309,7 +311,7 @@ public class TransitionSystem implements Serializable {
             // is it a pending intention?
             if (intention != null) {
                 // unify the message answer with the .send fourth argument.
-                // the send that put the intention in Pending state was
+                // the .send that put the intention in Pending state was
                 // something like
                 //    .send(ag1,askOne, value, X)
                 // if the answer was tell 3, unifies X=3
@@ -438,7 +440,7 @@ public class TransitionSystem implements Serializable {
                 // possibly creating branches for these intentions
                 // an intention is interested in the event if some of its IM has sub-plans for it.
                 //
-                // pseudo code:
+                // pseudocode:
                 //     for all intentions i interested in the external event
                 //         create a clone intention of i to handle the event
                 //
@@ -924,6 +926,7 @@ public class TransitionSystem implements Serializable {
         Literal body = null;
         if (bTerm instanceof Literal)
             body = (Literal)bTerm;
+        C.setLastDeed(bTerm);
 
         switch (h.getBodyType()) {
 
@@ -1059,7 +1062,7 @@ public class TransitionSystem implements Serializable {
             b2.makeTermsAnnon(); // do not change body (but b2), to not interfere in addBel
             // to delete, create events as external to avoid that
             // remove/add create two events for the same intention
-            // (in future releases, creates a two branches for this operator)
+            // (in future releases, creates two branches for this operator)
 
             try {
                 List<Literal>[] result = ag.brf(null, b2, curInt); // the intention is not the new focus
@@ -1649,7 +1652,7 @@ public class TransitionSystem implements Serializable {
     }
 
     /**
-     * Schedule a task to be executed in the begin of the next reasoning cycle.
+     * Schedule a task to be executed in the beginning of the next reasoning cycle.
      * It is used mostly to change the C only by the TS thread (e.g. by .wait)
      */
     public void runAtBeginOfNextCycle(RunnableSerializable r) {
@@ -1714,7 +1717,7 @@ public class TransitionSystem implements Serializable {
         try {
             C.resetDeliberate();
 
-            // run tasks allocated to be performed in the begin of the cycle
+            // run tasks allocated to be performed in the beginning of the cycle
             Runnable r = taskForBeginOfCycle.poll();
             while (r != null) {
                 r.run(); //It is processed only things related to operations on goals/intentions resumed/suspended/finished It can be placed in the deliberate stage, but the problem is the sleep when the synchronous execution is adopted
@@ -1789,7 +1792,7 @@ public class TransitionSystem implements Serializable {
          try {
              C.reset();
 
-             // run tasks allocated to be performed in the begin of the cycle
+             // run tasks allocated to be performed in the beginning of the cycle
              Runnable r = taskForBeginOfCycle.poll();
              while (r != null) {
                  r.run();
