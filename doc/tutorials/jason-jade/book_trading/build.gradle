@@ -20,10 +20,9 @@ repositories {
 }
 
 dependencies {
-    implementation 'io.github.jason-lang:jason-interpreter:3.2.0'
-
+    implementation('io.github.jason-lang:jason-interpreter:3.2.1-SNAPSHOT')
     // to use locally installed jars:
-    implementation fileTree(dir: 'lib', include: '*.jar')
+    //implementation fileTree(dir: 'lib', include: '*.jar')
 }
 
 sourceSets {
@@ -45,9 +44,18 @@ task run (type: JavaExec, dependsOn: 'classes') {
     classpath sourceSets.main.runtimeClasspath
 }
 
-task runJade (type: JavaExec, dependsOn: 'classes') {
-    description 'runs the application with Jade infrastructure'
-    mainClass = 'jason.infra.jade.RunJadeMAS'
-    args = [ 'book_trading.mas2j' ]
+task runJohn (type: JavaExec, dependsOn: 'classes') {
+    description 'runs agent jhon using JADE platform'
+    mainClass = 'jade.Boot'
+    args = [ '-container', 'john:jason.infra.jade.JadeAgArch(src/agt/john.asl)' ]
     classpath sourceSets.main.runtimeClasspath
 }
+
+task runJadeAgs (type: JavaExec, dependsOn: 'classes') {
+    description 'runs normal JADE agents'
+    mainClass = 'jade.Boot'
+    args = [ '-gui', 'bob:examples.bookTrading.BookBuyerAgent(Harry)' ]
+    //args = [ '-container', '-gui', '-local-host', '127.0.0.1', 'bob:examples.bookTrading.BookBuyerAgent(Harry)' ]
+    classpath sourceSets.main.runtimeClasspath
+}
+

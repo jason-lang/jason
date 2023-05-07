@@ -69,7 +69,7 @@ public class df_deregister extends df_register {
     @Override
     public Object execute(final TransitionSystem ts, Unifier un, Term[] args) throws Exception {
         checkArguments(args);
-        RuntimeServicesFactory.get().dfDeRegister(ts.getAgArch().getAgName(), getService(args), getType(args));
+        ts.getAgArch().getRuntimeServices().dfDeRegister(ts.getAgArch().getAgName(), getService(args), getType(args));
         return true;
     }
 }

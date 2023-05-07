@@ -1,6 +1,6 @@
-// Agent john in project book_trading.mas2j
+// Agent john
 
-/* Initial beliefs and rules */
+/* Initial beliefs */
 
 // The book beliefs has three arguments:
 //   . the book name
