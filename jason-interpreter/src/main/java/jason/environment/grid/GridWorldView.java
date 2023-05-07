@@ -88,7 +88,7 @@ public class GridWorldView extends JFrame {
 
     public void drawEmpty(Graphics g, int x, int y) {
         g.setColor(Color.white);
-        g.fillRect(x * cellSizeW + 1, y * cellSizeH+1, cellSizeW-1, cellSizeH-1);
+        g.fillRect(x * cellSizeW + 1, y * cellSizeH+1, cellSizeW-2, cellSizeH-2);
         g.setColor(Color.lightGray);
         g.drawRect(x * cellSizeW, y * cellSizeH, cellSizeW, cellSizeH);
     }
@@ -107,7 +107,7 @@ public class GridWorldView extends JFrame {
             drawObstacle(g, x, y);
         }
 
-        int vl = GridWorldModel.OBSTACLE*2;
+        int vl = GridWorldModel.OBSTACLE*2; // the next  object after OBSTACLE
         while (vl < limit) {
             if ((model.data[x][y] & vl) != 0) {
                 draw(g, x, y, vl);
