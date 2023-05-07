@@ -76,7 +76,7 @@ public class df_search extends df_register {
     public Object execute(final TransitionSystem ts, Unifier un, Term[] args) throws Exception {
         checkArguments(args);
         ListTerm lt = new ListTermImpl();
-        for (String a: RuntimeServicesFactory.get().dfSearch(getService(args), getType(args))) {
+        for (String a: ts.getAgArch().getRuntimeServices().dfSearch(getService(args), getType(args))) {
             lt.add(new Atom(a));
         }
         return un.unifies(args[args.length-1], lt);

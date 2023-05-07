@@ -215,10 +215,7 @@ public class AgArch implements Comparable<AgArch>, Serializable {
             successor.wakeUpAct();
     }
 
-    /**
-     * @deprecated use RuntimeServicesFactory.get instead
-     */
-    @Deprecated
+    /** return agent specific run time services (e.g. jade agents implements its differently for each agent) */
     public RuntimeServices getRuntimeServices() {
         if (successor == null)
             return null;
