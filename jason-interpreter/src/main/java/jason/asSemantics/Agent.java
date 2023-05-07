@@ -16,6 +16,7 @@ import jason.bb.StructureWrapperForLiteral;
 import jason.functions.Count;
 import jason.functions.RuleToFunction;
 import jason.mas2j.ClassParameters;
+import jason.pl.PlanLibrary;
 import jason.runtime.Settings;
 import jason.runtime.SourcePath;
 import jason.util.Config;
@@ -51,7 +52,7 @@ public class Agent implements Serializable, ToDOM {
 
     // Members
     protected BeliefBase       bb = null;
-    protected PlanLibrary      pl = null;
+    protected PlanLibrary pl = null;
     protected TransitionSystem ts = null;
     protected String           aslSource = null;
 

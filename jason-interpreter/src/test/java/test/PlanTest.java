@@ -7,7 +7,7 @@ import jason.asSyntax.LiteralImpl;
 import jason.asSyntax.Plan;
 import jason.asSyntax.PlanBody;
 import jason.asSyntax.PlanBodyImpl;
-import jason.asSyntax.PlanLibrary;
+import jason.pl.PlanLibrary;
 import jason.asSyntax.Term;
 import jason.asSyntax.VarTerm;
 import jason.asSyntax.PlanBody.BodyType;

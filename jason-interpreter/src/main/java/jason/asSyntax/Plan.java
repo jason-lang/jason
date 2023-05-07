@@ -5,6 +5,7 @@ import java.io.StringReader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import jason.pl.PlanLibrary;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -39,7 +40,7 @@ public class Plan extends Structure implements Cloneable, Serializable {
 
     // new in JasonER
     private LogicalFormula    goalCondition;
-    private PlanLibrary       subplans;
+    private PlanLibrary subplans;
     private PlanLibrary       scope;
 
     private boolean isAtomic      = false;

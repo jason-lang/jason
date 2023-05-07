@@ -3,7 +3,7 @@ package jason.infra.local;
 import jason.JasonException;
 import jason.asSemantics.Agent;
 import jason.asSyntax.NumberTermImpl;
-import jason.asSyntax.PlanLibrary;
+import jason.pl.PlanLibrary;
 import jason.asSyntax.Trigger;
 import jason.mas2j.AgentParameters;
 import jason.mas2j.ClassParameters;
@@ -12,7 +12,6 @@ import jason.runtime.Settings;
 import jason.runtime.SourcePath;
 
 import java.io.StringReader;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
