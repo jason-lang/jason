@@ -16,8 +16,8 @@ endif::[]
 
 == Tutorials
 * xref:./tutorials/getting-started/readme.adoc[Getting Started tutorial]
-//* xref:./tutorials/jason-jade/readme.adoc[Interoperating with JADE]
 * xref:./tutorials/hello-bdi/readme.adoc[BDI concepts]
+* xref:./tutorials/jason-jade/readme.adoc[Interoperating with JADE]
 
 == Others
 
