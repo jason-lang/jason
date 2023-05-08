@@ -881,6 +881,7 @@ public class TransitionSystem implements Serializable {
         }
         Unifier     u = im.unif;
         PlanBody    h = im.getCurrentStep();
+        C.setLastDeed(h);
 
         Term bTerm = h.getBodyTerm();
 
@@ -926,7 +927,6 @@ public class TransitionSystem implements Serializable {
         Literal body = null;
         if (bTerm instanceof Literal)
             body = (Literal)bTerm;
-        C.setLastDeed(bTerm);
 
         switch (h.getBodyType()) {
 

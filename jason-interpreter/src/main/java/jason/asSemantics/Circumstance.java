@@ -12,14 +12,10 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import jason.asSyntax.*;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import jason.asSyntax.ASSyntax;
-import jason.asSyntax.Atom;
-import jason.asSyntax.Literal;
-import jason.asSyntax.Term;
-import jason.asSyntax.Trigger;
 import jason.asSyntax.Trigger.TEOperator;
 import jason.asSyntax.Trigger.TEType;
 import jason.infra.local.LocalAgArch;
@@ -49,7 +45,7 @@ public class Circumstance implements Serializable, ToDOM {
     private Map<String, Intention>     PI; // pending intentions, intentions suspended by any other reason
     private Map<String, Event>         PE; // pending events, events suspended by .suspend
 
-    private Term                       lastDeed; // last executed deed of an intention
+    private PlanBody                   lastDeed; // last executed deed of an intention
 
     private Queue<CircumstanceListener> listeners = new ConcurrentLinkedQueue<>();
 
@@ -927,8 +923,8 @@ public class Circumstance implements Serializable, ToDOM {
         return SO;
     }
 
-    protected void setLastDeed(Term d) { lastDeed = d; }
-    public Term getLastDeed() { return lastDeed; }
+    protected void setLastDeed(PlanBody d) { lastDeed = d; }
+    public PlanBody getLastDeed() { return lastDeed; }
 
     /** clone E, I, MB, PA, PI, FA, and AI */
     public Circumstance clone() {
