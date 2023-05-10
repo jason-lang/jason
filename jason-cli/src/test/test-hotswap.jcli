@@ -1,0 +1,20 @@
+mas start --console
+agent start bob --source-id=s1 {
+   +!g <- .print(g); .wait(500); !g.
+}
+agent mind bob --plans
+
+agent run-as bob { !g; }
+
+wait 4000
+
+echo "=========================="
+echo "changing the plan library!"
+
+agent load-into bob --source-id=s1 {
+   +!g <- .print(newg); .wait(200); !g.
+}
+agent mind bob --plans
+
+wait 4000
+mas stop --exit

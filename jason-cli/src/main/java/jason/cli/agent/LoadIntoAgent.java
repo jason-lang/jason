@@ -25,7 +25,10 @@ public class LoadIntoAgent implements Runnable {
     @CommandLine.Option(names = { "--source" }, defaultValue = "", paramLabel = "<source file>", description = "file (or URL) for the source code of the agent.")
     String sourceFile;
 
-    @CommandLine.Option(names = { "--mas-name" }, paramLabel = "<mas name>", defaultValue = "", description = "MAS unique identification")
+    @CommandLine.Option(names = { "--source-id" }, defaultValue = "", paramLabel = "<string>", description = "identifiers of the plans")
+    String sourceId;
+
+    @CommandLine.Option(names = { "--mas-name" }, paramLabel = "<mas name>", defaultValue = "", description = "MAS identification where to find the agent")
     String masName;
 
     @Parameters(hidden = true)  // "hidden": don't show this parameter in usage help message
@@ -49,10 +52,17 @@ public class LoadIntoAgent implements Runnable {
             return;
         }
 
+        boolean replace = false;
+        if (sourceId.isEmpty()) {
+            sourceId = "jason-cli";
+        } else {
+            replace = true;
+        }
+
         var code = getCode(sourceFile, allParameters);
         try {
             if (!code.isEmpty()) {
-                RunningMASs.getRTS(masName).loadASL(agName, code, "jasonCLI-parameter");
+                RunningMASs.getRTS(masName).loadASL(agName, code, sourceId, replace);
             } else {
                 parent.parent.errorMsg("no code informed. E.g.: agent load-into bob { +!g <- .print(ok). }");
             }

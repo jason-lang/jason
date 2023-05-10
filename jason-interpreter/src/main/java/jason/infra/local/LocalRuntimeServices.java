@@ -3,6 +3,8 @@ package jason.infra.local;
 import jason.JasonException;
 import jason.asSemantics.Agent;
 import jason.asSyntax.NumberTermImpl;
+import jason.asSyntax.Plan;
+import jason.asSyntax.Pred;
 import jason.pl.PlanLibrary;
 import jason.asSyntax.Trigger;
 import jason.mas2j.AgentParameters;
@@ -12,6 +14,8 @@ import jason.runtime.Settings;
 import jason.runtime.SourcePath;
 
 import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -167,16 +171,29 @@ public class LocalRuntimeServices extends BaseRuntimeServices {
     }
 
     @Override
-    public String loadASL(String agName, String code, String sourceId) {
+    public String loadASL(String agName, String code, String sourceId, boolean replace) {
         LocalAgArch agArch = masRunner.getAg(agName);
         if (agArch == null)
             return "no agent named "+agName;
 
         try {
             var ag = agArch.getTS().getAg();
-            ag.parseAS(new StringReader(code), sourceId);
-            ag.addInitialBelsInBB();
-            ag.addInitialGoalsInTS();
+            synchronized (ag.getPL().getLock()) {
+                if (replace) {
+                    var toRem = new ArrayList<Pred>();
+                    for (var p : ag.getPL()) {
+                        if (p.getSourceFile().equals(sourceId)) {
+                            toRem.add(p.getLabel());
+                        }
+                    }
+                    for (var l : toRem) {
+                        ag.getPL().remove(l);
+                    }
+                }
+                ag.parseAS(new StringReader(code), sourceId);
+                ag.addInitialBelsInBB();
+                ag.addInitialGoalsInTS();
+            }
             return "ok";
         } catch (Exception e) {
             throw new RuntimeException(e);

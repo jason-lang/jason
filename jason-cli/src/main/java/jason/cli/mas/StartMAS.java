@@ -105,8 +105,8 @@ public class StartMAS implements Runnable {
             );
             var mclass = cl.loadClass(CLILocalMAS.class.getName());
             var r = (RunLocalMAS)mclass.getDeclaredConstructor().newInstance();
-            if (!masName.isEmpty())  r.addInitArg("masName", masName);
-            if (!envClass.isEmpty()) r.addInitArg("envName", envClass);
+            r.addInitArg("masName", masName);
+            r.addInitArg("envName", envClass);
             r.init(args.toArray(new String[args.size()]));
             r.create();
             new Thread( (Runnable) r).start();

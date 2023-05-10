@@ -6,8 +6,6 @@ import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Parameters;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +27,9 @@ public class StartAgent implements Runnable {
 
     @CommandLine.Option(names = { "--source" }, defaultValue = "", paramLabel = "<source file>", description = "file (or URL) for the source code of the agent.")
     String sourceFile;
+
+    @CommandLine.Option(names = { "--source-id" }, defaultValue = "", paramLabel = "<string>", description = "identifiers of the plans")
+    String sourceId;
 
     @CommandLine.Option(names = { "--mas-name" }, paramLabel = "<mas name>", defaultValue = "", description = "MAS unique identification")
     String masName;
@@ -74,6 +75,13 @@ public class StartAgent implements Runnable {
             return;
         }
 
+        boolean replace = false;
+        if (sourceId.isEmpty()) {
+            sourceId = "jason-cli";
+        } else {
+            replace = true;
+        }
+
         String code = LoadIntoAgent.getCode(sourceFile, allParameters);
 
         // load code into agents
@@ -81,7 +89,7 @@ public class StartAgent implements Runnable {
             // load code informed as parameter
             if (code != null && !code.isEmpty()) {
                 try {
-                    rt.loadASL(agName, code, "jasonCLI-parameter");
+                    rt.loadASL(agName, code, sourceId, replace);
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }

@@ -64,8 +64,8 @@ public class DelegatedRuntimeServices implements RuntimeServices {
     }
 
     @Override
-    public String loadASL(String agName, String code, String sourceId) throws RemoteException {
-        return delegate.loadASL(agName, code, sourceId);
+    public String loadASL(String agName, String code, String sourceId, boolean replace) throws RemoteException {
+        return delegate.loadASL(agName, code, sourceId, replace);
     }
 
     public boolean killAgent(String agName, String byAg, int deadline) throws RemoteException {

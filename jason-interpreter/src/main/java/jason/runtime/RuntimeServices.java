@@ -78,8 +78,8 @@ public interface RuntimeServices extends Remote {
     /** gets a copy of some agent (BB, PL, ...) */
     default public Agent getAgentSnapshot(String agName) throws RemoteException { return null; }
 
-    /** loads some ASL code into some agent */
-    default public String loadASL(String agName, String code, String sourceId) throws RemoteException { return "not implemented"; }
+    /** loads some ASL code into some agent, if replace is true, the previous plans from the sourceID will be removed */
+    default public String loadASL(String agName, String code, String sourceId, boolean replace) throws RemoteException { return "not implemented"; }
 
     /** Stops all MAS (the agents, the environment, the controller, ...) */
     public void stopMAS(int deadline, boolean stopJVM, int exitValue) throws RemoteException, Exception;
