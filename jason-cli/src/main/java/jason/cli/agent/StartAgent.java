@@ -6,6 +6,8 @@ import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Parameters;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
@@ -57,14 +59,7 @@ public class StartAgent implements Runnable {
             return;
         }
 
-        String code = null;
-        if (allParameters.size()>0) {
-            var last = allParameters.get( allParameters.size()-1).trim();
-            if (last.startsWith("{")) {
-                code =  last.substring(1,last.length()-1).trim();
-            }
-        }
-
+        // create the agents
         var ags = new ArrayList<String>();
         var rt =  RunningMASs.getRTS(masName);
         try {
@@ -72,13 +67,16 @@ public class StartAgent implements Runnable {
                 var n = agName;
                 if (instances>1)
                     n = agName + i;
-                ags.add(rt.createAgent( n, sourceFile, null, null, null, null, null));
+                ags.add(rt.createAgent( n, null, null, null, null, null, null));
             }
         } catch (Exception e) {
             parent.parent.errorMsg("error creating agent: "+e.getMessage());
             return;
         }
 
+        String code = LoadIntoAgent.getCode(sourceFile, allParameters);
+
+        // load code into agents
         for (String a: ags) {
             // load code informed as parameter
             if (code != null && !code.isEmpty()) {

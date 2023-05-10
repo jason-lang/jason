@@ -34,6 +34,9 @@ public class StartMAS implements Runnable {
     @Option(names = { "--cp" }, defaultValue = "", paramLabel = "<classpath>", description = "directories where java classes can be found (for environment implementation, for instance)")
     String classPathArg;
 
+    @Option(names = { "--mas2j" }, defaultValue = "", paramLabel = "<file>", description = "runs jason project without gradle (offline), java classes should be compiled before running")
+    String mas2j;
+
     @CommandLine.ParentCommand
     protected MAS parent;
 
@@ -44,7 +47,6 @@ public class StartMAS implements Runnable {
             parent.parent.errorMsg("open another terminal for the new MAS, or stop the current one with 'mas stop'");
             return;
         }
-        var args = new ArrayList<String>();
 
         var existing = RunningMASs.getAllRunningMAS().keySet();
         if (masName.isEmpty()) {
@@ -67,7 +69,14 @@ public class StartMAS implements Runnable {
             return;
         }
 
-        args.add("--empty-mas");
+        var args = new ArrayList<String>();
+
+        if (mas2j.isEmpty()) {
+            args.add("--empty-mas");
+        } else {
+            args.add(0, mas2j);
+            masName = "";
+        }
 
         if (console) {
             args.add("--log-conf");
@@ -96,8 +105,8 @@ public class StartMAS implements Runnable {
             );
             var mclass = cl.loadClass(CLILocalMAS.class.getName());
             var r = (RunLocalMAS)mclass.getDeclaredConstructor().newInstance();
-            r.addInitArg("masName", masName);
-            r.addInitArg("envName", envClass);
+            if (!masName.isEmpty())  r.addInitArg("masName", masName);
+            if (!envClass.isEmpty()) r.addInitArg("envName", envClass);
             r.init(args.toArray(new String[args.size()]));
             r.create();
             new Thread( (Runnable) r).start();
