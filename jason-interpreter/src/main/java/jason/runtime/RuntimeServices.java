@@ -54,7 +54,7 @@ public interface RuntimeServices extends Remote {
      * @param source: the agent used as source for beliefs, plans, ...
      * @param archClasses: agent architectures that will be used
      * @param agName: the name of the clone
-     * @return the agent arch created
+     * return the agent arch created
      * @throws JasonException
      */
     default public void clone(Agent source, List<String> archClasses, String agName) throws RemoteException, JasonException { }

@@ -94,7 +94,7 @@ public class StartMAS implements Runnable {
         classPathList.add("bin/classes/");
 
         try {
-            parent.parent.println("starting MAS "+masName+" ...");
+            parent.parent.println("starting MAS "+masName+"...");
             if (args.size() > 1)
                 parent.parent.println("         "+args);
 
