@@ -5,7 +5,8 @@ import jason.util.Config;
 import java.io.File;
 
 
-public class Run extends  Common {
+/** runs a mas2j using gradle */
+public class Run extends Common {
 
     public void run(String mas2j, boolean verbose) {
         // use gradle to run
