@@ -10,7 +10,7 @@ import java.io.*;
 
 @Command(
     name = "add-ia",
-    description = "adds a new internal action into the application"
+    description = "adds the source code a new internal action into the application"
 )
 public class AddInternalAction extends Common implements Runnable {
 

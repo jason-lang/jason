@@ -7,8 +7,26 @@ You can get help for any command with `--help`. For example:
 jason mas start --help
 ```
 
+## Application level
+
+`jason app` is used to manage the source code of some application.
+
+```
+Usage: jason app (create | compile | add-agent | add-gradle | add-ia )
+commands to handle applications
+
+Commands:
+  create      creates the files of a new application
+  compile     compiles the java classes of an application (using Gradle)
+  add-agent   adds the code of a new agent into the application
+  add-gradle  adds a Gradle script for the application
+  add-ia      adds the source code a new internal action into the application
+```
+
+
 ## MAS level
 
+`jason mas` is used to manage the execution of applications.
 
 ```
 Usage: jason mas (start | stop | list)
@@ -57,6 +75,9 @@ stops a MAS
 
 ## Agent level
 
+`jason agent` is used to manage the execution of agents.
+
+
 ```
 Usage: jason agent (start | stop | list | run-as | load-into | mind | status)
 commands to handle agents
@@ -97,15 +118,3 @@ jason agent start bob { +!g <- .print(ok). }
 
 Type `jason agent stop --help` for details of `stop` command ...
 
-## Application level
-
-```
-Usage: jason app (create | compile | add-agent | add-gradle )
-commands to handle applications
-
-Commands:
-  create      creates the files of a new application
-  compile     compiles the java classes of an application
-  add-agent   adds a new agent into the application
-  add-gradle  adds a Gradle script for the application
-```

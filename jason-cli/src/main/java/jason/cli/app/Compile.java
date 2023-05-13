@@ -8,7 +8,7 @@ import java.io.File;
 
 @Command(
     name = "compile",
-    description = "compiles the java classes of the application in the current directory"
+    description = "compiles the java classes of the application in the current directory (using Gradle)"
 )
 public class Compile extends Common implements Runnable {
 

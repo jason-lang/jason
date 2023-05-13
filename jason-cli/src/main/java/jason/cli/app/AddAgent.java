@@ -8,7 +8,7 @@ import java.io.*;
 
 @Command(
     name = "add-agent",
-    description = "adds a new agent into the application"
+    description = "adds the code of a new agent into the application"
 )
 public class AddAgent extends Common implements Runnable {
 

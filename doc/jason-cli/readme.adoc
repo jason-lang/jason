@@ -43,7 +43,8 @@ jason app add-gradle
 and then run it with `./gradlew run`.
 
 
-More details and commands with:
+More details and commands with (or xref:./commands.adoc[here])
+:
 
 ```
 jason app
