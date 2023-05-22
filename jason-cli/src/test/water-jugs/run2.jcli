@@ -1,0 +1,4 @@
+app compile
+mas start --mas2j=water_jugs.mas2j --console --no-net
+wait 1000
+mas stop --exit

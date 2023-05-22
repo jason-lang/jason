@@ -25,7 +25,6 @@ public class FunctionRegister extends DefaultDirective implements Directive {
     // add known global functions (can be computed without an agent reference)
     static {
         addJasonFunction(Abs.class);
-        addJasonFunction(Average.class);
         addJasonFunction(acos.class);
         addJasonFunction(asin.class);
         addJasonFunction(atan.class);

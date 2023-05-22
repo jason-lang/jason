@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import jason.JasonException;
 import jason.asSemantics.Message;
 import jason.asSemantics.Unifier;
 import jason.asSyntax.ASSyntax;
@@ -1038,7 +1039,7 @@ public class TermTest extends TestCase {
     }
 
     // Tests sent by Tim Cleaver (in jason-bugs list)
-    public void testObTerm() {
+    public void testObTerm() throws JasonException {
         ObjectTerm term = new ObjectTermImpl("test");
         assertTrue(term.equals(term));
 
@@ -1204,6 +1205,9 @@ public class TermTest extends TestCase {
                 + "    \"predicate\": \"alice\"\n"
                 + "}", t1.getAsJsonStr());
 
+        t1 = ASSyntax.parseTerm("[a,4,[11,22]]");
+        assertEquals("[{\"functor\":\"a\",\"predicate\":\"a\"},4.0,[11.0,22.0]]", t1.getAsJson().toString());
+
         t1 = ASSyntax.parseLiteral("~alice(female,10)");
         assertEquals("\n"
                 + "{\n"
@@ -1261,7 +1265,7 @@ public class TermTest extends TestCase {
                 + "}", t1.getAsJsonStr());*/
 
         Message m = new Message("tell", "bob", "karlos", ASSyntax.parseLiteral("b(a,[2,1])"), "myuniqueid");
-        System.out.println(m.getAsJsonStr());
+        //System.out.println(m.getAsJsonStr());
         assertEquals("\n"
                 + "{\n"
                 + "    \"performative\": \"tell\",\n"

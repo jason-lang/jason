@@ -1,17 +1,17 @@
-package jason.asSyntax;
+package jason.pl;
 
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.Serial;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import jason.asSemantics.CircumstanceListener;
+import jason.asSyntax.*;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -23,49 +23,51 @@ import jason.bb.BeliefBase;
 import jason.util.Config;
 import jason.util.ToDOM;
 
-/** Represents a set of plans used by an agent
-
-    @has - plans 0..* Plan
-*/
+/** Represents a set of plans used by an agent */
 public class PlanLibrary implements Iterable<Plan>, Serializable, ToDOM {
 
+    @Serial
     private static final long serialVersionUID = 1913142118716665555L;
 
     public static String KQML_PLANS_FILE = "kqmlPlans.asl";
 
     /** a MAP from TE to a list of relevant plans */
-    private Map<PredicateIndicator,List<Plan>> relPlans = new ConcurrentHashMap<>();
+    private final Map<PredicateIndicator,List<Plan>> relPlans = new ConcurrentHashMap<>();
 
     /**
      * All plans as defined in the AS code (maintains the order of the plans)
      */
-    private List<Plan> plans = new ArrayList<>();
+    private final List<Plan> plans = new ArrayList<>();
 
     /** list of plans that have var as TE */
-    private List<Plan> varPlans = new ArrayList<>();
+    private final List<Plan> varPlans = new ArrayList<>();
 
     /** A map from labels to plans */
-    private Map<String,Plan> planLabels = new ConcurrentHashMap<>();
+    private final Map<String,Plan> planLabels = new ConcurrentHashMap<>();
 
     private boolean hasMetaEventPlans = false;
     private boolean hasJagPlans = false; // plans for sleep/wake signals
 
-    private static AtomicInteger lastPlanLabel = new AtomicInteger(0);
+    private static final AtomicInteger lastPlanLabel = new AtomicInteger(0);
 
     private boolean hasUserKqmlReceived = false;
 
     //private Logger logger = Logger.getLogger(PlanLibrary.class.getName());
 
-    private transient Object lockPL = new Object();
+    private final transient Object lockPL;
 
     private PlanLibrary father = null;
 
     private boolean hasPlansForUpdateEvents = false;
 
+    private Queue<PlanLibraryListener> listeners = new ConcurrentLinkedQueue<>();
+
     public PlanLibrary() {
+        lockPL = new Object();
     }
 
     public PlanLibrary(PlanLibrary father) {
+        this();
         this.father = father;
     }
 
@@ -88,68 +90,22 @@ public class PlanLibrary implements Iterable<Plan>, Serializable, ToDOM {
         return lockPL;
     }
 
+    @Serial
     private void readObject(ObjectInputStream inputStream) throws IOException, ClassNotFoundException {
         inputStream.defaultReadObject();
-        lockPL = new Object();
     }
-
-
-    /**
-     *  Add a new plan written as a String. The source
-     *  normally is "self" or the agent that sent this plan.
-     *  If the PL already has a plan equals to "stPlan", only a
-     *  new source is added.
-     *
-     *  The plan is added in the end of the PlanLibrary.
-     *
-     *  @returns the plan just added
-     *  @deprecated parse the plan before (ASSyntax methods) and call add(Plan, ...) methods
-     */
-    @Deprecated
-    public Plan add(StringTerm stPlan, Term tSource) throws ParseException, JasonException {
-        return add(stPlan, tSource, false);
-    }
-
-    /**
-     *  Add a new plan written as a String. The source
-     *  normally is "self" or the agent that sent this plan.
-     *  If the PL already has a plan equals to "stPlan", only a
-     *  new source is added.
-     *
-     *  If <i>before</i> is true, the plan will be added in the
-     *  begin of the PlanLibrary; otherwise, it is added in
-     *  the end.
-     *
-     *  @returns the plan just added
-     *  @deprecated parse the plan before (ASSyntax methods) and call add(Plan, ...) methods
-     */
-    @Deprecated
-    public Plan add(StringTerm stPlan, Term tSource, boolean before) throws ParseException, JasonException {
-        String sPlan = stPlan.getString();
-        // remove quotes \" -> "
-        StringBuilder sTemp = new StringBuilder();
-        for (int c=0; c <sPlan.length(); c++) {
-            if (sPlan.charAt(c) != '\\') {
-                sTemp.append(sPlan.charAt(c));
-            }
-        }
-        sPlan  = sTemp.toString();
-        Plan p = ASSyntax.parsePlan(sPlan);
-        return add(p,tSource,before);
-    }
-
 
     /**
      *  Add a new plan in PL. The source
      *  normally is "self" or the agent that sent this plan.
      *  If the PL already has a plan equals to the parameter p, only a
      *  new source is added.
-     *
+     * <p>
      *  If <i>before</i> is true, the plan will be added in the
-     *  begin of the PlanLibrary; otherwise, it is added in
+     *  beginning of the PlanLibrary; otherwise, it is added in
      *  the end.
-     *
-     *  @returns the plan just added
+     * <p>
+     *  returns the plan just added
      */
     public Plan add(Plan p, Term source, boolean before) throws JasonException {
         synchronized (lockPL) {
@@ -179,14 +135,13 @@ public class PlanLibrary implements Iterable<Plan>, Serializable, ToDOM {
      * plans depending on the boolean parameter.
      *
      * @param p The plan to be added to the plan library
-     * @param before Whether or not to place the new plan before others
-     * @throws JasonException
+     * @param before Whether to place the new plan before others
      */
     public Plan add(Plan p, boolean before) throws JasonException {
         p.setScope(this);
         synchronized (lockPL) {
             // test p.label
-            if (p.getLabel() != null && planLabels.keySet().contains( getStringForLabel(p.getLabel()))) {
+            if (p.getLabel() != null && planLabels.containsKey( getStringForLabel(p.getLabel()))) {
                 // test if the new plan is equal, in this case, just add a source
                 Plan planInPL = get(p.getLabel());
                 if (p.equals(planInPL)) {
@@ -212,7 +167,7 @@ public class PlanLibrary implements Iterable<Plan>, Serializable, ToDOM {
 
             Trigger pte = p.getTrigger();
             if (pte.getLiteral().getFunctor().equals(kqmlReceivedFunctor)) {
-                // is it a KQML plan from a file different than the one provided by Jason?
+                // is it a KQML plan from a file different from the one provided by Jason?
                 if (! (p.getSrcInfo() != null && KQML_PLANS_FILE.equals(p.getSrcInfo().getSrcFile()))) {
 //                if (! (p.getSrcInfo() != null && p.getSrcInfo().getSrcFile().endsWith(".jar!/asl/kqmlPlans.asl"))) {
                     hasUserKqmlReceived = true;
@@ -264,6 +219,9 @@ public class PlanLibrary implements Iterable<Plan>, Serializable, ToDOM {
             else
                 plans.add(p);
 
+            if (hasListener())
+                for (PlanLibraryListener l : listeners)
+                    l.planAdded(p);
             return p;
         }
     }
@@ -289,7 +247,7 @@ public class PlanLibrary implements Iterable<Plan>, Serializable, ToDOM {
         // use functor + terms
         StringBuilder l = new StringBuilder();
         if (p.getNS() != Literal.DefaultNS)
-            l.append(p.getNS()+"::");
+            l.append(p.getNS()).append("::");
         l.append(p.getFunctor());
         if (p.hasTerm())
             for (Term t: p.getTerms())
@@ -314,7 +272,7 @@ public class PlanLibrary implements Iterable<Plan>, Serializable, ToDOM {
         String l;
         do {
             l = "p__" + (lastPlanLabel.incrementAndGet());
-        } while (planLabels.keySet().contains(l));
+        } while (planLabels.containsKey(l));
         return new Pred(l);
     }
 
@@ -399,14 +357,13 @@ public class PlanLibrary implements Iterable<Plan>, Serializable, ToDOM {
                     relPlans.remove(p.getTrigger().getPredicateIndicator());
                 }
             }
+
+            if (hasListener())
+                for (PlanLibraryListener l : listeners)
+                    l.planRemoved(p);
+
             return p;
         }
-    }
-
-    /** @deprecated use hasCandidatePlan(te) instead */
-    @Deprecated
-    public boolean isRelevant(Trigger te) {
-        return hasCandidatePlan(te);
     }
 
     public boolean hasCandidatePlan(Trigger te) {
@@ -416,12 +373,6 @@ public class PlanLibrary implements Iterable<Plan>, Serializable, ToDOM {
             return getCandidatePlans(te) != null;
     }
 
-
-    /** @deprecated use getCandidatePlans(te) instead */
-    @Deprecated
-    public List<Plan> getAllRelevant(Trigger te) {
-        return getCandidatePlans(te);
-    }
 
     public List<Plan> getCandidatePlans(Trigger te) {
         synchronized (lockPL) {
@@ -466,42 +417,56 @@ public class PlanLibrary implements Iterable<Plan>, Serializable, ToDOM {
         return pl;
     }
 
+
+    public boolean hasListener() {
+        return !listeners.isEmpty();
+    }
+    public void addListener(PlanLibraryListener el) {
+        listeners.add(el);
+    }
+
+    public void removeListener(PlanLibraryListener el) {
+        if (el != null) {
+            listeners.remove(el);
+        }
+    }
+
     public String toString() {
         return plans.toString();
     }
 
     /** get as txt */
     public String getAsTxt(boolean includeKQMLPlans) {
-        Map<String, StringBuilder> splans = new HashMap<>();
+        Map<String, StringBuilder> sPlans = new HashMap<>();
         StringBuilder r;
         for (Plan p: plans) {
-            r = splans.get(p.getSourceFile());
+            r = sPlans.get(p.getSourceFile());
             if (r == null) {
                 r = new StringBuilder();
                 if (p.getSourceFile().isEmpty()) {
                     r.append("\n\n// plans without file\n\n");
                 } else {
-                    r.append("\n\n// plans from "+p.getSourceFile()+"\n\n");
+                    r.append("\n\n// plans from ").append(p.getSourceFile()).append("\n\n");
                 }
-                splans.put(p.getSourceFile(), r);
+                sPlans.put(p.getSourceFile(), r);
             }
-            r.append(p.toString()+"\n");
+            r.append(p).append("\n");
         }
 
         r = new StringBuilder();
         StringBuilder end = new StringBuilder("\n");
-        for (String f: splans.keySet()) {
+        for (String f: sPlans.keySet()) {
             if (f.contains("kqmlPlans"))
                 if (includeKQMLPlans)
-                    end.append(splans.get(f));
+                    end.append(sPlans.get(f));
                 else
                     continue;
             if (f.isEmpty())
-                end.append(splans.get(f));
+                end.append(sPlans.get(f));
             else
-                r.append(splans.get(f));
+                r.append(sPlans.get(f));
         }
-        return r.toString()+end.toString();
+        return r.toString()+end;
     }
 
     // for cache
@@ -512,13 +477,13 @@ public class PlanLibrary implements Iterable<Plan>, Serializable, ToDOM {
         if (eDOMPlans != null)
             return eDOMPlans;
 
-        eDOMPlans = (Element) document.createElement("plans");
+        eDOMPlans = document.createElement("plans");
         String lastFunctor = null;
         synchronized (lockPL) {
             for (Plan p: plans) {
                 String currentFunctor = p.getTrigger().getLiteral().getFunctor();
                 if (lastFunctor != null && !currentFunctor.equals(lastFunctor)) {
-                    eDOMPlans.appendChild((Element) document.createElement("new-set-of-plans"));
+                    eDOMPlans.appendChild(document.createElement("new-set-of-plans"));
                 }
                 lastFunctor = currentFunctor;
                 eDOMPlans.appendChild(p.getAsDOM(document));

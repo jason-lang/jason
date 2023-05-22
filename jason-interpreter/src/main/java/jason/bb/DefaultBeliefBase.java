@@ -1,27 +1,19 @@
 package jason.bb;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Deque;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.LinkedBlockingDeque;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
+import jason.JasonException;
 import jason.asSemantics.Agent;
 import jason.asSemantics.Unifier;
 import jason.asSyntax.Atom;
 import jason.asSyntax.Literal;
 import jason.asSyntax.PredicateIndicator;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
+import java.io.Serializable;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.LinkedBlockingDeque;
+import java.util.logging.Logger;
 
 /**
  * Default implementation of Jason BB.
@@ -109,19 +101,21 @@ public class DefaultBeliefBase extends BeliefBase implements Serializable {
     }
 
     @Override
-    public boolean add(Literal l) {
+    public boolean add(Literal l) throws JasonException {
         return add(l, false);
     }
 
     @Override
-    public boolean add(int index, Literal l) {
+    public boolean add(int index, Literal l) throws JasonException {
         return add(l, index != 0);
     }
 
-    protected boolean add(Literal l, boolean addInEnd) {
+    protected boolean add(Literal l, boolean addInEnd) throws JasonException {
         if (!l.canBeAddedInBB()) {
-            logger.log(Level.SEVERE, "Error: '"+l+"' can not be added in the belief base.");
-            return false;
+            throw new JasonException("Error: '"+l+"' can not be added in the belief base.");
+        }
+        if (l.getNS().isVar()) {
+            throw new JasonException("Error: '"+l+"' can no be placed in an unground namespace "+l.getNS()+".");
         }
 
         Literal bl = contains(l);
@@ -360,7 +354,11 @@ public class DefaultBeliefBase extends BeliefBase implements Serializable {
     public BeliefBase clone() {
         DefaultBeliefBase bb = new DefaultBeliefBase();
         for (Literal b: this) {
-            bb.add(1, b.copy());
+            try {
+                bb.add(1, b.copy());
+            } catch (JasonException e) {
+                e.printStackTrace();
+            }
         }
         return bb;
     }

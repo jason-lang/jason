@@ -17,8 +17,8 @@ import java.io.PrintWriter;
         // version = "1.0",
         versionProvider = jason.cli.VersionProvider.class,
         mixinStandardHelpOptions = true,
-        subcommands = {  MAS.class, Agent.class, Application.class, Echo.class, Wait.class },
-        synopsisSubcommandLabel = "(mas | agent)"
+        subcommands = {  Application.class, MAS.class, Agent.class, Echo.class, Wait.class },
+        synopsisSubcommandLabel = "(app | mas | agent | <mas2j  file>)"
 )
 public class JasonCommands {
 

@@ -16,6 +16,7 @@ import jason.bb.StructureWrapperForLiteral;
 import jason.functions.Count;
 import jason.functions.RuleToFunction;
 import jason.mas2j.ClassParameters;
+import jason.pl.PlanLibrary;
 import jason.runtime.Settings;
 import jason.runtime.SourcePath;
 import jason.util.Config;
@@ -51,7 +52,7 @@ public class Agent implements Serializable, ToDOM {
 
     // Members
     protected BeliefBase       bb = null;
-    protected PlanLibrary      pl = null;
+    protected PlanLibrary pl = null;
     protected TransitionSystem ts = null;
     protected String           aslSource = null;
 
@@ -123,9 +124,13 @@ public class Agent implements Serializable, ToDOM {
         //if (ts.getSettings().hasQueryProfiling()) qProfiling = new QueryProfiling(this);
         //if (ts.getSettings().hasQueryCache())     qCache = new QueryCacheSimple(this, qProfiling);
 
-        if (! "false".equals(Config.get().getProperty(Config.START_WEB_MI))) MindInspectorWeb.get().registerAg(this);
+        addToMindInspectorWeb();
     }
 
+    public void addToMindInspectorWeb() {
+        if (! "false".equals(Config.get().getProperty(Config.START_WEB_MI)))
+            MindInspectorWeb.get().registerAg(this);
+    }
 
     /** parse and load the initial agent code + kqml plans + project bels and goals, asSrc may be null */
     public void loadInitialAS(String asSrc) throws Exception {
@@ -245,13 +250,16 @@ public class Agent implements Serializable, ToDOM {
         try {
             a = this.getClass().getConstructor().newInstance();
         } catch (InstantiationException e1) {
-            logger.severe(" cannot create derived class" +e1);
+            logger.severe(" cannot create derived class" + e1);
             return null;
         } catch (Exception e2) {
-            logger.severe(" cannot create derived class" +e2);
+            logger.severe(" cannot create derived class" + e2);
             return null;
         }
+        return cloneInto(arch, a);
+    }
 
+    public Agent cloneInto(AgArch arch, Agent a) {
         a.setLogger(arch);
         if (this.getTS().getSettings().verbose() >= 0)
             a.logger.setLevel(this.getTS().getSettings().logLevel());
@@ -267,7 +275,11 @@ public class Agent implements Serializable, ToDOM {
         }
         a.aslSource = this.aslSource;
         a.internalActions = new HashMap<>();
-        a.setTS(new TransitionSystem(a, this.getTS().getC().clone(), this.getTS().getSettings(), arch));
+        a.setTS(new TransitionSystem(a,
+                this.getTS().getC().clone(),
+                this.getTS().getSettings(),
+                arch));
+        a.getTS().setLogger(arch);
         if (a.getPL().hasMetaEventPlans())
             a.getTS().addGoalListener(new GoalListenerForMetaEvents(a.getTS()));
 
@@ -460,7 +472,7 @@ public class Agent implements Serializable, ToDOM {
     }
 
     /** add the initial beliefs in BB and produce the corresponding events */
-    public void addInitialBelsInBB() throws RevisionFailedException {
+    public void addInitialBelsInBB() throws JasonException {
         // Once beliefs are stored in a Stack in the BB, insert them in inverse order
         for (int i=initialBels.size()-1; i >=0; i--)
             addInitBel(initialBels.get(i));
@@ -478,7 +490,7 @@ public class Agent implements Serializable, ToDOM {
             }
     }
 
-    private void addInitBel(Literal b) throws RevisionFailedException {
+    private void addInitBel(Literal b) throws JasonException {
         // if l is not a rule and has free vars (like l(X)), convert it into a rule like "l(X) :- true."
         if (!b.isRule() && !b.isGround())
             b = new Rule(b,Literal.LTrue);

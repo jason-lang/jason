@@ -8,7 +8,7 @@ import jason.JasonException;
 import jason.asSemantics.Event;
 import jason.asSyntax.ASSyntax;
 import jason.asSyntax.Plan;
-import jason.asSyntax.PlanLibrary;
+import jason.pl.PlanLibrary;
 import jason.asSyntax.parser.ParseException;
 import junit.framework.TestCase;
 

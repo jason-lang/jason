@@ -12,14 +12,10 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import jason.asSyntax.*;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import jason.asSyntax.ASSyntax;
-import jason.asSyntax.Atom;
-import jason.asSyntax.Literal;
-import jason.asSyntax.Term;
-import jason.asSyntax.Trigger;
 import jason.asSyntax.Trigger.TEOperator;
 import jason.asSyntax.Trigger.TEType;
 import jason.infra.local.LocalAgArch;
@@ -33,7 +29,7 @@ public class Circumstance implements Serializable, ToDOM {
     private   Queue<Intention>         I;
     protected ActionExec               A;
     private   Queue<Message>           MB;
-    protected List<Option>             RP;
+    protected List<Option>             RP; // relevant plans
     protected List<Option>             AP;
     protected Event                    SE;
     protected Option                   SO;
@@ -48,6 +44,8 @@ public class Circumstance implements Serializable, ToDOM {
 
     private Map<String, Intention>     PI; // pending intentions, intentions suspended by any other reason
     private Map<String, Event>         PE; // pending events, events suspended by .suspend
+
+    private PlanBody                   lastDeed; // last executed deed of an intention
 
     private Queue<CircumstanceListener> listeners = new ConcurrentLinkedQueue<>();
 
@@ -113,6 +111,7 @@ public class Circumstance implements Serializable, ToDOM {
     public void resetAct() {
         A  = null;
         SI = null;
+        lastDeed = null;
     }
 
     public Event addAchvGoal(Literal l, Intention i) {
@@ -193,6 +192,22 @@ public class Circumstance implements Serializable, ToDOM {
     }
 
     public void clearEvents() {
+        clearEvents(false);
+        // notify listeners
+        /*if (hasListener())
+            for (CircumstanceListener el : listeners) {
+                for (Event ev: E)
+                    if (ev.getIntention() != null)
+                        el.intentionDropped(ev.getIntention());
+                if (AE != null && AE.getIntention() != null)
+                    el.intentionDropped(AE.getIntention());
+            }
+
+        E.clear();
+        AE = null;*/
+    }
+
+    public void clearEvents(boolean onlyGoals) {
         // notify listeners
         if (hasListener())
             for (CircumstanceListener el : listeners) {
@@ -203,7 +218,16 @@ public class Circumstance implements Serializable, ToDOM {
                     el.intentionDropped(AE.getIntention());
             }
 
-        E.clear();
+        if (onlyGoals) {
+            var ie = E.iterator();
+            while (ie.hasNext()) {
+                Event e = ie.next();
+                if (e.getTrigger().isGoal())
+                    ie.remove();
+            }
+        } else {
+            E.clear();
+        }
         AE = null;
     }
 
@@ -898,6 +922,9 @@ public class Circumstance implements Serializable, ToDOM {
     public Option getSelectedOption() {
         return SO;
     }
+
+    protected void setLastDeed(PlanBody d) { lastDeed = d; }
+    public PlanBody getLastDeed() { return lastDeed; }
 
     /** clone E, I, MB, PA, PI, FA, and AI */
     public Circumstance clone() {

@@ -14,7 +14,7 @@
      */
     .add_plan({
       +!go(X,Y) <-
-          .wait(10); // An arbitrary delay
+          .wait(50); // An arbitrary delay
     }, self, begin);
 
     // Trigger the mock plan to test desire

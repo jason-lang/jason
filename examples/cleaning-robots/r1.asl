@@ -13,15 +13,15 @@ at(P) :- pos(P,X,Y) & pos(r1,X,Y).
 +!check(slots) : not garbage(r1)
    <- next(slot);
       !check(slots).
-+!check(slots).
 
 
-@lg[atomic]
 +garbage(r1) : not .desire(carry_to(r2))
    <- !carry_to(r2).
 
 +!carry_to(R)
-   <- // remember where to go back
+   <- .drop_desire(check(slots)); // stop checking
+      
+      // remember where to go back
       ?pos(r1,X,Y);
       -+pos(last,X,Y);
 
@@ -30,9 +30,10 @@ at(P) :- pos(P,X,Y) & pos(r1,X,Y).
 
       // goes back and continue to check
       !at(last);
-      !check(slots).
+      !!check(slots).
 
-+!take(S,L) : true
+
++!take(S,L)
    <- !ensure_pick(S);
       !at(L);
       drop(S).

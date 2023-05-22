@@ -7,8 +7,26 @@ You can get help for any command with `--help`. For example:
 jason mas start --help
 ```
 
+## Application level
+
+`jason app` is used to manage the source code of some application.
+
+```
+Usage: jason app (create | compile | add-agent | add-gradle | add-ia )
+commands to handle applications
+
+Commands:
+  create      creates the files of a new application
+  compile     compiles the java classes of an application (using Gradle)
+  add-agent   adds the code of a new agent into the application
+  add-gradle  adds a Gradle script for the application
+  add-ia      adds the source code a new internal action into the application
+```
+
+
 ## MAS level
 
+`jason mas` is used to manage the execution of applications.
 
 ```
 Usage: jason mas (start | stop | list)
@@ -19,6 +37,7 @@ Sub-commands:
   stop   stops a MAS
   list   lists current running MAS
 ```
+
 ### MAS start
 
 ```
@@ -27,9 +46,20 @@ starts a new (empty) MAS
       [<mas name>]   MAS unique identification
       --console      output will be sent to the console instead of a GUI
       --no-net       disable all net services (mind inspector, runtime
-                       services, Mbeans, ...
+                     services, Mbeans, ...
+      --mas2j=<file> runs jason project without
+                     gradle (offline), java classes should be compiled
+                     before running.
+      --cp=<classpath>    directories where java classes can be found (for
+                     environment implementation, for instance)
 
 ```
+
+Regarding `.mas2j` files, they can be executed in two ways:
+
+- `jason x.mas2j`: it creates a build.gradle for the project and then uses Gradle to compile and run the project. Gradle will download dependencies, so internet connection is necessary.
+- `jason app start --mas2j=x.mas2j`: it executes the MAS without Gradle (it thus runs offline). However, all java code have to be compiled before. The command `jason app compile` can be used for that (note that this command uses Gradle to compile --- so compile online, run offline).
+
 
 
 ### MAS stop
@@ -44,6 +74,9 @@ stops a MAS
 ```
 
 ## Agent level
+
+`jason agent` is used to manage the execution of agents.
+
 
 ```
 Usage: jason agent (start | stop | list | run-as | load-into | mind | status)
@@ -85,15 +118,3 @@ jason agent start bob { +!g <- .print(ok). }
 
 Type `jason agent stop --help` for details of `stop` command ...
 
-## Application level
-
-```
-Usage: jason app (create | compile | add-agent | add-gradle )
-commands to handle applications
-
-Commands:
-  create      creates the files of a new application
-  compile     compiles the java classes of an application
-  add-agent   adds a new agent into the application
-  add-gradle  adds a Gradle script for the application
-```

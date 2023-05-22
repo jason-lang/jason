@@ -1,26 +1,16 @@
 package jason.mas2j;
 
+import jason.asSyntax.directives.DirectiveProcessor;
+import jason.runtime.SourcePath;
+
 import java.io.File;
 import java.io.FileReader;
 import java.io.Serializable;
 import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import jason.JasonException;
-import jason.asSyntax.directives.DirectiveProcessor;
-import jason.infra.InfrastructureFactory;
-import jason.runtime.SourcePath;
-import jason.util.Config;
 
 /**
  * Represents a MAS2J project (usually created from a .mas2j file)
@@ -252,7 +242,7 @@ public class MAS2JProject implements Serializable {
             s.append("\n");
         }
 
-        // sourcepath
+        // source path
         if (!aslSourcepaths.isEmpty()) {
             s.append("   aslSourcePath: ");
             for (String cp: aslSourcepaths.getPaths()) {
@@ -264,18 +254,5 @@ public class MAS2JProject implements Serializable {
         s.append("}");
 
         return s.toString();
-    }
-
-    private InfrastructureFactory infraFac = null; // backup
-    public InfrastructureFactory getInfrastructureFactory() throws JasonException {
-        if (infraFac == null) {
-            try {
-                String facClass = Config.get().getInfrastructureFactoryClass(infrastructure.getClassName());
-                infraFac = (InfrastructureFactory)Class.forName(facClass).getConstructor().newInstance();
-            } catch (Exception e) {
-                throw new JasonException("The project's infrastructure ('"+infrastructure.getClassName()+"') is not well configured! \n"+e);
-            }
-        }
-        return infraFac;
     }
 }

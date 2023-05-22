@@ -20,7 +20,7 @@ import jason.asSyntax.Term;
 @see jason.functions.Min
 @see jason.functions.Max
 @see jason.functions.Sum
-@see jason.functions.Average
+@see jason.functions.mean
 
 */
 public class StdDev extends DefaultArithFunction  {

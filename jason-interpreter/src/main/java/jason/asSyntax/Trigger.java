@@ -52,16 +52,17 @@ public class Trigger extends Structure implements Cloneable {
     public enum TEType {
         belief  { public String toString() {
                 return "";
-            }
-        },
+            } },
         achieve { public String toString() {
                 return "!";
-            }
-        },
+            } },
         test    { public String toString() {
                 return "?";
-            }
-        }
+            } },
+
+        signal {  public String toString() {
+            return "";
+        } }
     };
 
 
@@ -125,9 +126,12 @@ public class Trigger extends Structure implements Cloneable {
         predicateIndicatorCache  = null;
     }
 
-
     public boolean sameType(Trigger e) {
-        return operator == e.operator && type == e.type;
+        return operator == e.operator
+                && (type == e.type
+                    || (type == TEType.signal && e.type == TEType.belief)
+                    || (type == TEType.belief && e.type == TEType.signal)
+                   );
     }
 
     @Override
@@ -162,6 +166,8 @@ public class Trigger extends Structure implements Cloneable {
     public TEType getType() {
         return type;
     }
+
+    public void setType(TEType t) { type = t; }
 
     public boolean isAddition() {
         return operator == TEOperator.add;
@@ -256,5 +262,4 @@ public class Trigger extends Structure implements Cloneable {
         e.appendChild(literal.getAsDOM(document));
         return e;
     }
-
 }

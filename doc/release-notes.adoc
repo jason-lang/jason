@@ -773,7 +773,7 @@ New internal actions
 New functions
 
 -  .math.sum: sums a list of numbers
--  .math.average: returns the average of a list of numbers
+-  .math.average: returns the average of a list of numbers (renamed to math.mean in jason 3.3)
 
 
 API changes

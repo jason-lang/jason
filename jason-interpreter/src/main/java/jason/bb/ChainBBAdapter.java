@@ -3,6 +3,7 @@ package jason.bb;
 import java.util.Iterator;
 import java.util.Set;
 
+import jason.JasonException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -101,12 +102,12 @@ public abstract class ChainBBAdapter extends BeliefBase {
     }
 
     @Override
-    public boolean add(Literal l) {
+    public boolean add(Literal l) throws JasonException {
         return nextBB.add(l);
     }
 
     @Override
-    public boolean add(int index, Literal l) {
+    public boolean add(int index, Literal l) throws JasonException {
         return nextBB.add(index, l);
     }
 

@@ -6,11 +6,9 @@ import java.util.*;
 
 import jason.asSemantics.Message;
 import jason.asSemantics.TransitionSystem;
-import jason.infra.jade.JadeFactory;
-import jason.infra.local.LocalFactory;
 
 /**
- * Jason configuration (used by JasonID to generate the project's scripts)
+ * Jason configuration
  *
  * @author jomi
  */
@@ -23,12 +21,6 @@ public class Config extends Properties {
     public static final String JASON_JAR     = "jasonJar";
     public static final String JASON_PKG     = "jason";
 
-    /** path to ant home (jar directory) */
-    public static final String ANT_LIB       = "antLib";
-
-    /** path to jade.jar */
-    public static final String JADE_JAR      = "jadeJar";
-
     /** runtime jade arguments (the same used in jade.Boot) */
     public static final String JADE_ARGS     = "jadeArgs";
 
@@ -38,16 +30,9 @@ public class Config extends Properties {
     /** boolean, whether to start jade Sniffer or not */
     public static final String JADE_SNIFFER  = "jadeSniffer";
 
-    /** path to java home */
-    public static final String JAVA_HOME     = "javaHome";
-
-    public static final String SHELL_CMD     = "shellCommand";
     public static final String WARN_SING_VAR = "warnSingletonVars";
 
     public static final String SHOW_ANNOTS   = "showAnnots";
-
-
-    //public static final String jacamoHomeProp = "JaCaMoHome";
 
     public static final String SHORT_UNNAMED_VARS = "shortUnnamedVars";
     public static final String START_WEB_MI       = "startWebMindInspector";
@@ -165,16 +150,6 @@ public class Config extends Properties {
         return "";
     }
 
-    /** Returns the full path to the jade.jar file */
-    public String getJadeJar() {
-        String r = getProperty(JADE_JAR);
-        if (r == null) {
-            tryToFixJarFileConf(JADE_JAR,   "jade");
-            r = getProperty(JADE_JAR);
-        }
-        return r;
-    }
-
     /** Return the jade args (those used in jade.Boot) */
     public String getJadeArgs() {
         String a = getProperty(JADE_ARGS);
@@ -197,76 +172,12 @@ public class Config extends Properties {
         return as;
     }
 
-    /** Returns the path to the java  home directory */
-    public String getJavaHome() {
-        String h = getProperty(JAVA_HOME);
-        if (! h.endsWith(File.separator))
-            h += File.separator;
-        return h;
-    }
-
-    /** Returns the path to the ant home directory (where its jars are stored) */
-    public String getAntLib() {
-        return getProperty(ANT_LIB);
-    }
-
-    public String getAntJar() {
-        String ant = getAntLib();
-        if (ant != null) {
-            ant = findJarInDirectory(new File(ant), "ant-launcher");
-            if (ant != null) {
-                File fAnt = new File(ant);
-                if (fAnt.exists())
-                    return fAnt.getName();
-            }
-        }
-
-        return null;
-    }
-
-    public void setJavaHome(String jh) {
-        if (jh != null) {
-            jh = new File(jh).getAbsolutePath();
-            if (!jh.endsWith(File.separator)) {
-                jh += File.separator;
-            }
-            put(JAVA_HOME, jh);
-        }
-    }
-
-    public void setAntLib(String al) {
-        if (al != null) {
-            al = new File(al).getAbsolutePath();
-            if (!al.endsWith(File.separator)) {
-                al += File.separator;
-            }
-            put(ANT_LIB, al);
-            if (showFixMsgs)
-                System.out.println("Config of "+ANT_LIB+" set to "+al);
-        }
-    }
-
-    public String getShellCommand() {
-        return getProperty(SHELL_CMD);
-    }
-
     public String getKqmlFunctor() {
         return getProperty(KQML_RECEIVED_FUNCTOR, Message.kqmlReceivedFunctor);
     }
     public String getKqmlPlansFile() {
         return getProperty(KQML_PLANS_FILE, Message.kqmlDefaultPlans);
     }
-
-    public void resetSomeProps() {
-        //System.out.println("Reseting configuration of "+Config.JASON_JAR);
-        remove(Config.JASON_JAR);
-        //System.out.println("Reseting configuration of "+Config.JADE_JAR);
-        remove(Config.JADE_JAR);
-        //System.out.println("Reseting configuration of "+Config.ANT_LIB);
-        remove(Config.ANT_LIB);
-        put(Config.SHOW_ANNOTS, "false");
-    }
-
 
     /** Set most important parameters with default values */
     public void fix() {
@@ -282,83 +193,6 @@ public class Config extends Properties {
                 System.out.println("Using the jason.jar from classpath\n");
             }
             put(JASON_JAR, jasonJarFile); // always prefer classpath jar
-        }
-
-        // fix java home
-        if (get(JAVA_HOME) == null || !checkJavaHomePath(getProperty(JAVA_HOME))) {
-            String javaHome = System.getProperty("java.home");
-            if (checkJavaHomePath(javaHome)) {
-                setJavaHome(javaHome);
-            } else {
-                String javaEnvHome = System.getenv("JAVA_HOME");
-                if (javaEnvHome != null && checkJavaHomePath(javaEnvHome)) {
-                    setJavaHome(javaEnvHome);
-                } else {
-                    String javaHomeUp = javaHome + File.separator + "..";
-                    if (checkJavaHomePath(javaHomeUp)) {
-                        setJavaHome(javaHomeUp);
-                    } else {
-                        // try JRE
-                        if (checkJREHomePath(javaHome)) {
-                            setJavaHome(javaHome);
-                        } else {
-                            setJavaHome(File.separator);
-                        }
-                    }
-                }
-            }
-        }
-
-        // fix ant lib
-        if (get(ANT_LIB) == null || !checkAntLib(getAntLib())) {
-            try {
-                if (tryToFixJarFileConf("AntJar",  "ant-launcher")) {
-                    if (showFixMsgs)
-                        System.out.println("Ant Jar found at "+ get("AntJar"));
-                    String antlib = new File(get("AntJar").toString()).getParentFile().getAbsolutePath();
-                    if (checkAntLib(antlib))
-                        setAntLib(antlib);
-                }
-
-                String jjar = getJasonJar();
-                if (get(ANT_LIB) == null && jjar != null) {
-                    String antlib = new File(jjar).getParentFile().getParentFile().getAbsolutePath() + File.separator + "libs";
-                    if (showFixMsgs)
-                        System.out.println("trying to fix ant by jason jar, look at "+antlib);
-                    if (checkAntLib(antlib)) {
-                        setAntLib(antlib);
-                    } else {
-                        antlib = new File(".") + File.separator + "libs";
-                        if (checkAntLib(antlib)) {
-                            setAntLib(antlib);
-                        } else {
-                            antlib = new File("..") + File.separator + "libs";
-                            if (checkAntLib(antlib)) {
-                                setAntLib(antlib);
-                            }
-                        }
-                    }
-                }
-            } catch (Exception e) {
-                System.out.println("Error setting ant lib!");
-                e.printStackTrace();
-            }
-        }
-
-        // shell command
-        if (get(SHELL_CMD) == null) {
-            if (System.getProperty("os.name").startsWith("Windows 9")) {
-                put(SHELL_CMD, "command.com /e:1024 /c ");
-            } else if (System.getProperty("os.name").indexOf("indows") > 0) {
-                put(SHELL_CMD, "cmd /c ");
-            } else {
-                put(SHELL_CMD, "/bin/sh ");
-            }
-        }
-
-        // jade args
-        if (getProperty(JADE_RMA) == null) {
-            put(JADE_RMA, "true");
         }
 
         // show annots
@@ -385,14 +219,6 @@ public class Config extends Properties {
         if (getProperty(KQML_PLANS_FILE) == null) {
             put(KQML_PLANS_FILE, Message.kqmlDefaultPlans);
         }
-
-        // Default infrastructures
-        setDefaultInfra();
-    }
-
-    private void setDefaultInfra() {
-        put("infrastructure.Local", LocalFactory.class.getName());
-        put("infrastructure.Jade", JadeFactory.class.getName());
     }
 
     public void store() {
@@ -411,60 +237,6 @@ public class Config extends Properties {
             e.printStackTrace();
         }
     }
-
-    public String[] getAvailableInfrastructures() {
-        try {
-            List<String> infras = new ArrayList<>();
-            infras.add("Local"); // set Local as the first
-            for (Object k: keySet()) {
-                String sk = k.toString();
-                int p = sk.indexOf(".");
-                if (p > 0 && sk.startsWith("infrastructure") && p == sk.lastIndexOf(".")) { // only one "."
-                    String newinfra = sk.substring(p+1);
-                    if (!infras.contains(newinfra)) {
-                        infras.add(newinfra);
-                    }
-                }
-            }
-            if (infras.size() > 0) {
-                // copy infras to a array
-                String[] r = new String[infras.size()];
-                for (int i=0; i<r.length; i++) {
-                    r[i] = infras.get(i);
-                }
-                return r;
-            }
-        } catch (Exception e) {
-            System.err.println("Error getting user infrastructures.");
-        }
-        return new String[] {"Local","Jade" }; //,"JaCaMo"};
-    }
-
-    public String getInfrastructureFactoryClass(String infraId) {
-        if (infraId.equals("Centralised")) { // to keep backward compatibility
-            System.err.println("Centralised infrastructure was renamed to Local");
-            infraId = "Local";
-        }
-
-        Object oClass = get("infrastructure." + infraId);
-        if (oClass == null) {
-            // try to fix using default configuration
-            setDefaultInfra();
-            oClass = get("infrastructure." + infraId);
-        }
-        return oClass.toString();
-    }
-    public void setInfrastructureFactoryClass(String infraId, String factory) {
-        put("infrastructure." + infraId, factory);
-    }
-    public void removeInfrastructureFactoryClass(String infraId) {
-        remove("infrastructure." + infraId);
-    }
-
-
-    /*public String getDistPropFile() {
-        return "/dist.properties";
-    }*/
 
     public String getJasonVersion() {
         //Package j = jason.util.ConfigGUI.class.getClassLoader().getDefinedPackage("jason.util");
@@ -526,25 +298,23 @@ public class Config extends Properties {
     public String getJarFileForFixTest(String jarEntry) {
         if (jarEntry == JASON_JAR)
             return "jason/asSyntax/CyclicTerm.class";
-        if (jarEntry == JADE_JAR)
-            return "jade/Boot.class";
         return null;
     }
 
 
-    public boolean tryToFixJarFileConf(String jarEntry, String jarFilePrefix) {
+    public boolean tryToFixJarFileConf(String jarEntry, String jarFileNamePrefix) {
         String jarFile   = getProperty(jarEntry);
         String fileInJar = getJarFileForFixTest(jarEntry);
         if (jarFile == null || !checkJar(jarFile, fileInJar)) {
             //if (showFixMsgs)
-            //    System.out.println("Wrong configuration for " + jarFilePrefix + ", current is " + jarFile);
+            //    System.out.println("Wrong configuration for " + jarFileNamePrefix + ", current is " + jarFile);
 
             // try to get by class loader
             try {
                 String fromLoader = getClassForClassLoaderTest(jarEntry).getProtectionDomain().getCodeSource().getLocation().toString();
                 if (fromLoader.startsWith("file:"))
                     fromLoader = fromLoader.substring(5);
-                if (new File(fromLoader).getName().startsWith(jarFilePrefix) && checkJar(fromLoader, fileInJar)) {
+                if (new File(fromLoader).getName().startsWith(jarFileNamePrefix) && checkJar(fromLoader, fileInJar)) {
                     if (showFixMsgs)
                         System.out.println("Configuration of '"+jarEntry+"' found at " + fromLoader+", based on class loader");
                     put(jarEntry, fromLoader);
@@ -553,7 +323,7 @@ public class Config extends Properties {
             } catch (Exception e) {}
 
             // try to get from classpath (the most common case)
-            jarFile = getJarFromClassPath(jarFilePrefix, fileInJar);
+            jarFile = getJarFromClassPath(jarFileNamePrefix, fileInJar);
             if (checkJar(jarFile, fileInJar)) {
                 put(jarEntry, jarFile);
                 if (showFixMsgs)
@@ -563,24 +333,10 @@ public class Config extends Properties {
             if (showFixMsgs)
                 System.out.println("Configuration of '"+jarEntry+"' NOT found, based on class loader");
 
-            /*
-            try {
-                // try jason jar
-                File jasonjardir = new File(getJasonJar()).getAbsoluteFile().getCanonicalFile().getParentFile();
-                jarFile = findJarInDirectory(jasonjardir, jarFilePrefix);
-                if (checkJar(jarFile, minSize)) {
-                    put(jarEntry, jarFile);
-                    if (showFixMsgs)
-                        System.out.println("found at " + jarFile+" by jason.jar directory");
-                    return;
-                }
-            } catch (Exception e) {}
-            */
-
             // try with $JASON_HOME
             String jh = System.getenv().get("JASON_HOME");
             if (jh != null) {
-                jarFile = findJarInDirectory(new File(jh+"/interpreter/build/libs"), jarFilePrefix);
+                jarFile = findJarInDirectory(new File(jh+"/interpreter/build/libs"), jarFileNamePrefix);
                 if (checkJar(jarFile, fileInJar)) {
                     try {
                         put(jarEntry, new File(jarFile).getCanonicalFile().getAbsolutePath());
@@ -593,11 +349,11 @@ public class Config extends Properties {
                 }
             }
             if (showFixMsgs)
-                System.out.println("Configuration of '"+jarEntry+"' NOT found, based on JAVA_HOME="+jh);
+                System.out.println("Configuration of '"+jarEntry+"' NOT found, based on JASON_HOME="+jh);
 
             // try current build/libs (from gradle build), required for task testJason
             var localBuild = new File("build/libs").getAbsoluteFile();
-            jarFile = findJarInDirectory( localBuild, jarFilePrefix);
+            jarFile = findJarInDirectory( localBuild, jarFileNamePrefix);
             if (checkJar(jarFile, fileInJar)) {
                 try {
                     put(jarEntry, new File(jarFile).getCanonicalFile().getAbsolutePath());
@@ -656,7 +412,7 @@ public class Config extends Properties {
 
     public boolean checkJar(String jar, String file) {
         try {
-            return checkJar(jar) && checkJarHasFile(jar,file); //new File(jar).length() > minSize;
+            return checkJar(jar) && checkJarHasFile(jar,file);
         } catch (Exception e) {
         }
         return false;
@@ -670,55 +426,8 @@ public class Config extends Properties {
         try {
             new URL(jarFile).openStream().close();
             return true;
-        } catch (Exception e) {
-        }
+        } catch (Exception e) { }
         return false;
-    }
-
-    public static boolean checkJavaHomePath(String javaHome) {
-        try {
-            if (!javaHome.endsWith(File.separator)) {
-                javaHome += File.separator;
-            }
-            File javac1 = new File(javaHome + "bin" + File.separatorChar + "javac");
-            File javac2 = new File(javaHome + "bin" + File.separatorChar + "javac.exe");
-            if (javac1.exists() || javac2.exists()) {
-                return true;
-            }
-        } catch (Exception e) {
-        }
-        return false;
-    }
-
-    public static boolean checkJREHomePath(String javaHome) {
-        try {
-            if (!javaHome.endsWith(File.separator)) {
-                javaHome += File.separator;
-            }
-            File javac1 = new File(javaHome + "bin" + File.separatorChar + "java");
-            File javac2 = new File(javaHome + "bin" + File.separatorChar + "java.exe");
-            if (javac1.exists() || javac2.exists()) {
-                return true;
-            }
-        } catch (Exception e) {
-        }
-        return false;
-    }
-
-    public static boolean checkAntLib(String al) {
-        try {
-            if (!al.endsWith(File.separator)) {
-                al = al + File.separator;
-            }
-            if (findJarInDirectory(new File(al), "ant") != null) // new File(al + "ant.jar");
-                return true;
-        } catch (Exception e) {
-        }
-        return false;
-    }
-
-    public static boolean isWindows() {
-        return System.getProperty("os.name").startsWith("Windows");
     }
 
     protected String getJarFromClassPath(String file, String fileInsideJar) {
@@ -734,22 +443,6 @@ public class Config extends Properties {
         }
         return null;
     }
-
-    protected String getEclipseInstallationDirectory() {
-        return "jason";
-    }
-
-    /*private String getJarFromEclipseInstallation(String file) {
-        String eclipse = System.getProperty("eclipse.launcher");
-        //eclipse = "/Applications/eclipse/eclipse";
-        if (eclipse != null) {
-            File f = (new File(eclipse)).getParentFile().getParentFile();
-            if (eclipse.contains("Eclipse.app/Contents")) // MacOs case
-                f = f.getParentFile().getParentFile();
-            return findJarInDirectory(new File(f+"/"+getEclipseInstallationDirectory()+"/libs"), file);
-        }
-        return null;
-    }*/
 
     public String getTemplate(String templateName) {
         try {

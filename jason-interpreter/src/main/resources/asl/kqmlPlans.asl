@@ -143,7 +143,7 @@ kqml::bel_no_source_self(NS, Content, Ans)[hide_in_mind_inspector] :-
 @kqmlReceivedSignal
 +!kqml_received(Sender, signal, NS::Content, _)
     : not .list(Content) & .add_nested_source(Content, Sender, CA)
-   <- .signal( { +NS::CA }).
+   <- .signal( { +NS::CA }, type_signal ).
 
 /* general communication error handler */
 

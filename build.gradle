@@ -56,7 +56,7 @@ clean {
 task createCLIBin (dependsOn: [':jason-cli:createBin']) {
     doLast {
         copy {
-            from 'jason-cli/build/bin'
+            from 'jason-cli/build/bin/jason'
             into 'bin'
         }
     }

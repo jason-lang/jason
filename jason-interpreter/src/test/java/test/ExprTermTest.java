@@ -221,7 +221,7 @@ public class ExprTermTest extends TestCase {
         assertEquals(2.0,tnb.solve());
     }
 
-    public void testRelExpType() throws ParseException {
+    public void testRelExpType() throws ParseException, JasonException {
         assertTrue(ASSyntax.parseFormula("N>1").isLiteral()); // they need to be literal for unification test
         assertTrue(ASSyntax.parseFormula("a & b").isLiteral());
 

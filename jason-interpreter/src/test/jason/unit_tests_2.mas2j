@@ -1,11 +1,11 @@
-// to be run with
+// to be run with (in the directory src/test/jason)
 //     jason unit_tests_2.mas2j
 
 MAS unit_tests {
 
     agents:
         test_manager [
-            goals="create_tester_agents(\"./asl\",\"queueplan.asl\")",
+            goals="create_tester_agents(\"./asl\",\"drop_all_desires.asl\")",
             beliefs="shutdown_delay(4)"
         ];
 

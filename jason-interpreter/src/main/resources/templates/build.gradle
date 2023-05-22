@@ -16,7 +16,7 @@ apply plugin: 'java'
 repositories {
     mavenCentral()
     maven { url "https://raw.githubusercontent.com/jacamo-lang/mvn-repo/master" }
-    maven { url "https://jade.tilab.com/maven/" }
+    //maven { url "https://jade.tilab.com/maven/" }
 }
 
 dependencies {
@@ -40,6 +40,7 @@ sourceSets {
 }
 
 task run (type: JavaExec, dependsOn: 'classes') {
+    group = 'Jason'
     description 'runs the application'
     mainClass = 'jason.infra.local.RunLocalMAS'
     args = ['<PROJECT-FILE>']
@@ -50,8 +51,12 @@ task run (type: JavaExec, dependsOn: 'classes') {
 }
 
 task runJade (type: JavaExec, dependsOn: 'classes') {
+    group = 'Jason'
     description 'runs the application with Jade infrastructure'
     mainClass = 'jason.infra.jade.RunJadeMAS'
-    args = [ '<PROJECT-FILE>' ]
+    args = [ '<PROJECT-FILE>', '-gui' ]
+    // options:
+    //     args = ['<PROJECT-FILE>', '-gui', '-sniffer' ]
+    // and all usual JADE options for jade.Boot
     classpath sourceSets.main.runtimeClasspath
 }

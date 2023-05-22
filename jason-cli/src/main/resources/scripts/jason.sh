@@ -8,4 +8,5 @@ JASON_CLI_HOME="`pwd`"
 #echo "JASON_CLI_HOME is $JASON_CLI_HOME"
 cd "$CURDIR"
 
-java -cp "$JASON_CLI_HOME/*" jason.cli.JasonCLI $*
+# add  uberJar and others in classpath
+java -cp ".:build/classes/java/main:$JASON_CLI_HOME/*" jason.infra.local.RunLocalMAS $*

@@ -139,6 +139,14 @@ public class GridWorldModel {
         if (view != null) view.update(x,y);
     }
 
+    public void removeAll(int value) {
+        for (int i = 0; i < width; i++) {
+            for (int j = 0; j < height; j++) {
+                remove(value,i,j);
+            }
+        }
+
+    }
     public void setAgPos(int ag, Location l) {
         Location oldLoc = getAgPos(ag);
         if (oldLoc != null) {
