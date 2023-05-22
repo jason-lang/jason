@@ -10,7 +10,7 @@ at(P) :- pos(P,X,Y) & pos(r1,X,Y).
 
 /* Plans */
 
-+!check(slots)
++!check(slots) : not garbage(r1)
    <- next(slot);
       !check(slots).
 
