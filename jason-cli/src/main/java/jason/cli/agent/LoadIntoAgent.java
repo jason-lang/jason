@@ -39,6 +39,11 @@ public class LoadIntoAgent implements Runnable {
 
     @Override
     public void run() {
+        if (masName.isEmpty()) {
+            masName = RunningMASs.getDefaultMASName();
+            if (!masName.isEmpty())
+                parent.parent.println("using "+masName+" as MAS name");
+        }
         if (!RunningMASs.isRunningMAS(masName)) {
             parent.parent.errorMsg("no running MAS, create one with 'mas start'.");
             return;

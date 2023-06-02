@@ -36,7 +36,7 @@ public abstract class BaseRuntimeServices implements RuntimeServices {
 
 
     public Collection<String> getAgentsNames() {
-        return masRunner.getAgs().keySet();
+        return masRunner.getAgs().keySet().stream().toList();
     }
 
     public int getAgentsQty() {

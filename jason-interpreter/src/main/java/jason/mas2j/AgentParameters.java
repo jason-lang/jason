@@ -99,7 +99,7 @@ public class AgentParameters implements Serializable {
 
 
     public void setAgClass(String c) {
-        if (c != null)
+        if (c != null && !c.isEmpty())
             agClass = new ClassParameters(c);
     }
 

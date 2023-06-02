@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 
@@ -72,6 +73,21 @@ public class RunningMASs {
 
         return null;
     }
+
+    public static String getDefaultMASName() {
+        //  try with list of running MAS
+        try {
+            var i = testAllRemoteMAS().keys().asIterator();
+            while (i.hasNext()) {
+                var m = i.next().toString();
+                if (!m.equals("latest___mas")) {
+                    return m;
+                }
+            }
+        } catch (Exception e) {}
+        return "";
+    }
+
     public static boolean hasAgent(String masName, String agName) {
         var rt = getRTS(masName);
         if  (rt == null)

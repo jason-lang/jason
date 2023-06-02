@@ -21,6 +21,12 @@ public class ListAgents implements Runnable {
 
     @Override
     public void run() {
+        if (masName.isEmpty()) {
+            masName = RunningMASs.getDefaultMASName();
+            if (!masName.isEmpty())
+                parent.parent.println("using "+masName+" as MAS name");
+        }
+
         if (!RunningMASs.isRunningMAS(masName))
             return;
 
@@ -29,6 +35,7 @@ public class ListAgents implements Runnable {
                 parent.parent.println("    "+ag);
             }
         } catch (RemoteException e) {
+            e.printStackTrace();
         }
     }
 }

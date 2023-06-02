@@ -20,7 +20,7 @@ public class MyAgArch extends AgArch {
                     try {
                         Thread.sleep(3000);
 
-                        System.out.println("simulates the ack comming .... ");
+                        System.out.println("simulates the ack coming .... ");
                         // retrieve the pending intention with wack id
                         for (String k: getTS().getC().getPendingIntentions().keySet()) {
                             if (k.startsWith("wack")) {

@@ -8,6 +8,7 @@ import picocli.CommandLine.Parameters;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -34,6 +35,12 @@ public class StartAgent implements Runnable {
     @CommandLine.Option(names = { "--mas-name" }, paramLabel = "<mas name>", defaultValue = "", description = "MAS unique identification")
     String masName;
 
+    @CommandLine.Option(names = { "--ag-class" }, paramLabel = "<class name>", defaultValue = "", description = "Java class that implements the Agent customisation")
+    String agClass;
+
+    @CommandLine.Option(names = { "--ag-arch" }, paramLabel = "<class name>", defaultValue = "", description = "Java class that implements the Agent Architecture customisation", arity = "0..*")
+    String[] agArchs;
+
     @Parameters(hidden = true)  // "hidden": don't show this parameter in usage help message
     List<String> allParameters; // no "index" attribute: captures _all_ arguments
 
@@ -42,6 +49,12 @@ public class StartAgent implements Runnable {
 
     @Override
     public void run() {
+        if (masName.isEmpty()) {
+            masName = RunningMASs.getDefaultMASName();
+            if (!masName.isEmpty())
+                parent.parent.println("using "+masName+" as MAS name");
+        }
+
         if (!RunningMASs.isRunningMAS(masName)) {
             parent.parent.errorMsg("no running MAS, create one with 'mas start'.");
             return;
@@ -68,7 +81,7 @@ public class StartAgent implements Runnable {
                 var n = agName;
                 if (instances>1)
                     n = agName + i;
-                ags.add(rt.createAgent( n, null, null, null, null, null, null));
+                ags.add(rt.createAgent( n, null, agClass, Arrays.stream(agArchs).toList(), null, null, null));
             }
         } catch (Exception e) {
             parent.parent.errorMsg("error creating agent: "+e.getMessage());
