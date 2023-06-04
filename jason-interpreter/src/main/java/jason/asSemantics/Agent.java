@@ -35,6 +35,7 @@ import java.net.URL;
 import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -107,6 +108,10 @@ public class Agent implements Serializable, ToDOM {
         //}
     }
 
+    private boolean considerToaddMIForThisAgent = true;
+    public void setConsiderToAddMIForThisAgent(boolean add) {
+        considerToaddMIForThisAgent = add;
+    }
     /** Initialises the TS and other components of the agent */
     public void initAg() {
         if (bb == null) bb = new DefaultBeliefBase();
@@ -124,7 +129,8 @@ public class Agent implements Serializable, ToDOM {
         //if (ts.getSettings().hasQueryProfiling()) qProfiling = new QueryProfiling(this);
         //if (ts.getSettings().hasQueryCache())     qCache = new QueryCacheSimple(this, qProfiling);
 
-        addToMindInspectorWeb();
+        if (considerToaddMIForThisAgent)
+            addToMindInspectorWeb();
     }
 
     public void addToMindInspectorWeb() {

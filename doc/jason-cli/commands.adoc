@@ -96,16 +96,20 @@ Commands:
 ### Agent start
 
 ```
-Usage: jason agent start [--instances=<instances>] [--mas-name=<mas name>]
-                         [--source=<source file>] <agent name>
+Usage: jason agent start <agent name>
 starts a new (empty) agent
+
       <agent name>   agent unique identification
       --instances=<instances>
                      how many agents should be created
       --mas-name=<mas name>
                      MAS unique identification
       --source=<source file>
-                     file (or URL) for the source code of the agent.
+                     file (or URL) for the source code of the agent
+      --ag-class=<java class>
+                     agent class customization         
+      --ag-arch=<java class>
+                     agent architecture customization 
 ```
 
 The source code can be informed at the  end of the command enclosed by `{` and `}`. For instance:
