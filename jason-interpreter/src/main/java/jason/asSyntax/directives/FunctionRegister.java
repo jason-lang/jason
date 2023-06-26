@@ -28,6 +28,7 @@ public class FunctionRegister extends DefaultDirective implements Directive {
         addJasonFunction(acos.class);
         addJasonFunction(asin.class);
         addJasonFunction(atan.class);
+        addJasonFunction(Average.class);
         addJasonFunction(ceil.class);
         addJasonFunction(cos.class);
         addJasonFunction(e.class);
