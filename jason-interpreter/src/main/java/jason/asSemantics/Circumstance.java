@@ -1158,7 +1158,7 @@ public class Circumstance implements Serializable, ToDOM {
                 if (!alreadyIn.contains(o)) {
                     alreadyIn.add(o);
                     e = o.getAsDOM(document);
-                    e.setAttribute("feedback", "true");
+                    e.setAttribute("feedback", o.getResult()+"");
                     acts.appendChild(e);
                 }
             }
