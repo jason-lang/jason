@@ -4,7 +4,7 @@ import jason.asSemantics.*;
 
 public class DemoParser {
     public static void main(String[] args) throws Exception {
-        // create a parser from a file (it could a=be  any kind of stream)
+        // create a parser from a file (it could be any kind of stream)
         var parser = new as2j(new FileInputStream("r1.asl"));
 
         // create an Agent where to place the result of the parser
