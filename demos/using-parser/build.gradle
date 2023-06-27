@@ -6,10 +6,6 @@ defaultTasks 'run'
 
 apply plugin: 'java'
 
-// set version of group for your project
-//version '1.0'
-//group   'io.github.jason-lang'
-
 repositories {
     mavenCentral()
     maven { url "https://raw.githubusercontent.com/jacamo-lang/mvn-repo/master" }
@@ -29,9 +25,5 @@ sourceSets {
 
 task run (type: JavaExec, dependsOn: 'classes') {
     mainClass = 'DemoParser'
-    //args = ['app1.mas2j']
-	// options:
-	//     args = ['app1.mas2j', '--debug', '--no-net', '--empty-mas']
-	//     args = ['app1.mas2j', '--log-conf', 'l.p'] // to use file l.p to configure logging
     classpath sourceSets.main.runtimeClasspath
 }
