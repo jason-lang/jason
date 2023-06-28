@@ -19,13 +19,21 @@ public class Option implements Serializable, ToDOM {
     private Plan    plan;
     private Unifier unif;
 
+    private Event   evt; // the event this is an option for
+
     public Option(Plan p, Unifier u) {
         plan = p;
         unif = u;
     }
 
+    public Option(Plan p, Unifier u, Event e) {
+        plan = p;
+        unif = u;
+        evt  = e;
+    }
+
     public Object clone() {
-        return new Option((Plan) plan.clone(), (Unifier) unif.clone());
+        return new Option((Plan) plan.clone(), (Unifier) unif.clone(), (Event)evt.clone());
     }
 
     public String toString() {
@@ -45,6 +53,8 @@ public class Option implements Serializable, ToDOM {
     public Unifier getUnifier() {
         return unif;
     }
+
+    public Event getEvt() { return evt; }
 
     /** get as XML */
     public Element getAsDOM(Document document) {

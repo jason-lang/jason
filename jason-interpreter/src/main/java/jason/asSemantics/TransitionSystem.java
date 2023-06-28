@@ -471,7 +471,7 @@ public class TransitionSystem implements Serializable {
                                                     if (planBaseForEPlans == null)
                                                         planBaseForEPlans = ASSyntax.parsePlan("+artificial_plan <- .print(dropwhenreturntohere); .drop_intention."); // TODO: do not use drop_intention, but a new internal action that drops only this intention (important if the user decides to use .drop_intention to stop the g-plan)
 
-                                                    IntendedMeans joinIM = new IntendedMeans(new Option(planBaseForEPlans.cloneNS(Literal.DefaultNS), i.peek().getUnif()), C.SE.getTrigger());
+                                                    IntendedMeans joinIM = new IntendedMeans(new Option(planBaseForEPlans.cloneNS(Literal.DefaultNS), i.peek().getUnif(), C.SE), C.SE.getTrigger());
                                                     Intention newi = new Intention();
                                                     newi.setGIntention(i); // to avoid succeed_goal to resume it
                                                     i.copyTo(newi);
@@ -720,11 +720,11 @@ public class TransitionSystem implements Serializable {
         if (relUn != null) { // is relevant
             LogicalFormula context = pl.getContext();
             if (context == null) { // context is true
-                return new Option(pl, relUn);
+                return new Option(pl, relUn, evt);
             } else {
                 Iterator<Unifier> r = context.logicalConsequence(ag, relUn);
                 if (r != null && r.hasNext()) {
-                    return new Option(pl, r.next());
+                    return new Option(pl, r.next(), evt);
                 }
             }
         }
@@ -1306,7 +1306,7 @@ public class TransitionSystem implements Serializable {
             Plan p = evt.getIntention().peek().getPlan();
             if (p.hasSubPlans()) {
                 plib = p.getSubPlans();
-            } else {
+            } else if (p.getScope() != null) {
                 plib = p.getScope();
             }
         }
@@ -1331,7 +1331,7 @@ public class TransitionSystem implements Serializable {
                     relUn = pl.isRelevant(te, relUn);
                     if (relUn != null) {
                         if (rp == null) rp = new LinkedList<>();
-                        rp.add(new Option(pl, relUn));
+                        rp.add(new Option(pl, relUn, evt));
                     }
                 }
             }
@@ -1371,7 +1371,6 @@ public class TransitionSystem implements Serializable {
                     } else {
                         boolean allUnifs = opt.getPlan().isAllUnifs();
 
-
                         Iterator<Unifier> r = context.logicalConsequence(ag, opt.getUnifier());
                         boolean isApplicable = false;
                         if (r != null) {
@@ -1388,7 +1387,7 @@ public class TransitionSystem implements Serializable {
                                 if (!allUnifs) break; // returns only the first unification
                                 if (r.hasNext()) {
                                     // create a new option for the next loop step
-                                    opt = new Option(opt.getPlan(), null);
+                                    opt = new Option(opt.getPlan(), null, opt.getEvt());
                                 }
                             }
                         }

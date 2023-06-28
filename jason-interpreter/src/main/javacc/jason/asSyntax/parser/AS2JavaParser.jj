@@ -795,7 +795,7 @@ Pred plan_term_annotation() :
                               p = new Pred(K.image);
                               p.setSrcInfo(new SourceInfo(asSource, K.beginLine));
                             } else {
-                              p = new Pred("undefined");
+                              p = new Pred("undefined"); // plan as term should not get an unique ID, it usually is used as var and undefied should be replace by unique ID at run time
                             }
                             if (annots != null) {
                               p.addAnnots(annots.getAsList());

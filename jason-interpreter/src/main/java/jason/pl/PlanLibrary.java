@@ -114,6 +114,11 @@ public class PlanLibrary implements Iterable<Plan>, Serializable, ToDOM {
                 // add label, if necessary
                 if (p.getLabel() == null)
                     p.setLabel(getUniqueLabel());
+                else if (p.getLabel().getFunctor().equals("undefined")) {
+                    var label = getUniqueLabel();
+                    label.addAnnots(p.getLabel().getAnnots());
+                    p.setLabel(label);
+                }
                 p.addSource(source);
                 add(p, before);
             } else {
