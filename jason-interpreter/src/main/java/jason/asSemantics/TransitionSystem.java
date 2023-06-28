@@ -631,9 +631,14 @@ public class TransitionSystem implements Serializable {
 
 
     private void applySelAppl() throws JasonException {
+        NoOptionException noOptExp = null;
         // Rule SelAppl
         if (C.SE.getOption() == null) { // no option yet (an option could be set by selEvt JasonER part)
-            C.SO = ag.selectOption(C.AP);
+            try {
+                C.SO = ag.selectOption(C.AP);
+            } catch (NoOptionException e) {
+                noOptExp = e;
+            }
         } else {
             C.SO = C.SE.getOption();
         }
@@ -643,7 +648,11 @@ public class TransitionSystem implements Serializable {
             if (logger.isLoggable(Level.FINE)) logger.fine("Selected option "+C.SO+" for event "+C.SE);
         } else {
             logger.fine("** selectOption returned null!");
-            generateGoalDeletionFromEvent(JasonException.createBasicErrorAnnots("no_option", "selectOption returned null"), ASSyntax.createAtom("no_option"));
+            if (noOptExp == null) {
+                generateGoalDeletionFromEvent(JasonException.createBasicErrorAnnots("no_option", "selectOption returned null"), ASSyntax.createAtom("no_option"));
+            } else {
+                generateGoalDeletionFromEvent(noOptExp.getErrorTerms(), ASSyntax.createAtom("no_option"));
+            }
             // can't carry on, no applicable plan.
             stepDeliberate = State.ProcAct;
         }

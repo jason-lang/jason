@@ -604,7 +604,7 @@ public class Agent implements Serializable, ToDOM {
         return events.poll();
     }
 
-    public Option selectOption(List<Option> options) {
+    public Option selectOption(List<Option> options) throws NoOptionException {
         if (options != null && !options.isEmpty()) {
             return options.remove(0);
         } else {

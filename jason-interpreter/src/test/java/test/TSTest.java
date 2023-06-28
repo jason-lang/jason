@@ -6,11 +6,7 @@ import java.util.Queue;
 
 import jason.JasonException;
 import jason.architecture.AgArch;
-import jason.asSemantics.Agent;
-import jason.asSemantics.Intention;
-import jason.asSemantics.InternalAction;
-import jason.asSemantics.Option;
-import jason.asSemantics.TransitionSystem;
+import jason.asSemantics.*;
 import jason.asSyntax.ASSyntax;
 import jason.asSyntax.ArithFunctionTerm;
 import jason.asSyntax.InternalActionLiteral;
@@ -117,7 +113,7 @@ public class TSTest extends TestCase {
         public void t() {}
     }
     class Test2 extends Agent {
-        public Option selectOption(List<Option> options) {
+        public Option selectOption(List<Option> options) throws NoOptionException {
             return super.selectOption(options);
         }
     }

@@ -17,9 +17,9 @@ public class JasonException extends java.lang.Exception {
     public static final Term UNKNOW_ERROR = new Atom("unknown");
 
     private static final Term defaultError = new Atom("internal_action");
-    private Term error = defaultError;
+    protected Term error = defaultError;
 
-    private ListTerm errorAnnots = null;
+    protected ListTerm errorAnnots = null;
 
     /**
      * Creates a new instance of <code>JasonException</code> without detail message.
