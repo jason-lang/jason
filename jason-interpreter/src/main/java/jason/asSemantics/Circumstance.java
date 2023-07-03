@@ -1026,9 +1026,10 @@ public class Circumstance implements Serializable, ToDOM {
         List<Object> alreadyIn = new ArrayList<>();
 
         // option
-        if (getSelectedOption() != null) {
-            alreadyIn.add(getSelectedOption());
-            e = getSelectedOption().getAsDOM(document);
+        var op = getSelectedOption();
+        if (op != null) {
+            alreadyIn.add(op);
+            e = op.getAsDOM(document);
             e.setAttribute("relevant", "true");
             e.setAttribute("applicable", "true");
             e.setAttribute("selected", "true");
