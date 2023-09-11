@@ -146,6 +146,10 @@ public class Trigger extends Structure implements Cloneable {
         return type == TEType.achieve;
     }
 
+    public boolean isFailureGoal() {
+        return type == TEType.achieve && operator == TEOperator.del;
+    }
+
     public boolean isGoal() {
         return type == TEType.achieve || type == TEType.test;
     }

@@ -16,7 +16,7 @@ import jason.asSyntax.Term;
   This class can be used in place of DefaultInternalAction to create an IA that
   suspend the intention while it is being executed.
 
-  Example: a plan may ask something to an user and wait the answer.
+  Example: a plan may ask something to a user and wait the answer.
   If DefaultInternalAction is used for that, all the agent thread is blocked until
   the answer. With ConcurrentInternalAction, only the intention using the IA is
   suspended. See demos/gui/gui1.
@@ -96,12 +96,10 @@ public abstract class ConcurrentInternalAction implements InternalAction {
 
         if (timeout > 0) {
             // schedule a future test of the end of the action
-            Agent.getScheduler().schedule( new Runnable() {
-                public void run() {
-                    // finish the IA by timeout
-                    if (C.getPendingIntentions().get(key) != null) { // test if the intention is still there
-                        timeout(ts,key);
-                    }
+            Agent.getScheduler().schedule(() -> {
+                // finish the IA by timeout
+                if (C.getPendingIntentions().get(key) != null) { // test if the intention is still there
+                    timeout(ts,key);
                 }
             }, timeout, TimeUnit.MILLISECONDS);
         }
