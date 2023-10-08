@@ -1,4 +1,0 @@
-#!/bin/sh
-echo asciidoc for $@
-IMAGE=jomifred/adoc
-exec docker run --rm -i --user="$(id -u):$(id -g)" --net=none -v "$PWD":/app "$IMAGE" asciidoctor -r /pygments_init.rb "$@"
