@@ -7,7 +7,7 @@ git clone https://github.com/jason-lang/jason.git --branch gh-pages-new --single
 
 cp -R jason-interpreter/build/docs/javadoc /tmp/gh-pages/api
 
-cp -R doc /tmp/gh-pages/doc
+cp -R doc /tmp/gh-pages
 
 
 cd /tmp/gh-pages
