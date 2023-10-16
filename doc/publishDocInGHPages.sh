@@ -4,4 +4,5 @@ cd ..
 cp -R jason-interpreter/build/docs/javadoc /tmp/api
 
 git checkout gh-pages
+git pull
 
