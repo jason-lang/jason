@@ -11,7 +11,7 @@
 
 // this plan uses BDI internal actions to discover the current goal
 +!inspect(X)
-   <- .intention(Id,State,Stack,current); // doc at http://jason.sourceforge.net/api/jason/stdlib/intention.html
+   <- .intention(Id,State,Stack,current); // doc at http://jason-lang.github.io/jason/api/jason/stdlib/intention.html
       .print("Current intention number is ",Id," and its state is ",State);
       Stack = [Top|_]; // get just the intended means in the top of current intention
       Top   = im(Label, { +!Goal },PlanBody,Unifier);

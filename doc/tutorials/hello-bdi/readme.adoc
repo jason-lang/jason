@@ -12,7 +12,7 @@ Jomi F. Hubner (with Rafael H. Bordini support)
 == Introduction
 
 This programming (mini) tutorial illustrates how the BDI model is
-used in the http://jason.sf.net[Jason] agent-oriented programming
+used in the http://jason-lang.github.io/jason[Jason] agent-oriented programming
 language. We start by a very simple agent code and progress exploring
 the BDI features of Jason.
 
@@ -344,7 +344,7 @@ to react to the event.
 
 The first plan for `+happy(H)` is used when `H` is `bob` and the source
 of `happy(H)` is sincere
-(http://jason.sourceforge.net/api/jason/stdlib/my_name.html[`.my_name`]
+(http://jason-lang.github.io/jason/api/jason/stdlib/my_name.html[`.my_name`]
 is true if the value of `H` is the name of the agent executing that
 internal action). The second plan is used otherwise. The first plan for
 `+!say(X)` is used on Fridays and the second on days other than Monday.
@@ -477,8 +477,8 @@ The `untell` message removes the corresponding belief in the receiver
 
 === Exercises E
 
-1. Write a new plan for Bob so that on Saturdays he drops all his intentions. The internal action http://jason.sourceforge.net/api/jason/stdlib/drop_all_intentions.html[`.drop_all_intentions`] may help for that.
-2. Write a plan for Bob so that as soon as it realises that someone is happy, he shares this information with Carlos *only* if Bob intends to `say(hello(carlos))`. The internal action http://jason.sourceforge.net/api/jason/stdlib/intend.html[`.intend`] may help for that.
+1. Write a new plan for Bob so that on Saturdays he drops all his intentions. The internal action http://jason-lang.github.io/jason/api/jason/stdlib/drop_all_intentions.html[`.drop_all_intentions`] may help for that.
+2. Write a plan for Bob so that as soon as it realises that someone is happy, he shares this information with Carlos *only* if Bob intends to `say(hello(carlos))`. The internal action http://jason-lang.github.io/jason/api/jason/stdlib/intend.html[`.intend`] may help for that.
 
 == Bob (the lazy -- finally)
 
@@ -525,7 +525,7 @@ sincere(alice).
 -----
 
 (You can refer to the
-http://jason.sourceforge.net/api/jason/stdlib/package-summary.html#package.description[Jason
+http://jason-lang.github.io/jason/api/jason/stdlib/package-summary.html#package.description[Jason
 API] for explanations about all the commands used in this example.)
 
 This tutorial showed how some of the (great) BDI concepts become
