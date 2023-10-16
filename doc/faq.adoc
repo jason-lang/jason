@@ -1180,7 +1180,7 @@ Note that the plan that handles this event is not obliged to use any
 --------------------------------------------------------------------------------
 +
 The internal actions defined by the user can add new annotations to
-  indicate particular types of errors (see the API documentation of http://jason.sourceforge.net/api/jason/JasonException.html[JasonException] for
+  indicate particular types of errors (see the API documentation of http://jason-lang.github.io/jason/api/jason/JasonException.html[JasonException] for
   more information about that).
 
 === How can an agent know (and reason about) its own goals?
