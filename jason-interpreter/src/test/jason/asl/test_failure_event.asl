@@ -1,7 +1,7 @@
 /**
  * Test failure event, among the tests it intends to cover
  * the ones referred at:
- * http://jason.sourceforge.net/doc/faq.html#_why_is_jasons_plan_failure_mechanism_different_from_other_agent_platforms
+ * http://jason-lang.github.io/jason/doc/faq.html#_why_is_jasons_plan_failure_mechanism_different_from_other_agent_platforms
  */
 
 { include("tester_agent.asl") }
