@@ -1128,7 +1128,7 @@ intention(1,
 )
 -----------------------------------------------------------------------------
 +
-You can find more information in the documentation of the http://jason.sourceforge.net/api/jason/stdlib/current_intention.html[.current_intention] pre-defined internal action.
+You can find more information in the documentation of the http://jason-lang.github.io/jason/api/jason/stdlib/current_intention.html[.current_intention] pre-defined internal action.
 Annotations:::
   every failure event is annotated with at least the following
   information:
@@ -1180,12 +1180,12 @@ Note that the plan that handles this event is not obliged to use any
 --------------------------------------------------------------------------------
 +
 The internal actions defined by the user can add new annotations to
-  indicate particular types of errors (see the API documentation of http://jason.sourceforge.net/api/jason/JasonException.html[JasonException] for
+  indicate particular types of errors (see the API documentation of http://jason-lang.github.io/jason/api/jason/JasonException.html[JasonException] for
   more information about that).
 
 === How can an agent know (and reason about) its own goals?
 
-Jason provides a set of internal actions to help agents to reason about their intentional state (the list of these internal actions is available http://jason.sourceforge.net/api/jason/stdlib/package-summary.html#package.description[here]). This topic is also discussed in the http://jason.sourceforge.net/mini-tutorial/hello-bdi/[BDI Hello World] tutorial.
+Jason provides a set of internal actions to help agents to reason about their intentional state (the list of these internal actions is available http://jason-lang.github.io/jason/api/jason/stdlib/package-summary.html#package.description[here]). This topic is also discussed in the http://jason-lang.github.io/jason/doc/tutorials/hello-bdi/readme.html[BDI Hello World] tutorial.
 
 As a simple example, the following code allows the agent to discover the identifier of the current goal and the state of others.
 
@@ -1219,7 +1219,7 @@ As a simple example, the following code allows the agent to discover the identif
       }.
 --------------------------------------------------------------------------------
 
-The most important internal action used in the example is http://jason.sourceforge.net/api/jason/stdlib/intention.html[`.intention`].
+The most important internal action used in the example is http://jason-lang.github.io/jason/api/jason/stdlib/intention.html[`.intention`].
 
 
 The output is:

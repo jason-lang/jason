@@ -128,11 +128,11 @@ If an atomic plan runs, all its subgoals will be also atomic. More documentation
 
 Some internal actions are useful for concurrent programming in Jason:
 
-- http://jason.sourceforge.net/api/jason/stdlib/succeed_goal.html[.succeed_goal]
-- http://jason.sourceforge.net/api/jason/stdlib/fail_goal.html[.fail_goal]
-- http://jason.sourceforge.net/api/jason/stdlib/suspend.html[.suspend]
-- http://jason.sourceforge.net/api/jason/stdlib/resume.html[.resume]
-- http://jason.sourceforge.net/api/jason/stdlib/wait.html[.wait]
+- http://jason-lang.github.io/jason/api/jason/stdlib/succeed_goal.html[.succeed_goal]
+- http://jason-lang.github.io/jason/api/jason/stdlib/fail_goal.html[.fail_goal]
+- http://jason-lang.github.io/jason/api/jason/stdlib/suspend.html[.suspend]
+- http://jason-lang.github.io/jason/api/jason/stdlib/resume.html[.resume]
+- http://jason-lang.github.io/jason/api/jason/stdlib/wait.html[.wait]
 
 == Configuration
 

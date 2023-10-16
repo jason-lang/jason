@@ -176,7 +176,6 @@ Buyer-agent bob@10.200.0.100:1099/JADE terminating.
 // ----
 
 
-//The overall process of launching distributed agents can be simplified by the Ant script created by Jason as explained in the http://jason.sf.net/faq[FAQ].
 
 == Exercises
 

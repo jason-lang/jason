@@ -19,9 +19,7 @@ This tutorial uses VSCode + Jason. See xref:../vscode/readme.adoc[here] how to c
 
 Jason comes with many examples and demos. The examples are
 multi-agent system applications for simple scenarios. The demos are
-meant simply to show how to use some useful features of Jason. You
-can find a brief description of examples and demos at
-http://jason.sf.net.
+meant simply to show how to use some useful features of Jason. 
 
 We will now run the classic _Cleaning Robots_ example:
 
