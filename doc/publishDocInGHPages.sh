@@ -1,6 +1,6 @@
 cd ..
 
-#./gradlew doc
+./gradlew doc
 
 rm -rf /tmp/gh-pages*
 git clone https://github.com/jason-lang/jason.git --branch gh-pages-new --single-branch /tmp/gh-pages
