@@ -1,3 +1,4 @@
+---
 defaults:
   # _pages
   - scope:
@@ -7,6 +8,7 @@ defaults:
       layout: single
       author_profile: true
 permalink: /teaching/
+---
 
 # Teaching
 TBD
