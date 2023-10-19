@@ -1,3 +1,5 @@
 ---
-layout: splash
+layout: home
+author_profile: false
+foot:
 ---
