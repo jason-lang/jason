@@ -1,6 +1,3 @@
 main:
-  - title: "jason"
-    url: /
   - title: "Teaching"
     url: /teaching/
-    
