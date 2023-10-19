@@ -2,9 +2,9 @@
 layout: splash
 permalink: /
 header:
-   image: /assets/images/headerArial1.jpg
+   overlay_image: /assets/images/headerArial1.jpg
 excerpt: <
-  ttt 
+  
 ---
 # Jason
 
