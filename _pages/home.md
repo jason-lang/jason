@@ -3,6 +3,8 @@ layout: splash
 permalink: /
 header:
    image: /assets/images/headerArial1.jpg
+excerpt:
+   
 ---
 # Jason
 
