@@ -1,4 +1,4 @@
-# VSCode as an IDE for Jason
+= VSCode as an IDE for Jason
 :toc: right
 :date: March 2023
 :source-highlighter: coderay
@@ -7,7 +7,7 @@
 :prewrap!:
 
 
-= What You Will Build
+== What You Will Build
 
 In this document, you will build an environment to develop agent-based system with link:https://github.com/jason-lang/jason[Jason] language.
 
@@ -16,7 +16,7 @@ include::../../install.adoc[]
 //image:./figs/inst.png[vscode and java installation]
 
 
-= Create and run a new application
+== Create and run a new application
 
 In a terminal, you can create a new Jason application, named `app1`, with the following command:
 
@@ -55,7 +55,7 @@ Just as an example, change the code of `alice.asl` to
 
 executes the system again, open the link:http://127.0.0.1:3272[mind inspector], and see bob's beliefs.
 
-= More on Jason CLI
+== More on Jason CLI
 
 To add more agents in your project:
 

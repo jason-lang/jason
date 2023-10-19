@@ -2,15 +2,17 @@ cd ..
 
 ./gradlew doc
 
-rm -rf /tmp/gh-pages*
-git clone https://github.com/jason-lang/jason.git --branch gh-pages-new --single-branch /tmp/gh-pages
+#rm -rf /tmp/gh-pages*
+#git clone https://github.com/jason-lang/jason.git --branch gh-pages-new --single-branch /tmp/gh-pages
 
-cp -R jason-interpreter/build/docs/javadoc /tmp/gh-pages/api
+rm -rf ../jason-pages/api
+rm -rf ../jason-pages/doc
 
-cp -R doc /tmp/gh-pages
+cp -R jason-interpreter/build/docs/javadoc ../jason-pages/api
+cp -R doc ../jason-pages
 
 
-cd /tmp/gh-pages
+cd ../jason-pages
 git add api
 git commit -a -m "add javadoc api"
 
