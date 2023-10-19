@@ -6,7 +6,7 @@ The Jason CLI is a command-line interface tool that you use to initialize, devel
 include::../install.adoc[]
 
 
-## Create Applications
+== Create Applications
 
 New Jason applications can be created and executed with:
 
@@ -56,7 +56,7 @@ Then use your preferred IDE to edit the sources of the application, which are in
 The commands of this section are used to help change the source code of some application. To change or monitor the state of running applications, see the commands below.
 
 
-## Manage (running) MAS
+== Manage (running) MAS
 
 In your preferred terminal, you can start a new *empty* MAS with:
 
@@ -87,7 +87,7 @@ Agent commands:
     $ jason agent load-into alice --mas-name=mas_1 --source=y.asl
     $ jason agent mind alice   --mas-name=mas_1 --plans
 
-## Interactive Shell
+== Interactive Shell
 
 To open the Jason shell, simply execute `jason`: 
 
@@ -128,7 +128,7 @@ The shell provides completion and suggestions (using `<TAB>`).
 image:./figs/s1.png[screen show]
 
 
-## Scripts
+== Scripts
 
 Create a script file, for instance, a file called `hello.jcli` with content:
 
