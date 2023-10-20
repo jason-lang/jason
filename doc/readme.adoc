@@ -5,7 +5,7 @@ Jason is an interpreter for an extended version of AgentSpeak. It implements the
 Jason is developed by http://https://jomifred.github.io[Jomi F. Hübner] and http://www.inf.pucrs.br/r.bordini[Rafael H. Bordini], based on previous work done with many colleagues, in particular Michael Fisher, Joyce Martins, Álvaro Moreira, Renata Vieira, Willem Visser, Mike Wooldridge, but also many others, as acknowledged in the manual (see the http://jason-lang.github.io/[Jason web site]).
 
 ifdef::env-github[]
-NOTE: The documentation of is also available (and better rendered) at http://jason-lang.github.io/doc.
+NOTE: The documentation of is also available (and better rendered) at http://jason-lang.github.io/jason/.
 endif::[]
 
 == Installation
