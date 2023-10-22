@@ -26,6 +26,9 @@ endif::[]
 
 - xref:./release-notes.adoc[Release Notes]
 
+- https://github.com/jason-lang/jason/tree/master/demos[Demos]
+- http://jason.sf.net/jBook[Jason book] http://jason.sourceforge.net/jBook/jBookWebSite/Examples.html[examples]
+
 == Technical documents
 
 * link:http://jason-lang.github.io/api/jason/stdlib/package-summary.html[Standard internal actions]
@@ -38,13 +41,13 @@ endif::[]
 * xref:./tech/unit-tests.adoc[Testing]
 * xref:./tech/annotations.adoc[Unification with Annotations]
 
-== Other Links
+//== Other Links
 
-- https://github.com/jason-lang/jason[GitHub]
+//- https://github.com/jason-lang/jason[GitHub]
 //- http://sourceforge.net/news/?group_id=98417[News]
 //- http://sourceforge.net/mail/?group_id=98417[Mailing lists]
-- https://github.com/jason-lang/jason/tree/master/examples[Examples]
-- https://github.com/jason-lang/jason/tree/master/demos[Demos]
+//- https://github.com/jason-lang/jason/tree/master/examples[Examples]
+//- https://github.com/jason-lang/jason/tree/master/demos[Demos]
 //- http://jason.sourceforge.net/Jason/Documents.html[Publications]
 //- http://jason.sourceforge.net/Jason/Projects.html[Related projects]
 
