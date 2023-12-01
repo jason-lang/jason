@@ -1,0 +1,61 @@
+/*
+   Project book_trading
+
+   Gradle build file for Jason Application
+   May 07, 2023 - 19:29:43
+*/
+
+defaultTasks 'run'
+
+apply plugin: 'java'
+
+// set version of group for your project
+//version '1.0'
+//group   'io.github.jason-lang'
+
+repositories {
+    mavenCentral()
+    maven { url "https://raw.githubusercontent.com/jacamo-lang/mvn-repo/master" }
+    maven { url "https://jade.tilab.com/maven/" }
+}
+
+dependencies {
+    implementation('io.github.jason-lang:jason-interpreter:3.2.1-SNAPSHOT')
+    // to use locally installed jars:
+    //implementation fileTree(dir: 'lib', include: '*.jar')
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir 'src/java'
+            srcDir 'src/env'
+        }
+    }
+}
+
+task run (type: JavaExec, dependsOn: 'classes') {
+    description 'runs the application'
+    mainClass = 'jason.infra.local.RunLocalMAS'
+    args = ['book_trading.mas2j']
+	// options:
+	//     args = ['book_trading.mas2j', '--debug', '--no-net', '--empty-mas']
+	//     args = ['book_trading.mas2j', '--log-conf', 'l.p'] // to use file l.p to configure logging
+    classpath sourceSets.main.runtimeClasspath
+}
+
+task runJohn (type: JavaExec, dependsOn: 'classes') {
+    description 'runs agent jhon using JADE platform'
+    mainClass = 'jade.Boot'
+    args = [ '-container', 'john:jason.infra.jade.JadeAgArch(src/agt/john.asl)' ]
+    classpath sourceSets.main.runtimeClasspath
+}
+
+task runJadeAgs (type: JavaExec, dependsOn: 'classes') {
+    description 'runs normal JADE agents'
+    mainClass = 'jade.Boot'
+    args = [ '-gui', 'bob:examples.bookTrading.BookBuyerAgent(Harry)' ]
+    //args = [ '-container', '-gui', '-local-host', '127.0.0.1', 'bob:examples.bookTrading.BookBuyerAgent(Harry)' ]
+    classpath sourceSets.main.runtimeClasspath
+}
+
