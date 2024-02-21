@@ -103,7 +103,7 @@ public class relevant_plans extends DefaultInternalAction {
         	te.setLiteral(te.getLiteral().forceFullLiteralImpl());
         	te.getLiteral().addSource(new UnnamedVar());
         }
-        List<Option> rp = ts.relevantPlans(te, null);
+        List<Option> rp = ts.getAg().relevantPlans(te, null);
         if (rp != null) {
             for (Option opt: rp) {
                 Plan np = (Plan)opt.getPlan().clone();

@@ -1,51 +1,17 @@
 package jason.asSemantics;
 
-import java.io.Serial;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import jason.JasonException;
 import jason.NoValueException;
 import jason.RevisionFailedException;
 import jason.architecture.AgArch;
 import jason.asSemantics.GoalListener.GoalStates;
-import jason.asSyntax.ASSyntax;
-import jason.asSyntax.Atom;
-import jason.asSyntax.BinaryStructure;
-import jason.asSyntax.InternalActionLiteral;
-import jason.asSyntax.ListTerm;
-import jason.asSyntax.ListTermImpl;
-import jason.asSyntax.Literal;
-import jason.asSyntax.LiteralImpl;
-import jason.asSyntax.LogicalFormula;
-import jason.asSyntax.NumberTerm;
-import jason.asSyntax.ObjectTermImpl;
-import jason.asSyntax.Plan;
-import jason.asSyntax.PlanBody;
+import jason.asSyntax.*;
 import jason.asSyntax.PlanBody.BodyType;
-import jason.asSyntax.PlanBodyImpl;
-import jason.pl.PlanLibrary;
-import jason.asSyntax.SourceInfo;
-import jason.asSyntax.StringTermImpl;
-import jason.asSyntax.Structure;
-import jason.asSyntax.Term;
-import jason.asSyntax.Trigger;
 import jason.asSyntax.Trigger.TEOperator;
 import jason.asSyntax.Trigger.TEType;
-import jason.asSyntax.UnnamedVar;
-import jason.asSyntax.VarTerm;
 import jason.asSyntax.parser.ParseException;
 import jason.bb.BeliefBase;
+import jason.pl.PlanLibrary;
 import jason.runtime.Settings;
 import jason.stdlib.add_nested_source;
 import jason.stdlib.desire;
@@ -53,6 +19,14 @@ import jason.stdlib.fail_goal;
 import jason.stdlib.succeed_goal;
 import jason.util.Config;
 import jason.util.RunnableSerializable;
+
+import java.io.Serial;
+import java.io.Serializable;
+import java.util.*;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 public class TransitionSystem implements Serializable {
@@ -290,7 +264,7 @@ public class TransitionSystem implements Serializable {
             if (m == null) return;
 
             // get the content, it can be any term (literal, list, number, ...; see ask)
-            Term content = null;
+            Term content;
             if (m.getPropCont() instanceof Term) {
                 content = (Term)m.getPropCont();
             } else {
@@ -370,19 +344,23 @@ public class TransitionSystem implements Serializable {
 
                     boolean added = false;
                     if (!setts.isSync() && !ag.getPL().hasUserKqmlReceivedPlans() && content.isLiteral() && !content.isList()) { // optimisation to jump kqmlPlans
-                        if (m.getIlForce().equals("achieve") ) {
-                            content = add_nested_source.addAnnotToList(content, new Atom(sender));
-                            C.addEvent(new Event(new Trigger(TEOperator.add, TEType.achieve, (Literal)content), Intention.EmptyInt));
-                            added = true;
-                        } else if (m.getIlForce().equals("tell") ) {
-                            content = add_nested_source.addAnnotToList(content, new Atom(sender));
-                            getAg().addBel((Literal)content);
-                            added = true;
-                        } else if (m.getIlForce().equals("signal") ) {
-                            content = add_nested_source.addAnnotToList(content, new Atom(sender));
-                            ((Literal)content).addAnnot(new Atom("signal"));
-                            C.addEvent(new Event(new Trigger(TEOperator.add, TEType.signal, (Literal)content), Intention.EmptyInt));
-                            added = true;
+                        switch (m.getIlForce()) {
+                            case "achieve" -> {
+                                content = add_nested_source.addAnnotToList(content, new Atom(sender));
+                                C.addEvent(new Event(new Trigger(TEOperator.add, TEType.achieve, (Literal) content), Intention.EmptyInt));
+                                added = true;
+                            }
+                            case "tell" -> {
+                                content = add_nested_source.addAnnotToList(content, new Atom(sender));
+                                getAg().addBel((Literal) content);
+                                added = true;
+                            }
+                            case "signal" -> {
+                                content = add_nested_source.addAnnotToList(content, new Atom(sender));
+                                ((Literal) content).addAnnot(new Atom("signal"));
+                                C.addEvent(new Event(new Trigger(TEOperator.add, TEType.signal, (Literal) content), Intention.EmptyInt));
+                                added = true;
+                            }
                         }
                     }
 
@@ -544,7 +522,7 @@ public class TransitionSystem implements Serializable {
     private void applyRelPl() throws JasonException {
         if (C.SE.getOption() == null) { // no option yet
             // get all relevant plans for the selected event
-            C.RP = relevantPlans(C.SE.trigger, C.SE);
+            C.RP = getAg().relevantPlans(C.SE.trigger, C.SE);
 
             // Rule Rel1
             if (C.RP != null || setts.retrieve())
@@ -559,7 +537,7 @@ public class TransitionSystem implements Serializable {
 
     private void applyApplPl() throws JasonException {
         if (C.SE.getOption() == null) { // no option yet
-            C.AP = applicablePlans(C.RP);
+            C.AP = getAg().applicablePlans(C.RP);
 
             // Rule Appl1
             if (C.AP != null || setts.retrieve())
@@ -1296,7 +1274,7 @@ public class TransitionSystem implements Serializable {
     /* auxiliary functions for the semantic rules */
     /**********************************************/
 
-    public List<Option> relevantPlans(Trigger teP, Event evt) throws JasonException {
+    /*public List<Option> relevantPlans(Trigger teP, Event evt) throws JasonException {
         Trigger te = teP.clone();
         List<Option> rp = null;
 
@@ -1338,21 +1316,11 @@ public class TransitionSystem implements Serializable {
             plib = plib.getFather();
         }
 
-        /* (previous to JasonER)
-        List<Plan> candidateRPs = ag.pl.getCandidatePlans(te);
-        if (candidateRPs != null) {
-            for (Plan pl : candidateRPs) {
-                Unifier relUn = pl.isRelevant(te, null);
-                if (relUn != null) {
-                    if (rp == null) rp = new LinkedList<>();
-                    rp.add(new Option(pl, relUn));
-                }
-            }
-        }*/
         return rp;
     }
+    */
 
-    public List<Option> applicablePlans(List<Option> rp) throws JasonException {
+    /*public List<Option> applicablePlans(List<Option> rp) throws JasonException {
         synchronized (C.syncApPlanSense) {
             List<Option> ap = null;
             if (rp != null) {
@@ -1400,6 +1368,7 @@ public class TransitionSystem implements Serializable {
             return ap;
         }
     }
+    */
 
     public boolean updateEvents(List<Literal>[] result, Intention focus) {
         if (result == null) return false;

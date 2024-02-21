@@ -35,7 +35,6 @@ import java.net.URL;
 import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -79,7 +78,7 @@ public class Agent implements Serializable, ToDOM {
 
     /**
      * Set up the default agent configuration.
-     *
+     * <p>
      * Creates the agent class defined by <i>agClass</i>, default is jason.asSemantics.Agent.
      * Creates the TS for the agent.
      * Creates the belief base for the agent.
@@ -90,7 +89,7 @@ public class Agent implements Serializable, ToDOM {
 
             new TransitionSystem(ag, null, stts, arch);
 
-            BeliefBase bb = null;
+            BeliefBase bb;
             if (bbPars == null)
                 bb = new DefaultBeliefBase();
             else
@@ -108,10 +107,11 @@ public class Agent implements Serializable, ToDOM {
         //}
     }
 
-    private boolean considerToaddMIForThisAgent = true;
+    private boolean considerToAddMIForThisAgent = true;
     public void setConsiderToAddMIForThisAgent(boolean add) {
-        considerToaddMIForThisAgent = add;
+        considerToAddMIForThisAgent = add;
     }
+
     /** Initialises the TS and other components of the agent */
     public void initAg() {
         if (bb == null) bb = new DefaultBeliefBase();
@@ -129,7 +129,7 @@ public class Agent implements Serializable, ToDOM {
         //if (ts.getSettings().hasQueryProfiling()) qProfiling = new QueryProfiling(this);
         //if (ts.getSettings().hasQueryCache())     qCache = new QueryCacheSimple(this, qProfiling);
 
-        if (considerToaddMIForThisAgent)
+        if (considerToAddMIForThisAgent)
             addToMindInspectorWeb();
     }
 
@@ -252,7 +252,7 @@ public class Agent implements Serializable, ToDOM {
      *  A new TS is created (based on the cloned circumstance).
      */
     public Agent clone(AgArch arch) {
-        Agent a = null;
+        Agent a;
         try {
             a = this.getClass().getConstructor().newInstance();
         } catch (InstantiationException e1) {
@@ -645,6 +645,110 @@ public class Agent implements Serializable, ToDOM {
             return actions.poll();
     }
 
+    public List<Option> relevantPlans(Trigger teP, Event evt) throws JasonException {
+        Trigger te = teP.clone();
+        List<Option> rp = null;
+
+        // gets the proper plan library (root, inner scope, ...)
+        PlanLibrary plib = getPL();
+        if (evt != null && evt.isInternal() && !evt.getIntention().isFinished()) {
+            Plan p = evt.getIntention().peek().getPlan();
+            if (p.hasSubPlans()) {
+                plib = p.getSubPlans();
+            } else if (p.getScope() != null) {
+                plib = p.getScope();
+            }
+        }
+
+
+        while (plib != null) {
+            List<Plan> candidateRPs = plib.getCandidatePlans(te);
+            if (candidateRPs != null) {
+                for (Plan pl : candidateRPs) {
+
+                    Unifier relUn = null;
+                    if (evt != null && evt.isInternal()) {
+                        // use IM vars in the context for sub-plans (new in JasonER)
+                        for (IntendedMeans im: evt.getIntention()) {
+                            if (im.getPlan().hasSubPlans() && im.getPlan().getSubPlans().get(pl.getLabel()) != null) {
+                                relUn = im.triggerUnif.clone();
+                                break;
+                            }
+                        }
+                    }
+
+                    relUn = pl.isRelevant(te, relUn);
+                    if (relUn != null) {
+                        if (rp == null) rp = new LinkedList<>();
+                        rp.add(new Option(pl, relUn, evt));
+                    }
+                }
+            }
+            plib = plib.getFather();
+        }
+
+        /* (previous to JasonER)
+        List<Plan> candidateRPs = ag.pl.getCandidatePlans(te);
+        if (candidateRPs != null) {
+            for (Plan pl : candidateRPs) {
+                Unifier relUn = pl.isRelevant(te, null);
+                if (relUn != null) {
+                    if (rp == null) rp = new LinkedList<>();
+                    rp.add(new Option(pl, relUn));
+                }
+            }
+        }*/
+        return rp;
+    }
+
+    public List<Option> applicablePlans(List<Option> rp) throws JasonException {
+        synchronized (getTS().getC().syncApPlanSense) {
+            List<Option> ap = null;
+            if (rp != null) {
+                for (Option opt: rp) {
+                    LogicalFormula context = opt.getPlan().getContext();
+                    if (getLogger().isLoggable(Level.FINE))
+                        getLogger().log(Level.FINE, "option for "+getTS().getC().SE.getTrigger()+" is plan "+opt.getPlan().getLabel() + " " + opt.getPlan().getTrigger() + " : " + context + " -- with unification "+opt.getUnifier());
+
+                    if (context == null) { // context is true
+                        if (ap == null) ap = new LinkedList<>();
+                        ap.add(opt);
+                        if (getLogger().isLoggable(Level.FINE))
+                            getLogger().log(Level.FINE, "     "+opt.getPlan().getLabel() + " is applicable with unification "+opt.getUnifier());
+                    } else {
+                        boolean allUnifs = opt.getPlan().isAllUnifs();
+
+                        Iterator<Unifier> r = context.logicalConsequence(this, opt.getUnifier());
+                        boolean isApplicable = false;
+                        if (r != null) {
+                            while (r.hasNext()) {
+                                isApplicable = true;
+                                opt.setUnifier(r.next());
+
+                                if (ap == null) ap = new LinkedList<>();
+                                ap.add(opt);
+
+                                if (getLogger().isLoggable(Level.FINE))
+                                    getLogger().log(Level.FINE, "     "+opt.getPlan().getLabel() + " is applicable with unification "+opt.getUnifier());
+
+                                if (!allUnifs) break; // returns only the first unification
+                                if (r.hasNext()) {
+                                    // create a new option for the next loop step
+                                    opt = new Option(opt.getPlan(), null, opt.getEvt());
+                                }
+                            }
+                        }
+
+                        if (!isApplicable && getLogger().isLoggable(Level.FINE))
+                            getLogger().log(Level.FINE, "     "+opt.getPlan().getLabel() + " is not applicable");
+                    }
+                }
+            }
+            return ap;
+        }
+    }
+
+
     /** TS Initialisation (called by the AgArch) */
     public void setTS(TransitionSystem ts) {
         this.ts = ts;
@@ -896,7 +1000,7 @@ public class Agent implements Serializable, ToDOM {
                 }
 
                 if (beliefToDel != null) {
-                    Unifier u = null;
+                    Unifier u;
                     try {
                         u = i.peek().unif; // get from current intention
                     } catch (Exception e) {
