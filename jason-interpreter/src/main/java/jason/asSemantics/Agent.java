@@ -78,7 +78,7 @@ public class Agent implements Serializable, ToDOM {
 
     /**
      * Set up the default agent configuration.
-     *
+     * <p>
      * Creates the agent class defined by <i>agClass</i>, default is jason.asSemantics.Agent.
      * Creates the TS for the agent.
      * Creates the belief base for the agent.
