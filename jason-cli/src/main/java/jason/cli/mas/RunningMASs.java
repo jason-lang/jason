@@ -54,6 +54,7 @@ public class RunningMASs {
                 return rt;
             }
         } catch (Exception e) {
+            //e.printStackTrace();
         }
 
         //  try with list of running MAS

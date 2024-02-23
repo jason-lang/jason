@@ -16,7 +16,7 @@ import java.util.List;
     name = "start",
     description = "starts a new (empty) agent"
 )
-public class StartAgent implements Runnable {
+public class StartAgent extends BaseAgent implements Runnable {
     
     @Parameters(paramLabel = "<agent name>", defaultValue = "",
                arity = "1",
@@ -49,16 +49,9 @@ public class StartAgent implements Runnable {
 
     @Override
     public void run() {
-        if (masName.isEmpty()) {
-            masName = RunningMASs.getDefaultMASName();
-            if (!masName.isEmpty())
-                parent.parent.println("using "+masName+" as MAS name");
-        }
+        masName = testMasName(masName, parent.parent);
+        testRunningMAS(masName, parent.parent);
 
-        if (!RunningMASs.isRunningMAS(masName)) {
-            parent.parent.errorMsg("no running MAS, create one with 'mas start'.");
-            return;
-        }
         if (agName.isEmpty()) {
             parent.parent.errorMsg("the name of the new agent should be informed, e.g., 'agent start bob'.");
             return;

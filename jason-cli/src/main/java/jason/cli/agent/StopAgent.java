@@ -12,7 +12,7 @@ import java.rmi.RemoteException;
     name = "stop",
     description = "kills an agent"
 )
-public class StopAgent implements Runnable {
+public class StopAgent extends BaseAgent implements Runnable {
     
     @Parameters(paramLabel = "<agent name>", defaultValue = "",
                arity = "1",
@@ -27,15 +27,9 @@ public class StopAgent implements Runnable {
 
     @Override
     public void run() {
-        if (masName.isEmpty()) {
-            masName = RunningMASs.getDefaultMASName();
-            if (!masName.isEmpty())
-                parent.parent.println("using "+masName+" as MAS name");
-        }
-        if (!RunningMASs.isRunningMAS(masName)) {
-            parent.parent.errorMsg("no running MAS, so, no agent to kill.");
-            return;
-        }
+        masName = testMasName(masName, parent.parent);
+        testRunningMAS(masName, parent.parent);
+
         if (agName.isEmpty()) {
             parent.parent.errorMsg("the name of the agent should be informed, e.g., 'agent stop bob'.");
             return;

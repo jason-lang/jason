@@ -12,7 +12,7 @@ import java.rmi.RemoteException;
     name = "mind",
     description = "inspects the mind of an agent"
 )
-public class MindAgent implements Runnable {
+public class MindAgent extends BaseAgent implements Runnable {
 
     @CommandLine.Parameters(paramLabel = "<agent name>", defaultValue = "",
             arity = "1",
@@ -36,15 +36,9 @@ public class MindAgent implements Runnable {
 
     @Override
     public void run() {
-        if (masName.isEmpty()) {
-            masName = RunningMASs.getDefaultMASName();
-            if (!masName.isEmpty())
-                parent.parent.println("using "+masName+" as MAS name");
-        }
-        if (!RunningMASs.isRunningMAS(masName)) {
-            parent.parent.errorMsg("no running MAS, so, no agent to inspect.");
-            return;
-        }
+        masName = testMasName(masName, parent.parent);
+        testRunningMAS(masName, parent.parent);
+
         if (agName.isEmpty()) {
             parent.parent.errorMsg("the name of the agent should be informed, e.g., 'agent mind bob'.");
             return;

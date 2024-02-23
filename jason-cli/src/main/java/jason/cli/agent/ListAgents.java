@@ -11,7 +11,7 @@ import java.rmi.RemoteException;
     name = "list",
     description = "lists running agents"
 )
-public class ListAgents implements Runnable {
+public class ListAgents extends BaseAgent implements Runnable {
 
     @CommandLine.ParentCommand
     protected Agent parent;
@@ -21,14 +21,8 @@ public class ListAgents implements Runnable {
 
     @Override
     public void run() {
-        if (masName.isEmpty()) {
-            masName = RunningMASs.getDefaultMASName();
-            if (!masName.isEmpty())
-                parent.parent.println("using "+masName+" as MAS name");
-        }
-
-        if (!RunningMASs.isRunningMAS(masName))
-            return;
+        masName = testMasName(masName, parent.parent);
+        testRunningMAS(masName, parent.parent);
 
         try {
             for  (var ag: RunningMASs.getRTS(masName).getAgentsNames()) {

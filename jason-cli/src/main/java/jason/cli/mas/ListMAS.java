@@ -18,7 +18,7 @@ public class ListMAS implements Runnable {
         var all = RunningMASs.getAllRunningMAS();
         //parent.parent.println("running MAS:");
         for  (var mas: all.keySet()) {
-            parent.parent.println("    "+mas+" @"+all.get(mas));
+            parent.parent.println("    "+mas+"@"+all.get(mas));
         }
     }
 }
