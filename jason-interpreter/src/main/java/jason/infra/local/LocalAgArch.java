@@ -359,7 +359,7 @@ public class LocalAgArch extends AgArch implements Runnable, Serializable {
     }
 
     public void broadcast(Message m) throws Exception {
-        for (String agName: RuntimeServicesFactory.get().getAgentsNames()) {
+        for (String agName: RuntimeServicesFactory.get().getAgentsName()) {
             if (!agName.equals(this.getAgName())) {
                 Message newm = m.clone();
                 newm.setReceiver(agName);

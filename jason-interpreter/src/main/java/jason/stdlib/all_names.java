@@ -63,7 +63,7 @@ public class all_names extends DefaultInternalAction {
         checkArguments(args);
         ListTerm ln = new ListTermImpl();
         ListTerm tail = ln;
-        for (String a: RuntimeServicesFactory.get().getAgentsNames()) {
+        for (String a: RuntimeServicesFactory.get().getAgentsName()) {
             tail = tail.append(new Atom(a));
         }
         return un.unifies(args[0], ln);

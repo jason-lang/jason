@@ -117,7 +117,7 @@ public class TimeSteppedEnvironment extends Environment {
      */
     protected void updateNumberOfAgents() {
         try {
-            setNbAgs(getEnvironmentInfraTier().getRuntimeServices().getAgentsNames().size());
+            setNbAgs(getEnvironmentInfraTier().getRuntimeServices().getAgentsName().size());
         } catch (RemoteException e) {
             throw new RuntimeException(e);
         }

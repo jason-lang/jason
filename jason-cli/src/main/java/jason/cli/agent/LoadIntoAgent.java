@@ -87,7 +87,7 @@ public class LoadIntoAgent extends BaseAgent implements Runnable {
         }
 
         // load code in the script, enclosed by { }
-        if (allParameters.size()>0) {
+        if (!allParameters.isEmpty()) {
             var last = allParameters.get( allParameters.size()-1).trim();
             if (last.startsWith("{")) {
                 code.append(last.substring(1, last.length() - 1).trim());

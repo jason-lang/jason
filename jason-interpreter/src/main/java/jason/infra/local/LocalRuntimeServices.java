@@ -1,16 +1,15 @@
 package jason.infra.local;
 
 import jason.JasonException;
-import jason.asSemantics.Agent;
-import jason.asSyntax.NumberTermImpl;
-import jason.asSyntax.Pred;
-import jason.asSyntax.Trigger;
+import jason.asSemantics.*;
+import jason.asSyntax.*;
 import jason.mas2j.AgentParameters;
 import jason.mas2j.ClassParameters;
 import jason.pl.PlanLibrary;
 import jason.runtime.RuntimeServicesFactory;
 import jason.runtime.Settings;
 import jason.runtime.SourcePath;
+import jason.stdlib.print_unifier;
 
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -196,6 +195,49 @@ public class LocalRuntimeServices extends BaseRuntimeServices {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public String runAsAgent(String agName, String code) {
+        try {
+            LocalAgArch agArch = masRunner.getAg(agName);
+            if (agArch == null)
+                return "no agent named "+agName;
+
+            code = code.trim();
+            if (code.endsWith("."))
+                code = code.substring(0,code.length()-1);
+            while (code.endsWith(";"))
+                code = code.substring(0,code.length()-1);
+
+            code += "; "+ print_unifier.class.getName();
+            PlanBody lCmd = ASSyntax.parsePlanBody(code);
+
+//            parent.parent.println(lCmd.getBodyNext()+" -- "+lCmd.getBodyNext().getBodyType().getClass().getName());
+            var te   = ASSyntax.parseTrigger("+!run_repl_expr");
+            var i    = new Intention();
+            var plan =  new Plan(null,te,null,lCmd);
+            i.push(new IntendedMeans(
+                    new Option(
+                            plan,
+                            new Unifier()),
+                    te));
+
+            agArch.getTS().getC().addRunningIntention(i);
+
+//            parent.parent.println("------" + ag.getTS().getAg().getPL().getAsTxt(false));
+//            parent.parent.println("------" + ag.getTS().getC().getRunningIntentions());
+//            parent.parent.println("------" + ag.getTS().getAg().getPL().getCandidatePlans(
+//                    ASSyntax.parseTrigger("+!a")
+//            ));
+
+            agArch.getTS().getAgArch().wake();
+
+
+        } catch (Exception e) {
+            return "Error parsing "+code+"\n"+e;
+        }
+        return "ok";
     }
 }
 

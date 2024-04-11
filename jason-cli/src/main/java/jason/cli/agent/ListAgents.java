@@ -27,7 +27,7 @@ public class ListAgents extends BaseAgent implements Runnable {
         try {
             var rts = RunningMASs.getRTS(masName);
             if (rts != null) {
-                for (var ag : rts.getAgentsNames()) {
+                for (var ag : rts.getAgentsName()) {
                     parent.parent.println("    " + ag);
                 }
             }

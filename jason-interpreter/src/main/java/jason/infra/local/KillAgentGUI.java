@@ -35,7 +35,7 @@ public class KillAgentGUI extends BaseDialogGUI {
         // Fields
         Vector<String> agNames = null;
         try {
-            agNames = new Vector<String>(services.getAgentsNames());
+            agNames = new Vector<String>(services.getAgentsName());
         } catch (RemoteException e) {
             agNames = new Vector<>();
         }

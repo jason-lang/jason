@@ -66,7 +66,7 @@ public interface RuntimeServices extends Remote {
     public boolean killAgent(String agName, String byAg, int deadline) throws RemoteException;
 
     /** Returns a set of all agents' name */
-    public Collection<String> getAgentsNames() throws RemoteException;
+    public Collection<String> getAgentsName() throws RemoteException;
 
     /** Gets the number of agents in the MAS. */
     public int getAgentsQty() throws RemoteException;
@@ -80,6 +80,9 @@ public interface RuntimeServices extends Remote {
 
     /** loads some ASL code into some agent, if replace is true, the previous plans from the sourceID will be removed */
     default public String loadASL(String agName, String code, String sourceId, boolean replace) throws RemoteException { return "not implemented"; }
+
+    /** agent agName executes the code (in a new intention) */
+    //public String runAsAgent(String agName, String code);
 
     /** Stops all MAS (the agents, the environment, the controller, ...) */
     public void stopMAS(int deadline, boolean stopJVM, int exitValue) throws RemoteException, Exception;

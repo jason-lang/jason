@@ -17,8 +17,6 @@ import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.wrapper.AgentController;
 import jade.wrapper.ContainerController;
 import jade.wrapper.ControllerException;
-import jason.JasonException;
-import jason.architecture.AgArch;
 import jason.mas2j.AgentParameters;
 import jason.mas2j.ClassParameters;
 import jason.runtime.RuntimeServices;
@@ -75,7 +73,7 @@ public class JadeRuntimeServices implements RuntimeServices {
         // nothing to do, the jade create new agent is enough
     }
 
-    public Collection<String> getAgentsNames() {
+    public Collection<String> getAgentsName() {
         // TODO: make a cache list and update it when a new agent enters the system
         if (jadeAgent == null) return null;
         try {
@@ -114,7 +112,7 @@ public class JadeRuntimeServices implements RuntimeServices {
 
     public int getAgentsQty() {
         try {
-            return getAgentsNames().size();
+            return getAgentsName().size();
         } catch (Exception e) {
             logger.log(Level.SEVERE, "Error getting agents qty", e);
             return 0;

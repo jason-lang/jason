@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.Set;
 
 import jason.JasonException;
-import jason.architecture.AgArch;
 import jason.asSemantics.Agent;
 import jason.mas2j.ClassParameters;
 
@@ -45,8 +44,8 @@ public class DelegatedRuntimeServices implements RuntimeServices {
         delegate.clone(source, archClasses, agName);
     }
 
-    public Collection<String> getAgentsNames() throws RemoteException {
-        return delegate.getAgentsNames();
+    public Collection<String> getAgentsName() throws RemoteException {
+        return delegate.getAgentsName();
     }
 
     public int getAgentsQty() throws RemoteException {
