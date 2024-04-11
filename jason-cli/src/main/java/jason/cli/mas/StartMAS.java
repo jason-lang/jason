@@ -36,11 +36,11 @@ public class StartMAS implements Runnable {
     @Option(names = { "--cp" }, defaultValue = "", paramLabel = "<classpath>", description = "directories where java classes can be found (for environment implementation, for instance)")
     String classPathArg;
 
-    @Option(names = { "--mas2j" }, defaultValue = "", paramLabel = "<mas2j file>", description = "runs jason project without gradle (offline), java classes should be compiled before running")
+    @Option(names = { "--mas2j" }, defaultValue = "", paramLabel = "<mas2j file>", description = "runs a Jason project")
     String mas2j;
 
-    @Option(names = { "--use-gradle" }, defaultValue = "",  paramLabel = "<mas2j file>", description = "executes the MAS defined in a mas2j file using gradle")
-    String useGradle;
+    @Option(names = { "--use-gradle" }, defaultValue = "false", description = "executes the MAS defined in a mas2j file using gradle")
+    boolean useGradle;
 
     @CommandLine.ParentCommand
     protected MAS parent;
@@ -74,12 +74,16 @@ public class StartMAS implements Runnable {
             return;
         }
 
-        if (!useGradle.isEmpty()) {
+        if (useGradle) {
+            if (mas2j.isEmpty()) {
+                parent.parent.errorMsg("a mas2j file should be informed. E.g., jason mas start --use-gradle --mas2j=t.mas2j");
+                return;
+            }
             //if (JasonCLI.runningShell)
             if (parent.parent.isTerminal())
-                new Thread(() -> new Run().run(useGradle, true)).start();
+                new Thread(() -> new Run().run(mas2j, true)).start();
             else
-                new Run().run(useGradle, true);
+                new Run().run(mas2j, true);
             return;
         }
 
