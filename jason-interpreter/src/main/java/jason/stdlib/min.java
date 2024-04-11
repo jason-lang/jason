@@ -6,6 +6,7 @@ import jason.asSemantics.InternalAction;
 import jason.asSemantics.TransitionSystem;
 import jason.asSemantics.Unifier;
 import jason.asSyntax.ListTerm;
+import jason.asSyntax.LogicalFormula;
 import jason.asSyntax.Term;
 
 import java.util.Iterator;
@@ -25,7 +26,18 @@ numbers &lt; atoms &lt; structures &lt; lists
 <li>+/- minimal (term).
 </ul>
 
-<p>Examples:<ul>
+ <p>Query version:<ul>
+ <li>+ term (variable or structure): the variable or structure whose
+ instances will be used as min candidate.<br/>
+
+ <li>+ query (logical formula): the formula used to find values for the term
+ <br/>
+
+ <li>+/- result (term): the min value for the query.<br/>
+ </ul>
+
+
+ <p>Examples:<ul>
 
 <li> <code>.min([c,a,b],X)</code>: <code>X</code> unifies with
 <code>a</code>.
@@ -40,8 +52,10 @@ numbers &lt; atoms &lt; structures &lt; lists
 <li>
 <code>.min([3,2,5],5)</code>: false.
 
-<li>
-<code>.min([],X)</code>: false.
+<li><code>.min([],X)</code>: false.
+
+ <li><code>.min(V, b(V), Min)</code>: unifies Min with the min V value for query b(V).
+
 
 </ul>
 
@@ -59,40 +73,6 @@ numbers &lt; atoms &lt; structures &lt; lists
   @see jason.stdlib.union
 
 */
-@Manual(
-        literal=".min(list,minimal)",
-        hint="gets the minimum value of a list of terms, using the \"natural\" order. "+
-             "For different types, the order is: numbers &lt; atoms &lt; structures &lt; lists",
-        argsHint= {
-                "the list where to find the minimal term",
-                "the resulting minimal"
-        },
-        argsType= {
-                "list",
-                "term"
-        },
-        examples= {
-                ".max([c,a,b],X): X unifies with a",
-                ".max([b,c,10,g,f(10),5,f(4)],X): X unifies with 5",
-                ".max([3,2,5],2]): true",
-                ".max([3,2,5],5): false",
-                ".max([],X): false"
-        },
-        seeAlso= {
-                "jason.stdlib.concat",
-                "jason.stdlib.delete",
-                "jason.stdlib.length",
-                "jason.stdlib.member",
-                "jason.stdlib.sort",
-                "jason.stdlib.nth",
-                "jason.stdlib.max",
-                "jason.stdlib.reverse",
-                "jason.stdlib.difference",
-                "jason.stdlib.intersection",
-                "jason.stdlib.union"
-        }
-    )
-@SuppressWarnings("serial")
 public class min extends DefaultInternalAction {
 
     private static InternalAction singleton = null;
@@ -106,33 +86,49 @@ public class min extends DefaultInternalAction {
         return 2;
     }
     @Override public int getMaxArgs() {
-        return 2;
+        return 3;
     }
 
     @Override protected void checkArguments(Term[] args) throws JasonException {
         super.checkArguments(args); // check number of arguments
-        if (!args[0].isList())
-            throw JasonException.createWrongArgument(this,"first argument must be a list");
+        if (!args[0].isList() && args.length == 2)
+            throw JasonException.createWrongArgument(this,"first argument must be a list when two arguments are used");
     }
 
     @Override
     public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {
         checkArguments(args);
 
-        ListTerm list = (ListTerm)args[0];
-        if (list.isEmpty()) {
-            return false;
+        if (args[0].isList()) {
+            ListTerm list = (ListTerm) args[0];
+            if (list.isEmpty()) {
+                return false;
+            }
+
+            Iterator<Term> i = list.iterator();
+            Term min = i.next();
+            while (i.hasNext()) {
+                Term t = i.next();
+                if (compare(min, t)) {
+                    min = t;
+                }
+            }
+            return un.unifies(args[1], min.clone());
         }
 
-        Iterator<Term> i = list.iterator();
-        Term min = i.next();
-        while (i.hasNext()) {
-            Term t = i.next();
-            if (compare(min,t)) {
-                min = t;
+        if (args.length == 3) { // case of .min(V, query, Min)
+            Term var = args[0];
+            LogicalFormula logExpr = (LogicalFormula)args[1];
+            Iterator<Unifier> iu = logExpr.logicalConsequence(ts.getAg(), un);
+            Term result = null;
+            while (iu.hasNext()) {
+                var value = var.capply(iu.next());
+                if (result == null || compare(result,value))
+                    result = value;
             }
+            return un.unifies(args[2], result);
         }
-        return un.unifies(args[1], min.clone());
+        return false;
     }
 
     protected boolean compare(Term a, Term t) {

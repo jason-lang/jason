@@ -25,7 +25,7 @@ import java.util.Iterator;
   <li>+ term (variable or structure): the variable or structure whose
   instances will "populate" the list.<br/>
 
-  <li>+ query (logical formula): the formula used to find literals in the belief base;
+  <li>+ query (logical formula): the formula used to find values for the term;
   is has the same syntax as the plan context.
   <br/>
 
@@ -51,35 +51,13 @@ import java.util.Iterator;
   <li> <code>.findall(X,c(X),L)</code>: <code>L</code> unifies with
   <code>[100,200,100]</code>.</li>
 
+ <li> <code>.findall(X,.member(p(_,X),[p(a,10),p(b,20)]),L)</code>: <code>L</code> unifies with
+ <code>[10,20]</code>.</li>
 
-  @see jason.stdlib.count
+
+ @see jason.stdlib.count
   @see jason.stdlib.setof
 */
-@Manual(
-		literal=".findall(term,query,result)",
-		hint="builds a List of all instantiations of referred term which make query a logical consequence of the agent's BB",
-		argsHint= {
-				"the variable or structure whose instances will \"populate\" the list",
-				"the formula used to find literals in the belief base",
-				"the result list populated with found solutions for the query"
-		},
-		argsType= {
-				"variable or structure",
-				"logical formula",
-				"list"
-		},
-		examples= {
-				".findall(X,a(X),L): assuming current BB with {a(30),a(20),b(1,2),b(3,4),b(5,6)}, L unifies with [30,20]",
-				".findall(c(Y,X),b(X,Y),L): assuming current BB with {a(30),a(20),b(1,2),b(3,4),b(5,6)}, L unifies with [c(2,1),c(4,3),c(6,5)]",
-				".findall(r(X,V1,V2), (a(X) & b(V1,V2) & V1*V2 < X), L): assuming current BB with {a(30),a(20),b(1,2),b(3,4),b(5,6)}, L unifies with [r(30,1,2),r(30,3,4),r(20,1,2),r(20,3,4)]",
-				".findall(X, c(X), L): assuming current BB with {c(100),c(200),c(100)}, L unifies with [100,200,100]"
-		},
-		seeAlso= {
-				"jason.stdlib.count",
-				"jason.stdlib.setof"
-		}
-	)
-@SuppressWarnings("serial")
 public class findall extends DefaultInternalAction {
 
 	@Override public int getMinArgs() {
