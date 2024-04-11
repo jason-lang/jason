@@ -1,6 +1,8 @@
 package jason.cli.mas;
 
 import jason.asSyntax.ASSyntax;
+import jason.cli.JasonCLI;
+import jason.cli.app.Run;
 import jason.infra.local.RunLocalMAS;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
@@ -34,8 +36,11 @@ public class StartMAS implements Runnable {
     @Option(names = { "--cp" }, defaultValue = "", paramLabel = "<classpath>", description = "directories where java classes can be found (for environment implementation, for instance)")
     String classPathArg;
 
-    @Option(names = { "--mas2j" }, defaultValue = "", paramLabel = "<file>", description = "runs jason project without gradle (offline), java classes should be compiled before running")
+    @Option(names = { "--mas2j" }, defaultValue = "", paramLabel = "<mas2j file>", description = "runs jason project without gradle (offline), java classes should be compiled before running")
     String mas2j;
+
+    @Option(names = { "--use-gradle" }, defaultValue = "",  paramLabel = "<mas2j file>", description = "executes the MAS defined in a mas2j file using gradle")
+    String useGradle;
 
     @CommandLine.ParentCommand
     protected MAS parent;
@@ -66,6 +71,14 @@ public class StartMAS implements Runnable {
             }
         } catch (Exception e) {
             parent.parent.errorMsg("the name of the MAS should be a valid identifier, e.g., 'mas start m1'.");
+            return;
+        }
+
+        if (!useGradle.isEmpty()) {
+            if (JasonCLI.runningShell)
+                new Thread(() -> new Run().run(useGradle, true)).start();
+            else
+                new Run().run(useGradle, true);
             return;
         }
 
