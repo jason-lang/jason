@@ -27,9 +27,6 @@ import java.util.function.Supplier;
 
 public class JasonCLI {
 
-
-    static public boolean runningShell = false;
-
     public static void main(String[] args) {
         // add jason package
         try {
@@ -42,7 +39,6 @@ public class JasonCLI {
         }
 
         if (args.length == 0) {
-            runningShell = true;
             startTerminal();
         } else if (args.length >= 1 && args[0].endsWith(".mas2j")) {
             // case of .mas2j

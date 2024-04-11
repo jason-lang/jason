@@ -75,7 +75,8 @@ public class StartMAS implements Runnable {
         }
 
         if (!useGradle.isEmpty()) {
-            if (JasonCLI.runningShell)
+            //if (JasonCLI.runningShell)
+            if (parent.parent.isTerminal())
                 new Thread(() -> new Run().run(useGradle, true)).start();
             else
                 new Run().run(useGradle, true);
