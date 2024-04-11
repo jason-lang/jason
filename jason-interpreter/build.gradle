@@ -98,6 +98,7 @@ publishing {
 
 
 task publishMavenGitHub(dependsOn: [ 'build', 'publishToMavenLocal']) {
+  group = "publishing"
   doLast {
     def wdir = System.getProperty("user.home")+'/.m2/repository/io/github/jason-lang/jason-interpreter' //org/jason/jason'
     def rdir = project.projectDir.absolutePath+'/../../jacamo-mvn-repo'

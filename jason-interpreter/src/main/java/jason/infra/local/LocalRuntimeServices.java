@@ -237,7 +237,7 @@ public class LocalRuntimeServices extends BaseRuntimeServices {
         } catch (Exception e) {
             return "Error parsing "+code+"\n"+e;
         }
-        return "ok";
+        return "execution ok";
     }
 }
 

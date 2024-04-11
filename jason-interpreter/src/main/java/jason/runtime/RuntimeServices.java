@@ -82,7 +82,7 @@ public interface RuntimeServices extends Remote {
     default public String loadASL(String agName, String code, String sourceId, boolean replace) throws RemoteException { return "not implemented"; }
 
     /** agent agName executes the code (in a new intention) */
-    //public String runAsAgent(String agName, String code);
+    default public String runAsAgent(String agName, String code) throws RemoteException { return "not implemented"; }
 
     /** Stops all MAS (the agents, the environment, the controller, ...) */
     public void stopMAS(int deadline, boolean stopJVM, int exitValue) throws RemoteException, Exception;
