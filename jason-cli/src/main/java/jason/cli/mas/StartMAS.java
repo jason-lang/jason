@@ -1,14 +1,15 @@
 package jason.cli.mas;
 
 import jason.asSyntax.ASSyntax;
-import jason.cli.JasonCLI;
 import jason.cli.app.Run;
 import jason.infra.local.RunLocalMAS;
+import jason.mas2j.parser.mas2j;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 
+import java.io.FileInputStream;
 import java.util.ArrayList;
 
 
@@ -58,7 +59,16 @@ public class StartMAS implements Runnable {
                 parent.parent.errorMsg("a mas2j file should be informed. E.g., jason mas start --use-gradle --mas2j=t.mas2j");
                 return;
             }
-            //if (JasonCLI.runningShell)
+
+            try {
+                var parser = new mas2j(new FileInputStream(mas2j));
+                var project = parser.mas();
+                masName = project.getSocName();
+                parent.parent.println("MAS name (from mas2j) is "+masName);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
             if (parent.parent.isTerminal())
                 new Thread(() -> new Run().run(mas2j, true)).start();
             else
