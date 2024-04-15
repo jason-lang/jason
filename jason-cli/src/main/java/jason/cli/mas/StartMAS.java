@@ -54,19 +54,22 @@ public class StartMAS implements Runnable {
             return;
         }
 
-        if (useGradle) {
-            if (mas2j.isEmpty()) {
-                parent.parent.errorMsg("a mas2j file should be informed. E.g., jason mas start --use-gradle --mas2j=t.mas2j");
-                return;
-            }
-
+        // get MAS name from .mas2j
+        if (masName.isEmpty() && !mas2j.isEmpty()) {
             try {
                 var parser = new mas2j(new FileInputStream(mas2j));
                 var project = parser.mas();
                 masName = project.getSocName();
-                parent.parent.println("MAS name (from mas2j) is "+masName);
+                parent.parent.println("MAS name (from mas2j) is " + masName);
             } catch (Exception e) {
                 e.printStackTrace();
+            }
+        }
+
+        if (useGradle) {
+            if (mas2j.isEmpty()) {
+                parent.parent.errorMsg("a mas2j file should be informed. E.g., jason mas start --use-gradle --mas2j=t.mas2j");
+                return;
             }
 
             if (parent.parent.isTerminal())
@@ -76,7 +79,6 @@ public class StartMAS implements Runnable {
             waitRunning(masName);
             return;
         }
-
 
         var existing = RunningMASs.getAllRunningMAS().keySet();
         if (masName.isEmpty()) {
