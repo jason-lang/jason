@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 
@@ -30,7 +29,7 @@ public class RunningMASs {
         return localRunningMAS != null && localRunningMAS.isRunning();
     }
 
-    public static boolean isRunningMAS(String masName) {
+    public static boolean isMASRunning(String masName) {
         var rt = getRTS(masName);
         if  (rt == null)
             return false;
@@ -61,15 +60,21 @@ public class RunningMASs {
         try {
             var addr = getAllRunningMAS().get(masName);
             if  (addr != null && !addr.isEmpty()) {
+                if (addr.equals("local"))
+                    return RuntimeServicesFactory.get();
+
                 // try to connect
                 var saddr = addr.split(":");
-                var rt = (RuntimeServices)LocateRegistry.getRegistry(saddr[0], Integer.parseInt(saddr[1])).lookup(RunLocalMAS.RMI_PREFIX_RTS+masName);
+                if (saddr.length > 1) {
+                    var rt = (RuntimeServices) LocateRegistry.getRegistry(saddr[0], Integer.parseInt(saddr[1])).lookup(RunLocalMAS.RMI_PREFIX_RTS + masName);
 
-                if (rt.isRunning()) {
-                    return rt;
+                    if (rt.isRunning()) {
+                        return rt;
+                    }
                 }
             }
         } catch (Exception e) {
+            //e.printStackTrace();
         }
 
         return null;
@@ -110,7 +115,7 @@ public class RunningMASs {
                 continue;
             map.put(mas.toString(), all.getProperty(mas.toString()));
         }
-        if (isRunningMAS(null)) {
+        if (isMASRunning(null)) {
             map.put(localRunningMAS.getProject().getSocName(), "local");
         }
         return map;
@@ -171,7 +176,7 @@ public class RunningMASs {
 
             if (changed) {
                 try {
-                    props.store(new FileWriter(f),"running mas in jason");
+                    props.store(new FileWriter(f),"Jason MAS running");
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

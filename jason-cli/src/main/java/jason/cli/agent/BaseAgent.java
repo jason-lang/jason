@@ -9,7 +9,7 @@ public class BaseAgent {
     public String testMasName(String masName, JasonCommands parent) {
         if (masName.isEmpty()) {
             masName = RunningMASs.getDefaultMASName();
-            if (RunningMASs.isRunningMAS(masName)) {
+            if (RunningMASs.isMASRunning(masName)) {
                 if (!masName.isEmpty())
                     parent.println("using " + masName + " as MAS name");
             } else { // revert, masName is not working for some reason
@@ -20,7 +20,7 @@ public class BaseAgent {
     }
 
     public void testRunningMAS(String masName, JasonCommands parent) {
-        if (!RunningMASs.isRunningMAS(masName)) {
+        if (!RunningMASs.isMASRunning(masName)) {
             parent.errorMsg("no running MAS, create one with 'mas start'.");
         }
     }

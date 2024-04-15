@@ -53,6 +53,21 @@ public class StartMAS implements Runnable {
             return;
         }
 
+        if (useGradle) {
+            if (mas2j.isEmpty()) {
+                parent.parent.errorMsg("a mas2j file should be informed. E.g., jason mas start --use-gradle --mas2j=t.mas2j");
+                return;
+            }
+            //if (JasonCLI.runningShell)
+            if (parent.parent.isTerminal())
+                new Thread(() -> new Run().run(mas2j, true)).start();
+            else
+                new Run().run(mas2j, true);
+            waitRunning(masName);
+            return;
+        }
+
+
         var existing = RunningMASs.getAllRunningMAS().keySet();
         if (masName.isEmpty()) {
             masName = "mas_" + (masCount++);
@@ -71,19 +86,6 @@ public class StartMAS implements Runnable {
             }
         } catch (Exception e) {
             parent.parent.errorMsg("the name of the MAS should be a valid identifier, e.g., 'mas start m1'.");
-            return;
-        }
-
-        if (useGradle) {
-            if (mas2j.isEmpty()) {
-                parent.parent.errorMsg("a mas2j file should be informed. E.g., jason mas start --use-gradle --mas2j=t.mas2j");
-                return;
-            }
-            //if (JasonCLI.runningShell)
-            if (parent.parent.isTerminal())
-                new Thread(() -> new Run().run(mas2j, true)).start();
-            else
-                new Run().run(mas2j, true);
             return;
         }
 
@@ -129,10 +131,26 @@ public class StartMAS implements Runnable {
             r.create();
             new Thread( (Runnable) r).start();
 
+            waitRunning(masName);
+
             parent.parent.println("MAS "+masName+" is running.");
         } catch (Exception e) {
             e.printStackTrace();
         } 
+    }
+
+    void waitRunning(String masName) {
+        var c = 1;
+        while (c<30 && !RunningMASs.isMASRunning(masName)) {
+            if (c>5)
+                parent.parent.println("Waiting '"+masName+"' to start. ("+c+")");
+            try {
+                Thread.sleep(100+(c*100));
+            } catch (InterruptedException e) {
+                break;
+            }
+            c++;
+        }
     }
 }
 
