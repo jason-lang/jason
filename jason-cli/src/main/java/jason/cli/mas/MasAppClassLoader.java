@@ -11,7 +11,6 @@ class MasAppClassLoader extends ClassLoader {
     private List<String> paths;
 
     public MasAppClassLoader(ClassLoader parent, List<String> paths) {
-
         super(parent);
         this.paths = paths;
     }
@@ -20,7 +19,7 @@ class MasAppClassLoader extends ClassLoader {
     public Class loadClass(String name) throws ClassNotFoundException {
         //System.out.println("Loading Class '" + name + "' ");
 
-        // CLILocalMAS must be loaded by this loader, so that classes latter loaded from it use this loader
+        // CLILocalMAS must be loaded by this loader, so that classes that will be loaded from it use this loader
         if (name.equals(CLILocalMAS.class.getName())) {
             Class<?> c = getJasonCLIClass();
             // force this class to be assigned with this loader
@@ -67,17 +66,25 @@ class MasAppClassLoader extends ClassLoader {
     }
 
     private Class getAppClass(String name) throws ClassNotFoundException {
-        // TODO: consider proper application classpath
-        // .:bin/classes:build/classes/java/main:project classpath:*lib
-
         for (String path: paths) {
             try {
-                if (!path.isEmpty() && !path.endsWith("/"))
-                    path += "/";
-                String file = path + name.replace('.', File.separatorChar) + ".class";
-                //System.out.println("try to load class "+name+" from "+file);
-                // This loads the byte code data from the file
-                var b = loadClassData(new FileInputStream(file));
+                byte[] b = null;
+                if (path.endsWith(".jar")) {
+                    // load from jar
+                    var file = //"jar:file:/Users/jomi/pro/jason-cli/build/libs/jason-cli-1.0-SNAPSHOT.jar!/jason/cli/mas/CLILocalMAS.class";
+                            "jar:file:"+path+"!/"+
+                                    name.replace('.',File.separatorChar) + ".class";
+                    System.out.println("try to load class "+name+" from "+file);
+                    b = loadClassData(new URL(file).openStream());
+                    System.out.println("OK "+name);
+                } else {
+                    if (!path.isEmpty() && !path.endsWith("/"))
+                        path += "/";
+                    String file = path + name.replace('.', File.separatorChar) + ".class";
+                    System.out.println("try to load class "+name+" from "+file);
+                    // This loads the byte code data from the file
+                    b = loadClassData(new FileInputStream(file));
+                }
                 if (b != null) {
                     return defineClass(name, b, 0, b.length);
                 }

@@ -9,6 +9,7 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.util.ArrayList;
 
@@ -34,7 +35,7 @@ public class StartMAS implements Runnable {
 
     @Option(names = { "--env" }, defaultValue = "", paramLabel = "<env class>", description = "class that implements the environment and its arguments")
     String envClass;
-    @Option(names = { "--cp" }, defaultValue = "", paramLabel = "<classpath>", description = "directories where java classes can be found (for environment implementation, for instance)")
+    @Option(names = { "--cp" }, defaultValue = "", paramLabel = "<classpath>", description = "directories where java classes can be found (e.g., for environment implementation)")
     String classPathArg;
 
     @Option(names = { "--mas2j" }, defaultValue = "", paramLabel = "<mas2j file>", description = "runs a Jason project")
@@ -124,6 +125,15 @@ public class StartMAS implements Runnable {
         classPathList.add(".");
         classPathList.add("build/classes/java/main");
         classPathList.add("bin/classes/");
+        File libs = new File("lib");
+        if (libs.exists()) {
+            for (var f: libs.list()) {
+                if (f.endsWith(".jar")) {
+                    classPathList.add("lib/"+f);
+                }
+            }
+        }
+        //System.out.println("ClassPath="+classPathList);
 
         try {
             parent.parent.println("starting MAS "+masName+"...");
