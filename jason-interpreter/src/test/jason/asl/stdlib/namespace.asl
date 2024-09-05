@@ -17,4 +17,21 @@
 
     !assert_true( .namespace(family) );
     !assert_true( .namespace(financial) );
+
+    .namespace_set_prop(family, uri, "http://xxx.com");
+    .namespace_set_prop(family, size, 4);
+    .namespace_set_prop(family, root, bob);
+
+    .namespace_get_prop(family, uri, URI);
+    !assert_equals("http://xxx.com", URI);
+
+    .namespace_get_prop(family, kk, KK, k1);
+    !assert_equals(k1, KK);
+
+    .findall( K, .namespace_get_prop(family, K),  LK);
+    !assert_equals([uri,root,size], LK);
+
+    .findall( [K,V], .namespace_get_prop(family, K, V),  LKV);
+    !assert_equals([[uri,"http://xxx.com"],[root,bob],[size,4]], LKV);
+
 .

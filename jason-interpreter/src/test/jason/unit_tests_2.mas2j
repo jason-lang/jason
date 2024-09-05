@@ -1,13 +1,17 @@
 // to be run with (in the directory src/test/jason)
 //     jason unit_tests_2.mas2j
-
+// without jason, with java:
+//     ./gradlew config
+//     export JASON_UJ=$JASON_HOME/jason-cli/build/bin
+//     java -cp "$JASON_UJ/*" jason.infra.local.RunLocalMAS unit_tests_2.mas2j --log-conf logging.properties
+//
 MAS unit_tests {
 
     agents:
         test_manager [
-            goals="create_tester_agents(\"./asl\",\"drop_all_desires.asl\")",
+            goals="create_tester_agents(\"./asl\",\"namespace.asl\")",
             beliefs="shutdown_delay(4)"
         ];
 
-    aslSourcePath: "src/test/jason/inc";"src/test/jason/asl";"inc"; "$jasonJar/test/jason/inc";
+    aslSourcePath: "src/test/jason/inc";"src/test/jason/asl"; "inc"; "$jasonJar/test/jason/inc";
 }

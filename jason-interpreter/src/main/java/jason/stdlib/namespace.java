@@ -18,37 +18,17 @@ import java.util.Iterator;
   <li>+ arg[0] (any term): the term to be checked.<br/>
   </ul>
 
-  <p>Examples assuming the BB is currently
-  {a(10),family::brother(bob),b(f,1)}:
+  <p>Examples assuming that the BB contains the following beliefs
+  a(10),family::brother(bob),b(f,1):
   <ul>
   <li> <code>.namespace(family)</code>: true.
   <li> <code>.namespace(any_other)</code>: false.
   </ul>
 
-  @see jason.stdlib.findall
-  @see jason.stdlib.setof
-  @see jason.stdlib.count
+ @see namespace_set_prop
+ @see namespace_get_prop
 */
-@Manual(
-        literal=".namespace(argument)",
-        hint="checks whether the argument is a namespace",
-        argsHint= {
-                "the term to be checked"
-        },
-        argsType= {
-                "term"
-        },
-        examples= {
-                ".namespace(family), assuming the BB is {a(10),family::brother(bob),b(f,1)}: true",
-                ".namespace(any_other), assuming the BB is {a(10),family::brother(bob),b(f,1)}: false"
-        },
-        seeAlso= {
-                "jason.stdlib.findall",
-                "jason.stdlib.setof",
-                "jason.stdlib.count"
-        }
-    )
-@SuppressWarnings("serial")
+
 public class namespace extends DefaultInternalAction {
 
     @Override public int getMinArgs() {

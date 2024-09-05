@@ -6,9 +6,11 @@ import jason.asSemantics.Unifier;
 import jason.asSyntax.Atom;
 import jason.asSyntax.Literal;
 import jason.asSyntax.PredicateIndicator;
+import jason.asSyntax.Term;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -20,6 +22,7 @@ import java.util.logging.Logger;
  */
 public class DefaultBeliefBase extends BeliefBase implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 4189725430351480996L;
 
     private static Logger logger = Logger.getLogger(DefaultBeliefBase.class.getSimpleName());
@@ -31,6 +34,7 @@ public class DefaultBeliefBase extends BeliefBase implements Serializable {
     private Map<PredicateIndicator, BelEntry> belsMapDefaultNS = new ConcurrentHashMap<>();
 
     private Map<Atom, Map<PredicateIndicator, BelEntry>> nameSpaces = new ConcurrentHashMap<>();
+    private Map<Atom, Map<Atom, Term>> nameSpaceProps = new HashMap<>();
 
     private int size = 0;
 
@@ -51,6 +55,29 @@ public class DefaultBeliefBase extends BeliefBase implements Serializable {
     @Override
     public Set<Atom> getNameSpaces() {
         return nameSpaces.keySet();
+    }
+
+    @Override
+    public void setNameSpaceProp(Atom ns, Atom key, Term value) {
+        nameSpaceProps
+                .computeIfAbsent(ns, k -> new HashMap<>())
+                .put(key,value);
+    }
+
+    @Override
+    public Term getNameSpaceProp(Atom ns, Atom key) {
+        if (nameSpaceProps.containsKey(ns))
+            return nameSpaceProps.get(ns).get(key);
+        else
+            return null;
+    }
+
+    @Override
+    public Set<Atom> getNameSpaceProps(Atom ns) {
+        if (nameSpaceProps.containsKey(ns))
+            return nameSpaceProps.get(ns).keySet();
+        else
+            return new HashSet<Atom>();
     }
 
     @Override

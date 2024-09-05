@@ -2,6 +2,7 @@ package jason.bb;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -52,6 +53,10 @@ public abstract class BeliefBase implements Iterable<Literal>, Cloneable, ToDOM 
     public Set<Atom> getNameSpaces() {
         return null;
     }
+
+    public void setNameSpaceProp(Atom ns, Atom key, Term value) {}
+    public Term getNameSpaceProp(Atom ns, Atom key) { return null; }
+    public Set<Atom> getNameSpaceProps(Atom ns) { return new HashSet<>(); }
 
     /** Adds a belief in the end of the BB, returns true if succeed.
      *  The annots of l may be changed to reflect what was changed in the BB,

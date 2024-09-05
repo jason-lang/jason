@@ -37,7 +37,7 @@ dependencies {
     api 'org.jline:jline:3.22.0'
     api 'org.fusesource.jansi:jansi:2.4.0'
 
-    api 'org.gradle:gradle-tooling-api:8.8'
+    api 'org.gradle:gradle-tooling-api:8.10'
     //testImplementation group: 'junit', name: 'junit', version: '4.12'
 
     implementation 'org.slf4j:slf4j-nop:1.7.21' // to avoid warning msgs of SLF4J
