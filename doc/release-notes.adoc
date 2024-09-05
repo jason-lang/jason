@@ -1,6 +1,18 @@
 = Jason release notes
 :toc: right
 
+== version 3.3
+
+- namespaces may have assigned properties/values. See internal actions `.namespace_set_property` and  `.namespace_get_property`.
+
+- internal actions `.min` and `.max` may have a query as second argument.
+
+- several (minor) improvements in Jason-CLI.
+
+- update doc for new Jason web site: https://jason-lang.github.io
+
+
+
 == version 3.2 (2023-04-15)
 
 The main new feature of Jason 3.2 is the Jason Command Line Interface (*JasonCLI*). This tool is created to support the creation and monitoring of Jason application independently of IDEs. More information xref:./jason-cli/readme.adoc[here].
@@ -12,7 +24,7 @@ The main new feature of Jason 3.2 is the Jason Command Line Interface (*JasonCLI
 - `mas2j` files do not handle java class path  anymore. Gradle should be used for that. The command `jason app add-gradle` turn a Jason project into a Gradle project. It also helps your IDE to find Jason dependencies when programming Java classes for the environment, internal actions, ...
 - to use JADE, the Jason project should have a Gradle script. Then `./gradlew runJade` can be  used to start the MAS on top of JADE.  
 
-The project is cleaned a bit:
+The project is cleaned:
 
 - jEdit is removed (JasonCLI and third party IDEs are proposed)
 - Ant is replaced by Gradle
