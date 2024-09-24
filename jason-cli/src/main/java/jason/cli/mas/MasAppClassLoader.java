@@ -74,14 +74,14 @@ class MasAppClassLoader extends ClassLoader {
                     var file = //"jar:file:/Users/jomi/pro/jason-cli/build/libs/jason-cli-1.0-SNAPSHOT.jar!/jason/cli/mas/CLILocalMAS.class";
                             "jar:file:"+path+"!/"+
                                     name.replace('.',File.separatorChar) + ".class";
-                    System.out.println("try to load class "+name+" from "+file);
+                    //System.out.println("try to load class "+name+" from "+file);
                     b = loadClassData(new URL(file).openStream());
-                    System.out.println("OK "+name);
+                    //System.out.println("OK "+name);
                 } else {
                     if (!path.isEmpty() && !path.endsWith("/"))
                         path += "/";
                     String file = path + name.replace('.', File.separatorChar) + ".class";
-                    System.out.println("try to load class "+name+" from "+file);
+                    //System.out.println("try to load class "+name+" from "+file);
                     // This loads the byte code data from the file
                     b = loadClassData(new FileInputStream(file));
                 }
