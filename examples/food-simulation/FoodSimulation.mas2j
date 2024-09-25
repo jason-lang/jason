@@ -53,8 +53,6 @@ Actions:
 
 
 MAS normative_simulation {
-   infrastructure: Local(pool,8)
-
    // the class that implements the environment is FoodEnvironment
    // parameters are: grid size, number of agents, number of food units
    environment: FoodEnvironment(10,50,25)

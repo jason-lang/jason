@@ -2,6 +2,7 @@ package jason.infra.local;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -11,6 +12,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -49,6 +54,7 @@ import jason.util.Config;
  */
 public class LocalAgArch extends AgArch implements Runnable, Serializable {
 
+    @Serial
     private static final long serialVersionUID = 4378889704809002271L;
 
     protected transient LocalEnvironment      infraEnv     = null;
@@ -71,10 +77,13 @@ public class LocalAgArch extends AgArch implements Runnable, Serializable {
         msgListeners.remove(l);
     }
 
+    @Serial
     private void readObject(ObjectInputStream inputStream) throws IOException, ClassNotFoundException {
         inputStream.defaultReadObject();
-        sleepSync   = new Object();
-        syncMonitor = new Object();
+        sleepLock = new ReentrantLock();
+        inSleep = sleepLock.newCondition();
+        syncLock = new ReentrantLock();
+        inSyncMode = syncLock.newCondition();
         masRunner   = BaseLocalMAS.getRunner();
     }
 
@@ -278,7 +287,9 @@ public class LocalAgArch extends AgArch implements Runnable, Serializable {
         logger.fine("I finished!");
     }
 
-    private transient Object sleepSync = new Object();
+    private transient Lock sleepLock = new ReentrantLock();
+    private transient Condition inSleep = sleepLock.newCondition();
+
     private int    sleepTime = 50;
 
     public static final int MAX_SLEEP = 1000;
@@ -287,10 +298,13 @@ public class LocalAgArch extends AgArch implements Runnable, Serializable {
         try {
             if (!getTS().getSettings().isSync()) {
                 //logger.fine("Entering in sleep mode....");
-                synchronized (sleepSync) {
-                    sleepSync.wait(sleepTime); // wait for messages
+                sleepLock.lock();
+                try {
+                    inSleep.await(sleepTime, TimeUnit.MILLISECONDS);
                     if (sleepTime < MAX_SLEEP)
                         sleepTime += 100;
+                } finally {
+                    sleepLock.unlock();
                 }
             }
         } catch (InterruptedException e) {
@@ -301,9 +315,12 @@ public class LocalAgArch extends AgArch implements Runnable, Serializable {
 
     @Override
     public void wake() {
-        synchronized (sleepSync) {
+        sleepLock.lock();
+        try {
             sleepTime = 50;
-            sleepSync.notifyAll(); // notify sleep method
+            inSleep.signalAll();
+        } finally {
+            sleepLock.unlock();
         }
     }
 
@@ -403,7 +420,9 @@ public class LocalAgArch extends AgArch implements Runnable, Serializable {
         return mbox.isEmpty() && isRunning();
     }
 
-    private transient Object  syncMonitor = new Object();
+
+    private transient Lock syncLock = new ReentrantLock();
+    private transient Condition inSyncMode = syncLock.newCondition();
     private volatile boolean inWaitSyncMonitor = false;
 
     /**
@@ -411,15 +430,16 @@ public class LocalAgArch extends AgArch implements Runnable, Serializable {
      * execution mode)
      */
     private void waitSyncSignal() {
+        syncLock.lock();
         try {
-            synchronized (syncMonitor) {
                 inWaitSyncMonitor = true;
-                syncMonitor.wait();
+                inSyncMode.await();
                 inWaitSyncMonitor = false;
-            }
         } catch (InterruptedException e) {
         } catch (Exception e) {
             logger.log(Level.WARNING,"Error waiting sync (1)", e);
+        } finally {
+            syncLock.unlock();
         }
     }
 
@@ -428,17 +448,18 @@ public class LocalAgArch extends AgArch implements Runnable, Serializable {
      * waiting a signal
      */
     public void receiveSyncSignal() {
+        syncLock.lock();
         try {
-            synchronized (syncMonitor) {
-                while (!inWaitSyncMonitor && isRunning()) {
-                    // waits the agent to enter in waitSyncSignal
-                    syncMonitor.wait(50);
-                }
-                syncMonitor.notifyAll();
+            while (!inWaitSyncMonitor && isRunning()) {
+                // waits the agent to enter in waitSyncSignal
+                inSyncMode.await(50, TimeUnit.MILLISECONDS);
             }
+            inSyncMode.signalAll();
         } catch (InterruptedException e) {
         } catch (Exception e) {
             logger.log(Level.WARNING,"Error waiting sync (2)", e);
+        } finally {
+            syncLock.unlock();
         }
     }
 

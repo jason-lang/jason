@@ -376,7 +376,7 @@ public class RunLocalMAS extends BaseLocalMAS implements RunLocalMASMBean {
                 confFile = logPropFile;
             } else {
                 if (!(new File(confFile).exists()))
-                   System.err.println("Loggging properties file "+confFile+" not found!");
+                   System.err.println("Logging properties file "+confFile+" not found!");
             }
 
             // checks a local log configuration file
@@ -678,14 +678,15 @@ public class RunLocalMAS extends BaseLocalMAS implements RunLocalMASMBean {
         for (LocalAgArch ag : createdAgents) { //  ags.values()) { <<< removed, since agent can be created meanwhile and re-started here
             ag.setControlInfraTier(control);
 
-            // if the agent hasn't override the values for cycles, use the platform values
+            // if the agent hasn't overridden the values for cycles, use the platform values
             if (ag.getCyclesSense() == -1)            ag.setCyclesSense(cyclesSense);
             if (ag.getCyclesDeliberate() == -1)       ag.setCyclesDeliberate(cyclesDeliberate);
             if (ag.getCyclesAct() == -1)              ag.setCyclesAct(cyclesAct);
 
             // create the agent thread
             if (ag.getThread() == null)
-                ag.setThread(new Thread(ag));
+                //ag.setThread(new Thread(ag));
+                ag.setThread( Thread.ofVirtual().unstarted(ag) );
         }
 
         //logger.info("Creating threaded agents. Cycles: " + agTemp.getCyclesSense() + ", " + agTemp.getCyclesDeliberate() + ", " + agTemp.getCyclesAct());
@@ -750,7 +751,7 @@ public class RunLocalMAS extends BaseLocalMAS implements RunLocalMASMBean {
                     logger.info("Creating agents with asynchronous reasoning cycle (shared). Sense, Deliberate, Act (" + maxthreads + "). Cycles: " + cyclesSense + ", " + cyclesDeliberate + ", " + cyclesAct);
                     executorSense = executorDeliberate = executorAct = Executors.newFixedThreadPool(maxthreads);
 
-                } else { // pool c  ases
+                } else { // pool cases
                     if (conf == RConf.POOL_SYNCH) {
                         // redefine cycles
                         if (infra.getParametersArray().length == 3) {

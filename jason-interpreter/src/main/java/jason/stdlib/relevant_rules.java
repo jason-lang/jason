@@ -53,7 +53,6 @@ all rules with head p/1.</li>
                 ""
         }
     )
-@SuppressWarnings("serial")
 public class relevant_rules extends DefaultInternalAction {
 
     @Override public int getMinArgs() {
@@ -68,7 +67,8 @@ public class relevant_rules extends DefaultInternalAction {
         try {
             Literal pattern = (Literal)args[0];
             ListTerm result = new ListTermImpl();
-            synchronized (ts.getAg().getBB().getLock()) {
+            ts.getAg().getBB().getLock().lock();
+            try {
                 Iterator<Literal> i = ts.getAg().getBB().getCandidateBeliefs(pattern, un);
                 if (i != null) {
                     while (i.hasNext()) {
@@ -83,6 +83,8 @@ public class relevant_rules extends DefaultInternalAction {
                         }
                     }
                 }
+            } finally {
+                ts.getAg().getBB().getLock().unlock();
             }
             return un.unifies(args[1],result);
         } catch (Exception e) {

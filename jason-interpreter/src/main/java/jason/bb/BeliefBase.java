@@ -5,6 +5,8 @@ import java.io.ObjectInputStream;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import jason.JasonException;
 import org.w3c.dom.Document;
@@ -138,17 +140,16 @@ public abstract class BeliefBase implements Iterable<Literal>, Cloneable, ToDOM 
 
     public abstract BeliefBase clone();
 
-    transient Object lock = new Object();
+    transient Lock lock = new ReentrantLock();
 
     /** Gets a lock for the BB */
-    public Object getLock() {
+    public Lock getLock() {
         return lock;
     }
 
     private void readObject(ObjectInputStream inputStream) throws IOException, ClassNotFoundException {
         inputStream.defaultReadObject();
-        lock = new Object();
+        lock = new ReentrantLock();
     }
-
 
 }

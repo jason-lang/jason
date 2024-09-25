@@ -51,6 +51,7 @@ public class TimeSteppedEnvironment extends Environment {
     private long stepTimeout = 0;
     private int  sleep = 0; // pause time between cycles
 
+    private final Lock requestsLock = new ReentrantLock();
 
     private OverActionsPolicy overActPol = OverActionsPolicy.failSecond;
 
@@ -156,7 +157,8 @@ public class TimeSteppedEnvironment extends Environment {
 
         boolean startNew = false;
 
-        synchronized (requests) { // lock access to requests
+        requestsLock.lock();
+        try {
             if (nbAgs < 0) { // || timeoutThread == null) {
                 // initialise dynamic information
                 // (must be in sync part, so that more agents do not start the timeout thread)
@@ -182,6 +184,7 @@ public class TimeSteppedEnvironment extends Environment {
             } else {
                 // store the action request
                 requests.put(agName, newRequest);
+                //logger.info(agName+" act "+requests.size()+"/"+getNbAgs());
 
                 // test if all agents have sent their actions
                 if (testEndCycle(requests.keySet())) {
@@ -196,6 +199,8 @@ public class TimeSteppedEnvironment extends Environment {
                     } catch (InterruptedException e) {}
                 }
             }
+        } finally {
+            requestsLock.unlock();
         }
 
         if (startNew) {
@@ -231,7 +236,8 @@ public class TimeSteppedEnvironment extends Environment {
     private void startNewStep() {
         if (!isRunning()) return;
 
-        synchronized (requests) {
+        requestsLock.lock();
+        try {
             step++;
 
             //logger.info("#"+requests.size());
@@ -287,6 +293,8 @@ public class TimeSteppedEnvironment extends Environment {
                     logger.log(Level.WARNING, "act error!",ie);
                 }
             }
+        } finally {
+            requestsLock.unlock();
         }
     }
 
@@ -305,8 +313,11 @@ public class TimeSteppedEnvironment extends Environment {
     /** stops perception while executing the step's actions */
     @Override
     public Collection<Literal> getPercepts(String agName) {
-        synchronized (requests) {
+        requestsLock.lock();
+        try {
             return super.getPercepts(agName);
+        } finally {
+            requestsLock.unlock();
         }
     }
 

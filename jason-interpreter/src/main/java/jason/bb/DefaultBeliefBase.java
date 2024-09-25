@@ -159,7 +159,7 @@ public class DefaultBeliefBase extends BeliefBase implements Serializable {
         } else {
             // new bel
 
-            l = l.copy(); // we need to clone l for the consequent event to not have a ref to this bel (which may change before the event is processed); see bug from Viviana Marcardi
+            l = l.copy(); // we need to clone l for the consequent event to not have a ref to this bel (which may change before the event is processed); see bug from Viviana Mascardi
             BelEntry entry = provideBelEntry(l);
             entry.add(l, addInEnd);
 
@@ -380,12 +380,17 @@ public class DefaultBeliefBase extends BeliefBase implements Serializable {
     @Override
     public BeliefBase clone() {
         DefaultBeliefBase bb = new DefaultBeliefBase();
-        for (Literal b: this) {
-            try {
-                bb.add(1, b.copy());
-            } catch (JasonException e) {
-                e.printStackTrace();
+        getLock().lock();
+        try {
+            for (Literal b : this) {
+                try {
+                    bb.add(1, b.copy());
+                } catch (JasonException e) {
+                    e.printStackTrace();
+                }
             }
+        } finally {
+            getLock().unlock();
         }
         return bb;
     }
@@ -395,8 +400,8 @@ public class DefaultBeliefBase extends BeliefBase implements Serializable {
         Element eDOMbels = (Element) document.createElement("beliefs");
         int tries = 0;
         while (tries < 10) { // max 10 tries
+            getLock().lock();
             try {
-                synchronized (getLock()) {
                     // declare namespaces
                     Element enss = (Element) document.createElement("namespaces");
                     Element ens = (Element) document.createElement("namespace");
@@ -428,7 +433,6 @@ public class DefaultBeliefBase extends BeliefBase implements Serializable {
                         }
                     }
 
-                }
                 /*Collections.sort(allBels);
                 for (Literal l: allBels)
                     eDOMbels.appendChild(l.getAsDOM(document));*/
@@ -437,6 +441,8 @@ public class DefaultBeliefBase extends BeliefBase implements Serializable {
                 tries++;
                 e.printStackTrace();
                 // simply tries again
+            } finally {
+                getLock().unlock();
             }
         }
         return eDOMbels;

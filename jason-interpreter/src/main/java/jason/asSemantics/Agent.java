@@ -225,8 +225,11 @@ public class Agent implements Serializable, ToDOM {
     }
 
     public void stopAg() {
-        synchronized (bb.getLock()) {
+        bb.getLock().lock();
+        try {
             bb.stop();
+        } finally {
+            bb.getLock().unlock();
         }
 
         //if (qProfiling != null)
@@ -270,9 +273,8 @@ public class Agent implements Serializable, ToDOM {
         if (this.getTS().getSettings().verbose() >= 0)
             a.logger.setLevel(this.getTS().getSettings().logLevel());
 
-        synchronized (getBB().getLock()) {
-            a.bb = this.bb.clone();
-        }
+        a.bb = this.bb.clone();
+
         a.pl = this.pl.clone();
         try {
             fixAgInIAandFunctions(a);
@@ -936,7 +938,8 @@ public class Agent implements Serializable, ToDOM {
      * The unifier <i>un</i> is updated by the method.
      */
     public Literal findBel(Literal bel, Unifier un) {
-        synchronized (bb.getLock()) {
+        bb.getLock().lock();
+        try {
             Iterator<Literal> relB = bb.getCandidateBeliefs(bel, un);
             if (relB != null) {
                 while (relB.hasNext()) {
@@ -949,6 +952,8 @@ public class Agent implements Serializable, ToDOM {
                 }
             }
             return null;
+        } finally {
+            bb.getLock().unlock();
         }
     }
 
@@ -986,7 +991,8 @@ public class Agent implements Serializable, ToDOM {
             position = 1;
 
         List<Literal>[] result = null;
-        synchronized (bb.getLock()) {
+        bb.getLock().lock();
+        try {
             try {
                 if (beliefToAdd != null) {
                     if (logger.isLoggable(Level.FINE)) logger.fine("Doing (add) brf for " + beliefToAdd);
@@ -1040,6 +1046,8 @@ public class Agent implements Serializable, ToDOM {
             } catch (Exception e) {
                 logger.log(Level.WARNING, "Error at BRF.",e);
             }
+        } finally {
+            bb.getLock().unlock();
         }
         return result;
     }
@@ -1085,7 +1093,8 @@ public class Agent implements Serializable, ToDOM {
     public void abolish(Literal bel, Unifier un) throws RevisionFailedException {
         List<Literal> toDel = new ArrayList<>();
         if (un == null) un = new Unifier();
-        synchronized (bb.getLock()) {
+        bb.getLock().lock();
+        try {
             Iterator<Literal> il = getBB().getCandidateBeliefs(bel, un);
             if (il != null) {
                 while (il.hasNext()) {
@@ -1102,6 +1111,8 @@ public class Agent implements Serializable, ToDOM {
             for (Literal l: toDel) {
                 delBel(l);
             }
+        } finally {
+            bb.getLock().unlock();
         }
     }
 

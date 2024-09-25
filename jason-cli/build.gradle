@@ -6,11 +6,6 @@ defaultTasks 'build'
 
 apply plugin: 'java-library'
 
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
-    }
-}
 
 sourceSets {
     main {
