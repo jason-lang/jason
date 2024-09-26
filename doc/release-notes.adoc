@@ -11,7 +11,10 @@
 
 - internal actions `.min` and `.max` may have a query as second argument.
 
-- several (minor) improvements in Jason-CLI.
+- several (minor) improvements in Jason-CLI. About running a project:
+
+  * `jason x.mas2h` uses gradle to run the application
+  * `jason mas start --mas2j=x.mas2h` runs without gradle
 
 - update doc for new Jason web site: https://jason-lang.github.io
 
