@@ -9,6 +9,8 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import jason.asSemantics.CircumstanceListener;
 import jason.asSyntax.*;
@@ -54,16 +56,16 @@ public class PlanLibrary implements Iterable<Plan>, Serializable, ToDOM {
 
     //private Logger logger = Logger.getLogger(PlanLibrary.class.getName());
 
-    private final transient Object lockPL;
-
     private PlanLibrary father = null;
 
     private boolean hasPlansForUpdateEvents = false;
 
     private Queue<PlanLibraryListener> listeners = new ConcurrentLinkedQueue<>();
 
+    private Lock plLock;
+
     public PlanLibrary() {
-        lockPL = new Object();
+        plLock = new ReentrantLock();
     }
 
     public PlanLibrary(PlanLibrary father) {
@@ -86,8 +88,9 @@ public class PlanLibrary implements Iterable<Plan>, Serializable, ToDOM {
         return hasPlansForUpdateEvents;
     }
 
-    public Object getLock() {
-        return lockPL;
+
+    public Lock getLock() {
+        return plLock;
     }
 
     @Serial
@@ -108,7 +111,8 @@ public class PlanLibrary implements Iterable<Plan>, Serializable, ToDOM {
      *  returns the plan just added
      */
     public Plan add(Plan p, Term source, boolean before) throws JasonException {
-        synchronized (lockPL) {
+        plLock.lock();
+        try {
             int i = plans.indexOf(p);
             if (i < 0) {
                 // add label, if necessary
@@ -126,6 +130,8 @@ public class PlanLibrary implements Iterable<Plan>, Serializable, ToDOM {
                 p.addSource(source);
             }
             return p;
+        } finally {
+            plLock.unlock();
         }
     }
 
@@ -144,7 +150,8 @@ public class PlanLibrary implements Iterable<Plan>, Serializable, ToDOM {
      */
     public Plan add(Plan p, boolean before) throws JasonException {
         p.setScope(this);
-        synchronized (lockPL) {
+        plLock.lock();
+        try {
             // test p.label
             if (p.getLabel() != null && planLabels.containsKey( getStringForLabel(p.getLabel()))) {
                 // test if the new plan is equal, in this case, just add a source
@@ -228,23 +235,31 @@ public class PlanLibrary implements Iterable<Plan>, Serializable, ToDOM {
                 for (PlanLibraryListener l : listeners)
                     l.planAdded(p);
             return p;
+        } finally {
+            plLock.unlock();
         }
     }
 
     public void addAll(PlanLibrary pl) throws JasonException {
-        synchronized (lockPL) {
+        plLock.lock();
+        try {
             for (Plan p: pl) {
                 add(p, false);
             }
+        } finally {
+            plLock.unlock();
         }
         eDOMPlans = null;
     }
 
     public void addAll(List<Plan> plans) throws JasonException {
-        synchronized (lockPL) {
+        plLock.lock();
+        try {
             for (Plan p: plans) {
                 add(p, false);
             }
+        } finally {
+            plLock.unlock();
         }
     }
 
@@ -335,7 +350,8 @@ public class PlanLibrary implements Iterable<Plan>, Serializable, ToDOM {
     /** remove the plan with label <i>pLabel</i> */
     public Plan remove(Literal pLabel) {
     	eDOMPlans = null;
-    	synchronized (lockPL) {
+        plLock.lock();
+        try {
             Plan p = planLabels.remove( getStringForLabel(pLabel) );
 
             // remove it from plans' list
@@ -368,6 +384,8 @@ public class PlanLibrary implements Iterable<Plan>, Serializable, ToDOM {
                     l.planRemoved(p);
 
             return p;
+        } finally {
+            plLock.unlock();
         }
     }
 
@@ -380,7 +398,8 @@ public class PlanLibrary implements Iterable<Plan>, Serializable, ToDOM {
 
 
     public List<Plan> getCandidatePlans(Trigger te) {
-        synchronized (lockPL) {
+        plLock.lock();
+        try {
             List<Plan> l = null;
             if (te.getLiteral().isVar() || te.getNS().isVar()) { // add all plans!
                 for (Plan p: this)
@@ -401,6 +420,8 @@ public class PlanLibrary implements Iterable<Plan>, Serializable, ToDOM {
                 }
             }
             return l; // if no rel plan, have to return null instead of empty list
+        } finally {
+            plLock.unlock();
         }
     }
 
@@ -410,14 +431,15 @@ public class PlanLibrary implements Iterable<Plan>, Serializable, ToDOM {
 
     public PlanLibrary clone() {
         PlanLibrary pl = new PlanLibrary();
+        plLock.lock();
         try {
-            synchronized (lockPL) {
-                for (Plan p: this) {
-                    pl.add((Plan)p.clone(), false);
-                }
+            for (Plan p: this) {
+                pl.add((Plan)p.clone(), false);
             }
         } catch (JasonException e) {
             e.printStackTrace();
+        } finally {
+            plLock.unlock();
         }
         return pl;
     }
@@ -484,7 +506,8 @@ public class PlanLibrary implements Iterable<Plan>, Serializable, ToDOM {
 
         eDOMPlans = document.createElement("plans");
         String lastFunctor = null;
-        synchronized (lockPL) {
+        plLock.lock();
+        try {
             for (Plan p: plans) {
                 String currentFunctor = p.getTrigger().getLiteral().getFunctor();
                 if (lastFunctor != null && !currentFunctor.equals(lastFunctor)) {
@@ -493,6 +516,8 @@ public class PlanLibrary implements Iterable<Plan>, Serializable, ToDOM {
                 lastFunctor = currentFunctor;
                 eDOMPlans.appendChild(p.getAsDOM(document));
             }
+        } finally {
+            plLock.unlock();
         }
         return eDOMPlans;
     }

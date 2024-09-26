@@ -788,8 +788,11 @@ public class TransitionSystem implements Serializable {
         stepAct = State.SelInt; // default next step
         if (C.hasFeedbackAction()) { // suspended intentions are not considered
             ActionExec a = null;
-            synchronized (C.getFeedbackActions()) {
+            C.getFALock().lock();
+            try {
                 a = ag.selectAction(C.getFeedbackActions());
+            } finally {
+                C.getFALock().unlock();
             }
             if (a != null) {
                 final Intention curInt = a.getIntention();

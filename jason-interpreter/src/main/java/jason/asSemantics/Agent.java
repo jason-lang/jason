@@ -297,7 +297,8 @@ public class Agent implements Serializable, ToDOM {
 
     private void fixAgInIAandFunctions(Agent a) throws Exception {
         // find all internal actions and functions and change the pointer for agent
-        synchronized (getPL().getLock()) {
+        getPL().getLock().lock();
+        try {
             for (Plan p: a.getPL()) {
                 // search context
                 if (p.getContext() instanceof Literal l)
@@ -307,6 +308,8 @@ public class Agent implements Serializable, ToDOM {
                 if (p.getBody() instanceof Literal l)
                     fixAgInIAandFunctions(a, l);
             }
+        } finally {
+            getPL().getLock().unlock();
         }
     }
 

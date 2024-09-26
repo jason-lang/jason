@@ -241,7 +241,8 @@ public class Intention implements Serializable, Comparable<Intention>, Iterable<
             tevent = im.getTrigger();
         }
         Trigger failTrigger = new Trigger(TEOperator.del, tevent.getType(), tevent.getLiteral());
-        synchronized (pl.getLock()) {
+        pl.getLock().lock();
+        try {
             while (!pl.hasCandidatePlan(failTrigger) && ii.hasNext()) {
                 // TODO: pop IM until +!g or *!g (this TODO is valid only if meta events are pushed on top of the intention)
                 // If *!g is found first, no failure event
@@ -256,6 +257,8 @@ public class Intention implements Serializable, Comparable<Intention>, Iterable<
                 return new Pair<>(new Event(failTrigger.clone(), this), posInStak);
             else
                 return new Pair<>(null, 0);
+        } finally {
+            pl.getLock().unlock();
         }
     }
 

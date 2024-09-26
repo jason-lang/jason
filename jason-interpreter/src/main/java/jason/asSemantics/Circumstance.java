@@ -2,6 +2,7 @@ package jason.asSemantics;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -11,6 +12,8 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import jason.asSyntax.*;
 import org.w3c.dom.Document;
@@ -23,6 +26,7 @@ import jason.util.ToDOM;
 
 public class Circumstance implements Serializable, ToDOM {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     private   Queue<Event>             E;
@@ -607,6 +611,9 @@ public class Circumstance implements Serializable, ToDOM {
         return false;
     }
 
+    private Lock faLock = new ReentrantLock();
+    public Lock getFALock() { return faLock; }
+
     public Queue<ActionExec> getFeedbackActions() {
         return FA;
     }
@@ -1132,10 +1139,13 @@ public class Circumstance implements Serializable, ToDOM {
             if (getPendingActions().values().contains(getAction())) {
                 e.setAttribute("pending", "true");
             }
-            synchronized (getFeedbackActions()) {
+            getFALock().lock();
+            try {
                 if (getFeedbackActions().contains(getAction())) {
                     e.setAttribute("feedback", "true");
                 }
+            } finally {
+                getFALock().unlock();
             }
             acts.appendChild(e);
         }
@@ -1155,13 +1165,18 @@ public class Circumstance implements Serializable, ToDOM {
 
         // FA
         if (hasFeedbackAction()) {
-            for (ActionExec o: getFeedbackActions()) {
-                if (!alreadyIn.contains(o)) {
-                    alreadyIn.add(o);
-                    e = o.getAsDOM(document);
-                    e.setAttribute("feedback", o.getResult()+"");
-                    acts.appendChild(e);
+            getFALock().lock();
+            try {
+                for (ActionExec o : getFeedbackActions()) {
+                    if (!alreadyIn.contains(o)) {
+                        alreadyIn.add(o);
+                        e = o.getAsDOM(document);
+                        e.setAttribute("feedback", o.getResult() + "");
+                        acts.appendChild(e);
+                    }
                 }
+            } finally {
+                getFALock().unlock();
             }
         }
 

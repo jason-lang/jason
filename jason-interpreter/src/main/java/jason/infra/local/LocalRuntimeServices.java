@@ -15,6 +15,8 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -34,6 +36,8 @@ public class LocalRuntimeServices extends BaseRuntimeServices {
     protected LocalAgArch newAgInstance() {
         return new LocalAgArch();
     }
+
+    private Lock createLock = new ReentrantLock();
 
     @Override
     public String createAgent(String agName, String agSource, String agClass, List<String> archClasses, ClassParameters bbPars, Settings stts, Agent father) throws Exception {
@@ -66,7 +70,8 @@ public class LocalRuntimeServices extends BaseRuntimeServices {
 
         agSource = masRunner.getProject().getSourcePaths().fixPath(agSource);
 
-        synchronized (logger) { // to avoid problems related to concurrent executions of .create_agent
+        createLock.lock();
+        try { // to avoid problems related to concurrent executions of .create_agent
             agName = getNewAgentName(agName);
 
             LocalAgArch agArch = newAgInstance();
@@ -85,6 +90,8 @@ public class LocalRuntimeServices extends BaseRuntimeServices {
             }
 
             masRunner.addAg(agArch);
+        } finally {
+            createLock.unlock();
         }
 
         logger.fine("Agent " + agName + " created!");
@@ -175,7 +182,8 @@ public class LocalRuntimeServices extends BaseRuntimeServices {
 
         try {
             var ag = agArch.getTS().getAg();
-            synchronized (ag.getPL().getLock()) {
+            ag.getPL().getLock().lock();
+            try {
                 if (replace) {
                     var toRem = new ArrayList<Pred>();
                     for (var p : ag.getPL()) {
@@ -190,6 +198,8 @@ public class LocalRuntimeServices extends BaseRuntimeServices {
                 ag.parseAS(new StringReader(code), sourceId);
                 ag.addInitialBelsInBB();
                 ag.addInitialGoalsInTS();
+            } finally {
+                ag.getPL().getLock().unlock();
             }
             return "ok";
         } catch (Exception e) {
