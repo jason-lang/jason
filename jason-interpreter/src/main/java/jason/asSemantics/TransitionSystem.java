@@ -1662,8 +1662,11 @@ public class TransitionSystem implements Serializable {
 
             if (nrcslbr >= setts.nrcbp()) {
                 nrcslbr = 0;
-                synchronized (C.syncApPlanSense) {
+                C.syncApPlanSense.lock();
+                try {
                     ag.buf(getAgArch().perceive());
+                } finally {
+                    C.syncApPlanSense.unlock();
                 }
                 getAgArch().checkMail();
             }

@@ -35,6 +35,8 @@ import java.net.URL;
 import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -707,7 +709,8 @@ public class Agent implements Serializable, ToDOM {
     }
 
     public List<Option> applicablePlans(List<Option> rp) throws JasonException {
-        synchronized (getTS().getC().syncApPlanSense) {
+        getTS().getC().syncApPlanSense.lock();
+        try {
             List<Option> ap = null;
             if (rp != null) {
                 for (Option opt: rp) {
@@ -750,6 +753,8 @@ public class Agent implements Serializable, ToDOM {
                 }
             }
             return ap;
+        } finally {
+            getTS().getC().syncApPlanSense.unlock();
         }
     }
 
@@ -1135,8 +1140,9 @@ public class Agent implements Serializable, ToDOM {
     static DocumentBuilder builder = null;
 
 
+    private Lock agStateLock = new ReentrantLock();
     /** Gets the agent "mind" (beliefs, plans, and circumstance) as XML */
-    public synchronized Document getAgState() {
+    public Document getAgState() {
         if (builder == null) {
             try {
                 builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
@@ -1148,11 +1154,16 @@ public class Agent implements Serializable, ToDOM {
         Document docDOM = builder.newDocument();
         docDOM.appendChild(docDOM.createProcessingInstruction("xml-stylesheet", "href='http://jason.sf.net/xml/agInspection.xsl' type='text/xsl' "));
 
-        Element ag = getAsDOM(docDOM);
-        docDOM.appendChild(ag);
+        agStateLock.lock();
+        try {
+            Element ag = getAsDOM(docDOM);
+            docDOM.appendChild(ag);
 
-        ag.appendChild(ts.getC().getAsDOM(docDOM));
-        return docDOM;
+            ag.appendChild(ts.getC().getAsDOM(docDOM));
+            return docDOM;
+        } finally {
+            agStateLock.unlock();
+        }
     }
 
     @Override

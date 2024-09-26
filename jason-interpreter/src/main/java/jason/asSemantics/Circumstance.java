@@ -55,10 +55,9 @@ public class Circumstance implements Serializable, ToDOM {
 
     private TransitionSystem ts = null;
 
-    public transient Object syncApPlanSense = new Object();
+    public  Lock syncApPlanSense = new ReentrantLock();
 
     public Circumstance() {
-        syncApPlanSense = new Object();
         create();
         reset();
     }
@@ -74,9 +73,9 @@ public class Circumstance implements Serializable, ToDOM {
     }
 
 
+    @Serial
     private void readObject(ObjectInputStream inputStream) throws IOException, ClassNotFoundException {
         inputStream.defaultReadObject();
-        syncApPlanSense = new Object();
     }
 
     public void setTS(TransitionSystem ts) {
