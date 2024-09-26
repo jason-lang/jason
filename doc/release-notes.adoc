@@ -3,6 +3,10 @@
 
 == version 3.3
 
+- Java 21 is used
+
+- Agent's thread is Virtual and not Platform. It allow us to run thousands of agents. 
+
 - namespaces may have assigned properties/values. See internal actions `.namespace_set_property` and  `.namespace_get_property`.
 
 - internal actions `.min` and `.max` may have a query as second argument.
