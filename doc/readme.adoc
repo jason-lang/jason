@@ -19,7 +19,7 @@ endif::[]
 * xref:./tutorials/hello-bdi/readme.adoc[BDI concepts]
 * xref:./tutorials/jason-jade/readme.adoc[Interoperating with JADE]
 
-== Others
+== Other
 
 - xref:./faq.adoc[FAQ]
 - link:./Jason.pdf[First Jason Manual] (outdated)
