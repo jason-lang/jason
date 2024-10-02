@@ -58,6 +58,5 @@ doc/jason-cli/commands.html
 jason-interpreter/gradle.properties
 jason-interpreter/settings.gradle
 doc/install.html
+doc/index.html
 doc/doc.html
-jason-cli/src/test/water-jugs/settings.gradle
-jason-cli/src/test/water-jugs/build.gradle
