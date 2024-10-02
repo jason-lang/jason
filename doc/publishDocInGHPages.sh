@@ -5,14 +5,16 @@ cd ..
 #rm -rf /tmp/gh-pages*
 #git clone https://github.com/jason-lang/jason.git --branch gh-pages-new --single-branch /tmp/gh-pages
 
-rm -rf ../jason-pages/api
-rm -rf ../jason-pages/doc
+SITE_PATH=../jason-lang.github.io
 
-cp -R jason-interpreter/build/docs/javadoc ../jason-pages/api
-cp -R doc ../jason-pages
+rm -rf $SITE_PATH/api
+rm -rf $SITE_PATH/doc
+
+cp -R jason-interpreter/build/docs/javadoc $SITE_PATH/api
+cp -R doc $SITE_PATH
 
 
-cd ../jason-pages
+cd $SITE_PATH
 git add api
 git commit -a -m "add javadoc api"
 
@@ -22,5 +24,5 @@ git commit -a -m "add jason github doc folder"
 
 git push
 
-
+echo "edit jason-site.../doc/doc.html properly"
 
