@@ -9,9 +9,12 @@
 
 == What You Will Build
 
-In this document, you will build an environment to develop agent-based system with link:https://github.com/jason-lang/jason[Jason] language.
+In this document, you will build an environment to develop agent-based systems with link:https://github.com/jason-lang/jason[Jason] language.
 
 include::../../install.adoc[]
+
+(You may need to close and open VSCode again to have Jason in its `PATH` terminal)
+
 
 //image:./figs/inst.png[vscode and java installation]
 
@@ -62,6 +65,7 @@ To add more agents in your project:
 ----
 jason app add-agent karlos
 ----
+
 
 More commands for the application are shown with
 

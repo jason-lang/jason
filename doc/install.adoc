@@ -23,5 +23,3 @@ To test the installation, run the command `jason --version` in a terminal. The o
 ----
 Jason CLI 3.2
 ----
-
-(You may need to close and open VSCode again to have Jason in its `PATH` terminal)

@@ -23,6 +23,12 @@ The first command creates a Jason application identified by `app1` with two agen
 [alice] hello world.
 ```
 
+This approach uses Gradle to execute the application. Gradle is useful if you are using other packages. However, it you do not have dependencies, the application can be started faster without Gradle:
+
+```
+jason mas start --mas2j=app1.mas2j
+```
+
 You can add more agents in the project with:
 
 ```
@@ -34,6 +40,7 @@ To run agent karlos, there are two options: stop the MAS and run it again; or ad
 jason agent start --source="src/agt/karlos.asl" --mas-name="app1" karlos
 ```
 
+
 You can add a Gradle script for the application with:
 
 ```
@@ -43,8 +50,7 @@ jason app add-gradle
 and then run it with `./gradlew run`.
 
 
-More details and commands with (or xref:./commands.adoc[here])
-:
+More details and commands with (or xref:./commands.adoc[here]):
 
 ```
 jason app

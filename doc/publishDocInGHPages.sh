@@ -2,17 +2,18 @@ cd ..
 
 ./gradlew doc
 
-rm -rf ../jason-pages/api
-rm -rf ../jason-pages/doc
+SITE_PATH=../jason-lang.github.io
 
-#asciidoctor -a stylesheet=adoc-empty.css readme.adoc -o doc.html
+rm -rf $SITE_PATH/api
+rm -rf $SITE_PATH/doc
+
 IMAGE=jomifred/adoc
-docker run --rm -i --user="$(id -u):$(id -g)" --net=none -v "$PWD":/app "$IMAGE" asciidoctor -r /pygments_init.rb -a stylesheet=adoc-empty.css readme.adoc -o doc.html
+docker run --rm -i --user="$(id -u):$(id -g)" --net=none -v "$PWD":/app "$IMAGE" asciidoctor -r /pygments_init.rb -a stylesheet=adoc-empty.css doc/readme.adoc -o doc/doc.html
 
-cp -R jason-interpreter/build/docs/javadoc ../jason-pages/api
-cp -R doc ../jason-pages
+cp -R jason-interpreter/build/docs/javadoc $SITE_PATH/api
+cp -R doc $SITE_PATH
 
-cd ../jason-pages
+cd $SITE_PATH
 git add api
 git commit -a -m "add javadoc api"
 
@@ -21,6 +22,3 @@ git add doc
 git commit -a -m "add jason github doc folder"
 
 git push
-
-
-
