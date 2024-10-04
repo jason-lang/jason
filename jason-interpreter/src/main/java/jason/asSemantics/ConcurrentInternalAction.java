@@ -57,7 +57,7 @@ import jason.asSyntax.Term;
 */
 public abstract class ConcurrentInternalAction implements InternalAction {
 
-    private static AtomicInteger actcount  = new AtomicInteger(0);
+    private static final AtomicInteger actCount = new AtomicInteger(0);
 
     public boolean canBeUsedInContext() {
         return false;
@@ -88,7 +88,7 @@ public abstract class ConcurrentInternalAction implements InternalAction {
      * @return the final key used to store the intention in PI, this key is used the resume the intention
      */
     public String suspendInt(final TransitionSystem ts, String basekey, int timeout) {
-        final String key = basekey + "/" + (actcount.incrementAndGet());
+        final String key = basekey + "/" + (actCount.incrementAndGet());
         final Circumstance C = ts.getC();
         Intention i = C.getSelectedIntention();
         i.setSuspended(true);

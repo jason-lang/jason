@@ -350,9 +350,9 @@ public class Agent implements Serializable, ToDOM {
             try {
                 n = Integer.parseInt( Config.get().get(Config.NB_TH_SCH).toString() );
             } catch (Exception e) {
-                n = 2;
+                n = 3;
             }
-            scheduler = Executors.newScheduledThreadPool(n);
+            scheduler = Executors.newScheduledThreadPool(n, Thread.ofVirtual().factory());
         }
         return scheduler;
     }
