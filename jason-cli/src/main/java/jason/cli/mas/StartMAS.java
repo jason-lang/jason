@@ -30,7 +30,7 @@ public class StartMAS implements Runnable {
     @Option(names = { "--console" }, defaultValue = "false", description = "output will be sent to the console instead of a GUI")
     boolean console;
 
-    @Option(names = { "--no-net" }, defaultValue = "false", description = "disable all net services (mind inspector, runtime services, Mbeans, ...")
+    @Option(names = { "--no-net" }, defaultValue = "false", description = "disable all net services (mind inspector, runtime services, Mbeans, ...)")
     boolean noNet;
 
     @Option(names = { "--env" }, defaultValue = "", paramLabel = "<env class>", description = "class that implements the environment and its arguments")

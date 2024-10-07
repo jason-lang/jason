@@ -46,13 +46,15 @@ starts a new (empty) MAS
       [<mas name>]   MAS unique identification
       --console      output will be sent to the console instead of a GUI
       --no-net       disable all net services (mind inspector, runtime
-                     services, Mbeans, ...
+                     services, Mbeans, ...)
       --mas2j=<file> runs jason project without
                      gradle (offline), java classes should be compiled
-                     before running.
-      --cp=<classpath>    directories where java classes can be found (for
+                     before running
+      --use-gradle   executes the MAS defined in a mas2j file using gradle
+      --cp=<classpath> directories where java classes can be found (for
                      environment implementation, for instance)
-
+      --env=<env class> class that implements the environment and its
+                     arguments                     
 ```
 
 Regarding `.mas2j` files, they can be executed in two ways:
@@ -116,6 +118,12 @@ The source code can be informed at the  end of the command enclosed by `{` and `
 
 ```
 jason agent start bob { +!g <- .print(ok). }
+```
+
+Depending on your prompt shell, you should enclose the commands by "":
+
+```
+jason agent start bob " { +!g <- .print(ok). } "
 ```
 
 ### Other agent commands
