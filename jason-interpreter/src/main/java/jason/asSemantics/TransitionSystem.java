@@ -656,12 +656,7 @@ public class TransitionSystem implements Serializable {
         // gets the proper plan library (root, inner scope, ...)
         PlanLibrary plib = ag.getPL();
         if (C.SE.isInternal() && !C.SE.getIntention().isFinished()) {
-            Plan p = C.SE.getIntention().peek().getPlan();
-            if (p.hasSubPlans()) {
-                plib = p.getSubPlans();
-            } else if (p.getScope() != null) {
-                plib = p.getScope();
-            }
+            plib = getPLForIM(C.SE.getIntention().peek());
         }
 
         String kindOfError = "relevant";
@@ -681,6 +676,16 @@ public class TransitionSystem implements Serializable {
         }
 
         applyRelApplPlRule2(kindOfError);
+    }
+
+    protected PlanLibrary getPLForIM(IntendedMeans im) {
+        Plan p = im.getPlan();
+        if (p.hasSubPlans()) {
+            return p.getSubPlans();
+        } else if (p.getScope() != null) {
+            return p.getScope();
+        }
+        return ag.getPL();
     }
 
     private Option getOption(Event evt, Plan pl, Unifier relUn) {
@@ -1434,7 +1439,8 @@ public class TransitionSystem implements Serializable {
             setDefaultFailureAnnots(failEvent, bodyPart, failAnnots);
         }
 
-        if (im.getTrigger().isGoal()) {
+        //if (im.getTrigger().isGoal()) {
+        if (failEvent.getTrigger().isGoal()) {
 
             // notify listeners
             if (hasGoalListener())
@@ -1530,7 +1536,8 @@ public class TransitionSystem implements Serializable {
 
     public Event findEventForFailure(Intention i, Trigger tevent) {
         if (i != Intention.EmptyInt) {
-            return i.findEventForFailure(tevent, getAg().getPL(), getC()).getFirst();
+            //return i.findEventForFailure(tevent, getAg().getPL(), getC()).getFirst();
+            return i.findEventForFailure(tevent, getPLForIM(i.peek()), getC()).getFirst();
         } else if (tevent.isGoal() && tevent.isAddition()) {
             Trigger failTrigger = new Trigger(TEOperator.del, tevent.getType(), tevent.getLiteral());
             if (getAg().getPL().hasCandidatePlan(failTrigger))

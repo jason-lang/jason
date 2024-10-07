@@ -240,6 +240,7 @@ public class Intention implements Serializable, Comparable<Intention>, Iterable<
             }
             tevent = im.getTrigger();
         }
+
         Trigger failTrigger = new Trigger(TEOperator.del, tevent.getType(), tevent.getLiteral());
         pl.getLock().lock();
         try {
@@ -252,9 +253,10 @@ public class Intention implements Serializable, Comparable<Intention>, Iterable<
                 failTrigger = new Trigger(TEOperator.del, tevent.getType(), tevent.getLiteral());
                 posInStak--;
             }
-            if (tevent.isGoal() && //tevent.isAddition() &&
-                    pl.hasCandidatePlan(failTrigger))
+            if (tevent.isGoal() && pl.hasCandidatePlan(failTrigger))
                 return new Pair<>(new Event(failTrigger.clone(), this), posInStak);
+            else if (!pl.isRoot())
+                return findEventForFailure(tevent, pl.getFather(), c);
             else
                 return new Pair<>(null, 0);
         } finally {
