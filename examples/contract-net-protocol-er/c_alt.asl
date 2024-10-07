@@ -1,12 +1,5 @@
 // alternative implementation without .wait(<condition>), see plan for !bid
 
-/* Initial beliefs and rules */
-
-all_proposals_received(CNPId, NP)                // NP: number of participants
-  :- .count(propose(CNPId,_)[source(_)], NO) &   // NO: number of proposes received
-     .count(refuse(CNPId)[source(_)], NR) &      // NR: number of refusals received
-     NP = NO + NR.
-
 /* Initial goals */
 
 !run.
@@ -54,3 +47,10 @@ all_proposals_received(CNPId, NP)                // NP: number of participants
              .send(Ag,tell,reject_proposal(Id));
           }.
 }
+
+/* Initial beliefs and rules */
+
+all_proposals_received(CNPId, NP)                // NP: number of participants
+  :- .count(propose(CNPId,_)[source(_)], NO) &   // NO: number of proposes received
+     .count(refuse(CNPId)[source(_)], NR) &      // NR: number of refusals received
+     NP = NO + NR.

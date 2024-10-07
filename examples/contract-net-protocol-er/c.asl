@@ -1,9 +1,3 @@
-/* Initial beliefs and rules */
-
-all_proposals_received(CNPId, NP)                // NP: number of participants
-  :- .count(propose(CNPId,_)[source(_)], NO) &   // NO: number of proposes received
-     .count(refuse(CNPId)[source(_)], NR) &      // NR: number of refusals received
-     NP = NO + NR.
 
 /* Initial goals */
 
@@ -45,3 +39,10 @@ all_proposals_received(CNPId, NP)                // NP: number of participants
              }
           }.
     }
+
+/* Initial beliefs and rules */
+
+all_proposals_received(CNPId, NP)                // NP: number of participants
+  :- .count(propose(CNPId,_)[source(_)], NO) &   // NO: number of proposes received
+     .count(refuse(CNPId)[source(_)], NR) &      // NR: number of refusals received
+     NP = NO + NR.
