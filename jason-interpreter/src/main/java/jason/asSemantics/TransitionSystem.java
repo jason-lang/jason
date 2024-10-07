@@ -427,7 +427,7 @@ public class TransitionSystem implements Serializable {
                     Iterator<Intention> ii = C.getAllIntentions();
                     while (ii.hasNext()) {
                         Intention i = ii.next();
-                        //logger.info("**"+C.SE + "-- "+i.getId()+" "+i.hasInterestInUpdateEvents()+" "+ (C.SE.getIntention() != null ? C.SE.getIntention().getId() : " no int "));
+                        //logger.info("**"+C.SE + "-- "+i.getId()+" from "+i.getPlace()+" "+i.hasInterestInUpdateEvents()+" "+ (C.SE.getIntention() != null ? C.SE.getIntention().getId() : " no int "));
 
                         // if intention i has sub plans (so potentially interested in external events)
                         if (i.hasInterestInUpdateEvents()) {

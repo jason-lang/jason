@@ -788,7 +788,9 @@ public class Circumstance implements Serializable, ToDOM {
 
                     while (evtIterator.hasNext()) {
                         actInt = evtIterator.next().getIntention();
-                        if (actInt != null && !actInt.equals(getSelectedIntention())) {
+                        if (actInt == bySelEvt || actInt == bySelInt)
+                            continue;
+                        if (actInt != null) {
                             actInt.setPlace( IntentionPlace.EventQueue );
                             return;
                         }
@@ -803,6 +805,8 @@ public class Circumstance implements Serializable, ToDOM {
 
                     while (pendEvtIterator.hasNext()) {
                         actInt = pendEvtIterator.next().getIntention();
+                        if (actInt == bySelEvt || actInt == bySelInt)
+                            continue;
                         if (actInt != null) {
                             actInt.setPlace( IntentionPlace.PendingEvents );
                             return;
@@ -820,6 +824,8 @@ public class Circumstance implements Serializable, ToDOM {
 
                         while (pendActIterator.hasNext()) {
                             actInt = pendActIterator.next().getIntention();
+                            if (actInt == bySelEvt || actInt == bySelInt)
+                                continue;
                             if (actInt != null) {
                                 actInt.setPlace( IntentionPlace.PendingActions );
                                 return;
