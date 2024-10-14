@@ -86,6 +86,7 @@ task renderAsciiDocs(type: Exec) {
 
 // Builds the distribution, documentation and a new release
 task release(dependsOn: [ 'doc', 'zipRel' ]) {
+    group = "publishing"
 }
 
 // copy files used to build a release
