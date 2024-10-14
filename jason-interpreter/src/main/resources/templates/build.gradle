@@ -5,9 +5,12 @@
    <DATE>
 */
 
-defaultTasks 'run'
+plugins {
+    id 'com.gradleup.shadow' version '8.3.3'
+    id 'java'
+}
 
-apply plugin: 'java'
+defaultTasks 'run'
 
 // set version of group for your project
 //version '1.0'
@@ -60,3 +63,42 @@ task runJade (type: JavaExec, dependsOn: 'classes') {
     // and all usual JADE options for jade.Boot
     classpath sourceSets.main.runtimeClasspath
 }
+
+shadowJar {
+    doFirst {
+        copy {
+            from '<PROJECT-FILE>'
+            rename '<PROJECT-FILE>','default.mas2j'
+            into project.projectDir.absolutePath + '/'
+        }
+    }
+    archiveFileName = "jason-${project.name}-all.jar" // the name must start with jacamo so that jacamo...jar is found in the classpath
+    from (project.projectDir.absolutePath + '/src') {
+        include '**/*.asl'
+        include '**/*.xml'
+        include '**/*.sai'
+        include '**/*.ptl'
+        include '**/*.jcm'
+        include '*.properties'
+        exclude 'test'
+    }
+    from (project.buildDir.absolutePath + '/classes') {
+        include '**/*'
+    }
+    from (project.buildDir.absolutePath + '/jcm') {
+        include '**/*'
+    }
+    from (project.projectDir.absolutePath + '/') {
+        include '*.properties'
+        include 'default.mas2j'
+    }
+
+    manifest {
+        attributes 'Main-Class': 'jason.infra.local.RunLocalMAS'
+    }
+
+    doLast {
+        println("You can run your application with: java -jar build/libs/jason-${project.name}-all.jar")
+    }
+}
+

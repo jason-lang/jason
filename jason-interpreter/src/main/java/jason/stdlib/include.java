@@ -31,26 +31,6 @@ import jason.asSyntax.directives.Include;
   </ul>
 
  */
-@Manual(
-        literal=".include(file[,namespace])",
-        hint="loads an .asl file, i.e., includes beliefs, goals, and plans from a file optionally in a namespace",
-        argsHint= {
-                "the file name or any valid URL",
-                "sets the name space where the included components (bels, plans, ...) will be placed [optional]"
-        },
-        argsType= {
-                "string",
-                "atom or var"
-        },
-        examples= {
-                ".include(\"x.asl\")",
-                ".include(\"https://raw.githubusercontent.com/jason-lang/jason/master/examples/auction/ag3.asl\")",
-                ".include(\"jar:file:/Users/jomi/lib/test.jar!/l.asl\") includes from a local jar file."
-        },
-        seeAlso= {
-                ""
-        }
-    )
 @SuppressWarnings("serial")
 public class include extends DefaultInternalAction {
 

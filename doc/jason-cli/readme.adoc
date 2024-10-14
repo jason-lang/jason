@@ -6,7 +6,7 @@ The Jason CLI is a command-line interface tool that you use to initialize, devel
 include::../install.adoc[]
 
 
-== Create Applications
+== Create and Execute Applications
 
 New Jason applications can be created and executed with:
 
@@ -23,7 +23,7 @@ The first command creates a Jason application identified by `app1` with two agen
 [alice] hello world.
 ```
 
-This approach uses Gradle to execute the application. Gradle is useful if you are using other packages. However, it you do not have dependencies, the application can be started faster without Gradle:
+This approach uses Gradle to execute the application. Gradle is useful if you are using other packages. However, if you do not have dependencies, the application can be started faster without Gradle:
 
 ```
 jason mas start --mas2j=app1.mas2j

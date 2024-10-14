@@ -8,7 +8,7 @@ import java.io.File;
 
 @Command(
     name = "compile",
-    description = "compiles the java classes of the application in the current directory (using Gradle)"
+    description = "compiles the java classes of the application in the current directory (using Gradle) and produces a jar file with all necessary to run the application"
 )
 public class Compile extends Common implements Runnable {
 
@@ -25,6 +25,9 @@ public class Compile extends Common implements Runnable {
 //                    .withArguments("--build-file", buildFile.getAbsolutePath());
             getGradleBuild(connection)
                     .forTasks("compileJava")
+                    .run();
+            getGradleBuild(connection)
+                    .forTasks("shadowJar")
                     .run();
 
             if (created) {

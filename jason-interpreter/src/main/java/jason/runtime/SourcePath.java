@@ -115,7 +115,7 @@ public class SourcePath implements Serializable {
         if (f.startsWith("$")) { // the case of "$jason/src/a.asl"
             String jar = f.substring(1,f.indexOf("/"));
             if (Config.get().getPackage(jar) == null) {
-            	System.err.println("The included file '"+jar+"' is not configured");
+            	System.err.println("The included '$"+jar+"' is not configured");
             } else {
                 var nf = "jar:file:" + Config.get().getPackage(jar).getAbsolutePath() + "!" + f.substring(f.indexOf("/"));
                 if (testURLSrc(nf))

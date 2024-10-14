@@ -321,6 +321,8 @@ public class Config extends Properties {
                     return true;
                 }
             } catch (Exception e) {}
+            if (showFixMsgs)
+                System.out.println("Configuration of '"+jarEntry+"' NOT found, based on class loader");
 
             // try to get from classpath (the most common case)
             jarFile = getJarFromClassPath(jarFileNamePrefix, fileInJar);
@@ -331,7 +333,7 @@ public class Config extends Properties {
                 return true;
             }
             if (showFixMsgs)
-                System.out.println("Configuration of '"+jarEntry+"' NOT found, based on class loader");
+                System.out.println("Configuration of '"+jarEntry+"' NOT found, based on class path: "+System.getProperty("java.class.path"));
 
             // try with $JASON_HOME
             String jh = System.getenv().get("JASON_HOME");

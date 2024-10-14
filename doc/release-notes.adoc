@@ -16,6 +16,8 @@
   * `jason x.mas2h` uses gradle to run the application
   * `jason mas start --mas2j=x.mas2h` runs without gradle. The classpath might be informed using `--cp` if necessary.
 
+  * `jason app compile` uses shadowJar to create a jar file with all files and dependencies to run the application.
+
 - update doc for new Jason web site: https://jason-lang.github.io
 
 

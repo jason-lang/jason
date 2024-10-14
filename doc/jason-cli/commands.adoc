@@ -18,6 +18,7 @@ commands to handle applications
 Commands:
   create      creates the files of a new application
   compile     compiles the java classes of an application (using Gradle)
+              and produces a jar file with all necessary to run the application
   add-agent   adds the code of a new agent into the application
   add-gradle  adds a Gradle script for the application
   add-ia      adds the source code a new internal action into the application
