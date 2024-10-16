@@ -18,6 +18,9 @@ public class Gradle extends Common implements Runnable {
     @Override
     public void run() {
         var created = getOrCreateGradleFile( "" );
+        if (!created) {
+            parent.parent.println("using existing build.gradle");
+        }
         try (var connection = getGradleConnection(new File("." ))) { //gradleFile.getAbsoluteFile().getParentFile())
             getGradleBuild(connection)
                     .forTasks("wrapper")

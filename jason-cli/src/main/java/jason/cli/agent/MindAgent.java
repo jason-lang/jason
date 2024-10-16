@@ -34,6 +34,9 @@ public class MindAgent extends BaseAgent implements Runnable {
     @CommandLine.Option(names = { "--mas-name" }, paramLabel = "<mas name>", defaultValue = "", description = "MAS unique identification")
     String masName;
 
+    @CommandLine.Option(names = { "--json" }, defaultValue = "false", description = "output in JSON format (only for beliefs)")
+    boolean json;
+
     @Override
     public void run() {
         masName = testMasName(masName, parent.parent);
@@ -65,6 +68,9 @@ public class MindAgent extends BaseAgent implements Runnable {
 
     void showBeliefs(jason.asSemantics.Agent ag) {
         var out = new StringBuilder();
+        var v = "";
+        if (json)
+            out.append("[ ");
         for (var ns: ag.getBB().getNameSpaces()) {
             if (ns.toString().equals("kqml"))
                 continue;
@@ -77,19 +83,27 @@ public class MindAgent extends BaseAgent implements Runnable {
                         first = false;
                     }
                     // remove namespace
-                    var bs = b.toString();
-                    var p  = bs.indexOf("::");
-                    if (p>0)
-                        bs = bs.substring(p+2);
-                    out.append("    "+bs+"\n");
+                    if (json) {
+                        out.append(v+b.getAsJsonStr());
+                        v = ",";
+                    } else {
+                        var bs = b.toString();
+                        var p = bs.indexOf("::");
+                        if (p > 0)
+                            bs = bs.substring(p + 2);
+                        out.append("    " + bs + "\n");
+                    }
                 }
             }
+        }
+        if (json) {
+            out.append(" ]");
         }
         parent.parent.println( out.toString());
     }
 
     void showPlans(jason.asSemantics.Agent ag) {
-        parent.parent.println( ag.getPL().getAsTxt(false).trim());
+        parent.parent.println(ag.getPL().getAsTxt(false).trim());
     }
 
     void showIntentions(jason.asSemantics.Agent ag) {
