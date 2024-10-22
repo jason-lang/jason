@@ -1,7 +1,7 @@
 = Jason release notes
 :toc: right
 
-== version 3.3
+== version 3.3 (2024-10-21)
 
 - Java 21 is used
 
