@@ -1,15 +1,6 @@
 
 if you want to run/test changes in Jason sources without publishing jars on maven/gradle repositories:
 
-For Jason >= 3.3
-
-use
-    jason app compile
-to generate a single jar file with all required files to run the Jason application.
-
-
-For Jason < 3.3
-
 1. compile the changes
     ./gradlew  :jason-cli:uberJar
 
