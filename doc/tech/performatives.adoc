@@ -1,0 +1,55 @@
+= Jason ACL Performatives
+
+:source-highlighter: coderay
+:coderay-linenums-mode: inline
+:icons: font
+:prewrap!:
+
+ifdef::env-github[]
+:tip-caption: :bulb:
+:note-caption: :information_source:
+:important-caption: :heavy_exclamation_mark:
+:caution-caption: :fire:
+:warning-caption: :warning:
+endif::[]
+
+
+ifdef::env-github[:outfilesuffix: .adoc]
+
+Communication languages for autonomous agents have been strongly influenced by speech act theory, in particular the work of the philosophers of language <<Austing>> and <<Searle>>. This implies messages exchanged by agents have a clear separation of the actual content and the intent of the sender, which is also explicitly represented and expressed as performative verbs. This model of communication is adopted for the practical artificial agents communication language called <<KQML>> that is used in Jason (see also https://en.wikipedia.org/wiki/Knowledge_Query_and_Manipulation_Language)[Wikipedia]). 
+
+Jason implements a set of KQML performative verbs. For further details on advanced features, such as filtering reception of beliefs and redefining the semantics of performative verbs, see <<Jason Book>>. 
+
+The performative verbs are the following:
+
+tell:: The sender expects that the receiver will have the content of the message included in its belief base annotated with the sender as the source of that information. For example, the action `.send(a,tell,v(10))` done by agent `b` is expected to result in the inclusion of the belief `v(10)[source(b)]` in the belief base of agent `a`. 
+
+untell:: The sender expects that the receiver retracts from its belief base the source of the content of a tell message. The content corresponds to the belief the sender no longer holds. For example, the action `.send(a, untell, v(10))` done by agent `b` will retract the belief `v(10)[source(b)]` from the belief base of `a`. 
+
+achieve:: The receiver is expected to have the content of the message as a new goal with the source also annotated. For example, the action `.send(a,achieve,g(10))` done by agent `b` will include the goal `!g(10)[source(b)]` for the agent `a`.
+
+unachieve:: The sender expects the receiver to drop the goal of achieving a state of affairs corresponding to the message content. For example, the action `.send(a,unachieve,g(10))` done by agent `b` will drop the goal `!g(10)[source(b)]` for the agent `a`.
+
+
+askOne:: The sender wants to know whether or not the receiver believes in the content of the message (any belief that matches the pattern in the message content). If the receiver does so, it answers with one of its own belief; otherwise it answers `false`. For example, if `b` executes `.send(a,askOne,v(X))`, `a` will, normally, automatically execute `.send(b,tell,v(10))` in case it believes `v(10)`.
+This performative can be used synchronously when a fourth argument is used. For example, if one of agent `b`'s intentions executes `.send(a,askOne,v(X),A), this intention is suspended while it waits for the answer.  When the answer from `a` arrives, it is unified with the fourth argument and the intention resumed so that the next line of code in the plan body can already make use of the received response.
+
+askAll:: This performative is similar to `askOne` but it retrieves all the beliefs instead of one.
+
+askHow:: The sender asks the receiver for plans that can be used to handle some particular event. For example, an agent sending  `.send(a,askHow,{+!g(_)},P)` will have in the variable `P` a list of plans from agent `a` that can be used to achieve goal `g`, and it can then add these news plans into its own plan library using internal action `.add_plan`, if needed.
+
+
+tellHow:: The sender informs the receiver of a plan it has in its plans library. For example, agent `a` receiving .send(a,tellHow, {+!start[source(X)] <- .print(hello,X).}) will add the plan +!start[source(X)] <- .print(hello,X). in its plan library.
+
+
+untellHow:: The sender requests that the receiver disregards a certain plan (i.e., deletes that plan from its plan library).
+
+signal:: The sender adds an event in the receiver. For example, the action `.send(a,signal,hi)` done by agent `b` is expected to result in the inclusion of the event `hi[source(b)]` for agent `a` to handle. Different of `tell`, if an agent sends the same signal twice, the receiver will have two events.
+
+[bibliography]
+== References
+
+* [[[Austin]]] Austin, John Langshaw. 1962. _How to do things with words_. Clarendon Press.
+* [[[Searle]]] Searle, John. 1969. _Speech acts_. Cambridge University Press.
+* [[KQML]] Mayfield, James, Yannis Labrou, and Timothy W. Finin. 1996. _Evaluation of KQML as an agent communication language_.In Intelligent Agents II, Agent Theories, Architectures, and Languages, Proceedings of IJCAI'95. https://doi.org/10.1007/3540608052_77.
+* [[Jason Book]] Bordini, Rafael H., Jomi Fred Hübner, and Michael Wooldridge. 2007. _Programming multi-agent systems in AgentSpeak using Jason_. John Wiley & Sons.
