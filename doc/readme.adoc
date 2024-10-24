@@ -40,6 +40,7 @@ endif::[]
 * xref:./tech/concurrency.adoc[Concurrency]
 * xref:./tech/unit-tests.adoc[Testing]
 * xref:./tech/annotations.adoc[Unification with Annotations]
+* xref:./tech/performatives.adoc[List of implemented communication performatives]
 * https://jason-lang.github.io/doc/tech/jason/asSyntax/parser/AS2JavaParser.html[Jason Language BNF]
 
 //== Other Links
