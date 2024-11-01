@@ -34,10 +34,10 @@ public class Environment {
 
     private static Logger logger = Logger.getLogger(Environment.class.getName());
 
-    private List<Literal> percepts = Collections.synchronizedList(new ArrayList<Literal>());
-    private Map<String,List<Literal>>  agPercepts = new ConcurrentHashMap<String, List<Literal>>();
+    protected List<Literal> percepts = Collections.synchronizedList(new ArrayList<Literal>());
+    protected Map<String,List<Literal>>  agPercepts = new ConcurrentHashMap<String, List<Literal>>();
 
-    private boolean isRunning = true;
+    protected boolean isRunning = true;
 
     /** the infrastructure tier for environment (Local, Jade, ...) */
     private EnvironmentInfraTier environmentInfraTier = null;
