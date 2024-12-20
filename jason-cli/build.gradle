@@ -5,7 +5,10 @@
 defaultTasks 'build'
 
 apply plugin: 'java-library'
+apply plugin: 'maven-publish'
 
+version "${jasonVersion}"
+group   "${groupId}"
 
 sourceSets {
     main {
@@ -39,7 +42,7 @@ dependencies {
 }
 
 jar {
-    archiveBaseName = "jason-cli-${jasonVersion}"
+    archiveBaseName = "jason-cli"
     manifest {
         attributes 'Main-Class': 'jason.cli.JasonCLI',
                    'Specification-Title': 'Jason CLI',
@@ -80,6 +83,7 @@ task run (type: JavaExec, dependsOn: 'build') {
 }
 
 task uberJar(type: Jar, dependsOn: ['classes', ':jason-interpreter:jar']) {
+    group "build"
     description 'creates a single runnable jar file with all dependencies'
     duplicatesStrategy 'exclude'
 
@@ -89,13 +93,14 @@ task uberJar(type: Jar, dependsOn: ['classes', ':jason-interpreter:jar']) {
                    'Specification-Version': "${jasonVersion}",
                    'Implementation-Version': new Date().toString()
     }
-    archiveBaseName = "jason-cli-all-${jasonVersion}"
+    archiveBaseName = "jason-cli-all"
     destinationDirectory = file('build/bin')
     from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
     with jar
 }
 
 task createBin (dependsOn: ['uberJar']) {
+    group "build"
     def wdir = 'build/bin'
     doFirst {
         exec {
@@ -113,6 +118,47 @@ task createBin (dependsOn: ['uberJar']) {
         copy {
             from 'src/main/resources/scripts/jason.sh'
             into wdir
+        }
+    }
+}
+
+artifacts {
+    archives jar
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from components.java
+            artifactId 'jason-cli'
+        }
+    }
+}
+
+task publishMavenGitHub(dependsOn: [ 'build', 'publishToMavenLocal']) {
+    group = "publishing"
+    doLast {
+        def wdir = System.getProperty("user.home")+'/.m2/repository/io/github/jason-lang/jason-cli'
+        def rdir = project.projectDir.absolutePath+'/../../jacamo-mvn-repo'
+        exec {
+            commandLine 'git', 'pull'
+            workingDir rdir
+        }
+        copy {
+            from wdir
+            into rdir + '/io/github/jason-lang/jason-cli'
+        }
+        exec {
+            commandLine 'git', 'add', '*'
+            workingDir rdir
+        }
+        exec {
+            commandLine 'git', 'commit', '-a', '-m', 'new version of jason-cli '+project.version
+            workingDir rdir
+        }
+        exec {
+            commandLine 'git', 'push'
+            workingDir rdir
         }
     }
 }

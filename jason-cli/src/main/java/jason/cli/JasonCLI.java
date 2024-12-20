@@ -1,6 +1,9 @@
 package jason.cli;
 
+import jason.cli.agent.Agent;
+import jason.cli.app.Application;
 import jason.cli.app.Run;
+import jason.cli.mas.MAS;
 import jason.cli.mas.RunningMASs;
 import jason.util.Config;
 import org.fusesource.jansi.AnsiConsole;
@@ -24,6 +27,7 @@ import java.nio.file.Paths;
 import java.util.function.Supplier;
 
 // program "inspired" by https://github.com/remkop/picocli/tree/v4.7.1/picocli-shell-jline3
+// see https://picocli.info/#_sharing_options_in_subcommands
 
 public class JasonCLI {
 
@@ -44,10 +48,21 @@ public class JasonCLI {
             // case of .mas2j
             new Run().run(args[0], args.length == 2 && args[1].equals("-v"));
         } else {
-            int exitCode = new CommandLine(new JasonCommands()).execute(args);
+            var cmd = new CommandLine(new JasonCommands());
+            addSubCmd(cmd);
+            int exitCode = cmd.execute(args);
+
             if (!RunningMASs.hasLocalRunningMAS())
                 System.exit(exitCode);
         }
+    }
+
+    static void addSubCmd(CommandLine cmd) {
+        cmd.addSubcommand("app", new Application());
+        cmd.addSubcommand("mas", new MAS());
+        cmd.addSubcommand("agent", new Agent());
+        cmd.addSubcommand("echo", new Echo());
+        cmd.addSubcommand("wait", new Wait());
     }
 
     static void startTerminal() {
@@ -68,6 +83,8 @@ public class JasonCLI {
             // PicocliCommandsFactory factory = new PicocliCommandsFactory(customFactory); // chain the factories
 
             CommandLine cmd = new CommandLine(jasonCommands, factory);
+            addSubCmd(cmd);
+
             PicocliCommands picocliCommands = new PicocliCommands(cmd);
 
             var parser = new DefaultParser();

@@ -12,18 +12,18 @@ import picocli.CommandLine.IVersionProvider;
 import java.io.PrintWriter;
 
 // program "inspired" by https://github.com/remkop/picocli/tree/v4.7.1/picocli-shell-jline3
+// see https://picocli.info/#_sharing_options_in_subcommands
 
 @Command(name = "jason",
         // version = "1.0",
         versionProvider = jason.cli.VersionProvider.class,
         mixinStandardHelpOptions = true,
-        subcommands = {  Application.class, MAS.class, Agent.class, Echo.class, Wait.class },
+        //subcommands = {  Application.class, MAS.class, Agent.class, Echo.class, Wait.class },
         synopsisSubcommandLabel = "(app | mas | agent | <mas2j  file>)"
 )
 public class JasonCommands {
 
     private PrintWriter out = null;
-    private PrintWriter err = null;
 
     public PrintWriter getOut() {
         return out;
