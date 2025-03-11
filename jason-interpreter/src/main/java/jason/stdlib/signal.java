@@ -49,10 +49,7 @@ public class signal extends DefaultInternalAction {
         if (!te.getLiteral().hasSource()) {
             te.getLiteral().addSource(BeliefBase.ASelf);
         }
-        ts.updateEvents(
-                new Event(
-                        te,
-                        Intention.EmptyInt));
+        ts.updateEvents(new Event(te));
         return true;
     }
 }

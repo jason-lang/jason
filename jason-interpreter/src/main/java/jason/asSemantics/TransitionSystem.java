@@ -347,7 +347,7 @@ public class TransitionSystem implements Serializable {
                         switch (m.getIlForce()) {
                             case "achieve" -> {
                                 content = add_nested_source.addAnnotToList(content, new Atom(sender));
-                                C.addEvent(new Event(new Trigger(TEOperator.add, TEType.achieve, (Literal) content), Intention.EmptyInt));
+                                C.addEvent(new Event(new Trigger(TEOperator.add, TEType.achieve, (Literal) content)));
                                 added = true;
                             }
                             case "tell" -> {
@@ -358,7 +358,7 @@ public class TransitionSystem implements Serializable {
                             case "signal" -> {
                                 content = add_nested_source.addAnnotToList(content, new Atom(sender));
                                 ((Literal) content).addAnnot(new Atom("signal"));
-                                C.addEvent(new Event(new Trigger(TEOperator.add, TEType.signal, (Literal) content), Intention.EmptyInt));
+                                C.addEvent(new Event(new Trigger(TEOperator.add, TEType.signal, (Literal) content)));
                                 added = true;
                             }
                         }
@@ -371,7 +371,7 @@ public class TransitionSystem implements Serializable {
                             content,
                             new Atom(m.getMsgId()));
 
-                        updateEvents(new Event(new Trigger(TEOperator.add, TEType.achieve, received), Intention.EmptyInt));
+                        updateEvents(new Event(new Trigger(TEOperator.add, TEType.achieve, received)));
                     }
                 } else {
                     logger.fine("Ignoring message "+m+" because it is received after the timeout.");

@@ -64,7 +64,7 @@ public class GoalListenerForMetaEvents implements GoalListener {
                 newGoal.addAnnot( stateAnnot );
                 Trigger eEnd = new Trigger(TEOperator.goalState, type, newGoal);
                 if (ts.getAg().getPL().hasCandidatePlan(eEnd))
-                    ts.getC().insertMetaEvent(new Event(eEnd, null));
+                    ts.getC().insertMetaEvent(new Event(eEnd));
 
         });
         ts.getAgArch().wakeUpDeliberate();

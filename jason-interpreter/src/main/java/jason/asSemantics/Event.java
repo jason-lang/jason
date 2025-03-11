@@ -8,6 +8,9 @@ import org.w3c.dom.Element;
 import jason.asSyntax.Trigger;
 import jason.util.ToDOM;
 
+/**
+ * An Event is composed of a Trigger Literal and (optionally) the intention that produced the event.
+ */
 public class Event implements Serializable, ToDOM {
 
     private static final long serialVersionUID = 1L;
@@ -15,6 +18,10 @@ public class Event implements Serializable, ToDOM {
     Trigger   trigger   = null;
     Intention intention = Intention.EmptyInt;
     Option    option    = null; // option computed in selEv (JasonER)
+
+    public Event(Trigger t) {
+        trigger   = t;
+    }
 
     public Event(Trigger t, Intention i) {
         trigger   = t;
@@ -49,9 +56,7 @@ public class Event implements Serializable, ToDOM {
     public boolean isInternal() {
         return intention != Intention.EmptyInt;
     }
-    public boolean isAtomic() {
-        return intention != null && intention.isAtomic();
-    }
+    public boolean isAtomic()   { return intention != null && intention.isAtomic();  }
 
     @Override
     public int hashCode() {

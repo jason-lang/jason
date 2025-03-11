@@ -652,14 +652,22 @@ public class Agent implements Serializable, ToDOM {
             return actions.poll();
     }
 
-    public List<Option> relevantPlans(Trigger teP, Event evt) throws JasonException {
+    /**
+     * Gets relevant plans for a trigger event (teP), usually from a plan library.
+     * A relevant plan is represented by an Option (a plan and a unifier).
+     *
+     * if evt is not null, that event is used as the context where teP was produced.
+     * It can be used to get the proper plan library scope to retrieve plans.
+     *
+     */
+    public List<Option> relevantPlans(Trigger teP, Event event) throws JasonException {
         Trigger te = teP.clone();
         List<Option> rp = null;
 
         // gets the proper plan library (root, inner scope, ...)
         PlanLibrary plib = getPL();
-        if (evt != null && evt.isInternal() && !evt.getIntention().isFinished()) {
-            Plan p = evt.getIntention().peek().getPlan();
+        if (event != null && event.isInternal() && !event.getIntention().isFinished()) {
+            Plan p = event.getIntention().peek().getPlan();
             if (p.hasSubPlans()) {
                 plib = p.getSubPlans();
             } else if (p.getScope() != null) {
@@ -674,9 +682,9 @@ public class Agent implements Serializable, ToDOM {
                 for (Plan pl : candidateRPs) {
 
                     Unifier relUn = null;
-                    if (evt != null && evt.isInternal()) {
+                    if (event != null && event.isInternal()) {
                         // use IM vars in the context for sub-plans (new in JasonER)
-                        for (IntendedMeans im: evt.getIntention()) {
+                        for (IntendedMeans im: event.getIntention()) {
                             if (im.getPlan().hasSubPlans() && im.getPlan().getSubPlans().get(pl.getLabel()) != null) {
                                 relUn = im.triggerUnif.clone();
                                 break;
@@ -687,7 +695,7 @@ public class Agent implements Serializable, ToDOM {
                     relUn = pl.isRelevant(te, relUn);
                     if (relUn != null) {
                         if (rp == null) rp = new LinkedList<>();
-                        rp.add(new Option(pl, relUn, evt));
+                        rp.add(new Option(pl, relUn, event));
                     }
                 }
             }
@@ -838,7 +846,7 @@ public class Agent implements Serializable, ToDOM {
                     l = ASSyntax.createLiteral(l.getFunctor(), l.getTermsArray());
                     l.addAnnot(BeliefBase.TPercept);
                     te.setLiteral(l);
-                    ts.getC().addEvent(new Event(te, Intention.EmptyInt));
+                    ts.getC().addEvent(new Event(te));
                 }
             }
         }
@@ -896,7 +904,7 @@ public class Agent implements Serializable, ToDOM {
                 lp.addAnnot(BeliefBase.TPercept);
                 if (getBB().add(lp)) {
                     adds++;
-                    ts.updateEvents(new Event(new Trigger(TEOperator.add, TEType.belief, lp), Intention.EmptyInt));
+                    ts.updateEvents(new Event(new Trigger(TEOperator.add, TEType.belief, lp)));
                 }
             } catch (Exception e) {
                 logger.log(Level.SEVERE, "Error adding percetion " + lw.getLiteral(), e);
