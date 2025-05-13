@@ -1,7 +1,7 @@
 = Jason release notes
 :toc: right
 
-== version 3.3
+== version 3.3 (2024-02-21)
 
 - Java 21 is used
 
@@ -13,8 +13,8 @@
 
 - several (minor) improvements in Jason-CLI. About running a project:
 
-  * `jason x.mas2h` uses gradle to run the application
-  * `jason mas start --mas2j=x.mas2h` runs without gradle. The classpath might be informed using `--cp` if necessary.
+  * `jason x.mas2j` uses gradle to run the application
+  * `jason mas start --mas2j=x.mas2j` runs without gradle. The classpath might be informed using `--cp` if necessary.
 
   * `jason app compile` uses shadowJar to create a jar file with all files and dependencies to run the application.
 
