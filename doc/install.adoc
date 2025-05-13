@@ -1,6 +1,6 @@
 = Jason Installation
 
-1. Install link:https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html[Java 17]
+1. Install link:https://www.oracle.com/java/technologies/javase/jdk21-archive-downloads.html[Java 21]
 2. Install link:https://code.visualstudio.com/download[Visual Sudio Code]
 3. [windows] Install a terminal & shell tool like link:https://gitforwindows.org/[GitBash]
 4. Install Jason:
@@ -21,5 +21,5 @@ sudo apt install jason-cli
 To test the installation, run the command `jason --version` in a terminal. The output should be as follows:
 
 ----
-Jason CLI 3.2
+Jason CLI 3.3.0
 ----
