@@ -99,6 +99,21 @@ task uberJar(type: Jar, dependsOn: ['classes', ':jason-interpreter:jar']) {
     with jar
 }
 
+task createBin (type: JavaExec, dependsOn: 'uberJar') {
+    mainClass = 'jason.cli.tools.CreateJasonCLIBin'
+    args = [ 'build/bin/jason', 'build/bin/jason-cli-all-' + "${jasonVersion}" + '.jar']
+    standardInput = System.in
+    classpath sourceSets.main.runtimeClasspath
+    doLast {
+        copy {
+            from 'src/main/resources/scripts/jason.sh'
+            into 'build/bin'
+        }
+    }
+}
+
+
+/* // replaced by the above task (that does not reply in a shell script)
 task createBin (dependsOn: ['uberJar']) {
     group "build"
     def wdir = 'build/bin'
@@ -121,6 +136,7 @@ task createBin (dependsOn: ['uberJar']) {
         }
     }
 }
+*/
 
 artifacts {
     archives jar
