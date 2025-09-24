@@ -1,13 +1,9 @@
 package jason.environment.grid;
 
-import java.awt.BorderLayout;
-import java.awt.Canvas;
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.Graphics;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 
-import javax.swing.JFrame;
+import javax.swing.*;
 
 /**
  * View component for a GirdWorldModel.
@@ -23,6 +19,8 @@ public class GridWorldView extends JFrame {
 
     protected GridCanvas     drawArea;
     protected GridWorldModel model;
+    protected BufferedImage backBuffer;
+    private Graphics2D backG;
 
     protected Font defaultFont = new Font("Arial", Font.BOLD, 10);
 
@@ -46,20 +44,25 @@ public class GridWorldView extends JFrame {
         cellSizeW = drawArea.getWidth() / model.getWidth();
         cellSizeH = drawArea.getHeight() / model.getHeight();
         super.repaint();
-        drawArea.repaint();
     }
 
     /** updates all the frame */
     public void update() {
+        ensureBackBuffer();
         repaint();
     }
 
     /** updates only one position of the grid */
     public void update(int x, int y) {
-        Graphics g = drawArea.getGraphics();
-        if (g == null) return;
-        drawEmpty(g, x, y);
-        draw(g, x, y);
+        if (!SwingUtilities.isEventDispatchThread()) {
+            // Only the event dispatch thread can update the GUI
+            SwingUtilities.invokeLater(this::update);
+            return;
+        }
+
+        ensureBackBuffer();
+        renderAllToBackBuffer();
+        drawArea.repaint();
     }
 
     public void drawObstacle(Graphics g, int x, int y) {
@@ -100,9 +103,71 @@ public class GridWorldView extends JFrame {
         //drawString(g,x,y,defaultFont,String.valueOf(object));
     }
 
-    private static int limit = (int)Math.pow(2,14);
+    private static final int limit = (int)Math.pow(2,14);
 
-    private void draw(Graphics g, int x, int y) {
+    public Canvas getCanvas() {
+        return drawArea;
+    }
+
+    public GridWorldModel getModel() {
+        return model;
+    }
+
+    class GridCanvas extends Canvas {
+
+        private static final long serialVersionUID = 2L;
+
+        @Override
+        public void update(Graphics g) {
+            paint(g);
+        }
+
+        public void paint(Graphics g) {
+            ensureBackBuffer();
+            g.drawImage(backBuffer, 0, 0, this);
+            Toolkit.getDefaultToolkit().sync();
+        }
+    }
+
+    private void ensureBackBuffer() {
+        int w = Math.max(1, drawArea.getWidth());
+        int h = Math.max(1, drawArea.getHeight());
+        if (backBuffer == null || backBuffer.getWidth() != w || backBuffer.getHeight() != h) {
+            if (backG != null) {
+                backG.dispose();
+            }
+            backBuffer = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+            backG = backBuffer.createGraphics();
+            backG.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+        }
+        renderAllToBackBuffer();
+    }
+
+    private void renderAllToBackBuffer() {
+        cellSizeW = Math.max(1, backBuffer.getWidth() / model.getWidth());
+        cellSizeH = Math.max(1, backBuffer.getHeight() / model.getHeight());
+
+        backG.setColor(Color.white);
+        backG.fillRect(0, 0, backBuffer.getWidth(), backBuffer.getHeight());
+
+        backG.setColor(Color.lightGray);
+        for (int l = 1; l <= backBuffer.getHeight(); l++) {
+            backG.drawLine(0, l * cellSizeH, model.getWidth() * cellSizeW, l * cellSizeH);
+        }
+        for (int c = 1; c <= backBuffer.getWidth(); c++) {
+            backG.drawLine(c * cellSizeW, 0, c * cellSizeW, model.getHeight() *  cellSizeH);
+        }
+
+        for (int x = 0; x < model.getWidth(); x++) {
+            for (int y = 0; y < model.getHeight(); y++) {
+                renderCell(backG, x, y);
+            }
+        }
+    }
+
+    private void renderCell(Graphics2D g, int x, int y) {
+        drawEmpty(g, x, y);
+
         if ((model.data[x][y] & GridWorldModel.OBSTACLE) != 0) {
             drawObstacle(g, x, y);
         }
@@ -116,41 +181,7 @@ public class GridWorldView extends JFrame {
         }
 
         if ((model.data[x][y] & GridWorldModel.AGENT) != 0) {
-            drawAgent(drawArea.getGraphics(), x, y, Color.blue, model.getAgAtPos(x, y));
-        }
-    }
-
-    public Canvas getCanvas() {
-        return drawArea;
-    }
-
-    public GridWorldModel getModel() {
-        return model;
-    }
-
-    class GridCanvas extends Canvas {
-
-        private static final long serialVersionUID = 1L;
-
-        public void paint(Graphics g) {
-            cellSizeW = drawArea.getWidth() / model.getWidth();
-            cellSizeH = drawArea.getHeight() / model.getHeight();
-            int mwidth = model.getWidth();
-            int mheight = model.getHeight();
-
-            g.setColor(Color.lightGray);
-            for (int l = 1; l <= mheight; l++) {
-                g.drawLine(0, l * cellSizeH, mwidth * cellSizeW, l * cellSizeH);
-            }
-            for (int c = 1; c <= mwidth; c++) {
-                g.drawLine(c * cellSizeW, 0, c * cellSizeW, mheight * cellSizeH);
-            }
-
-            for (int x = 0; x < mwidth; x++) {
-                for (int y = 0; y < mheight; y++) {
-                    draw(g,x,y);
-                }
-            }
+            drawAgent(g, x, y, Color.blue, model.getAgAtPos(x, y));
         }
     }
 }
