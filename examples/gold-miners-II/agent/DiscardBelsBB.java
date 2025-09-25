@@ -30,7 +30,11 @@ public class DiscardBelsBB extends DefaultBeliefBase {
     @Override
     public boolean add(Literal bel) {
         if (!discartedBels.contains(bel.getFunctor())) {
-            return super.add(bel);
+            try {
+                return super.add(bel);
+            } catch (Exception e) {
+                return false;
+            }
         } else {
             return false;
         }
