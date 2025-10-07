@@ -45,7 +45,7 @@ group   "${groupId}"
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
+        languageVersion = JavaLanguageVersion.of(21)
     }
 }
 
@@ -79,14 +79,14 @@ jar {
 
 
 // the following lines is used to avoid errors while generating javadoc
-if (JavaVersion.current().isJava8Compatible()) {
-    allprojects {
-      tasks.withType(Javadoc) {
-        options.addStringOption('Xdoclint:none', '-quiet')
-        options.addStringOption("Xmaxwarns", "1")
-      }
-    }
-}
+// if (JavaVersion.current().isJava8Compatible()) {
+//     allprojects {
+//       tasks.withType(Javadoc) {
+//         options.addStringOption('Xdoclint:none', '-quiet')
+//         options.addStringOption("Xmaxwarns", "1")
+//       }
+//     }
+// }
 
 compileJavacc {
     inputDirectory = file('src/main/javacc')
@@ -112,8 +112,7 @@ publishing {
                     }
                     developer {
                         name.set('Rafael Heitor Bordini')
-                        email.set('rafael.bordini@pucrs.br')
-                        url.set('http://www.inf.pucrs.br/r.bordini')
+                        email.set('rafael.h.bordini@gmail.com')
                     }
                 }
             }
