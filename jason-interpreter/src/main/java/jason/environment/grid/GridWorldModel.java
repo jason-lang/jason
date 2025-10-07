@@ -1,6 +1,5 @@
 package jason.environment.grid;
 
-import javax.swing.*;
 import java.util.Random;
 
 
@@ -111,10 +110,7 @@ public class GridWorldModel {
 
     public void set(int value, int x, int y) {
         data[x][y] = value;
-        if (view != null) {
-            final int ux = x, uy = y;
-            SwingUtilities.invokeLater(() -> view.update(ux, uy));
-        }
+        if (view != null) view.update(x,y);
     }
 
     public void add(int value, Location l) {
@@ -123,10 +119,7 @@ public class GridWorldModel {
 
     public void add(int value, int x, int y) {
         data[x][y] |= value;
-        if (view != null) {
-            final int ux = x, uy = y;
-            SwingUtilities.invokeLater(() -> view.update(ux, uy));
-        }
+        if (view != null) view.update(x,y);
     }
 
     public void addWall(int x1, int y1, int x2, int y2) {
@@ -137,16 +130,13 @@ public class GridWorldModel {
         }
     }
 
-        public void remove(int value, Location l) {
+    public void remove(int value, Location l) {
         remove(value, l.x, l.y);
     }
 
     public void remove(int value, int x, int y) {
         data[x][y] &= ~value;
-        if (view != null) {
-            final int ux = x, uy = y;
-            SwingUtilities.invokeLater(() -> view.update(ux, uy));
-        }
+        if (view != null) view.update(x,y);
     }
 
     public void removeAll(int value) {
