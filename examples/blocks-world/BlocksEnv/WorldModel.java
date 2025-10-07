@@ -7,7 +7,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
 import java.util.logging.Logger;
-import javax.swing.SwingUtilities;
 
 public class WorldModel extends GridWorldModel {
 
@@ -92,9 +91,7 @@ public class WorldModel extends GridWorldModel {
         }
         modelToGrid();
         if (view != null)
-            SwingUtilities.invokeLater(() -> {
-                view.update();
-            });
+            view.update();
 
         return true;
     }
@@ -158,16 +155,16 @@ public class WorldModel extends GridWorldModel {
     void modelToGrid() {
         for (int i=0; i<GWidth; i++) {
             for (int j=0; j<GHeight-1; j++) {
-                model.set(0, i, j);
+                model.data[i][j] = 0;
                 model.names[i][j] = "";
             }
-            model.set(TABLE, i, GHeight-1);
+            model.data[i][GHeight-1] = TABLE;
             model.names[i][GHeight-1] = "table";
         }
         int i=0;
         for (Stack<String> s : stackList) {
             for (int j=1; j<s.size(); j++) {
-                model.set(BLOCK, i*2+1, GHeight-j-1);
+                model.data[i*2+1][GHeight-j-1] = BLOCK;
                 model.names[i*2+1][GHeight-j-1] = s.get(j);
             }
             i++;
