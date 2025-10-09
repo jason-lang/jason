@@ -3,14 +3,13 @@
 */
 
 plugins {
-  // see https://github.com/johnmartel/javaccPlugin
-  id "ca.coglinc.javacc" version "2.4.0"
+    id 'java-library'
+    id "ca.coglinc.javacc" version "2.4.0"   // see https://github.com/johnmartel/javaccPlugin
+    id 'maven-publish'
+    id 'org.jreleaser' version '1.20.0'
 }
 
 defaultTasks 'jar'
-
-apply plugin: 'java-library'
-apply plugin: 'maven-publish'
 
 version "${jasonVersion}"
 group   "${groupId}"
@@ -19,6 +18,8 @@ java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(21)
     }
+    withJavadocJar()
+    withSourcesJar()    
 }
 
 sourceSets {
@@ -31,6 +32,11 @@ sourceSets {
             srcDir 'src/resources'
         }
     }
+}
+
+tasks.sourcesJar {
+    dependsOn("compileJavacc")
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
 repositories {
@@ -67,6 +73,7 @@ compileJavacc {
     outputDirectory = file(project.buildDir.absolutePath + '/generated/javacc')
 }
 
+
 jjdoc {
     outputDirectory = file(project.projectDir.absolutePath + '/../doc/tech')
 }
@@ -81,21 +88,71 @@ if (JavaVersion.current().isJava8Compatible()) {
     }
 }
 
-artifacts {
-    archives jar //, sourceJar, javadocJar
-}
+// artifacts {
+//     archives jar //, sourceJar, javadocJar
+// }
 
 publishing {
     publications {
         maven(MavenPublication) {
+            artifactId = 'jason-interpreter'
             from components.java
-//                  artifact sourceJar
-//                  artifact javadocJar
-            artifactId 'jason-interpreter'
+
+            pom {
+                name = 'Jason'
+                url = 'https://jason-lang.github.io'
+                description = 'Jason is a programming language to develop BDI/cognitive agents'
+                developers {
+                    developer {
+                        name.set('Jomi Fred Hubner')
+                        email.set('jomifred@gmail.com')
+                        url.set('https://jomifred.github.io')
+                    }
+                    developer {
+                        name.set('Rafael Heitor Bordini')
+                        email.set('rafael.h.bordini@gmail.com')
+                    }
+                }
+                scm {
+                    connection = 'scm:git:https://github.com/jason-lang/jason'
+                    developerConnection = 'scm:git:https://github.com/jason-lang/jason'
+                    url = 'https://github.com/jason-lang/jason'
+                }            
+                licenses {
+                    license {
+                        name = 'LGPLv3'
+                        url = 'https://www.gnu.org/licenses/lgpl-3.0.html'
+                    }
+                }
+            }            
+        }
+    }
+    repositories {
+        maven {
+            url = layout.buildDirectory.dir('staging-deploy')
+        }
+    }        
+}
+
+jreleaser {
+    signing {
+        active = 'ALWAYS'
+        armored = true
+    }
+    gitRootSearch = true    
+
+    deploy {
+        maven {
+            mavenCentral {
+                sonatype {
+                    active = 'ALWAYS'
+                    url = 'https://central.sonatype.com/api/v1/publisher'
+                    stagingRepository('build/staging-deploy')
+                }
+            }
         }
     }
 }
-
 
 task publishMavenGitHub(dependsOn: [ 'build', 'publishToMavenLocal']) {
   group = "publishing"
