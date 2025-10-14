@@ -44,6 +44,10 @@ public class Config extends Properties {
     public static final String KQML_RECEIVED_FUNCTOR   = "kqmlReceivedFunctor";
     public static final String KQML_PLANS_FILE         = "kqmlPlansFile";
 
+    public static final String MIND_INSP_ARCH_CLASS_NAME  = "mindInspectorArchClassName";
+    public static final String MIND_INSP_WEB_SERVER_CLASS_NAME  = "mindInspectorWebServerClassName";
+
+
     protected static Config    singleton     = null;
 
     protected static String    configFactory = null;
@@ -507,13 +511,28 @@ public class Config extends Properties {
         Config.get(true);
     }
 
+    public void setMindInspectorArchClassName(String c) {
+        setProperty(MIND_INSP_ARCH_CLASS_NAME, c);
+    }
     public String getMindInspectorArchClassName() {
-        return "jason.architecture.MindInspectorAgArch";
+        if (getProperty(MIND_INSP_ARCH_CLASS_NAME) == null) {
+            return jason.architecture.MindInspectorAgArch.class.getName();
+        } else {
+            return getProperty(MIND_INSP_ARCH_CLASS_NAME);
+        }
     }
 
-    public String getMindInspectorWebServerClassName() {
-        return "jason.architecture.MindInspectorWebImpl";
+    public void setMindInspectorWebServerClassName(String c) {
+        setProperty(MIND_INSP_WEB_SERVER_CLASS_NAME, c);
     }
+    public String getMindInspectorWebServerClassName() {
+        if (getProperty(MIND_INSP_WEB_SERVER_CLASS_NAME) == null) {
+            return jason.architecture.MindInspectorWebImpl.class.getName();
+        } else {
+            return getProperty(MIND_INSP_WEB_SERVER_CLASS_NAME);
+        }
+    }
+
 
     public String getPresentation() {
         return "Jason "+getJasonVersion()+"\n"+
