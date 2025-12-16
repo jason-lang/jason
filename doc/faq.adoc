@@ -893,7 +893,7 @@ jade.Boot -agents "j_environment:jason.infra.jade.JadeEnvironment(j-project,test
 === What exactly are the cases where negative events of the forms `-!p` and `-?p` are generated?
 
 A test goal `?p` in the body of a plan first checks the belief base,
-and if it fails, it still tries to generate an internal event `+?p`.
+and if it fails, it still tries to generate an internal event `\+?p`.
 This is because the test goal might have been meant to be a more
 sophisticated query for which the programmer created a whole plan with
 `+?p` as triggering event, then that plan could be executed to satisfy
@@ -904,7 +904,7 @@ the manual says about this:
 Events for handling plan failure are already available in Jason,
 although they are not formalised in the semantics yet. If an action
 fails or there is no applicable plan for a subgoal in the plan being
-executed to handle an internal event with a goal addition `+!g`, then
+executed to handle an internal event with a goal addition `\+!g`, then
 the whole failed plan is removed from the top of the intention and an
 internal event for `-!g` associated with that same intention is
 generated. If the programmer provided a plan that has a triggering event
@@ -943,7 +943,7 @@ plan of the form `-!g : ...`) meant the programmer knew how to control
 a goal failure. It might include having other goals which might
 themselves fail, but a contingency plan should not itself be allowed
 to fail; a failure in the contingency plan would delete the whole
-intention stack. However, if a plan for `+!g2` failed and there were
+intention stack. However, if a plan for `\+!g2` failed and there were
 no `-!g2` plans given, if achieving that instance of `g2` was needed
 as part of a plan to achieve `g1`, `g1` would in turn fail as well
 (possibly triggering `-!g1` plans, if there were any).
