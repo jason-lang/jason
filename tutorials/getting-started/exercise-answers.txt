@@ -1,0 +1,171 @@
+There are several solutions for the code of the vacuum cleaner
+agent. Here we present and comment on some of them. We start from a very
+reactive solution and finish with a more goal-oriented version.
+
+
+
+1. First solution
+
+----------------------------------------
++dirty <- suck.
+
++pos(1) <- right.
++pos(2) <- down.
++pos(3) <- up.
++pos(4) <- left.
+----------------------------------------
+
+* comments
+- this is a reactive agent, which is easy to implement with Jason,
+  but note that the language is meant for cognitive agents
+- as a consequence, all plans have an empty context (normally used
+  to check the situation currently believed by the agent)
+
+* problems
+- the robot may leave dirt behind, and you will get messages like
+    [VCWorld] suck in a clean location!
+- reason: the events related to location ("+pos(...)") are
+  selected before the "dirty" event, so the suck action is performed
+  after the move action in a possibly clean location
+
+
+2. Second solution
+
+----------------------------------------
+// plans for dirty location
++pos(1) : dirty <- suck; right.
++pos(2) : dirty <- suck; down.
++pos(3) : dirty <- suck; up.
++pos(4) : dirty <- suck; left.
+
+// plans for clean location
++pos(1) : clean <- right.
++pos(2) : clean <- down.
++pos(3) : clean <- up.
++pos(4) : clean <- left.
+----------------------------------------
+
+* comments
+- again a rather reactive agent
+- the selection of plans is based on context (perceptual beliefs
+  in this case)
+- it solves the problems of the previous solution
+
+* problems
+- the moving strategy is coded in two sets of plans, so to change
+  the strategy we need change all plans
+- if you leave the agent running for a long time, it eventually stops.
+  the reason is that sometimes the robot does not perceive neither
+  dirty nor clean and thus no plan are selected. The following
+  code solves that:
+
+----------------------------------------
+// plans for a dirty location
++pos(1) : dirty <- suck; right.
++pos(2) : dirty <- suck; down.
++pos(3) : dirty <- suck; up.
++pos(4) : dirty <- suck; left.
+
+// plans for other circumstances
++pos(1) : true <- right.
++pos(2) : true <- down.
++pos(3) : true <- up.
++pos(4) : true <- left.
+----------------------------------------
+
+
+3. Third solution
+
+----------------------------------------
++pos(_) : dirty <- suck; !move.
++pos(_) : true  <- !move.
+
+// plans to move
++!move : pos(1) <- right.
++!move : pos(2) <- down.
++!move : pos(3) <- up.
++!move : pos(4) <- left.
+----------------------------------------
+
+* comments
+- the moving strategy is re-factored to use a (perform) goal
+  (the goal '!move')
+- this agent reacts to the perception of its location, but the
+  reaction creates a new goal (to move)
+- to change the moving strategy we only need to change the
+  way the goal "move" is achieved (the plans for triggering
+  event '+!move')
+
+* problem
+- suppose that actions may fail, in this case, after performing 'up',
+  for example, the agent may remain in the same place and then no new
+  location is perceived: the agent will stop moving
+  (this is only conceptually a problem since the environment was not
+  coded to simulate action failures, i.e., the environment model is
+  deterministic).
+
+
+4. Fourth solution
+
+----------------------------------------
+!clean. // initial goal
+
++!clean : clean <- !move; !clean.
++!clean : dirty <- suck; !move; !clean.
+-!clean         <- !clean.
+
++!move : pos(1) <- right.
++!move : pos(2) <- down.
++!move : pos(3) <- up.
++!move : pos(4) <- left.
+----------------------------------------
+
+* comments
+- this agent is not reactive at all; it has no behaviour which is
+  triggered by an external event, that is, a perception of change
+  in the environment (note however that BDI agents typically have
+  both goal-directed and reactive behaviour)
+- instead, the agent has a *maintenance goal* (the '!clean' goal) and
+  is blindly committed towards it (if it ever fails, the goal is just
+  adopted again -- see below)
+- this goal is implemented by a form of infinite loop using recursive
+  plans: all plans to achieve 'clean' finish by adding 'clean' itself
+  as a new goal
+- if anything fails in an attempt to achieve the goal 'clean', the
+  contingency plan (-!clean) reintroduces the goal again at all
+  circumstances (note the empty plan context); this is what causes the
+  "blind commitment" behaviour mentioned above
+- this agent is thus more 'robust' against action failures
+
+- the use of goals also allows us to easily code plans that handle
+  other goals. For instance, suppose we want to code the robot in a way
+  that after 2 seconds of cleaning, it makes a break of 1 second. This
+  behaviour can be easily code as follows:
+
+
+----------------------------------------
+!clean. // initial goal to clean
+!pause. // initial goal to break
+
++!clean : clean <- !move; !clean.
++!clean : dirty <- suck;  !clean.
+-!clean         <- !clean.
+
++!move : pos(1) <- right.
++!move : pos(2) <- down.
++!move : pos(3) <- up.
++!move : pos(4) <- left.
+
++!pause
+  <- .wait(2000);     // suspend this intention (the pause) for 2 seconds
+     .suspend(clean); // suspend the clean intention
+     .print("I'm having a break, alright.");
+     .wait(1000);     // suspend this intention again for 1 second
+     .print(cleaning);
+     .resume(clean);  // resume the clean intention
+     !pause.
+----------------------------------------
+
+Just to see how flexible it is to program with goals, you might want
+to try and implement the break strategy for the first (purely reactive)
+solution.
