@@ -19,7 +19,7 @@ java {
         languageVersion = JavaLanguageVersion.of(21)
     }
     withJavadocJar()
-    withSourcesJar()    
+    withSourcesJar()
 }
 
 sourceSets {
@@ -34,14 +34,8 @@ sourceSets {
     }
 }
 
-tasks.sourcesJar {
-    dependsOn("compileJavacc")
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-}
-
 repositories {
     mavenCentral()
-
     maven { url "https://raw.githubusercontent.com/jacamo-lang/mvn-repo/master" }
 }
 
@@ -51,11 +45,75 @@ dependencies {
     api 'javax.json:javax.json-api:1.1.4'
     api 'org.glassfish:javax.json:1.1.4'
 
+    implementation files('libs/peelweb-core-0.1.0.jar')
+
+    compileOnly 'org.projectlombok:lombok:1.18.34'
+    annotationProcessor 'org.projectlombok:lombok:1.18.34'
+
+    testCompileOnly 'org.projectlombok:lombok:1.18.34'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.34'
+
     testImplementation 'junit:junit:4.12'
 }
 
+compileJavacc {
+    inputDirectory = file('src/main/javacc')
+    outputDirectory = file(project.buildDir.absolutePath + '/generated/javacc')
+}
+
+tasks.sourcesJar {
+    dependsOn("compileJavacc")
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+jjdoc {
+    outputDirectory = file(project.projectDir.absolutePath + '/../doc/tech')
+}
+
+if (JavaVersion.current().isJava8Compatible()) {
+    allprojects {
+        tasks.withType(Javadoc) {
+            options.addStringOption('Xdoclint:none', '-quiet')
+            options.addStringOption("Xmaxwarns", "1")
+        }
+    }
+}
+
+def uiDir = file("${rootProject.projectDir}/jason-mind-ui")
+def npmCmd = org.gradle.internal.os.OperatingSystem.current().isWindows() ? "npm.cmd" : "npm"
+
+tasks.register("uiNpmInstall", Exec) {
+    workingDir uiDir
+    commandLine npmCmd, "ci"
+    inputs.file(file("${uiDir}/package-lock.json"))
+    outputs.dir(file("${uiDir}/node_modules"))
+}
+
+tasks.register("uiBuild", Exec) {
+    dependsOn "uiNpmInstall"
+    workingDir uiDir
+    commandLine npmCmd, "run", "build"
+    inputs.dir(file("${uiDir}/src"))
+    inputs.file(file("${uiDir}/package.json"))
+    inputs.file(file("${uiDir}/package-lock.json"))
+    outputs.dir(file("${uiDir}/dist"))
+}
+
+processResources {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    dependsOn "uiBuild"
+    from(file("${uiDir}/dist")) {
+        include "**/*"
+        into ""
+    }
+}
+
+tasks.named("jar") {
+    dependsOn tasks.named("processResources")
+}
+
 jar {
-    // archiveBaseName = 'jason'
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     manifest {
         attributes 'Specification-Title': 'Jason Language',
                    'Specification-Version': project.version,
@@ -66,31 +124,10 @@ jar {
         include '/test/jason/inc/**/*.asl'
         include '/test/jason/**/*.mas2j'
     }
-}
-
-compileJavacc {
-    inputDirectory = file('src/main/javacc')
-    outputDirectory = file(project.buildDir.absolutePath + '/generated/javacc')
-}
-
-
-jjdoc {
-    outputDirectory = file(project.projectDir.absolutePath + '/../doc/tech')
-}
-
-// the following lines is used to avoid errors while generating javadoc
-if (JavaVersion.current().isJava8Compatible()) {
-    allprojects {
-      tasks.withType(Javadoc) {
-        options.addStringOption('Xdoclint:none', '-quiet')
-        options.addStringOption("Xmaxwarns", "1")
-      }
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
     }
 }
-
-// artifacts {
-//     archives jar //, sourceJar, javadocJar
-// }
 
 publishing {
     publications {
@@ -117,21 +154,21 @@ publishing {
                     connection = 'scm:git:https://github.com/jason-lang/jason'
                     developerConnection = 'scm:git:https://github.com/jason-lang/jason'
                     url = 'https://github.com/jason-lang/jason'
-                }            
+                }
                 licenses {
                     license {
                         name = 'LGPLv3'
                         url = 'https://www.gnu.org/licenses/lgpl-3.0.html'
                     }
                 }
-            }            
+            }
         }
     }
     repositories {
         maven {
             url = layout.buildDirectory.dir('staging-deploy')
         }
-    }        
+    }
 }
 
 jreleaser {
@@ -139,7 +176,7 @@ jreleaser {
         active = 'ALWAYS'
         armored = true
     }
-    gitRootSearch = true    
+    gitRootSearch = true
 
     deploy {
         maven {
@@ -155,31 +192,31 @@ jreleaser {
 }
 
 task publishMavenGitHub(dependsOn: [ 'build', 'publishToMavenLocal']) {
-  group = "publishing"
-  doLast {
-    def wdir = System.getProperty("user.home")+'/.m2/repository/io/github/jason-lang/jason-interpreter' //org/jason/jason'
-    def rdir = project.projectDir.absolutePath+'/../../jacamo-mvn-repo'
-    exec {
-        commandLine 'git', 'pull'
-        workingDir rdir
+    group = "publishing"
+    doLast {
+        def wdir = System.getProperty("user.home")+'/.m2/repository/io/github/jason-lang/jason-interpreter'
+        def rdir = project.projectDir.absolutePath+'/../../jacamo-mvn-repo'
+        exec {
+            commandLine 'git', 'pull'
+            workingDir rdir
+        }
+        copy {
+            from wdir
+            into rdir + '/io/github/jason-lang/jason-interpreter'
+        }
+        exec {
+            commandLine 'git', 'add', '*'
+            workingDir rdir
+        }
+        exec {
+            commandLine 'git', 'commit', '-a', '-m', 'new version of jason '+project.version
+            workingDir rdir
+        }
+        exec {
+            commandLine 'git', 'push'
+            workingDir rdir
+        }
     }
-    copy {
-        from wdir
-        into rdir + '/io/github/jason-lang/jason-interpreter'
-    }
-    exec {
-        commandLine 'git', 'add', '*'
-        workingDir rdir
-    }
-    exec {
-        commandLine 'git', 'commit', '-a', '-m', 'new version of jason '+project.version
-        workingDir rdir
-    }
-    exec {
-        commandLine 'git', 'push'
-        workingDir rdir
-    }
-  }
 }
 
 /**
@@ -191,7 +228,7 @@ task publishMavenGitHub(dependsOn: [ 'build', 'publishToMavenLocal']) {
 task testJason(dependsOn: 'jar') {
     description 'runs Jason unit tests: tests.mas2j'
     def errorOnTests = false
-    outputs.upToDateWhen { false } // disable cache
+    outputs.upToDateWhen { false }
 
     doFirst {
         try {

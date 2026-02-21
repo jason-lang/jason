@@ -1,0 +1,26 @@
+:root {
+  --pallete-bg: #f7f7f7;
+  --pallete-1: #ffffff;
+  --pallete-2: #f0f0f0;
+  --pallete-trace: #e0e0e0;
+  --pallete-4: #cccccc;
+
+  --actuators-height: 24px;
+
+  --pallete-intention-1: #2c22a8;
+  --pallete-intention-2: #120c5a;
+  --pallete-intention-t-1: #eceafd;
+  --pallete-intention-t-2: #d6d1f7;
+
+  --pallete-plans-1: #bc7a00;
+  --pallete-plans-t-1: #fdf1d6;
+
+  --pallete-beliefs-1: #0a6a0a;
+  --pallete-beliefs-t-1: #e2f6e2;
+
+  --pallete-text: #333333;
+  --pallete-text-aside: #707070;
+
+  --text-little: 0.9em;
+  --header-height: 40px;
+}

@@ -516,7 +516,7 @@ public class Config extends Properties {
     }
     public String getMindInspectorArchClassName() {
         if (getProperty(MIND_INSP_ARCH_CLASS_NAME) == null) {
-            return jason.architecture.MindInspectorAgArch.class.getName();
+            return jason.architecture.api.jason.MindApiArch.class.getName();
         } else {
             return getProperty(MIND_INSP_ARCH_CLASS_NAME);
         }
@@ -527,7 +527,7 @@ public class Config extends Properties {
     }
     public String getMindInspectorWebServerClassName() {
         if (getProperty(MIND_INSP_WEB_SERVER_CLASS_NAME) == null) {
-            return jason.architecture.MindInspectorWebImpl.class.getName();
+            return jason.architecture.api.jason.MindApiManager.class.getName();
         } else {
             return getProperty(MIND_INSP_WEB_SERVER_CLASS_NAME);
         }

@@ -101,10 +101,13 @@ public class LocalAgArch extends AgArch implements Runnable, Serializable {
             createCustomArchs(agArchClasses);
 
             // mind inspector arch
-            if (stts.getUserParameter(Settings.MIND_INSPECTOR) != null) {
-                insertAgArch( (AgArch)Class.forName( Config.get().getMindInspectorArchClassName()).getConstructor().newInstance() );
-                getFirstAgArch().init();
-            }
+            // if (stts.getUserParameter(Settings.MIND_INSPECTOR) != null) {
+            //     insertAgArch( (AgArch)Class.forName( Config.get().getMindInspectorArchClassName()).getConstructor().newInstance() );
+            //     getFirstAgArch().init();
+            // }
+
+            insertAgArch( (AgArch)Class.forName( Config.get().getMindInspectorArchClassName()).getConstructor().newInstance() );
+            getFirstAgArch().init();
 
             setLogger();
         } catch (Exception e) {
