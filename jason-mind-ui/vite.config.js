@@ -16,6 +16,7 @@ export default defineConfig({
     },
   },
   build: {
-    assetsDir: 'mind'
+    assetsDir: 'mind',
+    outDir: 'build'
   }
 })

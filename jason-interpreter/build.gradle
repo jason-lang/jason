@@ -96,13 +96,13 @@ tasks.register("uiBuild", Exec) {
     inputs.dir(file("${uiDir}/src"))
     inputs.file(file("${uiDir}/package.json"))
     inputs.file(file("${uiDir}/package-lock.json"))
-    outputs.dir(file("${uiDir}/dist"))
+    outputs.dir(file("${uiDir}/build"))
 }
 
 processResources {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     dependsOn "uiBuild"
-    from(file("${uiDir}/dist")) {
+    from(file("${uiDir}/build")) {
         include "**/*"
         into ""
     }
