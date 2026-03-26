@@ -151,7 +151,7 @@ public class at extends DefaultInternalAction {
 
         public CheckDeadline(Trigger te, TransitionSystem ts) {
             this.id = idCount.incrementAndGet();
-            this.event = new Event(te, Intention.EmptyInt);
+            this.event = new Event(te);
             this.ts = ts;
             ats.put(id, this);
         }

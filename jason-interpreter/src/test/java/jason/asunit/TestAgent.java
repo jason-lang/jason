@@ -158,7 +158,7 @@ public class TestAgent extends Agent {
         }
     }
     public void assertEvt(Trigger te, final int maxCycles) {
-        final Event evt = new Event(te, Intention.EmptyInt);
+        final Event evt = new Event(te);
         Condition c = new Condition() {
             public boolean test(TestArch arch) {
                 return getTS().getC().getEvents().contains(evt);

@@ -1,0 +1,15 @@
+see https://central.sonatype.org/publish/publish-portal-gradle/
+
+namespace is io.github.jason-lang with jomifred user
+namespace is io.github.jacamo-lang with jomifred@gmail.com user
+
+for gradle, see https://jreleaser.org/guide/latest/examples/maven/maven-central.html#_gradle
+
+for GPG https://central.sonatype.org/publish/requirements/gpg/
+
+steps
+
+./gradlew :jason-interpreter:jreleaserConfig
+./gradlew :jason-interpreter:clean
+./gradlew :jason-interpreter:publish
+./gradlew :jason-interpreter:jreleaserDeploy

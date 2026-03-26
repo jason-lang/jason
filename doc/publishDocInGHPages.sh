@@ -1,6 +1,16 @@
+# this script is used to create the jason documentation
+# and publish it in the jason-lang.github.io repository
+# it should be run from the jason repository
+#
+# the jason-lang.github.io/doc should not be edited
+# changes should be done in the jason repository and then
+# this script should be run to publish the changes
+
+
 cd ..
 
 ./gradlew doc
+./gradlew javadoc
 
 SITE_PATH=../jason-lang.github.io
 

@@ -23,9 +23,10 @@ import jason.runtime.RuntimeServices;
  * <p>
  * This class implements a Chain of Responsibilities design pattern.
  * Each member of the chain is a subclass of AgArch. The last arch in the chain is the infrastructure tier (Local, JADE, Saci, ...).
- * The getUserAgArch method returns the first arch in the chain.
+ * The getFirstAgArch method returns the first arch in the chain.
  *
- * Users can customise the architecture by overriding some methods of this class.
+ * Users can customise the architecture in a sub class of AgArch and
+ * overriding some methods.
  */
 public class AgArch implements Comparable<AgArch>, Serializable {
 

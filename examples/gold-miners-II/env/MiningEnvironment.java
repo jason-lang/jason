@@ -293,7 +293,7 @@ public class MiningEnvironment extends TimeSteppedEnvironment {
     public void startNewWorld(int w) {
         addPercept(Literal.parseLiteral("end_of_simulation(" + simId + ",0)"));
         if (view != null) view.setVisible(false);
-        nextWorld = new Integer(w);
+        nextWorld = w;
     }
 
     // some customisation for cycled environment

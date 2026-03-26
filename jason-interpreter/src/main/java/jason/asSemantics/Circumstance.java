@@ -124,7 +124,7 @@ public class Circumstance implements Serializable, ToDOM {
     }
 
     public void addExternalEv(Trigger trig) {
-        addEvent(new Event(trig, Intention.EmptyInt));
+        addEvent(new Event(trig));
     }
 
     /** Events */

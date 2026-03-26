@@ -2,6 +2,8 @@ package jason.asSyntax;
 
 import java.io.Serializable;
 import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -170,9 +172,14 @@ public class Plan extends Structure implements Cloneable, Serializable {
         ListTerm l = new ListTermImpl();
         l.add(getLabel());
         l.add(getTrigger());
-        l.add(getContext());
+        l.add(getContext() == null ? Literal.LTrue : getContext());
         l.add(getBody());
         return l;
+    }
+
+    @Override
+    public List<Term> getTerms() {
+        return getAsListOfTerms().getAsList();
     }
 
     /** creates a plan from a list with four elements: [L, T, C, B] */

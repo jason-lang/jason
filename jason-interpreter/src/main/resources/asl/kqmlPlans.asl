@@ -138,7 +138,7 @@ kqml::bel_no_source_self(NS, Content, Ans)[hide_in_mind_inspector] :-
       .send(Sender, tellHow, ListOfPlansAn, MsgId).
 
 
-/* ---- signal performatives ---- */
+/* ---- signal performative ---- */
 
 @kqmlReceivedSignal
 +!kqml_received(Sender, signal, NS::Content, _)

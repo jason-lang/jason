@@ -125,7 +125,7 @@ public class MindInspectorWebImpl extends MindInspectorWeb {
                 if (arch != null) {
                     // should add a new conf for mindinspector, otherwise will start a new gui for the agent
                     arch.getTS().getSettings().addOption(Settings.MIND_INSPECTOR,"web(1000,html,no_history)");
-                    MindInspectorAgArch miArch = new MindInspectorAgArch();
+                    var miArch = (MindInspectorAgArch)Class.forName( Config.get().getMindInspectorArchClassName()).getConstructor().newInstance(); //new MindInspectorAgArch();
                     arch.insertAgArch(miArch);
                     miArch.init();
                     miArch.addAgState();

@@ -68,7 +68,11 @@ public class UniqueBelsBB extends DefaultBeliefBase {
                 remove(linbb);
             }
         }
-        return super.add(bel);
+        try {
+            return super.add(bel);
+        } catch (Exception e) {
+            return false;
+        }
     }
 
 }
