@@ -46,7 +46,7 @@ jason DomesticRobot.mas2j
 ## Making Changes
 
 ### Code Style
-- Follow existing code conventions in the project
+- Follow existing code conventions in the project. For AgentSpeak, see [JaCaMo coding style](https://jacamo-lang.github.io/documentation/programming-style/)
 - Use meaningful variable and method names
 - Add Javadoc comments for public APIs
 - Keep methods focused and concise
