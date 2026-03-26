@@ -1,7 +1,7 @@
 = Jason release notes
 :toc: right
 
-== version 3.3 (2024-02-21)
+== version 3.3 (2024-10-21)
 
 - Java 21 is used
 
@@ -19,7 +19,6 @@
   * `jason app compile` uses shadowJar to create a jar file with all files and dependencies to run the application.
 
 - update doc for new Jason web site: https://jason-lang.github.io
-
 
 
 == version 3.2 (2023-04-15)

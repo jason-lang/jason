@@ -1,5 +1,5 @@
 = Jason FAQ
-(for Jason 3.2)
+(for Jason 3.2+)
 :toc:
 :source-highlighter: pygments
 :pygments-style: jacamo
