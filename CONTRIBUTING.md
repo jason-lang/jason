@@ -62,7 +62,7 @@ jason DomesticRobot.mas2j
    ```bash
    git push origin feature/your-feature-name
    ```
-2. Open a **Pull Request** against the `master` branch
+2. Open a **Pull Request** against the `main` branch
 3. Provide a clear description of your changes
 4. Ensure all CI checks pass
 
