@@ -27,7 +27,7 @@ endif::[]
 - xref:./release-notes.adoc[Release Notes]
 
 - https://github.com/jason-lang/jason/tree/master/examples[Examples] and https://github.com/jason-lang/jason/tree/master/demos[demos]
-- http://jason.sf.net/jBook[Jason book]
+- https://www.wiley.com/en-gb/Programming+Multi-Agent+Systems+in+AgentSpeak+using+Jason-p-9780470029008[Jason book]
 
 == Technical documents
 
