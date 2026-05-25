@@ -9,7 +9,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
- * An Option is a Plan and the Unifier that has made it relevant and applicable
+ * An Option is a Plan and the Unifier that has made it relevant and applicable for an Event
  */
 
 public class Option implements Serializable, ToDOM {
@@ -18,7 +18,6 @@ public class Option implements Serializable, ToDOM {
 
     private Plan    plan;
     private Unifier unif;
-
     private Event   evt; // the event this is an option for
 
     public Option(Plan p, Unifier u) {

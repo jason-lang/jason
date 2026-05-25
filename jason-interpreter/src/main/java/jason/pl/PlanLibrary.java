@@ -49,11 +49,10 @@ public class PlanLibrary implements Iterable<Plan>, Serializable, ToDOM {
 
     private boolean hasMetaEventPlans = false;
     private boolean hasJagPlans = false; // plans for sleep/wake signals
-
-    private static final AtomicInteger lastPlanLabel = new AtomicInteger(0);
-
     private boolean hasUserKqmlReceived = false;
 
+    private static final AtomicInteger lastPlanLabel = new AtomicInteger(0);
+    
     //private Logger logger = Logger.getLogger(PlanLibrary.class.getName());
 
     private PlanLibrary father = null;
