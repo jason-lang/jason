@@ -139,12 +139,15 @@ public class add_plan extends DefaultInternalAction {
             String sPlan = ((StringTerm)t).getString();
             // remove quotes \" -> "
             StringBuilder sTemp = new StringBuilder();
-            for (int c=0; c <sPlan.length(); c++) {
-                if (sPlan.charAt(c) != '\\') {
+            for (int c = 0; c < sPlan.length(); c++) {
+                if (sPlan.charAt(c) == '\\' && c + 1 < sPlan.length()) {
+                    c++; // skip the backslash
+                    sTemp.append(sPlan.charAt(c)); // keep the following character
+                } else {
                     sTemp.append(sPlan.charAt(c));
                 }
             }
-            sPlan  = sTemp.toString();
+            sPlan = sTemp.toString();
             p = ASSyntax.parsePlan(sPlan);
         } else if (t instanceof Plan tp) {
             p = tp;
