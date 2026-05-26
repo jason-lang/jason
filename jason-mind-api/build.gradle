@@ -1,0 +1,99 @@
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+}
+
+defaultTasks 'jar'
+
+version "${jasonVersion}"
+group   "${groupId}"
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+    withJavadocJar()
+    withSourcesJar()
+}
+
+tasks.named("sourcesJar") {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir 'src/main/java'
+        }
+    }
+}
+
+repositories {
+    mavenCentral()
+
+    maven { url "https://raw.githubusercontent.com/jacamo-lang/mvn-repo/master" }
+}
+
+dependencies {
+    api project(':jason-interpreter')
+
+    implementation files('libs/peelweb-core-0.1.0.jar')
+
+    compileOnly 'org.projectlombok:lombok:1.18.34'
+    annotationProcessor 'org.projectlombok:lombok:1.18.34'
+
+    testCompileOnly 'org.projectlombok:lombok:1.18.34'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.34'
+}
+
+def uiDir = file("${rootProject.projectDir}/jason-mind-ui")
+def npmCmd = org.gradle.internal.os.OperatingSystem.current().isWindows() ? "npm.cmd" : "npm"
+
+tasks.register("uiNpmInstall", Exec) {
+    workingDir uiDir
+    commandLine npmCmd, "ci"
+    inputs.file(file("${uiDir}/package-lock.json"))
+    outputs.dir(file("${uiDir}/node_modules"))
+}
+
+tasks.register("uiBuild", Exec) {
+    dependsOn "uiNpmInstall"
+    workingDir uiDir
+    commandLine npmCmd, "run", "build"
+    inputs.dir(file("${uiDir}/src"))
+    inputs.file(file("${uiDir}/package.json"))
+    inputs.file(file("${uiDir}/package-lock.json"))
+    outputs.dir(file("${uiDir}/build"))
+}
+
+processResources {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    dependsOn "uiBuild"
+    from(file("${uiDir}/build")) {
+        include "**/*"
+        into ""
+    }
+}
+
+tasks.named("jar") {
+    dependsOn tasks.named("processResources")
+}
+
+jar {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    archiveBaseName = 'jason-mind-api'
+    manifest {
+        attributes 'Specification-Title': 'Jason Mind API',
+                   'Specification-Version': project.version,
+                   'Implementation-Version': new Date().toString()
+    }
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            artifactId = 'jason-mind-api'
+            from components.java
+        }
+    }
+}

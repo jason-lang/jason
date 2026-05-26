@@ -4,10 +4,7 @@ import java.io.*;
 import java.net.URL;
 import java.util.*;
 
-import jason.architecture.MindInspectorAgArch;
-import jason.architecture.MindInspectorWebImpl;
-import jason.architecture.api.bootstrap.MindApiManager;
-import jason.architecture.api.infrastructure.adapter.in.jason.MindApiArch;
+
 import jason.asSemantics.Message;
 import jason.asSemantics.TransitionSystem;
 
@@ -51,6 +48,11 @@ public class Config extends Properties {
 
     public static final String MIND_INSP_ARCH_CLASS_NAME  = "mindInspectorArchClassName";
     public static final String MIND_INSP_WEB_SERVER_CLASS_NAME  = "mindInspectorWebServerClassName";
+
+    public static final String OLD_MIND_INSPECTOR_ARCH_CLASS = "jason.architecture.MindInspectorAgArch";
+    public static final String OLD_MIND_INSPECTOR_WEB_CLASS  = "jason.architecture.MindInspectorWebImpl";
+    public static final String NEW_MIND_INSPECTOR_ARCH_CLASS = "jason.mind.api.infrastructure.adapter.in.jason.MindApiArch";
+    public static final String NEW_MIND_INSPECTOR_WEB_CLASS  = "jason.mind.api.bootstrap.MindApiManager";
 
 
     protected static Config    singleton     = null;
@@ -554,10 +556,14 @@ public class Config extends Properties {
         }
 
         if (isOldMindInspector()) {
-            return MindInspectorAgArch.class.getName();
+            return OLD_MIND_INSPECTOR_ARCH_CLASS;
         }
 
-        return MindApiArch.class.getName();
+        if (classExists(NEW_MIND_INSPECTOR_ARCH_CLASS)) {
+            return NEW_MIND_INSPECTOR_ARCH_CLASS;
+        }
+
+        return OLD_MIND_INSPECTOR_ARCH_CLASS;
     }
 
     public void setMindInspectorWebServerClassName(String c) {
@@ -569,10 +575,14 @@ public class Config extends Properties {
         }
 
         if (isOldMindInspector()) {
-            return MindInspectorWebImpl.class.getName();
+            return OLD_MIND_INSPECTOR_WEB_CLASS;
         }
 
-        return MindApiManager.class.getName();
+        if (classExists(NEW_MIND_INSPECTOR_WEB_CLASS)) {
+            return NEW_MIND_INSPECTOR_WEB_CLASS;
+        }
+
+        return OLD_MIND_INSPECTOR_WEB_CLASS;
     }
 
     public String getMindInspectorType() {
@@ -590,6 +600,15 @@ public class Config extends Properties {
 
     public boolean isOldMindInspector() {
         return getMindInspectorType().equals("old");
+    }
+
+    protected boolean classExists(String className) {
+        try {
+            Class.forName(className);
+            return true;
+        } catch (Throwable e) {
+            return false;
+        }
     }
 
 

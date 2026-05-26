@@ -44,15 +44,6 @@ dependencies {
 
     api 'javax.json:javax.json-api:1.1.4'
     api 'org.glassfish:javax.json:1.1.4'
-
-    implementation files('libs/peelweb-core-0.1.0.jar')
-
-    compileOnly 'org.projectlombok:lombok:1.18.34'
-    annotationProcessor 'org.projectlombok:lombok:1.18.34'
-
-    testCompileOnly 'org.projectlombok:lombok:1.18.34'
-    testAnnotationProcessor 'org.projectlombok:lombok:1.18.34'
-
     testImplementation 'junit:junit:4.12'
 }
 
@@ -77,39 +68,6 @@ if (JavaVersion.current().isJava8Compatible()) {
             options.addStringOption("Xmaxwarns", "1")
         }
     }
-}
-
-def uiDir = file("${rootProject.projectDir}/jason-mind-ui")
-def npmCmd = org.gradle.internal.os.OperatingSystem.current().isWindows() ? "npm.cmd" : "npm"
-
-tasks.register("uiNpmInstall", Exec) {
-    workingDir uiDir
-    commandLine npmCmd, "ci"
-    inputs.file(file("${uiDir}/package-lock.json"))
-    outputs.dir(file("${uiDir}/node_modules"))
-}
-
-tasks.register("uiBuild", Exec) {
-    dependsOn "uiNpmInstall"
-    workingDir uiDir
-    commandLine npmCmd, "run", "build"
-    inputs.dir(file("${uiDir}/src"))
-    inputs.file(file("${uiDir}/package.json"))
-    inputs.file(file("${uiDir}/package-lock.json"))
-    outputs.dir(file("${uiDir}/build"))
-}
-
-processResources {
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    dependsOn "uiBuild"
-    from(file("${uiDir}/build")) {
-        include "**/*"
-        into ""
-    }
-}
-
-tasks.named("jar") {
-    dependsOn tasks.named("processResources")
 }
 
 jar {
