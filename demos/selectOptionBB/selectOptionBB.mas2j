@@ -1,0 +1,8 @@
+/*
+    Illustrate how to select option based on a BB rule
+*/
+
+MAS selectOptionBB {
+
+    agents: bob;
+}

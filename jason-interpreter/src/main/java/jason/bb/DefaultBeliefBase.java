@@ -38,6 +38,10 @@ public class DefaultBeliefBase extends BeliefBase implements Serializable {
 
     private int size = 0;
 
+    /** whether the BB has a rule select__option */
+    protected boolean hasSelectOption = false;
+    public static final PredicateIndicator selectOptionPI = new PredicateIndicator("select__option", 4);
+
     /** set of beliefs with percept annot, used to improve performance of buf */
     protected Set<Literal> percepts = new HashSet<>();
 
@@ -145,6 +149,10 @@ public class DefaultBeliefBase extends BeliefBase implements Serializable {
             throw new JasonException("Error: '"+l+"' can no be placed in an unground namespace "+l.getNS()+".");
         }
 
+        if (l.getPredicateIndicator().equals(selectOptionPI)) {
+            hasSelectOption = true;
+        }
+
         Literal bl = contains(l);
         if (bl != null && !bl.isRule()) {
             // add only annots
@@ -172,6 +180,11 @@ public class DefaultBeliefBase extends BeliefBase implements Serializable {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public boolean hasSelectOption() {
+        return hasSelectOption;
     }
 
     private BelEntry provideBelEntry(Literal l) {

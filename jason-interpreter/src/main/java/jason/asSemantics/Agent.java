@@ -611,9 +611,29 @@ public class Agent implements Serializable, ToDOM {
         return events.poll();
     }
 
+    protected  List<Option> selectOptionBB(List<Option> options) {
+        // filter based on BB implications
+        List<Option> result = new ArrayList<>();
+        for (Option o: options) {
+            var intId = ASSyntax.createNumber(o.getEvt().getIntention() == null ? -1 : o.getEvt().getIntention().getId());
+            var ol = ASSyntax.createLiteral(DefaultBeliefBase.selectOptionPI.getFunctor(),
+                            o.getEvt().getTrigger(),
+                            intId,
+                            o.getPlan().capply(o.getUnifier()),
+                            o.getUnifier().getAsTerm());
+            if (ol.logicalConsequence(this, o.getUnifier()).hasNext()) {
+                result.add(o);
+            }
+        }
+        return result;
+    }
+
     public Option selectOption(List<Option> options) throws NoOptionException {
         if (options != null && !options.isEmpty()) {
-            return options.remove(0);
+            if (bb.hasSelectOption()) {
+                options = selectOptionBB(options);
+            }
+            return options.removeFirst();
         } else {
             return null;
         }
@@ -732,7 +752,7 @@ public class Agent implements Serializable, ToDOM {
                         if (getLogger().isLoggable(Level.FINE))
                             getLogger().log(Level.FINE, "     "+opt.getPlan().getLabel() + " is applicable with unification "+opt.getUnifier());
                     } else {
-                        boolean allUnifs = opt.getPlan().isAllUnifs();
+                        boolean allUnifs = opt.getPlan().isAllUnifs() || bb.hasSelectOption();
 
                         Iterator<Unifier> r = context.logicalConsequence(this, opt.getUnifier());
                         boolean isApplicable = false;
@@ -1142,7 +1162,7 @@ public class Agent implements Serializable, ToDOM {
     }
 
     public boolean hasCustomSelectOption() {
-        return hasCustomSelOp;
+        return hasCustomSelOp || bb.hasSelectOption();
     }
 
     static DocumentBuilder builder = null;

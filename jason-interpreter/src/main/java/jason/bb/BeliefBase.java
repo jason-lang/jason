@@ -152,4 +152,6 @@ public abstract class BeliefBase implements Iterable<Literal>, Cloneable, ToDOM 
         lock = new ReentrantLock();
     }
 
+    public boolean hasSelectOption() { return false; }
+
 }
