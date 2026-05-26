@@ -9,6 +9,12 @@ const router = createRouter({
       name: 'Main',
       component: Main,
     },
+    {
+      path: '/mind/agents/:agent',
+      name: 'Agent',
+      component: Main,
+      props: true,
+    },
   ],
 })
 

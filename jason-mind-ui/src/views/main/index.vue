@@ -12,14 +12,33 @@ export default {
     selectAgent(agent) {
       this.selectedAgentName = agent.name
       this.cycle = null
+      this.updateAgentRoute(agent.name)
     },
     close() {
       this.selectedAgentName = null
       this.$refs.leftbar.unselect()
+      if (this.$route.path !== "/mind") {
+        this.$router.push({name: "Main"})
+      }
     },
     goTo(o) {
       this.selectedAgentName = o.agent
       this.cycle = o.cycle
+      this.updateAgentRoute(o.agent)
+    },
+    updateAgentRoute(agentName) {
+      if (this.$route.params.agent !== agentName) {
+        this.$router.push({name: "Agent", params: {agent: agentName}})
+      }
+    }
+  },
+  watch: {
+    "$route.params.agent": {
+      immediate: true,
+      handler(agentName) {
+        this.selectedAgentName = agentName ?? null
+        this.cycle = null
+      }
     }
   },
   data() {
@@ -35,7 +54,7 @@ export default {
   <main class="main">
     <Header/>
     <div class="flex gap-1 w-full grow h-0">
-      <LeftBar ref="leftbar" style="width: 14%" @selectAgent="selectAgent"/>
+      <LeftBar ref="leftbar" style="width: 14%" :selected-agent-name="selectedAgentName" @selectAgent="selectAgent"/>
       <div class="flex flex-col items-center gap-1 w-0 grow">
         <AgentContent v-if="selectedAgentName"
                       v-model:agent-name="selectedAgentName"

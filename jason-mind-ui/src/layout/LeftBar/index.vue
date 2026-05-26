@@ -1,5 +1,5 @@
 <script>
-import agentService from "@/service/agent-service.js";
+import agentRuntimeService from "@/service/agent-service.js";
 import {createAgent} from "@/domain/agent/createAgent.js";
 import AgentCard from "@/layout/LeftBar/AgentCard.vue";
 import Tabs from "@/components/general/Tabs.vue";
@@ -8,15 +8,29 @@ import Loading from "@/components/general/Loading.vue";
 export default {
   name: "LeftBar",
   components: {Loading, Tabs, AgentCard},
+  props: {
+    selectedAgentName: String
+  },
   data() {
     return {
       agents: [],
       selectedAgent: null
     }
   },
+  watch: {
+    selectedAgentName: {
+      immediate: true,
+      handler() {
+        this.syncSelectedAgent()
+      }
+    },
+    agents() {
+      this.syncSelectedAgent()
+    }
+  },
   mounted() {
     setInterval(() => {
-      agentService.find().then((response) => {
+      agentRuntimeService.find().then((response) => {
         response.data.forEach((agent) => {
           let index = this.agents.findIndex(a => a.name === agent.name)
           if (index === -1) {
@@ -25,12 +39,16 @@ export default {
             this.agents[index] = createAgent(agent)
           }
         })
+        this.syncSelectedAgent()
       }).catch(() => {
         this.agents = []
       })
     }, 1000)
   },
   methods: {
+    syncSelectedAgent() {
+      this.selectedAgent = this.agents.find(agent => agent.name === this.selectedAgentName) ?? null
+    },
     unselect() {
       this.selectedAgent = null
     },
