@@ -1162,7 +1162,7 @@ public class Agent implements Serializable, ToDOM {
     }
 
     public boolean hasCustomSelectOption() {
-        return hasCustomSelOp || bb.hasSelectOption();
+        return hasCustomSelOp || (bb != null && bb.hasSelectOption());
     }
 
     static DocumentBuilder builder = null;
