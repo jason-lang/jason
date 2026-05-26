@@ -1,6 +1,11 @@
 = Jason release notes
 :toc: right
 
+== version 3.3.3
+
+- the selection of options for an event can be customised in the AgentSpeak code by a rule `select__option`. For instance, the agent can customise it to select plans that follow norms. See demos/selectOptionBB for an example.
+
+
 == version 3.3 (2024-10-21)
 
 - Java 21 is used
