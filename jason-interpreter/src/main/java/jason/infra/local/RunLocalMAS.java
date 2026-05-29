@@ -137,6 +137,11 @@ public class RunLocalMAS extends BaseLocalMAS implements RunLocalMASMBean {
             projectFileName = args[0];
         }
 
+        // load jason.properties if it exists
+        if (Config.get().getLocalConfFile().exists()) {
+            Config.get().load();
+        }
+
         if (Config.get().getJasonJar() == null) {
             //System.out.println("Jason is not configured");
             Config.get().setShowFixMsgs(false);
