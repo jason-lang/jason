@@ -53,6 +53,9 @@ public class RunLocalMAS extends BaseLocalMAS implements RunLocalMASMBean {
 
     protected List<LocalAgArch> createdAgents = new ArrayList<>();
 
+    protected Map<String,Object> initArgs = new HashMap<>();
+
+
     public RunLocalMAS() {
         super();
         try {
@@ -99,9 +102,8 @@ public class RunLocalMAS extends BaseLocalMAS implements RunLocalMASMBean {
     }
 
     protected void registerWebMindInspector() {
-        if ((boolean)(initArgs.getOrDefault("no-mindinspector", false))) {
+        if ("false".equals(Config.get().getProperty(Config.START_WEB_MI)))
             return;
-        }
 
         try {
             MindInspectorWeb.get(); // to start http server for jason
@@ -109,8 +111,6 @@ public class RunLocalMAS extends BaseLocalMAS implements RunLocalMASMBean {
             e.printStackTrace();
         }
     }
-
-    protected Map<String,Object> initArgs = new HashMap<>();
 
     public void addInitArg(String k, Object v) {
         initArgs.put(k,v);
@@ -138,9 +138,8 @@ public class RunLocalMAS extends BaseLocalMAS implements RunLocalMASMBean {
         }
 
         // load jason.properties if it exists
-        if (Config.get().getLocalConfFile().exists()) {
+        if (Config.get().getLocalConfFile().exists())
             Config.get().load();
-        }
 
         if (Config.get().getJasonJar() == null) {
             //System.out.println("Jason is not configured");
