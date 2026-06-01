@@ -103,6 +103,9 @@ public class MindInspectorAgArch extends AgArch {
      *    [gui|file|web] ( [ cycle|number ] , [xml,html] [, history | directory] )
      */
     public void setupMindInspector(String configuration) {
+        if (configuration == null)
+            return;
+
         Structure sConf = null;
         try {
             sConf = ASSyntax.parseStructure(configuration);
