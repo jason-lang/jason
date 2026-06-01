@@ -150,6 +150,13 @@ public class RunLocalMAS extends BaseLocalMAS implements RunLocalMASMBean {
             Logger.getLogger("").setLevel(Level.FINE);
         }
 
+        if ((boolean)(initArgs.getOrDefault("old-mind-inspector", false))) {
+            Config.get().put(Config.MIND_INSPECTOR_TYPE, "old");
+        }
+        if ((boolean)(initArgs.getOrDefault("no-mind-inspector", false))) {
+            Config.get().put(Config.START_WEB_MI, "false");
+        }
+
         // discover the handler
         for (Handler h : Logger.getLogger("").getHandlers()) {
             // if there is a MASConsoleLogHandler, show it
@@ -256,6 +263,11 @@ public class RunLocalMAS extends BaseLocalMAS implements RunLocalMASMBean {
                 }
                 if (arg.equals("--debug") || arg.equals("-d"))
                     initArgs.put("debug", true);
+
+                if (arg.equals("--old-mind-inspector"))
+                    initArgs.put("old-mind-inspector", true);
+                if (arg.equals("--no-mind-inspector"))
+                    initArgs.put("no-mind-inspector", true);
 
                 la = arg;
             }
