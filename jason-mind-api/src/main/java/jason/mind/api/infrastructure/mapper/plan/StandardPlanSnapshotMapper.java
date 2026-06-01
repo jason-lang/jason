@@ -45,6 +45,9 @@ public final class StandardPlanSnapshotMapper implements PlanSnapshotMapper {
         List<PlanDeedSnapshot> body = new ArrayList<>();
         PlanBody pb = plan.getBody();
         while (pb != null) {
+            if (pb.getBodyTerm() == null) {
+                break;
+            }
             PlanDeedSnapshot deed = this.extractPlanBody(pb, unifier);
             if (pb.equals(executedDeed)) {
                 deed.setSelected(true);

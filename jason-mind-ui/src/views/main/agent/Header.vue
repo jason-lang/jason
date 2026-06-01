@@ -54,6 +54,9 @@ export default {
   watch: {
     agent: {
       handler(agent) {
+        if (this.editing) {
+          return
+        }
         this.currentCycle = agent.currentCycle
       },
       deep: true
