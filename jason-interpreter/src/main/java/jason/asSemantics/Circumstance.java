@@ -44,7 +44,8 @@ public class Circumstance implements Serializable, ToDOM {
     private Map<String, Intention>     PI; // pending intentions, intentions suspended by any other reason
     private Map<String, Event>         PE; // pending events, events suspended by .suspend
 
-    private Map<Integer, PlanBody>                   lastDeed = new HashMap<>(); // last executed deed of an intention
+    private PlanBody                   lastDeed; // last executed deed of an intention
+    private Map<Integer, PlanBody>     lastDeeds = new HashMap<>(); // last executed deed of an intention
 
     private Queue<CircumstanceListener> listeners = new ConcurrentLinkedQueue<>();
 
@@ -109,6 +110,7 @@ public class Circumstance implements Serializable, ToDOM {
     public void resetAct() {
         A  = null;
         SI = null;
+        lastDeed = null;
     }
 
     public Event addAchvGoal(Literal l, Intention i) {
@@ -929,8 +931,12 @@ public class Circumstance implements Serializable, ToDOM {
         return SO;
     }
 
-    protected void setLastDeed(int intentionId, PlanBody d) { this.lastDeed.put(intentionId, d); }
-    public Map<Integer, PlanBody> getLastDeed() { return lastDeed; }
+    protected void setLastDeed(int intentionId, PlanBody d) {
+        lastDeed = d;
+        lastDeeds.put(intentionId, d);
+    }
+    public PlanBody getLastDeed() { return lastDeed; }
+    public Map<Integer, PlanBody> getLastDeeds() { return lastDeeds; }
 
     /** clone E, I, MB, PA, PI, FA, and AI */
     public Circumstance clone() {

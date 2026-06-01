@@ -36,7 +36,7 @@ public final class StandardIntentionSnapshotMapper implements IntentionSnapshotM
         String agentName = agent.getTS().getAgArch().getAgName();
 
         circumstance.getAllIntentions().forEachRemaining((intention) -> {
-            Map<Integer, PlanBody> lastDeeds = circumstance.getLastDeed();
+            Map<Integer, PlanBody> lastDeeds = circumstance.getLastDeeds();
             PlanBody lastDeed = lastDeeds.get(intention.getId());
 
             List<IntendedMeans> intendedMeans = snapshotIntendedMeans(agentName, intention);
