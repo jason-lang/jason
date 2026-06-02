@@ -1,0 +1,12 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,100..1000&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap');
+
+body {
+  color: var(--pallete-text);
+  font-family: "Roboto Flex", sans-serif;
+  font-size: 0.8em;
+}
+
+input {
+  color: var(--pallete-text);
+}

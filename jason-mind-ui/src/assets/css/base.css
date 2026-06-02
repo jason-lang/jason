@@ -1,0 +1,17 @@
+/* width */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: var(--pallete-2);
+  @apply overflow-hidden
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background-color: var(--pallete-4);
+  @apply rounded
+}

@@ -2,9 +2,16 @@ package jason.cli.agent;
 
 import jason.cli.JasonCommands;
 import jason.cli.mas.RunningMASs;
+import jason.runtime.Settings;
 
 
 public class BaseAgent {
+
+    protected Settings createMindApiSettings() {
+        Settings settings = new Settings();
+        settings.addOption(Settings.MIND_INSPECTOR, "web(cycle,html,no_history)");
+        return settings;
+    }
     
     public String testMasName(String masName, JasonCommands parent) {
         if (masName.isEmpty()) {
@@ -25,4 +32,3 @@ public class BaseAgent {
         }
     }
 }
-

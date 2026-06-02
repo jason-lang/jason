@@ -1,0 +1,14 @@
+hr {
+  background-color: var(--pallete-trace);
+  @apply border-none flex-shrink-0
+}
+
+hr.horizontal {
+  height: 1px;
+  @apply w-full
+}
+
+hr.vertical {
+  width: 1px;
+  @apply h-full
+}

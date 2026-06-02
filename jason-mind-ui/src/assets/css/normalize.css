@@ -1,0 +1,98 @@
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    list-style: none;
+    text-decoration: none;
+    outline: none;
+}
+
+
+input[type=date] {
+    cursor: pointer;
+}
+
+input::-ms-clear {
+    display: none;
+}
+
+input[type=number]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+}
+
+input[type=number] {
+    -moz-appearance: textfield;
+    -webkit-appearance: textfield;
+    appearance: textfield;
+}
+
+select:hover {
+    cursor: pointer;
+}
+
+img {
+    -webkit-user-drag: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+body {
+    overflow-x: hidden;
+}
+
+ul,
+ol {
+    padding: 0;
+}
+
+body,
+h1,
+h2,
+h3,
+h4,
+p,
+ul,
+ol,
+li,
+figure,
+figcaption,
+blockquote,
+dl,
+dd {
+    margin: 0;
+}
+
+html {
+    scroll-behavior: smooth !important;
+}
+
+body {
+    min-height: 100vh;
+    text-rendering: optimizeSpeed;
+}
+
+ul[class],
+ol[class] {
+    list-style: none;
+}
+
+
+a:not([class]) {
+    -webkit-text-decoration-skip: ink;
+    text-decoration-skip-ink: auto;
+}
+
+img {
+    display: block;
+}
+
+input,
+button,
+textarea,
+select {
+    font: inherit;
+}

@@ -44,6 +44,9 @@ public class StartMAS implements Runnable {
     @Option(names = { "--use-gradle" }, defaultValue = "false", description = "executes the MAS defined in a mas2j file using gradle")
     boolean useGradle;
 
+    @Option(names = { "--mi" }, defaultValue = "", paramLabel = "(new | old | no)", description = "kind of mind inspector")
+    String mindInspector;
+
     @CommandLine.ParentCommand
     protected MAS parent;
 
@@ -118,6 +121,13 @@ public class StartMAS implements Runnable {
         if (noNet) {
             args.add("--no-net");
         }
+        if (mindInspector.equals("old")) {
+            args.add("--old-mind-inspector");
+        }
+        if (mindInspector.equals("no")) {
+            args.add("--no-mind-inspector");
+        }
+
         var classPathList = new ArrayList<String>();
         for (var p: classPathArg.split(":"))
             if (!p.trim().isEmpty())

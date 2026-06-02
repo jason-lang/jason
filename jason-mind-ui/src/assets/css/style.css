@@ -1,0 +1,9 @@
+@import "@/assets/css/normalize.css";
+@import "@/assets/css/variable.css";
+@import "@/assets/css/font.css";
+@import "@/assets/css/base.css";
+@import "@/assets/css/text.css";
+@import "@/assets/css/img.css";
+@import "@/assets/css/component.css";
+
+@tailwind utilities;

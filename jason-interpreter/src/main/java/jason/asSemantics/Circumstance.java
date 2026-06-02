@@ -4,12 +4,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Queue;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.locks.Lock;
@@ -50,6 +45,7 @@ public class Circumstance implements Serializable, ToDOM {
     private Map<String, Event>         PE; // pending events, events suspended by .suspend
 
     private PlanBody                   lastDeed; // last executed deed of an intention
+    private Map<Integer, PlanBody>     lastDeeds = new HashMap<>(); // last executed deed of an intention
 
     private Queue<CircumstanceListener> listeners = new ConcurrentLinkedQueue<>();
 
@@ -124,7 +120,7 @@ public class Circumstance implements Serializable, ToDOM {
     }
 
     public void addExternalEv(Trigger trig) {
-        addEvent(new Event(trig));
+        addEvent(new Event(trig, Intention.EmptyInt));
     }
 
     /** Events */
@@ -935,8 +931,12 @@ public class Circumstance implements Serializable, ToDOM {
         return SO;
     }
 
-    protected void setLastDeed(PlanBody d) { lastDeed = d; }
+    protected void setLastDeed(int intentionId, PlanBody d) {
+        lastDeed = d;
+        lastDeeds.put(intentionId, d);
+    }
     public PlanBody getLastDeed() { return lastDeed; }
+    public Map<Integer, PlanBody> getLastDeeds() { return lastDeeds; }
 
     /** clone E, I, MB, PA, PI, FA, and AI */
     public Circumstance clone() {

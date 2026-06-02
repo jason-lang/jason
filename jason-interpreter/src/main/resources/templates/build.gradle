@@ -48,7 +48,7 @@ task run (type: JavaExec, dependsOn: 'classes') {
     mainClass = 'jason.infra.local.RunLocalMAS'
     args = ['<PROJECT-FILE>']
 	// options:
-	//     args = ['<PROJECT-FILE>', '--debug', '--no-net', '--empty-mas']
+	//     args = ['<PROJECT-FILE>', '--debug', '--no-net', '--empty-mas', '--no-mind-inspector', '--old-mind-inspector']
 	//     args = ['<PROJECT-FILE>', '--log-conf', 'l.p'] // to use file l.p to configure logging
     classpath sourceSets.main.runtimeClasspath
 }

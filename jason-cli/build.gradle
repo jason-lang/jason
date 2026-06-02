@@ -30,6 +30,7 @@ repositories {
 
 dependencies {
     api project(':jason-interpreter')
+    api project(':jason-mind-api')
 
     api 'info.picocli:picocli-shell-jline3:4.7.0'
     api 'org.jline:jline:3.22.0'
@@ -82,7 +83,7 @@ task run (type: JavaExec, dependsOn: 'build') {
     classpath sourceSets.main.runtimeClasspath
 }
 
-task uberJar(type: Jar, dependsOn: ['classes', ':jason-interpreter:jar']) {
+task uberJar(type: Jar, dependsOn: ['classes', ':jason-interpreter:jar', ':jason-mind-api:jar']) {
     group "build"
     description 'creates a single runnable jar file with all dependencies'
     duplicatesStrategy 'exclude'

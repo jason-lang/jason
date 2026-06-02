@@ -4,6 +4,7 @@ import java.io.*;
 import java.net.URL;
 import java.util.*;
 
+
 import jason.asSemantics.Message;
 import jason.asSemantics.TransitionSystem;
 
@@ -38,6 +39,7 @@ public class Config extends Properties {
     public static final String START_WEB_MI       = "startWebMindInspector";
     public static final String START_WEB_EI       = "startWebEnvInspector";
     public static final String START_WEB_OI       = "startWebOrgInspector";
+    public static final String MIND_INSPECTOR_TYPE = "mindInspector";
 
     public static final String NB_TH_SCH      = "numberOfThreadsForScheduler";
 
@@ -47,12 +49,19 @@ public class Config extends Properties {
     public static final String MIND_INSP_ARCH_CLASS_NAME  = "mindInspectorArchClassName";
     public static final String MIND_INSP_WEB_SERVER_CLASS_NAME  = "mindInspectorWebServerClassName";
 
+    public static final String OLD_MIND_INSPECTOR_ARCH_CLASS = "jason.architecture.MindInspectorAgArch";
+    public static final String OLD_MIND_INSPECTOR_WEB_CLASS  = "jason.architecture.MindInspectorWebImpl";
+    public static final String NEW_MIND_INSPECTOR_ARCH_CLASS = "jason.mind.api.infrastructure.adapter.in.jason.MindApiArch";
+    public static final String NEW_MIND_INSPECTOR_WEB_CLASS  = "jason.mind.api.bootstrap.MindApiManager";
+
 
     protected static Config    singleton     = null;
 
     protected static String    configFactory = null;
 
     protected static boolean   showFixMsgs = true;
+
+    protected static File      localConfFile = null;
 
     protected Map<String,File> packages = new HashMap<>(); // a map from 'jason' -> 'jar:file:/..../jason.jar' and other packages
 
@@ -96,7 +105,30 @@ public class Config extends Properties {
         return new File(System.getProperties().get("user.home") + File.separator + ".jason/user.properties");
     }
 
+    public static void setLocalConfFile(File f) {
+        localConfFile = f;
+        singleton = null;
+    }
+
+    public static void setLocalConfFile(String projectFileName) {
+        if (projectFileName == null || projectFileName.isBlank()) {
+            setLocalConfFile((File) null);
+            return;
+        }
+
+        var projectFile = new File(projectFileName).getAbsoluteFile();
+        var parent = projectFile.getParentFile();
+        if (parent == null) {
+            setLocalConfFile((File) null);
+        } else {
+            setLocalConfFile(new File(parent, "jason.properties"));
+        }
+    }
+
     public File getLocalConfFile() {
+        if (localConfFile != null) {
+            return localConfFile;
+        }
         return new File("jason.properties");
     }
 
@@ -206,6 +238,10 @@ public class Config extends Properties {
 
         if (getProperty(START_WEB_MI) == null) {
             put(START_WEB_MI, "true");
+        }
+
+        if (getProperty(MIND_INSPECTOR_TYPE) == null) {
+            put(MIND_INSPECTOR_TYPE, "new");
         }
 
         if (getProperty(NB_TH_SCH) == null) {
@@ -515,21 +551,63 @@ public class Config extends Properties {
         setProperty(MIND_INSP_ARCH_CLASS_NAME, c);
     }
     public String getMindInspectorArchClassName() {
-        if (getProperty(MIND_INSP_ARCH_CLASS_NAME) == null) {
-            return jason.architecture.MindInspectorAgArch.class.getName();
-        } else {
+        if (getProperty(MIND_INSP_ARCH_CLASS_NAME) != null) {
             return getProperty(MIND_INSP_ARCH_CLASS_NAME);
         }
+
+        if (isOldMindInspector()) {
+            return OLD_MIND_INSPECTOR_ARCH_CLASS;
+        }
+
+        if (classExists(NEW_MIND_INSPECTOR_ARCH_CLASS)) {
+            return NEW_MIND_INSPECTOR_ARCH_CLASS;
+        }
+
+        return OLD_MIND_INSPECTOR_ARCH_CLASS;
     }
 
     public void setMindInspectorWebServerClassName(String c) {
         setProperty(MIND_INSP_WEB_SERVER_CLASS_NAME, c);
     }
     public String getMindInspectorWebServerClassName() {
-        if (getProperty(MIND_INSP_WEB_SERVER_CLASS_NAME) == null) {
-            return jason.architecture.MindInspectorWebImpl.class.getName();
-        } else {
+        if (getProperty(MIND_INSP_WEB_SERVER_CLASS_NAME) != null) {
             return getProperty(MIND_INSP_WEB_SERVER_CLASS_NAME);
+        }
+
+        if (isOldMindInspector()) {
+            return OLD_MIND_INSPECTOR_WEB_CLASS;
+        }
+
+        if (classExists(NEW_MIND_INSPECTOR_WEB_CLASS)) {
+            return NEW_MIND_INSPECTOR_WEB_CLASS;
+        }
+
+        return OLD_MIND_INSPECTOR_WEB_CLASS;
+    }
+
+    public String getMindInspectorType() {
+        var type = getProperty(MIND_INSPECTOR_TYPE);
+        if (type == null) {
+            return "new";
+        }
+
+        type = type.trim().toLowerCase(Locale.ROOT);
+        if (type.equals("old")) {
+            return "old";
+        }
+        return "new";
+    }
+
+    public boolean isOldMindInspector() {
+        return getMindInspectorType().equals("old");
+    }
+
+    protected boolean classExists(String className) {
+        try {
+            Class.forName(className);
+            return true;
+        } catch (Throwable e) {
+            return false;
         }
     }
 

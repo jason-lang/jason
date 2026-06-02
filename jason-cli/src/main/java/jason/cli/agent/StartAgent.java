@@ -8,7 +8,6 @@ import picocli.CommandLine.Parameters;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 
@@ -69,12 +68,13 @@ public class StartAgent extends BaseAgent implements Runnable {
         // create the agents
         var ags = new ArrayList<String>();
         var rt =  RunningMASs.getRTS(masName);
+        var archs = agArchs == null ? List.<String>of() : List.of(agArchs);
         try {
             for (int i=0; i<instances; i++) {
                 var n = agName;
                 if (instances>1)
                     n = agName + i;
-                ags.add(rt.createAgent( n, null, agClass, Arrays.stream(agArchs).toList(), null, null, null));
+                ags.add(rt.createAgent( n, null, agClass, archs, null, createMindApiSettings(), null));
             }
         } catch (Exception e) {
             parent.parent.errorMsg("error creating agent: "+e.getMessage());
@@ -110,4 +110,3 @@ public class StartAgent extends BaseAgent implements Runnable {
         }
     }
 }
-

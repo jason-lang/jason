@@ -1,0 +1,7 @@
+.text-aside {
+  color: var(--pallete-text-aside);
+}
+
+.text-little {
+  font-size: var(--text-little);
+}
