@@ -251,7 +251,7 @@ public class RunLocalMAS extends BaseLocalMAS implements RunLocalMASMBean {
                 if (arg.equals("--no-mbean")) {
                     initArgs.put("no-mbean", true);
                 }
-                if (arg.equals("--no-mindinspector")) {
+                if (arg.equals("--no-mindinspector")) { // deprecated, use --no-mind-inspector, see below
                     initArgs.put("no-mindinspector", true);
                     Config.get().put( Config.START_WEB_MI, "false");
                 }
@@ -259,6 +259,7 @@ public class RunLocalMAS extends BaseLocalMAS implements RunLocalMASMBean {
                     initArgs.put("no-mbean", true);
                     initArgs.put("no-rmi", true);
                     initArgs.put("no-mindinspector", true);
+                    initArgs.put("no-mind-inspector", true);
                     Config.get().put( Config.START_WEB_MI, "false");
                 }
                 if (arg.equals("--debug") || arg.equals("-d"))
