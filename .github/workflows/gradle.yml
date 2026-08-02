@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v6
-    - uses: gradle/actions/wrapper-validation@v6
+    - uses: gradle/actions/wrapper-validation@v6.2.0
 
   build:
     needs: validate-gradle-wrapper
