@@ -191,15 +191,14 @@ public class MASConsoleGUI {
             }
 
             // print in output
-            synchronized (output) {
-                try {
+            try {
+                SwingUtilities.invokeAndWait(() -> {
                     if (output.getDocument().getLength() > 60000) {
                         cleanConsole();
                     }
                     output.append(s);
-                } catch (IllegalArgumentException e) {
-                }
-            }
+                });
+            }  catch (InterruptedException e) {}
         } catch (Exception e) {
             try {
                 PrintWriter out = new PrintWriter(new FileWriter("e_r_r_o_r.txt"));

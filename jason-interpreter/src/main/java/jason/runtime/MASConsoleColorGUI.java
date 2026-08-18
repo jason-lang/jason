@@ -105,19 +105,20 @@ public class MASConsoleColorGUI extends MASConsoleGUI {
             }
 
             // print in output
-            synchronized (output) {
+            Color finalC = c;
+            SwingUtilities.invokeAndWait(() -> {
                 if (output.getDocument().getLength() > 60000) {
                     cleanConsole();
                 }
                 try {
-                    output.append(c, s);
+                    output.append(finalC, s);
                 } catch (Throwable e) {
                     // just try again once...
                     try {
-                        output.append(c, s);
+                        output.append(finalC, s);
                     } catch (Throwable e2) { }
                 }
-            }
+            });
         } catch (InterruptedException e) {
             // ignore, system going down
         } catch (Exception e) {
