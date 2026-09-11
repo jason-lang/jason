@@ -159,26 +159,27 @@ task publishMavenGitHub(dependsOn: [ 'build', 'publishToMavenLocal']) {
   doLast {
     def wdir = System.getProperty("user.home")+'/.m2/repository/io/github/jason-lang/jason-interpreter' //org/jason/jason'
     def rdir = project.projectDir.absolutePath+'/../../jacamo-mvn-repo'
-    exec {
-        commandLine 'git', 'pull'
-        workingDir rdir
-    }
-    copy {
-        from wdir
-        into rdir + '/io/github/jason-lang/jason-interpreter'
-    }
-    exec {
-        commandLine 'git', 'add', '*'
-        workingDir rdir
-    }
-    exec {
-        commandLine 'git', 'commit', '-a', '-m', 'new version of jason '+project.version
-        workingDir rdir
-    }
-    exec {
-        commandLine 'git', 'push'
-        workingDir rdir
-    }
+        providers.exec {
+            workingDir rdir
+            commandLine "git", "pull"
+        }.result.get()
+        copy {
+            from wdir
+            into rdir + '/io/github/jason-lang/jason-interpreter'
+        }
+        providers.exec {
+            workingDir rdir
+            commandLine "git", "add", "*"
+        }.result.get()
+        providers.exec {
+            workingDir rdir
+            commandLine "git", "commit", "-a", "-m", "new version of jason interpreter "+project.version
+        }.result.get()
+        providers.exec {
+            workingDir rdir
+            commandLine "git", "push"
+        }.result.get()
+        
   }
 }
 
