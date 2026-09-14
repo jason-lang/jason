@@ -1,0 +1,10 @@
+/* Jason Project */
+
+MAS book_trading {
+
+    agents:
+        john;
+
+    aslSourcePath: "src/agt";
+}
+
