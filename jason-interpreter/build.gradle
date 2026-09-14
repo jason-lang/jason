@@ -11,8 +11,8 @@ plugins {
 
 defaultTasks 'jar'
 
-version "${jasonVersion}"
-group   "${groupId}"
+version = "${jasonVersion}"
+group   = "${groupId}"
 
 java {
     toolchain {
@@ -42,7 +42,7 @@ tasks.sourcesJar {
 repositories {
     mavenCentral()
 
-    maven { url "https://raw.githubusercontent.com/jacamo-lang/mvn-repo/master" }
+    maven { url = "https://raw.githubusercontent.com/jacamo-lang/mvn-repo/master" }
 }
 
 dependencies {
@@ -190,26 +190,27 @@ task publishMavenGitHub(dependsOn: [ 'build', 'publishToMavenLocal']) {
  * $ docker run -ti --rm -u gradle -v gradle-cache:/home/gradle/.gradle -v "$PWD":/home/gradle/project -w /home/gradle/project -p 8000:8000 gradle:6.3.0-jdk11 bash -c "./gradlew config test -i"
  */
 task testJason(dependsOn: 'jar') {
-    description 'runs Jason unit tests: tests.mas2j'
+    description = 'runs Jason unit tests: tests.mas2j'
     def errorOnTests = false
     outputs.upToDateWhen { false } // disable cache
 
-    doFirst {
+    //doFirst {
         try {
-            javaexec {
-                jvmArgs += '--enable-preview'
-                main = 'jason.infra.local.RunLocalMAS'
-                if (gradle.startParameter.logLevel.toString().equals("DEBUG")) {
-                    args = ['src/test/jason/unit_tests.mas2j', '--log-conf', 'src/main/resources/templates/console-debug-logging.properties']
-                } else if (gradle.startParameter.logLevel.toString().equals("INFO")) {
-                    args = ['src/test/jason/unit_tests.mas2j', '--log-conf', 'src/main/resources/templates/console-info-logging.properties']
-                } else {
-                    args = ['src/test/jason/unit_tests.mas2j', '--log-conf', 'src/main/resources/templates/console-lifecycle-logging.properties']
-                }
+            providers.javaexec {
+                //jvmArgs += '--enable-preview'
+                mainClass = 'jason.infra.local.RunLocalMAS'
+                //if (gradle.startParameter.logLevel.toString().equals("DEBUG")) {
+                //    args = ['src/test/jason/unit_tests.mas2j', '--log-conf', 'src/main/resources/templates/console-debug-logging.properties']
+                //} else if (gradle.startParameter.logLevel.toString().equals("INFO")) {
+                //    args = ['src/test/jason/unit_tests.mas2j', '--log-conf', 'src/main/resources/templates/console-info-logging.properties']
+                //} else {
+                args = ['src/test/jason/unit_tests.mas2j', '--log-conf', 'src/main/resources/templates/console-lifecycle-logging.properties']
+                //}
+                workingDir project.projectDir.absolutePath
                 classpath sourceSets.main.runtimeClasspath
                 sourceSets.test.java.srcDirs += ['src/test/jason/jia']
 
-                errorOutput = new ByteArrayOutputStream()
+                /*errorOutput = new ByteArrayOutputStream()
                 standardOutput = new ByteArrayOutputStream()
 
                 ext.stdout = {
@@ -217,14 +218,15 @@ task testJason(dependsOn: 'jar') {
                 }
                 ext.errout = {
                     return errorOutput.toString()
-                }
-            }
+                }*/
+            }.result.get()
         } catch (Exception e) {
-            errorOnTests = true
+        //    errorOnTests = true
+            throw new GradleException('Jason unit tests: ERROR! (see jason-interpreter/build/reports/tests/mas.log for details)')
         }
-    }
+    //}
 
-    doLast {
+    /*doLast {
         def styler = 'black red green yellow blue magenta cyan white'
             .split().toList().withIndex(30)
             .collectEntries { key, val -> [(key) : { "\033[${val}m${it}\033[0m" }] }
@@ -252,6 +254,7 @@ task testJason(dependsOn: 'jar') {
         if (errorOnTests) {
             throw new GradleException('Jason unit tests: ERROR!')
         }
-    }
+    }*/
 }
-//tasks.build.finalizedBy testJason
+
+tasks.build.finalizedBy testJason

@@ -7,8 +7,8 @@ defaultTasks 'build'
 apply plugin: 'java-library'
 apply plugin: 'maven-publish'
 
-version "${jasonVersion}"
-group   "${groupId}"
+version = "${jasonVersion}"
+group   = "${groupId}"
 
 sourceSets {
     main {
@@ -24,8 +24,8 @@ sourceSets {
 repositories {
     mavenCentral()
 
-    maven { url "https://raw.githubusercontent.com/jacamo-lang/mvn-repo/master" }
-    maven { url 'https://repo.gradle.org/gradle/libs-releases' }
+    maven { url = "https://raw.githubusercontent.com/jacamo-lang/mvn-repo/master" }
+    maven { url = "https://repo.gradle.org/gradle/libs-releases" }
 }
 
 dependencies {
@@ -82,9 +82,9 @@ task run (type: JavaExec, dependsOn: 'build') {
 }
 
 task uberJar(type: Jar, dependsOn: ['classes', ':jason-interpreter:jar']) {
-    group "build"
-    description 'creates a single runnable jar file with all dependencies'
-    duplicatesStrategy 'exclude'
+    group = "build"
+    description = 'creates a single runnable jar file with all dependencies'
+    duplicatesStrategy = 'exclude'
 
     manifest {
         attributes 'Main-Class': 'jason.cli.JasonCLI',
@@ -137,15 +137,15 @@ task createBin (dependsOn: ['uberJar']) {
 }
 */
 
-artifacts {
+/*artifacts {
     archives jar
-}
+}*/
 
 publishing {
     publications {
         maven(MavenPublication) {
             from components.java
-            artifactId 'jason-cli'
+            artifactId = 'jason-cli'
         }
     }
 }
