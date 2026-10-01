@@ -6,7 +6,7 @@ plugins {
     id 'java-library'
     id("org.javacc.javacc") version "4.0.3"
     id 'maven-publish'
-    id 'org.jreleaser' version '1.25.0'
+    id 'org.jreleaser' version '1.26.0'
 }
 
 defaultTasks 'jar'
