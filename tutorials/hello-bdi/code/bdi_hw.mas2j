@@ -1,0 +1,10 @@
+/* Jason Project */
+
+MAS bdi_hw {
+    environment: jaca.CartagoEnvironment
+
+    agents:
+        bob   agentArchClass jaca.CAgentArch;
+        alice agentArchClass jaca.CAgentArch;
+
+}
