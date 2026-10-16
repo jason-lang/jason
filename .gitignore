@@ -62,3 +62,4 @@ doc/index.html
 doc/doc.html
 doc.html
 /doc
+*.gradle
