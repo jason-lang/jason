@@ -1,28 +1,24 @@
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.*;
+import java.util.logging.*;
 
 import jason.architecture.AgArch;
-import jason.asSemantics.ActionExec;
-import jason.asSemantics.Agent;
-import jason.asSemantics.TransitionSystem;
+import jason.asSemantics.*;
 import jason.asSyntax.Literal;
 import jason.infra.local.RunLocalMAS;
 
+
+
 /**
- * Example of an agent that only uses Jason BDI engine. It runs without all
- * Jason IDE stuff. (see Jason FAQ for more information about this example)
- *
- * The class must extend AgArch class to be used by the Jason engine.
+ * Example of a java program that uses only the Jason BDI engine.
  */
 public class SimpleJasonAgent extends AgArch {
 
     private static Logger logger = Logger.getLogger(SimpleJasonAgent.class.getName());
 
     public static void main(String[] a) {
-        new RunLocalMAS().setupLogger();
+        new RunLocalMAS().setupDefaultConsoleLogger();
+
         SimpleJasonAgent ag = new SimpleJasonAgent();
         ag.run();
     }

@@ -409,7 +409,7 @@ public class RunLocalMAS extends BaseLocalMAS implements RunLocalMASMBean {
         return RunLocalMAS.class.getResource("/templates/" + logPropFile).openStream();
     }
 
-    protected void setupDefaultConsoleLogger() {
+    public static void setupDefaultConsoleLogger() {
         Handler[] hs = Logger.getLogger("").getHandlers();
         for (Handler handler : hs) {
             Logger.getLogger("").removeHandler(handler);
