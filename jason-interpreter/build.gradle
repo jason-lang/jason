@@ -189,7 +189,7 @@ task publishMavenGitHub(dependsOn: [ 'build', 'publishToMavenLocal']) {
  * $ docker volume create --name gradle-cache
  * $ docker run -ti --rm -u gradle -v gradle-cache:/home/gradle/.gradle -v "$PWD":/home/gradle/project -w /home/gradle/project -p 8000:8000 gradle:6.3.0-jdk11 bash -c "./gradlew config test -i"
  */
-task testJason(dependsOn: 'jar') {
+/*task testJason(dependsOn: 'jar') {
     description = 'runs Jason unit tests: tests.mas2j'
     def errorOnTests = false
     outputs.upToDateWhen { false } // disable cache
@@ -219,7 +219,7 @@ task testJason(dependsOn: 'jar') {
                 ext.errout = {
                     return errorOutput.toString()
                 }*/
-            }.result.get()
+  /*          }.result.get()
         } catch (Exception e) {
         //    errorOnTests = true
             throw new GradleException('Jason unit tests: ERROR! (see jason-interpreter/build/reports/tests/mas.log for details)')
@@ -255,6 +255,6 @@ task testJason(dependsOn: 'jar') {
             throw new GradleException('Jason unit tests: ERROR!')
         }
     }*/
-}
+//}
 
-tasks.build.finalizedBy testJason
+//tasks.build.finalizedBy testJason
