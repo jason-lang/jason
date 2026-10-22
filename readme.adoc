@@ -13,6 +13,8 @@ Most of the Jason documentation is available xref:doc/readme.adoc[in the doc fol
 
 == Installation
 
+Java 21 is required to run Jason. This _exact_ version is required.
+
 === For Jason users
 
 Follow the xref:doc/tutorials/getting-started/readme.adoc[getting started tutorial].
