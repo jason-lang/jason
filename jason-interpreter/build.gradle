@@ -183,7 +183,7 @@ task publishMavenGitHub(dependsOn: [ 'build', 'publishToMavenLocal']) {
   }
 }
 
-task testJason (type: JavaExec, dependsOn: 'classes') {
+task testJason (type: JavaExec, dependsOn: 'jar') {
     group = 'Jason'
     description = 'runs Jason unit tests written in ASL'
     mainClass = 'jason.infra.local.RunLocalMAS'
