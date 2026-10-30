@@ -8,6 +8,8 @@ defaultTasks 'config'
 
 clean {
     delete 'bin'
+    delete 'jason-bin/bin'
+    delete 'jason-interpreter/bin'
     delete 'doc/api'
     delete 'doc/faq.html'
     delete 'doc/index.html'
