@@ -68,6 +68,21 @@ jar {
     }
 }
 
+task uberJar(type: Jar, dependsOn: ['jar']) {
+    group = "build"
+    description = 'creates a single jar file with all dependencies'
+    duplicatesStrategy = 'exclude'
+    manifest {
+        attributes 'Specification-Title': 'Jason Language',
+                   'Specification-Version': project.version,
+                   'Implementation-Version': new Date().toString(),
+                   'Main-Class': 'jason.infra.local.RunLocalMAS'
+    }
+    archiveBaseName = "jason-interpreter-all"
+    from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
+
 compileJavacc {
     inputDirectory = file('src/main/javacc')
     outputDirectory = file(project.buildDir.absolutePath + '/generated/javacc')

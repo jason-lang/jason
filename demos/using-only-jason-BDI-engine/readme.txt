@@ -4,7 +4,7 @@ Jason AgentSpeak interpreter. See the FAQ for more information.
 To run this demo:
 
 1. compile the source
-    javac -classpath "$JASON_HOME/libs/*:." SimpleJasonAgent.java
+    javac -cp "../../bin/*:." SimpleJasonAgent.java
 
 2. run the Java code:
-    java -classpath "$JASON_HOME/libs/*:." SimpleJasonAgent
+    java -cp "../../bin/*:." SimpleJasonAgent

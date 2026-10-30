@@ -53,11 +53,16 @@ clean {
     emptyDirs.reverseEach { it.delete() }
 }
 
-task createCLIBin (dependsOn: [':jason-cli:createBin']) {
+task createCLIBin (dependsOn: [':jason-cli:createBin',':jason-interpreter:uberJar']) {
     group = "build"
     doLast {
         copy {
             from 'jason-cli/build/bin/jason'
+            into 'bin'
+        }
+        copy {
+            from 'jason-interpreter/build/libs'
+            include '*all*.jar'
             into 'bin'
         }
     }
